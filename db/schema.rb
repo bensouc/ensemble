@@ -109,7 +109,7 @@ ActiveRecord::Schema.define(version: 2021_11_29_165422) do
     t.bigint "work_plan_domain_id", null: false
     t.bigint "skill_id", null: false
     t.string "kind"
-    t.bigint "challenge_id", null: false
+    t.bigint "challenge_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["challenge_id"], name: "index_work_plan_skills_on_challenge_id"
