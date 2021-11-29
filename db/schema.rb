@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_29_160354) do
+ActiveRecord::Schema.define(version: 2021_11_29_165422) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -46,6 +46,42 @@ ActiveRecord::Schema.define(version: 2021_11_29_160354) do
     t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
   end
 
+  create_table "challenges", force: :cascade do |t|
+    t.string "name"
+    t.bigint "skill_id", null: false
+    t.boolean "shared"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["skill_id"], name: "index_challenges_on_skill_id"
+    t.index ["user_id"], name: "index_challenges_on_user_id"
+  end
+
+  create_table "classrooms", force: :cascade do |t|
+    t.string "grade"
+    t.bigint "user_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["user_id"], name: "index_classrooms_on_user_id"
+  end
+
+  create_table "skills", force: :cascade do |t|
+    t.string "domain"
+    t.integer "level"
+    t.string "name"
+    t.string "symbol"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "students", force: :cascade do |t|
+    t.string "first_name"
+    t.bigint "classroom_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["classroom_id"], name: "index_students_on_classroom_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -54,9 +90,52 @@ ActiveRecord::Schema.define(version: 2021_11_29_160354) do
     t.datetime "remember_created_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "first_name"
+    t.string "last_name"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "work_plan_domains", force: :cascade do |t|
+    t.string "domain"
+    t.integer "level"
+    t.bigint "work_plan_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["work_plan_id"], name: "index_work_plan_domains_on_work_plan_id"
+  end
+
+  create_table "work_plan_skills", force: :cascade do |t|
+    t.bigint "work_plan_domain_id", null: false
+    t.bigint "skill_id", null: false
+    t.string "kind"
+    t.bigint "challenge_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["challenge_id"], name: "index_work_plan_skills_on_challenge_id"
+    t.index ["skill_id"], name: "index_work_plan_skills_on_skill_id"
+    t.index ["work_plan_domain_id"], name: "index_work_plan_skills_on_work_plan_domain_id"
+  end
+
+  create_table "work_plans", force: :cascade do |t|
+    t.string "name"
+    t.bigint "user_id", null: false
+    t.bigint "student_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["student_id"], name: "index_work_plans_on_student_id"
+    t.index ["user_id"], name: "index_work_plans_on_user_id"
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "challenges", "skills"
+  add_foreign_key "challenges", "users"
+  add_foreign_key "classrooms", "users"
+  add_foreign_key "students", "classrooms"
+  add_foreign_key "work_plan_domains", "work_plans"
+  add_foreign_key "work_plan_skills", "challenges"
+  add_foreign_key "work_plan_skills", "skills"
+  add_foreign_key "work_plan_skills", "work_plan_domains"
+  add_foreign_key "work_plans", "students"
+  add_foreign_key "work_plans", "users"
 end
