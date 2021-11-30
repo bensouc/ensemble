@@ -1,14 +1,14 @@
 require "open-uri"
 
 puts "destroying current data"
-# WorkPlanSkill.destroy_all
-# Challenge.destroy_all
-# Skill.destroy_all
-# WorkPlanDomain.destroy_all
-# WorkPlan.destroy_all
-# Student.destroy_all
-# Classroom.destroy_all
-# User.destroy_all
+WorkPlanSkill.destroy_all
+WorkPlanDomain.destroy_all
+Challenge.destroy_all
+Skill.destroy_all
+WorkPlan.destroy_all
+Student.destroy_all
+Classroom.destroy_all
+User.destroy_all
 
 puts "creating user"
 
