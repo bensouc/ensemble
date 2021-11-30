@@ -26,13 +26,16 @@ student1 = Student.create!(first_name: 'Adèle', classroom: classroom1)
 
 puts "creating WorkPlan"
 
-work_plan1 = WorkPlan.create!(name: 'Mon premier PT avec élève', user: user1, student: student1)
-work_plan2 = WorkPlan.create!(name: 'Mon premier PT sans élève', user: user1)
+work_plan1 = WorkPlan.create!(name: 'Mon premier PT avec élève', start_date: '06/12/2021', end_date: '10/12/2021', user: user1, student: student1)
+work_plan2 = WorkPlan.create!(name: 'Mon premier PT sans élève', start_date: '06/12/2021', end_date: '10/12/2021', user: user1)
 
 puts "creating WorkPlanDomain"
 
 work_plan_domain1 = WorkPlanDomain.create!(domain: 'Vocabulaire', level: 1, work_plan: work_plan1)
 work_plan_domain2 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_plan: work_plan2)
+# add a 2nd domain to work_plan1
+work_plan_domain3 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_plan: work_plan1)
+
 
 puts "creating all the Skills"
   skill1 = Skill.create!(domain: 'Vocabulaire', level: 1, symbol: '◼', name: 'Classer les lettres dans l’ordre alphabétique')
@@ -199,3 +202,4 @@ work_plan_skill1 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain1, sk
 work_plan_skill2 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain1, skill: skill2, kind: 'excercice', challenge: challenge2)
 work_plan_skill3 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain2, skill: skill18, kind: 'excercice', challenge: challenge3)
 work_plan_skill4 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain2, skill: skill19, kind: 'excercice', challenge: challenge4)
+work_plan_skill5 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain3, skill: skill19, kind: 'excercice', challenge: challenge4)

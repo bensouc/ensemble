@@ -1,6 +1,27 @@
 <div class='container'>
   <div class='border-bottom'>
-    <h1><%= @work_plan.name%></h1>
+    <div class='d-flex justify-content-between align-self-center'>
+      <h1><%= @work_plan.name%></h1>
+      <div>
+        <h4>Du <%= @work_plan.start_date%> Au <%= @work_plan.end_date%></h4>
+      </div>
+    </div>
+    <%# Student details %>
+    <div class='d-flex justify-content-between mb-1'>
+      <div>
+        <h2><%= @work_plan.student.first_name%></h2>
+      </div>
+      <div class='d-flex-column '>
+        <p>Bilan du plan de travail <br>◻ Programme tenu <br> ◻ Programme non tenu <br>◻ Programme dépassé
+        </p>
+      </div>
+      <div class='border rounded-3 w-50 p-1'>
+        <p>Commentaires:</p>
+      </div>
+      <div class='border rounded-3 w-20 p-1'>
+        <p>Signatures des Parents:</p>
+      </div>
+    </div>
   </div>
   <%console%> <%# à enlever par la suite %>
   <%# Start of a domain %>
@@ -8,34 +29,27 @@
     <% @work_plan.work_plan_domains.each do |work_plan_domain|%>
       <%# boucle sur les work_plan_domains %>
       <div class='domain '>
-          <div class='banner p-1 d-flex border-bottom'>
+          <div class='banner p-1 d-flex  border-bottom border-top'>
             <div class='w-20 border-right '>
               <h2><%= work_plan_domain.domain%></h2>
-              <h2 class='align-middle'><i class="fas fa-bacon text-light"></i> </h2>
+              <h2 class='d-flex justify-content-around'><i class="fas fa-bacon text-danger"></i><%= work_plan_domain.level%> </h2>
               <%# <%= work_plan_domain.level%>
             </div>
-            <div class='w-100 '>
+            <div class='w-100 p-1'>
               <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
               <div class='d-flex justify-content-between '>
                 <div >
                   <p><%= plan_skill.skill.symbol%> <%= plan_skill.skill.name%></p>
                 </div>
                 <div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-                    <label class="form-check-label" for="inlineCheckbox1">J</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2" <%='checked' if plan_skill.kind == 'exercice'%>>
-                    <label class="form-check-label" for="inlineCheckbox2">E</label>
-                  </div>
-                  <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
-                    <label class="form-check-label" for="inlineCheckbox3">C</label>
-                  </div>
+                  <p><%= plan_skill.kind.capitalize%></p>
                 </div >
               </div>
               <% end %>
+              <%= button_tag(type: 'button') do%>
+                <%content_tag(:strong, 'Ajouter une compétence!')%>
+              <% end %>
+
             </div>
 
         </div>
