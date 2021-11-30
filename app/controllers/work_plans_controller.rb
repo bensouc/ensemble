@@ -5,6 +5,7 @@ class WorkPlansController < ApplicationController
 
   def new
     @work_plan = WorkPlan.new
+    # search all students of current-user
     @students = Student.where(classroom: current_user.classrooms)
   end
 
