@@ -1,4 +1,8 @@
 class WorkPlansController < ApplicationController
+  def index
+    @my_work_plans = WorkPlan.where(user: current_user)
+  end
+
   def new
     @work_plan = WorkPlan.new
     @students = Student.where(classroom: current_user.classrooms)
