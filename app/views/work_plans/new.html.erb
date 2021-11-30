@@ -1,8 +1,0 @@
-<h1>Création du plan de travail</h1>
-<div>
-  <%= simple_form_for @work_plan do |f| %>
-    <%= f.input :name, label: 'Nom' %>
-    <%= f.association :student, label: 'Elève', collection: @students, label_method: :first_name %>
-    <%= f.submit "Valider", class: "btn btn-primary" %>
-  <% end %>
-</div>

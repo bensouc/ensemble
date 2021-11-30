@@ -20,7 +20,7 @@ class WorkPlansController < ApplicationController
   end
 
   private
-
+  
   def work_plan_params
     params.require(:work_plan).permit(:name, :student_id)
   end
