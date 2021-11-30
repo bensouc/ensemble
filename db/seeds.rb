@@ -141,6 +141,29 @@ challenge2 = Challenge.create!(name: 'Classer des mots par catégories', skill: 
 challenge3 = Challenge.create!(name: 'Mettre des mots dans l’ordre pour former une phrase', skill: skill18, user: user1)
 challenge4 = Challenge.create!(name: 'Reconnaître le verbe dans une phrase', skill: skill19, user: user1)
 
+content1 = '<p><span style="font-size:13.999999999999998pt"><span style="font-family:Calibri,sans-serif"><span style="color:#000000"><strong>Range les lettres dans l&rsquo;ordre alphab&eacute;tique&nbsp;:&nbsp;</strong></span></span></span></p>
+
+<p><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">A, F , C , G , N&nbsp;: ................................ </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">e, i, t , v , g&nbsp;: .....................................</span></span></span></p>
+
+<p><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">b, m, d , u , s&nbsp;: .................................</span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">J, L, H, X, O&nbsp;: .....................................</span></span></span></p>
+
+<p><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">B, F , C , P, N&nbsp;: .................................&nbsp; </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">f, j , t , v , m&nbsp;: .....................................</span></span></span></p>
+
+<p>&nbsp;</p>'
+
+
+challenge1.content.body = content1
+challenge1.save
+
+challenge2.content.body = content1
+challenge2.save
+
+challenge3.content.body = content1
+challenge3.save
+
+challenge4.content.body = content1
+challenge4.save
+
 puts "creating WorkPlanSkill"
 
 work_plan_skill1 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain1, skill: skill1, kind: 'excercice', challenge: challenge1)
