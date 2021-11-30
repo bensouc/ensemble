@@ -1,0 +1,62 @@
+<div class='container'>
+  <div class='border-bottom'>
+    <h1><%= @work_plan.name%></h1>
+  </div>
+  <%console%> <%# à enlever par la suite %>
+  <%# Start of a domain %>
+  <div>
+    <% @work_plan.work_plan_domains.each do |work_plan_domain|%>
+      <%# boucle sur les work_plan_domains %>
+      <div class='domain '>
+          <div class='banner p-1 d-flex border-bottom'>
+            <div class='w-20 border-right '>
+              <h2><%= work_plan_domain.domain%></h2>
+              <h2 class='align-middle'><i class="fas fa-bacon text-light"></i> </h2>
+              <%# <%= work_plan_domain.level%>
+            </div>
+            <div class='w-100 '>
+              <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
+              <div class='d-flex justify-content-between '>
+                <div >
+                  <p><%= plan_skill.skill.symbol%> <%= plan_skill.skill.name%></p>
+                </div>
+                <div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
+                    <label class="form-check-label" for="inlineCheckbox1">J</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2" <%='checked' if plan_skill.kind == 'exercice'%>>
+                    <label class="form-check-label" for="inlineCheckbox2">E</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3">
+                    <label class="form-check-label" for="inlineCheckbox3">C</label>
+                  </div>
+                </div >
+              </div>
+              <% end %>
+            </div>
+
+        </div>
+
+        <div >
+          <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
+            <%# display 1 exo %>
+            <div>
+            <%# display le content d'un exo %>
+              <div>
+                <h2>Exercice</h2>
+                <%= work_plan_skill.challenge.content.body%>
+                <% end %>
+              </div>
+              <%# Display editeur, en d-none de base %>
+              <div class='d-none'>
+              editeur
+              </div>
+            </div>
+        </div>
+      </div>
+    <%end%>
+  </div>
+</div>

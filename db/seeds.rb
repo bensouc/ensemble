@@ -32,7 +32,7 @@ work_plan2 = WorkPlan.create!(name: 'Mon premier PT sans élève', user: user1)
 puts "creating WorkPlanDomain"
 
 work_plan_domain1 = WorkPlanDomain.create!(domain: 'Vocabulaire', level: 1, work_plan: work_plan1)
-work_plan_domain2 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_plan: work_plan1)
+work_plan_domain2 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_plan: work_plan2)
 
 puts "creating all the Skills"
   skill1 = Skill.create!(domain: 'Vocabulaire', level: 1, symbol: '◼', name: 'Classer les lettres dans l’ordre alphabétique')
