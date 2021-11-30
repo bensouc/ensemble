@@ -1,0 +1,13 @@
+<div class='w-50'>
+  <ul>
+    <%@my_work_plans.each do |wp| %>
+    <div class='card'>
+      <%= link_to work_plan_path(wp) do %>
+        <h2><%= wp.name %></h2>
+        <p>Pour <%= wp.student.nil? ? "Non assigné": wp.student.first_name %></p>
+        <p>Derniere Modification : <%=wp.updated_at.strftime("%d/%m/%Y") %></p>
+      <% end %>
+    </div>
+    <% end %>
+  </ul>
+</div>

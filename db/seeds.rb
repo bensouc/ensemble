@@ -142,26 +142,55 @@ challenge3 = Challenge.create!(name: 'Mettre des mots dans l’ordre pour former
 challenge4 = Challenge.create!(name: 'Reconnaître le verbe dans une phrase', skill: skill19, user: user1)
 
 content1 = '<p><span style="font-size:13.999999999999998pt"><span style="font-family:Calibri,sans-serif"><span style="color:#000000"><strong>Range les lettres dans l&rsquo;ordre alphab&eacute;tique&nbsp;:&nbsp;</strong></span></span></span></p>
-
-<p><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">A, F , C , G , N&nbsp;: ................................ </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">e, i, t , v , g&nbsp;: .....................................</span></span></span></p>
-
-<p><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">b, m, d , u , s&nbsp;: .................................</span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">J, L, H, X, O&nbsp;: .....................................</span></span></span></p>
-
-<p><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">B, F , C , P, N&nbsp;: .................................&nbsp; </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">f, j , t , v , m&nbsp;: .....................................</span></span></span></p>
-
-<p>&nbsp;</p>'
+  <p><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">A, F , C , G , N&nbsp;: ................................ </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">e, i, t , v , g&nbsp;: .....................................</span></span></span></p>
+  <p><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">b, m, d , u , s&nbsp;: .................................</span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">J, L, H, X, O&nbsp;: .....................................</span></span></span></p>
+  <p><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">B, F , C , P, N&nbsp;: .................................&nbsp; </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">f, j , t , v , m&nbsp;: .....................................</span></span></span></p>
+  <p>&nbsp;</p>'
 
 
 challenge1.content.body = content1
 challenge1.save
 
-challenge2.content.body = content1
+
+
+challenge2.content.body = <<~HTML
+  <p><span style="font-size:13.999999999999998pt"><span style="font-family:Calibri,sans-serif"><span style="color:#000000"><strong>Barre l&rsquo;intrus dans chaque liste de mots&nbsp;</strong></span></span></span></p>
+  <p>&nbsp;</p>
+  <p>deux dix&nbsp;treize &eacute;gal&nbsp;huit</p>
+  <p><span style="font-weight: 400;">cercle&nbsp;</span><span style="font-weight: 400;">carr&eacute;&nbsp;</span><span style="font-weight: 400;">rectangle&nbsp;</span><span style="font-weight: 400;">triangle&nbsp;</span><span style="font-weight: 400;">stylo</span></p>
+  <p><span style="font-weight: 400;">poireau&nbsp;</span><span style="font-weight: 400;">chou-fleur&nbsp;</span><span style="font-weight: 400;">pomme&nbsp;</span><span style="font-weight: 400;">carotte&nbsp;</span><span style="font-weight: 400;">&eacute;pinards</span></p>
+  <p><span style="font-weight: 400;">gomme&nbsp;</span><span style="font-weight: 400;">trottinette&nbsp;</span><span style="font-weight: 400;">cahier&nbsp;</span><span style="font-weight: 400;">stylo&nbsp;</span><span style="font-weight: 400;">trousse</span></p>
+  <p><span style="font-weight: 400;">marteau&nbsp;</span><span style="font-weight: 400;">tournevis&nbsp;</span><span style="font-weight: 400;">chaise&nbsp;</span><span style="font-weight: 400;">pince&nbsp;</span><span style="font-weight: 400;">perceuse</span></p>
+HTML
+
 challenge2.save
 
-challenge3.content.body = content1
+challenge3.content.body = <<~HTML
+  <p><span style="font-size:13pt"><span style="font-family:Calibri,sans-serif"><span style="color:#000000"><strong>Mets les mots dans l&rsquo;ordre pour former une phrase puis souligne le verbe</strong></span></span></span></p>
+  <p>&nbsp;</p>
+  <ul>
+    <li style="list-style-type:disc"><span style="font-size:13pt"><span style="font-family:'Century Gothic',sans-serif"><span style="color:#000000">le / dans / lion / sa / rugit / cage / vieux</span></span></span></li>
+  </ul>
+  <p><span style="font-size:13pt"><span style="font-family:'Century Gothic',sans-serif"><span style="color:#000000">&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;...</span></span></span></p>
+  <ul>
+    <li style="list-style-type:disc"><span style="font-size:13pt"><span style="font-family:'Century Gothic',sans-serif"><span style="color:#000000">soeur / ma / fait / devoirs / ses&nbsp;</span></span></span></li>
+  </ul>
+  <p><span style="font-size:13pt"><span style="font-family:'Century Gothic',sans-serif"><span style="color:#000000">&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;...</span></span></span></p>
+  <ul>
+    <li style="list-style-type:disc"><span style="font-size:13pt"><span style="font-family:'Century Gothic',sans-serif"><span style="color:#000000">rigolent / elles / ce / matin / moi / avec</span></span></span></li>
+  </ul>
+  <p><span style="font-size:13pt"><span style="font-family:'Century Gothic',sans-serif"><span style="color:#000000">&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;..</span></span></span></p>
+HTML
 challenge3.save
 
-challenge4.content.body = content1
+challenge4.content.body = <<~HTML
+  <p><span style="font-size:13.999999999999998pt"><span style="font-family:Calibri,sans-serif"><span style="color:#000000"><strong>Souligne le verbe en rouge dans les phrases</strong></span></span></span><span style="font-size:12pt"><span style="font-family:'Times New Roman'"><span style="color:#000000">&nbsp;</span></span></span></p>
+  <p><span style="font-size:12pt"><span style="font-family:'Century Gothic',sans-serif"><span style="color:#000000">Les chevaliers d&eacute;fendaient leur ch&acirc;teau fort.&nbsp;</span></span></span></p>
+  <p><span style="font-size:12pt"><span style="font-family:'Century Gothic',sans-serif"><span style="color:#000000">Tous les enfants aiment les vacances.&nbsp;</span></span></span></p>
+  <p><span style="font-size:12pt"><span style="font-family:'Century Gothic',sans-serif"><span style="color:#000000">Dans la classe, le ma&icirc;tre installe des ordinateurs.&nbsp;</span></span></span></p>
+  <p><span style="font-size:12pt"><span style="font-family:'Century Gothic',sans-serif"><span style="color:#000000">Sur l&rsquo;&eacute;tag&egrave;re il range les livres. </span></span></span></p>
+HTML
+
 challenge4.save
 
 puts "creating WorkPlanSkill"
