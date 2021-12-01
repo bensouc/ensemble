@@ -14,8 +14,7 @@
       <% end %>
       </div>
       <div class='d-flex-column '>
-        <p>Bilan du plan de travail <br>◻ Programme tenu <br> ◻ Programme non tenu <br>◻ Programme dépassé
-        </p>
+        <p>Bilan du plan de travail <br>◻ Programme tenu <br> ◻ Programme non tenu <br>◻ Programme dépassé</p>
       </div>
       <div class='border rounded-3 w-50 p-1'>
         <p>Commentaires:</p>
@@ -56,11 +55,11 @@
 
         </div>
 
+        <%# show 1 exo %>
         <div >
           <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
-            <%# display 1 exo %>
             <div>
-            <%# display le content d'un exo %>
+            <%# display le content.body d'un exo %>
               <div>
                 <h2>Exercice</h2>
                 <%= work_plan_skill.challenge.content.body%>
@@ -68,7 +67,7 @@
               </div>
               <%# Display editeur, en d-none de base %>
               <div class='d-none'>
-              editeur
+                editeur
               </div>
             </div>
         </div>
