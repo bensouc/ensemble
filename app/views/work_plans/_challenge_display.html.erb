@@ -5,7 +5,12 @@
             <%= work_plan_skill.challenge.content.body%>
           </div>
           <%# Display editeur, en d-none de base %>
-          <div class='d-none'>
-            editeur
+          <div class=''>
+            <%= form_with model: work_plan_skill.challenge do |form| %>
+              <div class="field">
+                <%= form.label :content %>
+                <%= form.rich_text_area :content %>
+              </div>
+            <% end %>
           </div>
         </div>
