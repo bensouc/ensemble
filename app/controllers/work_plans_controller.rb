@@ -11,6 +11,7 @@ class WorkPlansController < ApplicationController
     @work_plan = WorkPlan.new
     # search all students of current-user
     @students = Student.where(classroom: current_user.classrooms)
+    @work_plan.work_plan_domains.new
   end
 
   def create
@@ -26,6 +27,7 @@ class WorkPlansController < ApplicationController
   private
 
   def work_plan_params
-    params.require(:work_plan).permit(:name, :student_id, :start_date, :end_date)
+    params.require(:work_plan).permit(:name, :student_id, :start_date, :end_date,
+      work_plan_domains_attributes: [:domain])
   end
 end
