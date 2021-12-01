@@ -6,10 +6,14 @@
           </div>
           <%# Display editeur, en d-none de base %>
           <div class=''>
-            <%= form_with model: work_plan_skill.challenge do |form| %>
+            <%= form_for [work_plan_skill, work_plan_skill.challenge] do |form| %>
               <div class="field">
                 <%= form.label :content %>
                 <%= form.rich_text_area :content %>
+              </div>
+              <div class="form-actions">
+                <%= form.button :submit %>
+                <%# <% raise %>
               </div>
             <% end %>
           </div>
