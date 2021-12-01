@@ -1,0 +1,78 @@
+<div class='container'>
+  <div class='border-bottom'>
+    <div class='d-flex justify-content-between align-self-center'>
+      <h1><%= @work_plan.name%></h1>
+      <div>
+        <h4>Du <%= @work_plan.start_date%> Au <%= @work_plan.end_date%></h4>
+      </div>
+    </div>
+    <%# Student details %>
+    <div class='d-flex justify-content-between mb-1'>
+      <div>
+      <% if !@work_plan.student.nil? %>
+        <h2><%= @work_plan.student.first_name%></h2>
+      <% end %>
+      </div>
+      <div class='d-flex-column '>
+        <p>Bilan du plan de travail <br>◻ Programme tenu <br> ◻ Programme non tenu <br>◻ Programme dépassé
+        </p>
+      </div>
+      <div class='border rounded-3 w-50 p-1'>
+        <p>Commentaires:</p>
+      </div>
+      <div class='border rounded-3 w-20 p-1'>
+        <p>Signatures des Parents:</p>
+      </div>
+    </div>
+  </div>
+  <%console%> <%# à enlever par la suite %>
+  <%# Start of a domain %>
+  <div>
+    <% @work_plan.work_plan_domains.each do |work_plan_domain|%>
+      <%# boucle sur les work_plan_domains %>
+      <div class='domain '>
+          <div class='banner p-1 d-flex  border-bottom border-top'>
+            <div class='w-20 border-right '>
+              <h2><%= work_plan_domain.domain%></h2>
+              <h2 class='d-flex justify-content-around'><i class="fas fa-bacon text-danger"></i><%= work_plan_domain.level%> </h2>
+              <%# <%= work_plan_domain.level%>
+            </div>
+            <div class='w-100 p-1'>
+              <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
+              <div class='d-flex justify-content-between '>
+                <div >
+                  <p><%= plan_skill.skill.symbol%> <%= plan_skill.skill.name%></p>
+                </div>
+                <div>
+                  <p><%= plan_skill.kind.capitalize%></p>
+                </div >
+              </div>
+              <% end %>
+              <%= button_tag(type: 'button') do%>
+                <%content_tag(:strong, 'Ajouter une compétence!')%>
+              <% end %>
+
+            </div>
+
+        </div>
+
+        <div >
+          <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
+            <%# display 1 exo %>
+            <div>
+            <%# display le content d'un exo %>
+              <div>
+                <h2>Exercice</h2>
+                <%= work_plan_skill.challenge.content.body%>
+                <% end %>
+              </div>
+              <%# Display editeur, en d-none de base %>
+              <div class='d-none'>
+              editeur
+              </div>
+            </div>
+        </div>
+      </div>
+    <%end%>
+  </div>
+</div>
