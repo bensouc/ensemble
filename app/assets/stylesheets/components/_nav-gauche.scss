@@ -1,4 +1,8 @@
 .main_nav{
+  display: flex;
+  // align-items: center;
+  flex-direction: column;
+  width: 200px;
   background-color: $blanc;
   border-right: 1px;
   border-color: transparent, #DDDDDD, transparent, transparent;
