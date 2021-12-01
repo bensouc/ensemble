@@ -3,15 +3,18 @@
   <%= simple_form_for @work_plan do |f| %>
     <%= f.input :name, label: 'Nom' %>
     <%= f.association :student, label: 'Elève',
-                      collection: @students, label_method: :first_name %>
+                      collection: @students.order(:first_name),
+                      label_method: :first_name %>
     <%= f.input :start_date, label: 'Période du',
                 as: :string, input_html: {class: "datepicker"} %>
     <%= f.input :end_date, label: 'au',
                 as: :string, input_html: {class: "datepicker"} %>
     <%= f.simple_fields_for :work_plan_domains do |domain_form| %>
       <%= domain_form.input :domain, label: 'Domaine',
-      collection: WorkPlanDomain.order(:domain) %>
-    <% end %>
+                            collection: WorkPlanDomain::DOMAINS %>
+      <%= domain_form.input :level, label: 'Niveau',
+                            collection: WorkPlanDomain::LEVELS %>
+      <% end %>
     <%= f.submit "Valider", class: "btn btn-primary" %>
   <% end %>
 </div>
