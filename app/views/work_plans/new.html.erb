@@ -3,6 +3,8 @@
   <%= simple_form_for @work_plan do |f| %>
     <%= f.input :name, label: 'Nom' %>
     <%= f.association :student, label: 'Elève', collection: @students, label_method: :first_name %>
+    <%= f.input :start_date, as: :string, input_html: {class: "datepicker"}, label: 'Période du'%>
+    <%= f.input :end_date, as: :string, input_html: {class: "datepicker"}, label: 'au'%>
     <%= f.submit "Valider", class: "btn btn-primary" %>
   <% end %>
 </div>

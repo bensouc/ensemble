@@ -26,7 +26,6 @@ class WorkPlansController < ApplicationController
   private
 
   def work_plan_params
-    params.require(:work_plan).permit(:name, :student_id)
+    params.require(:work_plan).permit(:name, :student_id, :start_date, :end_date)
   end
-
 end
