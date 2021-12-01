@@ -1,12 +1,14 @@
-        <div>
+        <div class="challenge-card" data-controller='edit-challenge'>
         <%# display le content.body d'un exo %>
-          <div>
-            <h2>Exercice</h2>
+          <div class="challenge-infos" data-edit-challenge-target="infos">
+            <h2>Exercice</h2> <i class="fas fa-pen fa-xs ml-2"
+            data-action="click->edit-challenge#displayForm">Edit</i>
             <%= work_plan_skill.challenge.content.body%>
           </div>
           <%# Display editeur, en d-none de base %>
-          <div class=''>
-            <%= form_for [work_plan_skill, work_plan_skill.challenge] do |form| %>
+          <div >
+            <%= form_for [work_plan_skill, work_plan_skill.challenge],
+            html: { class: 'd-none', data: { edit_challenge_target: 'form' } } do |form| %>
               <div class="field">
                 <%= form.label :content %>
                 <%= form.rich_text_area :content %>
