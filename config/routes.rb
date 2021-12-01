@@ -12,10 +12,8 @@ Rails.application.routes.draw do
   end
 
   resources :work_plan_skills, only: [:update] do
-    resources :challenges, only: [:create]
+    resources :challenges, only: [:create, :update]
   end
-
-  resources :challenges, only: [:update]
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
