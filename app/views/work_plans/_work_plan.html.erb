@@ -1,0 +1,39 @@
+<% @work_plan.work_plan_domains.each do |work_plan_domain|%>
+      <%# boucle sur les work_plan_domains %>
+      <div class='domain '>
+          <div class='banner p-1 d-flex  border-bottom border-top'>
+            <div class='w-20 border-right '>
+              <h2><%= work_plan_domain.domain%></h2>
+              <h2 class='d-flex justify-content-around'><i class="fas fa-bacon text-danger"></i><%= work_plan_domain.level%> </h2>
+              <%# <%= work_plan_domain.level%>
+            </div>
+            <%#  %>
+            <div class='w-100 p-1'>
+              <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
+              <div class='d-flex justify-content-between '>
+                <div >
+                  <p><%= plan_skill.skill.symbol%> <%= plan_skill.skill.name%></p>
+                </div>
+                <div>
+                  <p><%= plan_skill.kind.capitalize%></p>
+                </div >
+              </div>
+              <% end %>
+              <%= button_tag(type: 'button') do%>
+                <%content_tag(:strong, 'Ajouter une compétence!')%>
+              <% end %>
+
+            </div>
+
+        </div>
+
+        <%# show 1 exo %>
+        <div >
+        <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
+          <%= render 'challenge_display', work_plan_skill: work_plan_skill%>
+        <% end %>
+
+
+        </div>
+      </div>
+    <%end%>
