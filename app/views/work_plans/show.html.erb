@@ -2,13 +2,13 @@
 
   <div class='border-bottom'>
     <%# header WP%>
-  <%= render 'header_domain'%>
+  <%= render 'header_domain', work_plan: @work_plan%>
     <%# Student details %>
-  <%= render 'student_details'%>
+  <%= render 'student_details', work_plan: @work_plan%>
   </div>
-  <%console%> <%# à enlever par la suite %>
+  <%# <%console%>
   <%# Start of a domain %>
   <div>
-    <%= render 'work_plan'%>
+    <%= render 'work_plan_domain', work_plan: @work_plan%>
   </div>
 </div>
