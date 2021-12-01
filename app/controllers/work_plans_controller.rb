@@ -4,6 +4,7 @@ class WorkPlansController < ApplicationController
   end
 
   def show
+    @belt = %w(blanche jaune orange verte bleue marron noire)
     @work_plan = WorkPlan.find(params[:id])
   end
 

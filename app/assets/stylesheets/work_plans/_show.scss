@@ -16,6 +16,8 @@
   padding: 2px;
   width: 70px;
   color: $grisC;
+  height: 2em;
+
  }
 
 //  top row
@@ -30,13 +32,15 @@ height: small
 .kind-display{
  border: solid $grisC ;
  border-radius: 20px;
- height: 1.4rem
+ height: 28px;
+ margin-bottom: 5px;
 }
 
 //cells
 .cells{
   display: flex;
   align-items: center;
+  padding: 2px 0;
 }
 
 
@@ -44,4 +48,5 @@ height: small
 .b-middle{
     border-left: solid $grisC;
     border-right: solid $grisC;
+    padding: 3px;
   }

@@ -2,16 +2,17 @@
       <%# boucle sur les work_plan_domains %>
       <div class='domain '>
           <div class='banner p-1 d-flex  border-bottom border-top'>
-            <div class='w-20 border-right '>
+            <div class='w-20 border-right p-1'>
               <h2><%= work_plan_domain.domain%></h2>
-              <h2 class='d-flex justify-content-around'><i class="fas fa-bacon text-danger"></i><%= work_plan_domain.level%> </h2>
+              <div class='d-flex justify-content-around'><i class="fas fa-bacon belt-<%= work_plan_domain.level %> display-2 font-weight-bold"></i></div>
+              <div class='d-flex justify-content-around mt-1'> <strong><%= @belt[work_plan_domain.level-1].capitalize%></strong></div>
               <%# <%= work_plan_domain.level%>
             </div>
             <%#  %>
             <div class='w-100 p-2'>
               <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
               <div class='d-flex justify-content-between p-2 '>
-                <div class='border-skill'>
+                <div class='border-skill mt-2'>
                   <div><%= plan_skill.skill.symbol%> <%= plan_skill.skill.name%></div>
                 </div>
                 <div class='challenge-kind '>
@@ -21,6 +22,7 @@
                     <div class='align-items-center'>E</div>
                     <div class='align-items-center'>C</div>
                   </div>
+                  <%# les skills %>
                   <div class='d-flex justify-content-center w-100 kind-display'>
                     <div class='align-items-center cells'><% if plan_skill.kind.downcase == 'jeu' %>
                         <i class="fas fa-circle text-dark"></i>
