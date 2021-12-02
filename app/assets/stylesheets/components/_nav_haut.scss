@@ -1,0 +1,33 @@
+.navhaut{
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  height: 140px;
+  background-color: $white;
+  // align-content: flex-end;
+}
+.avatar{
+  font-family: $bandeau-haut-font;
+  font-size: 10px;
+  font-weight: 700;
+  padding-right: 2em;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  img{
+    border-radius: 50em;
+    width: 55px;
+    height: 55px;
+    margin-bottom: 8px;
+  }
+  h3{
+    font-size: 10px;
+    font-weight: 700;
+    color: $grisF;
+    margin-bottom: 0;
+  }
+  p{
+    color: $rose;
+  }
+}
