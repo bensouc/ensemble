@@ -34,15 +34,15 @@
           <%= domain_form.input :domain, label: 'Choisissez un domaine :', as: :radio_buttons,
                                 collection: WorkPlanDomain::DOMAINS,
                                 collection_wrapper_tag: 'div',
-                                collection_wrapper_class: 'category-wrapper',
+                                collection_wrapper_class: 'wrapper',
                                 item_wrapper_class: 'domain-item',
-                                input_html: { class: 'category-selector' } %>
+                                input_html: { class: 'selector domain-selector' } %>
           <%= domain_form.input :level, label: 'Choisissez une ceinture :', as: :radio_buttons,
                                 collection: WorkPlanDomain::LEVELS,
                                 collection_wrapper_tag: 'div',
-                                collection_wrapper_class: 'category-wrapper',
+                                collection_wrapper_class: 'wrapper',
                                 item_wrapper_class: 'level-item',
-                                input_html: { class: 'category-selector level' } %>
+                                input_html: { class: 'selector level-selector' } %>
         <% end %>
       </div>
       <%= f.submit "Valider", class: "btn btn-primary" %>

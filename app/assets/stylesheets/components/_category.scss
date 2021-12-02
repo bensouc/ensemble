@@ -1,4 +1,4 @@
-.category-wrapper {
+.wrapper {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -10,14 +10,17 @@
 
 .level-item {
   flex: 0 0 10%;
+  // background-color: white;
+  // border: 1px solid $grisC;
+  // border-radius: 12px;
 }
 
-.category-selector {
+.selector {
   position: absolute;
   transform: scale(0);
 }
 
-.category-selector + label {
+.selector + label {
   display: block;
   cursor: pointer;
   // box-sizing: border-box;
@@ -26,29 +29,93 @@
   text-align: center;
   padding: 2rem;
   border: 1px solid $grisC;
+}
+
+.domain-selector + label {
   border-radius: 12px;
   background-color: white;
   &:hover {
-    border-color: $jaune;
-    box-shadow: 0 0 1rem $jaune;
-    transition: 0.6s;
+    border-color: $rose;
+    box-shadow: 0 0 1rem $rose;
+    transition: 0.8s;
   }
 }
 
-.level + label {
-  color: white
-}
-
-.category-selector:checked + label {
+.domain-selector:checked + label {
   background-color: $jaune;
 }
 
-#snippet_category_1 + label {
-  background-color: $belt-1;
-
+.level-selector + label {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  color: white
 }
 
-#snippet_category_ruby:checked + label {
-  background-color: #FD1015;
-  border-color: #FD1015;
+#work_plan_work_plan_domains_attributes_0_level_1 + label {
+  background-color: $belt-1;
+  &:hover {
+    border-color: $rose;
+    box-shadow: 0 0 1rem $rose;
+    transition: 0.8s;
+  }
+}
+#work_plan_work_plan_domains_attributes_0_level_2 + label {
+  background-color: $belt-2;
+  &:hover {
+    border-color: $rose;
+    box-shadow: 0 0 1rem $rose;
+    transition: 0.8s;
+  }
+}
+#work_plan_work_plan_domains_attributes_0_level_3 + label {
+  background-color: $belt-3;
+  &:hover {
+    border-color: $rose;
+    box-shadow: 0 0 1rem $rose;
+    transition: 0.8s;
+  }
+}
+#work_plan_work_plan_domains_attributes_0_level_4 + label {
+  background-color: $belt-4;
+  &:hover {
+    border-color: $rose;
+    box-shadow: 0 0 1rem $rose;
+    transition: 0.8s;
+  }
+}
+#work_plan_work_plan_domains_attributes_0_level_5 + label {
+  background-color: $belt-5;
+  &:hover {
+    border-color: $rose;
+    box-shadow: 0 0 1rem $rose;
+    transition: 0.8s;
+  }
+}
+#work_plan_work_plan_domains_attributes_0_level_6 + label {
+  background-color: $belt-6;
+  &:hover {
+    border-color: $rose;
+    box-shadow: 0 0 1rem $rose;
+    transition: 0.8s;
+  }
+}
+#work_plan_work_plan_domains_attributes_0_level_7 + label {
+  background-color: $belt-7;
+  &:hover {
+    border-color: $rose;
+    box-shadow: 0 0 1rem $rose;
+    transition: 0.8s;
+  }
+}
+
+// .level-selector + label {
+//   background-color: $rose;
+//   border-radius: 12px;
+// }
+
+.level-selector:checked + label {
+  background-color: $jaune;
+  border-radius: 12px;
+  transition: 0.6s;
 }
