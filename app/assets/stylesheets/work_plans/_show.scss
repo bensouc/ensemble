@@ -1,7 +1,26 @@
 // PT SHOW
 .pt{
-  background-color: rgb(255, 255, 255);
+  min-width: 1000px;
+  margin-left: 5px ;
+  background-color: white;
 }
+
+.pt-header{
+  border: thin solid $grisC ;
+  border-radius: 14px;
+  margin: 5px;
+  padding: 5px 2px 0 10px;
+ }
+
+.student-name{
+  width: 150px;
+}
+.comments{
+  width: 400px;
+}
+ .signaturess{
+  width: 150px;
+ }
 
 // challenge skill in header
 .border-skill{
@@ -18,6 +37,8 @@
 
   // div that contains kind display
   .challenge-kind {
+    margin-top: -14px;
+    margin-right: 40px;
     padding: 2px;
     width: 70px;
     color: $grisC;
