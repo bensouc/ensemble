@@ -5,6 +5,7 @@ class WorkPlanDomain < ApplicationRecord
   belongs_to :work_plan
 
   has_many :work_plan_skills
+  accepts_nested_attributes_for :work_plan_skills
 
   validates :domain, presence: true, inclusion: { in: DOMAINS }
   validates :level, presence: true, inclusion: { in: LEVELS }
