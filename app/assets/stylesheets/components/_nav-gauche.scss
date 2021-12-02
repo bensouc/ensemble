@@ -1,9 +1,125 @@
 .main_nav{
+  font-family: $nav-gauche-font;
+  font-size: 14px;
+  font-weight: 700;
   display: flex;
   // align-items: center;
   flex-direction: column;
+  align-items: center;
   width: 200px;
+  height: 100vh;
   background-color: $blanc;
   border-right: 1px;
   border-color: transparent, #DDDDDD, transparent, transparent;
+}
+
+.logo{
+  border-color: transparent, transparent, #DDDDDD, transparent;
+  padding-bottom: 5em;
+  padding-top: 1.5em;
+  img{
+  width: 99px;
+  height: 90px;
+  }
+}
+.menug-container{
+  display:flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 191px;
+
+  margin-bottom: 12em;
+  .on{
+    background-color: $rose;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  .off{
+    background-color: $white;
+    padding: 10px;
+    border-radius: 10px;
+  }
+}
+
+.menug_voir{
+  align-items: center;
+  color: $grisC;
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  margin: 10px 0;
+  :hover{
+    color: $grisF;
+    transition: color .5s ease .05s;
+  }
+}
+.menug_creer{
+  align-items: center;
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+.menug_evaluer{
+  align-items: center;
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  transition: opacity 2s ease .05s;
+  margin: 10px 0;
+  color: $grisC;
+  :hover{
+    color: $grisF;
+    transition: color 2s ease .05s;
+  }
+}
+.menug_partager{
+  align-items: center;
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  transition: opacity 2s ease .05s;
+  margin: 10px 0;
+  color: $grisC;
+  :hover{
+    color: $grisF;
+    transition: color 2s ease .05s;
+  }
+}
+.calendrier{
+  margin-bottom: 4em;
+  h3{
+    font-family: $titres-font;
+    color: $grisF;
+    font-weight: 700;
+    font-size: 16px;
+  }
+  h4{
+    font-family: $plan-font;
+    color: $rose;
+    font-weight:400;
+    font-size: 16px;
+  }
+  p{
+    font-family: $plan-font;
+    color: $grisF;
+    font-weight:400;
+    font-size: 16px;
+  }
+}
+.deco{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  height: 14px;
+  .fas{
+    color:$rose;
+    padding-right: 5px;
+  }
+  h6{
+    font-family: $nav-gauche-font;
+    font-size: 12px;
+    font-weight: 700;
+  }
 }
