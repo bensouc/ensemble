@@ -33,6 +33,31 @@
 
 }
 
+.add-skill{
+  display: flex;
+  vertical-align: text-top;
+  border: thin solid $grisC ;
+  border-radius: 14px;
+  width: fit-content;
+  height: 2em;
+  padding: 1px 3px;
+  margin-left: 8px;
+  h6{
+    padding-left: 10px;
+    padding-top: 3px ;
+  }
+  i{
+    color: yellowgreen;
+    padding-top: 6px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+.add-skill:hover{
+  background-color: $orange;
+}
+
 // CSS to display challenge kind with Style
 
   // div that contains kind display

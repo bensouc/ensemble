@@ -50,10 +50,8 @@
               </div>
             <% end %>
             <div data-controller="skill-add">
-              <div data-skill-add-target="button" data-action="click->skill-add#displayForm">
-              <%= button_tag(type: 'button') do%>
-                <%content_tag(:strong, 'Ajouter une compétence!')%>
-                <% end %>
+              <div data-skill-add-target="button" data-action="click->skill-add#displayForm" class='add-skill'>
+                <h6>Ajouter une compétence  </h6><i class="fas fa-plus-circle text-green"></i>
               </div>
               <div class="d-none" data-skill-add-target="form">
               <%= simple_form_for [WorkPlanSkill.new ], url:  work_plan_domain_work_plan_skills_path(work_plan_domain), method: :post  do |f| %>
