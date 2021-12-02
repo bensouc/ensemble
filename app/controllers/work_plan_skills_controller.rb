@@ -34,5 +34,4 @@ class WorkPlanSkillsController < ApplicationController
       kind: params.require(:kind)
     }
   end
-
 end
