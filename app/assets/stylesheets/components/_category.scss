@@ -1,0 +1,54 @@
+.category-wrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.domain-item {
+  flex: 0 0 20%;
+}
+
+.level-item {
+  flex: 0 0 10%;
+}
+
+.category-selector {
+  position: absolute;
+  transform: scale(0);
+}
+
+.category-selector + label {
+  display: block;
+  cursor: pointer;
+  // box-sizing: border-box;
+  // width: 100%;
+  font-size: 1rem;
+  text-align: center;
+  padding: 2rem;
+  border: 1px solid $grisC;
+  border-radius: 12px;
+  background-color: white;
+  &:hover {
+    border-color: $jaune;
+    box-shadow: 0 0 1rem $jaune;
+    transition: 0.6s;
+  }
+}
+
+.level + label {
+  color: white
+}
+
+.category-selector:checked + label {
+  background-color: $jaune;
+}
+
+#snippet_category_1 + label {
+  background-color: $belt-1;
+
+}
+
+#snippet_category_ruby:checked + label {
+  background-color: #FD1015;
+  border-color: #FD1015;
+}

@@ -29,12 +29,20 @@
           <p>Signature des Parents</p>
         </div>
       </div>
-      <div>
+      <div class='mt-5'>
         <%= f.simple_fields_for :work_plan_domains do |domain_form| %>
-          <%= domain_form.input :domain, label: 'Domaine', as: :radio_buttons,
-                                collection: WorkPlanDomain::DOMAINS %>
-          <%= domain_form.input :level, label: 'Niveau', as: :radio_buttons,
-                                collection: WorkPlanDomain::LEVELS %>
+          <%= domain_form.input :domain, label: 'Choisissez un domaine :', as: :radio_buttons,
+                                collection: WorkPlanDomain::DOMAINS,
+                                collection_wrapper_tag: 'div',
+                                collection_wrapper_class: 'category-wrapper',
+                                item_wrapper_class: 'domain-item',
+                                input_html: { class: 'category-selector' } %>
+          <%= domain_form.input :level, label: 'Choisissez une ceinture :', as: :radio_buttons,
+                                collection: WorkPlanDomain::LEVELS,
+                                collection_wrapper_tag: 'div',
+                                collection_wrapper_class: 'category-wrapper',
+                                item_wrapper_class: 'level-item',
+                                input_html: { class: 'category-selector level' } %>
         <% end %>
       </div>
       <%= f.submit "Valider", class: "btn btn-primary" %>
