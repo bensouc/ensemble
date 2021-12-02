@@ -198,8 +198,8 @@ challenge4.save
 
 puts "creating WorkPlanSkill"
 
-work_plan_skill1 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain1, skill: skill1, kind: 'excercice', challenge: challenge1)
-work_plan_skill2 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain1, skill: skill2, kind: 'excercice', challenge: challenge2)
-work_plan_skill3 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain2, skill: skill18, kind: 'excercice', challenge: challenge3)
-work_plan_skill4 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain2, skill: skill19, kind: 'excercice', challenge: challenge4)
-work_plan_skill5 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain3, skill: skill19, kind: 'excercice', challenge: challenge4)
+work_plan_skill1 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain1, skill: skill1, kind: 'exercice', challenge: challenge1)
+work_plan_skill2 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain1, skill: skill2, kind: 'exercice', challenge: challenge2)
+work_plan_skill3 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain2, skill: skill18, kind: 'exercice', challenge: challenge3)
+work_plan_skill4 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain2, skill: skill19, kind: 'exercice', challenge: challenge4)
+work_plan_skill5 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain3, skill: skill19, kind: 'exercice', challenge: challenge4)

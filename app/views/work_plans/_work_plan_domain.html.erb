@@ -29,7 +29,7 @@
                         <% end%>
                     </div>
                     <div class='align-items-center cells b-middle'>
-                      <% if plan_skill.kind.downcase == 'excercice' %>
+                      <% if plan_skill.kind.downcase == 'exercice' %>
                         <i class="fas fa-circle text-dark"></i>
                       <% end%>
                     </div>
@@ -42,10 +42,19 @@
 
                 </div >
               </div>
+            <% end %>
+            <div>
+            <%= button_tag(type: 'button') do%>
+              <%content_tag(:strong, 'Ajouter une compétence!')%>
               <% end %>
-              <%= button_tag(type: 'button') do%>
-                <%content_tag(:strong, 'Ajouter une compétence!')%>
-                <% end %>
+            </div>
+            <div class='d-none'>
+            <%= simple_form_for [WorkPlanSkill.new ], url:  work_plan_domain_work_plan_skills_path(work_plan_domain), method: :post  do |f| %>
+              <%= select_tag :skill, options_from_collection_for_select(Skill.where(domain: work_plan_domain.domain ,level: work_plan_domain.level), :id, :name), :prompt => "Sélectionnez Une compétences" %>
+              <%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>controle</option>"), :prompt => "Sélectionnez Un type" %>
+              <%= f.button :submit %>
+            <% end %>
+            </div>
 
             </div>
 
@@ -54,7 +63,9 @@
         <%# show 1 exo %>
         <div >
         <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
-          <%= render 'challenge_display', work_plan_skill: work_plan_skill%>
+          <% if work_plan_skill.kind == 'exercice' %>
+            <%= render 'challenge_display', work_plan_skill: work_plan_skill%>
+          <% end %>
         <% end %>
 
 
