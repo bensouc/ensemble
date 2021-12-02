@@ -33,17 +33,8 @@
         <%= f.simple_fields_for :work_plan_domains do |domain_form| %>
           <%= domain_form.input :domain, label: 'Domaine', as: :radio_buttons,
                                 collection: WorkPlanDomain::DOMAINS %>
-          <%= domain_form.input :level, label: 'Niveau',
+          <%= domain_form.input :level, label: 'Niveau', as: :radio_buttons,
                                 collection: WorkPlanDomain::LEVELS %>
-          <%= domain_form.simple_fields_for :work_plan_skills do |skill_form| %>
-            <%= skill_form.input :skill, label: 'Compétence',
-                                  collection: Skill.order(:name),
-                                  label_method: :name %>
-            <%= skill_form.input :kind, label: 'Type', as: :radio_buttons,
-                                  collection: [['Jeu', 'J'],
-                                              ['Exercice', 'E'],
-                                              ['Contrôle', 'C']] %>
-          <% end %>
         <% end %>
       </div>
       <%= f.submit "Valider", class: "btn btn-primary" %>
