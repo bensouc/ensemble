@@ -1,0 +1,52 @@
+// challenge skill in header
+.border-skill{
+  border: thin solid $grisC ;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  width: 500px;
+  padding-left: 2px;
+
+}
+
+// CSS to display challenge kind with Style
+
+  // div that contains kind display
+  .challenge-kind {
+    padding: 2px;
+    width: 70px;
+    color: $grisC;
+    height: 2em;
+
+  }
+
+  //  top row
+  .kind-label{
+  font-size: small;
+  padding: 0px 8px;
+  margin: 0;
+  height: small
+  }
+
+  // bottom row
+  .kind-display{
+  border: solid $grisC ;
+  border-radius: 20px;
+  height: 28px;
+  margin-bottom: 5px;
+  }
+
+  //cells
+  .cells{
+    display: flex;
+    align-items: center;
+    padding: 2px 0;
+  }
+
+
+  // central cell borders
+  .b-middle{
+      border-left: solid $grisC;
+      border-right: solid $grisC;
+      padding: 3px;
+    }
