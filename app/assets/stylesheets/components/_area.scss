@@ -2,7 +2,12 @@
   border: $grisC solid 1px;
   border-radius: 12px;
   padding: 5px;
-  color: $grisC
+  color: $grisC;
+  list-style: none;
+}
+
+.rect-xl {
+  width: 90%;
 }
 
 .rect-lg {

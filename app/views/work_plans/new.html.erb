@@ -1,53 +1,51 @@
-<div class='bg-white'>
-  <div class='container bg-white'>
-    <div class='mt-5'>
-      <%= simple_form_for @work_plan do |f| %>
-        <!-- <h1>Création du plan de travail</h1> -->
-        <div class='d-flex justify-content-between'>
-          <%= f.input :name, label: 'Nommez votre plan de travail :', placeholder: 'Plan de travail...' %>
-          <%= f.input :start_date, as: :string, label: '📅',
-                      placeholder: 'Période du',
-                      input_html: {class: 'datepicker '} %>
-          <%= f.input :end_date, as: :string, label: '📅',
-                      placeholder: 'au',
-                      input_html: {class: 'datepicker'} %>
+<div class='container'>
+  <div class='mt-5'>
+    <%= simple_form_for @work_plan do |f| %>
+      <!-- <h1>Création du plan de travail</h1> -->
+      <div class='d-flex justify-content-between'>
+        <%= f.input :name, label: 'Nommez votre plan de travail :', placeholder: 'Plan de travail...' %>
+        <%= f.input :start_date, as: :string, label: '📅',
+                    placeholder: 'Période du',
+                    input_html: {class: 'datepicker '} %>
+        <%= f.input :end_date, as: :string, label: '📅',
+                    placeholder: 'au',
+                    input_html: {class: 'datepicker'} %>
+      </div>
+      <div style="width:100%; height:3em; border: 1px solid grey">
+      </div>
+      <div class='d-flex justify-content-between mt-5'>
+        <img class="avatar-ensemble-lg" src='https://images.unsplash.com/photo-1607211851821-8be3cd6146f0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80' alt="child hand">
+        <!-- <img class='avatar' src='../../assets/images/child_hand.jpg' alt="child hand"> -->
+        <%= f.association :student, label: 'Elève',
+                          collection: @students.order(:first_name),
+                          label_method: :first_name %>
+        <div class='d-flex-column '>
+          <p>Bilan du plan de travail <br>🔲 Programme tenu <br>🔲 Programme non tenu <br>🔲 Programme dépassé</p>
         </div>
-        <div style="width:100%; height:3em; border: 1px solid grey">
+        <div class='area rect-lg'>
+          <p>Commentaires</p>
         </div>
-        <div class='d-flex justify-content-between mt-5'>
-          <img class="avatar-ensemble-lg" src='https://images.unsplash.com/photo-1607211851821-8be3cd6146f0?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80' alt="child hand">
-          <!-- <img class='avatar' src='../../assets/images/child_hand.jpg' alt="child hand"> -->
-          <%= f.association :student, label: 'Elève',
-                            collection: @students.order(:first_name),
-                            label_method: :first_name %>
-          <div class='d-flex-column '>
-            <p>Bilan du plan de travail <br>🔲 Programme tenu <br>🔲 Programme non tenu <br>🔲 Programme dépassé</p>
-          </div>
-          <div class='area rect-lg'>
-            <p>Commentaires</p>
-          </div>
-          <div class='area rect-sm'>
-            <p>Signature des Parents</p>
-          </div>
+        <div class='area rect-sm'>
+          <p>Signature des Parents</p>
         </div>
-        <div class='mt-5'>
-          <%= f.simple_fields_for :work_plan_domains do |domain_form| %>
-            <%= domain_form.input :domain, label: 'Choisissez un domaine :', as: :radio_buttons,
-                                  collection: WorkPlanDomain::DOMAINS,
-                                  collection_wrapper_tag: 'div',
-                                  collection_wrapper_class: 'wrapper',
-                                  item_wrapper_class: 'domain-item',
-                                  input_html: { class: 'selector domain-selector' } %>
-            <%= domain_form.input :level, label: 'Choisissez une ceinture :', as: :radio_buttons,
-                                  collection: WorkPlanDomain::LEVELS,
-                                  collection_wrapper_tag: 'div',
-                                  collection_wrapper_class: 'wrapper',
-                                  item_wrapper_class: 'level-item',
-                                  input_html: { class: 'selector level-selector' } %>
-          <% end %>
-        </div>
-        <%= f.submit "Valider", class: "btn btn-primary" %>
-      <% end %>
-    </div>
+      </div>
+      <div class='mt-5'>
+        <%= f.simple_fields_for :work_plan_domains do |domain_form| %>
+          <%= domain_form.input :domain, label: 'Choisissez un domaine :', as: :radio_buttons,
+                                collection: WorkPlanDomain::DOMAINS,
+                                collection_wrapper_tag: 'div',
+                                collection_wrapper_class: 'wrapper',
+                                item_wrapper_class: 'domain-item',
+                                input_html: { class: 'selector domain-selector' } %>
+          <%= domain_form.input :level, label: 'Choisissez une ceinture :', as: :radio_buttons,
+                                collection: WorkPlanDomain::LEVELS,
+                                collection_wrapper_tag: 'div',
+                                collection_wrapper_class: 'wrapper',
+                                item_wrapper_class: 'level-item',
+                                input_html: { class: 'selector level-selector' } %>
+        <% end %>
+      </div>
+      <%= f.submit "Valider", class: "btn btn-primary" %>
+    <% end %>
   </div>
 </div>
