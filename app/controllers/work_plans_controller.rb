@@ -16,9 +16,10 @@ class WorkPlansController < ApplicationController
 
     # generate the first work_plan_domain for new work_plan
     @work_plan_domain = @work_plan.work_plan_domains.new
+    @levels = WorkPlanDomain::LEVELS
 
     # generate the first work_plan_skill for first work_plan_domain
-    @work_plan_domain.work_plan_skills.new
+    # @work_plan_domain.work_plan_skills.new
   end
 
   def create

@@ -1,7 +1,8 @@
 .area {
-  border: gray solid 1px;
+  border: $grisC solid 1px;
   border-radius: 12px;
   padding: 5px;
+  color: $grisC
 }
 
 .rect-lg {
