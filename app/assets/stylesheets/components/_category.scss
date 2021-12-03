@@ -27,11 +27,11 @@
   // width: 100%;
   font-size: 1rem;
   text-align: center;
-  padding: 2rem;
   border: 1px solid $grisC;
 }
 
 .domain-selector + label {
+  padding: 2rem;
   border-radius: 12px;
   background-color: white;
   &:hover {
@@ -46,10 +46,12 @@
 }
 
 .level-selector + label {
-  width: 100%;
-  height: 100%;
+  padding: 3rem;
+  // width: 100%;
+  // height: 100%;
   border-radius: 50%;
-  color: white
+  color: white;
+  font-size: 0;
 }
 
 #work_plan_work_plan_domains_attributes_0_level_1 + label {
