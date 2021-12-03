@@ -33,6 +33,7 @@ gem 'devise'
 gem 'autoprefixer-rails', '10.2.5'
 gem 'font-awesome-sass'
 gem 'simple_form'
+gem 'rails-i18n'
 
 # gem de navbar
 gem "simple_calendar", "~> 2.4"
