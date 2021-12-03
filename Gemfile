@@ -34,6 +34,10 @@ gem 'autoprefixer-rails', '10.2.5'
 gem 'font-awesome-sass'
 gem 'simple_form'
 
+# gem de navbar
+gem "simple_calendar", "~> 2.4"
+# gem 'install faker'
+
 group :development, :test do
   gem 'pry-byebug'
   gem 'pry-rails'

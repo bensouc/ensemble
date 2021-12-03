@@ -1,3 +1,27 @@
+// PT SHOW
+.pt{
+  min-width: 1000px;
+  margin-left: 5px ;
+  background-color: white;
+}
+
+.pt-header{
+  border: thin solid $grisC ;
+  border-radius: 14px;
+  margin: 5px;
+  padding: 5px 2px 0 10px;
+ }
+
+.student-name{
+  width: 150px;
+}
+.comments{
+  width: 400px;
+}
+ .signaturess{
+  width: 150px;
+ }
+
 // challenge skill in header
 .border-skill{
   border: thin solid $grisC ;
@@ -9,10 +33,37 @@
 
 }
 
+.add-skill{
+  display: flex;
+  vertical-align: text-top;
+  border: thin solid $grisC ;
+  border-radius: 14px;
+  width: fit-content;
+  height: 2em;
+  padding: 1px 3px;
+  margin-left: 8px;
+  h6{
+    padding-left: 10px;
+    padding-top: 3px ;
+  }
+  i{
+    color: yellowgreen;
+    padding-top: 6px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+.add-skill:hover{
+  background-color: $orange;
+}
+
 // CSS to display challenge kind with Style
 
   // div that contains kind display
   .challenge-kind {
+    margin-top: -14px;
+    margin-right: 40px;
     padding: 2px;
     width: 70px;
     color: $grisC;

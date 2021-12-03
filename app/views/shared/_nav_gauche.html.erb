@@ -1,14 +1,49 @@
 <div class="main_nav">
   <div class="logo">
-
+  <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg" alt="">
   </div>
+
   <div class="menu-g">
+    <div class="menug-container">
+      <div class="menug_voir">
+        <div class="element-off">Voir</div>
+          <%= link_to work_plans_path do %>
+          <%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638459822/ico_menu_1_wvddvx.svg", class: "off" %>
+          <% end %>
+      </div>
 
+        <div class="menug_creer">
+
+          <div class="element-on">Créer</div>
+          <%= link_to new_work_plan_path do %>
+            <%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638460053/ico_menu_2_nxfzcp.svg", class: "on" %>
+          <% end %>
+          </div>
+
+        <div class="menug_evaluer">
+        <div class="element-off">Évaluer</div>
+        <img class="off" src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638460053/ico_menu_3_tj7m4a.svg" alt="">
+      </div>
+
+      <div class="menug_partager">
+        <div class="element-off">Partager</div>
+        <img class="off" src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638460053/ico_menu_4_cfcsj1.svg" alt="">
+      </div>
+    </div>
   </div>
+
+
   <div class="calendrier">
-
+  <%# <%= week_calendar(number_of_weeks: 1) do |date| %>
+    <%# <%= date %>
+  <%# <% end %>
+    <h3>Décembre 2021</h3><br>
+    <h4>Semaine 2</h4><br>
+    <p>du : 01.01.2022<br>au : 08.01.2022</p>
   </div>
-  <div class="deco">
-    
+  <div class="deco ">
+    <%= link_to destroy_user_session_path, method: :delete, class: "dropdown-item d-flex"  do %>
+    <i class="fas fa-sign-out-alt"></i><h6>Se déconnecter</h6>
+  <% end %>
   </div>
 </div>
