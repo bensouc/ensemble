@@ -1,0 +1,34 @@
+.btn-flat {
+  color: white;
+  padding: 8px 24px;
+  border-radius: 10px;
+  // background: #1EDD88;
+  transition: background 0.3s ease;
+  background-color: #FF8888;
+}
+
+.home-container {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.box-include-button {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  border: #FF8888;
+  background-color: white;
+  border: solid #FF8888;
+  border-radius: 10px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-top: 20px;
+  }
+
+.space-button {
+  padding : 5%;
+  display: flex;
+  margin: auto;
+}

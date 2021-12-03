@@ -1,2 +1,22 @@
-<h1>Pages#home</h1>
-<p>Find me in app/views/pages/home.html.erb</p>
+
+<div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(<%=image_url('back_to_school.jpg') %>);">
+  <div class= "logo bg-white">
+    <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg">
+  </div>
+  <div class="container home-container">
+    <h1>LA SOLUTION aux préparations et partages des plans de travail</h1>
+    <div class= "space-button">
+      <div class= "box-include-button" >
+        <span><strong>Découvrez une plateforme révolutionnaire<strong></span>
+        <%= link_to "Commencer",dashboard_path, class: "btn btn-flat mt-4 mb-4 ml-4 mr-4" %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="blanche">
+</div>
+
+<div class= "fake-wall" style="background-image: url(<%=image_url('home_bis.png') %>)">
+
+</div>
