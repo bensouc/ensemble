@@ -1,3 +1,4 @@
+
 <div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(<%=image_url('back_to_school.jpg') %>);">
     <div class= "logo bg-white">
       <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg">
@@ -7,7 +8,7 @@
     <div class= "space-button">
       <div class= "box-include-button" >
         <span><strong>Découvrez une plateforme révolutionnaire<strong></span>
-        <a class= "btn btn-flat mt-4 mb-4 ml-4 mr-4" href="#">Commencer</a>
+        <%= link_to "Commencer",dashboard_path, class: "btn btn-flat mt-4 mb-4 ml-4 mr-4" %>
       </div>
     </div>
   </div>
@@ -16,6 +17,6 @@
 <div class="blanche">
 </div>
 
-<div>
-    Background image
+<div class= "fake-wall">
+    <img src="/Home bis.PNG" alt="figma">
 </div>
