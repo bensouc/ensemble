@@ -2,3 +2,21 @@ body {
   background-color: white;
   font-family: $body-font;
 }
+
+.bd-maison{
+  border:  solid $rose;
+  color: $grisF;
+  font-family: "Poppins", sans-serif;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  height: 1.5em;
+  height: fit-content;
+  padding: 5px;
+
+}
+
+// .bd-maison .skill:hover{
+//     background-color: $rose;
+//     color: $grisC;
+// }

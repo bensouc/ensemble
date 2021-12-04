@@ -1,16 +1,33 @@
 // PT SHOW
 .pt{
-  min-width: 1000px;
+  max-width: 1000px;
   margin-left: 5px ;
   background-color: white;
+  font-family: "Poppins", sans-serif;
+  h1{
+    font-family: "Poppins", sans-serif;
+  }
+  h2{
+    font-family: "Poppins", sans-serif;
+  }
+  h3{
+    font-family: "Poppins", sans-serif;
+  }
 }
+
+
 
 .pt-header{
   border: thin solid $grisC ;
   border-radius: 14px;
   margin: 5px;
   padding: 5px 2px 0 10px;
+
  }
+
+.date-domain{
+  vertical-align: middle;
+}
 
 .student-name{
   width: 150px;
@@ -24,7 +41,7 @@
 
 // challenge skill in header
 .border-skill{
-  border: thin solid $grisC ;
+  border:  solid $rose;
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -33,29 +50,34 @@
 
 }
 
-.add-skill{
+.add-skill-btn{
   display: flex;
   vertical-align: text-top;
-  border: thin solid $grisC ;
+  border:  solid $rose ;
   border-radius: 14px;
   width: fit-content;
   height: 2em;
   padding: 1px 3px;
   margin-left: 8px;
+  background-color: inherit;
   h6{
     padding-left: 10px;
     padding-top: 3px ;
   }
   i{
-    color: yellowgreen;
+    color: $rose;
     padding-top: 6px;
     margin-left: 10px;
     margin-right: 10px;
   }
 }
 
-.add-skill:hover{
-  background-color: $orange;
+.add-skill-btn:hover{
+  background-color: $rose;
+  color: $grisC;
+  i{
+    color: $grisC;
+  }
 }
 
 // CSS to display challenge kind with Style
@@ -66,7 +88,7 @@
     margin-right: 40px;
     padding: 2px;
     width: 70px;
-    color: $grisC;
+    color: $rose;
     height: 2em;
 
   }
@@ -81,7 +103,7 @@
 
   // bottom row
   .kind-display{
-  border: solid $grisC ;
+  border: solid $rose ;
   border-radius: 20px;
   height: 28px;
   margin-bottom: 5px;
@@ -97,7 +119,12 @@
 
   // central cell borders
   .b-middle{
-      border-left: solid $grisC;
-      border-right: solid $grisC;
+      border-left: solid $rose;
+      border-right: solid $rose;
       padding: 3px;
     }
+
+    //bullet color
+ .bullet-color{
+    color: #bf9c9c;
+  }

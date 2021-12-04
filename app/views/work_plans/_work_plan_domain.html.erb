@@ -1,10 +1,14 @@
 <% work_plan.work_plan_domains.each do |work_plan_domain|%>
       <%# boucle sur les work_plan_domains %>
       <div class='domain '>
-          <div class='banner p-1 d-flex  border-bottom border-top'>
-            <div class='w-20 border-right p-1'>
+          <div class='p-1 d-flex  border-bottom border-top'>
+            <div class='w-20 '>
               <h2><%= work_plan_domain.domain%></h2>
-              <div class='d-flex justify-content-around'><i class="fas fa-bacon belt-<%= work_plan_domain.level %> display-2 font-weight-bold "></i></div>
+              <div class='d-flex justify-content-around '>
+                <div class='bd-maison'>
+                  <i class=" fas fa-bacon belt-<%= work_plan_domain.level %> display-2 font-weight-bold"></i>
+                </div>
+              </div>
               <div class='d-flex justify-content-around mt-1'> <strong><%= @belt[work_plan_domain.level-1].capitalize%></strong></div>
               <%# <%= work_plan_domain.level%>
             </div>
@@ -25,21 +29,21 @@
                   <%# les skills %>
                   <div class='d-flex justify-content-center w-100 kind-display'>
                     <div class='align-items-center cells'><% if plan_skill.kind.downcase == 'jeu' %>
-                        <i class="fas fa-circle text-dark"></i>
+                        <i class="fas fa-circle bullet-color"></i>
                         <% else %>
                         <i class="fas fa-circle text-white"></i>
                         <% end%>
                     </div>
                     <div class='align-items-center cells b-middle'>
                       <% if plan_skill.kind.downcase == 'exercice' %>
-                        <i class="fas fa-circle text-dark"></i>
+                        <i class="fas fa-circle bullet-color"></i>
                         <% else %>
                         <i class="fas fa-circle text-white"></i>
                       <% end%>
                     </div>
                     <div class='align-items-center cells'>
                       <% if plan_skill.kind.downcase == 'controle' %>
-                        <i class="fas fa-circle text-dark"></i>
+                        <i class="fas fa-circle bullet-color"></i>
                         <% else %>
                         <i class="fas fa-circle text-white"></i>
                       <% end%>
@@ -50,14 +54,14 @@
               </div>
             <% end %>
             <div data-controller="skill-add">
-              <div data-skill-add-target="button" data-action="click->skill-add#displayForm" class='add-skill'>
-                <h6>Ajouter une compétence  </h6><i class="fas fa-plus-circle text-green"></i>
+              <div data-skill-add-target="button" data-action="click->skill-add#displayForm" class='add-skill-btn'>
+                <h6>Ajouter une compétence  </h6><i class="fas fa-chevron-right"></i>
               </div>
               <div class="d-none" data-skill-add-target="form">
-              <%= simple_form_for [WorkPlanSkill.new ], url:  work_plan_domain_work_plan_skills_path(work_plan_domain), method: :post  do |f| %>
-                <%= select_tag :skill, options_from_collection_for_select(Skill.where(domain: work_plan_domain.domain ,level: work_plan_domain.level), :id, :name), :prompt => "Sélectionnez Une compétences" %>
-                <%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>controle</option>"), :prompt => "Sélectionnez Un type" %>
-                <%= f.button :submit %>
+              <%= simple_form_for [WorkPlanSkill.new ], url:  work_plan_domain_work_plan_skills_path(work_plan_domain), method: :post, class:'d-flex'  do |f| %>
+                <%= select_tag :skill, options_from_collection_for_select(Skill.where(domain: work_plan_domain.domain ,level: work_plan_domain.level), :id, :name), :prompt => "Sélectionnez Une compétences",class: 'btn-maison' %>
+                <%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>controle</option>"), :prompt => "Sélectionnez Un type" ,class: 'btn-maison'%>
+                <%= f.submit 'Validez' ,class: 'add-skill-btn' %>
               <% end %>
               </div>
             </div>

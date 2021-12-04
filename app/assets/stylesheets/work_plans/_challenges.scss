@@ -1,13 +1,30 @@
 .cont-challenge{
   padding: 4px 0;
   padding-left: 61px;
-  margin: 4px 50px 0 0;
-
-
-}
-
-.challenge-card{
-
-  border:  solid $grisC ;
+  padding-right: 10px;
+  margin: 20px 20px 10px 30px;
+  border:  solid $menuOff ;
   border-radius: 14px;
+
 }
+
+.challenge-mngt{
+  margin-top: 20px;
+  padding: 0 5px 0 0 ;
+}
+
+.btn-maison{
+  border:  solid $menuOff;
+  background-color: inherit;
+  color: $grisF;
+  font-family: "Poppins", sans-serif;
+  border-radius: 14px;
+  align-items: center;
+  padding: 10px 10px 0 5px;
+  display: flex;
+  align-items: baseline;
+    p{
+      font-size: 1rem;
+      margin-left: 5px;
+    }
+  }
