@@ -26,7 +26,7 @@
  }
 
 .date-domain{
-  vertical-align: middle;
+
 }
 
 .student-name{
@@ -41,7 +41,7 @@
 
 // challenge skill in header
 .border-skill{
-  border:  solid $rose;
+  border:  thin solid #dddddd;
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -53,19 +53,20 @@
 .add-skill-btn{
   display: flex;
   vertical-align: text-top;
-  border:  solid $rose ;
+  border:  solid #dddddd ;
   border-radius: 14px;
   width: fit-content;
   height: 2em;
   padding: 1px 3px;
   margin-left: 8px;
   background-color: inherit;
+  transition: 0.3s;
   h6{
     padding-left: 10px;
     padding-top: 3px ;
   }
   i{
-    color: $rose;
+    // color: $rose;
     padding-top: 6px;
     margin-left: 10px;
     margin-right: 10px;
@@ -73,7 +74,9 @@
 }
 
 .add-skill-btn:hover{
+  transition: 0.2s;
   background-color: $rose;
+  border-color: $rose;
   color: $grisC;
   i{
     color: $grisC;
@@ -103,7 +106,7 @@
 
   // bottom row
   .kind-display{
-  border: solid $rose ;
+  border: solid #dddddd ;
   border-radius: 20px;
   height: 28px;
   margin-bottom: 5px;
@@ -119,8 +122,8 @@
 
   // central cell borders
   .b-middle{
-      border-left: solid $rose;
-      border-right: solid $rose;
+      border-left: solid #dddddd;
+      border-right: solid #dddddd;
       padding: 3px;
     }
 
