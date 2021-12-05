@@ -30,13 +30,14 @@
 }
 
 .student-name{
-  width: 150px;
+  width: 180px;
 }
 .comments{
   width: 400px;
 }
- .signaturess{
-  width: 150px;
+ .signatures{
+  width: 200px;
+  padding-right: 10px;
  }
 
 // challenge skill in header
@@ -46,7 +47,7 @@
   display: flex;
   align-items: center;
   width: 500px;
-  padding-left: 2px;
+  padding: 5px 10px;
 
 }
 
