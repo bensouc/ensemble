@@ -20,7 +20,9 @@
     <%# le controleur qui est en params mais malheuresement c'est devise/session         %>
     <%# sur toutes les pages xD                                                          %>
     <%# :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::%>
-    <% if ['pages', 'registrations','devise/sessions'].include?(params[:controller]) %>
+
+    <% if ['pages', 'registrations', 'devise/sessions' ].include?(params[:controller]) %>
+
       <div class="pastouche"><%= yield %></div>
     <% else %>
       <div class="container2">
