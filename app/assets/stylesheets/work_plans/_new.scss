@@ -1,3 +1,4 @@
+//** Fonts **
 .font {
   font-family: $plan-font;
   font-size: 18px;
@@ -24,6 +25,7 @@
     color: $rose;
 }
 
+//** Positions **
 .m-top {
   margin-top: 5rem;
 }
@@ -32,16 +34,30 @@
   margin-left: 1rem;
 }
 
-.box {
+.box-start {
   display: flex;
   justify-content: flex-start;
   // align-items: flex-bottom;
 }
 
-// .flex-start {
-//   align-self: flex-start;
-// }
+.box-end {
+  display: flex;
+  justify-content: flex-end;
+  // align-items: flex-bottom;
+}
 
-// .align-self-start {
-//   align-self: flex-start;
-// }
+.self-end {
+  align-self: flex-end;
+}
+
+//** Button **
+.btn {
+  color:$grisC;
+  background-color: $rose;
+  padding: 1rem 2rem;
+  &:hover {
+    color:$grisC;
+    border: $grisC solid thin;
+    opacity: 0.8;
+  }
+}

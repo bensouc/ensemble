@@ -5,6 +5,7 @@
   padding: 5px;
   // padding: 1rem;
   color: $grisF;
+  background-color: white;
   list-style: none;
 }
 
@@ -18,4 +19,10 @@
 
 .rect-sm {
   width: 25%;
+}
+
+.square {
+  padding: 0 !important;
+  width: 7rem;
+  height: 7rem;
 }

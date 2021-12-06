@@ -2,15 +2,14 @@
   <h1 style='text-align: center'><i class='fas fa-desktop'></i> MON PLAN DE TRAVAIL</h1>
   <div class='m-top'>
     <%= simple_form_for @work_plan do |f| %>
-      <%# <% render 'form_part_1', work_plan: @work_plan%>
-      <div class='box m-top'>
+      <div class='box-start m-top'>
         <p>Nommez votre plan de travail : *</p>
         <%= f.input :name, label: false,
                     placeholder: 'CE2...',
                     input_html: { class: 'area rect-xl m-left' } %>
       </div>
 
-      <div class='box m-top'>
+      <div class='box-start m-top'>
         <%# <i class="far fa-calendar-check font-fa"></i> %>
         <p>Période du</p>
         <%= f.input :start_date, as: :string, label: false,
@@ -20,7 +19,7 @@
                     input_html: {class: 'datepicker area rect-lg m-left'} %>
       </div>
 
-      <div class='box m-top'>
+      <div class='box-start m-top'>
         <%# <i class="far fa-user-circle font-fa"></i> %>
         <p>Personnalisez pour l'élève :</p>
         <div class='m-left'>
@@ -31,28 +30,33 @@
         </div>
       </div>
 
-      <div class='m-top'>
-        <%= f.simple_fields_for :work_plan_domains do |domain_form| %>
+      <%= f.simple_fields_for :work_plan_domains do |domain_form| %>
+        <div class='m-top'>
           <%= domain_form.input :domain, label: 'Choisissez un domaine :', as: :radio_buttons,
                                 collection: WorkPlanDomain::DOMAINS,
                                 collection_wrapper_tag: 'div',
                                 collection_wrapper_class: 'wrapper',
                                 item_wrapper_class: 'domain-item',
                                 input_html: { class: 'selector domain-selector' } %>
-      </div>
+        </div>
 
-      <div class='m-top'>
+        <div class='m-top'>
           <%= domain_form.input :level, label: 'Choisissez une ceinture :', as: :radio_buttons,
                                 collection: WorkPlanDomain::LEVELS,
                                 collection_wrapper_tag: 'div',
                                 collection_wrapper_class: 'wrapper',
                                 item_wrapper_class: 'level-item',
-                                input_html: { class: 'selector level-selector' } %>
-        <% end %>
+                                input_html: { class: 'selector level-selector' },
+                                label_method: lambda { |level| render 'level_btn', level: level} %>
+        </div>
+      <% end %>
+
+      <div class='m-top box-end'>
+        <%= f.submit "Valider", class: 'area btn' %>
       </div>
 
-
-      <%= f.submit "Valider", class: "btn btn-primary" %>
+      <div class='m-top'>
+      </div>
     <% end %>
   </div>
 </div>
