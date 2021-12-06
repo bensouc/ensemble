@@ -10,9 +10,6 @@
 
 .level-item {
   flex: 0 0 10%;
-  // background-color: white;
-  // border: 1px solid $grisC;
-  // border-radius: 12px;
 }
 
 .selector {
@@ -20,104 +17,100 @@
   transform: scale(0);
 }
 
-.selector + label {
+.domain-selector + label {
   display: block;
   cursor: pointer;
-  // box-sizing: border-box;
-  // width: 100%;
-  font-size: 1rem;
+  font-size: 18px;
+  // font-size: 1rem;
   text-align: center;
-  border: 1px solid $grisC;
-}
-
-.domain-selector + label {
+  border: thin solid $grisC;
   padding: 2rem;
   border-radius: 12px;
   background-color: white;
   &:hover {
-    border-color: $rose;
-    box-shadow: 0 0 1rem $rose;
-    transition: 0.8s;
+    background-color: $rose;
+    opacity: 0.8;
+    color: $grisC;
+    transition: 0.3s;
   }
 }
 
 .domain-selector:checked + label {
-  background-color: $jaune;
+  background-color: $rose;
+  color: $grisC;
 }
 
 .level-selector + label {
-  padding: 3rem;
-  // width: 100%;
-  // height: 100%;
-  border-radius: 50%;
-  color: white;
-  font-size: 0;
+  cursor: pointer;
+  font-size: 30px;
 }
 
-#work_plan_work_plan_domains_attributes_0_level_1 + label {
+.level-selector:checked + label .square {
+  #round-1, #round-2, #round-3, #round-4,
+  #round-5, #round-6, #round-7 {
+    transition: 0.4s;
+    width: 7rem;
+    height: 7rem;
+    border-radius: 12px;
+  }
+}
+
+#round-1 {
+  width: 4rem;
+  height: 4rem;
   background-color: $belt-1;
-  &:hover {
-    border-color: $rose;
-    box-shadow: 0 0 1rem $rose;
-    transition: 0.8s;
-  }
+  border-radius: 50%;
 }
-#work_plan_work_plan_domains_attributes_0_level_2 + label {
+#round-2 {
+  width: 4rem;
+  height: 4rem;
   background-color: $belt-2;
-  &:hover {
-    border-color: $rose;
-    box-shadow: 0 0 1rem $rose;
-    transition: 0.8s;
-  }
+  border-radius: 50%;
 }
-#work_plan_work_plan_domains_attributes_0_level_3 + label {
+#round-3 {
+  width: 4rem;
+  height: 4rem;
   background-color: $belt-3;
-  &:hover {
-    border-color: $rose;
-    box-shadow: 0 0 1rem $rose;
-    transition: 0.8s;
-  }
+  border-radius: 50%;
 }
-#work_plan_work_plan_domains_attributes_0_level_4 + label {
+#round-4 {
+  width: 4rem;
+  height: 4rem;
   background-color: $belt-4;
-  &:hover {
-    border-color: $rose;
-    box-shadow: 0 0 1rem $rose;
-    transition: 0.8s;
-  }
+  border-radius: 50%;
 }
-#work_plan_work_plan_domains_attributes_0_level_5 + label {
+#round-5 {
+  width: 4rem;
+  height: 4rem;
   background-color: $belt-5;
-  &:hover {
-    border-color: $rose;
-    box-shadow: 0 0 1rem $rose;
-    transition: 0.8s;
-  }
+  border-radius: 50%;
 }
-#work_plan_work_plan_domains_attributes_0_level_6 + label {
+#round-6 {
+  width: 4rem;
+  height: 4rem;
   background-color: $belt-6;
-  &:hover {
-    border-color: $rose;
-    box-shadow: 0 0 1rem $rose;
-    transition: 0.8s;
-  }
+  border-radius: 50%;
 }
-#work_plan_work_plan_domains_attributes_0_level_7 + label {
+#round-7 {
+  width: 4rem;
+  height: 4rem;
   background-color: $belt-7;
-  &:hover {
-    border-color: $rose;
-    box-shadow: 0 0 1rem $rose;
-    transition: 0.8s;
-  }
+  border-radius: 50%;
 }
+
+// #work_plan_work_plan_domains_attributes_0_level_1 + label {
+//     width: 4rem;
+//     height: 4rem;
+//     border-radius: 50%;
+//     background-color: $belt-1;
+//     &:hover {
+//           border-color: $rose;
+//           box-shadow: 0 0 1rem $rose;
+//           transition: 0.8s;
+//         }
+// }
 
 // .level-selector + label {
 //   background-color: $rose;
 //   border-radius: 12px;
 // }
-
-.level-selector:checked + label {
-  background-color: $jaune;
-  border-radius: 12px;
-  transition: 0.6s;
-}
