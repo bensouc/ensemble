@@ -5,6 +5,7 @@
   display: flex;
   // align-items: center;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   width: 200px;
   height: 100vh;
@@ -16,87 +17,111 @@
 
 .logo{
   border-color: transparent, transparent, $grisC, transparent;
-  padding-bottom: 5em;
+  padding-bottom: 4em;
   padding-top: 1.5em;
   img{
   width: 99px;
   height: 90px;
   }
 }
+
+.menu-g{
+  width: fit-content;
+  padding: 5px;
+}
 .menug-container{
   display:flex;
   flex-direction: column;
   justify-content: space-between;
+
   height: 191px;
+  margin-bottom: 6em;
+  a {
+   text-decoration: none;
 
-  margin-bottom: 12em;
-  .on{
-    background-color: $rose;
-    padding: 10px;
-    border-radius: 10px;
-  }
-  .off{
-    background-color: $white;
-    padding: 10px;
-    border-radius: 10px;
-  }
+     }
+
+}
+.active{
+color: $grisF;
+}
+.on{
+  background-color: $rose;
+   border: thin solid inherit;
+  padding: 5px;
+  margin-right: -5px;
+  border-radius: 10px;
+  margin-left: 10px;
 }
 
-.menug_voir{
+
+.menug_icone{
   align-items: center;
   color: $grisC;
   display:flex;
   flex-direction: row;
   justify-content: space-between;
   margin: 10px 0;
+  padding: 5px 5px 5px 0;
   transition: opacity 2s ease .05s;
-}
-.off {
-  color: $grisF;
-  transition: color 0.3s, opacity 0.3s;
-  opacity: .4;
-  :hover{
-    color: $grisF;
-    opacity: 1;
-    transition: color 0.3s, opacity 0.3s;
-  }
+  width: 100px;
 }
 
-.menug_creer{
-  align-items: center;
-  display:flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 10px 0;
+.menug_icone:hover{
+  color: $rose;
+  background-color: inherit;
+
 }
-.menug_evaluer{
-  align-items: center;
-  display:flex;
-  flex-direction: row;
-  justify-content: space-between;
-  transition: opacity 2s ease .05s;
-  margin: 10px 0;
-  color: $grisC;
-  // :hover{
-  //   color: $grisF;
-  //   transition: color 2s ease .05s;
-  // }
-}
-.menug_partager{
-  align-items: center;
-  display:flex;
-  flex-direction: row;
-  justify-content: space-between;
-  transition: opacity 2s ease .05s;
-  margin: 10px 0;
-  color: $grisC;
-  // :hover{
-  //   color: $grisF;
-  //   transition: color 2s ease .05s;
-  // }
-}
+
+
+
+// .off {
+//   color: $grisF;
+//   transition: color 0.3s, opacity 0.3s;
+//   opacity: .4;
+//   :hover{
+//     color: $grisF;
+//     opacity: 1;
+//     transition: color 0.3s, opacity 0.3s;
+//   }
+// }
+
+// .menug_creer{
+//   align-items: center;
+//   display:flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+//   margin: 10px 0;
+// }
+// .menug_evaluer{
+//   align-items: center;
+//   display:flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+//   transition: opacity 2s ease .05s;
+//   margin: 10px 0;
+//   color: $grisC;
+// }
+// .menug_evaluer:hover{
+//     color: $grisF;
+//     transition: color 2s ease .05s;
+//   }
+
+// .menug_partager{
+//   align-items: center;
+//   display:flex;
+//   flex-direction: row;
+//   justify-content: space-between;
+//   transition: opacity 2s ease .05s;
+//   margin: 10px 0;
+//   color: $grisC;
+//   // :hover{
+//   //   color: $grisF;
+//   //   transition: color 2s ease .05s;
+//   // }
+// }
 .calendrier{
-  margin-bottom: 4em;
+  margin-bottom: 1em;
   h3{
     font-family: $titres-font;
     color: $grisF;
@@ -120,8 +145,8 @@
   display: flex;
   flex-direction: row;
   align-items: flex-start;
-  height: 14px;
   background-color: white;
+  margin-bottom: 10px;
   .fas{
     color:$rose;
     padding-right: 5px;
