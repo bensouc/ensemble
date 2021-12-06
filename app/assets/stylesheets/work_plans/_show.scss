@@ -57,7 +57,7 @@
   border-radius: 12px;
   display: flex;
   align-items: center;
-  width: 635px;
+  width: 653px;
   padding: 5px 10px;
 }
 
@@ -97,6 +97,19 @@
     margin-left: 10px;
     margin-right: 10px;
   }
+}
+
+.bd-maison{
+  border:  solid #dddddd;
+  color: $grisF;
+  font-family: "Poppins", sans-serif;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  height: 1.5em;
+  height: fit-content;
+  padding: 5px;
+
 }
 
 .add-skill-btn:hover{
@@ -144,7 +157,7 @@
   .cells{
     display: flex;
     align-items: center;
-    padding: 2px 0;
+    padding: 5px 2px 7px 2px;
   }
 
 
