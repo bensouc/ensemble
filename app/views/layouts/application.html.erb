@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <%# <%= favicon_link_tag %> 
     <title>Ensemble</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -14,16 +15,27 @@
   <body>
 
     <%= render 'shared/flashes' %>
-    <div class="container2">
-      <% if params[:controller] != 'pages'  %>
+
+    <%# :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: %>
+    <%# À voir pour ne plus afficher les sides bars sur le login ça passe par            %>
+    <%# le controleur qui est en params mais malheuresement c'est devise/session         %>
+    <%# sur toutes les pages xD                                                          %>
+    <%# :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::%>
+
+    <% if ['pages', 'registrations', 'devise/sessions' ].include?(params[:controller]) %>
+
+      <div class="pastouche"><%= yield %></div>
+    <% else %>
+      <div class="container2">
         <div class="navgauche"><%= render 'shared/nav_gauche' %></div>
-      <% end %>
-      <div class="contenu">
-      <% if params[:controller] != 'pages'  %>
-        <div class="navhaut"><%= render 'shared/nav_haut' %></div>
-      <% end %>
-        <div class="pastouche"><%= yield %></div>
+        <div class="contenu">
+          <div class="navhaut"><%= render 'shared/nav_haut' %></div>
+          <div class="pastouche" style="margin: 0 auto"><%= yield %></div>
+        </div>
       </div>
-    </div>
+    <% end %>
+
+
+
   </body>
 </html>
