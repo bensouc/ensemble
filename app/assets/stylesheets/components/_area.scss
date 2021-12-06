@@ -1,7 +1,15 @@
 .area {
-  border: gray solid 1px;
+  border: $grisC solid 1px;
   border-radius: 12px;
-  padding: 5px;
+  padding: 10px;
+  color: $grisC;
+  font-family: $plan-font;
+  font-size: 18px;
+  list-style: none;
+}
+
+.rect-xl {
+  width: 90%;
 }
 
 .rect-lg {
