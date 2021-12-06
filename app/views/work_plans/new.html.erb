@@ -9,14 +9,22 @@
                     input_html: { class: 'area rect-xl m-left' } %>
       </div>
 
-      <div class='box-start m-top'>
+      <div class='box-start m-top' data-controller='wp-default-period'>
         <%# <i class="far fa-calendar-check font-fa"></i> %>
         <p>Période du</p>
-        <%= f.input :start_date, as: :string, label: false,
-                    input_html: {class: 'datepicker area rect-lg m-left'} %>
+        <div data-wp-default-period-target='start'
+             data-action='click->wp-default-period#add'
+             >
+          <%= f.input :start_date, as: :string, label: false,
+                      input_html: { class: 'datepicker area rect-lg m-left' }
+                      %>
+        </div>
         <p class='m-left'>au</p>
-        <%= f.input :end_date, as: :string, label: false,
-                    input_html: {class: 'datepicker area rect-lg m-left'} %>
+        <div data-wp-default-period-target='end'>
+          <%= f.input :end_date, as: :string, label: false,
+                      input_html: { class: 'datepicker area rect-lg m-left' }
+                      %>
+        </div>
       </div>
 
       <div class='box-start m-top'>
@@ -54,7 +62,6 @@
       <div class='m-top box-end'>
         <%= f.submit "Valider", class: 'area btn' %>
       </div>
-      <%# %>
       <div class='m-top'>
       </div>
     <% end %>
