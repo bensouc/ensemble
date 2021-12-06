@@ -59,8 +59,14 @@
               </div>
               <div class="d-none" data-skill-add-target="form">
               <%= simple_form_for [WorkPlanSkill.new ], url:  work_plan_domain_work_plan_skills_path(work_plan_domain), method: :post, class:'d-flex'  do |f| %>
-                <%= select_tag :skill, options_from_collection_for_select(Skill.where(domain: work_plan_domain.domain ,level: work_plan_domain.level), :id, :name), :prompt => "Sélectionnez Une compétences",class: 'btn-maison' %>
-                <%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>controle</option>"), :prompt => "Sélectionnez Un type" ,class: 'btn-maison'%>
+                <div class=" d-flex justify-content-between pb-1 w-100">
+                  <div class='d-flex '>
+                    <%= select_tag :skill, options_from_collection_for_select(Skill.where(domain: work_plan_domain.domain ,level: work_plan_domain.level), :id, :name), :prompt => "Sélectionnez Une compétences",class: 'skill-selector' %>
+                  </div>
+                  <div>
+                    <%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>controle</option>"), :prompt => "Sélectionnez Un type" ,class: 'skill-selector'%>
+                  </div>
+                </div>
                 <%= f.submit 'Validez' ,class: 'add-skill-btn' %>
               <% end %>
               </div>

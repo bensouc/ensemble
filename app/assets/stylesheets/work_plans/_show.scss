@@ -19,14 +19,16 @@
 
 .pt-header{
   border: thin solid $grisC ;
-  border-radius: 14px;
+  border-radius: 12px;
   margin: 5px;
   padding: 5px 2px 0 10px;
-
  }
 
-.date-domain{
-
+.bilan{
+  height: 80px;
+  width: 180px;
+  padding: 5px 5px 10px 10px;
+  line-height: 20px;
 }
 
 .student-name{
@@ -34,34 +36,50 @@
 }
 .comments{
   width: 400px;
+  height: 80px;
 }
  .signatures{
   width: 200px;
   padding-right: 10px;
+   height: 80px;
  }
 
 // challenge skill in header
 .border-skill{
   border:  thin solid #dddddd;
-  border-radius: 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  width: 500px;
+  width: 635px;
   padding: 5px 10px;
-
 }
 
-.add-skill-btn{
+.skill-selector{
   display: flex;
   vertical-align: text-top;
   border:  solid #dddddd ;
-  border-radius: 14px;
+  border-radius: 12px;
   width: fit-content;
   height: 2em;
   padding: 1px 3px;
   margin-left: 8px;
   background-color: inherit;
   transition: 0.3s;
+
+}
+
+.add-skill-btn{
+  display: flex;
+  vertical-align: text-top;
+  border:  solid $rose ;
+  border-radius: 12px;
+  width: fit-content;
+  height: 2em;
+  padding: 1px 3px;
+  margin-left: 8px;
+  background-color: $rose;
+  transition: 0.3s;
+  color: white;
   h6{
     padding-left: 10px;
     padding-top: 3px ;
@@ -76,22 +94,24 @@
 
 .add-skill-btn:hover{
   transition: 0.2s;
-  background-color: $rose;
+  background-color: white;
   border-color: $rose;
-  color: $grisC;
+  color: $rose;
   i{
-    color: $grisC;
+    color: $rose;
   }
 }
+
+
 
 // CSS to display challenge kind with Style
 
   // div that contains kind display
   .challenge-kind {
     margin-top: -14px;
-    margin-right: 40px;
+    margin-right: 25px;
     padding: 2px;
-    width: 70px;
+    width: 80px;
     color: $rose;
     height: 2em;
 
@@ -109,7 +129,7 @@
   .kind-display{
   border: solid #dddddd ;
   border-radius: 20px;
-  height: 28px;
+  height: 38px;
   margin-bottom: 5px;
   }
 

@@ -1,4 +1,4 @@
-        <div class="d-flex " data-controller='edit-challenge' >
+        <div class="d-flex " data-controller='edit-challenge' id="<%=dom_id(work_plan_skill.challenge)%>">
         <%# display le content.body d'un exo %>
           <div class="cont-challenge w-100">
             <div class= "challenge-card">
@@ -7,14 +7,14 @@
               </div>
             </div>
               <%# Display editeur, en d-none de base %>
-              <div >
+              <div>
                 <%= form_for [work_plan_skill, work_plan_skill.challenge],
                 html: { class: 'd-none', data: { edit_challenge_target: 'form' } } do |form| %>
                   <div class="field pb-2">
                       <%= form.rich_text_area :content %>
                   </div>
                   <div class="form-actions ">
-                    <%= form.submit 'Enregistrez', class: 'add-skill-btn' %>
+                    <%= form.submit 'Enregistrez', class: 'add-skill-btn'%>
                     <%# <% raise %>
                   </div>
                 <% end %>
