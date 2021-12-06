@@ -1,13 +1,68 @@
 .cont-challenge{
   padding: 4px 0;
   padding-left: 61px;
-  margin: 4px 50px 0 0;
-
+  padding-right: 10px;
+  margin: 20px 20px 10px 30px;
+  border:  solid $menuOff ;
+  border-radius: 14px;
 
 }
 
-.challenge-card{
+.challenge-mngt{
+  margin-top: 20px;
+  padding: 0 5px 0 0 ;
+}
 
-  border:  solid $grisC ;
+.edit-challenge{
+  background-color: $rose;
+}
+
+.btn-maison{
+  border:  solid $menuOff;
+  background-color: inherit;
+  color: $grisF;
+  font-family: "Poppins", sans-serif;
   border-radius: 14px;
+  align-items: center;
+  padding: 10px 10px 0 5px;
+  display: flex;
+  align-items: baseline;
+    p{
+      font-size: 1rem;
+      margin-left: 5px;
+    }
+  }
+
+.modify-challenge-btn{
+  display: flex;
+  vertical-align: text-top;
+  border:  solid $rose ;
+  border-radius: 14px;
+  width: fit-content;
+  height: 2em;
+  padding: 1px 3px;
+  margin-left: 8px;
+  color: white;
+  background-color: $rose;
+  transition: 0.3s;
+  h6{
+    padding-right: 10px;
+    padding-top: 3px ;
+  }
+  i{
+    // color: $rose;
+    padding-top: 6px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+}
+
+.modify-challenge-btn:hover{
+  transition: 0.3s;
+  background-color: white;
+  border-color: $rose;
+  color: $rose;
+  i{
+    color: $rose;
+  }
 }

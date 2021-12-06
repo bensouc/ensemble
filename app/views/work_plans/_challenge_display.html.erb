@@ -1,27 +1,29 @@
-        <div class="cont-challenge" data-controller='edit-challenge'>
+        <div class="d-flex " data-controller='edit-challenge' id="<%=dom_id(work_plan_skill.challenge)%>">
         <%# display le content.body d'un exo %>
-        <div challenge-card>
-          <div class="challenge-infos " data-edit-challenge-target="infos">
-            <div class='d-flex justify-space-between'>
-              <h4>Exercice</h4>
-              <i class="fas fa-pen fa-xs ml-2"
-              data-action="click->edit-challenge#displayForm">Edit</i>
+          <div class="cont-challenge w-100">
+            <div class= "challenge-card">
+              <div class="challenge-infos " data-edit-challenge-target="infos">
+              <%= work_plan_skill.challenge.content.body%>
+              </div>
             </div>
-            <%= work_plan_skill.challenge.content.body%>
+              <%# Display editeur, en d-none de base %>
+              <div>
+                <%= form_for [work_plan_skill, work_plan_skill.challenge],
+                html: { class: 'd-none', data: { edit_challenge_target: 'form' } } do |form| %>
+                  <div class="field pb-2">
+                      <%= form.rich_text_area :content %>
+                  </div>
+                  <div class="form-actions ">
+                    <%= form.submit 'Enregistrez', class: 'add-skill-btn'%>
+                    <%# <% raise %>
+                  </div>
+                <% end %>
+              </div>
           </div>
-        </div>
-          <%# Display editeur, en d-none de base %>
-          <div >
-            <%= form_for [work_plan_skill, work_plan_skill.challenge],
-            html: { class: 'd-none', data: { edit_challenge_target: 'form' } } do |form| %>
-              <div class="field">
-                <%= form.label :content %>
-                <%= form.rich_text_area :content %>
-              </div>
-              <div class="form-actions">
-                <%= form.button :submit %>
-                <%# <% raise %>
-              </div>
-            <% end %>
+          <div class="challenge-mngt">
+            <div class="modify-challenge-btn" data-action="click->edit-challenge#displayForm">
+               <i class="fas fa-pen fa-xs ml-2"></i>
+               <h6>Modifier</h6>
+            </div>
           </div>
         </div>
