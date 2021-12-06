@@ -1,12 +1,18 @@
 .navhaut{
   display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-  align-items: center;
-  height: 140px;
+  justify-content: space-between;
+  width: 100%;
+  height: 105px;
   background-color: $white;
+  padding: 5px 20px 5px 20px;
+  margin-bottom: 10px;
   // align-content: flex-end;
 }
+
+.quote{
+font-family: $plan-font;
+}
+
 .avatar{
   font-family: $bandeau-haut-font;
   font-size: 10px;
