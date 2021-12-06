@@ -5,16 +5,24 @@
   background-color: white;
   font-family: "Poppins", sans-serif;
   h1{
-    font-family: "Poppins", sans-serif;
+    font-family: $titres-font;
   }
   h2{
-    font-family: "Poppins", sans-serif;
+    font-family: $titres-font;
   }
   h3{
     font-family: "Poppins", sans-serif;
   }
+  h4{
+    font-family: $titres-font;
+  }
 }
 
+.domain{
+  margin-top: 10px;
+  border: thin solid $grisC;
+  border-radius: 12px;
+}
 
 
 .pt-header{
