@@ -12,7 +12,7 @@
   </head>
 
   <body>
-    <%# <div data-controller="scroll-progress" class="h-2 bg-indigo-400 fixed top-0"></div> %>
+
     <%= render 'shared/flashes' %>
 
     <%# :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: %>
@@ -27,7 +27,7 @@
         <div class="navgauche"><%= render 'shared/nav_gauche' %></div>
         <div class="contenu">
           <div class="navhaut"><%= render 'shared/nav_haut' %></div>
-          <div class="pastouche"><%= yield %></div>
+          <div class="pastouche" style="margin: 0 auto"><%= yield %></div>
         </div>
       </div>
     <% end %>
