@@ -1,13 +1,15 @@
 .area {
-  border: $rose solid 0.2rem;
+  border: $grisC solid thin;
+  // border: $rose solid 0.2rem;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 5px;
+  // padding: 1rem;
   color: $grisF;
   list-style: none;
 }
 
 .rect-xl {
-  width: 100%;
+  width: 200%;
 }
 
 .rect-lg {

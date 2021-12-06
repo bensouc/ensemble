@@ -1,32 +1,37 @@
 <div class='container font'>
-  <h1><i class='fas fa-desktop'></i> MON PLAN DE TRAVAIL</h1>
-  <div class='m-top-5'>
+  <h1 style='text-align: center'><i class='fas fa-desktop'></i> MON PLAN DE TRAVAIL</h1>
+  <div class='m-top'>
     <%= simple_form_for @work_plan do |f| %>
-      <%= f.input :name, label: 'Nommez votre plan de travail :',
-                  placeholder: 'CE2...',
-                  input_html: { class: 'area rect-lg' } %>
-      <div class='box m-top-5'>
-        <i class="far fa-calendar-check font-fa" style="align-self: flex-center"></i>
-        <div class='m-left-5'>
-          <%= f.input :start_date, as: :string, label: 'Période du',
-                      # placeholder: '📅',
-                      input_html: {class: 'datepicker '} %>
-        </div>
-        <div class='m-left-5'>
-          <%= f.input :end_date, as: :string, label: 'au',
-                      # placeholder: '📅',
-                      input_html: {class: 'datepicker'} %>
-        </div>
+      <%# <% render 'form_part_1', work_plan: @work_plan%>
+      <div class='box m-top'>
+        <p>Nommez votre plan de travail : *</p>
+        <%= f.input :name, label: false,
+                    placeholder: 'CE2...',
+                    input_html: { class: 'area rect-xl m-left' } %>
       </div>
-      <div class='d-flex m-top-5'>
-        <i class="far fa-user-circle font-fa"></i>
-        <div class='m-left-5'>
-          <%= f.association :student, label: "Personnalisez pour l'élève :",
+
+      <div class='box m-top'>
+        <%# <i class="far fa-calendar-check font-fa"></i> %>
+        <p>Période du</p>
+        <%= f.input :start_date, as: :string, label: false,
+                    input_html: {class: 'datepicker area rect-lg m-left'} %>
+        <p class='m-left'>au</p>
+        <%= f.input :end_date, as: :string, label: false,
+                    input_html: {class: 'datepicker area rect-lg m-left'} %>
+      </div>
+
+      <div class='box m-top'>
+        <%# <i class="far fa-user-circle font-fa"></i> %>
+        <p>Personnalisez pour l'élève :</p>
+        <div class='m-left'>
+          <%= f.association :student, label: false,
                             collection: @students.order(:first_name),
+                            input_html: {class: 'area rect-xl'},
                             label_method: :first_name %>
         </div>
       </div>
-      <div class='m-top-5'>
+
+      <div class='m-top'>
         <%= f.simple_fields_for :work_plan_domains do |domain_form| %>
           <%= domain_form.input :domain, label: 'Choisissez un domaine :', as: :radio_buttons,
                                 collection: WorkPlanDomain::DOMAINS,
@@ -35,7 +40,8 @@
                                 item_wrapper_class: 'domain-item',
                                 input_html: { class: 'selector domain-selector' } %>
       </div>
-      <div class='m-top-5'>
+
+      <div class='m-top'>
           <%= domain_form.input :level, label: 'Choisissez une ceinture :', as: :radio_buttons,
                                 collection: WorkPlanDomain::LEVELS,
                                 collection_wrapper_tag: 'div',
@@ -44,6 +50,8 @@
                                 input_html: { class: 'selector level-selector' } %>
         <% end %>
       </div>
+
+
       <%= f.submit "Valider", class: "btn btn-primary" %>
     <% end %>
   </div>

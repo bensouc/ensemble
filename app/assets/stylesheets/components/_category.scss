@@ -25,9 +25,10 @@
   cursor: pointer;
   // box-sizing: border-box;
   // width: 100%;
-  font-size: 1rem;
+  font-size: 18px;
+  // font-size: 1rem;
   text-align: center;
-  border: 1px solid $grisC;
+  border: thin solid $grisC;
 }
 
 .domain-selector + label {
@@ -35,14 +36,14 @@
   border-radius: 12px;
   background-color: white;
   &:hover {
-    border-color: $rose;
-    box-shadow: 0 0 1rem $rose;
-    transition: 0.8s;
+    background-color: $rose;
+    // box-shadow: 0 0 1rem $rose;
+    transition: 0.3s;
   }
 }
 
 .domain-selector:checked + label {
-  background-color: $jaune;
+  background-color: $rose;
 }
 
 .level-selector + label {

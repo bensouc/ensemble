@@ -1,36 +1,47 @@
 .font {
-  font-family: $bandeau-haut-font;
-  font-size: 2rem;
+  font-family: $plan-font;
+  font-size: 18px;
+  // font-size: 2rem;
   font-weight: 400;
-  letter-spacing: 1rem;
+  // letter-spacing: 1rem;
   color: $grisF;
   h1 {
     font-family: $titres-font;
-    font-size: 4rem;
+    font-size: 36px;
+    // font-size: 4rem;
     font-weight: 700;
   }
 }
 
 .font-fa {
-  font-size: 4rem
+  font-size: 36px
+  // font-size: 4rem
 }
 
 .fa-desktop,
 .fa-user-circle,
 .fa-calendar-check {
-    color: $yellow;
+    color: $rose;
 }
 
-.m-top-5 {
+.m-top {
   margin-top: 5rem;
 }
 
-.m-left-5 {
-  margin-left: 5rem;
+.m-left {
+  margin-left: 1rem;
 }
 
 .box {
   display: flex;
   justify-content: flex-start;
-  // align-items: flex-center;
+  // align-items: flex-bottom;
 }
+
+// .flex-start {
+//   align-self: flex-start;
+// }
+
+// .align-self-start {
+//   align-self: flex-start;
+// }
