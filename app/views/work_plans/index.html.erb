@@ -1,20 +1,25 @@
 
 
 <div class='container'>
+
   <ul>
+  <div class="title mb-4">
+    <h1 class="content"><i class="far fa-dot-circle"></i> Mes derniers plans de travail</h1>
+  </div>
     <%@my_work_plans.each do |wp| %>
-      <li class='area rect-xl mb-5 wp-item'>
+      <li class='area mb-3 wp-item'>
         <%= link_to work_plan_path(wp) do %>
           <div class='wp-text'>
             <h3><%= wp.name %>
                 <%= wp.start_date.nil? ? '' : l(wp.start_date, format: "du %a. %d/%m/%Y") %>
                 <%= wp.end_date.nil? ? '' : l(wp.end_date, format: "au %a. %d/%m/%Y") %>
             </h3>
-            <p>Pour <%= wp.student.nil? ? "Non assigné": wp.student.first_name %></p>
-            <p>Dernière modification : <%= l(wp.updated_at, format: "%d/%m/%Y") %></p>
+            <h6><span>Pour <%= wp.student.nil? ? "Non assigné": wp.student.first_name %></span> | Dernière modification : <%= l(wp.updated_at, format: "%d/%m/%Y") %></h6>
+
+
           </div>
         <% end %>
-      </li>
-    <% end %>
+      <% end %>
+    </li>
   </ul>
 </div>

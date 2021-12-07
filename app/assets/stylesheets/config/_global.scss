@@ -1,8 +1,20 @@
 body {
+  // background-image: url("https://res.cloudinary.com/dr50qe2fh/image/upload/v1638810072/bg2_tbato3.svg");
   background-color: white;
   font-family: $body-font;
 }
 
+
+.bd-maison{
+  border:  solid #dddddd;
+  color: $grisF;
+  font-family: "Poppins", sans-serif;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  height: 1.5em;
+  height: fit-content;
+}
 
 
 // .bd-maison .skill:hover{
