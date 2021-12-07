@@ -1,17 +1,17 @@
 .title{
   padding: 12px;
-  background-color: $menuOff;
-  border-radius: 12px;
+  // background-color: $menuOff;
+  // border-radius: 12px;
   margin-bottom: 12px;
   .content{
     font-family: $titres-font;
-    font-size: 32px;
-    font-weight: 600;
+    font-size: 36px;
+    font-weight: 700;
     color: $grisF;
     }
-  .far{
-    color:$orange;
-    font-size: 20px;
+  .fas{
+    color:$rose;
+    font-size: 30px;
   }
 }
 li{
