@@ -10,6 +10,7 @@
 
 .level-item {
   flex: 0 0 10%;
+  // height: 112px;
 }
 
 .selector {
@@ -20,80 +21,87 @@
 .domain-selector + label {
   display: block;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 24px;
   // font-size: 1rem;
   text-align: center;
   border: thin solid $grisC;
   padding: 2rem;
   border-radius: 12px;
   background-color: white;
+  opacity: 0.7;
+  transition-duration: 0.4s;
+  transition: 0.4s;
   &:hover {
-    background-color: $rose;
-    opacity: 0.8;
-    color: $grisC;
-    transition: 0.3s;
+    opacity: 1;
+    transform: scale(1.1);
   }
 }
 
 .domain-selector:checked + label {
   background-color: $rose;
-  color: $grisC;
+  color: $white;
 }
 
 .level-selector + label {
   cursor: pointer;
   font-size: 30px;
+  transition-duration: 0.4s;
+  transition: 0.4s;
+  &:hover {
+    opacity: 1;
+    transform: scale(1.1);
+  }
 }
 
 .level-selector:checked + label .square {
   #round-1, #round-2, #round-3, #round-4,
   #round-5, #round-6, #round-7 {
     transition: 0.4s;
-    width: 7rem;
-    height: 7rem;
+    width: 5rem;
+    height: 5rem;
     border-radius: 12px;
   }
 }
 
 #round-1 {
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
   background-color: $belt-1;
   border-radius: 50%;
 }
 #round-2 {
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
   background-color: $belt-2;
   border-radius: 50%;
 }
 #round-3 {
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
   background-color: $belt-3;
   border-radius: 50%;
 }
 #round-4 {
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
   background-color: $belt-4;
   border-radius: 50%;
 }
 #round-5 {
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
   background-color: $belt-5;
   border-radius: 50%;
 }
 #round-6 {
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
   background-color: $belt-6;
   border-radius: 50%;
 }
 #round-7 {
-  width: 4rem;
-  height: 4rem;
+  width: 3rem;
+  height: 3rem;
   background-color: $belt-7;
   border-radius: 50%;
 }
