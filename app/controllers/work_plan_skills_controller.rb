@@ -26,6 +26,12 @@ class WorkPlanSkillsController < ApplicationController
     end
   end
 
+  #u^date
+  #recupere l'id du nouveau challenge
+  #re^lace l'id du challenege par le nouve
+  # @sauver
+
+
   private
 
   def set_params_wpskill
