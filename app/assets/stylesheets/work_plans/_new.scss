@@ -19,6 +19,7 @@
 //   font-size: 4rem
 // }
 
+.fa-address-card,
 .fa-desktop,
 .fa-user-circle,
 .fa-calendar-check {
@@ -28,6 +29,10 @@
 //** Positions **
 .m-top {
   margin-top: 3rem;
+}
+
+.pad-35 {
+  padding: 0.35rem;
 }
 
 .m-left {
@@ -46,6 +51,14 @@
   // align-items: flex-bottom;
 }
 
+.box-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.grow {
+  flex-grow: 1;
+}
 
 //** Button **
 .btn{
