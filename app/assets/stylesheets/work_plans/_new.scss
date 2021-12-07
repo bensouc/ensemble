@@ -1,0 +1,63 @@
+//** Fonts **
+.font {
+  font-family: $plan-font;
+  font-size: 18px;
+  // font-size: 2rem;
+  font-weight: 400;
+  // letter-spacing: 1rem;
+  color: $grisF;
+  h1 {
+    font-family: $titres-font;
+    font-size: 36px;
+    // font-size: 4rem;
+    font-weight: 700;
+  }
+}
+
+.font-fa {
+  font-size: 36px
+  // font-size: 4rem
+}
+
+.fa-desktop,
+.fa-user-circle,
+.fa-calendar-check {
+    color: $rose;
+}
+
+//** Positions **
+.m-top {
+  margin-top: 5rem;
+}
+
+.m-left {
+  margin-left: 1rem;
+}
+
+.box-start {
+  display: flex;
+  justify-content: flex-start;
+  // align-items: flex-bottom;
+}
+
+.box-end {
+  display: flex;
+  justify-content: flex-end;
+  // align-items: flex-bottom;
+}
+
+.self-end {
+  align-self: flex-end;
+}
+
+//** Button **
+.btn {
+  color:$grisC;
+  background-color: $rose;
+  padding: 1rem 2rem;
+  &:hover {
+    color:$grisC;
+    border: $grisC solid thin;
+    opacity: 0.8;
+  }
+}

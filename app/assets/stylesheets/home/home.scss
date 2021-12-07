@@ -1,0 +1,24 @@
+#home {
+  .banner {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .flex-container {
+    display: flex;
+    width: 47rem;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    p {
+      font-size: .9rem;
+    }
+  }
+
+  .btn-flat {
+   background-color: #F24150;
+  }
+}
