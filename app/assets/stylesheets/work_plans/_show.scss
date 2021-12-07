@@ -2,6 +2,7 @@
 .pt{
   max-width: 1000px;
   margin-left: 5px ;
+  margin-bottom: 40px;
   background-color: white;
   font-family: "Poppins", sans-serif;
   h1{
@@ -20,15 +21,16 @@
 
 .domain{
   margin-top: 10px;
-  border: thin solid $grisC;
-  border-radius: 12px;
+
+  border-bottom: thin solid $grisC;
+  // border-radius: 12px;
 }
 
 .pt-header{
   border: thin solid $grisC ;
   border-radius: 12px;
   margin: 5px;
-  padding: 5px 2px 0 10px;
+  padding: 5px 5px 0 15px;
  }
 
 .bilan{
@@ -57,7 +59,7 @@
   border-radius: 12px;
   display: flex;
   align-items: center;
-  width: 653px;
+  width: 600px;
   padding: 5px 10px;
 }
 
@@ -70,6 +72,7 @@
   height: 2em;
   padding: 1px 3px;
   margin-left: 8px;
+      margin-right: 33px;
   background-color: inherit;
   transition: 0.3s;
 
@@ -83,6 +86,7 @@
   width: fit-content;
   height: 2em;
   padding: 1px 3px;
+  margin-top: 10px;
   margin-left: 8px;
   background-color: $rose;
   transition: 0.3s;
@@ -109,7 +113,7 @@
   height: 1.5em;
   height: fit-content;
   padding: 5px;
-
+  margin-top: 10px;
 }
 
 .add-skill-btn:hover{
@@ -125,6 +129,20 @@
 
 
 // CSS to display challenge kind with Style
+.skill-display{
+  margin-top: 46px;
+  margin-left: -91px;
+}
+.domain-display{
+    font-size: 40px;
+    font-weight: bold;
+    font-family: "Poppins", sans-serif;
+
+}
+.belt-display{
+  margin-left: -78px;
+}
+
 
   // div that contains kind display
   .challenge-kind {
