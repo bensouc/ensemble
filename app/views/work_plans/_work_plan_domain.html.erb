@@ -3,7 +3,16 @@
       <div class='domain  '>
           <div class='p-1 d-flex'>
             <div class='w-20 '>
-              <div class='domain-display'><%= work_plan_domain.domain%></div>
+              <div class='domain-display d-flex justify-content-start'>
+                <%# Button remove Domain %>
+                <%= link_to work_plan_domain_path(work_plan_domain), method: :delete do %>
+                  <div class='rmv-skill-btn mt-3 mr-2'>
+                    <i class="far fa-times-circle"></i>
+                  </div>
+                <% end %>
+                <%#  %>
+                <%= work_plan_domain.domain%>
+              </div>
               <div class='d-flex justify-content-around belt-display '>
                 <div class='bd-maison'>
                   <i class=" fas fa-bacon belt-<%= work_plan_domain.level %> display-2 font-weight-bold"></i>
@@ -21,16 +30,16 @@
                     <%= plan_skill.skill.symbol%>
                     <%= plan_skill.skill.name%>
                   </div>
-                  <%# Button Delete %>
+                  <%# Button remmove Skill %>
                   <div>
                     <%= link_to work_plan_skill_path(plan_skill), method: :delete do %>
-                    <div class='rmv-skill-btn'>
-                      <i class="far fa-times-circle"></i>
-                    </div>
+                      <div class='rmv-skill-btn'>
+                        <i class="far fa-times-circle"></i>
+                      </div>
                     <% end %>
                   </div>
+                  <%#  %>
                 </div>
-                <%#  %>
                 <div class='challenge-kind '>
                   <%# les entete %>
                   <div class='d-flex justify-content-between w-100 kind-label'>
