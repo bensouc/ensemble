@@ -52,7 +52,7 @@
     border-radius: 12px;
     transition-property: width;
     transition-duration: 0.2s;
-    transition: .4s;
+    transition: .3s;
 
     &:hover {
       transform: scale(1.1);
@@ -87,7 +87,7 @@ a:hover  {
   border-radius: 12px;
   transition-property: opacity;
   transition-duration: 0.5s;
-  transition: .4s;
+  transition: .3s;
 
   &:hover {
     transform: scale(1.1);
@@ -133,7 +133,7 @@ a:hover  {
   height: 240px;
   padding: 25px;
   border-radius: 12px;
-  transition: .4s;
+  transition: .3s;
 
   &:hover {
     transform: scale(1.1);
