@@ -12,7 +12,7 @@ const displayQuote = ((event) => {
   const theme = ['amour','ecologie', 'ecole', 'education', 'enseignement', 'enfance', 'reve', 'connaissance'][Math.floor(Math.random() * 7)];
   const author="";
   const word="";
-  console.log(theme)
+
   //const src='https://citations.ouest-france.fr/apis/export.php?t='+escape(type);
   //const src='http://local.citation-du-jour.fr/apis/export.php?t='+escape(type)+'&author='+author+'&theme='+theme+'&word='+word;
 
@@ -20,7 +20,6 @@ const displayQuote = ((event) => {
   request.open('GET', 'https://citations.ouest-france.fr/apis/export.php?json&key=464fzer5&t=' + escape(type) + '&author=' + author + '&theme=' + theme + '&word=' + word, true);
   request.send(null);
 
-  console.log(request)
 
   request.onload = function () {
     if (request.status >= 200 && request.status < 400) {
