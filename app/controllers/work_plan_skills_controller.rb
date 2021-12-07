@@ -26,10 +26,16 @@ class WorkPlanSkillsController < ApplicationController
     end
   end
 
-  #u^date
-  #recupere l'id du nouveau challenge
-  #re^lace l'id du challenege par le nouve
-  # @sauver
+
+  def update
+    @work_plan_skill = WorkPlanSkill.find(params[:id])
+    @challenge = Challenge.find(params[:challenge])
+    @work_plan = @work_plan_skill.work_plan_domain.work_plan
+
+    @work_plan_skill.challenge = @challenge
+    @work_plan_skill.save
+    redirect_to work_plan_path(@work_plan)
+  end
 
 
   private
@@ -41,4 +47,6 @@ class WorkPlanSkillsController < ApplicationController
       kind: params.require(:kind)
     }
   end
+
+
 end
