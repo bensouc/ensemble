@@ -4,9 +4,22 @@
   background-position: center;
   padding: 6vh;
   height: 600px;
-}
 
-.banner {
+  .logo {
+    border-radius: 1rem;
+    margin: 0 auto;
+    padding: 1rem;
+
+    img {
+      width: 10rem;
+      height: 10rem;
+    }
+  }
+
+  .blanche {
+    height: 100px;
+  }
+
   h1 {
     margin: 0;
     color: white;
@@ -25,15 +38,7 @@
 }
 
 
-.blanche {
-  height: 100px;
-}
- .logo {
-  width: fit-content;
-  padding: 1rem;
-  border-radius: 1rem;
-  margin-left: 3rem;
- }
+
 
 //  .left-card1 {
     // font-family: $titres-font;

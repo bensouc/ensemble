@@ -1,31 +1,31 @@
 <div class='container font'>
-  <h1 style='text-align: center'><i class='fas fa-desktop'></i> MON PLAN DE TRAVAIL</h1>
+  <h1 style='text-align: center'>
+    <i class='far fa-address-card' style='font-size: 30px'></i> MON PLAN DE TRAVAIL
+  </h1>
   <div class='m-top'>
     <%= simple_form_for @work_plan do |f| %>
       <div class='box-start m-top'>
-        <p>Nommez votre plan de travail : *</p>
-        <%= f.input :name, label: false,
-                    placeholder: 'CE2...',
-                    input_html: { class: 'area rect-xl m-left' } %>
-      </div>
+        <div class='box-column'>
+          <p class='pad-35'>Nommez votre plan de travail : *</p>
+          <p class='pad-35'>Période du :</p>
+          <p class='pad-35'>Personnalisez pour l'élève :</p>
+        </div>
 
-      <div class='box-start m-top'>
-        <%# <i class="far fa-calendar-check font-fa"></i> %>
-        <p>Période du</p>
-        <%= f.input :start_date, as: :string, label: false,
-                    input_html: {class: 'datepicker area rect-lg m-left'} %>
-        <p class='m-left'>au</p>
-        <%= f.input :end_date, as: :string, label: false,
-                    input_html: {class: 'datepicker area rect-lg m-left'} %>
-      </div>
-
-      <div class='box-start m-top'>
-        <%# <i class="far fa-user-circle font-fa"></i> %>
-        <p>Personnalisez pour l'élève :</p>
-        <div class='m-left'>
+        <div class='box-column'>
+          <%= f.input :name, label: false,
+                      placeholder: 'CE2...',
+                      input_html: { class: 'area grow m-left' } %>
+          <%# <i class="far fa-calendar-check font-fa"></i> %>
+          <div class='box-start'>
+            <%= f.input :start_date, as: :string, label: false,
+                        input_html: {class: 'datepicker area rect-lg m-left'} %>
+            <p class='m-left'>au</p>
+            <%= f.input :end_date, as: :string, label: false,
+                        input_html: {class: 'datepicker area rect-lg m-left'} %>
+          </div>
           <%= f.association :student, label: false,
                             collection: @students.order(:first_name),
-                            input_html: {class: 'area rect-xl'},
+                            input_html: {class: 'area grow m-left'},
                             label_method: :first_name %>
         </div>
       </div>
@@ -52,7 +52,7 @@
       <% end %>
 
       <div class='m-top box-end'>
-        <%= f.submit "Valider", class: 'area btn' %>
+        <%= f.submit "Valider", class: 'area rect-sm btn' %>
       </div>
       <%# %>
       <div class='m-top'>

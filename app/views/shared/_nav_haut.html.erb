@@ -1,15 +1,10 @@
 <div class="navhaut">
-  <div class="searchbar">
-    <%# <div id="QuoteOFDay"></div>
-    <script>
-    var type="theme";
-    var theme="partage";
-    </script>
-    <script src="https://citations.ouest-france.fr/js/web/export.js?v3"></script> %>
+  <div class="quote">
+    <div id="QuoteOFDay"></div>
   </div>
   <div class="avatar">
-    <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638462641/avatar_iusuuo.svg" alt="">
-    <h3>Élodie Branchon</h3>
-    <p>Classe : CE2 - 2</p>
+    <%= cl_image_tag current_user.photo.key%>
+    <h3><%=current_user.first_name.capitalize%> <%=current_user.last_name.capitalize%></h3>
+    <p>Classe : CE1</p>
   </div>
 </div>

@@ -26,6 +26,7 @@ class WorkPlanSkillsController < ApplicationController
     end
   end
 
+
   def update
     @work_plan_skill = WorkPlanSkill.find(params[:id])
     @challenge = Challenge.find(params[:challenge])
@@ -35,6 +36,7 @@ class WorkPlanSkillsController < ApplicationController
     @work_plan_skill.save
     redirect_to work_plan_path(@work_plan)
   end
+
 
   private
 

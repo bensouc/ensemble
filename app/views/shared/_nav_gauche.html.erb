@@ -5,11 +5,11 @@
   </div>
   <% end %>
 
-  <div class="menu-g" data-controller="left-menu">
+  <div class="menu-g" >
     <div class="menug-container">
           <%= link_to work_plans_path do %>
             <div class="menug_icone" data-action="click->left-menu#seechange" >
-            <div class="<%="active" if current_page?(work_plans_path)%> " data-left-menu-target="seetext" style='decoration-text: none' >Voir</div>
+            <div class="<%="active" if current_page?(work_plans_path) %> " data-left-menu-target="seetext" style='decoration-text: none' >Voir</div>
             <%if current_page?(work_plans_path)%>
             <%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/1blanc_yahz0m.svg", class:"on" %>
             <% else %>
@@ -20,8 +20,9 @@
 
           <%= link_to new_work_plan_path do %>
             <div class="menug_icone" data-action="click->left-menu#seechange">
-            <div class="<%="active" if current_page?(new_work_plan_path)%>" data-left-menu-target="seetext" style='decoration-text: none'>Créer</div>
-            <%if current_page?(new_work_plan_path)%>
+            <div class="<%="active" if (current_page?(new_work_plan_path) || params[:action] == "show") %>" data-left-menu-target="seetext" style='decoration-text: none'>Créer</div>
+            <%if (  current_page?(new_work_plan_path)|| (params[:action] == "show" && !current_page?(dashboard_path)) )%>
+
             <%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/2blanc_tixkrs.svg", class:"on" %>
             <% else %>
             <%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/2_ekrwe3.svg", class: "" %>
