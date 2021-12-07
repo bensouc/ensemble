@@ -54,6 +54,42 @@
   height: 80px;
 }
 
+// add domain
+.add-domain{
+  margin: 10px;
+  padding-left: 10px;
+  .domain-btn{
+  display: flex;
+  vertical-align: text-top;
+  border:  solid $rose ;
+  border-radius: 14px;
+  width: fit-content;
+  height: 2em;
+  padding: 1px 3px;
+  margin-left: 8px;
+  color: $rose;
+  background-color: inherit;
+  transition: 0.3s;
+    h6{
+      padding-right: 10px;
+      padding-top: 3px ;
+    }
+    i{
+      // color: $rose;
+      padding-top: 6px;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+  }
+  .domain-btn:hover{
+  transition: 0.3s;
+  background-color: white;
+  border-color: $rose;
+  color: $grisF;
+
+  }
+}
+
 // challenge skill in header
 .domain-belt-level{
   width: 200px;
