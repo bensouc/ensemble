@@ -128,6 +128,15 @@
   }
 }
 
+.rmv-skill-btn {
+  color: $rose;
+  cursor: pointer;
+  font-size: 1.2rem;
+  &:hover {
+    transition-duration: 0.3s;
+    transform: scale(1.3);
+  }
+}
 
 
 // CSS to display challenge kind with Style

@@ -16,9 +16,21 @@
             <div class='p-2 skill-display'>
               <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
               <div class='d-flex justify-content-between p-2 '>
-                <div class='border-skill mt-2'>
-                  <div><%= plan_skill.skill.symbol%> <%= plan_skill.skill.name%></div>
+                <div class='border-skill justify-content-between mt-2'>
+                  <div>
+                    <%= plan_skill.skill.symbol%>
+                    <%= plan_skill.skill.name%>
+                  </div>
+                  <%# Button Delete %>
+                  <div>
+                    <%= link_to work_plan_skill_path(plan_skill), method: :delete do %>
+                    <div class='rmv-skill-btn'>
+                      <i class="far fa-times-circle"></i>
+                    </div>
+                    <% end %>
+                  </div>
                 </div>
+                <%#  %>
                 <div class='challenge-kind '>
                   <%# les entete %>
                   <div class='d-flex justify-content-between w-100 kind-label'>

@@ -26,6 +26,13 @@ class WorkPlanSkillsController < ApplicationController
     end
   end
 
+  def destroy
+    @work_plan_skill = WorkPlanSkill.find(params[:id])
+    # raise
+    @work_plan_skill.destroy
+    redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan)
+  end
+
   private
 
   def set_params_wpskill
