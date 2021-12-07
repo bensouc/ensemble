@@ -2,8 +2,10 @@
         <%# display le content.body d'un exo %>
           <div class="cont-challenge w-100">
             <div class= "challenge-card">
-              <div class="challenge-infos " data-edit-challenge-target="infos">
-              <%= work_plan_skill.challenge.content.body%>
+              <div class="challenge-infos" data-edit-challenge-target="infos">
+                <%= work_plan_skill.challenge.content.body %>
+              </div>
+              <div class="challenge-infos d-none" data-edit-challenge-target="preview" >
               </div>
             </div>
               <%# Display editeur, en d-none de base %>
@@ -15,15 +17,40 @@
                   </div>
                   <div class="form-actions ">
                     <%= form.submit 'Enregistrez', class: 'add-skill-btn'%>
-                    <%# <% raise %>
                   </div>
                 <% end %>
               </div>
           </div>
+
           <div class="challenge-mngt">
             <div class="modify-challenge-btn" data-action="click->edit-challenge#displayForm">
-               <i class="fas fa-pen fa-xs ml-2"></i>
-               <h6>Modifier</h6>
+              <i class="fas fa-pen fa-xs ml-2"></i>
+              <h6>Modifier</h6>
             </div>
+            <%# ADD A SKILL %>
+            <div data-controller="skill-add">
+              <div data-edit-challenge-target="button" data-skill-add-target="button" data-action="click->skill-add#displayForm" class='add-skill-btn'>
+                <h6>Remplacer  </h6><i class="fas fa-chevron-right"></i>
+              </div>
+              <div class="d-none challenge-form" data-skill-add-target="form">
+              <%# Selectionner les challenges appartenant à un WP Skill%>
+              <%= simple_form_for work_plan_skill, method: :patch, class:'d-flex'  do |f| %>
+                <div class=" d-flex justify-content-between pb-1 w-100">
+                  <div class='d-flex '>
+                  <%# challenge qui appartient à un skill %>
+                    <select name="challenge" id="challenge" class="skill-selector" data-action="change->edit-challenge#preview">
+                      <option value>Sélectionner un exercice</option>
+                      <% work_plan_skill.skill.challenges.each do |challenge| %>
+                        <option data-content="<%= challenge.content.body.to_json %>" value=<%=challenge.id%>><%= challenge.name %></option>
+                      <% end %>
+                    </select>
+                  </div>
+                </div>
+                <%= f.submit 'Validez' ,class: 'add-skill-btn' %>
+                <%= link_to 'Annuler', work_plan_path(@work_plan), class: 'add-skill-btn' %>
+              <% end %>
+              </div>
+            </div>
+            <%# ADD A SKILL END %>
           </div>
         </div>

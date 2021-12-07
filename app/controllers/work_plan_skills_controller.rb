@@ -26,6 +26,16 @@ class WorkPlanSkillsController < ApplicationController
     end
   end
 
+  def update
+    @work_plan_skill = WorkPlanSkill.find(params[:id])
+    @challenge = Challenge.find(params[:challenge])
+    @work_plan = @work_plan_skill.work_plan_domain.work_plan
+
+    @work_plan_skill.challenge = @challenge
+    @work_plan_skill.save
+    redirect_to work_plan_path(@work_plan)
+  end
+
   private
 
   def set_params_wpskill
@@ -35,4 +45,6 @@ class WorkPlanSkillsController < ApplicationController
       kind: params.require(:kind)
     }
   end
+
+
 end
