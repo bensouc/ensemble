@@ -26,6 +26,7 @@ require("channels")
 import "bootstrap";
 
 import { initFlatpickr } from "../plugins/flatpickr";
+import { displayQuote } from "../plugins/quote.js";
 initFlatpickr();
 
 // Internal imports, e.g:
@@ -34,6 +35,7 @@ initFlatpickr();
 document.addEventListener('turbolinks:load', () => {
   // Call your functions here, e.g:
   // initSelect2();
+  displayQuote();
 });
 
 require("trix")
