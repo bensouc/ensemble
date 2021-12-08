@@ -18,10 +18,12 @@ class WorkPlanSkillsController < ApplicationController
       @work_plan_skill.challenge = challenge
     end
 
-    if @work_plan_skill.save!
+    if @work_plan_skill.save! && @work_plan_skill.kind.downcase == 'exercice'
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(challenge))
-    else
+    elsif @work_plan_skill.save!
+      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
       # a revoir poour la failedsaveredirection
+    else
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan)
     end
   end
