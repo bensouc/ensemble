@@ -1,6 +1,6 @@
 <% work_plan.work_plan_domains.each do |work_plan_domain|%>
       <%# boucle sur les work_plan_domains %>
-      <div class='domain  '>
+      <div class='domain  ' id="<%= dom_id(work_plan_domain) %>">
           <div class='p-1 d-flex'>
 
             <div class='domain-belt-level'>
@@ -108,7 +108,9 @@
      </div>
       <%# add domain%>
     <%end%>
-        <div>
+        <a id="bottom"></a>
+        <div >
 
             <%= render 'add_domain', work_plan: work_plan%>
+
         </div>

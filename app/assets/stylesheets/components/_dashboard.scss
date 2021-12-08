@@ -10,6 +10,7 @@
 
   &:hover{
     text-decoration: none;
+     cursor: pointer;
   }
 
   h1{
@@ -56,6 +57,7 @@
 
     &:hover {
       transform: scale(1.1);
+       cursor: pointer;
     }
 
     img{
@@ -66,6 +68,7 @@
       transition-duration: 1s;
       &:hover{
         opacity: 1;
+         cursor: pointer;
       }
     }
   }
@@ -73,6 +76,7 @@
 
 a:hover  {
   text-decoration: none;
+
 }
 
 .bg2{

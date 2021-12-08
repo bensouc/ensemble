@@ -19,7 +19,7 @@ class WorkPlanSkillsController < ApplicationController
     end
 
     if @work_plan_skill.save!
-      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan)
+      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(challenge))
     else
       # a revoir poour la failedsaveredirection
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan)
@@ -29,9 +29,10 @@ class WorkPlanSkillsController < ApplicationController
 
   def destroy
     @work_plan_skill = WorkPlanSkill.find(params[:id])
+    work_plan_domain = @work_plan_skill.work_plan_domain
     # raise
     @work_plan_skill.destroy
-    redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan)
+    redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(work_plan_domain))
   end
 
   def update

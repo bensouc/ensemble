@@ -3,7 +3,7 @@
     <div id="QuoteOFDay"></div>
   </div>
   <div class="avatar">
-    <%= cl_image_tag current_user.photo.key%>
+    <%= image_tag cl_image_path current_user.photo.key, class: "avatar dropdown-toggle"%>
     <h3><%=current_user.first_name.capitalize%> <%=current_user.last_name.capitalize%></h3>
     <p>Classe : CE1</p>
   </div>

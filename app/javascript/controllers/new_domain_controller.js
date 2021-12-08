@@ -9,5 +9,7 @@ export default class extends Controller {
   displayForm() {
     this.buttonTarget.classList.toggle('d-none');
     this.domainformTarget.classList.toggle('d-none');
+    window.scrollTo(0, document.body.scrollHeight);
   }
+
 }

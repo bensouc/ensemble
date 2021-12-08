@@ -22,6 +22,7 @@ li{
   transition: .3s;
   &:hover {
     transform: scale(1.05);
+     cursor: pointer;
   }
   a {
     text-decoration: none;
