@@ -1,0 +1,33 @@
+ <div class="add-domain" data-controller='new-domain'>
+    <div class="domain-btn" data-new-domain-target='button' data-action="click->new-domain#displayForm" id='dmn-validate'>
+        <h6>Ajouter un domaine</h6><i class="fas fa-chevron-down"></i>
+    </div>
+    <div class="add-domain-form d-none" data-new-domain-target='domainform'>
+      <div class='m-top'>
+        <%= simple_form_for work_plan do |f| %>
+          <%= f.simple_fields_for  WorkPlanDomain.new do |domain_form| %>
+            <div class='m-top'>
+              <%= domain_form.input :domain, label: 'Choisissez un nouveau domaine :', as: :radio_buttons,
+                                    collection: WorkPlanDomain::DOMAINS,
+                                    collection_wrapper_tag: 'div',
+                                    collection_wrapper_class: 'wrapper',
+                                    item_wrapper_class: 'domain-item',
+                                    input_html: { class: 'selector domain-selector' } %>
+            </div>
+            <div class='m-top'>
+              <%= domain_form.input :level, label: 'Choisissez une ceinture :', as: :radio_buttons,
+                                    collection: WorkPlanDomain::LEVELS,
+                                    collection_wrapper_tag: 'div',
+                                    collection_wrapper_class: 'wrapper',
+                                    item_wrapper_class: 'level-item',
+                                    input_html: { class: 'selector level-selector' },
+                                    label_method: lambda { |level| render 'level_btn', level: level} %>
+            </div>
+          <% end %>
+          <div class='m-top box-end' id='dmn-validate'>
+            <%= f.submit "Valider", class: 'add-skill-btn fs-2', method: 'patch' %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+</div>

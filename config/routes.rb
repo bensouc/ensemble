@@ -7,11 +7,11 @@ Rails.application.routes.draw do
     resources :work_plan_domains, only: [:new, :create]
   end
 
-  resources :work_plan_domains, only: [] do
+  resources :work_plan_domains, only: [:destroy] do
     resources :work_plan_skills, only: [:create]
   end
 
-  resources :work_plan_skills, only: [:update] do
+  resources :work_plan_skills, only: [:update, :destroy] do
     resources :challenges, only: [:create, :update]
   end
 

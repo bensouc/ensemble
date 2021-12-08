@@ -19,6 +19,7 @@
   border-color: transparent, transparent, $grisC, transparent;
   padding-bottom: 4em;
   padding-top: 1.5em;
+  margin-right: 40px;
   img{
   width: 99px;
   height: 90px;
@@ -71,6 +72,7 @@ color: $grisF;
 .menug_icone:hover{
   color: $rose;
   background-color: inherit;
+  cursor: pointer;
 
 }
 

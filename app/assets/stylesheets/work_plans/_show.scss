@@ -2,6 +2,7 @@
 .pt{
   max-width: 1000px;
   margin-left: 5px ;
+  margin-bottom: 40px;
   background-color: white;
   font-family: "Poppins", sans-serif;
   h1{
@@ -20,16 +21,18 @@
 
 .domain{
   margin-top: 10px;
-  border: thin solid $grisC;
-  border-radius: 12px;
+
+  border-bottom: thin solid $grisC;
+  // border-radius: 12px;
 }
 
 .pt-header{
   border: thin solid $grisC ;
   border-radius: 12px;
   margin: 5px;
-  padding: 5px 2px 0 10px;
-}
+  padding: 5px 5px 0 15px;
+ }
+
 
 .bilan{
   height: 80px;
@@ -51,13 +54,53 @@
   height: 80px;
 }
 
+// add domain
+.add-domain{
+  margin: 10px;
+  padding-left: 10px;
+  .domain-btn{
+  display: flex;
+  vertical-align: text-top;
+  border:  solid $rose ;
+  border-radius: 14px;
+  width: fit-content;
+  height: 2em;
+  padding: 3px 3px;
+  margin-left: 8px;
+  color: white;
+  background-color: $rose;
+  transition: 0.3s;
+    h6{
+      padding-left: 10px;
+      padding-right: 10px;
+     }
+    i{
+      // color: $rose;
+      padding-top: 3px;
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+  }
+  .domain-btn:hover{
+  transition: 0.3s;
+  background-color: white;
+  border-color: $rose;
+  color: $rose;
+  cursor: pointer;
+  }
+}
+
 // challenge skill in header
+.domain-belt-level{
+  width: 200px;
+}
+
 .border-skill{
   border:  thin solid #dddddd;
   border-radius: 12px;
   display: flex;
   align-items: center;
-  width: 635px;
+  width: 633px;
   padding: 5px 10px;
 }
 
@@ -67,9 +110,11 @@
   border:  solid #dddddd ;
   border-radius: 12px;
   width: fit-content;
+  max-width: 30ch;
   height: 2em;
   padding: 1px 3px;
   margin-left: 8px;
+      margin-right: 33px;
   background-color: inherit;
   transition: 0.3s;
 
@@ -98,6 +143,7 @@
   width: fit-content;
   height: 2em;
   padding: 1px 3px;
+  margin-top: 10px;
   margin-left: 8px;
   background-color: $rose;
   transition: 0.3s;
@@ -114,7 +160,21 @@
   }
 }
 
+.bd-maison{
+  border:  solid #dddddd;
+  color: $grisF;
+  font-family: "Poppins", sans-serif;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  height: 1.5em;
+  height: fit-content;
+  padding: 11px;
+  margin-top: 10px;
+}
+
 .add-skill-btn:hover{
+   cursor: pointer;
   transition: 0.2s;
   background-color: white;
   border-color: $rose;
@@ -124,14 +184,38 @@
   }
 }
 
-
+.rmv-skill-btn {
+  color: $rose;
+  cursor: pointer;
+  font-size: 1.2rem;
+  &:hover {
+    transition-duration: 0.3s;
+    transform: scale(1.3);
+  }
+}
 
 // CSS to display challenge kind with Style
+.skill-display{
+  margin-top: 46px;
+  // margin-left: -91px;
+  width: 800px;
+  max-width: 800px;
+}
+.domain-display{
+    font-size: 40px;
+    font-weight: bold;
+    font-family: "Poppins", sans-serif;
+
+}
+.belt-display{
+  margin-left: -17px;
+}
+
 
   // div that contains kind display
   .challenge-kind {
     margin-top: -14px;
-    margin-right: 25px;
+
     padding: 2px;
     width: 80px;
     color: $rose;
@@ -159,7 +243,7 @@
   .cells{
     display: flex;
     align-items: center;
-    padding: 2px 0;
+    padding: 5px 2px 7px 2px;
   }
 
 
