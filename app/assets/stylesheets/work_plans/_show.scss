@@ -120,10 +120,25 @@
 
 }
 
+.challenge-selector{
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  vertical-align: text-top;
+  border:  solid #dddddd ;
+  border-radius: 12px;
+  max-width: 13ch;
+  background-color: inherit;
+  transition: 0.3s;
+  select:focus-visible {
+    outline: 1px solid transparent;
+  }
+}
+
 .add-skill-btn{
   display: flex;
   vertical-align: text-top;
-  border:  solid $rose ;
+  border: solid $rose ;
   border-radius: 12px;
   width: fit-content;
   height: 2em;
@@ -134,11 +149,11 @@
   transition: 0.3s;
   color: white;
   h6{
-    padding-left: 10px;
+    padding-left: 4px;
     padding-top: 3px ;
   }
   i{
-    // color: $rose;
+    color: $white;
     padding-top: 6px;
     margin-left: 10px;
     margin-right: 10px;
