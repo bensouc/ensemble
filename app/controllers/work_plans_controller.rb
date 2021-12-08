@@ -32,6 +32,18 @@ class WorkPlansController < ApplicationController
     end
   end
 
+  def update
+      @work_plan = WorkPlan.find(params[:id])
+      @domain = WorkPlanDomain.new(work_plan_domain_params)
+      @domain.work_plan = @work_plan
+      if @domain.save
+
+        redirect_to work_plan_path(@work_plan, anchor: helpers.dom_id(@domain))
+      else
+        redirect_to work_plan_path(@work_plan, anchor:'dmn-validate')
+      end
+  end
+
   private
 
   def work_plan_params
@@ -39,4 +51,9 @@ class WorkPlansController < ApplicationController
                                       work_plan_domains_attributes: %i[domain level],
                                       work_plan_skills_attributes: :name)
   end
+
+  def work_plan_domain_params
+    params[:work_plan].require(:work_plan_domain).permit(:domain, :level)
+  end
+
 end
