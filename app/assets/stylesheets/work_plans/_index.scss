@@ -1,7 +1,5 @@
 .title{
   padding: 12px;
-  // background-color: $menuOff;
-  // border-radius: 12px;
   margin-bottom: 12px;
   .content{
     font-family: $titres-font;
@@ -22,7 +20,7 @@ li{
   transition: .3s;
   &:hover {
     transform: scale(1.05);
-     cursor: pointer;
+    cursor: pointer;
   }
   a {
     text-decoration: none;
@@ -30,11 +28,16 @@ li{
 }
 
 .wp-text {
+  h3{
+    font-size: 18px;
+  }
   h3, h6{
     color:$grisF;
   }
   h6 span{
+    font-size: 18px;
     color: $rose;
+    font-weight: 700;
   }
   padding: 12px;
   color: $rose;
