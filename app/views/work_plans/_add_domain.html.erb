@@ -1,7 +1,6 @@
  <div class="add-domain" data-controller='new-domain'>
     <div class="domain-btn" data-new-domain-target='button' data-action="click->new-domain#displayForm" id='dmn-validate'>
-      <i class="fas fa-pen fa-xs ml-2"></i>
-      <h6>Ajouter un domaine</h6>
+        <h6>Ajouter un domaine</h6><i class="fas fa-chevron-down"></i>
     </div>
     <div class="add-domain-form d-none" data-new-domain-target='domainform'>
       <div class='m-top'>
@@ -26,7 +25,7 @@
             </div>
           <% end %>
           <div class='m-top box-end' id='dmn-validate'>
-            <%= f.submit "Valider", class: 'area rect-sm btn', method: 'patch' %>
+            <%= f.submit "Valider", class: 'add-skill-btn fs-2', method: 'patch' %>
           </div>
         <% end %>
       </div>

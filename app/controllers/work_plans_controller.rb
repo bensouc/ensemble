@@ -38,9 +38,9 @@ class WorkPlansController < ApplicationController
       @domain.work_plan = @work_plan
       if @domain.save
 
-        redirect_to work_plan_path(@work_plan, anchor: helpers.dom_id(@domain))
+        redirect_to work_plan_path(@work_plan, anchor: 'bottom')
       else
-        redirect_to work_plan_path(@work_plan, anchor:'dmn-validate')
+        redirect_to work_plan_path(@work_plan, anchor: 'dmn-validate')
       end
   end
 
