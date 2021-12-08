@@ -41,6 +41,7 @@ document.addEventListener('turbolinks:load', () => {
 
 require("trix")
 require("@rails/actiontext")
+require('sweetalert2')
 
 import "controllers"
 import "../plugins/quote"
