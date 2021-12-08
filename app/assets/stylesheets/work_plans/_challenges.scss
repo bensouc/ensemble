@@ -34,35 +34,105 @@
 
 .modify-challenge-btn{
   display: flex;
-  vertical-align: text-top;
-  border:  solid $rose ;
-  border-radius: 14px;
-  width: fit-content;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 12px;
+  width: 134px;
   height: 2em;
-  padding: 1px 3px;
-  margin-left: 8px;
-  margin-bottom: 6px;
-  color: white;
-  background-color: $rose;
+  border: 3px solid $rose;
   transition: 0.3s;
-  h6{
-    padding-right: 10px;
-    padding-top: 3px ;
+  color: $rose;
+  margin-bottom: 6px;
+  h6 {
+    padding: 10px;
+    margin: 0;
   }
   i{
-    // color: $rose;
-    padding-top: 6px;
-    margin-left: 10px;
-    margin-right: 10px;
+    font-size: 12px;
   }
 }
 
 .modify-challenge-btn:hover{
-  transition: 0.3s;
-  background-color: white;
+  transition: 0.2s;
+  background-color: $rose;
   border-color: $rose;
   color: $rose;
+  i, h6{
+    color: $white;
+  }
+}
+
+.replace-challenge-btn{
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-radius: 12px;
+  width: fit-content;
+  height: 2em;
+  border: 3px solid $rose;
+  transition: 0.3s;
+  color: $rose;
+
+  h6 {
+    padding: 10px;
+    margin: 0;
+  }
   i{
+    font-size: 12px;
+  }
+}
+
+.replace-challenge-btn:hover{
+  transition: 0.2s;
+  background-color: $rose;
+  border-color: $rose;
+  color: $rose;
+  i, h6{
+    color: $white;
+  }
+}
+
+.cancel-btn{
+  border-radius: 12px;
+  width: fit-content;
+  border: 3px solid $grisC;
+  background-color: $grisC;
+  font-weight: 700;
+  font-size: 20px;
+  color: white;
+  margin: 4px;
+  padding: 0;
+  transition: 0.3s;
+  padding: 0.5rem 1rem;
+  display: inline-block;
+
+
+  &:hover{
+    background-color: $white;
+    color: $grisC;
+  }
+}
+
+[type="submit"] {
+  -webkit-appearance: none !important;
+}
+
+.validate-btn{
+  border-radius: 12px;
+  width: fit-content;
+  border: 3px solid $rose;
+  background-color: $rose;
+  font-weight: 700;
+  font-size: 20px;
+  color: $white;
+  margin: 4px;
+  padding: 0;
+  transition: 0.3s;
+  padding: 0.5rem 1rem;
+  display: inline-block;
+
+  &:hover{
+    background-color: $white;
     color: $rose;
   }
 }
