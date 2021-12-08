@@ -11,10 +11,10 @@
         <%= link_to work_plan_path(wp) do %>
           <div class='wp-text'>
             <h3><%= wp.name %>
-                <%= wp.start_date.nil? ? '' : l(wp.start_date, format: "du %a. %d/%m/%Y") %>
-                <%= wp.end_date.nil? ? '' : l(wp.end_date, format: "au %a. %d/%m/%Y") %>
+                <%= wp.start_date.nil? ? '' : l(wp.start_date, format: "du %d/%m/%Y") %>
+                <%= wp.end_date.nil? ? '' : l(wp.end_date, format: "au %d/%m/%Y") %>
             </h3>
-            <h6><span>Pour <%= wp.student.nil? ? "Non assigné": wp.student.first_name %></span> | Dernière modification : <%= l(wp.updated_at, format: "%d/%m/%Y") %></h6>
+            <h6><span>Pour <%= wp.student.nil? ? "Non assigné": wp.student.first_name.upcase %></span> | Dernière modification : <%= l(wp.updated_at, format: "%d/%m/%Y") %></h6>
 
 
           </div>
