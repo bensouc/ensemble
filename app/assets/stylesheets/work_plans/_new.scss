@@ -14,11 +14,12 @@
   }
 }
 
-.font-fa {
-  font-size: 36px
-  // font-size: 4rem
-}
+// .font-fa {
+//   font-size: 36px
+//   font-size: 4rem
+// }
 
+.fa-address-card,
 .fa-desktop,
 .fa-user-circle,
 .fa-calendar-check {
@@ -27,7 +28,11 @@
 
 //** Positions **
 .m-top {
-  margin-top: 5rem;
+  margin-top: 3rem;
+}
+
+.pad-35 {
+  padding: 0.35rem;
 }
 
 .m-left {
@@ -46,18 +51,27 @@
   // align-items: flex-bottom;
 }
 
-.self-end {
-  align-self: flex-end;
+.box-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.grow {
+  flex-grow: 1;
 }
 
 //** Button **
-.btn {
-  color:$grisC;
+.btn-valid {
+  border: solid $rose ;
+  border-radius: 12px;
+  color: white;
+  font-size: 24px;
   background-color: $rose;
-  padding: 1rem 2rem;
+  transition: 0.3s;
   &:hover {
-    color:$grisC;
-    border: $grisC solid thin;
-    opacity: 0.8;
+    background-color: white;
+    border-color: $rose;
+    color: $rose;
+     cursor: pointer;
   }
 }

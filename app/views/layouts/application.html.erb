@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <%# <%= favicon_link_tag %> 
+    <%# <%= favicon_link_tag %>
     <title>Ensemble</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -13,7 +13,7 @@
   </head>
 
   <body>
-
+<%# <%console%>
     <%= render 'shared/flashes' %>
 
     <%# :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: %>
@@ -22,7 +22,7 @@
     <%# sur toutes les pages xD                                                          %>
     <%# :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::%>
 
-    <% if ['pages', 'registrations', 'devise/sessions' ].include?(params[:controller]) %>
+    <% if ['pages', 'devise/registrations', 'devise/sessions' ].include?(params[:controller]) %>
 
       <div class="pastouche"><%= yield %></div>
     <% else %>

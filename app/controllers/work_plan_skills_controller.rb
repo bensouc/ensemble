@@ -18,12 +18,33 @@ class WorkPlanSkillsController < ApplicationController
       @work_plan_skill.challenge = challenge
     end
 
-    if @work_plan_skill.save!
-      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan)
-    else
+    if @work_plan_skill.save! && @work_plan_skill.kind.downcase == 'exercice'
+      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(challenge))
+    elsif @work_plan_skill.save!
+      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
       # a revoir poour la failedsaveredirection
+    else
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan)
     end
+  end
+
+
+  def destroy
+    @work_plan_skill = WorkPlanSkill.find(params[:id])
+    work_plan_domain = @work_plan_skill.work_plan_domain
+    # raise
+    @work_plan_skill.destroy
+    redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(work_plan_domain))
+  end
+
+  def update
+    @work_plan_skill = WorkPlanSkill.find(params[:id])
+    @challenge = Challenge.find(params[:challenge])
+    @work_plan = @work_plan_skill.work_plan_domain.work_plan
+
+    @work_plan_skill.challenge = @challenge
+    @work_plan_skill.save
+    redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge))
   end
 
   private
@@ -35,4 +56,6 @@ class WorkPlanSkillsController < ApplicationController
       kind: params.require(:kind)
     }
   end
+
+
 end

@@ -1,14 +1,22 @@
-.wp-item {
-  &:hover {
-    box-shadow: 0 0 1rem $rose;
-    transition: 0.8s;
-    a {
-      text-decoration: none;
-    }
-  }
-}
+// .wp-item {
+//   width: fit-content;
+//   &:hover {
+//     transition: .3s;
 
-.wp-text {
-  padding: 5px;
-  color: $grisF;
-}
+//     &:hover {
+//       transform: scale(1.05);
+//     }
+//     a {
+//       text-decoration: none;
+//     }
+
+//   }
+// }
+
+// .wp-text {
+//   h3, h6{
+//     color:$grisF;
+//   }
+//   padding: 12px;
+//   color: $rose;
+// }

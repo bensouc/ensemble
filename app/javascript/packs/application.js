@@ -26,7 +26,7 @@ require("channels")
 import "bootstrap";
 
 import { initFlatpickr } from "../plugins/flatpickr";
-initFlatpickr();
+import { displayQuote } from "../plugins/quote.js";
 
 // Internal imports, e.g:
 // import { initSelect2 } from '../components/init_select2';
@@ -34,10 +34,14 @@ initFlatpickr();
 document.addEventListener('turbolinks:load', () => {
   // Call your functions here, e.g:
   // initSelect2();
+  displayQuote();
+  initFlatpickr();
+
 });
 
 require("trix")
 require("@rails/actiontext")
+require("@rails/ujs").start();
 
 import "controllers"
-
+import "../plugins/quote"

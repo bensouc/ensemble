@@ -1,9 +1,9 @@
 <div id="home">
   <div class="banner" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(<%=image_url('back_to_school.jpg') %>);">
-    <div class= "logo bg-white">
+    <div class= "logo bg-white mb-5">
       <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg">
     </div>
-    <div class="container home-container">
+    <div class="container home-container mt-5">
       <h1>ENSEMBLE</h1>
       <h2>LA SOLUTION aux préparations et partages des plans de travail</h2>
     </div>
@@ -11,8 +11,11 @@
 
   <div class="description">
     <div class="text-center mb-5">
-      <%= link_to "Commencer à créer",dashboard_path, class: "btn btn-flat mt-4 mb-4 ml-4 mr-4" %>
+      <%= link_to "Commencer à créer",dashboard_path, class: "btn btn-flat py-3 px-5 m-4" %>
     </div>
-    <%= image_tag "desc.svg" %>
+    <div class= " d-flex justify-content-center mb-5 objet-fit ">
+        <%= image_tag "desc.svg" %>
+    </div>
+    <div class= mt-5></div>
   </div>
 </div>
