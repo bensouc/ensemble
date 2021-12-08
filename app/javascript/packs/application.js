@@ -41,6 +41,7 @@ document.addEventListener('turbolinks:load', () => {
 
 require("trix")
 require("@rails/actiontext")
+require("@rails/ujs").start();
 
 import "controllers"
 import "../plugins/quote"

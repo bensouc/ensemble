@@ -6,7 +6,7 @@
             <div class='domain-belt-level'>
               <div class='domain-display d-flex justify-content-start'>
                 <%# Button remove Domain %>
-                <%= link_to work_plan_domain_path(work_plan_domain), method: :delete do %>
+                <%= link_to work_plan_domain_path(work_plan_domain), method: :delete, data: { confirm: "Voulez vous enlever ce domaine?" } do %>
                   <div class='rmv-skill-btn mt-3 mr-2'>
                     <i class="far fa-times-circle"></i>
                   </div>
@@ -32,7 +32,7 @@
                   </div>
                   <%# Button remmove Skill %>
                   <div>
-                    <%= link_to work_plan_skill_path(plan_skill), method: :delete do %>
+                    <%= link_to work_plan_skill_path(plan_skill), method: :delete, data: { confirm: "Voulez vous enlever cette compétence?" } do %>
                       <div class='rmv-skill-btn'>
                         <i class="far fa-times-circle"></i>
                       </div>
