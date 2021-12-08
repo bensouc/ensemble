@@ -12,29 +12,49 @@ User.destroy_all
 
 puts "creating user"
 
-user1 = User.create!(email:'toto@gmail.com', password:'secret', first_name:'toto', last_name: 'titi')
-file = URI.open('https://cdn0.iconfinder.com/data/icons/basic-50/24/essential_basic_ui_user-512.png')
-user1.photo.attach(io: file, filename: 'essential_basic_ui_user-512.png', content_type: 'image/png')
+# user1 = User.create!(email:'toto@gmail.com', password:'secret', first_name:'toto', last_name: 'titi')
+# file = URI.open('https://cdn0.iconfinder.com/data/icons/basic-50/24/essential_basic_ui_user-512.png')
+# user1.photo.attach(io: file, filename: 'essential_basic_ui_user-512.png', content_type: 'image/png')
+
+user1 = User.create!(email:'celine@gmail.com', password:'secret', first_name:'Céline', last_name: 'Chevalier')
+# file = URI.open('https://cdn0.iconfinder.com/data/icons/basic-50/24/essential_basic_ui_user-512.png')
+# user2.photo.attach(io: file, filename: 'essential_basic_ui_user-512.png', content_type: 'image/png')
 
 puts "creating Classroom"
 
-classroom1 = Classroom.create!(grade: 'ce1', user: user1)
+classroom1 = Classroom.create!(grade: 'CE1', user: user2)
 
 puts "creating Student"
 
-student1 = Student.create!(first_name: 'Adèle', classroom: classroom1)
+# student1 = Student.create!(first_name: 'Adèle', classroom: classroom1)
+students = %w[Pierre Jade Marame Jeanne Enora Kenji Halil Marie Ines Hamza Riteje Sam Mila Wisdom Mikele]
+students.each |student| do
+  Student.create!(first_name: student, classroom: classroom1)
+end
 
 puts "creating WorkPlan"
 
-work_plan1 = WorkPlan.create!(name: 'Mon premier PT avec élève', start_date: '06/12/2021', end_date: '10/12/2021', user: user1, student: student1)
-work_plan2 = WorkPlan.create!(name: 'Mon premier PT sans élève', start_date: '06/12/2021', end_date: '10/12/2021', user: user1)
+work_plan1 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S48', start_date: '29/11/2021', end_date: '03/11/2021',
+                              user: user1, student: students[5])
+work_plan2 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S49', start_date: '06/12/2021', end_date: '10/12/2021',
+                              user: user1)
+work_plan3 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S49', start_date: '06/12/2021', end_date: '10/12/2021',
+                              user: user1, student: students[3])
+work_plan4 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S50', start_date: '13/12/2021', end_date: '17/12/2021',
+                              user: user1)
+work_plan5 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S1', start_date: '03/01/2022', end_date: '07/01/2022',
+                              user: user1)
+
 
 puts "creating WorkPlanDomain"
 
+# add domain to work_plan1
 work_plan_domain1 = WorkPlanDomain.create!(domain: 'Vocabulaire', level: 1, work_plan: work_plan1)
-work_plan_domain2 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_plan: work_plan2)
-# add a 2nd domain to work_plan1
-work_plan_domain3 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_plan: work_plan1)
+work_plan_domain2 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_plan: work_plan1)
+# add domain to work_plan2
+work_plan_domain3 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_plan: work_plan2)
+# add domain to work_plan5
+work_plan_domain4 = WorkPlanDomain.create!(domain: 'Calcul', level: 3, work_plan: work_plan5)
 
 
 puts "creating all the Skills"
@@ -143,6 +163,7 @@ challenge1 = Challenge.create!(name: "Classer les lettres dans l’ordre alphab�
 challenge2 = Challenge.create!(name: 'Classer des mots par catégories', skill: skill2, user: user1)
 challenge3 = Challenge.create!(name: 'Mettre des mots dans l’ordre pour former une phrase', skill: skill18, user: user1)
 challenge4 = Challenge.create!(name: 'Reconnaître le verbe dans une phrase', skill: skill19, user: user1)
+challenge5 = Challenge.create!(name: "Ecrire des suites de nombres jusqu'à 100", skill: skill51, user: user1)
 
 content1 = '<p><span style="font-size:13.999999999999998pt"><span style="font-family:Calibri,sans-serif"><span style="color:#000000"><strong>Range les lettres dans l&rsquo;ordre alphab&eacute;tique&nbsp;:&nbsp;</strong></span></span></span></p>
   <p><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">A, F , C , G , N&nbsp;: ................................ </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">e, i, t , v , g&nbsp;: .....................................</span></span></span></p>
