@@ -43,7 +43,7 @@ work_plan3 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S49', start_date: '06/1
 work_plan4 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S50', start_date: '13/12/2021', end_date: '17/12/2021',
                               user: user1, student: Student.first)
 work_plan5 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S1', start_date: '03/01/2022', end_date: '07/01/2022',
-                              user: user1, student: Student.where(first_name: 'Sam'))
+                              user: user1, student: Student.find_by(first_name: 'Sam'))
 
 
 puts "creating WorkPlanDomain"
@@ -55,7 +55,7 @@ work_plan_domain2 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_p
 work_plan_domain3 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_plan: work_plan2)
 # add domain to work_plan5
 work_plan_domain4 = WorkPlanDomain.create!(domain: 'Vocabulaire', level: 1, work_plan: work_plan5)
-work_plan_domain5 = WorkPlanDomain.create!(domain: 'Grammaire', level: 1, work_plan: work_plan5)
+work_plan_domain5 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_plan: work_plan5)
 
 
 puts "creating all the Skills"
@@ -168,8 +168,10 @@ challenge4 = Challenge.create!(name: 'Souligne le verbe en rouge dans les phrase
 challenge5 = Challenge.create!(name: "Additionner des dizaines entières", skill: skill77, user: user1)
 challenge6 = Challenge.create!(name: "Complète la suite en respectant la règle", skill: skill51, user: user1)
 challenge7 = Challenge.create!(name: "Calcule", skill: skill73, user: user1)
-challenge8 = Challenge.create!(name: "Colorie en vert les phrases au passé, en rouge celles au présent et en jaune celles au futur.", skill: 20, user: user1)
-challenge9 = Challenge.create!(name: "Colorie les phrases correctes.", skill: 15, user: user1)
+challenge8 = Challenge.create!(name: "Colorie en vert les phrases au passé, en rouge celles au présent et en jaune celles au futur.", skill: skill20, user: user1)
+challenge9 = Challenge.create!(name: "Colorie les phrases correctes.", skill: skill15, user: user1)
+challenge10 = Challenge.create!(name: "Colorie le verbe en bleu dans les phrases.", skill: skill19, user: user1)
+challenge11 = Challenge.create!(name: "Entoure le verbe en rouge dans les phrases.", skill: skill19, user: user1)
 
 
 content1 = '<p><span style="font-size:13.999999999999998pt"><span style="font-family:Calibri,sans-serif"><span style="color:#000000"><strong>Range les lettres dans l&rsquo;ordre alphab&eacute;tique&nbsp;:&nbsp;</strong></span></span></span></p>
@@ -265,6 +267,26 @@ challenge9.content.body = <<~HTML
 </ol>
 HTML
 challenge9.save
+
+challenge10.content.body = <<~HTML
+<p style='margin-bottom: 0cm;color: #000000;line-height: 100%;background: transparent;font-family: "Cambria", serif;font-size:16px;'><u><strong>Colorie le verbe en bleu dans les phrases :<br></strong></u></p>
+<ol>
+    <li style='margin-bottom: 0cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Je mange des c&eacute;r&eacute;ales au petit-d&eacute;jeuner.</li>
+    <li style='margin-bottom: 0cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Je vais &agrave; la cantine.</li>
+    <li style='margin-bottom: 0.05cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>J&rsquo;aime beaucoup la r&eacute;cr&eacute;ation.</li>
+    <li style='margin-bottom: 0.05cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Mes copains adorent le football.</li>
+    <li style='margin-bottom: 0.05cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Je joue au rugby avec mes copains.</li>
+</ol>
+HTML
+challenge10.save
+
+challenge11.content.body = <<~HTML
+<p style='margin-bottom: 0cm;color: #000000;line-height: 100%;background: transparent;font-family: "Cambria", serif;font-size:16px;'><u><strong>Entoure le verbe en rouge dans les phrases :<br></strong></u></p>
+<p id="isPasted" style="margin-bottom: 0.3cm;color: #000000;line-height: 150%;background: transparent;margin-top: 0.3cm;"><span lang="fr-FR">Le vieux lion rugit dans sa cage.</span></p>
+<p id="isPasted" style="margin-bottom: 0.3cm;color: #000000;line-height: 150%;background: transparent;margin-top: 0.3cm;"><span lang="fr-FR">Nous buvons trop de coca.</span></p>
+<p id="isPasted" style="margin-bottom: 0.3cm;color: #000000;line-height: 150%;background: transparent;margin-top: 0.3cm;"><span lang="fr-FR">Ils ont 8 ans.</span></p>
+HTML
+challenge11.save
 
 
 puts "creating WorkPlanSkill"
