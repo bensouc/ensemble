@@ -13,15 +13,20 @@
 
         <div class='box-column'>
           <%= f.input :name, label: false,
-                      placeholder: 'CE2...',
+                      # placeholder: 'CE2...',
                       input_html: { class: 'area grow m-left' } %>
           <%# <i class="far fa-calendar-check font-fa"></i> %>
-          <div class='box-start'>
-            <%= f.input :start_date, as: :string, label: false,
-                        input_html: {class: 'datepicker area rect-lg m-left ', locale: "fr"} %>
+          <div class='box-start data-controller='wp-default-period'>
+            <div data-wp-default-period-target='start'
+                 data-action='click->wp-default-period#add'>
+              <%= f.input :start_date, as: :string, label: false,
+                          input_html: {class: 'datepicker area rect-lg m-left ', locale: "fr"} %>
+            </div>
             <p class='m-left'>au</p>
-            <%= f.input :end_date, as: :string, label: false,
-                        input_html: {class: 'datepicker area rect-lg m-left'} %>
+            <div data-wp-default-period-target='end'>
+              <%= f.input :end_date, as: :string, label: false,
+                          input_html: {class: 'datepicker area rect-lg m-left'} %>
+            </div>
           </div>
           <%= f.association :student, label: false,
                             collection: @students.order(:first_name),
@@ -54,7 +59,6 @@
       <div class='m-top box-end'>
         <%= f.submit "Valider", class: 'area rect-sm btn-valid' %>
       </div>
-      <%# %>
       <div class='m-top'>
       </div>
     <% end %>

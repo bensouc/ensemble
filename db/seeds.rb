@@ -27,23 +27,24 @@ classroom1 = Classroom.create!(grade: 'CE1', user: user1)
 puts "creating Student"
 
 # student1 = Student.create!(first_name: 'Adèle', classroom: classroom1)
-students = %w[Pierre Jade Marame Jeanne Enora Kenji Halil Marie Ines Hamza Riteje Sam Mila Wisdom Mikele]
+students = %w[Pierre Jade Marame Jeanne Enora Kenji Halil Adèle Ines Hamza Riteje Sam Mila Wisdom Mikele]
+students.sort!
 students.each do |student|
   Student.create!(first_name: student, classroom: classroom1)
 end
 
 puts "creating WorkPlan"
 
-work_plan1 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S48', start_date: '29/11/2021', end_date: '03/11/2021',
+work_plan1 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S48', start_date: '29/11/2021', end_date: '03/12/2021',
                               user: user1, student: Student.second)
 work_plan2 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S49', start_date: '06/12/2021', end_date: '10/12/2021',
                               user: user1, student: Student.third)
 work_plan3 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S49', start_date: '06/12/2021', end_date: '10/12/2021',
-                              user: user1, student: Student.first)
+                              user: user1, student: Student.last)
 work_plan4 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S50', start_date: '13/12/2021', end_date: '17/12/2021',
                               user: user1, student: Student.first)
 work_plan5 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S1', start_date: '03/01/2022', end_date: '07/01/2022',
-                              user: user1, student: Student.last)
+                              user: user1, student: Student.find_by(first_name: 'Sam'))
 
 
 puts "creating WorkPlanDomain"
@@ -54,7 +55,8 @@ work_plan_domain2 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_p
 # add domain to work_plan2
 work_plan_domain3 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_plan: work_plan2)
 # add domain to work_plan5
-work_plan_domain4 = WorkPlanDomain.create!(domain: 'Calcul', level: 3, work_plan: work_plan5)
+work_plan_domain4 = WorkPlanDomain.create!(domain: 'Vocabulaire', level: 1, work_plan: work_plan5)
+work_plan_domain5 = WorkPlanDomain.create!(domain: 'Grammaire', level: 2, work_plan: work_plan5)
 
 
 puts "creating all the Skills"
@@ -159,14 +161,19 @@ puts "creating all the Skills"
 
 puts "creating Challenges"
 
-challenge1 = Challenge.create!(name: "Classer les lettres dans l’ordre alphabétique", skill: skill1, user: user1)
-challenge2 = Challenge.create!(name: 'Classer des mots par catégories', skill: skill2, user: user1)
-challenge3 = Challenge.create!(name: 'Mettre des mots dans l’ordre pour former une phrase', skill: skill18, user: user1)
-challenge4 = Challenge.create!(name: 'Reconnaître le verbe dans une phrase', skill: skill19, user: user1)
+challenge1 = Challenge.create!(name: "Range les lettres dans l’ordre alphabétique", skill: skill1, user: user1)
+challenge2 = Challenge.create!(name: 'Barre l’intrus dans chaque liste de mots', skill: skill2, user: user1)
+challenge3 = Challenge.create!(name: 'Mets les mots dans l’ordre pour former une phrase puis souligne le verbe', skill: skill18, user: user1)
+challenge4 = Challenge.create!(name: 'Souligne le verbe en rouge dans les phrases', skill: skill19, user: user1)
 
 challenge5 = Challenge.create!(name: "Additionner des dizaines entières", skill: skill77, user: user1)
-challenge6 = Challenge.create!(name: "Ecrire des suites de nombres jusqu'à 100", skill: skill51, user: user1)
-challenge7 = Challenge.create!(name: "Ajouter et retirer 1", skill: skill73, user: user1)
+challenge6 = Challenge.create!(name: "Complète la suite en respectant la règle", skill: skill51, user: user1)
+challenge7 = Challenge.create!(name: "Calcule", skill: skill73, user: user1)
+challenge8 = Challenge.create!(name: "Colorie en vert les phrases au passé, en rouge celles au présent et en jaune celles au futur.", skill: skill20, user: user1)
+challenge9 = Challenge.create!(name: "Colorie les phrases correctes.", skill: skill15, user: user1)
+challenge10 = Challenge.create!(name: "Colorie le verbe en bleu dans les phrases.", skill: skill19, user: user1)
+challenge11 = Challenge.create!(name: "Entoure le verbe en rouge dans les phrases.", skill: skill19, user: user1)
+
 
 content1 = '<p><span style="font-size:13.999999999999998pt"><span style="font-family:Calibri,sans-serif"><span style="color:#000000"><strong>Range les lettres dans l&rsquo;ordre alphab&eacute;tique&nbsp;:&nbsp;</strong></span></span></span></p>
   <p><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">A, F , C , G , N&nbsp;: ................................ </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000"> </span></span></span><span style="font-size:13.999999999999998pt"><span style="font-family:Arial"><span style="color:#000000">e, i, t , v , g&nbsp;: .....................................</span></span></span></p>
@@ -237,14 +244,69 @@ challenge7.content.body = <<~HTML
 HTML
 challenge7.save
 
+challenge8.content.body = <<~HTML
+<p style='margin-bottom: 0cm;color: #000000;line-height: 150%;background: transparent;font-family: "Cambria", serif;font-size:16px;margin-right: -1.46cm;'><u><strong>Colorie en vert les phrases au pass&eacute;</strong></u><u><strong>, en rouge celles au pr&eacute;sent et en jaune celles au futur.</strong></u></p>
+<p style='margin-bottom: 0cm;color: #000000;line-height: 150%;background: transparent;font-family: "Cambria", serif;font-size:16px;margin-right: -1.46cm;'>Hier, ma maman a pr&eacute;par&eacute; un g&acirc;teau.</p>
+<p style='margin-bottom: 0cm;color: #000000;line-height: 150%;background: transparent;font-family: "Cambria", serif;font-size:16px;margin-right: -1.46cm;'>Dans trois semaines on sera en vacances.</p>
+<p style='margin-bottom: 0cm;color: #000000;line-height: 150%;background: transparent;font-family: "Cambria", serif;font-size:16px;margin-right: -1.46cm;'>La ma&icirc;tresse est tr&egrave;s en col&egrave;re.</p>
+<p style='margin-bottom: 0cm;color: #000000;line-height: 150%;background: transparent;font-family: "Cambria", serif;font-size:16px;margin-right: -1.46cm;'>Il y a deux mois nous allions au cin&eacute;ma.</p>
+<p style='margin-bottom: 0cm;color: #000000;line-height: 100%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Tu seras en retard !</p>
+HTML
+challenge8.save
+
+challenge9.content.body = <<~HTML
+<p style='margin-bottom: 0cm;color: #000000;line-height: 100%;background: transparent;font-family: "Cambria", serif;font-size:16px;'><u><strong>Colorie les phrases correctes</strong></u></p>
+<ol>
+    <li style='margin-bottom: 0cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>J&rsquo;ai mang&eacute; des c&eacute;r&eacute;ales au petit-d&eacute;jeuner.</li>
+    <li style='margin-bottom: 0cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>maman cherche je sortie &eacute;cole</li>
+    <li style='margin-bottom: 0cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Aller cantine moi je.</li>
+    <li style='margin-bottom: 0cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>cartable, trousse, stylo</li>
+    <li style='margin-bottom: 0.05cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>J&rsquo;aime beaucoup la r&eacute;cr&eacute;ation.</li>
+    <li style='margin-bottom: 0.05cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Bient&ocirc;t, nous ferons une sortie.</li>
+    <li style='margin-bottom: 0.05cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Mes copains adorent jouer au ballon.</li>
+    <li style='margin-bottom: 0.05cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Hier, je suis all&eacute; au rugby.</li>
+</ol>
+HTML
+challenge9.save
+
+challenge10.content.body = <<~HTML
+<p style='margin-bottom: 0cm;color: #000000;line-height: 100%;background: transparent;font-family: "Cambria", serif;font-size:16px;'><u><strong>Colorie le verbe en bleu dans les phrases :<br></strong></u></p>
+<ol>
+    <li style='margin-bottom: 0cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Je mange des c&eacute;r&eacute;ales au petit-d&eacute;jeuner.</li>
+    <li style='margin-bottom: 0cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Je vais &agrave; la cantine.</li>
+    <li style='margin-bottom: 0.05cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>J&rsquo;aime beaucoup la r&eacute;cr&eacute;ation.</li>
+    <li style='margin-bottom: 0.05cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Mes copains adorent le football.</li>
+    <li style='margin-bottom: 0.05cm;color: #000000;line-height: 200%;background: transparent;font-family: "Cambria", serif;font-size:16px;'>Je joue au rugby avec mes copains.</li>
+</ol>
+HTML
+challenge10.save
+
+challenge11.content.body = <<~HTML
+<p style='margin-bottom: 0cm;color: #000000;line-height: 100%;background: transparent;font-family: "Cambria", serif;font-size:16px;'><u><strong>Entoure le verbe en rouge dans les phrases :<br></strong></u></p>
+<p id="isPasted" style="margin-bottom: 0.3cm;color: #000000;line-height: 150%;background: transparent;margin-top: 0.3cm;"><span lang="fr-FR">Le vieux lion rugit dans sa cage.</span></p>
+<p id="isPasted" style="margin-bottom: 0.3cm;color: #000000;line-height: 150%;background: transparent;margin-top: 0.3cm;"><span lang="fr-FR">Nous buvons trop de coca.</span></p>
+<p id="isPasted" style="margin-bottom: 0.3cm;color: #000000;line-height: 150%;background: transparent;margin-top: 0.3cm;"><span lang="fr-FR">Ils ont 8 ans.</span></p>
+HTML
+challenge11.save
+
 
 puts "creating WorkPlanSkill"
 
+# work_plan_skill des WPD1 et 2 (WP1)
 work_plan_skill1 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain1, skill: skill1, kind: 'exercice', challenge: challenge1)
 work_plan_skill2 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain1, skill: skill2, kind: 'exercice', challenge: challenge2)
 work_plan_skill3 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain2, skill: skill18, kind: 'exercice', challenge: challenge3)
 work_plan_skill4 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain2, skill: skill19, kind: 'exercice', challenge: challenge4)
+
+# work_plan_skill du WPD3 (WP2)
 work_plan_skill5 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain3, skill: skill19, kind: 'exercice', challenge: challenge4)
 
+# work_plan_skill des WPD4 et 5 (WP5)
 work_plan_skill6 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain4,
-                                        skill: skill77, kind: 'exercice', challenge: challenge5)
+                                        skill: skill1, kind: 'exercice', challenge: challenge1)
+work_plan_skill7 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain4,
+                                        skill: skill2, kind: 'exercice', challenge: challenge2)
+work_plan_skill8 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain5,
+                                        skill: skill18, kind: 'exercice', challenge: challenge3)
+work_plan_skill9 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain5,
+                                        skill: skill19, kind: 'exercice', challenge: challenge4)
