@@ -19,10 +19,21 @@
   }
 
   .btn-flat {
-   background-color: #F24150;
-   padding: 24px;
+  background-color: $rose;
+
+  color: white;
+  border: solid $rose;
+  font-weight: bold;
+  font-family: "Baloo 2", cursive;
+  font-size: 30px;
   }
-}
+
+  .btn-flat:hover {
+  background-color: white;
+  color: $rose;
+  }
+
+
 .description {
   margin-top: -50px;
 }
@@ -36,4 +47,5 @@
  }
 .object-fit {
   object-fit: scale-down;
+}
 }

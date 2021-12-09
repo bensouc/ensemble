@@ -12,7 +12,8 @@ class WorkPlanSkillsController < ApplicationController
         user: current_user
       })
       challenge.content.body = <<~HTML
-      A vous de jouer
+      Exercice à REDIGER............................
+
       HTML
       challenge.save!
       @work_plan_skill.challenge = challenge

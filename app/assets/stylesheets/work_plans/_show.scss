@@ -21,6 +21,7 @@
 
 .domain{
   margin-top: 10px;
+  margin-bottom: 10px;
 
   border-bottom: thin solid $grisC;
   // border-radius: 12px;
@@ -141,8 +142,7 @@
   border: solid $rose ;
   border-radius: 12px;
   width: fit-content;
-  height: 2em;
-  padding: 1px 3px;
+  padding: 10px 20px;
   margin-top: 10px;
   margin-left: 8px;
   background-color: $rose;
@@ -258,3 +258,60 @@
 .bullet-color{
     color: #bf9c9c;
   }
+
+  // domain add
+  .cancel-domain-btn{
+  border-radius: 12px;
+  width: fit-content;
+  border: 3px solid $grisC;
+  background-color: $grisC;
+  font-weight: 700;
+  font-size: 20px;
+  color: white;
+  padding: 0;
+  transition: 0.3s;
+  padding: 0.5rem 1rem;
+  display: inline-block;
+
+
+  &:hover{
+    background-color: $white;
+    color: $grisC;
+  }
+}
+
+.validate-domain-btn{
+  display: flex;
+  vertical-align: text-top;
+  border: solid $rose ;
+  border-radius: 12px;
+  width: fit-content;
+  padding: 10px 20px;
+
+  margin-right: 15px;
+  background-color: $rose;
+  transition: 0.3s;
+  color: white;
+  h6{
+    padding-left: 4px;
+    padding-top: 3px ;
+  }
+  i{
+    color: $white;
+    padding-top: 6px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  &:hover{
+  cursor: pointer;
+  transition: 0.2s;
+  background-color: white;
+  border-color: $rose;
+  color: $rose;
+    i{
+      color: $rose;
+    }
+  }
+
+}
