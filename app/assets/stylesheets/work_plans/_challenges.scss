@@ -136,6 +136,7 @@
   background-color: $rose;
   border-color: $rose;
   color: $rose;
+  cursor: pointer;
   i, h6{
     color: $white;
   }
@@ -159,6 +160,7 @@
   &:hover{
     background-color: $white;
     color: $grisC;
+    cursor: pointer;
   }
 }
 
@@ -183,5 +185,6 @@
   &:hover{
     background-color: $white;
     color: #53D138;
+    cursor: pointer;
   }
 }
