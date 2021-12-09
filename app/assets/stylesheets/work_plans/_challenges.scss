@@ -1,5 +1,10 @@
+.display-challenge-name{
+  margin: 20px 0 -20px 0 ;
+}
+
 .cont-challenge{
-  padding: 20px 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
   padding-left: 30px;
   padding-right: 20px;
   margin: 20px 20px 30px 30px;
@@ -15,6 +20,44 @@
 .edit-challenge{
   background-color: $rose;
 }
+
+.height-validate-challenge{
+  height: 50px;
+}
+.validate-challenge-btn{
+  display: flex;
+  vertical-align: text-top;
+  border: solid #53D138 ;
+  border-radius: 12px;
+  width: fit-content;
+
+  margin-left: 8px;
+  background-color: white;
+  transition: 0.3s;
+  color: #53D138;
+  h6{
+    padding-left: 4px;
+    padding-top: 3px ;
+  }
+  i{
+    color: $white;
+    // padding-top: 6px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+}
+
+.validate-challenge-btn:hover{
+  cursor: pointer;
+  transition: 0.2s;
+  background-color: #53D138;
+  border-color: #53D138;
+  color: white;
+  i{
+    color: white;
+  }
+  }
 
 .btn-maison{
   border:  solid $menuOff;
@@ -39,17 +82,20 @@
   justify-content: flex-start;
   border-radius: 12px;
   width: 134px;
-  height: 2em;
+  height: 3em;
   border: 3px solid $rose;
   transition: 0.3s;
   color: $rose;
   margin-bottom: 6px;
+  padding: 23px 4px;
+
   h6 {
-    padding: 10px;
+    padding: 16px;
     margin: 0;
   }
   i{
     font-size: 12px;
+    padding-left: 1px;
   }
 }
 
@@ -65,12 +111,13 @@
 }
 
 .replace-challenge-btn{
+  margin-bottom: 15px;
   display: flex;
   align-items: center;
   justify-content: space-around;
   border-radius: 12px;
-  width: fit-content;
-  height: 2em;
+  width: 134px;
+  height: 3em;
   border: 3px solid $rose;
   transition: 0.3s;
   color: $rose;
@@ -102,7 +149,7 @@
   font-weight: 700;
   font-size: 20px;
   color: white;
-  margin: 4px;
+  // margin: 4px;
   padding: 0;
   transition: 0.3s;
   padding: 0.5rem 1rem;
@@ -122,8 +169,8 @@
 .validate-btn{
   border-radius: 12px;
   width: fit-content;
-  border: 3px solid $rose;
-  background-color: $rose;
+  border: 3px solid #53D138;
+  background-color: #53D138;
   font-weight: 700;
   font-size: 20px;
   color: $white;
@@ -135,6 +182,6 @@
 
   &:hover{
     background-color: $white;
-    color: $rose;
+    color: #53D138;
   }
 }

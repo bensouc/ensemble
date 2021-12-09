@@ -1,5 +1,10 @@
+        <%# titre de la skill %>
+        <div class='display-challenge-name'>
+        <h4><%= work_plan_skill.skill.name%></h4>
+        </div>
+        <div>
         <div class="d-flex " data-controller='edit-challenge' id="<%=dom_id(work_plan_skill.challenge)%>">
-        <%# display le content.body d'un exo %>
+                <%# display le content.body d'un exo %>
           <div class="cont-challenge w-100">
             <div class= "challenge-card">
               <div class="challenge-infos" data-edit-challenge-target="infos">
@@ -15,9 +20,11 @@
                   <div class="field pb-2">
                       <%= form.rich_text_area :content %>
                   </div>
-                  <div class="form-actions ">
-
-                    <%= form.submit 'Enregistrez', class: 'add-skill-btn'%>
+                  <div class="form-actions d-flex justify-content-end height-validate-challenge">
+                    <%= link_to work_plan_path(@work_plan, anchor: "challenge_#{work_plan_skill.challenge.id}"), class: 'cancel-btn' do %>
+                      <i class="fas fa-times"></i>
+                    <% end %>
+                    <%= form.submit 'Enregistrer', class: 'validate-challenge-btn'%>
 
                   </div>
                 <% end %>
@@ -25,14 +32,14 @@
           </div>
 
           <div class="challenge-mngt">
-            <div class="modify-challenge-btn" data-action="click->edit-challenge#displayForm">
+            <div class="replace-challenge-btn" data-action="click->edit-challenge#displayForm">
               <i class="fas fa-pen fa-xs ml-2"></i>
               <h6>Modifier</h6>
             </div>
             <%# REPLACE A CHALLENGE %>
             <div data-controller="skill-add">
               <div data-edit-challenge-target="button" data-skill-add-target="button" data-action="click->skill-add#displayForm" class='replace-challenge-btn'>
-                <i class="fas fa-pen fa-xs ml-2"></i><h6>Remplacer  </h6>
+                <i class="far fa-folder-open ml-2"></i><h6>Charger</h6>
               </div>
               <div class="d-none challenge-form" data-skill-add-target="form">
               <%# Selectionner les challenges appartenant à un WP Skill%>
@@ -53,7 +60,7 @@
                     <button class="validate-btn" type="submit">
                       <i class="far fa-save"></i>
                     </button>
-                    <%= link_to work_plan_path(@work_plan), class: 'cancel-btn' do %>
+                    <%= link_to work_plan_path(@work_plan, anchor: "challenge_#{work_plan_skill.challenge.id}"), class: 'cancel-btn' do %>
                       <i class="fas fa-times"></i>
                     <% end %>
                   </div>
@@ -62,4 +69,5 @@
             </div>
             <%# REPLACE A CHALLENGE END %>
           </div>
+        </div>
         </div>
