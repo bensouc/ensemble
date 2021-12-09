@@ -1,3 +1,44 @@
+.container3{
+  width: 100%;
+}
+.student, .namept{
+  font-weight: 600;
+}
+// table tr:nth-child(odd){
+//   background-color:red;
+// }
+.entitled{
+  td, tr, th{
+    padding: 12px 2.5rem;
+  }
+  .student{
+    a{
+      color:$rose;
+    }
+  }
+
+.work-plan-line {
+  border-bottom: 1px solid $grisC;
+  transition: .3s;
+  &:hover {
+    transform: scale(1.05);
+    background-color: $grisC;
+    cursor: pointer;
+  }
+}
+
+  td a{
+    color: $grisF;
+  }
+  th a{
+    color: $grisC;
+    font-size: 14px;
+    }
+    .student{
+      color: $rose;
+    }
+}
+
 .title{
   padding: 12px;
   margin-bottom: 12px;
@@ -11,6 +52,9 @@
     color:$rose;
     font-size: 30px;
   }
+}
+ul{
+  width: 100%;
 }
 li{
   margin: 0;
