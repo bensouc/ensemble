@@ -28,6 +28,7 @@ puts "creating Student"
 
 # student1 = Student.create!(first_name: 'Adèle', classroom: classroom1)
 students = %w[Pierre Jade Marame Jeanne Enora Kenji Halil Adèle Ines Hamza Riteje Sam Mila Wisdom Mikele]
+students.sort!
 students.each do |student|
   Student.create!(first_name: student, classroom: classroom1)
 end
