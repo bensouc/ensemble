@@ -1,6 +1,14 @@
 class WorkPlansController < ApplicationController
   def index
-    @my_work_plans = WorkPlan.where(user: current_user)
+    # @my_work_plans = WorkPlan.where(user: current_user)
+    if params[:sort] != "avg_ranking"
+      @my_work_plans = WorkPlan.order(params[:sort])
+    elsif params[:sort] == "avg_ranking"
+      @my_work_plans = WorkPlan.all.sort_by{|player| player.avg_ranking}
+    else
+      @my_work_plans = WorkPlan.all
+    end
+    # raise
   end
 
   def show
