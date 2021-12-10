@@ -42,7 +42,7 @@ work_plan2 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S49', start_date: '06/1
 work_plan3 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S49', start_date: '06/12/2021', end_date: '10/12/2021',
                               user: user1, student: Student.last)
 work_plan4 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S50', start_date: '13/12/2021', end_date: '17/12/2021',
-                              user: user1, student: Student.first)
+                              user: user1, student: Student.last)
 work_plan5 = WorkPlan.create!(name: 'Jules Ferry - CE1 - S1', start_date: '03/01/2022', end_date: '07/01/2022',
                               user: user1, student: Student.find_by(first_name: 'Sam'))
 
