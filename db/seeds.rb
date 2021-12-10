@@ -310,3 +310,228 @@ work_plan_skill8 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain5,
                                         skill: skill18, kind: 'exercice', challenge: challenge3)
 work_plan_skill9 = WorkPlanSkill.create!(work_plan_domain: work_plan_domain5,
                                         skill: skill19, kind: 'exercice', challenge: challenge4)
+# new challenge: numerastion
+challenge12 = Challenge.create!(name:"Connaître les nombres (écrire/nommer) jusqu’à 60 1", skill: skill45, user: user1)
+challenge13 = Challenge.create!(name:"Connaître les nombres (écrire/nommer) jusqu’à 60 2", skill: skill45, user: user1)
+challenge14 = Challenge.create!(name:"Connaître les nombres (écrire/nommer) jusqu’à 60 3", skill: skill45, user: user1)
+challenge15 = Challenge.create!(name:"Comparer, ranger, encadrer et situer sur une ligne graduée les nombres jusqu’à 60 4", skill: skill46, user: user1)
+challenge16 = Challenge.create!(name:"Comparer, ranger, encadrer et situer sur une ligne graduée les nombres jusqu’à 60 5", skill: skill46, user: user1)
+challenge17 = Challenge.create!(name:"Comparer, ranger, encadrer et situer sur une ligne graduée les nombres jusqu’à 60 6", skill: skill46, user: user1)
+challenge18 = Challenge.create!(name:"Ecrire des suites de nombres jusqu’à 60 7", skill: skill47, user: user1)
+challenge19 = Challenge.create!(name:"Ecrire des suites de nombres jusqu’à 60 8", skill: skill47, user: user1)
+challenge20 = Challenge.create!(name:"Ecrire des suites de nombres jusqu’à 60 9", skill: skill47, user: user1)
+
+challenge12.content.body = <<~HTML
+<p><b>&Eacute;cris en chiffres ou en lettres&nbsp;:&nbsp;</b></p>
+<p><span style="font-weight: 400;">quarante-deux : &hellip;&hellip;&hellip; &nbsp; &nbsp; &nbsp; </span> <span style="font-weight: 400;">56&nbsp;:&hellip;&hellip;&hellip;.......................................</span></p>
+<p><span style="font-weight: 400;">cinquante-trois :&nbsp;&hellip;&hellip;&hellip;</span> <span style="font-weight: 400;"> &nbsp; &nbsp; </span> <span style="font-weight: 400;">41&nbsp;: &hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;..............</span></p>
+HTML
+challenge13.content.body = <<~HTML
+<p><b>&Eacute;cris en chiffres ou en lettres&nbsp;:&nbsp;</b></p>
+<p><span style="font-weight: 400;">cinquante-trois : &hellip;&hellip;&hellip; &hellip;&hellip;&nbsp; &nbsp; &nbsp; </span> <span style="font-weight: 400;">27&nbsp;: &hellip;&hellip;&hellip;&hellip;.......................................</span></p>
+<p><span style="font-weight: 400;">&nbsp;59&nbsp;: &hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; vingt-sept:......................................</span></p>
+HTML
+challenge14.content.body = <<~HTML
+<p><b>&Eacute;cris en chiffres ou en lettres&nbsp;:&nbsp;</b></p>
+<p><span style="font-weight: 400;">47 : &hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;.&nbsp; &nbsp; &nbsp; &nbsp; quatorze : .......................</span></p>
+<p><span style="font-weight: 400;">vingt-deux : &hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;. &nbsp; &nbsp; &nbsp; &nbsp; 35 : &hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;..</span></p>
+HTML
+challenge15.content.body = <<~HTML
+<p><b>Compl&egrave;te avec&nbsp; </b><b>&lt;</b><b> ou </b><b>&gt;</b><b>&nbsp;</b></p>
+<p><span style="font-weight: 400;">58&hellip;... 54</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span style="font-weight: 400;">48 &hellip;&hellip;60</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-weight: 400;">45 &hellip;&hellip; 41&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p><span style="font-weight: 400;">32 &hellip;&hellip; 40 +1</span>&nbsp; &nbsp; &nbsp;<span style="font-weight: 400;">58&nbsp; &hellip;&hellip;40+9</span></p>
+HTML
+challenge16.content.body = <<~HTML
+<p><b>Compl&egrave;te avec&nbsp; </b><b>&lt;</b><b> ou </b><b>&gt;</b><b>&nbsp;</b></p>
+<p><span style="font-weight: 400;">35&hellip;.56</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span style="font-weight: 400;">32&hellip;&hellip;24</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-weight: 400;">43&hellip;&hellip;.21</span></p>
+<p><span style="font-weight: 400;">55 &hellip;&hellip;48+9</span>&nbsp; &nbsp;<span style="font-weight: 400;">34 &hellip;&hellip; 22 +1</span></p>
+HTML
+challenge17.content.body = <<~HTML
+<p><b>Compl&egrave;te avec&nbsp; </b><b>&lt;</b><b> ou </b><b>&gt;</b><b>&nbsp;</b></p>
+<p><span style="font-weight: 400;">58&hellip;... 54</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-weight: 400;">48 &hellip;&hellip;60</span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-weight: 400;">45 &hellip;&hellip; 41&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p><span style="font-weight: 400;">32 &hellip;&hellip; 47+1</span>&nbsp; &nbsp; &nbsp; &nbsp;<span style="font-weight: 400;">54&nbsp; &hellip;&hellip;40+9</span></p>
+HTML
+challenge18.content.body = <<~HTML
+<p><b>Compl&egrave;te les suites en respectant la r&egrave;gle&nbsp;:</b></p>
+<p><span style="font-weight: 400;">4&ndash; 8 &ndash; 12 - &hellip;..&nbsp; - &hellip;.. - &hellip;... - &hellip;.. - &hellip;..&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p><span style="font-weight: 400;">60 &ndash; 53&ndash; 47- &hellip;.. - &hellip;.. - &hellip;.. - &hellip;.. - &hellip;..</span></p>
+HTML
+challenge19.content.body = <<~HTML
+<p><b>Compl&egrave;te les suites en respectant la r&egrave;gle&nbsp;:</b></p>
+<p><span style="font-weight: 400;">25 &ndash; 30 &ndash; 35 - &hellip;..&nbsp; - &hellip;.. - &hellip;... - &hellip;.. - &hellip;..&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p><span style="font-weight: 400;">58 &ndash; 56 &ndash; 54 - &hellip;.. - &hellip;.. - &hellip;.. - &hellip;.. - &hellip;..</span></p>
+HTML
+challenge20.content.body = <<~HTML
+<p><b>Compl&egrave;te les suites en respectant la r&egrave;gle&nbsp;:</b></p>
+<p><span style="font-weight: 400;">4 &ndash; 14 &ndash; 24 - &hellip;..&nbsp; - &hellip;.. - &hellip;... - &hellip;.. - &hellip;..&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></p>
+<p><span style="font-weight: 400;">34 &ndash; 28 &ndash; 22 - &hellip;.. - &hellip;.. - &hellip;.. - &hellip;.. - &hellip;..</span></p>
+HTML
+
+challenge12.save
+challenge13.save
+challenge14.save
+challenge15.save
+challenge16.save
+challenge17.save
+challenge18.save
+challenge19.save
+challenge20.save
+
+# skill 15 Colorie les phrases correctes.
+challenge22 = Challenge.create!(name:"Reconnaître une phrase et différencier phrase/ligne 11", skill: skill15, user: user1)
+challenge23 = Challenge.create!(name:"Reconnaître une phrase et différencier phrase/ligne 12", skill: skill15, user: user1)
+challenge24 = Challenge.create!(name:"Reconnaître une phrase et différencier phrase/ligne 13", skill: skill15, user: user1)
+
+challenge22.content.body = <<~HTML
+<p><b>Colorie chaque phrase d&rsquo;une couleur diff&eacute;rente.</b></p>
+<p><span style="font-weight: 400;">Dans la cour de la ferme, une petite poule trouve des graines. Elle rencontre</span></p>
+<p><span style="font-weight: 400;">ses trois amis, le cochon, le canard et le chat. Elle leur demande de l&rsquo;aide.&nbsp;</span></p>
+<p><span style="font-weight: 400;">nombre de phrases</span><span style="font-weight: 400;">&nbsp; : &hellip;&hellip;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span style="font-weight: 400;">nombre de lignes : &hellip;&hellip;</span></p>
+HTML
+challenge23.content.body = <<~HTML
+<p><b>Colorie chaque phrase d&rsquo;une couleur diff&eacute;rente.</b></p>
+<p><span style="font-weight: 400;">Pluche est un petit lapin gris. Il habite un terrier dans un jardin </span></p>
+<p><span style="font-weight: 400;">pr&egrave;s d&rsquo;un pommier. A c&ocirc;t&eacute;, il y a une maison </span></p>
+<p><span style="font-weight: 400;">avec des enfants et un chien. </span></p>
+<p><span style="font-weight: 400;">nombre de phrases</span><span style="font-weight: 400;">&nbsp; : &hellip;&hellip;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span style="font-weight: 400;">nombre de lignes : &hellip;&hellip;</span></p>
+HTML
+challenge24.content.body = <<~HTML
+<p><b>Colorie chaque phrase d&rsquo;une couleur diff&eacute;rente.</b></p>
+<p><span style="font-weight: 400;">Ce matin-là, Papa et Maman préparent tout : les malles, les mallettes, les valises, le canari, les cannes à pêche, le chien dans son panier, le chat dans son couffin et les jumeaux dans leur berceau. Ils déposent tout dans la voiture et ils ajoutent la télé. Puis ils ferment les portes et ils demandent si tout est l&agrave;.&nbsp; </span></p>
+<p><span style="font-weight: 400;">nombre de phrases</span><span style="font-weight: 400;">&nbsp; : &hellip;&hellip;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span style="font-weight: 400;">nombre de lignes : &hellip;&hellip;</span></p>
+HTML
+
+challenge22.save
+challenge23.save
+challenge24.save
+
+# add challenges skill2 Vocabulaire leve 1 Classer des mots par catégories
+challenge26 = Challenge.create!(name:"Classer des mots par catégories 15", skill: skill2, user: user1)
+challenge27 = Challenge.create!(name:"Classer des mots par catégories 16", skill: skill2, user: user1)
+challenge28 = Challenge.create!(name:"Classer des mots par catégories 17", skill: skill2, user: user1)
+
+challenge26.content.body = <<~HTML
+<p><span style="font-size:13.999999999999998pt;"><span style="font-family:Calibri,sans-
+serif;"><span style="color: rgb(0, 0, 0); font-size: 18px;"><strong>Barre l&rsquo;intrus dans
+chaque liste de mots&nbsp;</strong></span></span></span></p>
+<p>chapeau    bonnet    trottinette    casquette</p>
+<p>livre     dictionnaire     rouge     cahier</p>
+<p>pomme     poire    carotte    abricot</p>
+<p>ch&acirc;teau    maison   arbre   cabane</p>
+HTML
+challenge27.content.body = <<~HTML
+<p><span style="font-size: 13.999999999999998pt;"><span style="font-family: Calibri,sans-serif;"><span style="color: #000000; font-size: 18px;"><strong>Barre l&rsquo;intrus dans chaque liste de mots&nbsp;</strong></span></span></span></p>
+<p>bras&nbsp; &nbsp; &nbsp;jambe&nbsp; &nbsp; &nbsp;h&ocirc;pital&nbsp; &nbsp; &nbsp;oeil&nbsp; &nbsp; &nbsp;genoux</p>
+<p>pierre&nbsp; &nbsp; &nbsp;sable&nbsp; &nbsp; &nbsp; cailloux&nbsp; &nbsp; &nbsp;fleur&nbsp; &nbsp; &nbsp;rocher</p>
+<p>poup&eacute;e&nbsp; &nbsp; &nbsp; ballon&nbsp; &nbsp; &nbsp;table&nbsp; &nbsp; &nbsp; billes</p>
+<p>voiture&nbsp; &nbsp; &nbsp;camion&nbsp; &nbsp; &nbsp; soupe&nbsp; &nbsp; v&eacute;lo&nbsp; &nbsp; &nbsp;trottinette</p>
+HTML
+challenge28.content.body = <<~HTML
+<p><span style="font-size: 13.999999999999998pt;"><span style="font-family: Calibri,sans-serif;"><span style="color: #000000; font-size: 18px;"><strong>Barre l&rsquo;intrus dans chaque liste de mots&nbsp;</strong></span></span></span></p>
+<p>cuisine&nbsp; &nbsp; p&acirc;t&eacute; &nbsp; chambre &nbsp; salon</p>
+<p>rose &nbsp; p&acirc;querette &nbsp; vache &nbsp; jonquille</p>
+<p>chaise &nbsp; chat &nbsp; poisson &nbsp; souris</p>
+HTML
+
+challenge26.save
+challenge27.save
+challenge28.save
+
+# skill81 Calcul niveau 4
+challenge29 = Challenge.create!(name: "Ajouter/ retirer 10 21", skill: skill81, user: user1)
+challenge30 = Challenge.create!(name: "Ajouter/ retirer 10 22", skill: skill81, user: user1)
+challenge31 = Challenge.create!(name: "Ajouter/ retirer 10 23", skill: skill81, user: user1)
+
+challenge29.content.body = <<~HTML
+<p><b>Compl&egrave;te&nbsp;</b></p>
+<p><span style="font-weight: 400;">236 + 10 =&nbsp; &nbsp; </span> <span style="font-weight: 400;">&nbsp; &nbsp; &nbsp; &nbsp; 120 - 10 =&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span style="font-weight: 400;">440 + 10 =&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span></p>
+<p><span>127 + 10 =&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 100 - 10 =&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span>190 + 10 =</span></p>
+HTML
+challenge30.content.body = <<~HTML
+<p><b>Compl&egrave;te&nbsp;</b></p>
+<p><span style="font-weight: 400;">54 + 10 =&nbsp; &nbsp; </span> <span style="font-weight: 400;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 32 - 10 =&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span style="font-weight: 400;">410 + 10 =&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span></p>
+<p><span style="font-weight: 400;">234 + 10 =&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 150 - 10 =&nbsp; &nbsp; &nbsp; &nbsp;</span><span style="font-weight: 400;">421 + 10 =</span></p>
+HTML
+challenge31.content.body = <<~HTML
+<p><b>Compl&egrave;te&nbsp;</b></p>
+<p><span style="font-weight: 400;">74 + 10 =&nbsp; &nbsp; </span> <span style="font-weight: 400;">&nbsp; &nbsp; &nbsp; &nbsp; 85 - 10 =&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span style="font-weight: 400;">210 + 10 =&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span></p>
+<p><span>45 + 10 =&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 47 - 10 =&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span>21 + 10 =</span></p>
+HTML
+challenge29.save
+challenge30.save
+challenge31.save
+
+#skill 53 umération', level: 4, symbol: '◼', name: 'Connaître les nombres (écrire/nommer) jusqu’à 200'
+challenge34 = Challenge.create!(name:"Connaître les nombres (écrire/nommer) jusqu’à 200 23", skill: skill53, user: user1)
+challenge35 = Challenge.create!(name:"Connaître les nombres (écrire/nommer) jusqu’à 200 24", skill: skill53, user: user1)
+challenge36 = Challenge.create!(name:"Connaître les nombres (écrire/nommer) jusqu’à 200 25", skill: skill53, user: user1)
+
+challenge34.content.body = <<~HTML
+<p style='margin-bottom: 0cm;color: #000000;line-height: 100%;background: transparent;font-
+family: "Cambria", serif;font-size:16px;'><u><strong>&Eacute;cris en chiffres ou en
+lettres :&nbsp;</strong></u></p>
+<p style='margin-bottom: 0cm;color: #000000;line-height: 150%;background: transparent;font-
+family: "Cambria", serif;font-size:16px;'>cent vingt-huit<span lang="fr-FR">: &hellip;&hellip;.
+182 :
+&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;.........&hellip;&
+hellip;&hellip;&hellip;</span></p>
+<p style="margin-bottom: 0cm;color: #000000;line-height: 150%;background: transparent;margin-
+left: -1.2cm;text-indent: 1.2cm;">cent soixante-seize<span lang="fr-FR">: &hellip;&hellip;&hellip;
+133 :
+&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;...........&hellip;
+&hellip;&hellip;&hellip;</span></p>
+HTML
+
+challenge35.content.body = <<~HTML
+<p style='margin-bottom: 0cm;color: #000000;line-height: 100%;background: transparent;font-
+family: "Cambria", serif;font-size:16px;'><u><strong>&Eacute;cris en chiffres ou en
+lettres :&nbsp;</strong></u></p>
+<p style='margin-bottom: 0cm;color: #000000;line-height: 150%;background: transparent;font-
+family: "Cambria", serif;font-size:16px;'>cent cinquante<span lang="fr-FR">: &hellip;&hellip;.
+160 :
+&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;.........&hellip;&
+hellip;&hellip;&hellip;</span></p>
+<p style="margin-bottom: 0cm;color: #000000;line-height: 150%;background: transparent;margin-
+left: -1.2cm;text-indent: 1.2cm;">cent quatre-vingt-treize<span lang="fr-FR">:
+&hellip;&hellip;&hellip; 167 :
+&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;...........&hellip;
+&hellip;&hellip;&hellip;</span></p>
+HTML
+
+challenge36.content.body = <<~HTML
+<p style='margin-bottom: 0cm;color: #000000;line-height: 100%;background: transparent;font-
+family: "Cambria", serif;font-size:16px;'><u><strong>&Eacute;cris en chiffres ou en
+lettres :&nbsp;</strong></u></p>
+<p style='margin-bottom: 0cm;color: #000000;line-height: 150%;background: transparent;font-
+family: "Cambria", serif;font-size:16px;'>cent seize<span lang="fr-FR">: &hellip;&hellip;. 199 :
+&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;.........&hellip;&
+hellip;&hellip;&hellip;</span></p>
+<p style="margin-bottom: 0cm;color: #000000;line-height: 150%;background: transparent;margin-
+left: -1.2cm;text-indent: 1.2cm;">cent trente-quatre<span lang="fr-FR">: &hellip;&hellip;&hellip;
+1 :
+&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;&hellip;...........&hellip;
+&hellip;&hellip;&hellip;</span></p>
+HTML
+
+challenge34.save
+challenge35.save
+challenge36.save
+
+# add challenges skill1 Vocabulaire leve 1
+challenge37 = Challenge.create!(name:"Classer les lettres dans l’ordre alphabétique 26", skill: skill1, user: user1)
+challenge38 = Challenge.create!(name:"Classer les lettres dans l’ordre alphabétique 27", skill: skill1, user: user1)
+challenge39 = Challenge.create!(name:"Classer les lettres dans l’ordre alphabétique 28", skill: skill1, user: user1)
+
+challenge37.content.body = <<~HTML
+<p>k&nbsp; &nbsp;d&nbsp; &nbsp;h&nbsp; &nbsp;d&nbsp; &nbsp;e&nbsp; &nbsp;c&nbsp; &nbsp;l&nbsp; &nbsp;r&nbsp; &nbsp;p&nbsp; &nbsp;f&nbsp; &nbsp;i&nbsp; &nbsp;u&nbsp; &nbsp;s</p>
+HTML
+challenge38.content.body = <<~HTML
+<p>a &nbsp;h&nbsp; &nbsp;h&nbsp; &nbsp;d&nbsp; &nbsp;r &nbsp;t&nbsp; &nbsp;f&nbsp; &nbsp;r&nbsp; &nbsp;p&nbsp; &nbsp;g&nbsp; j&nbsp; &nbsp;u&nbsp; y</p>
+HTML
+challenge39.content.body = <<~HTML
+<p>z &nbsp;B&nbsp; &nbsp;f&nbsp; &nbsp;R&nbsp; &nbsp;r &nbsp;I&nbsp; &nbsp;f&nbsp; &nbsp;H&nbsp; &nbsp;v&nbsp; &nbsp;g&nbsp; j&nbsp; &nbsp;u&nbsp; y</p>
+HTML
+
+challenge37.save
+challenge38.save
+challenge39.save
