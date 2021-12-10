@@ -16,7 +16,7 @@
   grid-template-rows: 1fr 1fr;
   // justify-items:center;
   // width: 100%;
-  column-gap: 0;
+
   row-gap: 140px;
   h1{
     font-family: $titres-font;
@@ -30,7 +30,7 @@
     text-align: center;
   }
 }
-.row{
+.row1{
   display: flex;
   flex-direction: column;
   align-items: center;
