@@ -1,5 +1,6 @@
 meta_product_name : "Ensemble"
 meta_title : "Ensemble | LA SOLUTION aux préparations et partages des plans de travail"
 meta_description : "Partagez et éditer des plans de travail facilement "
-meta_image : "https://res.cloudinary.com/dgtcdn0q2/image/upload/v1638804608/logo_image_gd5kvj.png" # devrait exister dans `app/assets/images/`
+# meta_image : "https://res.cloudinary.com/dgtcdn0q2/image/upload/v1638804608/logo_image_gd5kvj.png" # devrait exister dans `app/assets/images/`
+meta_image : "https://res.cloudinary.com/bensoucdev/image/upload/v1639137849/image-FB_1_jlssna.png" # devrait exister dans `app/assets/images/`
 twitter_account : "@product_twitter_account" # requis pour les cartes Twitter
