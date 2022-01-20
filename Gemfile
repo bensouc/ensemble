@@ -41,6 +41,11 @@ gem 'rails-i18n'
 gem "simple_calendar", "~> 2.4"
 # gem 'install faker'
 
+# gem for pdf-output
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
+
+
 group :development, :test do
   gem 'pry-byebug'
   gem 'pry-rails'

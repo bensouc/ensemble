@@ -1,0 +1,145 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset='utf-8' />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <title><%= @work_plan.name%></title>
+
+    <%= stylesheet_link_tag wicked_pdf_asset_base64("pdf") %>
+    <%= stylesheet_link_tag wicked_pdf_asset_base64("application") %>
+    <%# <%= javascript_include_tag wicked_pdf_asset_base64("number_pages") %>
+    <script src="https://kit.fontawesome.com/aa9dc78317.js" crossorigin="anonymous"></script>
+  </head>
+  <body onload='number_pages'>
+    <div class='pt'>
+      <div class='pt-header-box'>
+        <%# header WP%>
+        <div >
+          <h1 class='name-pt'><%= @work_plan.name%></h1>
+          <h4 class='date-pt'>Du <%= @work_plan.start_date.strftime("%d/%m/%Y")%> Au <%= @work_plan.end_date.strftime("%d/%m/%Y")%></h4>
+        </div>
+        <%# Student details %>
+        <div class='student-box'>
+            <div class='student-name'>
+          <% if !@work_plan.student.nil? %>
+            <h2><%= @work_plan.student.first_name%></h2>
+            <% end %>
+            <%# <%= link_to 'PDF', work_plan_path(@work_plan, format: :pdf)%>
+            </div>
+            <div class='bilan-box'>
+              <p style="margin: 0; padding-left : 10px">Bilan :</p>
+              <div class='pt-header bilan'>
+                <p style="padding-top: 4px;margin: 0; font-size: 14px">◻ Programme tenu <br> ◻ Programme non tenu <br>◻ Programme dépassé</p>
+              </div>
+            </div>
+            <div class='box-com'>
+              <p style="margin: 0; padding-left : 10px">Commentaires :</p>
+              <div class='pt-header comments'></div>
+            </div>
+            <div class='box-sign'>
+              <p style="margin: 0; padding-left : 10px">Signatures des Parents :</p>
+              <div class='pt-header signatures '></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%# Start of a domain %>
+      <div class=''>
+        <% @work_plan.work_plan_domains.order(:id).each do |work_plan_domain|%>
+          <%# boucle sur les work_plan_domains %>
+          <div class='domain'>
+                <%# displayname %>
+                <div class='domain-display'>
+                  <%= work_plan_domain.domain%>
+                </div>
+
+                <%# belt and level div %>
+                <div class='belt-display'>
+                  <%# belt and levelname %>
+                  <div class=''>
+                    <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642065142/belt_white_cxov6t.png", size: "100x50")%>
+                  </div>
+                  <div class=''>
+                    <strong><%= @belt[work_plan_domain.level-1].capitalize%></strong>
+                  </div>
+                </div>
+                <%# <%= work_plan_domain.level%>
+            </div>
+            <%# skills zone %>
+            <div class='skill-display'>
+                <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
+                <%# loop for each skills %>
+                  <div class='a-skill'>
+                    <div class='border-skill '>
+                      <div>
+                        <%= plan_skill.skill.symbol%>
+                        <%= plan_skill.skill.name%>
+                      </div>
+                    </div>
+                    <%# tab for skill kind %>
+                    <div class='challenge-kind '>
+                      <%# les entetes %>
+                      <div class='kind-label'>
+                        <div class='cells'>J</div>
+                        <div class='cells'>E</div>
+                        <div class='cells'>C</div>
+                      </div>
+                      <%# les skills %>
+                      <div class='kind-display'>
+                        <div class='start'>
+                          <% if plan_skill.kind.downcase == 'jeu' %>
+                            <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642591049/dot_PNG40_kibspo.png", size: "20x20")%>
+                          <% end%>
+                        </div>
+                        <div class='middle'>
+                          <% if plan_skill.kind.downcase == 'exercice' %>
+                            <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642591049/dot_PNG40_kibspo.png", size: "15x15")%>
+                          <% end%>
+                        </div>
+                        <div class='end'>
+                          <% if plan_skill.kind.downcase == 'controle' %>
+                            <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642591049/dot_PNG40_kibspo.png", size: "20x20")%>
+                          <% end%>
+                        </div>
+                      </div>
+                    </div >
+                  </div>
+                <% end %>
+            </div>
+            <%# end show skill %>
+          </div>
+          <%# show 1 exo %>
+          <div class='display-challenges'>
+          <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
+            <% if work_plan_skill.kind == 'exercice' %>
+              <%# challengeS render%>
+              <%# titre de la skill %>
+              <div class='display-challenge-name'>
+                <h4><%= work_plan_skill.skill.name%></h4>
+              </div>
+              <div>
+                <div class="d-flex " data-controller='edit-challenge' id="<%=dom_id(work_plan_skill.challenge)%>">
+                  <div class="cont-challenge">
+                    <div class= "challenge-card">
+                      <div>
+                        <%# display le content.body d'un exo %>
+                        <%= work_plan_skill.challenge.content.body %>
+                        <%# END display le content.body d'un exo %>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <%# end challengeS render %>
+            <% end %>
+          <% end %>
+          </div>
+        </div>
+        <% end %>
+        <%# end of domain loop %>
+      </div>
+    </div>
+  </body>
+</html>
