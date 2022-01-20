@@ -14,6 +14,12 @@ class WorkPlansController < ApplicationController
   def show
     @belt = %w(blanche jaune orange verte bleue marron noire)
     @work_plan = WorkPlan.find(params[:id])
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "file_name", template: "pdf/show_print.html.erb" # Excluding ".pdf" extension.
+      end
+    end
   end
 
   def new

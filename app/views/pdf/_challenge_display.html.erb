@@ -1,0 +1,21 @@
+        <%# titre de la skill %>
+        <div class='display-challenge-name'>
+        <h4><%= work_plan_skill.skill.name%></h4>
+        </div>
+        <div>
+        <div class="d-flex " data-controller='edit-challenge' id="<%=dom_id(work_plan_skill.challenge)%>">
+                <%# display le content.body d'un exo %>
+          <div class="cont-challenge w-100">
+            <div class= "challenge-card">
+              <div class="challenge-infos" data-edit-challenge-target="infos">
+                <%= work_plan_skill.challenge.content.body %>
+              </div>
+
+            </div>
+              <%# Display editeur, en d-none de base %>
+
+          </div>
+
+
+        </div>
+        </div>

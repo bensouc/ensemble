@@ -1,0 +1,268 @@
+// Graphical variables
+
+// Define fonts for body and headers
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+$headers-font: 'Poppins', sans-serif;
+$body-font: 'Poppins', sans-serif;
+$nav-gauche-font: 'Poppins', sans-serif;
+$bandeau-haut-font: 'Roboto', sans-serif;
+$plan-font: 'Oswald', sans-serif;
+$titres-font: 'Baloo 2', cursive;
+
+// Define colors
+// Define variables for your color scheme
+
+// For example:
+$red: #FD1015;
+$blue: #167FFB;
+$yellow: #FFC65A;
+$orange: #E67E22;
+$green: #1EDD88;
+$gray: #0E0000;
+$light-gray: #F4F4F4;
+
+// COULEUR ENSEMBLE
+$orange: #FFB888;
+$grisF: #3D3D3D;
+$grisC: #DDDDDD;
+$violet: #E7E4FA;
+$jaune: #F9DD8A;
+$bleuC: #C8E6FB;
+$menuOff: #FFE3CF;
+$blanc: #FFFFFF;
+$rose: #F24150;
+
+/* _colors.scss */
+$belt-1: rgb(240, 230, 230);
+$belt-2: rgb(248, 244, 6);
+$belt-3: orange;
+$belt-4: rgb(13, 196, 22);
+$belt-5: rgb(30, 27, 211);
+$belt-6: rgb(175, 99, 0);
+$belt-7: black;
+
+// External libraries
+@import "bootstrap/scss/bootstrap";
+@import "font-awesome-sprockets";
+@import "flatpickr/dist/themes/light";
+
+
+// @import "flatpickr/dist/flatpickr";
+@import "font-awesome";
+@import "trix/dist/trix";
+
+// css show*
+
+
+// PT SHOW
+.pt{
+  width: 100%;
+  font-family: "Poppins", sans-serif;
+}
+
+.date-pt{
+  display: inline-block;
+}
+.name-pt{
+  display: inline-block;
+  width: 70%;
+}
+.pt-header-box{
+  border-radius: 12px;
+  margin: 0;
+  font-family: 'Baloo 2', cursive;
+}
+
+.student-box{
+  margin: 15px 0px;
+
+  width: 100%;
+}
+.pt-header{
+  border:  solid rgb(0, 0, 0) ;
+  border-radius: 12px;
+  padding: 5px 5px 0 15px;
+}
+
+.student-name{
+  display: inline-block;
+  padding: 30px 5px 0 5px;
+  width: 15%;
+  h2{
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+  }
+}
+.bilan-box{
+  display: inline-block;
+  width: 180px;
+  vertical-align: top;
+  margin-right: 10px;
+}
+.bilan{
+  height: 90px;
+}
+
+.box-com{
+  display: inline-block;
+  width: 330px;
+  vertical-align: top;
+  margin-right: 10px;
+}
+
+.comments{
+  height: 90px;
+}
+
+.box-sign{
+  display: inline-block;
+  vertical-align: top;
+}
+
+.signatures{
+  width: 210px;
+  height: 90px;
+}
+
+
+
+.domain{
+  // styles for domain loop
+  width: 100%;
+  margin-top: 50px;
+  margin-bottom: 10px;
+  border: solid #e223a9;
+}
+
+
+
+.box-domain{
+  border:  solid #1b9221;
+  margin: 0;
+  height: 200px;
+  padding: 10px;
+}
+
+.domain-display{
+  font-size: 40px;
+  font-weight: bold;
+  font-family: "Poppins", sans-serif;
+}
+.belt-display{
+  float: left;
+  width: 15%;
+  height: 80px;
+  border:  solid #13d169;
+  text-align: center;
+}
+.skill-display{
+  float: right;
+  width: 85%;
+  border:  solid #2013d1;
+  padding: 5px 0 5px 0;
+}
+
+.border-skill{
+  float: left;
+  border:  thin solid #dddddd;
+  border-radius: 12px;
+  width: 600px;
+  padding: 10px 10px;
+  margin: 0 10px 15px 0;
+
+}
+// CSS to display challenge kind with Style
+
+.a-skill{
+  margin-bottom: 10px;
+}
+
+  // div that contains kind display
+.challenge-kind{
+  float: right;
+}
+  //  top row
+  .kind-label{
+
+  }
+  .cells{
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    width: 25px;
+  }
+  // bottom row
+  .kind-display{
+  }
+
+
+  .start{
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    border-top: solid rgb(0, 0, 0);
+    border-bottom: solid rgb(0, 0, 0);
+    border-left: solid rgb(0, 0, 0);
+    border-top-left-radius: 14px;
+    border-bottom-left-radius: 14px;
+    height: 25px;
+    width: 28px;
+    margin-right: -4px;
+    padding-bottom: 2px;
+  }
+  .middle{
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    border: solid rgb(0, 0, 0);
+    height: 25px;
+    width: 28px;
+  }
+  .end{
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    border-top: solid rgb(0, 0, 0);
+    border-bottom: solid rgb(0, 0, 0);
+    border-right: solid rgb(0, 0, 0);
+    border-top-right-radius: 14px;
+    border-bottom-right-radius: 14px;
+    margin-left: -4px;
+    height: 25px;
+    width: 28px;
+  }
+
+
+
+// css challenges
+.display-challenge-name {
+  margin: 20px ;
+}
+.display-challenge-name h4{
+  font-size: 14px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: bold;
+}
+
+.cont-challenge{
+  width: 100%;
+  padding: 15px 10px 15px 20px;
+  border:  solid #942424 ;
+  border-radius: 14px;
+}
+
+
+
+
+//belt colors
+.belt-1 {  color: $belt-1; }
+.belt-2 {  color: $belt-2; }
+.belt-3 {  color: $belt-3; }
+.belt-4 {  color: $belt-4; }
+.belt-5 {  color: $belt-5; }
+.belt-6 {  color: $belt-6; }
+.belt-7 {  color: $belt-7; }
