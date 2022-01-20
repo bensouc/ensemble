@@ -49,35 +49,38 @@
       <div class=''>
         <% @work_plan.work_plan_domains.order(:id).each do |work_plan_domain|%>
           <%# boucle sur les work_plan_domains %>
-           <div class='domain' id="<%= dom_id(work_plan_domain) %>">
-             <div class='box-domain'>
-                <div class='domain-belt-level'>
-                  <div class='domain-display'>
-                  <%#  %>
-                  <%= work_plan_domain.domain%></div>
-                  <%# belt and level div %>
-                  <div class='belt-display'>
-                    <div class=''>
-                      <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642065142/belt_white_cxov6t.png", size: "100x50")%>
-                    </div>
-                    <div class=''> <strong><%= @belt[work_plan_domain.level-1].capitalize%></strong></div>
-                  </div>
-                  <%# <%= work_plan_domain.level%>
+          <div class='domain'>
+                <%# displayname %>
+                <div class='domain-display'>
+                  <%= work_plan_domain.domain%>
                 </div>
-                <%#  %>
-                <div class='skill-display'>
-                  <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
+
+                <%# belt and level div %>
+                <div class='belt-display'>
+                  <%# belt and levelname %>
+                  <div class=''>
+                    <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642065142/belt_white_cxov6t.png", size: "100x50")%>
+                  </div>
+                  <div class=''>
+                    <strong><%= @belt[work_plan_domain.level-1].capitalize%></strong>
+                  </div>
+                </div>
+                <%# <%= work_plan_domain.level%>
+            </div>
+            <%# skills zone %>
+            <div class='skill-display'>
+                <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
+                <%# loop for each skills %>
                   <div class='a-skill'>
                     <div class='border-skill '>
                       <div>
                         <%= plan_skill.skill.symbol%>
                         <%= plan_skill.skill.name%>
                       </div>
-                      <%# Button remmove Skill %>
-
                     </div>
+                    <%# tab for skill kind %>
                     <div class='challenge-kind '>
-                      <%# les entete %>
+                      <%# les entetes %>
                       <div class='kind-label'>
                         <div class='cells'>J</div>
                         <div class='cells'>E</div>
@@ -103,13 +106,12 @@
                       </div>
                     </div >
                   </div>
-                  <% end %>
-                </div>
-                <%# end show skill %>
+                <% end %>
             </div>
+            <%# end show skill %>
           </div>
           <%# show 1 exo %>
-          <div >
+          <div class='display-challenges'>
           <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
             <% if work_plan_skill.kind == 'exercice' %>
               <%# challengeS render%>
