@@ -18,8 +18,8 @@ class WorkPlansController < ApplicationController
       format.html
       format.pdf do
         render pdf: "#{@work_plan.name}-#{@work_plan.student.first_name}",
-        template: "pdf/show_print.html.erb" # Excluding ".pdf" extension.
-        # disposition: 'attachment' #a remettre pour lle DL auto des pdf
+        template: "pdf/show_print.html.erb", # Excluding ".pdf" extension.
+        disposition: 'attachment' #a remettre pour lle DL auto des pdf
       end
     end
   end
