@@ -21,6 +21,15 @@
   background-color: $rose;
 }
 
+.challenge-title{
+  padding: 10px ;
+  border: thin solid #dddddd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  width: 100%;
+  background-color: rgba(250, 128, 114, 0.308);
+  }
+
 .height-validate-challenge{
   height: 50px;
 }
