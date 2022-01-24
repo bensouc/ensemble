@@ -7,6 +7,6 @@ class ChallengesController < ApplicationController
   end
 
   def challenge_params
-    params.require(:challenge).permit(:content)
+    params.require(:challenge).permit(:content, :name)
   end
 end

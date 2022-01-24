@@ -18,6 +18,9 @@
                 <%= form_for [work_plan_skill, work_plan_skill.challenge],
                 html: { class: 'd-none', data: { edit_challenge_target: 'form' } } do |form| %>
                   <div class="field pb-2">
+                      <div>
+                        <%= form.text_field :name, class: "challenge-title"%>
+                      </div>
                       <%= form.rich_text_area :content %>
                   </div>
                   <div class="form-actions d-flex justify-content-end height-validate-challenge">
