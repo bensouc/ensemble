@@ -2,6 +2,7 @@ class Challenge < ApplicationRecord
   belongs_to :skill
   belongs_to :user
   has_rich_text :content
+  has_many_attached :photos
 
   has_many :work_plan_skills
 
