@@ -13,6 +13,7 @@ Rails.application.routes.draw do
 
   resources :work_plan_skills, only: [:update, :destroy] do
     resources :challenges, only: [:create, :update]
+    post '/challenges/:id', to: 'challenges#clone', as: :clone
   end
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
