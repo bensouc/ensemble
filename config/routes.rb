@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   root to: 'pages#home'
   get '/dashboard', to: "dashboard#show"
 
-  resources :work_plans, only: [:index, :show, :update, :new, :create] do
+  resources :work_plans, only: [:index, :show, :update, :new, :create, :destroy] do
     resources :work_plan_domains, only: [:new, :create]
   end
 
