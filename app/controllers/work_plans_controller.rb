@@ -60,6 +60,12 @@ class WorkPlansController < ApplicationController
       end
   end
 
+  def destroy
+    @work_plan = WorkPlan.find(params[:id])
+    @work_plan.destroy
+    redirect_to work_plans_path
+  end
+
   private
 
   def work_plan_params
