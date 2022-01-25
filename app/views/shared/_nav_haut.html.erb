@@ -3,7 +3,7 @@
     <div id="QuoteOFDay"></div>
   </div>
   <div class="avatar">
-  <img src="https://res.cloudinary.com/bensoucdev/image/upload/v1638972450/g5k24afbblx102mjt2e31kb0h9li.jpg" class= "avatar" alt="">
+  <img src="<%= cl_image_path current_user.photo.key %>" class= "avatar" alt="">
     <%# <%= image_tag urcl_image_tag current_user.photo.key, class: "avatar dropdown-toggle"%>
     <h3><%=current_user.first_name.capitalize%> <%=current_user.last_name.capitalize%></h3>
     <p>Classe : CE1</p>
