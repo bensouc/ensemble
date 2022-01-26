@@ -51,6 +51,11 @@ body{
   font-family: "Poppins", sans-serif;
 }
 
+.alwaysbreak { page-break-before: always; }
+.nobreak:before { clear:both; }
+.nobreak { page-break-inside: avoid; }
+
+
 .domain{
   // styles for domain loop
   display: block;
@@ -65,6 +70,7 @@ body{
   font-family: "Poppins", sans-serif;
 }
 .display-challenges{
+
   margin: 0;
   border: 1px dashed black;
   clear:both
@@ -228,24 +234,34 @@ body{
 
 // css challenges
 .display-challenges{
-   border: solid rgb(0, 0, 0);
+
    clear: both;
 }
 .display-challenge-name {
-  margin: 20px ;
+  margin: 20px 0px 10px 30px ;
 }
 .display-challenge-name h4{
-  font-size: 14px;
+  font-size: 25px;
   font-family: 'Roboto', sans-serif;
   font-weight: bold;
 }
 
 .cont-challenge{
   width: 95%;
-  padding: 15px 10px 15px 20px;
+  padding: 20px;
   border:  solid #942424 ;
   border-radius: 14px;
   margin: 0 15px;
+  font-family: "Poppins", sans-serif;
+  font-size: 22px;
+}
+.cont-challenge h1{
+  font-size: 25px;
+}
+.cont-challenge img{
+  width: fit-content;
+  padding-right: 50px;
+
 }
 
 
