@@ -45,11 +45,19 @@ gem "simple_calendar", "~> 2.4"
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary', '~> 0.12.5'
 
+# gem for pdf-output
+gem 'wicked_pdf'
+
+group :development, :test do
+# gem for pdf-output
+  gem 'wkhtmltopdf-binary', '~> 0.12.5'
+end
 
 group :development, :test do
   gem 'pry-byebug'
   gem 'pry-rails'
   gem 'dotenv-rails'
+
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
