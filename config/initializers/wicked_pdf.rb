@@ -10,7 +10,7 @@
 
 WickedPdf.config do |config|
   if Rails.env == 'production'
-    config.exe_path = "0.12.6.5/bin/wkhtmltopdf_exherbo__amd64"
+    config.exe_path = Rails.root.to_s + "/bin/wkhtmltopdf"
   end
 end
 
