@@ -33,8 +33,17 @@
       max-width: 100% !important;
     }
   }
+  .attachment--preview{
+    .attachment__caption{
+        display: none;
+    }
+  }
 }
 
 trix-editor{
   background-color: rgba(250, 128, 114, 0.308);
+}
+
+
+element.style {
 }
