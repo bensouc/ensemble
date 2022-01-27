@@ -3,11 +3,6 @@
 const displayQuote = ((event) => {
   console.log('coucou');
 
-  // if (typeof type == 'undefined' || !type) type = "day";
-  // if (typeof author == 'undefined' || !author) author = '';
-  // if (typeof theme == 'undefined' || !theme) theme = '';
-  // if (typeof word == 'undefined' || !word) word = '';
-
   const type="theme";
   const theme = ['amour','ecologie', 'ecole', 'education', 'enseignement', 'enfance', 'reve', 'connaissance'][Math.floor(Math.random() * 7)];
   const author="";

@@ -8,11 +8,11 @@
 #
 # https://github.com/mileszs/wicked_pdf/blob/master/README.md
 
-WickedPdf.config do |config|
-  if Rails.env == 'production'
-    config.exe_path = "0.12.6.5/bin/wkhtmltopdf_exherbo__amd64"
-  end
-end
+# WickedPdf.config do |config|
+#   if Rails.env == 'production'
+#     config.exe_path = "/usr/x86_64-pc-linux-gnu/bin/wkhtmltopdf"
+#   end
+# end
 
 # WickedPdf.config = {
 

@@ -46,7 +46,7 @@
         </div>
       </div>
       <%# Start of a domain %>
-      <div class=''>
+      <div class=' '>
         <% @work_plan.work_plan_domains.order(:id).each do |work_plan_domain|%>
           <%# boucle sur les work_plan_domains %>
           <div class='domain'>
@@ -113,17 +113,18 @@
           <%# show 1 exo %>
           <div class='display-challenges'>
           <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
+            <div class="nobreak">
             <% if work_plan_skill.kind == 'exercice' %>
               <%# challengeS render%>
               <%# titre de la skill %>
-              <div class='display-challenge-name'>
+              <div class='display-challenge-name '>
                 <h4><%= work_plan_skill.skill.name%></h4>
               </div>
               <div>
-                <div class="d-flex " data-controller='edit-challenge' id="<%=dom_id(work_plan_skill.challenge)%>">
+                <div>
                   <div class="cont-challenge">
                     <div class= "challenge-card">
-                      <div>
+                      <div class= 'challenge-content'>
                         <%# display le content.body d'un exo %>
                         <%= work_plan_skill.challenge.content.body %>
                         <%# END display le content.body d'un exo %>
@@ -134,6 +135,7 @@
               </div>
               <%# end challengeS render %>
             <% end %>
+            </div>
           <% end %>
           </div>
         </div>
