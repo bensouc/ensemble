@@ -43,8 +43,9 @@ gem "simple_calendar", "~> 2.4"
 
 # gem for pdf-output
 gem 'wicked_pdf'
-gem "wkhtmltopdf-binary", group: :development
-gem "wkhtmltopdf-heroku", group: :production
+# gem "wkhtmltopdf-binary", group: :development
+gem "wkhtmltopdf-heroku"
+# gem "wkhtmltopdf-heroku", group: :production
 
 # group :development, :test do
 # # gem for pdf-output
