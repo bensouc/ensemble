@@ -3,6 +3,8 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.7.4'
 
+
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 gem 'rails', '~> 6.0.4', '>= 6.0.4.1'
 # Use postgresql as the database for Active Record
@@ -44,7 +46,7 @@ gem "simple_calendar", "~> 2.4"
 # gem for pdf-output
 gem 'wicked_pdf'
 # gem "wkhtmltopdf-binary", group: :development
-gem "wkhtmltopdf-heroku"
+gem "wkhtmltopdf-heroku", '2.12.6.0'
 # gem "wkhtmltopdf-heroku", group: :production
 
 # group :development, :test do
