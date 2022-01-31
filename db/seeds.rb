@@ -17,8 +17,8 @@ puts "creating user"
 # user1.photo.attach(io: file, filename: 'essential_basic_ui_user-512.png', content_type: 'image/png')
 
 user1 = User.create!(email:'celine@gmail.com', password:'secret', first_name:'Céline', last_name: 'Chevalier')
-file = URI.open('https://res.cloudinary.com/bensoucdev/image/upload/v1638964031/personna-celine_lqgsqd.jpg')
-user1.photo.attach(io: file, filename: 'personna-celine_lqgsqd.jpg', content_type: 'image/jpg')
+file = URI.open('https://res.cloudinary.com/bensoucdev/image/upload/v1643125865/em1eqkab9jyivykc2oukgkiwdofs.jpg')
+user1.photo.attach(io: file, filename: 'em1eqkab9jyivykc2oukgkiwdofs.jpg', content_type: 'image/jpg')
 
 puts "creating Classroom"
 
