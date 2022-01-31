@@ -306,7 +306,7 @@ DEPENDENCIES
   webdrivers
   webpacker (~> 4.0)
   wicked_pdf
-  wkhtmltopdf-heroku
+  wkhtmltopdf-heroku (= 2.12.6.0)
 
 RUBY VERSION
    ruby 2.7.4p191
