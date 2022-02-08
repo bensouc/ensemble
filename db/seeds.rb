@@ -17,12 +17,21 @@ puts "creating user"
 # user1.photo.attach(io: file, filename: 'essential_basic_ui_user-512.png', content_type: 'image/png')
 
 user1 = User.create!(email:'celine@gmail.com', password:'secret', first_name:'Céline', last_name: 'Chevalier')
-file = URI.open('https://res.cloudinary.com/bensoucdev/image/upload/v1638964031/personna-celine_lqgsqd.jpg')
-user1.photo.attach(io: file, filename: 'personna-celine_lqgsqd.jpg', content_type: 'image/jpg')
+file = URI.open('https://res.cloudinary.com/bensoucdev/image/upload/v1643643833/rrp7ctohyeb9fo4y1r4bqz79d5k8.jpg')
+user1.photo.attach(io: file, filename: 'em1eqkab9jyivykc2oukgkiwdofs.jpg', content_type: 'image/jpg')
+puts "creating user1 OK"
+
+user2 = User.create!(email:'monna@gmail.com', password:'secret', first_name:'Monna', last_name: 'Lemoine')
+file = URI.open('https://res.cloudinary.com/bensoucdev/image/upload/v1643658991/monna_asnz91.jpg')
+user2.photo.attach(io: file, filename: 'monna_asnz91.jpg', content_type: 'image/jpg')
+puts "creating user2 OK"
+
 
 puts "creating Classroom"
 
 classroom1 = Classroom.create!(grade: 'CE1', user: user1)
+classroom2 = Classroom.create!(grade: 'CE1', user: user2)
+
 
 puts "creating Student"
 

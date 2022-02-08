@@ -47,7 +47,8 @@ $belt-7: black;
 
 
 body{
-  width: 100%;
+  width: 1200px;
+  height: 1400px;
   font-family: "Poppins", sans-serif;
 }
 
@@ -59,7 +60,7 @@ body{
 .domain{
   // styles for domain loop
   display: block;
-  width: 100%;
+  // width: 100%;
   margin-top: 50px;
   margin-bottom: fill;
 
@@ -73,6 +74,7 @@ body{
 
   margin: 0;
   border: 1px dashed black;
+  width: 100%;
   clear:both
 }
 .date-pt{
@@ -110,23 +112,25 @@ body{
 }
 .bilan-box{
   display: inline-block;
-  width: 180px;
+  width: 210px;
   vertical-align: top;
   margin-right: 10px;
+
 }
 .bilan{
-  height: 90px;
+  height: 120px;
+  line-height: 32px;
 }
 
 .box-com{
   display: inline-block;
-  width: 330px;
+  width: 480px;
   vertical-align: top;
   margin-right: 10px;
 }
 
 .comments{
-  height: 90px;
+  height: 120px;
 }
 
 .box-sign{
@@ -136,7 +140,7 @@ body{
 
 .signatures{
   width: 210px;
-  height: 90px;
+  height: 120px;
 }
 
 

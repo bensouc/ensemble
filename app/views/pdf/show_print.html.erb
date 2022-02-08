@@ -17,21 +17,26 @@
       <div class='pt-header-box'>
         <%# header WP%>
         <div >
-          <h1 class='name-pt'><%= @work_plan.name%></h1>
+          <h1 class='name-pt'>
+            <% if !@work_plan.student.nil? %>
+              <%= @work_plan.student.first_name%> -
+            <% end %>
+            <%= @work_plan.name%>
+          </h1>
           <h4 class='date-pt'>Du <%= @work_plan.start_date.strftime("%d/%m/%Y")%> Au <%= @work_plan.end_date.strftime("%d/%m/%Y")%></h4>
         </div>
         <%# Student details %>
         <div class='student-box'>
-            <div class='student-name'>
-          <% if !@work_plan.student.nil? %>
-            <h2><%= @work_plan.student.first_name%></h2>
-            <% end %>
+            <%# <div class='student-name'>
+              <% if !@work_plan.student.nil? %>
+              <%# <h2><%= @work_plan.student.first_name%></h2>
+              <%# <% end %>
             <%# <%= link_to 'PDF', work_plan_path(@work_plan, format: :pdf)%>
             </div>
             <div class='bilan-box'>
               <p style="margin: 0; padding-left : 10px">Bilan :</p>
               <div class='pt-header bilan'>
-                <p style="padding-top: 4px;margin: 0; font-size: 14px">◻ Programme tenu <br> ◻ Programme non tenu <br>◻ Programme dépassé</p>
+                <p style="padding-top: 4px;margin: 0; font-size: 16px">◻ Programme tenu <br> ◻ Programme non tenu <br>◻ Programme dépassé</p>
               </div>
             </div>
             <div class='box-com'>
@@ -118,7 +123,7 @@
               <%# challengeS render%>
               <%# titre de la skill %>
               <div class='display-challenge-name '>
-                <h4><%= work_plan_skill.skill.name%></h4>
+                <%# <h4><%= work_plan_skill.skill.name</h4> %>
               </div>
               <div>
                 <div>
