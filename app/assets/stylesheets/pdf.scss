@@ -57,18 +57,39 @@ body{
 .nobreak { page-break-inside: avoid; }
 
 
-.domain{
+.pt-header-box{
+  width: 100%;
+  border-radius: 12px;
+  margin: 0;
+  font-family: 'Baloo 2', cursive;
+  border: 1px dashed rgb(0, 255, 42);
+}
+.challenges{
   // styles for domain loop
+  background-color: #F9DD8A;
   display: block;
-  // width: 100%;
+  border: 1px dashed rgb(255, 51, 0);
+  width: 100%;
   margin-top: 50px;
   margin-bottom: fill;
 
 }
+
 .domain-display {
-  font-size: 40px;
+  margin-bottom: 5px;
+  font-size: 25px;
   font-weight: bold;
   font-family: "Poppins", sans-serif;
+}
+
+
+
+.belt-display{
+  border: 1px solid rgb(21, 255, 0);
+  float: left;
+  width: 15%;
+  height: 80px;
+  text-align: center;
 }
 .display-challenges{
 
@@ -84,15 +105,10 @@ body{
   display: inline-block;
   width: 70%;
 }
-.pt-header-box{
-  border-radius: 12px;
-  margin: 0;
-  font-family: 'Baloo 2', cursive;
-}
 
 .student-box{
   margin: 15px 0px;
-
+  border: 1px solid rgb(187, 13, 143);
   width: 100%;
 }
 .pt-header{
@@ -145,43 +161,36 @@ body{
 
 
 
-.box-domain{
-  margin-top: 100px;
-  padding: 10px;
 
-}
-
-.belt-display{
-  float: left;
-  width: 15%;
-  height: 80px;
-  text-align: center;
-}
 .skill-display{
+  margin-top: -34px;
   float: right;
   width: 84%;
   padding: 5px 0 5px 0;
+  border:  thin solid #b92f2f;
 }
 
 .a-skill{
   margin-bottom: 5px;
+  border:  thin dotted #b92f2f;
+}
+// div that contains kind display
+.challenge-kind{
+  float: right;
+
 }
 .border-skill{
   float: left;
   border:  thin solid #dddddd;
   border-radius: 14px;
   width: 600px;
-  padding: 10px 10px;
-  margin: 0 10px 15px 0;
+  padding: 5px 10px;
+  margin: 0 25px 15px 0;
 
 }
 // CSS to display challenge kind with Style
 
 
-  // div that contains kind display
-.challenge-kind{
-  float: right;
-}
   //  top row
   .kind-label{
     margin: 0;
@@ -191,6 +200,7 @@ body{
     vertical-align: top;
     text-align: center;
     width: 25px;
+    font-size: 15px;
   }
   // bottom row
   .kind-display{
@@ -257,15 +267,14 @@ body{
   border-radius: 14px;
   margin: 0 15px;
   font-family: "Poppins", sans-serif;
-  font-size: 22px;
+  font-size: 1rem;
 }
 .cont-challenge h1{
   font-size: 25px;
 }
-.cont-challenge img{
-  width: fit-content;
+.challenge-content img{
+  width: 100%;
   padding-right: 50px;
-
 }
 
 

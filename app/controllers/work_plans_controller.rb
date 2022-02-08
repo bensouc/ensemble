@@ -27,8 +27,8 @@ class WorkPlansController < ApplicationController
         margin: { top:    3,
             bottom: 3,
             left:   5,
-            right:  5 },
-        dpi: 300
+            right:  5 }
+        # dpi: 300
       end
     end
   end
