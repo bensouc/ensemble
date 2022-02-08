@@ -49,7 +49,7 @@ $belt-7: black;
 body{
   width: 1200px;
   height: 1400px;
-  font-family: "Poppins", sans-serif;
+  font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif ;
 }
 
 .alwaysbreak { page-break-before: always; }
@@ -66,12 +66,10 @@ body{
 }
 .challenges{
   // styles for domain loop
-  background-color: #F9DD8A;
   display: block;
-  border: 1px dashed rgb(255, 51, 0);
-  width: 100%;
+  width: 1000px;
   margin-top: 50px;
-  margin-bottom: fill;
+
 
 }
 
@@ -79,22 +77,22 @@ body{
   margin-bottom: 5px;
   font-size: 25px;
   font-weight: bold;
-  font-family: "Poppins", sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 
 
 .belt-display{
-  border: 1px solid rgb(21, 255, 0);
+  // border: 1px solid rgb(21, 255, 0);
   float: left;
+  // margin-left: 20px;
   width: 15%;
   height: 80px;
   text-align: center;
 }
 .display-challenges{
-
-  margin: 0;
-  border: 1px dashed black;
+  margin: 0 0 10px 0;
+  // border: 1px dashed black;
   width: 100%;
   clear:both
 }
@@ -128,7 +126,7 @@ body{
 }
 .bilan-box{
   display: inline-block;
-  width: 210px;
+  width: 220px;
   vertical-align: top;
   margin-right: 10px;
 
@@ -140,7 +138,7 @@ body{
 
 .box-com{
   display: inline-block;
-  width: 480px;
+  width: 500px;
   vertical-align: top;
   margin-right: 10px;
 }
@@ -158,21 +156,17 @@ body{
   width: 210px;
   height: 120px;
 }
-
-
-
-
 .skill-display{
   margin-top: -34px;
   float: right;
   width: 84%;
-  padding: 5px 0 5px 0;
-  border:  thin solid #b92f2f;
+  padding: 0 0 5px 0;
+  // border:  thin solid #b92f2f;
 }
 
 .a-skill{
   margin-bottom: 5px;
-  border:  thin dotted #b92f2f;
+  // border:  thin dashed #b92f2f;
 }
 // div that contains kind display
 .challenge-kind{
@@ -184,9 +178,11 @@ body{
   border:  thin solid #dddddd;
   border-radius: 14px;
   width: 600px;
-  padding: 5px 10px;
-  margin: 0 25px 15px 0;
-
+  height: 44px;
+  padding: 5px 5px;
+  margin: 0 25px 15px 20px;
+  font-size: 1em;
+  font-family: "Poppins";
 }
 // CSS to display challenge kind with Style
 
@@ -247,10 +243,7 @@ body{
 
 
 // css challenges
-.display-challenges{
 
-   clear: both;
-}
 .display-challenge-name {
   margin: 20px 0px 10px 30px ;
 }
@@ -261,23 +254,27 @@ body{
 }
 
 .cont-challenge{
-  width: 95%;
+  width: 1000px;
   padding: 20px;
   border:  solid #942424 ;
   border-radius: 14px;
-  margin: 0 15px;
+  margin: auto;
   font-family: "Poppins", sans-serif;
-  font-size: 1rem;
+  font-size: 20.25px;
+
+
 }
 .cont-challenge h1{
-  font-size: 25px;
+  font-size: 23px;
+  font-style: underline;
 }
 .challenge-content img{
   width: 100%;
-  padding-right: 50px;
 }
 
-
+.attachment__caption{
+        display: none;
+}
 
 
 //belt colors
