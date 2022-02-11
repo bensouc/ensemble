@@ -6,55 +6,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-$headers-font: 'Poppins', sans-serif;
-$body-font: 'Poppins', sans-serif;
-$nav-gauche-font: 'Poppins', sans-serif;
-$bandeau-haut-font: 'Roboto', sans-serif;
-$plan-font: 'Oswald', sans-serif;
-$titres-font: 'Baloo 2', cursive;
-
-// Define colors
-// Define variables for your color scheme
-
-// For example:
-$red: #FD1015;
-$blue: #167FFB;
-$yellow: #FFC65A;
-$orange: #E67E22;
-$green: #1EDD88;
-$gray: #0E0000;
-$light-gray: #F4F4F4;
-
-// COULEUR ENSEMBLE
-$orange: #FFB888;
-$grisF: #3D3D3D;
-$grisC: #DDDDDD;
-$violet: #E7E4FA;
-$jaune: #F9DD8A;
-$bleuC: #C8E6FB;
-$menuOff: #FFE3CF;
-$blanc: #FFFFFF;
-$rose: #F24150;
-
-/* _colors.scss */
-$belt-1: rgb(240, 230, 230);
-$belt-2: rgb(248, 244, 6);
-$belt-3: orange;
-$belt-4: rgb(13, 196, 22);
-$belt-5: rgb(30, 27, 211);
-$belt-6: rgb(175, 99, 0);
-$belt-7: black;
-
-
 body{
   width: 1200px;
   height: 1400px;
   font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif ;
 }
 
-.alwaysbreak { page-break-before: always; }
-.nobreak:before { clear:both; }
-.nobreak { page-break-inside: avoid; }
+div.alwaysbreak { page-break-before: always; }
+div.nobreak:before { clear:both; }
+div.nobreak { page-break-inside: avoid; }
 
 
 .pt-header-box{
@@ -62,7 +22,7 @@ body{
   border-radius: 12px;
   margin: 0;
   font-family: 'Baloo 2', cursive;
-  border: 1px dashed rgb(0, 255, 42);
+  // border: 1px dashed rgb(0, 255, 42);
 }
 .challenges{
   // styles for domain loop
@@ -106,7 +66,7 @@ body{
 
 .student-box{
   margin: 15px 0px;
-  border: 1px solid rgb(187, 13, 143);
+  // border: 1px solid rgb(187, 13, 143);
   width: 100%;
 }
 .pt-header{
@@ -138,7 +98,7 @@ body{
 
 .box-com{
   display: inline-block;
-  width: 500px;
+  width: 540px;
   vertical-align: top;
   margin-right: 10px;
 }
@@ -261,6 +221,7 @@ body{
   margin: auto;
   font-family: "Poppins", sans-serif;
   font-size: 20.25px;
+  margin-bottom: 20px;
 
 
 }
@@ -275,13 +236,3 @@ body{
 .attachment__caption{
         display: none;
 }
-
-
-//belt colors
-.belt-1 {  color: $belt-1; }
-.belt-2 {  color: $belt-2; }
-.belt-3 {  color: $belt-3; }
-.belt-4 {  color: $belt-4; }
-.belt-5 {  color: $belt-5; }
-.belt-6 {  color: $belt-6; }
-.belt-7 {  color: $belt-7; }

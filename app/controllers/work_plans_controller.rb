@@ -4,7 +4,7 @@ class WorkPlansController < ApplicationController
     if params[:sort] != "avg_ranking"
       @my_work_plans = WorkPlan.where(user: current_user).order(params[:sort])
     elsif params[:sort] == "avg_ranking"
-      @my_work_plans = WorkPlan.where(user: current_user).sort_by{|player| player.avg_ranking}
+      @my_work_plans = WorkPlan.where(user: current_user).sort_by{ |player| player.avg_ranking }
     else
       @my_work_plans = WorkPlan.where(user: current_user)
     end
@@ -24,7 +24,7 @@ class WorkPlansController < ApplicationController
           }",
         template: "pdf/show_print.html.erb", # Excluding ".pdf" extension.
         disposition: 'attachment', #a remettre pour lle DL auto des pdf
-        margin: { top:    3,
+        margin: { top:    5,
             bottom: 3,
             left:   5,
             right:  5 }
