@@ -20,7 +20,7 @@
   "version": "0.1.0",
   "devDependencies": {
     "webpack-dev-server": "^4.6.0"
-  }
+  },
     "engines": {
       "yarn": "v1.22.15"
     }
