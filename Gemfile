@@ -58,6 +58,8 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'pry-rails'
   gem 'dotenv-rails'
+  # autoindent erb file
+  gem 'htmlbeautifier'
 
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
