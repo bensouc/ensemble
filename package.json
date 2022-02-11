@@ -21,4 +21,7 @@
   "devDependencies": {
     "webpack-dev-server": "^4.6.0"
   }
+    "engines": {
+      "yarn": "v1.22.15"
+    }
 }
