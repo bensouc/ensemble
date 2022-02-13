@@ -27,7 +27,7 @@ puts "creating user1 OK"
 puts "creating user2"
 user2 = User.create!(email:'monna@gmail.com', password:'secret', first_name:'Monna', last_name: 'Lemoine')
 file2 = URI.open('https://res.cloudinary.com/bensoucdev/image/upload/v1644762709/ydt2oy5frv5n4yhgo1hjy1wv4j9s.jpg')
-user2.photo.attach(io: file2, filename: 'ydt2oy5frv5n4yhgo1hjy1wv4j9s.jpg', content_type: 'image/jpg')
+user2.avatar.attach(io: file2, filename: 'ydt2oy5frv5n4yhgo1hjy1wv4j9s.jpg', content_type: 'image/jpg')
 puts "creating user2 OK"
 
 
