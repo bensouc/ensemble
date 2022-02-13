@@ -14,16 +14,16 @@ Student.destroy_all
 Classroom.destroy_all
 User.destroy_all
 
-puts "creating user"
+
 
 # user1 = User.create!(email:'toto@gmail.com', password:'secret', first_name:'toto', last_name: 'titi')
 # file = URI.open('https://cdn0.iconfinder.com/data/icons/basic-50/24/essential_basic_ui_user-512.png')
 # user1.photo.attach(io: file, filename: 'essential_basic_ui_user-512.png', content_type: 'image/png')
 
-user1 = User.create!(email:'celine@gmail.com', password:'secret', first_name:'Céline', last_name: 'Chevalier')
-file = URI.open('https://res.cloudinary.com/bensoucdev/image/upload/v1643643833/rrp7ctohyeb9fo4y1r4bqz79d5k8.jpg')
-user1.photo.attach(io: file, filename: 'em1eqkab9jyivykc2oukgkiwdofs.jpg', content_type: 'image/jpg')
-puts "creating user1 OK"
+# user1 = User.create!(email:'celine@gmail.com', password:'secret', first_name:'Céline', last_name: 'Chevalier')
+# file = URI.open('https://res.cloudinary.com/bensoucdev/image/upload/v1643643833/rrp7ctohyeb9fo4y1r4bqz79d5k8.jpg')
+# user1.photo.attach(io: file, filename: 'em1eqkab9jyivykc2oukgkiwdofs.jpg', content_type: 'image/jpg')
+# puts "creating user1 OK"
 
 
 
@@ -545,6 +545,7 @@ challenge37.save
 challenge38.save
 challenge39.save
 
+puts "creating user2"
 user2 = User.create!(email:'monna@gmail.com', password:'secret', first_name:'Monna', last_name: 'Lemoine')
 file2 = URI.open('https://res.cloudinary.com/bensoucdev/image/upload/v1644762709/ydt2oy5frv5n4yhgo1hjy1wv4j9s.jpg')
 user2.photo.attach(io: file2, filename: 'ydt2oy5frv5n4yhgo1hjy1wv4j9s.jpg', content_type: 'image/jpg')
