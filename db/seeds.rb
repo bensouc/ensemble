@@ -2,9 +2,13 @@ require "open-uri"
 
 puts "destroying current data"
 WorkPlanSkill.destroy_all
+puts "destroying current WorkPlanSkill"
 WorkPlanDomain.destroy_all
+puts "destroying current WorkPlanDomain "
 Challenge.destroy_all
+puts "destroying current Challenge "
 Skill.destroy_all
+puts "destroying current Skill "
 WorkPlan.destroy_all
 Student.destroy_all
 Classroom.destroy_all
@@ -21,9 +25,10 @@ file = URI.open('https://res.cloudinary.com/bensoucdev/image/upload/v1643643833/
 user1.photo.attach(io: file, filename: 'em1eqkab9jyivykc2oukgkiwdofs.jpg', content_type: 'image/jpg')
 puts "creating user1 OK"
 
+
 user2 = User.create!(email:'monna@gmail.com', password:'secret', first_name:'Monna', last_name: 'Lemoine')
-file = URI.open('https://res.cloudinary.com/bensoucdev/image/upload/v1643658991/monna_asnz91.jpg')
-user2.photo.attach(io: file, filename: 'monna_asnz91.jpg', content_type: 'image/jpg')
+file2 = URI.open('https://res.cloudinary.com/bensoucdev/image/upload/v1643658991/monna_asnz91.jpg')
+user2.photo.attach(io: file2, filename: 'monna_asnz91.jpg', content_type: 'image/jpg')
 puts "creating user2 OK"
 
 
