@@ -3,16 +3,15 @@
     <div id="QuoteOFDay"></div>
   </div>
   <div class="avatar">
-  <%if current_user.nil?%>
-  <img src="https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png" class= "avatar" alt="">
-  <% else %>
-  <img src="<%= cl_image_path current_user.photo.key %>" class= "avatar" alt="">
-    <%# <%= image_tag urcl_image_tag current_user.photo.key, class: "avatar dropdown-toggle"%>
+    <%if current_user.avatar.attached?%>
+      <%= cl_image_tag current_user.avatar.key, class: "avatar dropdown-toggle", alt: "https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png"%>
+    <% else %>
+      <img src="https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png" class= "avatar" alt="">
+    <% end %>
     <h3><%=current_user.first_name.capitalize%> <%=current_user.last_name.capitalize%></h3>
     <p>Classe : <%current_user.classrooms.each do |classroom|%>
-      <%= classroom.grade%>
+        <%= classroom.grade%>
+      </p>
     <% end %>
-    </p>
-  <% end %>
   </div>
 </div>

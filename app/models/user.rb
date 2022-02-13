@@ -11,6 +11,6 @@ class User < ApplicationRecord
   has_many :students, through: :classrooms
   has_many :challenges
 
-  has_one_attached :photo
+  has_one_attached :avatar
 
 end
