@@ -1,25 +1,25 @@
 // PT SHOW
-.pt{
+.pt {
   max-width: 1000px;
-  margin-left: 5px ;
+  margin-left: 5px;
   margin-bottom: 40px;
   background-color: white;
   font-family: "Poppins", sans-serif;
-  h1{
+  h1 {
     font-family: $titres-font;
   }
-  h2{
+  h2 {
     font-family: $titres-font;
   }
-  h3{
+  h3 {
     font-family: "Poppins", sans-serif;
   }
-  h4{
+  h4 {
     font-family: $titres-font;
   }
 }
 
-.domain{
+.domain {
   margin-top: 10px;
   margin-bottom: 10px;
 
@@ -27,77 +27,76 @@
   // border-radius: 12px;
 }
 
-.pt-header{
-  border: thin solid $grisC ;
+.pt-header {
+  border: thin solid $grisC;
   border-radius: 12px;
   margin: 5px;
   padding: 5px 5px 0 15px;
- }
+}
 
-
-.bilan{
+.bilan {
   height: 80px;
   width: 180px;
   padding: 5px 5px 10px 10px;
   line-height: 20px;
 }
 
-.student-name{
+.student-name {
   width: 180px;
 }
-.comments{
+.comments {
   width: 400px;
   height: 80px;
 }
-.signatures{
+.signatures {
   width: 200px;
   padding-right: 10px;
   height: 80px;
 }
 
 // add domain
-.add-domain{
+.add-domain {
   margin: 10px;
   padding-left: 10px;
-  .domain-btn{
-  display: flex;
-  vertical-align: text-top;
-  border:  solid $rose ;
-  border-radius: 14px;
-  width: fit-content;
-  height: 2em;
-  padding: 3px 3px;
-  margin-left: 8px;
-  color: white;
-  background-color: $rose;
-  transition: 0.3s;
-    h6{
+  .domain-btn {
+    display: flex;
+    vertical-align: text-top;
+    border: solid $rose;
+    border-radius: 14px;
+    width: fit-content;
+    height: 2em;
+    padding: 3px 3px;
+    margin-left: 8px;
+    color: white;
+    background-color: $rose;
+    transition: 0.3s;
+    h6 {
       padding-left: 10px;
       padding-right: 10px;
-     }
-    i{
+    }
+    i {
       // color: $rose;
       padding-top: 3px;
       margin-left: 10px;
       margin-right: 10px;
     }
   }
-  .domain-btn:hover{
-  transition: 0.3s;
-  background-color: white;
-  border-color: $rose;
-  color: $rose;
-  cursor: pointer;
+  .domain-btn:hover {
+    transition: 0.3s;
+    background-color: white;
+    border-color: $rose;
+    color: $rose;
+    cursor: pointer;
   }
 }
 
 // challenge skill in header
-.domain-belt-level{
+.domain-belt-level {
   width: 200px;
 }
 
-.border-skill{
-  border:  thin solid #dddddd;
+.border-skill {
+  border: thin solid #dddddd;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -105,28 +104,27 @@
   padding: 5px 10px;
 }
 
-.skill-selector{
+.skill-selector {
   display: flex;
   vertical-align: text-top;
-  border:  solid #dddddd ;
+  border: solid #dddddd;
   border-radius: 12px;
   width: fit-content;
   max-width: 30ch;
   height: 2em;
   padding: 1px 3px;
   margin-left: 8px;
-      margin-right: 33px;
+  margin-right: 33px;
   background-color: rgba(250, 128, 114, 0.308);
   transition: 0.3s;
-
 }
 
-.challenge-selector{
+.challenge-selector {
   display: flex;
   align-items: center;
   justify-content: flex-start;
   vertical-align: text-top;
-  border:  solid #dddddd ;
+  border: solid #dddddd;
   border-radius: 12px;
   max-width: 13ch;
   background-color: inherit;
@@ -136,10 +134,10 @@
   }
 }
 
-.add-skill-btn{
+.add-skill-btn {
   display: flex;
   vertical-align: text-top;
-  border: solid $rose ;
+  border: solid $rose;
   border-radius: 12px;
   width: fit-content;
   padding: 10px 20px;
@@ -148,11 +146,11 @@
   background-color: $rose;
   transition: 0.3s;
   color: white;
-  h6{
+  h6 {
     padding-left: 4px;
-    padding-top: 3px ;
+    padding-top: 3px;
   }
-  i{
+  i {
     color: $white;
     padding-top: 6px;
     margin-left: 10px;
@@ -160,8 +158,8 @@
   }
 }
 
-.bd-maison{
-  border:  solid #dddddd;
+.bd-maison {
+  border: solid #dddddd;
   color: $grisF;
   font-family: "Poppins", sans-serif;
   border-radius: 14px;
@@ -173,13 +171,13 @@
   margin-top: 10px;
 }
 
-.add-skill-btn:hover{
-   cursor: pointer;
+.add-skill-btn:hover {
+  cursor: pointer;
   transition: 0.2s;
   background-color: white;
   border-color: $rose;
   color: $rose;
-  i{
+  i {
     color: $rose;
   }
 }
@@ -195,72 +193,68 @@
 }
 
 // CSS to display challenge kind with Style
-.skill-display{
+.skill-display {
   margin-top: 46px;
   // margin-left: -91px;
   width: 800px;
   max-width: 800px;
 }
-.domain-display{
-    font-size: 40px;
-    font-weight: bold;
-    font-family: "Poppins", sans-serif;
-
+.domain-display {
+  font-size: 40px;
+  font-weight: bold;
+  font-family: "Poppins", sans-serif;
 }
-.belt-display{
+.belt-display {
   margin-left: -17px;
 }
 
+// div that contains kind display
+.challenge-kind {
+  margin-top: -14px;
 
-  // div that contains kind display
-  .challenge-kind {
-    margin-top: -14px;
+  padding: 2px;
+  width: 80px;
+  color: $rose;
+  height: 2em;
+}
 
-    padding: 2px;
-    width: 80px;
-    color: $rose;
-    height: 2em;
-
-  }
-
-  //  top row
-  .kind-label{
+//  top row
+.kind-label {
   font-size: small;
   padding: 0px 8px;
   margin: 0;
-  height: small
-  }
+  height: small;
+}
 
-  // bottom row
-  .kind-display{
-  border: solid #dddddd ;
+// bottom row
+.kind-display {
+  border: solid #dddddd;
   border-radius: 20px;
   height: 38px;
   margin-bottom: 5px;
-  }
+}
 
-  //cells
-  .cells{
-    display: flex;
-    align-items: center;
-    padding: 5px 2px 7px 2px;
-  }
+//cells
+.cells {
+  display: flex;
+  align-items: center;
+  padding: 5px 2px 7px 2px;
+}
 
+// central cell borders
+.b-middle {
+  border-left: solid #dddddd;
+  border-right: solid #dddddd;
+  padding: 3px;
+}
 
-  // central cell borders
-  .b-middle{
-      border-left: solid #dddddd;
-      border-right: solid #dddddd;
-      padding: 3px;
-    }
+//bullet color
+.bullet-color {
+  color: #bf9c9c;
+}
 
-    //bullet color
-.bullet-color{
-    color: #bf9c9c;
-  }
-
-  // domain add
-  .cancel-domain-btn{
+// domain add
+.cancel-domain-btn {
   border-radius: 12px;
   width: fit-content;
   border: 3px solid $grisC;
@@ -273,17 +267,16 @@
   padding: 0.5rem 1rem;
   display: inline-block;
 
-
-  &:hover{
+  &:hover {
     background-color: $white;
     color: $grisC;
   }
 }
 
-.validate-domain-btn{
+.validate-domain-btn {
   display: flex;
   vertical-align: text-top;
-  border: solid $rose ;
+  border: solid $rose;
   border-radius: 12px;
   width: fit-content;
   padding: 10px 20px;
@@ -292,26 +285,25 @@
   background-color: $rose;
   transition: 0.3s;
   color: white;
-  h6{
+  h6 {
     padding-left: 4px;
-    padding-top: 3px ;
+    padding-top: 3px;
   }
-  i{
+  i {
     color: $white;
     padding-top: 6px;
     margin-left: 10px;
     margin-right: 10px;
   }
 
-  &:hover{
-  cursor: pointer;
-  transition: 0.2s;
-  background-color: white;
-  border-color: $rose;
-  color: $rose;
-    i{
+  &:hover {
+    cursor: pointer;
+    transition: 0.2s;
+    background-color: white;
+    border-color: $rose;
+    color: $rose;
+    i {
       color: $rose;
     }
   }
-
 }
