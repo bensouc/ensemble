@@ -6,16 +6,16 @@
   background-color: white;
   font-family: "Poppins", sans-serif;
   h1{
-    font-family: $titres-font;
+    font-family: "Poppins", sans-serif;
   }
   h2{
-    font-family: $titres-font;
+    font-family: "Poppins", sans-serif;
   }
   h3{
     font-family: "Poppins", sans-serif;
   }
   h4{
-    font-family: $titres-font;
+    font-family: "Poppins", sans-serif;
   }
 }
 
@@ -259,59 +259,59 @@
     color: #bf9c9c;
   }
 
-  // domain add
-  .cancel-domain-btn{
-  border-radius: 12px;
-  width: fit-content;
-  border: 3px solid $grisC;
-  background-color: $grisC;
-  font-weight: 700;
-  font-size: 20px;
-  color: white;
-  padding: 0;
-  transition: 0.3s;
-  padding: 0.5rem 1rem;
-  display: inline-block;
+//   // domain add
+//   .cancel-domain-btn{
+//   border-radius: 12px;
+//   width: fit-content;
+//   border: 3px solid $grisC;
+//   background-color: $grisC;
+//   font-weight: 700;
+//   font-size: 20px;
+//   color: white;
+//   padding: 0;
+//   transition: 0.3s;
+//   padding: 0.5rem 1rem;
+//   display: inline-block;
 
 
-  &:hover{
-    background-color: $white;
-    color: $grisC;
-  }
-}
+//   &:hover{
+//     background-color: $white;
+//     color: $grisC;
+//   }
+// }
 
-.validate-domain-btn{
-  display: flex;
-  vertical-align: text-top;
-  border: solid $rose ;
-  border-radius: 12px;
-  width: fit-content;
-  padding: 10px 20px;
+// .validate-domain-btn{
+//   display: flex;
+//   vertical-align: text-top;
+//   border: solid $rose ;
+//   border-radius: 12px;
+//   width: fit-content;
+//   padding: 10px 20px;
 
-  margin-right: 15px;
-  background-color: $rose;
-  transition: 0.3s;
-  color: white;
-  h6{
-    padding-left: 4px;
-    padding-top: 3px ;
-  }
-  i{
-    color: $white;
-    padding-top: 6px;
-    margin-left: 10px;
-    margin-right: 10px;
-  }
+//   margin-right: 15px;
+//   background-color: $rose;
+//   transition: 0.3s;
+//   color: white;
+//   h6{
+//     padding-left: 4px;
+//     padding-top: 3px ;
+//   }
+//   i{
+//     color: $white;
+//     padding-top: 6px;
+//     margin-left: 10px;
+//     margin-right: 10px;
+//   }
 
-  &:hover{
-  cursor: pointer;
-  transition: 0.2s;
-  background-color: white;
-  border-color: $rose;
-  color: $rose;
-    i{
-      color: $rose;
-    }
-  }
+//   &:hover{
+//   cursor: pointer;
+//   transition: 0.2s;
+//   background-color: white;
+//   border-color: $rose;
+//   color: $rose;
+//     i{
+//       color: $rose;
+//     }
+//   }
 
-}
+// }
