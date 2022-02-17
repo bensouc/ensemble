@@ -158,6 +158,19 @@
   }
 }
 
+.edit-wp {
+  width: 400px;
+  // form {
+  //   width: auto;
+  // }
+}
+.edit-cal_wp {
+  input {
+    width: 15ch;
+    padding-left: 15px;
+  }
+}
+
 .bd-maison {
   border: solid #dddddd;
   color: $grisF;
