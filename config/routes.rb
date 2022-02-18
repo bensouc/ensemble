@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :work_plans, only: [:index, :show, :update, :new, :create, :destroy] do
     resources :work_plan_domains, only: [:new, :create]
     post '/work_plans/:id', to: 'work_plans#clone', as: :clone
+    patch '', to: 'work_plans#edit', as: :edit
   end
 
   resources :work_plan_domains, only: [:destroy] do
