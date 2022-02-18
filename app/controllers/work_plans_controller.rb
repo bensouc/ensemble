@@ -1,4 +1,18 @@
 class WorkPlansController < ApplicationController
+  def edit
+    temp_wp = WorkPlan.new(true_wp_params)
+    @work_plan = WorkPlan.find(params[:work_plan_id])
+    @work_plan.name = temp_wp.name
+    @work_plan.start_date = temp_wp.start_date
+    @work_plan.end_date = temp_wp.end_date
+    @work_plan.student_id = temp_wp.student_id
+    if @work_plan.save
+      redirect_to work_plan_path(@work_plan)
+    else
+      render :show
+    end
+  end
+
   def index
     # @my_work_plans = WorkPlan.where(user: current_user)
     if params[:sort] != "avg_ranking"
@@ -81,6 +95,10 @@ class WorkPlansController < ApplicationController
     params.require(:work_plan).permit(:name, :student_id, :start_date, :end_date,
                                       work_plan_domains_attributes: %i[domain level],
                                       work_plan_skills_attributes: :name)
+  end
+
+  def true_wp_params
+    params.require(:work_plan).permit(:name, :student_id,:start_date, :end_date, :id)
   end
 
   def work_plan_domain_params
