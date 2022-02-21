@@ -4,6 +4,7 @@
     <h2><%= work_plan.student.first_name%></h2>
     <% end %>
     <%= link_to 'PDF', work_plan_path(@work_plan, format: :pdf)%>
+    <%= link_to 'Clone', work_plan_clone_path(@work_plan), method: 'post'%>
   </div>
   <%# <div class='d-flex-column'>
     <p style="margin: 0; padding-left : 10px">Bilan :</p>
