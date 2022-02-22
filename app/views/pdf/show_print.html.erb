@@ -54,7 +54,7 @@
               <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642065142/belt_white_cxov6t.png", size: "100x50")%>
             </div>
             <%# belt levelname %>
-            <div>
+            <div <%  if ['Géométrie', 'Grandeurs et Mesures'].include?(work_plan_domain.domain) then%> style = 'visibility: hidden'<%end%>>
               <strong><%= @belt[work_plan_domain.level-1].capitalize%></strong>
             </div>
           </div>

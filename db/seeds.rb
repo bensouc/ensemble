@@ -48,15 +48,23 @@ require "open-uri"
 #   Student.create!(first_name: student, classroom: classroom1)
 # end
 
-puts "creating new geometrie et grandeur"
+# puts "destroy all  geometrie et grandeur"
+# Skill.where(domain: 'Géométrie').destroy_all
+# puts "destroy all  geometrie et grandeur => OK"
+# puts '******************'
+# puts "destroy all  geometrie et grandeur"
+# Skill.where(domain: 'grandeurs et Mesures').destroy_all
+# puts "destroy all  geometrie et grandeur => OK"
+# puts '******************'
 
-  skill97 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '◼', name: '1 - Connaître et utiliser le vocabulairepermettant de définir une position')
-puts "creating new geometrie et grandeur skill 1 OK"
-skill98 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '◼', name: '2 - Repérer les cases d’un quadrillage')
-skill99 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '◼', name: '3 - Coder et décoder des déplacements  sur un quadrillage')
-skill100 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '◼', name: '4 - Reproduire une figure sur un quadrillage')
-skill101 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬟', name: '5 - Utiliser l’équerre pour tracer un angle droit')
-skill102 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬟', name: '1 - Utiliser la règle pour tracer')
+puts "creating Géométrie"
+
+eskill97 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '◼', name: '1 - Connaître et utiliser le vocabulaire permettant de définir une position')
+eskill98 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '◼', name: '2 - Repérer les cases d’un quadrillage')
+eskill99 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '◼', name: '3 - Coder et décoder des déplacements  sur un quadrillage')
+eskill100 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '◼', name: '4 - Reproduire une figure sur un quadrillage')
+# skill101 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬟', name: '5 - Utiliser l’équerre pour tracer un angle droit')
+eskill102 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬟', name: '1 - Utiliser la règle pour tracer')
 skill103 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬟', name: '2 - Utiliser la règle pour vérifier un alignement')
 skill104 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬟', name: '3 - Utiliser le compas pour tracer un cercle')
 skill105 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬟', name: '4 - Utiliser l’équerre pour vérifier un angle droit')
@@ -64,15 +72,18 @@ skill106 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬥', name: '
 skill107 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬥', name: '1 - Reconnaître les figures : carré, rectangle, cercle, triangle')
 skill108 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬥', name: '2- Connaître le vocabulaire des figures géométriques : polygone, côté, sommet')
 skill109 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬥', name: '3 - Connaître le vocabulaire des figures géométriques : droite, segment, milieu, angle droit')
-skill110 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬥', name: ' 4 - Identifier un carré, un rectangle et marquer les angles droits')
+skill110 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬥', name: '4 - Identifier un carré, un rectangle et marquer les angles droits')
 skill111 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬥', name: '5 - Compléter un carré, un rectangle')
 skill112 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬥', name: '6 - Connaître le vocabulaire des figures géométriques : cercle, disque, rayon, centre')
-skill113 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '🞮', name: '7 - Construire un cercle en connaissant centre/point ou centre/rayon')
+skill113 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '⬥', name: '7 - Construire un cercle en connaissant centre/point ou centre/rayon')
 skill114 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '🞮', name: '1 - Reconnaître si une figure a un axe de symétrie')
-skill115 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '▲', name: '2 - Tracer la figure symétrique d’une autre par rapport à un axe')
+skill115 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '🞮', name: '2 - Tracer la figure symétrique d’une autre par rapport à un axe')
 skill116 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '▲', name: '1 - Reconnaître et nommer les solides : sphère, cube, pavé droit.')
 skill117 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '▲', name: '2 - Décrire des solides avec le bon vocabulaire : face, sommet et arrête')
-skill118 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '◼', name: '3 - Reconnaitre un solide à partir de son patron')
+skill118 = Skill.create!(domain: 'Géométrie', level: 1, symbol: '▲', name: '3 - Reconnaitre un solide à partir de son patron')
+puts "creating new geometrie skill 1 OK"
+puts '***************************'
+puts "creating new 'Grandeurs et Mesures' OK"
 skill119 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '◼', name: '1 - Comparer et classer des objets selon leur longueur')
 skill120 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '◼', name: '2 - Mesurer des segments avec la règle (en cm)')
 skill121 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '◼', name: '3 - Mesurer des longueurs en cm et mm')
@@ -82,10 +93,13 @@ skill124 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '⬟'
 skill125 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '⬟', name: '3 - Lire l’heure (pile, demie, quart, moins quart)')
 skill126 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '⬟', name: '4 - Lire l’heure')
 skill127 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '⬟', name: '5 - Connaître les relations entre mesures du temps (1 semaine =7 jours; 1 mois =29,30 ou 31 jours, 1 année = 365j ; 1 année =12 mois)')
-skill128 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '⬥', name: '6 - Résoudre des problèmes de durée (heure et minute)')
+skill128 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '⬟', name: '6 - Résoudre des problèmes de durée (heure et minute)')
 skill129 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '⬥', name: '1 - Comparer des masses')
 skill130 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '⬥', name: '2 - Comparer des contenances')
 skill131 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '⬥', name: '3 - Mesurer des masses (g,kg)')
-skill132 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '▲', name: '4 - Mesurer des contenances (cl,l)')
+skill132 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '⬥', name: '4 - Mesurer des contenances (cl,l)')
 skill133 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '▲', name: '1 - Connaître et utiliser la monnaie (sommes jusqu’à 20 avec 1/2/5/10)')
 skill134 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '▲', name: '2 - Connaître et utiliser la monnaie (+centimes)')
+skill135 = Skill.create!(domain: 'Grandeurs et Mesures', level: 1, symbol: '▲', name: '3 - Résoudre des problèmes avec de la monnaie')
+
+puts "creating new 'Grandeurs et Mesures' "
