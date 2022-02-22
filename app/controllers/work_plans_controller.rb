@@ -2,6 +2,7 @@ class WorkPlansController < ApplicationController
 
 
   def clone
+
     orig_work_plan = WorkPlan.find(wp_id)
     # //crer des copie des WorkPlanDomain et de workplan skill
     @work_plan = WorkPlan.new(
@@ -65,39 +66,10 @@ class WorkPlansController < ApplicationController
     # @work_plan_domain.work_plan_skills.new
   end
 
-  def create
-    @work_plan = WorkPlan.new(work_plan_params)
-    @work_plan.user = current_user
-    if @work_plan.save
-      redirect_to work_plan_path(@work_plan)
-    else
-      redirect_to new_work_plan_path
-    end
-  end
 
   def update
-      @work_plan = WorkPlan.find(params[:id])
-      @domain = WorkPlanDomain.new(work_plan_domain_params)
-      @domain.work_plan = @work_plan
-      # raise
-      if @domain.save
-
-        redirect_to work_plan_path(@work_plan, anchor: 'bottom')
-      else
-        redirect_to work_plan_path(@work_plan, anchor: 'dmn-validate')
-      end
-  end
-
-  def destroy
-    @work_plan = WorkPlan.find(params[:id])
-    @work_plan.destroy
-    redirect_to work_plans_path
-  end
-
-  def edit
     temp_wp = WorkPlan.new(true_wp_params)
-    raise
-    @work_plan = WorkPlan.find(params[:work_plan_id])
+    @work_plan = WorkPlan.find(params[:id])
     @work_plan.name = temp_wp.name
     @work_plan.start_date = temp_wp.start_date
     @work_plan.end_date = temp_wp.end_date
@@ -107,6 +79,13 @@ class WorkPlansController < ApplicationController
     else
       render :show
     end
+
+  end
+
+  def destroy
+    @work_plan = WorkPlan.find(params[:id])
+    @work_plan.destroy
+    redirect_to work_plans_path
   end
 
   private

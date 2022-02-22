@@ -32,7 +32,7 @@
                             collection: current_user.students.order(:first_name),
                             input_html: {class: 'area grow m-left'},
                             label_method: :first_name %>
-      <%= f.submit "Valider", class: 'area rect-sm btn-valid',method: 'post', action: 'edit' %>
+      <%= f.submit "Valider", class: 'area rect-sm btn-valid' %>
     <% end %>
   </div>
 </div>
