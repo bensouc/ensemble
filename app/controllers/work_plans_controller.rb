@@ -1,16 +1,21 @@
 class WorkPlansController < ApplicationController
-  def edit
-    temp_wp = WorkPlan.new(true_wp_params)
-    @work_plan = WorkPlan.find(params[:work_plan_id])
-    @work_plan.name = temp_wp.name
-    @work_plan.start_date = temp_wp.start_date
-    @work_plan.end_date = temp_wp.end_date
-    @work_plan.student_id = temp_wp.student_id
-    if @work_plan.save
-      redirect_to work_plan_path(@work_plan)
-    else
-      render :show
-    end
+
+
+  def clone
+
+    orig_work_plan = WorkPlan.find(wp_id)
+    # //crer des copie des WorkPlanDomain et de workplan skill
+    @work_plan = WorkPlan.new(
+      {
+        work_plan_domain_ids: orig_work_plan.work_plan_domain_ids,
+        name: "#{orig_work_plan.name} - CLONE",
+        user_id: current_user.id,
+        start_date: orig_work_plan.start_date,
+        end_date: orig_work_plan.end_date
+      })
+    # @work_plan = WorkPlan.new
+    # @work_plan.id = old_work_plan
+
   end
 
   def index
@@ -61,26 +66,20 @@ class WorkPlansController < ApplicationController
     # @work_plan_domain.work_plan_skills.new
   end
 
-  def create
-    @work_plan = WorkPlan.new(work_plan_params)
-    @work_plan.user = current_user
+
+  def update
+    temp_wp = WorkPlan.new(true_wp_params)
+    @work_plan = WorkPlan.find(params[:id])
+    @work_plan.name = temp_wp.name
+    @work_plan.start_date = temp_wp.start_date
+    @work_plan.end_date = temp_wp.end_date
+    @work_plan.student_id = temp_wp.student_id
     if @work_plan.save
       redirect_to work_plan_path(@work_plan)
     else
-      redirect_to new_work_plan_path
+      render :show
     end
-  end
 
-  def update
-      @work_plan = WorkPlan.find(params[:id])
-      @domain = WorkPlanDomain.new(work_plan_domain_params)
-      @domain.work_plan = @work_plan
-      if @domain.save
-
-        redirect_to work_plan_path(@work_plan, anchor: 'bottom')
-      else
-        redirect_to work_plan_path(@work_plan, anchor: 'dmn-validate')
-      end
   end
 
   def destroy
@@ -99,6 +98,11 @@ class WorkPlansController < ApplicationController
 
   def true_wp_params
     params.require(:work_plan).permit(:name, :student_id,:start_date, :end_date, :id)
+  end
+
+  def wp_id
+    params.require(:work_plan_id)
+
   end
 
   def work_plan_domain_params

@@ -4,7 +4,7 @@
     </div>
     <div class="add-domain-form d-none" data-new-domain-target='domainform'>
       <div class='m-top'>
-        <%= simple_form_for work_plan do |f| %>
+        <%= simple_form_for work_plan, url: work_plan_work_plan_domains_path(work_plan), method: :post do |f| %>
           <%= f.simple_fields_for  WorkPlanDomain.new do |domain_form| %>
             <div class='m-top'>
               <%= domain_form.input :domain, label: 'Choisissez un nouveau domaine :', as: :radio_buttons,
@@ -25,7 +25,7 @@
             </div>
           <% end %>
           <div class='m-top box-end' id='dmn-validate'>
-            <%= f.submit "Valider", class: 'validate-domain-btn fs-2', method: 'patch' %>
+            <%= f.submit "Valider", class: 'validate-domain-btn fs-2'%> //, method: 'patch', action: 'update'
             <%= link_to work_plan_path(@work_plan, anchor: "bottom"), class: 'cancel-domain-btn' do %>
                       <i class="fas fa-times"></i>
             <% end %>

@@ -1,22 +1,10 @@
 <div class='d-flex justify-content-between mb-1'>
   <div class='student-name'>
-  <% if !work_plan.student.nil? %>
-    <h2><%= work_plan.student.first_name%></h2>
+    <% if !work_plan.student.nil? %>
+      <h2><%= work_plan.student.first_name%></h2>
     <% end %>
     <%= link_to 'PDF', work_plan_path(@work_plan, format: :pdf)%>
+    <%= link_to 'Clone', work_plan_clone_path(@work_plan), method: 'post', class: 'd-none'%>
   </div>
-  <%# <div class='d-flex-column'>
-    <p style="margin: 0; padding-left : 10px">Bilan :</p>
-    <div class='pt-header bilan'>
-      <p style="margin: 0; font-size: 12px">◻ Programme tenu <br> ◻ Programme non tenu <br>◻ Programme dépassé</p>
-    </div>
-  </div>
-  <div>
-    <p style="margin: 0; padding-left : 10px">Commentaires :</p>
-    <div class='pt-header comments'></div>
-  </div>
-  <div >
-    <p style="margin: 0; padding-left : 10px">Signatures des Parents :</p>
-    <div class='pt-header signatures '></div>
-  </div> %>
+
 </div>
