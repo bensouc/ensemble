@@ -1,5 +1,5 @@
 class WorkPlanDomain < ApplicationRecord
-  DOMAINS = %w[Vocabulaire Grammaire Numération Calcul]
+  DOMAINS = ['Vocabulaire', 'Grammaire', 'Numération', 'Calcul', 'Géométrie', 'Grandeurs et Mesures']
   LEVELS = 1..7
 
   belongs_to :work_plan
