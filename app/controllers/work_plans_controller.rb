@@ -2,7 +2,6 @@ class WorkPlansController < ApplicationController
 
 
   def clone
-
     orig_work_plan = WorkPlan.find(wp_id)
     # //crer des copie des WorkPlanDomain et de workplan skill
     @work_plan = WorkPlan.new(
@@ -12,10 +11,8 @@ class WorkPlansController < ApplicationController
         user_id: current_user.id,
         start_date: orig_work_plan.start_date,
         end_date: orig_work_plan.end_date
-      })
-    # @work_plan = WorkPlan.new
-    # @work_plan.id = old_work_plan
-
+      }
+    )
   end
 
   def index

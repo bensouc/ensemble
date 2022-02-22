@@ -5,7 +5,9 @@ class WorkPlanDomainsController < ApplicationController
       @work_plan = WorkPlan.find(params_wp_id)
       @domain = WorkPlanDomain.new(work_plan_domain_params)
       @domain.work_plan = @work_plan
-
+      if ['Géométrie', 'Grandeurs et Mesures'].include?(@domain.domain)
+        @domain.level= 1
+      end
       if @domain.save
         redirect_to work_plan_path(@work_plan, anchor: 'bottom')
       else
