@@ -1,76 +1,75 @@
-.display-challenge-name{
-  margin: 20px 0 -20px 0 ;
+.display-challenge-name {
+  margin: 20px 0 -20px 0;
 }
 
-.cont-challenge{
+.cont-challenge {
   padding-top: 20px;
   padding-bottom: 20px;
   padding-left: 30px;
   padding-right: 20px;
   margin: 20px 20px 30px 30px;
-  border:  solid #dddddd ;
+  border: solid #dddddd;
   border-radius: 14px;
 }
 
-.challenge-mngt{
+.challenge-mngt {
   margin-top: 20px;
-  padding: 0 5px 0 0 ;
+  padding: 0 5px 0 0;
 }
 
-.edit-challenge{
+.edit-challenge {
   background-color: $rose;
   font-size: 2em;
 }
 
-.challenge-title{
-  padding: 10px ;
+.challenge-title {
+  padding: 10px;
   border: thin solid #dddddd;
   border-radius: 8px;
   margin-bottom: 20px;
   width: 100%;
   background-color: rgba(250, 128, 114, 0.308);
-  }
+}
 
-.height-validate-challenge{
+.height-validate-challenge {
   height: 50px;
 }
-.validate-challenge-btn{
+.validate-challenge-btn {
   display: flex;
   vertical-align: text-top;
-  border: solid #53D138 ;
+  border: solid #53d138;
   border-radius: 12px;
   width: fit-content;
 
   margin-left: 8px;
   background-color: white;
   transition: 0.3s;
-  color: #53D138;
-  h6{
+  color: #53d138;
+  h6 {
     padding-left: 4px;
-    padding-top: 3px ;
+    padding-top: 3px;
   }
-  i{
+  i {
     color: $white;
     // padding-top: 6px;
     margin-left: 10px;
     margin-right: 10px;
   }
-
 }
 
-.validate-challenge-btn:hover{
+.validate-challenge-btn:hover {
   cursor: pointer;
   transition: 0.2s;
-  background-color: #53D138;
-  border-color: #53D138;
+  background-color: #53d138;
+  border-color: #53d138;
   color: white;
-  i{
+  i {
     color: white;
   }
-  }
+}
 
-.btn-maison{
-  border:  solid $menuOff;
+.btn-maison {
+  border: solid $menuOff;
   background-color: inherit;
   color: $grisF;
   font-family: "Poppins", sans-serif;
@@ -79,13 +78,13 @@
   padding: 10px 10px 0 5px;
   display: flex;
   align-items: baseline;
-    p{
-      font-size: 1rem;
-      margin-left: 5px;
-    }
+  p {
+    font-size: 1rem;
+    margin-left: 5px;
   }
+}
 
-.modify-challenge-btn{
+.modify-challenge-btn {
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -103,24 +102,25 @@
     padding: 16px;
     margin: 0;
   }
-  i{
+  i {
     font-size: 12px;
     padding-left: 1px;
   }
 }
 
-.modify-challenge-btn:hover{
+.modify-challenge-btn:hover {
   transition: 0.2s;
   background-color: $rose;
 
   border-color: $rose;
   color: $rose;
-  i, h6{
+  i,
+  h6 {
     color: $white;
   }
 }
 
-.replace-challenge-btn{
+.replace-challenge-btn {
   margin-bottom: 15px;
   display: flex;
   align-items: center;
@@ -136,23 +136,24 @@
     padding: 10px;
     margin: 0;
   }
-  i{
+  i {
     font-size: 12px;
   }
 }
 
-.replace-challenge-btn:hover{
+.replace-challenge-btn:hover {
   transition: 0.2s;
   background-color: $rose;
   border-color: $rose;
   color: $rose;
   cursor: pointer;
-  i, h6{
+  i,
+  h6 {
     color: $white;
   }
 }
 
-.cancel-btn{
+.cancel-btn {
   border-radius: 12px;
   width: fit-content;
   border: 3px solid $grisC;
@@ -166,8 +167,7 @@
   padding: 0.5rem 1rem;
   display: inline-block;
 
-
-  &:hover{
+  &:hover {
     background-color: $white;
     color: $grisC;
     cursor: pointer;
@@ -178,11 +178,11 @@
   -webkit-appearance: none !important;
 }
 
-.validate-btn{
+.validate-btn {
   border-radius: 12px;
   width: fit-content;
-  border: 3px solid #53D138;
-  background-color: #53D138;
+  border: 3px solid #53d138;
+  background-color: #53d138;
   font-weight: 700;
   font-size: 20px;
   color: $white;
@@ -192,9 +192,9 @@
   padding: 0.5rem 1rem;
   display: inline-block;
 
-  &:hover{
+  &:hover {
     background-color: $white;
-    color: #53D138;
+    color: #53d138;
     cursor: pointer;
   }
 }
@@ -202,47 +202,56 @@
 //css for table edition
 
 table {
-    border-collapse: collapse;
-    border-spacing:0
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
-td, th {
-    padding:0
+td,
+th {
+  padding: 0;
 }
 
-td:not([align]), th:not([align]) {
-    text-align:left
+td:not([align]),
+th:not([align]) {
+  text-align: left;
 }
 
 .table {
-    background-color: #fff;
-    color: #363636
+  background-color: #fff;
+  color: #363636;
 }
 
-.table td, .table th {
-    border: 1px solid #dbdbdb;
-    border-width: 0 0 1px;
-    padding: .5em .75em;
-    vertical-align: top
+.table td,
+.table th {
+  border: 1px solid #dbdbdb;
+  border-width: 0 0 1px;
+  padding: 0.5em 0.75em;
+  vertical-align: top;
 }
 
-.table.is-bordered td, .table.is-bordered th {
-    border-width: 1px
+.table.is-bordered td,
+.table.is-bordered th {
+  border-width: 1px;
 }
 
-.table.is-bordered tr:last-child td, .table.is-bordered tr:last-child th {
-    border-bottom-width: 1px
+.table.is-bordered tr:last-child td,
+.table.is-bordered tr:last-child th {
+  border-bottom-width: 1px;
 }
 
 .table-input {
-    background-color: transparent;
-    border-color: transparent;
-    box-shadow: none;
-    padding-left: 0;
-    padding-right: 0;
-    margin: 0;
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  padding-left: 0;
+  padding-right: 0;
+  margin: 0;
 }
 
 trix-toolbar .trix-button--icon-table::before {
   background-image: url(data:image/svg+xml,%3Csvg%20width%3D%2224px%22%20height%3D%2224px%22%20viewBox%3D%220%200%2024%2024%22%20version%3D%221.1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%3E%3Cg%20stroke%3D%22none%22%20stroke-width%3D%221%22%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Crect%20stroke%3D%22%23000000%22%20x%3D%223%22%20y%3D%223%22%20width%3D%2218%22%20height%3D%2218%22%3E%3C%2Frect%3E%3Cpath%20d%3D%22M3%2C9%20L21%2C9%22%20stroke%3D%22%23000000%22%20stroke-linecap%3D%22square%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M3%2C15%20L21%2C15%22%20stroke%3D%22%23000000%22%20stroke-linecap%3D%22square%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M12%2C3%20L12%2C21%22%20stroke%3D%22%23000000%22%20stroke-linecap%3D%22square%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3C%2Fsvg%3E);
+}
+
+button {
+  padding: 0 10px !important;
 }
