@@ -80,9 +80,15 @@ div.nobreak { page-break-inside: avoid; }
   display: inline-block;
   padding: 30px 5px 0 5px;
   width: 15%;
+  gap: 25px;
   h2{
     font-family: 'Roboto', sans-serif;
     font-weight: bold;
+  }
+  .replace-challenge-btn{
+    h6{
+      margin: 0 10px 0 10px;
+    }
   }
 }
 .bilan-box{

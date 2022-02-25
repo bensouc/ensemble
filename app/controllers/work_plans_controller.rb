@@ -2,17 +2,39 @@ class WorkPlansController < ApplicationController
 
 
   def clone
-    orig_work_plan = WorkPlan.find(wp_id)
+    wp = WorkPlan.find(wp_id)
     # //crer des copie des WorkPlanDomain et de workplan skill
-    @work_plan = WorkPlan.new(
+    new_wp = WorkPlan.create(
       {
-        work_plan_domain_ids: orig_work_plan.work_plan_domain_ids,
-        name: "#{orig_work_plan.name} - CLONE",
+        #work_plan_domain_ids: wp.work_plan_domain_ids,
+        name: "#{wp.name} - CLONE",
         user_id: current_user.id,
-        start_date: orig_work_plan.start_date,
-        end_date: orig_work_plan.end_date
+        start_date: wp.start_date,
+        end_date: wp.end_date,
+        student_id: wp.student_id
       }
     )
+    domains = WorkPlanDomain.where(work_plan_id: wp)
+    domains.each do |domain|
+      new_wp_domain = domain.dup
+      new_wp_domain.save
+      work_plan_skills = WorkPlanSkill.where(work_plan_domain_id: domain)
+      work_plan_skills.each do |wps|
+        new_wps = wps.dup
+        new_wps.work_plan_domain_id = new_wp_domain.id
+        new_wps.save
+      end
+      new_wp_domain.work_plan_id = new_wp.id
+      new_wp_domain.save
+    end
+
+    if new_wp.save
+
+
+      redirect_to work_plan_path(new_wp), notice: 'Clonage réussi'
+    else
+      redirect_to work_plan_path(wp), notice: 'Clonage raté'
+    end
   end
 
   def index
