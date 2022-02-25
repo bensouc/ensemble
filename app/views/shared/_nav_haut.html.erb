@@ -28,6 +28,9 @@
           <div class="dropdown-menu left" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" href="#">Ma classe</a>
             <a class="dropdown-item" href="#">Mon compte</a>
+            <%if current_user.admin%>
+            <%= link_to 'ADMIN', '/admin', class: "dropdown-item", target: '_blank' %>
+            <% end %>
             <a class="dropdown-item" href="#">Déconnexion</a>
           </div>
         </li>
