@@ -3,19 +3,27 @@ class WorkPlanSkillsController < ApplicationController
   def create
 
     @work_plan_skill = WorkPlanSkill.new(set_params_wpskill)
-
+    challenges = Challenge.where(skill_id: @work_plan_skill.skill)
     if @work_plan_skill.kind.downcase == 'exercice'
-      name = @work_plan_skill.skill.name + ( (Challenge.where(skill_id: @work_plan_skill.skill).count) +1  ).to_s
-      challenge = Challenge.create({
-        skill: @work_plan_skill.skill,
-        name: name,
-        user: current_user
-      })
-      challenge.content.body = <<~HTML
-      Exercice à REDIGER............................
+      if challenges == []
+        # if no existing challeng 4 that skill
+        # create a empty challenge 4 that skill
+        name = @work_plan_skill.skill.name + ( (Challenge.where(skill_id: @work_plan_skill.skill).count) +1  ).to_s
+        challenge = Challenge.create({
+            skill: @work_plan_skill.skill,
+            name: name,
+            user: current_user
+          } )
+        challenge.content.body = <<~HTML
+        Exercice à REDIGER............................
+        HTML
+        challenge.save!
+        # @work_plan_skill.challenge = challenge
+      else
+        # recuper un des exo existant avec le skill id de @work_plan_skill
+        challenge = challenges.sample
 
-      HTML
-      challenge.save!
+      end
       @work_plan_skill.challenge = challenge
     end
 
