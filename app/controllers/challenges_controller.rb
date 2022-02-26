@@ -1,5 +1,4 @@
 class ChallengesController < ApplicationController
-
   def clone
     puts "Clone launched"
     @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
