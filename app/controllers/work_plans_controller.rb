@@ -1,6 +1,4 @@
 class WorkPlansController < ApplicationController
-
-
   def clone
     wp = WorkPlan.find(wp_id)
     # //crer des copie des WorkPlanDomain et de workplan skill
