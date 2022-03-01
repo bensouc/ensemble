@@ -27,7 +27,7 @@
                     <%= link_to work_plan_path(@work_plan, anchor: "challenge_#{work_plan_skill.challenge.id}"), class: 'cancel-btn' do %>
                       <i class="fas fa-times"></i>
                     <% end %>
-                    <%= form.submit 'Enregistrer', class: 'validate-challenge-btn', data: { confirm: "Attention, modifier cet excercice impactera les autres Plan. Sinon vous pouvez cloner l'exercice." }%>
+                    <%= form.submit 'Enregistrer', class: 'validate-challenge-btn', data: { confirm: "Attention, modifier cet excercice impactera les autres Plans l'utilisant. Sinon vous pouvez cloner l'exercice." }%>
 
                   </div>
                 <% end %>
