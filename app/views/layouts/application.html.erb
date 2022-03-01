@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
   <head>
-   <%= favicon_link_tag %>
-
+    <%= favicon_link_tag %>
     <title><%= meta_title %></title>
     <meta name="description" content="<%= meta_description %>">
-
     <!-- Facebook Open Graph data -->
     <meta property="og:title" content="<%= meta_title %>" />
     <meta property="og:type" content="website" />
@@ -13,7 +11,6 @@
     <meta property="og:image" content="<%= meta_image %>" />
     <meta property="og:description" content="<%= meta_description %>" />
     <meta property="og:site_name" content="<%= meta_title %>" />
-
     <!-- Twitter Card data -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="<%= DEFAULT_META["twitter_account"] %>">
@@ -23,25 +20,19 @@
     <meta name="twitter:image:src" content="<%= meta_image %>">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload', defer: true %>
   </head>
-
   <body>
-<%# <%console%>
+    <%# <%console%>
     <%= render 'shared/flashes' %>
-
     <%# :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: %>
     <%# À voir pour ne plus afficher les sides bars sur le login ça passe par            %>
     <%# le controleur qui est en params mais malheuresement c'est devise/session         %>
     <%# sur toutes les pages xD                                                          %>
     <%# :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::%>
-
     <% if ['pages', 'devise/registrations', 'devise/sessions' ].include?(params[:controller]) %>
-
       <div class="pastouche"><%= yield %></div>
     <% else %>
       <div class="container2">
@@ -49,11 +40,9 @@
         <div class="contenu">
           <%= render 'shared/nav_haut' %>
           <div class="pastouche" style="margin: 0 auto"><%= yield %></div>
+          <%= render 'shared/footer' %>
         </div>
       </div>
     <% end %>
-
-
-
   </body>
 </html>
