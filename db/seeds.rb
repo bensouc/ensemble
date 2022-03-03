@@ -7,3 +7,14 @@
 # students.each do |student|
 #   Student.create!(first_name: student, classroom: monna_classroom)
 # end
+puts 'selecting all skills'
+skills = Skill.all
+skills.each do |skill|
+
+  puts skill.grade
+  skill.grade = 'CE1'
+  skill.save!
+  puts skill.grade
+  puts '**********'
+end
+puts 'c ok'
