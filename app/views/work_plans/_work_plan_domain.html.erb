@@ -1,4 +1,6 @@
+<%# work_plan.work_plan_domains.each do |work_plan_domain|%>
 <% work_plan.work_plan_domains.order(:id).each do |work_plan_domain|%>
+<%raise%>
   <%# boucle sur les work_plan_domains %>
   <div class='domain  ' id="<%= dom_id(work_plan_domain) %>">
     <div class='p-1 d-flex'>
