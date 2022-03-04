@@ -6,6 +6,7 @@ class WorkPlansController < ApplicationController
       {
         #work_plan_domain_ids: wp.work_plan_domain_ids,
         name: "#{wp.name} - CLONE",
+        grade: wp.grade,
         user_id: current_user.id,
         start_date: wp.start_date,
         end_date: wp.end_date,
@@ -26,7 +27,7 @@ class WorkPlansController < ApplicationController
       new_wp_domain.save
     end
 
-    if new_wp.save
+    if new_wp.save!
 
 
       redirect_to work_plan_path(new_wp), notice: 'Clonage réussi'
@@ -117,7 +118,7 @@ class WorkPlansController < ApplicationController
   private
 
   def work_plan_params
-    params.require(:work_plan).permit(:name, :student_id, :start_date, :end_date,
+    params.require(:work_plan).permit(:name, :student_id, :grade,:start_date, :end_date,
                                       work_plan_domains_attributes: %i[domain level],
                                       work_plan_skills_attributes: :name)
   end

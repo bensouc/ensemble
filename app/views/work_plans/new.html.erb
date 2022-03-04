@@ -7,14 +7,18 @@
       <div class='box-start m-top'>
         <div class='box-column'>
           <p class='pad-35'>Nommez votre plan de travail : *</p>
+          <p class='pad-35'>Niveau de : *</p>
           <p class='pad-35'>Période du :</p>
           <p class='pad-35'>Personnalisez pour l'élève :</p>
         </div>
-
         <div class='box-column'>
           <%= f.input :name, label: false,
                       # placeholder: 'CE2...',
                       input_html: { class: 'area grow m-left' } %>
+          <%= f.input :grade, label: false,
+                            collection: Classroom::GRADE,
+                            input_html: {class: 'area grow m-left'}
+                            %>
           <%# <i class="far fa-calendar-check font-fa"></i> %>
           <div class='box-start data-controller='wp-default-period'>
             <div data-wp-default-period-target='start'
@@ -34,7 +38,6 @@
                             label_method: :first_name %>
         </div>
       </div>
-
       <%= f.simple_fields_for :work_plan_domains do |domain_form| %>
         <div class='m-top'>
           <%= domain_form.input :domain, label: 'Choisissez un domaine :', as: :radio_buttons,
@@ -44,7 +47,6 @@
                                 item_wrapper_class: 'domain-item',
                                 input_html: { class: 'selector domain-selector' } %>
         </div>
-
         <div class='m-top'>
           <%= domain_form.input :level, label: 'Choisissez une ceinture :', as: :radio_buttons,
                                 collection: WorkPlanDomain::LEVELS,
@@ -55,7 +57,6 @@
                                 label_method: lambda { |level| render 'level_btn', level: level} %>
         </div>
       <% end %>
-
       <div class='m-top box-end'>
         <%= f.submit "Valider", class: 'area rect-sm btn-valid' %>
       </div>
