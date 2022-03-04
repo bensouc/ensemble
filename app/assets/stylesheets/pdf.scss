@@ -143,14 +143,15 @@ div.nobreak { page-break-inside: avoid; }
 .border-skill{
   float: left;
   border:  thin solid #dddddd;
+  background-color: #888585;
   border-radius: 14px;
   width: 600px;
   height: 44px;
-  padding: 5px 5px;
+  padding: 10px 10px;
   margin: 0 25px 15px 20px;
   font-size: 1em;
   font-family: 'Roboto', sans-serif;
-}
+  }
 // CSS to display challenge kind with Style
 
 

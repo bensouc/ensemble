@@ -8,6 +8,7 @@ class WorkPlan < ApplicationRecord
   has_many :work_plan_skills, through: :work_plan_domains
 
   validates :name, presence: true
+  validates :grade, presence: true
 
 
 end

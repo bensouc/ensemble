@@ -6,5 +6,6 @@ class Skill < ApplicationRecord
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
   validates :name, presence: true
   validates :symbol, presence: true
+  validates :grade, presence: true
 
 end

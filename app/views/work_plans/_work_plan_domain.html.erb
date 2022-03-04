@@ -2,6 +2,7 @@
   <% work_plan.work_plan_domains.order(:id).each do |work_plan_domain|%>
     <%# boucle sur les work_plan_domains %>
     <div class='domain  ' id="<%= dom_id(work_plan_domain) %>">
+      <%# DOMAIN + BELT DISPLAY %>
       <div class='p-1 d-flex'>
         <div class='domain-belt-level'>
           <div class='domain-display d-flex justify-content-start'>
@@ -23,7 +24,7 @@
             </div>
           </div>
         </div>
-        <%#  %>
+        <%# SKILLS DISPLAY  %>
         <div class='p-2 skill-display'>
           <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
             <div class='d-flex justify-content-between p-2 '>
@@ -84,7 +85,7 @@
               <%= simple_form_for [WorkPlanSkill.new ], url:  work_plan_domain_work_plan_skills_path(work_plan_domain), method: :post, class:'d-flex'  do |f| %>
                 <div class=" d-flex justify-content-between pb-1 ">
                   <div class='d-flex '>
-                    <%= select_tag :skill, options_from_collection_for_select(Skill.where(domain: work_plan_domain.domain ,level: work_plan_domain.level).order(:id), :id, :name), :prompt => "Sélectionnez Une compétences",class: 'skill-selector', :required => true %>
+                    <%= select_tag :skill, options_from_collection_for_select(Skill.where(domain: work_plan_domain.domain ,level: work_plan_domain.level, grade: work_plan.grade).order(:id), :id, :name), :prompt => "Sélectionnez Une compétences",class: 'skill-selector', :required => true %>
                   </div>
                   <div>
                     <%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>controle</option>"), :prompt => "Sélectionnez Un type" ,class: 'skill-selector', :required => true %>
