@@ -66,7 +66,7 @@
                     <% end%>
                   </div>
                   <div class='align-items-center cells'>
-                    <% if plan_skill.kind.downcase == 'controle' %>
+                    <% if (plan_skill.kind.downcase == 'controle') ||  (plan_skill.kind.downcase == 'ceinture')%>
                       <i class="fas fa-circle bullet-color"></i>
                     <% else %>
                       <i class="fas fa-circle text-white"></i>
@@ -88,7 +88,7 @@
                     <%= select_tag :skill, options_from_collection_for_select(Skill.where(domain: work_plan_domain.domain ,level: work_plan_domain.level, grade: work_plan.grade).order(:id), :id, :name), :prompt => "Sélectionnez Une compétences",class: 'skill-selector', :required => true %>
                   </div>
                   <div>
-                    <%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>controle</option>"), :prompt => "Sélectionnez Un type" ,class: 'skill-selector', :required => true %>
+                    <%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>ceinture</option>"), :prompt => "Sélectionnez Un type" ,class: 'skill-selector', :required => true %>
                   </div>
                 </div>
                 <div class=''>
@@ -102,7 +102,7 @@
       <%# show 1 exo %>
       <div >
         <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
-          <% if work_plan_skill.kind == 'exercice' %>
+          <% if (work_plan_skill.kind == 'exercice') %>
             <%= render 'challenge_display', work_plan_skill: work_plan_skill%>
           <% end %>
         <% end %>

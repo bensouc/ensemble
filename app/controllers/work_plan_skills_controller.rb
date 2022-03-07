@@ -4,7 +4,7 @@ class WorkPlanSkillsController < ApplicationController
 
     @work_plan_skill = WorkPlanSkill.new(set_params_wpskill)
     challenges = Challenge.where(skill_id: @work_plan_skill.skill)
-    if @work_plan_skill.kind.downcase == 'exercice'
+    if (@work_plan_skill.kind.downcase == 'exercice')
       if challenges == []
         # if no existing challeng 4 that skill
         # create a empty challenge 4 that skill
