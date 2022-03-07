@@ -142,8 +142,8 @@ div.nobreak { page-break-inside: avoid; }
 }
 .border-skill{
   float: left;
-  border:  thin solid #dddddd;
-  background-color: #888585;
+  border:  thin solid #a3a2a2;
+  background-color: #dfe2df;
   border-radius: 14px;
   width: 600px;
   height: 44px;
@@ -243,4 +243,54 @@ div.nobreak { page-break-inside: avoid; }
 
 .attachment__caption{
         display: none;
+}
+
+//css for table edition
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-weight: 400;
+}
+
+td,
+th {
+  padding: 0;
+}
+
+td:not([align]),
+th:not([align]) {
+  text-align: left;
+}
+
+.table {
+  background-color: #fff;
+  color: #363636;
+}
+
+.table td,
+.table th {
+  border: 1px solid #dbdbdb;
+  border-width: 0 0 1px;
+  padding: 0.5em 0.75em;
+  vertical-align: top;
+}
+
+.table.is-bordered td,
+.table.is-bordered th {
+  border-width: 1px;
+}
+
+.table.is-bordered tr:last-child td,
+.table.is-bordered tr:last-child th {
+  border-bottom-width: 1px;
+}
+
+.table-input {
+  background-color: transparent;
+  border-color: transparent;
+  box-shadow: none;
+  padding-left: 0;
+  padding-right: 0;
+  margin: 0;
 }
