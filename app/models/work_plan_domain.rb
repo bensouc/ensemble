@@ -1,5 +1,6 @@
 class WorkPlanDomain < ApplicationRecord
   DOMAINS = ['Vocabulaire', 'Grammaire', 'Numération', 'Calcul', 'Géométrie', 'Grandeurs et Mesures']
+  # order in the array give the Workplan show domain display ordering
   LEVELS = 1..7
 
   belongs_to :work_plan

@@ -39,94 +39,101 @@
       </div>
     </div>
     <%# Start of a domain %>
-    <div class='challenges '>
+    <div class='domains-block'>
       <%# boucle sur les work_plan_domains %>
-      <% @work_plan.work_plan_domains.order(:id).each do |work_plan_domain|%>
-        <div class="nobreak">
-          <%# displayname %>
-          <div class='domain-display'>
-            <%= work_plan_domain.domain%>
-          </div>
-          <%# belt and level div %>
-          <div class='belt-display'>
-            <%# belt pic %>
-            <div>
-              <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642065142/belt_white_cxov6t.png", size: "100x50")%>
-            </div>
-            <%# belt levelname %>
-            <div <%  if ['Géométrie', 'Grandeurs et Mesures'].include?(work_plan_domain.domain) then%> style = 'visibility: hidden'<%end%>>
-              <strong><%= @belt[work_plan_domain.level-1].capitalize%></strong>
-            </div>
-          </div>
-          <%# skills zone %>
-          <div class='skill-display '>
-            <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
-              <%# loop for each skills %>
-              <div class='a-skill'>
-                <div class='border-skill '>
-                  <%= plan_skill.skill.symbol%>
-                  <%= plan_skill.skill.name%>
+      <%WorkPlanDomain::DOMAINS.each do |work_plan_domains|%>
+        <% wpd2 = @work_plan.work_plan_domains.where(domain: "#{work_plan_domains}")%>
+        <% unless wpd2.empty? %>
+          <%wpd2.order(:level).each do |work_plan_domain|%>
+            <div class="domain-block">
+              <div class="">
+                <%# displayname %>
+                <div class='domain-display'>
+                  <%= work_plan_domain.domain%>
                 </div>
-                <%# tab for skill kind %>
-                <div class='challenge-kind '>
-                  <%# les entetes %>
-                  <div class='kind-label'>
-                    <div class='cells'>J</div>
-                    <div class='cells'>E</div>
-                    <div class='cells'>C</div>
-                  </div>
-                  <%# les skills %>
-                  <div class='kind-display'>
-                    <div class='start'>
-                      <% if plan_skill.kind.downcase == 'jeu' %>
-                        <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642591049/dot_PNG40_kibspo.png", size: "20x20")%>
-                      <% end%>
-                    </div>
-                    <div class='middle'>
-                      <% if plan_skill.kind.downcase == 'exercice' %>
-                        <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642591049/dot_PNG40_kibspo.png", size: "15x15")%>
-                      <% end%>
-                    </div>
-                    <div class='end'>
-                      <% if plan_skill.kind.downcase == 'controle' %>
-                        <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642591049/dot_PNG40_kibspo.png", size: "20x20")%>
-                      <% end%>
-                    </div>
-                  </div>
-                </div >
-              </div>
-            <% end %>
-          </div>
-        </div>
-        <%# end show skill %>
-        <%# show 1 exo %>
-        <div class='display-challenges'>
-          <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
-            <div class="nobreak">
-              <% if work_plan_skill.kind == 'exercice' %>
-                <%# challengeS render%>
-                <%# titre de la skill %>
-                <div class='display-challenge-name '>
-                  <%# <h4><%= work_plan_skill.skill.name</h4> %>
-                </div>
-                <div>
+                <%# belt and level div %>
+                <div class='belt-display'>
+                  <%# belt pic %>
                   <div>
-                    <div class="cont-challenge">
-                      <div class= "challenge-card">
-                        <div class= 'challenge-content'>
-                          <%# display le content.body d'un exo %>
-                          <%= work_plan_skill.challenge.content.body %>
-                          <%# END display le content.body d'un exo %>
+                    <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642065142/belt_white_cxov6t.png", size: "100x50")%>
+                  </div>
+                  <%# belt levelname %>
+                  <div <%  if ['Géométrie', 'Grandeurs et Mesures'].include?(work_plan_domain.domain) then%> style = 'visibility: hidden'<%end%>>
+                    <strong><%= @belt[work_plan_domain.level-1].capitalize%></strong>
+                  </div>
+                </div>
+                <%# skills zone %>
+                <div class='skill-display'>
+                  <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
+                    <%# loop for each skills %>
+                    <div class='a-skill'>
+                      <div class='border-skill '>
+                        <%= plan_skill.skill.symbol%>
+                        <%= plan_skill.skill.name%>
+                      </div>
+                      <%# tab for skill kind %>
+                      <div class='challenge-kind '>
+                        <%# les entetes %>
+                        <div class='kind-label'>
+                          <div class='cells'>J</div>
+                          <div class='cells'>E</div>
+                          <div class='cells'>C</div>
+                        </div>
+                        <%# les skills %>
+                        <div class='kind-display'>
+                          <div class='start'>
+                            <% if plan_skill.kind.downcase == 'jeu' %>
+                              <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642591049/dot_PNG40_kibspo.png", size: "20x20")%>
+                            <% end%>
+                          </div>
+                          <div class='middle'>
+                            <% if plan_skill.kind.downcase == 'exercice' %>
+                              <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642591049/dot_PNG40_kibspo.png", size: "20x20")%>
+                            <% end%>
+                          </div>
+                          <div class='end'>
+                            <% if (plan_skill.kind.downcase == 'controle') || plan_skill.kind.downcase == 'ceinture' %>
+                              <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642591049/dot_PNG40_kibspo.png", size: "20x20")%>
+                            <% end%>
+                          </div>
+                        </div>
+                      </div >
+                    </div>
+                  <% end %>
+                </div>
+              </div>
+              <%# end show skill %>
+            </div>
+            <%# show 1 exo %>
+            <div class='display-challenges'>
+              <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
+                <div class="nobreak">
+                  <% if work_plan_skill.kind == 'exercice' %>
+                    <%# challengeS render%>
+                    <%# titre de la skill %>
+                    <div class='display-challenge-name '>
+                      <%# <h4><%= work_plan_skill.skill.name</h4> %>
+                    </div>
+                    <div>
+                      <div>
+                        <div class="cont-challenge">
+                          <div class= "challenge-card">
+                            <div class= 'challenge-content'>
+                              <%# display le content.body d'un exo %>
+                              <%= work_plan_skill.challenge.content.body %>
+                              <%# END display le content.body d'un exo %>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                    <%# end challengeS render %>
+                  <% end %>
                 </div>
-                <%# end challengeS render %>
               <% end %>
             </div>
           <% end %>
-        </div>
+        <% end %>
       <% end %>
       <%# end of domain loop %>
     </div>

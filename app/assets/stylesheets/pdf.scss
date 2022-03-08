@@ -24,14 +24,17 @@ div.nobreak { page-break-inside: avoid; }
   font-family: 'Roboto', sans-serif;
   // border: 1px dashed rgb(0, 255, 42);
 }
-.challenges{
+.domains-block{
   // styles for domain loop
-  display: block;
+  // display: block;
+
   width: 1000px;
   margin-top: 50px;
+  margin-bottom: 15px;
   word-break: break-word;
 
 }
+
 
 .domain-display {
   margin-bottom: 5px;
@@ -123,32 +126,38 @@ div.nobreak { page-break-inside: avoid; }
   width: 210px;
   height: 120px;
 }
+
+.domain-block{
+  border-top: #a3a2a2;
+}
+
 .skill-display{
   margin-top: -34px;
+  margin-bottom: 15px;
   float: right;
   width: 84%;
   padding: 0 0 5px 0;
-  // border:  thin solid #b92f2f;
+  border-bottom:  thin solid #b4b4b4;
 }
 
 .a-skill{
-  margin-bottom: 5px;
-  // border:  thin dashed #b92f2f;
+  page-break-inside: avoid;
+  margin-bottom: 15px;
+
 }
 // div that contains kind display
 .challenge-kind{
   float: right;
-
 }
 .border-skill{
   float: left;
   border:  thin solid #a3a2a2;
   background-color: #dfe2df;
   border-radius: 14px;
-  width: 600px;
-  height: 44px;
+  width: 740px;
+  min-height: 44px;
   padding: 10px 10px;
-  margin: 0 25px 15px 20px;
+  margin: 0 10px 0px 0;
   font-size: 1em;
   font-family: 'Roboto', sans-serif;
   }
