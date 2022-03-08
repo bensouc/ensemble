@@ -45,7 +45,7 @@
         <% wpd2 = @work_plan.work_plan_domains.where(domain: "#{work_plan_domains}")%>
         <% unless wpd2.empty? %>
           <%wpd2.order(:level).each do |work_plan_domain|%>
-            <div class="nobreak">
+            <div class="domain-block">
               <div class="">
                 <%# displayname %>
                 <div class='domain-display'>

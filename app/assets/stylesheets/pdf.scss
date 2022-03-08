@@ -126,24 +126,28 @@ div.nobreak { page-break-inside: avoid; }
   width: 210px;
   height: 120px;
 }
+
+.domain-block{
+  border-top: #a3a2a2;
+}
+
 .skill-display{
   margin-top: -34px;
+  margin-bottom: 15px;
   float: right;
   width: 84%;
   padding: 0 0 5px 0;
-  border:  thin solid #b92f2f;
+  border-bottom:  thin solid #b4b4b4;
 }
 
 .a-skill{
   page-break-inside: avoid;
   margin-bottom: 15px;
-  border:  thin dashed #b92f2f;
+
 }
 // div that contains kind display
 .challenge-kind{
   float: right;
-   border:  thin dashed #34b92f;
-
 }
 .border-skill{
   float: left;
@@ -151,9 +155,9 @@ div.nobreak { page-break-inside: avoid; }
   background-color: #dfe2df;
   border-radius: 14px;
   width: 740px;
-  height: 44px;
+  min-height: 44px;
   padding: 10px 10px;
-  // margin: 0 25px 15px 0;
+  margin: 0 10px 0px 0;
   font-size: 1em;
   font-family: 'Roboto', sans-serif;
   }
