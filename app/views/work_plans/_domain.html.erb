@@ -37,7 +37,8 @@
           <%= simple_form_for [WorkPlanSkill.new ], url:  work_plan_domain_work_plan_skills_path(work_plan_domain), method: :post, class:'d-flex'  do |f| %>
             <div class=" d-flex justify-content-between pb-1 ">
               <div class='d-flex '>
-                <%= select_tag :skill, options_from_collection_for_select(Skill.where(domain: work_plan_domain.domain ,level: work_plan_domain.level, grade: @work_plan.grade).order(:id), :id, :name), :prompt => "Sélectionnez Une compétences",class: 'skill-selector', :required => true %>
+
+                <%= select_tag :skill, options_from_collection_for_select(Skill.where(domain: work_plan_domain.domain ,level: work_plan_domain.level, grade: @work_plan.grade).order(:symbol,:name), :id,:name), :prompt => "Sélectionnez Une compétences",class: 'skill-selector', :required => true %>
               </div>
               <div>
                 <%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>ceinture</option>"), :prompt => "Sélectionnez Un type" ,class: 'skill-selector', :required => true %>
