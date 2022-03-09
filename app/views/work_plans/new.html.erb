@@ -37,26 +37,8 @@
                             input_html: {class: 'area grow m-left'},
                             label_method: :first_name %>
         </div>
-      </div>
-      <%= f.simple_fields_for :work_plan_domains do |domain_form| %>
-        <div class='m-top'>
-          <%= domain_form.input :domain, label: 'Choisissez un domaine :', as: :radio_buttons,
-                                collection: WorkPlanDomain::DOMAINS,
-                                collection_wrapper_tag: 'div',
-                                collection_wrapper_class: 'wrapper',
-                                item_wrapper_class: 'domain-item',
-                                input_html: { class: 'selector domain-selector' } %>
-        </div>
-        <div class='m-top'>
-          <%= domain_form.input :level, label: 'Choisissez une ceinture :', as: :radio_buttons,
-                                collection: WorkPlanDomain::LEVELS,
-                                collection_wrapper_tag: 'div',
-                                collection_wrapper_class: 'wrapper',
-                                item_wrapper_class: 'level-item',
-                                input_html: { class: 'selector level-selector' },
-                                label_method: lambda { |level| render 'level_btn', level: level} %>
-        </div>
-      <% end %>
+       </div>
+
       <div class='m-top box-end'>
         <%= f.submit "Valider", class: 'area rect-sm btn-valid' %>
       </div>

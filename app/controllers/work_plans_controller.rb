@@ -118,9 +118,9 @@ class WorkPlansController < ApplicationController
   private
 
   def work_plan_params
-    params.require(:work_plan).permit(:name, :student_id, :grade,:start_date, :end_date,
-                                      work_plan_domains_attributes: %i[domain level],
-                                      work_plan_skills_attributes: :name)
+    params.require(:work_plan).permit(:name, :student_id, :grade,:start_date, :end_date)
+                                      # work_plan_domains_attributes: %i[domain level],
+                                      # work_plan_skills_attributes: :name)
   end
 
   def true_wp_params
