@@ -29,9 +29,9 @@
             <a class="dropdown-item" href="#">Ma classe</a>
             <a class="dropdown-item" href="#">Mon compte</a>
             <%if current_user.admin%>
-            <%= link_to 'ADMIN', '/admin', class: "dropdown-item", target: '_blank' %>
+              <%= link_to 'ADMIN', '/admin', class: "dropdown-item", target: '_blank' %>
             <% end %>
-            <a class="dropdown-item" href="#">Déconnexion</a>
+            <%=link_to "Déconnexion", destroy_user_session_path, method: :delete,class: "dropdown-item"%>
           </div>
         </li>
       </ul>
