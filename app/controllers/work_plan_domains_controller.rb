@@ -1,16 +1,16 @@
 class WorkPlanDomainsController < ApplicationController
-
   def create
     @work_plan = WorkPlan.find(params_wp_id)
     @domain = WorkPlanDomain.new(work_plan_domain_params)
+    kind = params.require(:kind)
     @domain.work_plan = @work_plan
     @domain.save!
-    if ['Géométrie', 'Grandeurs et Mesures'].include?(@domain.domain)
-      @domain.level= 1
+    if ["Géométrie", "Grandeurs et Mesures"].include?(@domain.domain)
+      @domain.level = 1
       if @domain.save
-        redirect_to work_plan_path(@work_plan, anchor: 'bottom')
+        redirect_to work_plan_path(@work_plan, anchor: "bottom")
       else
-        redirect_to work_plan_path(@work_plan, anchor: 'dmn-validate')
+        redirect_to work_plan_path(@work_plan, anchor: "dmn-validate")
       end
     else
       ######################### start loop
@@ -20,37 +20,41 @@ class WorkPlanDomainsController < ApplicationController
       skills.each do |skill|
         # à chaque loop, creer wokrplan skill.
         work_plan_skill = WorkPlanSkill.new(
-            work_plan_domain_id: @domain.id,
-            skill_id: skill.id,
-            kind: 'exercice'
-          )
-        challenges = Challenge.where(skill_id: skill)
-        if challenges == []
-          # if no existing challeng 4 that skill
-          # create a empty challenge 4 that skill
-          name = work_plan_skill.skill.name + ( (Challenge.where(skill_id: work_plan_skill.skill).count) +1  ).to_s
-          challenge = Challenge.create({
-              skill: work_plan_skill.skill,
-              name: name,
-              user: current_user
-              })
-          challenge.content.body = <<~HTML
-          Exercice à REDIGER............................
-          HTML
-          challenge.save!
-          # @work_plan_skill.challenge = challenge
-        else
-          # recuper un des exo existant avec le skill id de @work_plan_skill
-          challenge = challenges.sample
+          work_plan_domain_id: @domain.id,
+          skill_id: skill.id,
+          kind: kind
+        )
+        if kind == "exercice"
+          challenges = Challenge.where(skill_id: skill)
+          if challenges == []
+            # if no existing challeng 4 that skill
+            # create a empty challenge 4 that skill
+            name = work_plan_skill.skill.name + ((Challenge.where(skill_id: work_plan_skill.skill).count) + 1).to_s
+            challenge = Challenge.create(
+              {
+                skill: work_plan_skill.skill,
+                name: name,
+                user: current_user,
+              }
+            )
+            challenge.content.body = <<~HTML
+              Exercice à REDIGER............................
+            HTML
+            challenge.save!
+            # @work_plan_skill.challenge = challenge
+          else
+            # recuper un des exo existant avec le skill id de @work_plan_skill
+            challenge = challenges.sample
+          end
+          work_plan_skill.challenge = challenge
         end
-        work_plan_skill.challenge = challenge
         work_plan_skill.save!
       end
       # $$$$$$$ END $$$$$$$$$$$$$$$$$$$$
       if @domain.save
-        redirect_to work_plan_path(@work_plan, anchor: 'bottom')
+        redirect_to work_plan_path(@work_plan, anchor: "bottom")
       else
-        redirect_to work_plan_path(@work_plan, anchor: 'dmn-validate')
+        redirect_to work_plan_path(@work_plan, anchor: "dmn-validate")
       end
     end
   end
@@ -70,5 +74,9 @@ class WorkPlanDomainsController < ApplicationController
 
   def work_plan_domain_params
     params[:work_plan].require(:work_plan_domain).permit(:domain, :level)
+  end
+
+  def work_plan_domain_kind_params
+    params.require(:kind)
   end
 end
