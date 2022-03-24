@@ -47,3 +47,4 @@ require("@rails/ujs").start();
 import "controllers"
 import "../plugins/quote"
 import "../plugins/trix-editor-overrides"
+import "../plugins/stimulus_scroll_progress"

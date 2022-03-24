@@ -4,7 +4,13 @@ body {
   font-family: $body-font;
 }
 
+.scroll-progress{
+  height: 0.5rem;
+  top: 0;
+  position: fixed;
 
+  background-color: #f241506b;
+}
 
 
 
