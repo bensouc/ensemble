@@ -21,9 +21,9 @@
   "devDependencies": {
     "webpack-dev-server": "^4.6.0"
   },
-    "engines": {
-      "node": "v14.15.5",
-      "yarn": "v1.22.15",
-      "npm": "v6.14.11"
-    }
+  "engines": {
+    "node": "v14.15.5",
+    "yarn": "v1.22.15",
+    "npm": "v6.14.11"
+  }
 }
