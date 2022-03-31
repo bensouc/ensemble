@@ -1,0 +1,26 @@
+<div class='d-flex justify-content-between p-2 '>
+  <div class="previous_eval mt-2">
+  <%# 3 previous wps %>
+  <%# last_wps = WorlPlanSkill%>
+    <div class="eval_bull">
+      <i class="fa-solid fa-j"></i>
+    </div>
+    <div class="eval_bull">
+      <i class="fa-solid fa-c"></i>
+    </div>
+    <div class="eval_bull">
+      <i class="fa-solid fa-c"></i>
+    </div>
+    <%# current wps %>
+    <div class="eval_bull">
+      <i class="fa-solid fa-c"></i>
+    </div>
+  </div>
+<%= render "eval_wps_mngt", plan_skill: plan_skill %>
+  <div class='border-skill justify-content-between mt-2'>
+
+      <%= plan_skill.skill.symbol %>
+      <%= plan_skill.skill.name %>
+
+  </div>
+ </div>

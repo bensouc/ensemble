@@ -38,6 +38,14 @@ class WorkPlanSkillsController < ApplicationController
   end
 
 
+  def update_eval
+   @work_plan_skill = WorkPlanSkill.find(params[:id])
+   raise
+   #input : completed / failed / redo
+
+  end
+
+
   def destroy
     @work_plan_skill = WorkPlanSkill.find(params[:id])
     work_plan_domain = @work_plan_skill.work_plan_domain
@@ -48,13 +56,20 @@ class WorkPlanSkillsController < ApplicationController
 
   def update
     @work_plan_skill = WorkPlanSkill.find(params[:id])
-    @challenge = Challenge.find(params[:challenge])
     @work_plan = @work_plan_skill.work_plan_domain.work_plan
+    if params[:format].nil?
+      @challenge = Challenge.find(params[:challenge])
+      @work_plan_skill.challenge = @challenge
+      @work_plan_skill.save
+      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge))
+    end
 
-    @work_plan_skill.challenge = @challenge
+    @work_plan_skill.status = params[:format]
     @work_plan_skill.save
-    redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge))
+    redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
   end
+
+
 
   private
 

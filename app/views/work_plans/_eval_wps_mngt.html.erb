@@ -1,0 +1,38 @@
+<div class="eval-mngt">
+  <% # #si plan_skill kind jeux %>
+  <div class=''>
+    <% if plan_skill.kind.downcase == "jeu" %>
+      <%= link_to work_plan_skill_update_eval_path(plan_skill, :redo), method: :patch do %>
+        <i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i>
+      <% end %>
+      <%= link_to work_plan_skill_update_eval_path(plan_skill, :completed), method: :patch do %>
+        <i class="fas fa-pen text-info eval-icon"></i>
+      <% end %>
+    <% end %>
+  </div>
+  <% # #si plan_skill kind exo %>
+  <div class=''>
+    <% if plan_skill.kind.downcase == "exercice" %>
+      <%= link_to work_plan_skill_update_eval_path(plan_skill, :failed), method: :patch do %>
+        <i class="fa-solid fa-xmark text-danger eval-icon"></i>
+      <% end %>
+      <%= link_to work_plan_skill_update_eval_path(plan_skill, :redo), method: :patch do %>
+        <i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i>
+      <% end %>
+      <%= link_to work_plan_skill_update_eval_path(plan_skill, :completed), method: :patch do %>
+        <i class="fa-solid fa-graduation-cap text-info eval-icon"></i>
+      <% end %>
+    <% end %>
+  </div>
+    <% # #si plan_skill kind ceinture %>
+  <div class=''>
+    <% if (plan_skill.kind.downcase == "controle") || (plan_skill.kind.downcase == "ceinture") %>
+      <%= link_to work_plan_skill_update_eval_path(plan_skill, :redo), method: :patch do %>
+        <i class="fa-solid fa-arrow-rotate-left text-warning eval-icon"></i>
+      <% end %>
+      <%= link_to work_plan_skill_update_eval_path(plan_skill, :completed), method: :patch do %>
+        <i class="fa-solid fa-graduation-cap text-success eval-icon"></i>
+      <% end %>
+    <% end %>
+  </div>
+</div>

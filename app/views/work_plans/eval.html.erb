@@ -1,0 +1,18 @@
+<div class=' pt '>
+  <div class=''>
+    <% # header WP %>
+  <%= render "header_wp", work_plan: @work_plan %>
+    <% # Student details %>
+    <div class='student-name d-flex justify-content-between'>
+    <% if !@work_plan.student.nil? %>
+      <h2><strong><%= @work_plan.student.first_name %></strong></h2>
+    <% end %>
+      <h1>Correction</h1>
+    <%= link_to 'Retour Plan de travail', work_plan_path(@work_plan)%>
+    </div>
+  </div>
+  <% # Start of a domain %>
+    <div>
+    <%= render "eval_work_plan_domains", work_plan: @work_plan %>
+  </div>
+</div>

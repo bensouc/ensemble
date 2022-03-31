@@ -48,6 +48,16 @@ class WorkPlansController < ApplicationController
     # raise
   end
 
+  def eval
+    @belt = %w(blanche jaune orange verte bleue marron noire)
+    @work_plan = WorkPlan.find(params[:id])
+
+    # envoyer les resultats liés à leleve et au même skill_id
+    #fonction
+    
+
+  end
+
   def show
     @belt = %w(blanche jaune orange verte bleue marron noire)
     @work_plan = WorkPlan.find(params[:id])

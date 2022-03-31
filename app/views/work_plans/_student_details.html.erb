@@ -3,6 +3,9 @@
       <h2><strong><%= work_plan.student.first_name%></strong></h2>
     <% end %>
     <div class='d-flex'>
+    <%= link_to eval_path(@work_plan), class: "utility-wp-btn" do %>
+        <h6>Correction</h6>
+      <% end %>
       <%= link_to work_plan_path(@work_plan, format: :pdf), class: 'utility-wp-btn' do%>
         <h6>Export PDF</h6>
       <% end %>
