@@ -22,7 +22,7 @@ class WorkPlanDomainsController < ApplicationController
         work_plan_skill = WorkPlanSkill.new(
           work_plan_domain_id: @domain.id,
           skill_id: skill.id,
-          kind: kind
+          kind: kind,
         )
         if kind == "exercice"
           challenges = Challenge.where(skill_id: skill)
