@@ -7,14 +7,15 @@
 # students.each do |student|
 #   Student.create!(first_name: student, classroom: monna_classroom)
 # end
-puts 'selecting all WP'
-wps = WorkPlan.all
-wps.each do |wp|
 
-  puts wp.grade
-  wp.grade = 'CE1'
-  wp.save!
-  puts wp.grade
-  puts '**********'
+#UPDATE workplans skill with student#
+
+wps_all = WorkPlanSkill.all
+wps_all.each do |wps|
+  unless wps.work_plan_domain.work_plan.student.nil?
+    puts wps.work_plan_domain.work_plan.student.first_name
+    wps.student = wps.work_plan_domain.work_plan.student
+    wps.save!
+    puts "#{wps.id} SAVED #{wps.student.first_name}"
+  end
 end
-puts 'c ok'
