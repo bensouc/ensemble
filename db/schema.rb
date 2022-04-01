@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_03_04_084204) do
+ActiveRecord::Schema.define(version: 2022_04_01_153851) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -112,6 +112,8 @@ ActiveRecord::Schema.define(version: 2022_03_04_084204) do
     t.bigint "work_plan_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.bigint "student_id"
+    t.index ["student_id"], name: "index_work_plan_domains_on_student_id"
     t.index ["work_plan_id"], name: "index_work_plan_domains_on_work_plan_id"
   end
 
@@ -122,8 +124,12 @@ ActiveRecord::Schema.define(version: 2022_03_04_084204) do
     t.bigint "challenge_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.boolean "completed", default: false
+    t.string "status", default: "new"
+    t.bigint "student_id"
     t.index ["challenge_id"], name: "index_work_plan_skills_on_challenge_id"
     t.index ["skill_id"], name: "index_work_plan_skills_on_skill_id"
+    t.index ["student_id"], name: "index_work_plan_skills_on_student_id"
     t.index ["work_plan_domain_id"], name: "index_work_plan_skills_on_work_plan_domain_id"
   end
 
@@ -145,9 +151,11 @@ ActiveRecord::Schema.define(version: 2022_03_04_084204) do
   add_foreign_key "challenges", "users"
   add_foreign_key "classrooms", "users"
   add_foreign_key "students", "classrooms"
+  add_foreign_key "work_plan_domains", "students"
   add_foreign_key "work_plan_domains", "work_plans"
   add_foreign_key "work_plan_skills", "challenges"
   add_foreign_key "work_plan_skills", "skills"
+  add_foreign_key "work_plan_skills", "students"
   add_foreign_key "work_plan_skills", "work_plan_domains"
   add_foreign_key "work_plans", "students"
   add_foreign_key "work_plans", "users"

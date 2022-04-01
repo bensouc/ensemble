@@ -1,7 +1,7 @@
 class WorkPlanDomainsController < ApplicationController
   def create
     @work_plan = WorkPlan.find(params_wp_id)
-    @domain = WorkPlanDomain.new(work_plan_domain_params)
+    @domain = WorkPlanDomain.new(domain: work_plan_domain_params[:domain], level: work_plan_domain_params[:level], student: @work_plan.student )
     kind = params.require(:kind)
     @domain.work_plan = @work_plan
     @domain.save!
@@ -22,8 +22,10 @@ class WorkPlanDomainsController < ApplicationController
         work_plan_skill = WorkPlanSkill.new(
           work_plan_domain_id: @domain.id,
           skill_id: skill.id,
-          kind: kind
+          kind: kind,
+          student: @work_plan.student
         )
+
         if kind == "exercice"
           challenges = Challenge.where(skill_id: skill)
           if challenges == []
@@ -49,6 +51,7 @@ class WorkPlanDomainsController < ApplicationController
           work_plan_skill.challenge = challenge
         end
         work_plan_skill.save!
+
       end
       # $$$$$$$ END $$$$$$$$$$$$$$$$$$$$
       if @domain.save

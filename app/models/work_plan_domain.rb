@@ -4,6 +4,7 @@ class WorkPlanDomain < ApplicationRecord
   LEVELS = 1..7
 
   belongs_to :work_plan
+  belongs_to :student, optional: true
 
   has_many :work_plan_skills, dependent: :destroy
   accepts_nested_attributes_for :work_plan_skills

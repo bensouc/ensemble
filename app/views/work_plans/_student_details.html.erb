@@ -1,8 +1,13 @@
   <div class='student-name d-flex justify-content-between'>
-    <% if !work_plan.student.nil? %>
+    <% unless work_plan.student.nil? %>
       <h2><strong><%= work_plan.student.first_name%></strong></h2>
     <% end %>
     <div class='d-flex'>
+      <% unless work_plan.student.nil? %>
+        <%= link_to eval_path(@work_plan), class: "utility-wp-btn" do %>
+          <h6>Correction</h6>
+        <% end %>
+      <% end %>
       <%= link_to work_plan_path(@work_plan, format: :pdf), class: 'utility-wp-btn' do%>
         <h6>Export PDF</h6>
       <% end %>

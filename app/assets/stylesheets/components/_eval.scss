@@ -1,0 +1,57 @@
+.eval-domain-belt-level {
+  width: 155px;
+}
+.eval-icon {
+  font-size: 25px;
+  padding: 0 10px;
+  width: 32px;
+}
+.previous_eval {
+  margin-right: 15px;
+  width: 10ch;
+  height: 40px;
+  border: solid grey;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.eval_bull {
+  width: 2.5ch;
+  height: 2.5ch;
+  border: solid grey;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.eval-mngt{
+  width: 150px;
+   display: flex;
+   align-items: center;
+}
+
+.failed{
+  background-color: red !important;
+  color: white !important;
+  border-top: red !important;
+}
+
+.redo{
+    background-color: #FFC65A  !important;
+    border-color: #FFC65A !important;
+  color: green !important;
+}
+
+.completed{
+  background-color: green !important;
+  border-color: green !important;
+  color: antiquewhite !important;
+}
+
+.new{
+  background-color: white !important;
+  color: black !important;
+}
