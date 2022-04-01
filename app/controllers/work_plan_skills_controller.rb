@@ -3,6 +3,7 @@ class WorkPlanSkillsController < ApplicationController
   def create
 
     @work_plan_skill = WorkPlanSkill.new(set_params_wpskill)
+    @work_plan_skill.student = @work_plan_skill.work_plan_domain.work_plan.student
     challenges = Challenge.where(skill_id: @work_plan_skill.skill)
     if (@work_plan_skill.kind.downcase == 'exercice')
       if challenges == []
@@ -57,6 +58,7 @@ class WorkPlanSkillsController < ApplicationController
   def update
     @work_plan_skill = WorkPlanSkill.find(params[:id])
     @work_plan = @work_plan_skill.work_plan_domain.work_plan
+
     if params[:format].nil?
       @challenge = Challenge.find(params[:challenge])
       @work_plan_skill.challenge = @challenge
