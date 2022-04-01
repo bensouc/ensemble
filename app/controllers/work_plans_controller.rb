@@ -68,7 +68,6 @@ class WorkPlansController < ApplicationController
     # # retrieveing the last 5 wps for the students
     # @last_5_wp = @work_plan.student.work_plans.order(updated_at: :desc).limit(10)
 
-    raise
 
     # envoyer les resultats liés à leleve et au même skill_id
     #fonction
@@ -81,9 +80,11 @@ class WorkPlansController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "#{@work_plan.name} #{unless @work_plan.student.nil?
-                 @work_plan.student.first_name
-               end}",
+        render pdf: "#{@work_plan.name} #{
+          unless @work_plan.student.nil?
+            @work_plan.student.first_name
+          end
+          }",
                template: "pdf/show_print.html.erb", # Excluding ".pdf" extension.
                disposition: "attachment", #a remettre pour lle DL auto des pdf
                margin: { top: 5,
