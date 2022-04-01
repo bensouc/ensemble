@@ -4,4 +4,9 @@ class WorkPlanSkill < ApplicationRecord
   belongs_to :challenge, optional: true
 
   validates :kind, presence: true, inclusion: { in: %w(jeu exercice controle ceinture)}
+  validates :status, inclusion: {in: %w(redo failed completed new)}
+
+  private
+
+
 end

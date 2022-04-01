@@ -28,7 +28,7 @@
   <div class=''>
     <% if (plan_skill.kind.downcase == "controle") || (plan_skill.kind.downcase == "ceinture") %>
       <%= link_to work_plan_skill_update_eval_path(plan_skill, :redo), method: :patch do %>
-        <i class="fa-solid fa-arrow-rotate-left text-warning eval-icon"></i>
+        <i class="fa-solid fa-arrow-rotate-left text-danger eval-icon"></i>
       <% end %>
       <%= link_to work_plan_skill_update_eval_path(plan_skill, :completed), method: :patch do %>
         <i class="fa-solid fa-graduation-cap text-success eval-icon"></i>

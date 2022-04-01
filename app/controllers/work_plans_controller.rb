@@ -52,9 +52,22 @@ class WorkPlansController < ApplicationController
     @belt = %w(blanche jaune orange verte bleue marron noire)
     @work_plan = WorkPlan.find(params[:id])
 
+    # creating data to display previous evals#
+    # retrieving all #workplandomains of @workplan
+    @wpds = WorkPlanDomain.where(work_plan_id: 65).ids
+    # retrieving all #workplanskill of @workplan using @wpds
+    @wpss = WorkPlanSkill.where(work_plan_domain_id: wpds).order(:skill_id)
+    # retrieveing the last 5 wp for the students
+    @last_5_wp = @work_plan.student.work_plans.order(updated_at: :desc).limit(10)
+
+    @wpss.each do |wps|
+      # ONLY the @work_plan.student for each skill_id & kind retrieve previous wps with status et order by date ONLY last 4
+    end
+raise
+
     # envoyer les resultats liés à leleve et au même skill_id
     #fonction
-    
+
 
   end
 

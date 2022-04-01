@@ -71,6 +71,7 @@ class WorkPlanSkillsController < ApplicationController
 
 
 
+
   private
 
   def set_params_wpskill
@@ -80,6 +81,5 @@ class WorkPlanSkillsController < ApplicationController
       kind: params.require(:kind)
     }
   end
-
 
 end
