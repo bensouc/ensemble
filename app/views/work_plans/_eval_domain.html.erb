@@ -20,6 +20,7 @@
     <%# SKILLS DISPLAY  %>
     <div class='p-2 skill-display'>
       <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
+      
         <%= render 'eval_skill_display', plan_skill: plan_skill%>
       <% end %>
     </div>

@@ -7,22 +7,12 @@ class WorkPlanSkillsController < ApplicationController
       if challenges == []
         # if no existing challeng 4 that skill
         # create a empty challenge 4 that skill
-        name = @work_plan_skill.skill.name + ((Challenge.where(skill_id: @work_plan_skill.skill).count) + 1).to_s
-        challenge = Challenge.create({
-          skill: @work_plan_skill.skill,
-          name: name,
-          user: current_user,
-        })
-        challenge.content.body = <<~HTML
-          Exercice à REDIGER............................
-        HTML
-        challenge.save!
-        # @work_plan_skill.challenge = challenge
+        work_plan_skill.challenge = add_new_chall_2_wps(@work_plan_skill)
       else
         # recuper un des exo existant avec le skill id de @work_plan_skill
         challenge = challenges.sample
+        @work_plan_skill.challenge = challenge
       end
-      @work_plan_skill.challenge = challenge
     end
 
     if @work_plan_skill.save! && @work_plan_skill.kind.downcase == "exercice"
@@ -53,20 +43,17 @@ class WorkPlanSkillsController < ApplicationController
   def update
     @work_plan_skill = WorkPlanSkill.find(params[:id])
     @work_plan = @work_plan_skill.work_plan_domain.work_plan
-
+    # if format nil => no evaluation
     if params[:format].nil? || !params[:challenge].nil?
       @challenge = Challenge.find(params[:challenge])
       @work_plan_skill.challenge = @challenge
       @work_plan_skill.save!
-
-
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge))
       return
     end
-
+    #:format completed redo failed
     @work_plan_skill.status = params[:format]
     @work_plan_skill.save
-
     redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@work_plan_skill))
   end
 
@@ -78,5 +65,20 @@ class WorkPlanSkillsController < ApplicationController
       skill_id: params.require(:skill).to_i,
       kind: params.require(:kind),
     }
+  end
+
+  def add_new_chall_2_wps(work_plan_skill)
+    name = work_plan_skill.skill.name + ((Challenge.where(skill_id: work_plan_skill.skill).count) + 1).to_s
+    challenge = Challenge.create({
+        skill: work_plan_skill.skill,
+        name: name,
+        user: current_user
+      })
+    challenge.content.body = <<~HTML
+    Exercice à REDIGER............................
+    HTML
+    challenge.save!
+    # @work_plan_skill.challenge = challenge
+    return challenge
   end
 end

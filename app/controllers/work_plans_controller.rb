@@ -58,7 +58,7 @@ class WorkPlansController < ApplicationController
     @wpds.each do |wpd|
       wpd.work_plan_skills.each do |wps|
         #retrieve the last 4 wps for the student on this skill ids
-        @last_4_wps = WorkPlanSkill.where(student: @work_plan.student, skill: wps.skill_id).order(updated_at: :desc).limit(4)
+        @last_4_wps = WorkPlanSkill.where(student: @work_plan.student, skill: wps.skill_id).order(:updated_at).limit(3)
         @previous << [wps.skill_id, @last_4_wps]
       end
     end
@@ -81,16 +81,18 @@ class WorkPlansController < ApplicationController
       format.html
       format.pdf do
         render pdf: "#{@work_plan.name} #{
-          unless @work_plan.student.nil?
+            unless @work_plan.student.nil?
             @work_plan.student.first_name
-          end
+            end
           }",
-               template: "pdf/show_print.html.erb", # Excluding ".pdf" extension.
-               disposition: "attachment", #a remettre pour lle DL auto des pdf
-               margin: { top: 5,
-                         bottom: 3,
-                         left: 5,
-                         right: 5 }
+          template: "pdf/show_print.html.erb", # Excluding ".pdf" extension.
+          disposition: "attachment", #a remettre pour lle DL auto des pdf
+          margin: {
+                      top: 5,
+                      bottom: 3,
+                      left: 5,
+                      right: 5
+                  }
         # dpi: 300
       end
     end
