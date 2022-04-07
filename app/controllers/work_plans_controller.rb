@@ -10,13 +10,14 @@ class WorkPlansController < ApplicationController
         user_id: current_user.id,
         start_date: wp.start_date,
         end_date: wp.end_date,
-        student_id: wp.student_id,
+        student_id: wp.student_id
       }
     )
     domains = WorkPlanDomain.where(work_plan_id: wp)
     domains.each do |domain|
       new_wp_domain = domain.dup
       new_wp_domain.student = wp.student
+      new_wp_domain.work_plan = new_wp
       new_wp_domain.save
       work_plan_skills = WorkPlanSkill.where(work_plan_domain_id: domain)
       work_plan_skills.each do |wps|
@@ -25,7 +26,6 @@ class WorkPlansController < ApplicationController
         new_wps.student = wp.student
         new_wps.save
       end
-      new_wp_domain.work_plan_ids = new_wp.id
       new_wp_domain.save
     end
 
