@@ -1,21 +1,24 @@
+<% last_3_wps = @previous.select { |t| t.first == plan_skill.skill_id }.first[1] %>
+
 <div class='d-flex justify-content-between p-2 '>
   <div class="previous_eval mt-2">
-  <%# 3 previous wps %>
-  <%# last_wps = WorlPlanSkill%>
-    <div class="eval_bull">
-      <i class="fa-solid fa-j"></i>
+  <% unless last_3_wps.count == 1 %>
+  <% # 3 previous wps %>
+  <% # last_wps = WorlPlanSkill %>
+    <% for n in -(last_3_wps.count)..-2 %>
+    <div class="eval_bull <%= last_3_wps[n].status %> ">
+      <i class="fa-solid fa-<%= plan_skill.kind[0] %>"></i>
     </div>
-    <div class="eval_bull">
-      <i class="fa-solid fa-c"></i>
-    </div>
-    <div class="eval_bull ">
-      <i class="fa-solid fa- "></i>
-    </div>
-    <%# current wps %>
-    <div class="eval_bull">
-      <i class="fa-solid fa-c"></i>
+    <% end %>
+  <% end %>
+    <% # current wps %>
+
+    <div class="eval_bull <%= plan_skill.status %>">
+      <i class="fa-solid fa-<%= plan_skill.kind[0] %> "></i>
     </div>
   </div>
+
+
 <%= render "eval_wps_mngt", plan_skill: plan_skill %>
   <div class='border-skill justify-content-between mt-2'>
 
