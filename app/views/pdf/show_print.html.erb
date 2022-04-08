@@ -9,6 +9,7 @@
     <%= stylesheet_link_tag wicked_pdf_asset_base64("application") %>
     <%# <%= javascript_include_tag wicked_pdf_asset_base64("number_pages") %>
     <script src="https://kit.fontawesome.com/aa9dc78317.js" crossorigin="anonymous"></script>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
   </head>
   <body onload='number_pages'>
     <div class='pt-header-box'>
@@ -64,11 +65,11 @@
                 </div>
                 <%# skills zone %>
                 <div class='skill-display'>
-                  <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
+                  <% work_plan_domain.work_plan_skills.order(:skill_id).each do |plan_skill| %>
                     <%# loop for each skills %>
                     <div class='a-skill'>
-                      <div class='border-skill '>
-                        <%= plan_skill.skill.symbol%>
+                      <div class='border-skill'>
+                        <symbol style='font-family: Times New Roman, Times, serif'><%= plan_skill.skill.symbol%></symbol>
                         <%= plan_skill.skill.name%>
                       </div>
                       <%# tab for skill kind %>
@@ -106,7 +107,7 @@
             </div>
             <%# show 1 exo %>
             <div class='display-challenges'>
-              <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
+              <% work_plan_domain.work_plan_skills.order(:skill_id).each do |work_plan_skill| %>
                 <div class="nobreak">
                   <% if work_plan_skill.kind == 'exercice' %>
                     <%# challengeS render%>

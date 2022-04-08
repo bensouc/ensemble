@@ -24,7 +24,7 @@
     </div>
     <%# SKILLS DISPLAY  %>
     <div class='p-2 skill-display'>
-      <% work_plan_domain.work_plan_skills.each do |plan_skill| %>
+      <% work_plan_domain.work_plan_skills.order(:skill_id).each do |plan_skill| %>
         <%= render 'skill_display', plan_skill: plan_skill%>
       <% end %>
       <%# add skill on domain %>
@@ -54,7 +54,7 @@
   </div>
   <%# show 1 exo %>
   <div >
-    <% work_plan_domain.work_plan_skills.each do |work_plan_skill| %>
+    <% work_plan_domain.work_plan_skills.order(:skill_id).each do |work_plan_skill| %>
       <% if (work_plan_skill.kind == 'exercice') %>
         <%= render 'challenge_display', work_plan_skill: work_plan_skill%>
       <% end %>

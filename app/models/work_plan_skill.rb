@@ -5,6 +5,6 @@ class WorkPlanSkill < ApplicationRecord
   belongs_to :student, optional: true
 
   validates :kind, presence: true, inclusion: { in: %w(jeu exercice controle ceinture)}
-  validates :status, inclusion: {in: %w(redo failed completed new)}
+  validates :status, inclusion: {in: %w(redo failed redo_OK completed new)}
 
 end

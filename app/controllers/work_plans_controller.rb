@@ -86,7 +86,8 @@ class WorkPlansController < ApplicationController
             end
           }",
           template: "pdf/show_print.html.erb", # Excluding ".pdf" extension.
-          disposition: "attachment", #a remettre pour lle DL auto des pdf
+          disposition: "attachment",
+          encoding: 'utf8', #a remettre pour lle DL auto des pdf
           margin: {
                       top: 5,
                       bottom: 3,
