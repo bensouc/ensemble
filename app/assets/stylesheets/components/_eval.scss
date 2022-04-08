@@ -1,5 +1,5 @@
 .eval-domain-belt-level {
-  width: 155px;
+  width: 100px;
 }
 .eval-icon {
   font-size: 25px;
@@ -17,6 +17,10 @@
   justify-content: space-around;
 }
 
+.orange{
+  color: orange;
+}
+
 .eval_bull {
   width: 2.5ch;
   height: 2.5ch;
@@ -28,21 +32,21 @@
 }
 
 .eval-mngt{
-  width: 150px;
+  width: 190px;
    display: flex;
    align-items: center;
 }
 
 .failed{
-  background-color: red !important;
+  background-color: orange !important;
   color: white !important;
-  border-top: red !important;
+  border-color: orange !important;
 }
 
 .redo{
-    background-color: #FFC65A  !important;
-    border-color: #FFC65A !important;
-  color: green !important;
+    background-color: yellow  !important;
+    border-color: yellow!important;
+  color: rgb(255, 154, 1) !important;
 }
 
 .completed{
@@ -56,4 +60,8 @@
   color: black !important;
 }
 
-
+.redo_OK{
+    background-color: green!important;
+    color: yellow !important;
+    border-color: yellow;
+}
