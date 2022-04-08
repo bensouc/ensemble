@@ -8,7 +8,7 @@
       <h2><strong><%= @work_plan.student.first_name %></strong></h2>
     <% end %>
       <h1>Correction</h1>
-    <%= link_to 'Retour Plan de travail', work_plan_path(@work_plan)%>
+    <%= link_to 'Retour Plan de travail', work_plan_path(@work_plan), class: 'utility-wp-btn eval-btn'%>
     </div>
   </div>
   <% # Start of a domain %>

@@ -4,7 +4,19 @@ class WorkPlanSkill < ApplicationRecord
   belongs_to :challenge, optional: true
   belongs_to :student, optional: true
 
-  validates :kind, presence: true, inclusion: { in: %w(jeu exercice controle ceinture)}
-  validates :status, inclusion: {in: %w(redo failed redo_OK completed new)}
+  validates :kind, presence: true, inclusion: { in: %w(jeu exercice controle ceinture) }
+  validates :status, inclusion: { in: %w(redo failed redo_OK completed new) }
 
+  def clone(current_wp, new_wp_domain)
+    new_wps = self.dup
+    new_wps.work_plan_domain_id = new_wp_domain.id
+    new_wps.student = current_wp.student
+    new_wps.status = "new"
+    new_wps.save
+  end
+
+  def self.last_4_wps(work_plan, wps)
+    # retrieve the last 4 wps for the student on this skill ids
+    WorkPlanSkill.where(student: work_plan.student, skill: wps.skill_id).sort_by(&:created_at).reverse[1..3]
+  end
 end
