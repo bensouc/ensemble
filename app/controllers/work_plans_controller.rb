@@ -24,6 +24,7 @@ class WorkPlansController < ApplicationController
         new_wps = wps.dup
         new_wps.work_plan_domain_id = new_wp_domain.id
         new_wps.student = wp.student
+        new_wps.status = "new"
         new_wps.save
       end
       new_wp_domain.save
@@ -58,8 +59,8 @@ class WorkPlansController < ApplicationController
     @wpds.each do |wpd|
       wpd.work_plan_skills.each do |wps|
         #retrieve the last 4 wps for the student on this skill ids
-        @last_4_wps = WorkPlanSkill.where(student: @work_plan.student, skill: wps.skill_id).order(:updated_at).limit(3)
-        @previous << [wps.skill_id, @last_4_wps]
+        last_4_wps = WorkPlanSkill.where(student: @work_plan.student, skill: wps.skill_id).order(updated_at: :desc).limit(4)
+        @previous << [wps.skill_id, last_4_wps]
       end
     end
 

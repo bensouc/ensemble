@@ -2,8 +2,9 @@
   <%# raise %>
   <% # #si plan_skill kind jeux %>
   <div class=''>
+  
     <% if plan_skill.kind.downcase == "jeu" %>
-      <%= link_to work_plan_skill_update_eval_path(plan_skill, :redo), method: :patch do %>
+      <%= link_to work_plan_skill_update_eval_path(plan_skill, :redo_OK), method: :patch do %>
         <i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i>
       <% end %>
       <%= link_to work_plan_skill_update_eval_path(plan_skill, :completed), method: :patch do %>

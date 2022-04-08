@@ -1,14 +1,17 @@
-<% last_3_wps = @previous.select { |t| t.first == plan_skill.skill_id }.first[1] %>
+<% last_3_wps = @previous.select { |t| t.first == plan_skill.skill_id }.first[1].sort_by(&:updated_at) %>
+
 
 <div class='d-flex justify-content-between p-2 '>
   <div class="previous_eval mt-2">
   <% unless last_3_wps.count == 1 %>
   <% # 3 previous wps %>
   <% # last_wps = WorlPlanSkill %>
-    <% for n in -(last_3_wps.count)..-2 %>
-    <div class="eval_bull <%= last_3_wps[n].status %> ">
-      <i class="fa-solid fa-<%= plan_skill.kind[0] %>"></i>
-    </div>
+    <%last_3_wps.each do |wps|%>
+      <% unless wps.id == plan_skill.id %>
+        <div class="eval_bull <%= wps.status %> ">
+        <i class="fa-solid fa-<%= wps.kind[0] %>"></i>
+        </div>
+      <% end %>
     <% end %>
   <% end %>
     <% # current wps %>
