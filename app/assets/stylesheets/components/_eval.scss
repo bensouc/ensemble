@@ -7,8 +7,8 @@
   width: 32px;
 }
 .previous_eval {
-  margin-right: 15px;
-  width: 10ch;
+  margin-right: 10px;
+  max-width: 15ch;
   height: 40px;
   border: solid grey;
   border-radius: 14px;
@@ -35,6 +35,8 @@
   width: 190px;
    display: flex;
    align-items: center;
+  margin-right: 18px;
+  padding-top: 10px;
 }
 
 .failed{
