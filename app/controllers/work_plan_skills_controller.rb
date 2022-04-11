@@ -7,7 +7,7 @@ class WorkPlanSkillsController < ApplicationController
       if challenges == []
         # if no existing challeng 4 that skill
         # create a empty challenge 4 that skill
-        work_plan_skill.challenge = add_new_chall_2_wps(@work_plan_skill)
+        @work_plan_skill.challenge = add_new_chall_2_wps(@work_plan_skill)
       else
         # recuper un des exo existant avec le skill id de @work_plan_skill
         challenge = challenges.sample
@@ -16,20 +16,13 @@ class WorkPlanSkillsController < ApplicationController
     end
 
     if @work_plan_skill.save! && @work_plan_skill.kind.downcase == "exercice"
-      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(challenge))
+      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@work_plan_skill.challenge))
     elsif @work_plan_skill.save!
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
       # a revoir poour la failedsaveredirection
     else
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan)
     end
-  end
-
-  def update_eval
-    @work_plan_skill = WorkPlanSkill.find(params[:id])
-    raise
-    #input : completed / failed / redo
-
   end
 
   def destroy
@@ -69,15 +62,7 @@ class WorkPlanSkillsController < ApplicationController
 
   def add_new_chall_2_wps(work_plan_skill)
     name = work_plan_skill.skill.name + ((Challenge.where(skill_id: work_plan_skill.skill).count) + 1).to_s
-    challenge = Challenge.create({
-        skill: work_plan_skill.skill,
-        name: name,
-        user: current_user
-      })
-    challenge.content.body = <<~HTML
-    Exercice à REDIGER............................
-    HTML
-    challenge.save!
+    challenge = Challenge.create_empty(work_plan_skill, name, current_user)
     # @work_plan_skill.challenge = challenge
     return challenge
   end
