@@ -13,14 +13,16 @@
   width: 32px;
 }
 .previous_eval {
+
   margin-right: 10px;
-  max-width: 15ch;
+  width: 15ch;
   height: 40px;
   border: solid grey;
   border-radius: 14px;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: flex-end;
+  gap: 3px;
   padding: 0 2px 0 2px;
 }
 

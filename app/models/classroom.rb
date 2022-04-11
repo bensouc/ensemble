@@ -5,4 +5,8 @@ class Classroom < ApplicationRecord
   has_many :students
 
   validates :grade, presence: true
+
+  def student_list
+    Student.where(classroom_id: self.id)
+  end
 end
