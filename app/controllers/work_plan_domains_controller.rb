@@ -26,7 +26,7 @@ class WorkPlanDomainsController < ApplicationController
         )
         if kind == "exercice"
           ############### refacto START add_challenges_2_wps############
-          challenge = add_challenges_2_wps(skill, work_plan_skill)
+          challenge = add_challenges_2_wps(work_plan_skill)
           ############ refacto END ############
           work_plan_skill.challenge = challenge
         end
@@ -62,12 +62,12 @@ class WorkPlanDomainsController < ApplicationController
     params.require(:kind)
   end
 
-  def add_challenges_2_wps(skill, work_plan_skill)
-    challenges = Challenge.where(skill_id: skill)
+  def add_challenges_2_wps(work_plan_skill)
+    challenges = Challenge.where(skill_id: work_plan_skill.skill)
     if challenges == []
       # if no existing challeng 4 that skill
       # create a empty challenge 4 that skill
-      name = work_plan_skill.skill.name + ((Challenge.where(skill_id: work_plan_skill.skill).count) + 1).to_s
+      name = work_plan_skill.skill.name + (challenges.count + 1).to_s
       challenge = Challenge.create_empty(work_plan_skill, name, current_user)
     else
       # recuper un des exo existant avec le skill id de @work_plan_skill

@@ -29,5 +29,6 @@ class Challenge < ApplicationRecord
       Exercice à REDIGER............................
     HTML
     challenge.save!
+    return challenge
   end
 end

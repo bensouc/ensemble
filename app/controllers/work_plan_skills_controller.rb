@@ -62,15 +62,7 @@ class WorkPlanSkillsController < ApplicationController
 
   def add_new_chall_2_wps(work_plan_skill)
     name = work_plan_skill.skill.name + ((Challenge.where(skill_id: work_plan_skill.skill).count) + 1).to_s
-    challenge = Challenge.create({
-        skill: work_plan_skill.skill,
-        name: name,
-        user: current_user
-      })
-    challenge.content.body = <<~HTML
-    Exercice à REDIGER............................
-    HTML
-    challenge.save!
+    challenge = Challenge.create_empty(work_plan_skill, name, current_user)
     # @work_plan_skill.challenge = challenge
     return challenge
   end
