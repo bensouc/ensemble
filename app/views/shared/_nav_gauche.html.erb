@@ -30,11 +30,16 @@
             </div>
           <% end %>
 
-        <div class="menug_icone-dead" >
-        <div class="" >Évaluer</div>
-        <img class="dead-icon" src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1639043115/4-b_wlw5fg.svg" alt="">
-     <%# https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/3blanc_vdt7bb.svg %>
-      </div>
+          <%= link_to classrooms_path do %>
+            <div class="menug_icone" data-action="click->left-menu#seechange" >
+            <div class="<%= "active" if current_page?(classrooms_path) %> " data-left-menu-target="seetext" style='decoration-text: none' >Evaluer</div>
+            <% if current_page?(classrooms_path) %>
+            <%= image_tag "icons/eval-icon.svg", class: "on" %>
+            <% else %>
+            <%= image_tag "icons/eval-red-icon.svg" %>
+            <% end %>
+          </div>
+          <% end %>
 
       <div class="menug_icone-dead" >
         <div class="" >Partager</div>

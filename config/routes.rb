@@ -6,11 +6,11 @@ Rails.application.routes.draw do
 
   resources :work_plans, only: [:index, :show, :update, :new, :create, :destroy] do
     resources :work_plan_domains, only: [:new, :create]
-
     post '', to: 'work_plans#clone', as: :clone
   end
 
   get "work_plans/:id/eval", to: "work_plans#eval", as: :eval
+
 
   resources :work_plan_domains, only: [:destroy] do
     resources :work_plan_skills, only: [:create]
@@ -24,6 +24,9 @@ Rails.application.routes.draw do
     post '', to: 'work_plan_skills#update_eval', as: :update_eval
 
   end
+
+  resources :classrooms, only: [:index, :show, :update, :new, :create]
+
 
   # route for tab editing
   resources :tables, only: [:show, :create, :update]

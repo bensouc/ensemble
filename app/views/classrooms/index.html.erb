@@ -1,0 +1,17 @@
+<h1>A venir!!!</h1>
+<div class="classrooms-list">
+  <% @classrooms.each do |classroom| %>
+    <div class="classroom-card">
+      <img src="" alt="">
+      <% (@students_list.select { |s| s.first == classroom }).first[1].each do |student| %>
+
+        <div class="student-fname">
+          <h1>
+          <%= student.first_name %>
+          </h1>
+        </div>
+        <% end %>
+        ajouter un élève
+    </div>
+    <% end %>
+</div>
