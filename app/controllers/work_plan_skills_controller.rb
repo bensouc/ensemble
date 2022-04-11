@@ -25,13 +25,6 @@ class WorkPlanSkillsController < ApplicationController
     end
   end
 
-  def update_eval
-    @work_plan_skill = WorkPlanSkill.find(params[:id])
-    raise
-    #input : completed / failed / redo
-
-  end
-
   def destroy
     @work_plan_skill = WorkPlanSkill.find(params[:id])
     work_plan_domain = @work_plan_skill.work_plan_domain
