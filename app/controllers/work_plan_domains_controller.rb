@@ -1,7 +1,7 @@
 class WorkPlanDomainsController < ApplicationController
   def create
     @work_plan = WorkPlan.find(params_wp_id)
-    @domain = WorkPlanDomain.new(domain: work_plan_domain_params[:domain], level: work_plan_domain_params[:level], student: @work_plan.student )
+    @domain = WorkPlanDomain.new(domain: work_plan_domain_params[:domain], level: work_plan_domain_params[:level], student: @work_plan.student)
     kind = params.require(:kind)
     @domain.work_plan = @work_plan
     @domain.save!
@@ -18,40 +18,20 @@ class WorkPlanDomainsController < ApplicationController
       skills = Skill.where(domain: @domain.domain, level: @domain.level)
       # loop autour du tableau des skills du domain/level
       skills.each do |skill|
-        # à chaque loop, creer wokrplan skill.
+        # à chaque loop, creer workplan skill.
         work_plan_skill = WorkPlanSkill.new(
           work_plan_domain_id: @domain.id,
           skill_id: skill.id,
           kind: kind,
-          student: @work_plan.student
+          student: @work_plan.student,
         )
-
+        ###############
         if kind == "exercice"
-          challenges = Challenge.where(skill_id: skill)
-          if challenges == []
-            # if no existing challeng 4 that skill
-            # create a empty challenge 4 that skill
-            name = work_plan_skill.skill.name + ((Challenge.where(skill_id: work_plan_skill.skill).count) + 1).to_s
-            challenge = Challenge.create(
-              {
-                skill: work_plan_skill.skill,
-                name: name,
-                user: current_user,
-              }
-            )
-            challenge.content.body = <<~HTML
-              Exercice à REDIGER............................
-            HTML
-            challenge.save!
-            # @work_plan_skill.challenge = challenge
-          else
-            # recuper un des exo existant avec le skill id de @work_plan_skill
-            challenge = challenges.sample
-          end
+          challenge = add_challenges_2_wps(skill, work_plan_skill)
           work_plan_skill.challenge = challenge
         end
+        ############
         work_plan_skill.save!
-
       end
       # $$$$$$$ END $$$$$$$$$$$$$$$$$$$$
       if @domain.save
@@ -81,5 +61,31 @@ class WorkPlanDomainsController < ApplicationController
 
   def work_plan_domain_kind_params
     params.require(:kind)
+  end
+
+  def add_challenges_2_wps(skill, work_plan_skill)
+    challenges = Challenge.where(skill_id: skill)
+    if challenges == []
+      # if no existing challeng 4 that skill
+      # create a empty challenge 4 that skill
+      name = work_plan_skill.skill.name + ((Challenge.where(skill_id: work_plan_skill.skill).count) + 1).to_s
+
+      challenge = Challenge.create_empty(work_plan_skill, name, current_user)
+      #   {
+      #     skill: work_plan_skill.skill,
+      #     name: name,
+      #     user: current_user
+      #   }
+      # )
+      # challenge.content.body = <<~HTML
+      #   Exercice à REDIGER............................
+      # HTML
+      # challenge.save!
+      # # @work_plan_skill.challenge = challenge
+    else
+      # recuper un des exo existant avec le skill id de @work_plan_skill
+      challenge = challenges.sample
+    end
+    return challenge
   end
 end
