@@ -7,9 +7,10 @@
     <div data-controller='wp-by-student'>
       <h2>
         <%= student.first_name.capitalize %>
-        <i class="fa-solid fa-folder-open" data-action="click->wp-by-student#displayList"></i>
+        <i class="fa-solid fa-folder-closed" data-wp-by-student-target="folderopen" data-action="click->wp-by-student#displayList"></i>
+        <i class="fa-solid fa-folder-open d-none" data-wp-by-student-target="folderclosed" data-action="click->wp-by-student#displayList"></i>
       </h2>
-      <div data-wp-by-student-target="wplist">
+      <div data-wp-by-student-target="wplist" class='d-none'>
         <% @my_work_plans.select { |a| a.student_id==student.id }.each do |wp| %>
           <%= link_to work_plan_path(wp) do %>
             <div class="student-wp">
