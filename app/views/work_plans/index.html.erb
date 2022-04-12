@@ -6,11 +6,11 @@
     <% classroom.students.order(:first_name).each do |student| %>
       <div data-controller='wp-by-student'>
         <h2>
+            <i class="fa-solid fa-folder-closed ml-4 mr-3" data-wp-by-student-target="folderopen"
+              data-action="click->wp-by-student#displayList"></i>
+            <i class="fa-solid fa-folder-open ml-4 mr-3 d-none" data-wp-by-student-target="folderclosed"
+              data-action="click->wp-by-student#displayList"></i>
           <%= student.first_name.capitalize %>
-            <i class="fa-solid fa-folder-closed" data-wp-by-student-target="folderopen"
-              data-action="click->wp-by-student#displayList"></i>
-            <i class="fa-solid fa-folder-open d-none" data-wp-by-student-target="folderclosed"
-              data-action="click->wp-by-student#displayList"></i>
         </h2>
         <div data-wp-by-student-target="wplist" class='d-none'>
           <% @my_work_plans.select { |a| a.student_id==student.id }.each do |wp| %>
@@ -38,9 +38,10 @@
         <% end %>
       </div>
       <div>
-      <h2>Non assigné
-        <i class="fa-solid fa-folder-closed" data-wp-by-student-target="folderopen" data-action=""></i>
-        <i class="fa-solid fa-folder-open d-none" data-wp-by-student-target="folderclosed" data-action=""></i>
+      <h2>
+        <i class="fa-solid fa-folder-closed ml-4 mr-3" data-wp-by-student-target="folderopen" data-action=""></i>
+        <i class="fa-solid fa-folder-open d-none ml-4 mr-3" data-wp-by-student-target="folderclosed" data-action=""></i>
+        Non assigné
       </h2>
       <div data-wp-by-student-target="wplistus" class=''>
         <% @my_work_plans_unassigned.each do |wp| %>
