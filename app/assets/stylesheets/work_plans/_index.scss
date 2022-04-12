@@ -1,12 +1,53 @@
 .container3{
-  width: 100%;
+  width: 1000px;
+  h1{
+    font-weight: 900;
+    color: $rose;
+  }
+  h2 i {
+    color: $rose;
+  }
 }
-.student, .namept{
-  font-weight: 600;
+
+.student-wp{
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0 5px 10px;
+  justify-content: baseline;
+  a{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+
+      &:hover {
+        transform: scale(1.05);
+        background-color: $grisC;
+        border-radius: 14px;
+        padding: 2px 0 0 10px;
+
+        cursor: pointer;
+      }
+  }
+
 }
-// table tr:nth-child(odd){
-//   background-color:red;
-// }
+.wp-dates{
+  width: 300px;
+  text-align: center;
+  color: #3D3D3D;
+}
+.rmv-wp{
+  width: 40px;
+  display: flex;
+  justify-content: space-around;
+}
+
+
+.namept{
+  font-weight: 500;
+  width: 200px;
+  color: #3D3D3D;
+}
+
 .entitled{
   td, tr, th{
     padding: 12px 2.5rem;
@@ -20,11 +61,7 @@
 .work-plan-line {
   border-bottom: 1px solid $grisC;
   transition: .3s;
-  &:hover {
-    transform: scale(1.05);
-    background-color: $grisC;
-    cursor: pointer;
-  }
+
 }
 
   td a{

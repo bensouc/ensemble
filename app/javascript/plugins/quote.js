@@ -12,7 +12,7 @@ const displayQuote = ((event) => {
   //const src='http://local.citation-du-jour.fr/apis/export.php?t='+escape(type)+'&author='+author+'&theme='+theme+'&word='+word;
 
   const request = new XMLHttpRequest();
-  request.open('GET', 'https://citations.ouest-france.fr/apis/export.php?json&key=464fzer5&t=' + escape(type) + '&author=' + author + '&theme=' + theme + '&word=' + word, true);
+  request.open('GET', 'http://local.citation-du-jour.fr/apis/export.php?t=' + escape(type) + '&author=' + author + '&theme=' + theme + '&word=' + word, true);
   request.send(null);
 
 

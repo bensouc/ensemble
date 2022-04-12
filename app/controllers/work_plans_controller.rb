@@ -27,14 +27,21 @@ class WorkPlansController < ApplicationController
 
   def index
     # @my_work_plans = WorkPlan.where(user: current_user)
-    if params[:sort] != "avg_ranking"
-      @my_work_plans = WorkPlan.where(user: current_user).order(params[:sort])
-    elsif params[:sort] == "avg_ranking"
-      @my_work_plans = WorkPlan.where(user: current_user).sort_by { |player| player.avg_ranking }
-    else
-      @my_work_plans = WorkPlan.where(user: current_user)
-    end
-    # raise
+    # if params[:sort] != "avg_ranking"
+    #   @my_work_plans = WorkPlan.where(user: current_user).order(params[:sort])
+    # elsif params[:sort] == "avg_ranking"
+    #   @my_work_plans = WorkPlan.where(user: current_user).sort_by { |player| player.avg_ranking }
+    # else
+
+    # recupere classrooms
+    # recupe wstyudent from class room
+    # recup work plan
+
+
+    @my_classrooms = Classroom.where(user: current_user)
+    @my_work_plans = WorkPlan.where(user: current_user).order(created_at: :DESC).sort_by(&:student)
+    # end
+
   end
 
   def eval
