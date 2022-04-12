@@ -1,7 +1,7 @@
 import { Controller } from "stimulus";
 
 export default class extends Controller {
-  static targets = ['wplist', 'folderopen', 'folderclosed'];
+  static targets = ['wplist', 'wplistus', 'folderopen', 'folderclosed'];
   connect() {
     console.log('wp-by-student');
   }
@@ -10,5 +10,6 @@ export default class extends Controller {
     this.folderopenTarget.classList.toggle('d-none');
     this.folderclosedTarget.classList.toggle('d-none');
     this.wplistTarget.classList.toggle('d-none');
+    this.wplistusTarget.toggle('d-none');
   }
 }

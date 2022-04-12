@@ -4,14 +4,46 @@
       <%= classroom.grade %>
     </h1>
     <% classroom.students.order(:first_name).each do |student| %>
-    <div data-controller='wp-by-student'>
-      <h2>
-        <%= student.first_name.capitalize %>
-        <i class="fa-solid fa-folder-closed" data-wp-by-student-target="folderopen" data-action="click->wp-by-student#displayList"></i>
-        <i class="fa-solid fa-folder-open d-none" data-wp-by-student-target="folderclosed" data-action="click->wp-by-student#displayList"></i>
+      <div data-controller='wp-by-student'>
+        <h2>
+          <%= student.first_name.capitalize %>
+            <i class="fa-solid fa-folder-closed" data-wp-by-student-target="folderopen"
+              data-action="click->wp-by-student#displayList"></i>
+            <i class="fa-solid fa-folder-open d-none" data-wp-by-student-target="folderclosed"
+              data-action="click->wp-by-student#displayList"></i>
+        </h2>
+        <div data-wp-by-student-target="wplist" class='d-none'>
+          <% @my_work_plans.select { |a| a.student_id==student.id }.each do |wp| %>
+            <%= link_to work_plan_path(wp) do %>
+              <div class="student-wp">
+                <div class="namept">
+                  <%= wp.name %>
+                </div>
+                <div class="wp-dates">
+                  <%= wp.start_date.nil? ? "" : l(wp.start_date, format: "%d/%m/%Y" ) %>
+                    <%= wp.end_date.nil? ? "" : l(wp.end_date, format: "au %a. %d/%m/%Y" ) %>
+                </div>
+                <% end %>
+                  <div class='rmv-wp'>
+                    <%= link_to work_plan_path(wp), method: :delete, data: {
+                      confirm: "Voulez vous Supprimer Ce Plan de Travail?" } do %>
+                      <div class='rmv-skill-btn '>
+                        <i class="far fa-times-circle"></i>
+                      </div>
+                      <% end %>
+                  </div>
+              </div>
+              <% end %>
+        </div>
+        <% end %>
+      </div>
+      <div>
+      <h2>Non assigné
+        <i class="fa-solid fa-folder-closed" data-wp-by-student-target="folderopen" data-action=""></i>
+        <i class="fa-solid fa-folder-open d-none" data-wp-by-student-target="folderclosed" data-action=""></i>
       </h2>
-      <div data-wp-by-student-target="wplist" class='d-none'>
-        <% @my_work_plans.select { |a| a.student_id==student.id }.each do |wp| %>
+      <div data-wp-by-student-target="wplistus" class=''>
+        <% @my_work_plans_unassigned.each do |wp| %>
           <%= link_to work_plan_path(wp) do %>
             <div class="student-wp">
               <div class="namept">
@@ -19,22 +51,19 @@
               </div>
               <div class="wp-dates">
                 <%= wp.start_date.nil? ? "" : l(wp.start_date, format: "%d/%m/%Y" ) %>
-                <%= wp.end_date.nil? ? "" : l(wp.end_date, format: "au %a. %d/%m/%Y" ) %>
+                  <%= wp.end_date.nil? ? "" : l(wp.end_date, format: "au %a. %d/%m/%Y" ) %>
               </div>
-              <% end %>
+          <% end %>
               <div class='rmv-wp'>
                 <%= link_to work_plan_path(wp), method: :delete, data: {
-                    confirm: "Voulez vous Supprimer Ce Plan de Travail?" } do %>
+                  confirm: "Voulez vous Supprimer Ce Plan de Travail?" , } do %>
                   <div class='rmv-skill-btn '>
-                      <i class="far fa-times-circle"></i>
+                    <i class="far fa-times-circle"></i>
                   </div>
                 <% end %>
               </div>
             </div>
-          <% end %>
-          </div>
         <% end %>
       </div>
-    </div>
   <% end %>
 </div>
