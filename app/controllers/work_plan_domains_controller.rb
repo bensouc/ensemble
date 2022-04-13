@@ -14,23 +14,25 @@ class WorkPlanDomainsController < ApplicationController
       end
     else
       # recupere les skills associé domaine/level dnas un tableau
-      skills = Skill.where(domain: @domain.domain, level: @domain.level)
+      skills = Skill.where(domain: @domain.domain, level: @domain.level, grade: @work_plan.grade)
       # loop autour du tableau des skills du domain/level
       ######################### SKILLS loop START ######################
-      skills.each do |skill|
-        work_plan_skill = WorkPlanSkill.new(
-          work_plan_domain_id: @domain.id,
-          skill_id: skill.id,
-          kind: kind,
-          student: @work_plan.student,
-        )
-        if kind == "exercice"
-          ############### refacto START add_challenges_2_wps############
-          challenge = add_challenges_2_wps(work_plan_skill)
-          ############ refacto END ############
-          work_plan_skill.challenge = challenge
+      unless skills.nil?
+        skills.each do |skill|
+          work_plan_skill = WorkPlanSkill.new(
+            work_plan_domain_id: @domain.id,
+            skill_id: skill.id,
+            kind: kind,
+            student: @work_plan.student,
+          )
+          if kind == "exercice"
+            ############### refacto START add_challenges_2_wps############
+            challenge = add_challenges_2_wps(work_plan_skill)
+            ############ refacto END ############
+            work_plan_skill.challenge = challenge
+          end
+          work_plan_skill.save!
         end
-        work_plan_skill.save!
       end
       ######################### SKILLS loop END ######################
       if @domain.save
