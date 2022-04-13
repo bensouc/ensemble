@@ -26,7 +26,7 @@
 
         <div data-wp-by-student-target="wplist" class='d-none'>
           <% @my_work_plans.select { |a| a.student_id == student.id }.each do |wp| %>
-          <%= render 'index_wp_line', wp: wp %>
+          <%= render "index_wp_line", wp: wp %>
           <% end %>
         </div>
       <% end %>
@@ -38,13 +38,13 @@
             <i class="fa-solid fa-folder-open d-none ml-4 mr-3" data-wplistunsigned-target="folderclosed" data-action="click->wplistunsigned#displayList"></i>
           </div>
           <div class='index-wp-name d-flex'>
-          Non assigné
-          <div class='invisible'>
-          --
-          </div>
-          <div class="index-wp-count">
-            ( <%= @my_work_plans_unassigned.count %> Plan<%= "s" if @my_work_plans_unassigned.count > 1 %> de travail )</div>
-          </div>
+            Non assigné
+            <div class='invisible'>
+            --
+            </div>
+            <div class="index-wp-count">
+              ( <%= @my_work_plans_unassigned.count %> Plan<%= "s" if @my_work_plans_unassigned.count > 1 %> de travail )
+            </div>
           </div>
         </div>
         <div class='d-none' data-wplistunsigned-target="wplistus">
