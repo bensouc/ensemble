@@ -4,67 +4,54 @@
       <%= classroom.grade %>
     </h1>
     <% classroom.students.order(:first_name).each do |student| %>
-      <div data-controller='wp-by-student'>
-        <h2>
+      <div data-controller='wp-by-student' >
+        <div class='d-flex'>
+        <div class="index-folder">
             <i class="fa-solid fa-folder-closed ml-4 mr-3" data-wp-by-student-target="folderopen"
               data-action="click->wp-by-student#displayList"></i>
             <i class="fa-solid fa-folder-open ml-4 mr-3 d-none" data-wp-by-student-target="folderclosed"
               data-action="click->wp-by-student#displayList"></i>
-          <%= student.first_name.capitalize %>
-        </h2>
-        <div data-wp-by-student-target="wplist" class='d-none'>
-          <% @my_work_plans.select { |a| a.student_id==student.id }.each do |wp| %>
-            <%= link_to work_plan_path(wp) do %>
-              <div class="student-wp">
-                <div class="namept">
-                  <%= wp.name %>
-                </div>
-                <div class="wp-dates">
-                  <%= wp.start_date.nil? ? "" : l(wp.start_date, format: "%d/%m/%Y" ) %>
-                    <%= wp.end_date.nil? ? "" : l(wp.end_date, format: "au %a. %d/%m/%Y" ) %>
-                </div>
-                <% end %>
-                  <div class='rmv-wp'>
-                    <%= link_to work_plan_path(wp), method: :delete, data: {
-                      confirm: "Voulez vous Supprimer Ce Plan de Travail?" } do %>
-                      <div class='rmv-skill-btn '>
-                        <i class="far fa-times-circle"></i>
-                      </div>
-                      <% end %>
-                  </div>
-              </div>
-              <% end %>
         </div>
-        <% end %>
-      </div>
-      <div>
-      <h2>
-        <i class="fa-solid fa-folder-closed ml-4 mr-3" data-wp-by-student-target="folderopen" data-action=""></i>
-        <i class="fa-solid fa-folder-open d-none ml-4 mr-3" data-wp-by-student-target="folderclosed" data-action=""></i>
-        Non assigné
-      </h2>
-      <div data-wp-by-student-target="wplistus" class=''>
-        <% @my_work_plans_unassigned.each do |wp| %>
-          <%= link_to work_plan_path(wp) do %>
-            <div class="student-wp">
-              <div class="namept">
-                <%= wp.name %>
-              </div>
-              <div class="wp-dates">
-                <%= wp.start_date.nil? ? "" : l(wp.start_date, format: "%d/%m/%Y" ) %>
-                  <%= wp.end_date.nil? ? "" : l(wp.end_date, format: "au %a. %d/%m/%Y" ) %>
-              </div>
+        <div class='index-wp-name d-flex'>
+          <div class="wp-firstname">
+            <%= student.first_name.capitalize %>
+          </div>
+          <div class='invisible'>
+          --
+          </div>
+          <div class="index-wp-count">
+            ( <%= @my_work_plans.select { |a| a.student_id == student.id }.count %> Plan<%= "s" if @my_work_plans.select { |a| a.student_id == student.id }.count > 1 %> de travail )</div>
+          </div>
+        </div>
+
+        <div data-wp-by-student-target="wplist" class='d-none'>
+          <% @my_work_plans.select { |a| a.student_id == student.id }.each do |wp| %>
+          <%= render 'index_wp_line', wp: wp %>
           <% end %>
-              <div class='rmv-wp'>
-                <%= link_to work_plan_path(wp), method: :delete, data: {
-                  confirm: "Voulez vous Supprimer Ce Plan de Travail?" , } do %>
-                  <div class='rmv-skill-btn '>
-                    <i class="far fa-times-circle"></i>
-                  </div>
-                <% end %>
-              </div>
-            </div>
-        <% end %>
+        </div>
+      <% end %>
+      </div>
+      <div data-controller="wplistunsigned" class=''>
+        <div class='d-flex'>
+          <div class="index-folder">
+            <i class="fa-solid fa-folder-closed ml-4 mr-3" data-wplistunsigned-target="folderopen" data-action="click->wplistunsigned#displayList"></i>
+            <i class="fa-solid fa-folder-open d-none ml-4 mr-3" data-wplistunsigned-target="folderclosed" data-action="click->wplistunsigned#displayList"></i>
+          </div>
+          <div class='index-wp-name d-flex'>
+          Non assigné
+          <div class='invisible'>
+          --
+          </div>
+          <div class="index-wp-count">
+            ( <%= @my_work_plans_unassigned.count %> Plan<%= "s" if @my_work_plans_unassigned.count > 1 %> de travail )</div>
+          </div>
+          </div>
+        </div>
+        <div class='d-none' data-wplistunsigned-target="wplistus">
+          <% @my_work_plans_unassigned.each do |wp| %>
+            <%= render "index_wp_line", wp: wp %>
+          <% end %>
+        </div>
       </div>
   <% end %>
 </div>

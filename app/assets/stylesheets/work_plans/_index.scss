@@ -1,10 +1,11 @@
 .container3{
   width: 1000px;
+  margin-bottom: 15px;
   h1{
     font-weight: 900;
     color: $rose;
   }
-  h2 i {
+  h5 i {
     color: $rose;
   }
 }
@@ -48,78 +49,14 @@
   color: #3D3D3D;
 }
 
-.entitled{
-  td, tr, th{
-    padding: 12px 2.5rem;
-  }
-  .student{
-    a{
-      color:$rose;
-    }
-  }
-
-.work-plan-line {
-  border-bottom: 1px solid $grisC;
-  transition: .3s;
-
-}
-
-  td a{
-    color: $grisF;
-  }
-  th a{
-    color: $grisC;
-    font-size: 14px;
-    }
-    .student{
-      color: $rose;
-    }
-}
-
-.title{
-  padding: 12px;
-  margin-bottom: 12px;
-  .content{
-    font-family: $titres-font;
-    font-size: 36px;
-    font-weight: 700;
-    color: $grisF;
-    }
-  .fas{
-    color:$rose;
-    font-size: 30px;
-  }
-}
-ul{
-  width: 100%;
-}
-li{
-  margin: 0;
-}
-.wp-item {
-  width: fit-content;
-  transition: .3s;
-  &:hover {
-    transform: scale(1.05);
-    cursor: pointer;
-  }
-  a {
-    text-decoration: none;
-  }
-}
-
-.wp-text {
-  h3{
-    font-size: 18px;
-  }
-  h3, h6{
-    color:$grisF;
-  }
-  h6 span{
-    font-size: 18px;
-    color: $rose;
-    font-weight: 700;
-  }
-  padding: 12px;
+.index-folder{
   color: $rose;
+}
+
+.invisible{
+  opacity: 0;
+}
+.index-wp-count{
+  font-style: italic;
+  opacity: 0.33;
 }
