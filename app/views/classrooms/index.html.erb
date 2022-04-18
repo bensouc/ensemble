@@ -1,17 +1,31 @@
-<h1>A venir!!!</h1>
+<% if @classrooms.count == 1 %>
+  <h1>Ma Classe</h1>
+<% else %>
+  <h1>Mes Classes</h1>
+<% end %>
+
 <div class="classrooms-list">
   <% @classrooms.each do |classroom| %>
     <div class="classroom-card">
       <img src="" alt="">
       <% (@students_list.select { |s| s.first == classroom }).first[1].each do |student| %>
 
-        <div class="student-fname">
-          <h1>
-          <%= student.first_name %>
+        <div class="student-fname d-flex">
+          <div class='ml-3'>
+                <%= link_to student_path(student), method: :delete, data: {
+                                                  confirm: "Voulez vous Supprimer Cet élève?",
+                                                } do %>
+                  <div class='rmv-skill-btn '>
+                    <i class="far fa-times-circle"></i>
+                  </div>
+                <% end %>
+          </div>
+          <h1 class='ml-3 mr-5'>
+          <%= student.first_name.capitalize %>
           </h1>
         </div>
-        <% end %>
-        ajouter un élève
+      <% end %>
+        <%= link_to "ajouter un élève", new_classroom_student_path(classroom), class: 'ml-3 replace-challenge-btn'%>
     </div>
     <% end %>
 </div>

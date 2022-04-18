@@ -1,0 +1,7 @@
+<div class="student-edit">
+  <%= form_for [@student] do |form| %>
+    <%= form.text_field :first_name %>
+    <%= form.text_field :classroom, value: @classroom.id%>
+    <%= form.submit "Valider", class: "area rect-sm btn-valid" %>
+  <% end %>
+</div>
