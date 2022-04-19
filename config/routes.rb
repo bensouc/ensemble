@@ -25,7 +25,7 @@ Rails.application.routes.draw do
 
   end
 
-  resources :classrooms, only: [:index, :show, :update, :new, :create] do
+  resources :classrooms, only: [:index, :show, :update, :new, :create, :destroy] do
     resources :students, only: [:new, :edit] #:create, :destroy
   end
 

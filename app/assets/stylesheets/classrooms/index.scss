@@ -4,10 +4,11 @@
 
 .students-names{
    display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 .classroom-card {
   min-height: 200px;
+  margin-bottom: 15px;
   // min-width: 300px;
   border: solid $grisC;
   border-radius: 15px;
@@ -64,6 +65,11 @@
   a, h6{
     color: $white;
   }
+}
+
+// add/create student
+.hidden{
+  visibility: hidden;
 }
 
 // create classroom section

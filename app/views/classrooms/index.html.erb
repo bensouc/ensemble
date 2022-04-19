@@ -12,8 +12,17 @@
       <div class="classroom-card">
         <%# <img src="" alt=""> %>
         <div class="classroom-card-top">
-          <div class="class-grade ml-5">
+          <div class="class-grade ml-5 d-flex">
             <%= classroom.grade.upcase %>
+                    <div class='ml-3 pt-1'>
+                    <%= link_to classroom_path(classroom), method: :delete, data: {
+                                                         confirm: "Voulez vous Supprimer Cette classe?",
+                                                       } do %>
+                      <div class='rmv-skill-btn '>
+                        <i class="far fa-times-circle"></i>
+                      </div>
+                    <% end %>
+                    </div>
           </div>
         </div>
         <div class="students-names">
@@ -33,10 +42,10 @@
               </h1>
             </div>
           <% end %>
+        </div>
             <div class="ml-3 add-student-btn">
                     <%= link_to "Ajouter un élève", new_classroom_student_path(classroom), class: "" %>
             </div>
-        </div>
       </div>
     <% end %>
   </div>

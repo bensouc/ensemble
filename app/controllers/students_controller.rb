@@ -10,7 +10,7 @@ class StudentsController < ApplicationController
       classroom_id: params_student[:classroom].to_i,
 
     }
-    @student = Student.create(student)
+    @student = Student.create!(student)
     redirect_to classrooms_path
   end
 
