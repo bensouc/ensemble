@@ -1,21 +1,83 @@
-.classrooms-list{
-
+.classrooms-list {
+  margin-bottom: 15px;
 }
 
-.classroom-card{
+.students-names{
+   display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+.classroom-card {
   min-height: 200px;
-  width: 500px;
-  border: solid grey;
+  margin-bottom: 15px;
+  // min-width: 300px;
+  border: solid $grisC;
   border-radius: 15px;
+}
 
+.classroom-card-top{
+  background-color: $grisC;
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
+  margin-bottom: 10px;
+}
 
-  img {
-
+.class-grade{
+  font-size: 25px;
+  color: $rose;
+  font-weight: 900;
+}
+.student-fname {
+  width: 290px;
+  h1 {
+  font-size: 20px !important;
   }
 }
 
-.student-fname h1{
+.add-student-btn{
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  border-radius: 12px;
+  width: 170px;
+  height: 3em;
+  border: 3px solid $rose;
+  transition: 0.3s;
+  a{
+    color: $rose;
+  }
 
-    font-size: 20px !important;
+  h6 {
+    padding: 10px;
+    margin: 0;
+  }
+  i{
+    font-size: 12px;
+  }
+}
 
+.add-student-btn:hover{
+  transition: 0.2s;
+  background-color: $rose;
+  border-color: $rose;
+  color: white;
+  cursor: pointer;
+  a, h6{
+    color: $white;
+  }
+}
+
+// add/create student
+.hidden{
+  visibility: hidden;
+}
+
+// create classroom section
+.add-grade{
+  width: 8ch;
+  margin-right: 20px;
+}
+
+.classroom-field{
+  margin: 15px 0 15px 0;
 }

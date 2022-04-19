@@ -25,8 +25,11 @@ Rails.application.routes.draw do
 
   end
 
-  resources :classrooms, only: [:index, :show, :update, :new, :create]
+  resources :classrooms, only: [:index, :show, :update, :new, :create, :destroy] do
+    resources :students, only: [:new, :edit] #:create, :destroy
+  end
 
+  resources :students, only: [:create, :update, :destroy]
 
   # route for tab editing
   resources :tables, only: [:show, :create, :update]

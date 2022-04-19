@@ -1,57 +1,48 @@
 <div class="container3">
   <% @my_classrooms.each do |classroom| %>
+  <div class="wp-one-classroom">
     <h1>
       <%= classroom.grade %>
     </h1>
+    <%# WP assigned %>
     <% classroom.students.order(:first_name).each do |student| %>
-      <div data-controller='wp-by-student' >
-        <div class='d-flex'>
+    <div data-controller='wp-by-student' >
+    
+      <%# START of folder + student name + student wp count %>
+      <%= render "index_wp_student_name", student: student%>
+      <% # END of folder + student name + student wp count %>
+
+      <div data-wp-by-student-target="wplist" class='d-none'>
+          <% @my_work_plans.select { |a| a.student_id == student.id }.each do |wp| %>
+          <%= render "index_wp_line", wp: wp %>
+          <% end %>
+      </div>
+    </div>
+    <% end %>
+    <%# WP unassigned %>
+    <div data-controller="wplistunsigned" class=''>
+      <div class='d-flex'>
         <div class="index-folder">
-            <i class="fa-solid fa-folder-closed ml-4 mr-3" data-wp-by-student-target="folderopen"
-              data-action="click->wp-by-student#displayList"></i>
-            <i class="fa-solid fa-folder-open ml-4 mr-3 d-none" data-wp-by-student-target="folderclosed"
-              data-action="click->wp-by-student#displayList"></i>
+          <i class="fa-solid fa-folder-closed ml-4 mr-3" data-wplistunsigned-target="folderopen" data-action="click->wplistunsigned#displayList"></i>
+          <i class="fa-solid fa-folder-open d-none ml-4 mr-3" data-wplistunsigned-target="folderclosed" data-action="click->wplistunsigned#displayList"></i>
         </div>
         <div class='index-wp-name d-flex'>
-          <div class="wp-firstname">
-            <%= student.first_name.capitalize %>
-          </div>
+        Non assigné
           <div class='invisible'>
           --
           </div>
           <div class="index-wp-count">
-            ( <%= @my_work_plans.select { |a| a.student_id == student.id }.count %> Plan<%= "s" if @my_work_plans.select { |a| a.student_id == student.id }.count > 1 %> de travail )</div>
+            ( <%= @my_work_plans_unassigned.count %> Plan<%= "s" if @my_work_plans_unassigned.count > 1 %> de travail )
           </div>
         </div>
-
-        <div data-wp-by-student-target="wplist" class='d-none'>
-          <% @my_work_plans.select { |a| a.student_id == student.id }.each do |wp| %>
+      </div>
+      <div class='d-none' data-wplistunsigned-target="wplistus">
+        <% @my_work_plans_unassigned.each do |wp| %>
           <%= render "index_wp_line", wp: wp %>
-          <% end %>
-        </div>
-      <% end %>
+        <% end %>
       </div>
-      <div data-controller="wplistunsigned" class=''>
-        <div class='d-flex'>
-          <div class="index-folder">
-            <i class="fa-solid fa-folder-closed ml-4 mr-3" data-wplistunsigned-target="folderopen" data-action="click->wplistunsigned#displayList"></i>
-            <i class="fa-solid fa-folder-open d-none ml-4 mr-3" data-wplistunsigned-target="folderclosed" data-action="click->wplistunsigned#displayList"></i>
-          </div>
-          <div class='index-wp-name d-flex'>
-            Non assigné
-            <div class='invisible'>
-            --
-            </div>
-            <div class="index-wp-count">
-              ( <%= @my_work_plans_unassigned.count %> Plan<%= "s" if @my_work_plans_unassigned.count > 1 %> de travail )
-            </div>
-          </div>
-        </div>
-        <div class='d-none' data-wplistunsigned-target="wplistus">
-          <% @my_work_plans_unassigned.each do |wp| %>
-            <%= render "index_wp_line", wp: wp %>
-          <% end %>
-        </div>
-      </div>
+    </div>
+  <%# end classroom loop => class wp-one-classroom %>
+  </div>
   <% end %>
 </div>

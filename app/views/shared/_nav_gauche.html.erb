@@ -32,8 +32,8 @@
 
           <%= link_to classrooms_path do %>
             <div class="menug_icone" data-action="click->left-menu#seechange" >
-            <div class="<%= "active" if (!current_page?(work_plans_path) && !current_page?(dashboard_path) && !current_page?(new_work_plan_path) && (current_page?(classrooms_path) || current_page?(eval_path))) %> " data-left-menu-target="seetext" style='decoration-text: none' >Evaluer</div>
-            <% if (!current_page?(work_plans_path) && !current_page?(new_work_plan_path) && !current_page?(dashboard_path) && (current_page?(classrooms_path) || current_page?(eval_path))) %>
+            <div class="<%= "active" unless (current_page?(work_plans_path) || current_page?(dashboard_path) || current_page?(new_work_plan_path) ) %> " data-left-menu-target="seetext" style='decoration-text: none' >Evaluer</div>
+            <% unless (current_page?(work_plans_path) || current_page?(dashboard_path) || current_page?(new_work_plan_path) ) %>
             <%= image_tag "icons/eval-icon.svg", class: "on" %>
             <% else %>
             <%= image_tag "icons/eval-red-icon.svg" %>
