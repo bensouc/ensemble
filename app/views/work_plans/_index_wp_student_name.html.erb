@@ -1,0 +1,18 @@
+<div class='d-flex'>
+  <div class="index-folder">
+      <i class="fa-solid fa-folder-closed ml-4 mr-3" data-wp-by-student-target="folderopen"
+        data-action="click->wp-by-student#displayList"></i>
+      <i class="fa-solid fa-folder-open ml-4 mr-3 d-none" data-wp-by-student-target="folderclosed"
+        data-action="click->wp-by-student#displayList"></i>
+  </div>
+  <div class='index-wp-name d-flex'>
+    <div class="wp-firstname">
+      <%= student.first_name.capitalize %>
+    </div>
+  <div class='invisible'>
+  --
+  </div>
+  <div class="index-wp-count">
+    ( <%= @my_work_plans.select { |a| a.student_id == student.id }.count %> Plan<%= "s" if @my_work_plans.select { |a| a.student_id == student.id }.count > 1 %> de travail )</div>
+  </div>
+</div>

@@ -1,5 +1,6 @@
-<% if @classrooms.nil?%>
-  <h1>Ouups, Vous n'avez pas de Classe</h1>
+<% if @classrooms.empty?%>
+  <h1>Ouups, Vous n'avez pas de Classe.</h1>
+  <h1> Créez en une !</h1>
 <% else %>
   <% if @classrooms.count == 1 %>
     <h1>Ma Classe</h1>
@@ -16,7 +17,7 @@
             <%= classroom.grade.upcase %>
                     <div class='ml-3 pt-1'>
                     <%= link_to classroom_path(classroom), method: :delete, data: {
-                                                         confirm: "Voulez vous Supprimer Cette classe?",
+                                                         confirm: "Voulez vous Supprimer Cette classe? Vous allez supprimer tous les élèves et les plans de travail associés",
                                                        } do %>
                       <div class='rmv-skill-btn '>
                         <i class="far fa-times-circle"></i>

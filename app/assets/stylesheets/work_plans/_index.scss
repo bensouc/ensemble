@@ -2,6 +2,8 @@
   width: 1000px;
   margin-bottom: 15px;
   padding: 0 0 15px 15px;
+  // display: grid;
+  // grid-template-columns:  1fr 1fr;
   h1{
     font-weight: 900;
     color: $rose;
@@ -11,15 +13,23 @@
   }
 }
 
+.wp-one-classroom{
+  width: 70%;
+  border-bottom: thin solid $grisC;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+}
+
 .student-wp{
   display: flex;
   justify-content: space-between;
   margin: 5px 0 5px 10px;
   justify-content: baseline;
   a{
+
     display: flex;
     justify-content: space-between;
-    width: 100%;
+
 
       &:hover {
         transform: scale(1.05);
@@ -38,6 +48,7 @@
   color: #3D3D3D;
 }
 .rmv-wp{
+  padding-top: 3px;
   width: 40px;
   display: flex;
   justify-content: space-around;
@@ -46,10 +57,12 @@
 
 .namept{
   font-weight: 500;
-  width: 600px;
+  width: 43ch;
   color: #3D3D3D;
+          white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
 }
-
 .index-folder{
   color: $rose;
 }
