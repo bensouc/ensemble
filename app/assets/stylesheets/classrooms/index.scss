@@ -1,6 +1,5 @@
 .classrooms-list {
-
- 
+  margin-bottom: 15px;
 }
 
 .students-names{
@@ -10,14 +9,21 @@
 .classroom-card {
   min-height: 200px;
   // min-width: 300px;
-  border: solid grey;
+  border: solid $grisC;
   border-radius: 15px;
 }
 
+.classroom-card-top{
+  background-color: $grisC;
+  border-top-left-radius: 11px;
+  border-top-right-radius: 11px;
+  margin-bottom: 10px;
+}
+
 .class-grade{
-  font-size: larger;
+  font-size: 25px;
   color: $rose;
-  font-weight: 800;
+  font-weight: 900;
 }
 .student-fname {
   width: 290px;
@@ -58,4 +64,14 @@
   a, h6{
     color: $white;
   }
+}
+
+// create classroom section
+.add-grade{
+  width: 8ch;
+  margin-right: 20px;
+}
+
+.classroom-field{
+  margin: 15px 0 15px 0;
 }
