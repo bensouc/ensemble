@@ -44,8 +44,16 @@ class WorkPlanSkillsController < ApplicationController
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge))
       return
     end
-    #:format completed redo failed
+    # :format completed redo failed
     @work_plan_skill.status = params[:format]
+
+    # add test if (@work_plan_skill.kind == 'ceinture' && @work_plan_skill.status)
+    if @work_plan_skill.kind == "ceinture" && !@work_plan_skill.status
+      # then test all skills for domain are completed => TODO create a class method to do so
+
+      # if Yes => @work_plan_skill.work_plan_domain.status = 'true'
+      raise
+    end
     @work_plan_skill.save
     redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
   end

@@ -4,6 +4,11 @@ class StudentsController < ApplicationController
     @student = Student.new(classroom_id: @classroom.id)
   end
 
+  def show
+    @student = Student.find(params[:id])
+    @belt = %w(blanche jaune orange verte bleue marron noire)
+  end
+
   def create
     student = {
       first_name: params_student[:first_name],

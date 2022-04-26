@@ -1,0 +1,48 @@
+.top{
+  display: flex;
+}
+.nocolor{
+  border-color: white !important;
+  background-color: white !important;
+}
+.results{
+  margin: 0 15px 20px 15px;
+}
+.results-header{
+  margin-left: 15px;
+}
+
+.domain-level{
+  height: 120px;
+  width: 100px;
+  // border: solid red;
+  text-align: center;
+  background-color: $grisC;
+  border-radius: 14px;
+}
+
+.domain-col{
+  padding: 5px;
+  height: 120px;
+  width: 120px;
+
+  margin: 0 5px;
+}
+
+.cells{
+    border: solid rgb(0, 255, 13);
+}
+
+.header{
+  transform: rotate(-45deg);
+  font-weight: bold;
+    position: relative;
+  top: 30px;
+  left: 14px;
+  color: $rose;
+}
+
+.belt-result{
+  margin: 10px;
+  font-size: 70px;
+}

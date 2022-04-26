@@ -19,4 +19,9 @@ class WorkPlanSkill < ApplicationRecord
     # retrieve the last 4 wps for the student on this skill ids
     WorkPlanSkill.where(student: work_plan.student, skill: wps.skill_id).sort_by(&:created_at).reverse[1..3]
   end
+
+  def self.last_wps(student_id, skill_id)
+    WorkPlanSkill.where(skill_id: skill_id, student_id: student_id).last
+  end
+
 end
