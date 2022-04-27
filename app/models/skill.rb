@@ -8,4 +8,8 @@ class Skill < ApplicationRecord
   validates :symbol, presence: true
   validates :grade, presence: true
 
+  def resolve_skill_id(domain, level, grade)
+    Skill.where(domain: domain, level: level, grade: grade)
+    # return a skill object
+  end
 end

@@ -29,7 +29,7 @@ Rails.application.routes.draw do
     resources :students, only: [:new, :edit] #:create, :destroy
   end
 
-  resources :students, only: [:create, :update, :destroy]
+  resources :students, only: [:create, :update, :show, :destroy]
 
   # route for tab editing
   resources :tables, only: [:show, :create, :update]

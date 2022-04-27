@@ -38,9 +38,11 @@
                       </div>
                     <% end %>
               </div>
-              <h1 class='ml-3 mr-5'>
-              <%= student.first_name.capitalize %>
-              </h1>
+              <%= link_to student_path(student) do %>
+                <h1 class='ml-3 mr-5'>
+                <%= student.first_name.capitalize %>
+                </h1>
+              <% end %>
             </div>
           <% end %>
         </div>
