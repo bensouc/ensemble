@@ -5,6 +5,15 @@
   border-color: white !important;
   background-color: white !important;
 }
+
+.printer-logo{
+  text-decoration: none;
+  color: $rose !important;
+  &:hover{
+    cursor: pointer;
+  }
+}
+
 .results{
   margin: 0 15px 20px 15px;
 }
