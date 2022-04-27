@@ -46,14 +46,30 @@ class WorkPlanSkillsController < ApplicationController
     end
     # :format completed redo failed
     @work_plan_skill.status = params[:format]
-
+    # Create a belt or get the corresponding one
+    belt = Belt.find_or_create_by(
+      {
+        student_id: @work_plan_skill.student.id,
+        domain: @work_plan_skill.work_plan_domain.domain,
+        grade: @work_plan.grade,
+        level: @work_plan_skill.work_plan_domain.level
+      }
+    )
     # add test if (@work_plan_skill.kind == 'ceinture' && @work_plan_skill.status)
-    if @work_plan_skill.kind == "ceinture" && !@work_plan_skill.status
-      # then test all skills for domain are completed => TODO create a class method to do so
+    if @work_plan_skill.kind == "ceinture"
 
-      # if Yes => @work_plan_skill.work_plan_domain.status = 'true'
-      raise
+      case @work_plan_skill.status
+      when 'completed'
+        @work_plan_skill.completed = true
+        # test for each skill of its domain a 'belt is validated'jbiv
+
+        belt.completed = @work_plan_skill.work_plan_domain.all_skills_completed!
+
+      end
+      #
+      # if Yes => create a BELT
     end
+    belt.save
     @work_plan_skill.save
     redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
   end

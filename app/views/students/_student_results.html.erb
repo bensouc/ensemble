@@ -1,5 +1,7 @@
 <h1>
-  <%= image_tag("print.png", :width => 80, :height => 70, :onclick => "PrintDiv();", :class => "btn rose") %>
+  <%= link_to  'your_link_here', :onclick => "window.print();return false;" do %>
+    <%= image_tag("print.png", :width => 80, :height => 70,:class => "btn rose") %>
+  <% end %>
   Progression de <%= @student.first_name.capitalize%>
 </h1>
 <div class="top">
@@ -7,7 +9,7 @@
   </div>
   <div class="d-flex">
     <% WorkPlanDomain::DOMAINS.each do |domain| %>
-      <div class="domain-col header">
+      <div class="domain-col domain-header">
         <%= domain %>
       </div>
     <% end %>
@@ -26,9 +28,23 @@
       <% WorkPlanDomain::DOMAINS.each do |domain| %>
         <div class="">
           <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
-            <div class="domain-col cells mb-2">
-              <%= render 'resultat_cell', level:level , domain: domain%>
-            </div>
+          <%belt = @belts.where(domain: domain, level: level).last%>
+
+            <%# testouille %>
+              <% if !belt.nil? && belt.completed? %>
+                <div class="domain-col cells-student mb-2">
+                    <%= render "resultat_belt", level: level, domain: domain, belt: belt %>
+                </div>
+            <% elsif !belt.nil? %>
+              <div class="domain-col cells-student mb-2">
+                <%= render "resultat_cell", level: level, domain: domain %>
+              </div>
+            <% else %>
+              <div class="domain-col cells-student mb-2">
+                    <%# <i class="fa-solid fa-person-digging text-warning digging"></i> %>
+              </div>
+            <% end %>
+            <%# fin testouille %>
           <% end %>
         </div>
       <% end %>

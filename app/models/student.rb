@@ -8,6 +8,8 @@ class Student < ApplicationRecord
   accepts_nested_attributes_for :work_plans
 
   has_many :work_plan_domains, dependent: :destroy
+  
+  has_many :belts, dependent: :destroy
 
   validates :first_name, presence: true
 end

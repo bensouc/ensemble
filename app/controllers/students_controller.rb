@@ -7,6 +7,15 @@ class StudentsController < ApplicationController
   def show
     @student = Student.find(params[:id])
     @belt = %w(blanche jaune orange verte bleue marron noire)
+    @all_skills = []
+    @student_grade = @student.classroom.grade
+    Skill.where(grade: @student_grade).each  do |skill|
+      @all_skills << {
+        skill: skill,
+        last_wps: WorkPlanSkill.last_wps(@student.id, skill.id)
+      }
+    end
+    @belts = Belt.where(student: @student, grade: @student_grade)
   end
 
   def create

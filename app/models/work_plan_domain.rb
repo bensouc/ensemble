@@ -1,6 +1,6 @@
 class WorkPlanDomain < ApplicationRecord
   DOMAINS = ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"]
-  # order in the array give the Workplan show domain display ordering
+  # order in the DOMAINS array give the Workplan show domain display ordering
   LEVELS = 1..7
 
   belongs_to :work_plan
@@ -15,15 +15,15 @@ class WorkPlanDomain < ApplicationRecord
   # validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
 
   def all_domain_skills
-    Skill.where(domain: self.domain, level: self.level)
+    Skill.where(domain: self.domain, level: self.level, grade: self.work_plan.grade)
   end
 
   # test if a all skills are validated on a domain and
   # update completed status
   def all_skills_completed!
     # get all skills for a domain
-    student = self.student
-    self.student = self.all_domain_skills.all? do |skill|
+    student = self.work_plan.student
+    self.completed = self.all_domain_skills.all? do |skill|
       # test if wps is completed
       WorkPlanSkill.last_wps(student, skill).completed
     end
