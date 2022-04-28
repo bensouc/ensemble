@@ -133,8 +133,15 @@
     margin-left: 0;
   }
 
+  .belt-name h6{
+      font-size: 10px !important;
+      word-break: break-word !important;
+  }
+
   .pastouche {
     text-align: center;
     padding-top: 3%;
   }
 }
+
+/*END OF This css will only works when you print*/

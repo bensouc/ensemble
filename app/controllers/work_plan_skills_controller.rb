@@ -62,15 +62,15 @@ class WorkPlanSkillsController < ApplicationController
       when 'completed'
         @work_plan_skill.completed = true
         # test for each skill of its domain a 'belt is validated'jbiv
-
+        @work_plan_skill.save
         belt.completed = @work_plan_skill.work_plan_domain.all_skills_completed?
 
       end
       #
       # if Yes => create a BELT
     end
-    belt.save
     @work_plan_skill.save
+    belt.save
     redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
   end
 
