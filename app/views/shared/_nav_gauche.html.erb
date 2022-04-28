@@ -20,8 +20,8 @@
 
           <%= link_to new_work_plan_path do %>
             <div class="menug_icone" data-action="click->left-menu#seechange">
-            <div class="<%= "active" if (current_page?(new_work_plan_path) || (params[:action] == "show" && !current_page?(dashboard_path))) %>" data-left-menu-target="seetext" style='decoration-text: none'>Créer</div>
-            <% if (current_page?(new_work_plan_path) || (params[:action] == "show" && !current_page?(dashboard_path))) %>
+            <div class="<%= "active" if (current_page?(new_work_plan_path) || (params[:action] == "show" && current_page?(work_plan_path))) %>" data-left-menu-target="seetext" style='decoration-text: none'>Créer</div>
+            <% if (current_page?(new_work_plan_path) || (params[:action] == "show" && current_page?(work_plan_path))) %>
 
             <%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/2blanc_tixkrs.svg", class: "on" %>
             <% else %>
@@ -32,11 +32,11 @@
 
           <%= link_to classrooms_path do %>
             <div class="menug_icone" data-action="click->left-menu#seechange" >
-            <div class="<%= "active" unless (current_page?(work_plans_path) || current_page?(dashboard_path) || current_page?(new_work_plan_path) ) %> " data-left-menu-target="seetext" style='decoration-text: none' >Evaluer</div>
-            <% unless (current_page?(work_plans_path) || current_page?(dashboard_path) || current_page?(new_work_plan_path) ) %>
-            <%= image_tag "icons/eval-icon.svg", class: "on" %>
+            <div class="<%= "active" if current_page?(classrooms_path) || controller_name()== 'students' %> " data-left-menu-target="seetext" style='decoration-text: none' >Evaluer</div>
+            <% if current_page?(classrooms_path) || controller_name() == 'students'%>
+              <%= image_tag "icons/eval-icon.svg", class: "on" %>
             <% else %>
-            <%= image_tag "icons/eval-red-icon.svg" %>
+              <%= image_tag "icons/eval-red-icon.svg" %>
             <% end %>
           </div>
           <% end %>
