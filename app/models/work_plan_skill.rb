@@ -17,7 +17,9 @@ class WorkPlanSkill < ApplicationRecord
 
   def self.last_4_wps(work_plan, wps)
     # retrieve the last 4 wps for the student on this skill ids
-    WorkPlanSkill.where(student: work_plan.student, skill: wps.skill_id).sort_by(&:created_at).reverse[1..3]
+    out = WorkPlanSkill.where(student: work_plan.student, skill: wps.skill_id).sort_by(&:created_at).reverse
+    out.reject { |t| t == wps }
+    out.last(3)
   end
 
   def self.last_wps(student_id, skill_id)
@@ -25,14 +27,14 @@ class WorkPlanSkill < ApplicationRecord
   end
 
   # must test all last wps on each skill of its skill domains
-  def test_wps_belt?(mode = 'all')
-    self.work_plan_domain.all_domain_skills
-    
-    if mode == 'all'
-      self.skill_id
-    else
-      'repos'
-    end
-  end
+  # def test_wps_belt?(mode = 'all')
+  #   self.work_plan_domain.all_domain_skills
+
+  #   if mode == 'all'
+  #     self.skill_id
+  #   else
+  #     'repos'
+  #   end
+  # end
 
 end
