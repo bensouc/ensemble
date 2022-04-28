@@ -53,11 +53,11 @@
     <% end %>
   </div>
 <% end %>
-<div class="classroom-creation">
-  <button class="validate-btn">
+<div class="classroom-creation" data-controller='create-classroom'>
+  <button class="validate-btn" data-action='click->create-classroom#displayForm'>
     Créer une classe
   </button>
-  <div class="classroom-form">
+  <div class="classroom-form d-none" data-create-classroom-target='form'>
     <%= simple_form_for Classroom.new do |f|%>
     <div class="classroom-field d-flex">
     <%=f.input :grade, label: false,
