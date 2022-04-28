@@ -63,7 +63,7 @@ class WorkPlanSkillsController < ApplicationController
         @work_plan_skill.completed = true
         # test for each skill of its domain a 'belt is validated'jbiv
 
-        belt.completed = @work_plan_skill.work_plan_domain.all_skills_completed!
+        belt.completed = @work_plan_skill.work_plan_domain.all_skills_completed?
 
       end
       #

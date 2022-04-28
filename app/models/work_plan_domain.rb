@@ -20,7 +20,7 @@ class WorkPlanDomain < ApplicationRecord
 
   # test if a all skills are validated on a domain and
   # update completed status
-  def all_skills_completed!
+  def all_skills_completed?
     # get all skills for a domain
     student = self.work_plan.student
     self.completed = self.all_domain_skills.all? do |skill|
@@ -28,5 +28,6 @@ class WorkPlanDomain < ApplicationRecord
       WorkPlanSkill.last_wps(student, skill).completed
     end
     self.save
+    return self.completed
   end
 end

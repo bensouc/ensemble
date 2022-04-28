@@ -1,30 +1,30 @@
 
 <div class='domain  ' id="<%= dom_id(work_plan_domain) %>">
-  <%# DOMAIN + BELT DISPLAY %>
+  <% # DOMAIN + BELT DISPLAY %>
   <div class='p-1 d-flex'>
     <div class='eval-domain-belt-level'>
-      <div class='domain-display d-flex justify-content-start'>
-        <%= work_plan_domain.domain%>
-        </div>
+      <div class='domain-display d-flex justify-content-start eval-skill-display'>
+        <%= work_plan_domain.domain %>
+      </div>
       <div >
-        <div class='d-flex justify-content-around belt-display eval '>
+        <div class='d-flex justify-content-around belt-display'>
           <div class='bd-maison' >
             <i class=" fas fa-bacon belt-<%= work_plan_domain.level %> display-2 font-weight-bold"></i>
           </div>
         </div>
-        <div class='d-flex justify-content-around mt-1 belt-display' <%  if ['Géométrie', 'Grandeurs et Mesures'].include?(work_plan_domain.domain) then%> style = 'visibility: hidden'<%end%> >
-          <strong><%= @belt[work_plan_domain.level-1].capitalize%></strong>
+        <div class='d-flex justify-content-around mt-1 belt-display' <% if ["Géométrie", "Grandeurs et Mesures"].include?(work_plan_domain.domain) %> style = 'visibility: hidden'<% end %> >
+          <strong><%= @belt[work_plan_domain.level - 1].capitalize %></strong>
         </div>
       </div>
     </div>
-    <%# SKILLS DISPLAY  %>
-    <div class='p-2 skill-display w-100'>
+    <% # SKILLS DISPLAY %>
+    <div class='p-2 skill-display '>
       <% work_plan_domain.work_plan_skills.order(:skill_id).each do |plan_skill| %>
 
-        <%= render 'eval_skill_display', plan_skill: plan_skill%>
+        <%= render "eval_skill_display", plan_skill: plan_skill %>
       <% end %>
     </div>
   </div>
-  <%# show 1 exo %>
+  <%# raise %>
 
 </div>

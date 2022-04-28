@@ -33,9 +33,9 @@
         <div class="">
           <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
           <%belt = @belts.where(domain: domain, level: level).last%>
-
+<%# <%raise%>
             <%# testouille %>
-              <% if !belt.nil? && belt.completed? %>
+              <% if !belt.nil? && belt != [] && belt.completed? %>
                 <div class="domain-col cells-student mb-2">
                     <%= render "resultat_belt", level: level, domain: domain, belt: belt %>
                 </div>
