@@ -8,6 +8,8 @@
         <%= render 'challenge_status', wps: wps%>
         <div class="skill-name d-none" data-wps-result-target='name'>
           <%=skill.name%>
+          -
+          <%=render 'wps_status', wps: wps%>
         </div>
       </div>
     <% end %>

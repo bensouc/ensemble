@@ -25,16 +25,4 @@ class WorkPlanSkill < ApplicationRecord
   def self.last_wps(student_id, skill_id)
     WorkPlanSkill.where(skill_id: skill_id, student_id: student_id).last
   end
-
-  # must test all last wps on each skill of its skill domains
-  # def test_wps_belt?(mode = 'all')
-  #   self.work_plan_domain.all_domain_skills
-
-  #   if mode == 'all'
-  #     self.skill_id
-  #   else
-  #     'repos'
-  #   end
-  # end
-
 end
