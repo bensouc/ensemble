@@ -60,7 +60,8 @@
                     <%# challenge qui appartient à un skill %>
                       <select name="challenge" id="challenge" class="challenge-selector" data-action="change->edit-challenge#preview">
                         <option value>Sélectionner un exercice</option>
-                        <% work_plan_skill.skill.challenges.each do |challenge| %>
+                        <% challenges = work_plan_skill.skill.challenges.reject{|chal| chal == work_plan_skill.challenge}%>
+                        <% challenges.each do |challenge| %>
                           <%# VOIR edit_challenge_controller.js pour le parse %>
                           <option data-content="<%= challenge.content.body.to_json %>" value=<%=challenge.id%>><%= challenge.name %></option>
                         <% end %>
