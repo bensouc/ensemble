@@ -1,0 +1,26 @@
+<h1>
+  Non<%= "s" if @my_work_plans_unassigned.count> 1 %> assigné<%= "s" if @my_work_plans_unassigned.count> 1 %>
+</h1>
+<div class='d-flex'>
+  <div class="index-folder">
+    <i class="fa-solid fa-folder-closed ml-4 mr-3" data-wplistunsigned-target="folderopen"
+      data-action="click->wplistunsigned#displayList"></i>
+    <i class="fa-solid fa-folder-open d-none ml-4 mr-3" data-wplistunsigned-target="folderclosed"
+      data-action="click->wplistunsigned#displayList"></i>
+  </div>
+  <div class='index-wp-name d-flex'>
+    Non assigné
+    <div class='invisible'>
+      --
+    </div>
+    <div class="index-wp-count">
+      ( <%= @my_work_plans_unassigned.count %> Plan<%= "s" if @my_work_plans_unassigned.count> 1 %> de travail )
+    </div>
+  </div>
+</div>
+<div class='d-none' data-wplistunsigned-target="wplistus">
+  <% @my_work_plans_unassigned.each do |wp| %>
+    <%= render "index_wp_line" , wp: wp %>
+      <% end %>
+</div>
+</div>
