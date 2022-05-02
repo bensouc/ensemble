@@ -10,6 +10,6 @@ export default class extends Controller {
 
   add(event) {
     console.log('**********')
-    console.log(this.startTarget + 5)
+    console.log(this.startTarget)
   }
 }
