@@ -8,28 +8,28 @@
         <div class='box-column'>
           <p class='pad-35'>Nommez votre plan de travail : *</p>
           <p class='pad-35'>Niveau de : *</p>
-          <p class='pad-35'>Période du :</p>
+          <p class='pad-35'>Période du : *</p>
           <p class='pad-35'>Personnalisez pour l'élève :</p>
         </div>
         <div class='box-column'>
-          <%= f.input :name, label: false,
+          <%= f.input :name, label: false,  required: true,
                       # placeholder: 'CE2...',
                       input_html: { class: 'area grow m-left' } %>
-          <%= f.input :grade, label: false,
+          <%= f.input :grade, label: false,  required: true,
                             collection: Classroom::GRADE,
                             input_html: {class: 'area grow m-left'}
                             %>
           <%# <i class="far fa-calendar-check font-fa"></i> %>
-          <div class='box-start data-controller='wp-default-period'>
-            <div data-wp-default-period-target='start'
-                 data-action='click->wp-default-period#add'>
-              <%= f.input :start_date, as: :string, label: false,
-                          input_html: {class: 'datepicker area rect-lg m-left ', locale: "fr"} %>
+          <div class='box-start' data-controller='wp-default-period'>
+          <%# data-wp-default-period-target='start' /// data-action='click->wp-default-period#add' %>
+            <div>
+              <%= f.input :start_date, as: :string, label: false,  required: true,
+                          input_html: {class: 'datepicker area rect-lg m-left ', locale: "fr", data:{ wp_default_period_target: "start",action:"click->wp-default-period#add"}} %>
             </div>
             <p class='m-left'>au</p>
             <div data-wp-default-period-target='end'>
-              <%= f.input :end_date, as: :string, label: false,
-                          input_html: {class: 'datepicker area rect-lg m-left'} %>
+              <%= f.input :end_date, as: :string, label: false,  required: true,
+                          input_html: {class: 'datepicker area rect-lg m-left', locale: "fr",data:{ wp_default_period_target: "end"}} %>
             </div>
           </div>
           <%= f.association :student, label: false,
