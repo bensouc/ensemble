@@ -11,20 +11,20 @@ class Challenge < ApplicationRecord
 
   def self.new_clone(challenge_original)
     return Challenge.new(
-      {
-        name: "#{challenge_original.name}-Clone#{rand(1..10)}",
-        content: challenge_original.content,
-        skill_id: challenge_original.skill_id,
-      }
-    )
+             {
+               name: "#{challenge_original.name}-Clone#{rand(1..10)}",
+               content: challenge_original.content,
+               skill_id: challenge_original.skill_id,
+             }
+           )
   end
 
   def self.create_empty(work_plan_skill, name, user)
     challenge = Challenge.create({
       skill: work_plan_skill.skill,
       name: name,
-      user: user
-                      })
+      user: user,
+    })
     challenge.content.body = <<~HTML
       Exercice à REDIGER............................
     HTML

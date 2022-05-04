@@ -10,5 +10,4 @@ class Belt < ApplicationRecord
     obj.update(completed)
     return obj
   end
-
 end

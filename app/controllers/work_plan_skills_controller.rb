@@ -52,14 +52,13 @@ class WorkPlanSkillsController < ApplicationController
         student_id: @work_plan_skill.student.id,
         domain: @work_plan_skill.work_plan_domain.domain,
         grade: @work_plan.grade,
-        level: @work_plan_skill.work_plan_domain.level
+        level: @work_plan_skill.work_plan_domain.level,
       }
     )
     # add test if (@work_plan_skill.kind == 'ceinture' && @work_plan_skill.status)
     if @work_plan_skill.kind == "ceinture"
-
       case @work_plan_skill.status
-      when 'completed'
+      when "completed"
         @work_plan_skill.completed = true
         # test for each skill of its domain a 'belt is validated'jbiv
         @work_plan_skill.save

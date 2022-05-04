@@ -37,12 +37,10 @@ class WorkPlansController < ApplicationController
     # recupe wstyudent from class room
     # recup work plan
 
-
     @my_classrooms = Classroom.where(user: current_user)
     @my_work_plans = WorkPlan.where(user: current_user).order(created_at: :DESC) #.sort_by(&:student)
     @my_work_plans_unassigned = @my_work_plans.where(student: nil)
     @my_work_plans = @my_work_plans.where.not(student: nil).sort_by(&:student)
-
   end
 
   def eval
@@ -54,7 +52,7 @@ class WorkPlansController < ApplicationController
     @wpds = WorkPlanDomain.where(work_plan: @work_plan)
     @wpds.each do |wpd|
       wpd.work_plan_skills.each do |wps|
-         # last_4_wps = WorkPlanSkill.where(student: @work_plan.student, skill: wps.skill_id).sort_by(&:created_at).reverse[1..3]
+        # last_4_wps = WorkPlanSkill.where(student: @work_plan.student, skill: wps.skill_id).sort_by(&:created_at).reverse[1..3]
         last_4_wps = WorkPlanSkill.last_4_wps(@work_plan, wps)
         @previous << [wps.skill_id, last_4_wps]
       end
@@ -69,16 +67,17 @@ class WorkPlansController < ApplicationController
       format.pdf do
         render pdf: "#{@work_plan.name} #{
           unless @work_plan.student.nil?
-                 @work_plan.student.first_name
-          end}",
+            @work_plan.student.first_name
+          end
+          }",
           template: "pdf/show_print.html.erb", # Excluding ".pdf" extension.
           disposition: "attachment",
           encoding: "utf8", # a remettre pour lle DL auto des pdf
           margin: {
-                     top: 5,
-                     bottom: 3,
-                     left: 5,
-                     right: 5,
+            top: 5,
+            bottom: 3,
+            left: 5,
+            right: 5,
           }
         # dpi: 300
       end

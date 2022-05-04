@@ -61,7 +61,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'dotenv-rails'
   # autoindent erb file
-  gem 'htmlbeautifier'
+
 
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -90,4 +90,3 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # add cloudinary
 gem 'cloudinary', '~> 1.16.0'
-
