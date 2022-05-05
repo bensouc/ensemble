@@ -5,6 +5,7 @@ class WorkPlanDomainsController < ApplicationController
     kind = params.require(:kind)
     @domain.work_plan = @work_plan
     @domain.save!
+
     if ["Géométrie", "Grandeurs et Mesures"].include?(@domain.domain)
       @domain.level = 1
       if @domain.save
