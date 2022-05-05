@@ -24,7 +24,9 @@ export default class extends Controller {
     } else {
       this.beltFormTarget.classList.remove('d-none');
     }
-
+    // document.body.scrollTop = document.body.scrollHeight;
+    // document.documentElement.scrollTop = document.documentElement.scrollHeight;
+    window.scrollTo(0, document.body.scrollHeight);
   }
 
 }
