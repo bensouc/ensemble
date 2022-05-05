@@ -12,16 +12,15 @@ export default class extends Controller {
     window.scrollTo(0, document.body.scrollHeight);
   }
 
+
+  // TO manage belt selection for special domain cases Géométrie et 'Grandeurs et Mesures' )
   displayBelt(event) {
     // console.log(this);
     const cell = this
-    if (event.path[0].value == 'Géométrie' || event.path[0].value =='Grandeurs et Mesures') {
-      // console.log(cell);
-      // console.log(this);
-      // console.log(cell.boxTarget.checked);
-      cell.beltFormTarget.classList.add('d-none');
-      cell.boxTarget.checked = true
-      // console.log(cell.boxTarget.checked);
+    if (event.path[0].value == 'Géométrie' || event.path[0].value == 'Grandeurs et Mesures') {
+      this.beltFormTarget.classList.add('d-none');
+      // put level 1 checkbox as true
+      this.boxTarget.checked = true
     } else {
       this.beltFormTarget.classList.remove('d-none');
     }
