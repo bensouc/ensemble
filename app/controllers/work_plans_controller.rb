@@ -44,7 +44,7 @@ class WorkPlansController < ApplicationController
   end
 
   def eval
-    @belt = %w(blanche jaune orange verte bleue marron noire)
+    @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
     @previous = []
     # creating data to display previous evals#
@@ -60,7 +60,7 @@ class WorkPlansController < ApplicationController
   end
 
   def show
-    @belt = %w(blanche jaune orange verte bleue marron noire)
+    @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
     respond_to do |format|
       format.html
