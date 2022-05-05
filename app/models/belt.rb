@@ -1,4 +1,6 @@
 class Belt < ApplicationRecord
+
+  BELT_COLORS = %w(blanche jaune orange verte bleue marron noire)
   belongs_to :student
 
   def completed?

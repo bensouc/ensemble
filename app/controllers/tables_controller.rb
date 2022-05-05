@@ -17,6 +17,7 @@ class TablesController < ApplicationController
 
   def update
     @table = ActionText::Attachable.from_attachable_sgid params[:id]
+    
     if params["method"] == "addRow"
       @table.rows += 1
     elsif params["method"] == "addColumn"

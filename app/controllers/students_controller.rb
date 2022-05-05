@@ -6,7 +6,7 @@ class StudentsController < ApplicationController
 
   def show
     @student = Student.find(params[:id])
-    @belt = %w(blanche jaune orange verte bleue marron noire)
+    @belt = Belt::BELT_COLORS
     @all_skills = []
     @student_grade = @student.classroom.grade
     Skill.where(grade: @student_grade).each  do |skill|
