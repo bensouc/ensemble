@@ -2,13 +2,13 @@
 <div class=' pt '>
   <div class=''>
     <%# header WP%>
-  <%= render 'header_wp', work_plan: @work_plan%>
+  <%= render 'shared_header_wp', work_plan: @work_plan%>
     <%# Student details %>
-  <%= render 'student_details', work_plan: @work_plan%>
+  <%= render 'show_student_details', work_plan: @work_plan%>
   </div>
 
   <%# Start of a domain %>
   <div>
-    <%= render 'work_plan_domains', work_plan: @work_plan%>
+    <%= render 'show_work_plan_domains', work_plan: @work_plan%>
   </div>
 </div>
