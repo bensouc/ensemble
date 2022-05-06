@@ -1,14 +1,22 @@
-
 <div class=' pt '>
   <div class=''>
+    <div class="top-floating-btn" id='backToBottomBtn' onclick="const backFunction = () => {
+()">
+      <i class="fa-solid fa-circle-arrow-down"></i>
+    </div>
     <%# header WP%>
-  <%= render 'header_wp', work_plan: @work_plan%>
+    <%= render 'shared_header_wp', work_plan: @work_plan%>
     <%# Student details %>
-  <%= render 'student_details', work_plan: @work_plan%>
+    <%= render 'show_student_details', work_plan: @work_plan%>
   </div>
-
   <%# Start of a domain %>
   <div>
-    <%= render 'work_plan_domains', work_plan: @work_plan%>
+    <%= render 'show_work_plan_domains', work_plan: @work_plan%>
+  </div>
+  <div class="bottom-floating-btn" id='back-to-top-btn' onclick="topFunction()">
+    <i class="fa-solid fa-circle-arrow-up"></i>
+    <%= link_to work_plan_path(@work_plan, format: :pdf) do %>
+      <i class="fa-solid fa-file-pdf"></i>
+    <% end %>
   </div>
 </div>
