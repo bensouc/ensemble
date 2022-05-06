@@ -1,0 +1,41 @@
+.bottom-floating-btn{
+  text-decoration: none;
+  display: none;
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  color: $rose;
+  font-size: 30px;
+  opacity: 0.6;
+  a{
+    text-decoration: none;
+    color: $rose;
+  }
+  &:hover{
+    opacity: 1;
+  }
+}
+.bottom-floating-btn:active{
+  color: #ff1125;
+}
+
+.top-floating-btn{
+  text-decoration: none;
+  display: none;
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  color: $rose;
+  font-size: 30px;
+  opacity: 0.6;
+  a{
+    text-decoration: none;
+    color: $rose;
+  }
+  &:hover{
+    opacity: 1;
+  }
+}
+.top-floating-btn:active{
+  color: #ff1125;
+}
