@@ -39,6 +39,9 @@ gem 'font-awesome-sass'
 gem 'simple_form'
 gem 'rails-i18n'
 
+# reduce log size with lograge
+gem "lograge"
+
 # admin
 gem 'rails_admin', ['>= 3.0.0.rc2', '< 4']
 # gem de navbar
@@ -61,6 +64,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'dotenv-rails'
   # autoindent erb file
+
 
 
 
