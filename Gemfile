@@ -39,6 +39,9 @@ gem 'font-awesome-sass'
 gem 'simple_form'
 gem 'rails-i18n'
 
+# reduce log size with lograge
+gem "lograge"
+
 # admin
 gem 'rails_admin', ['>= 3.0.0.rc2', '< 4']
 # gem de navbar
@@ -64,6 +67,7 @@ group :development, :test do
 
 
 
+
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
 end
@@ -75,6 +79,7 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'htmlbeautifier'
 end
 
 group :test do

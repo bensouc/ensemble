@@ -87,6 +87,11 @@ Rails.application.configure do
     config.logger    = ActiveSupport::TaggedLogging.new(logger)
   end
 
+  # Enable lograge or the relevant environment config:
+  config.lograge.enabled = true
+  # If some action can be ignore in logs => use below
+  # config.lograge.ignore_actions = ["HomeController#index", "AController#an_action"]
+
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
