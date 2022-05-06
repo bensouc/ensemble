@@ -6,15 +6,25 @@
   right: 20px;
   color: $rose;
   font-size: 30px;
-  opacity: 0.6;
-  a{
+
+  i {
+    opacity: 0.6;
+    &:hover {
+    transition: 0.5;
+    opacity: 1;
+    cursor: pointer;
+    }}
+
+  a {
     text-decoration: none;
     color: $rose;
+    opacity: 0.6;
+    &:hover{
+      transition: 0.5;
+      opacity: 1;
+    }}
   }
-  &:hover{
-    opacity: 1;
-  }
-}
+
 .bottom-floating-btn:active{
   color: #ff1125;
 }
@@ -33,9 +43,8 @@
     color: $rose;
   }
   &:hover{
+    transition: 0.5;
     opacity: 1;
+    cursor: pointer;
   }
-}
-.top-floating-btn:active{
-  color: #ff1125;
 }
