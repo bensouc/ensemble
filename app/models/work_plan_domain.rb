@@ -3,6 +3,8 @@ class WorkPlanDomain < ApplicationRecord
   # order in the DOMAINS array give the Workplan show domain display ordering
   LEVELS = 1..7
 
+  DOMAINS_SPECIALS = ["Géométrie", "Grandeurs et Mesures"]
+
   belongs_to :work_plan
   belongs_to :student, optional: true
 
@@ -29,5 +31,14 @@ class WorkPlanDomain < ApplicationRecord
     end
     self.save
     return self.completed
+  end
+
+  # return the number of validated skill for a domain
+  def all_skills_completed_count
+    student = self.work_plan.student
+    out = self.all_domain_skills.select do |skill|
+      !WorkPlanSkill.last_wps(student, skill).nil? && WorkPlanSkill.last_wps(student, skill).completed
+    end
+    out.count
   end
 end
