@@ -27,10 +27,12 @@ import "bootstrap";
 
 import { initFlatpickr } from "../plugins/flatpickr";
 import { displayQuote } from "../plugins/quote.js";
-// JS 4 back to top BTN
-import "./back_to_top"
-// import { topFunction } from "./back_to_top"
 // import { scrollFunction } from "./back_to_top";
+// JS 4 back to top BTN
+
+import "./back_to_top";
+// import { scrollFunction } from "./back_to_top";
+
 
 
 // Internal imports, e.g:
@@ -40,10 +42,9 @@ import "./back_to_top"
 document.addEventListener('turbolinks:load', () => {
   // Call your functions here, e.g:
   // initSelect2();
-  displayQuote();
+  // displayQuote();
   initFlatpickr();
-  scrollFunction();
-  topFunction();
+
 });
 
 require("trix")
