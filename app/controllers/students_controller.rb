@@ -9,12 +9,14 @@ class StudentsController < ApplicationController
     @belt = Belt::BELT_COLORS
     @all_skills = []
     @student_grade = @student.classroom.grade
-    Skill.where(grade: @student_grade).each  do |skill|
+    Skill.where(grade: @student_grade).each do |skill|
       @all_skills << {
         skill: skill,
         last_wps: WorkPlanSkill.last_wps(@student.id, skill.id)
       }
     end
+    #cleaning of the useless lastwps (eg: special domain, remove the amount)
+    
     @belts = Belt.where(student: @student, grade: @student_grade)
   end
 

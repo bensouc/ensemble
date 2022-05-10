@@ -1,17 +1,37 @@
 <%# render resultat <%= domain %>
-<% skills = Skill.where(domain: domain, level: level, grade: @student.classroom.grade)%>
-<div class="display-last-wps">
-  <%skills.order(:id).each do |skill|%>
-    <%wps= @all_skills.select {|f| f[:skill]==skill}.first[:last_wps] %>
-    <%unless wps.nil?%>
-      <div class="a-wps" data-controller='wps-result'>
-        <%= render 'challenge_status', wps: wps%>
-        <div class="skill-name d-none" data-wps-result-target='name'>
-          <%=skill.name%>
-          -
-          <%=render 'wps_status', wps: wps%>
+<%if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain)%>
+  <% skills = Skill.where(domain: domain, grade: @student.classroom.grade)%>
+  <div class="display-last-wps">
+    <%skills.order(:id).each do |skill|%>
+      <%wps= @all_skills.select {|f| f[:skill]==skill}.first[:last_wps] %>
+      <%unless wps.nil?%>
+      <%# <%wps = wps.sort_by { |f| f[:updated_at]}%>
+        <div class="a-wps" data-controller='wps-result'>
+          <%= render 'challenge_status', wps: wps%>
+          <div class="skill-name d-none" data-wps-result-target='name'>
+            <%=skill.name%>
+            -
+            <%=render 'wps_status', wps: wps%>
+          </div>
         </div>
-      </div>
+      <% end %>
     <% end %>
-  <% end %>
-</div>
+  </div>
+<% else %>
+  <% skills = Skill.where(domain: domain, level: level, grade: @student.classroom.grade)%>
+  <div class="display-last-wps">
+    <%skills.order(:id).each do |skill|%>
+      <%wps= @all_skills.select {|f| f[:skill]==skill}.first[:last_wps] %>
+      <%unless wps.nil?%>
+        <div class="a-wps" data-controller='wps-result'>
+          <%= render 'challenge_status', wps: wps%>
+          <div class="skill-name d-none" data-wps-result-target='name'>
+            <%=skill.name%>
+            -
+            <%=render 'wps_status', wps: wps%>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
