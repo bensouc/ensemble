@@ -3,7 +3,7 @@
   <% skills = Skill.where(domain: domain, grade: @student.classroom.grade)%>
   <div class="display-last-wps ">
     <%# test if level 1 or if level +1 above the higher belt %>
-    <% if (level == 1 || (level == (@belts.where(domain: domain).last.level + 1 ) if !@belts.where(domain: domain).last.nil?)) %>
+    <% if (level == 1 || !@belts.where(domain: domain, completed: true).last.nil? && (level == (@belts.where(domain: domain, completed: true).last.level + 1 ) )) %>
       <%skills.order(:id).each do |skill|%>
         <%wps= @all_skills.select {|f| f[:skill]==skill && !f[:last_wps].nil?} %>
         <% wps = wps.first[:last_wps] if wps != []%>
