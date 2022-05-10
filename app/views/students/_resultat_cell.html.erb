@@ -1,17 +1,41 @@
 <%# render resultat <%= domain %>
-<% skills = Skill.where(domain: domain, level: level, grade: @student.classroom.grade)%>
-<div class="display-last-wps">
-  <%skills.order(:id).each do |skill|%>
-    <%wps= @all_skills.select {|f| f[:skill]==skill}.first[:last_wps] %>
-    <%unless wps.nil?%>
-      <div class="a-wps" data-controller='wps-result'>
-        <%= render 'challenge_status', wps: wps%>
-        <div class="skill-name d-none" data-wps-result-target='name'>
-          <%=skill.name%>
-          -
-          <%=render 'wps_status', wps: wps%>
-        </div>
-      </div>
+<%if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain)%>
+  <% skills = Skill.where(domain: domain, grade: @student.classroom.grade)%>
+  <div class="display-last-wps ">
+    <%# test if level 1 or if level +1 above the higher belt %>
+    <% if (level == 1 || !@belts.where(domain: domain, completed: true).last.nil? && (level == (@belts.where(domain: domain, completed: true).last.level + 1 ) )) %>
+      <%skills.order(:id).each do |skill|%>
+        <%wps= @all_skills.select {|f| f[:skill]==skill && !f[:last_wps].nil?} %>
+        <% wps = wps.first[:last_wps] if wps != []%>
+        <%unless wps.nil? || wps==[]%>
+          <div class="a-wps" data-controller='wps-result'>
+            <%= render 'challenge_status', wps: wps%>
+            <div class="skill-name d-none" data-wps-result-target='name'>
+              <%=skill.name%>
+              -
+              <%=render 'wps_status', wps: wps%>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
     <% end %>
-  <% end %>
+  </div>
 </div>
+<% else %>
+  <% skills = Skill.where(domain: domain, level: level, grade: @student.classroom.grade)%>
+  <div class="display-last-wps">
+    <%skills.order(:id).each do |skill|%>
+      <%wps= @all_skills.select {|f| f[:skill]==skill}.first[:last_wps] %>
+      <%unless wps.nil?%>
+        <div class="a-wps" data-controller='wps-result'>
+          <%= render 'challenge_status', wps: wps%>
+          <div class="skill-name d-none" data-wps-result-target='name'>
+            <%=skill.name%>
+            -
+            <%=render 'wps_status', wps: wps%>
+          </div>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>
