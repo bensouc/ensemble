@@ -8,6 +8,7 @@ class StudentsController < ApplicationController
     @student = Student.find(params[:id])
     @belt = Belt::BELT_COLORS
     @all_skills = []
+    @belts_specials_count = []
     @student_grade = @student.classroom.grade
     Skill.where(grade: @student_grade).each do |skill|
       @all_skills << {
@@ -15,9 +16,14 @@ class StudentsController < ApplicationController
         last_wps: WorkPlanSkill.last_wps(@student.id, skill.id)
       }
     end
-    #cleaning of the useless lastwps (eg: special domain, remove the amount)
-    
+    # retrive all student belts
     @belts = Belt.where(student: @student, grade: @student_grade)
+    #cleaning of the useless lastwps (eg: special domain, remove the amount)
+    WorkPlanDomain::DOMAINS_SPECIALS.each do |domain|
+      unless @belts.where(domain: domain).empty?
+        @all_skills = wps_cleaned_belt(@all_skills, domain, @belts.where(domain: domain, completed: true).count )
+      end
+    end
   end
 
   def create
@@ -44,5 +50,25 @@ class StudentsController < ApplicationController
 
   def classroom_params_id
     params.require(:classroom_id)
+  end
+
+  def wps_cleaned_belt(all_skills, domain, count)
+    # "Géométrie", "Grandeurs et Mesures"
+    belt_validation = [
+    {
+      domain: "Géométrie",
+      validation: [2,4,7,10,13,17,21]
+    },
+    {
+      domain: "Grandeurs et Mesures",
+      validation: [2,4,6,9,12,15,18]
+    },
+    ]
+    to_remove = belt_validation.select { |d| d[:domain] == domain }.first[:validation][count - 1]
+    (1..to_remove).to_a.each do
+      all_skills.delete_at(all_skills.index { |h| h[:skill][:domain] == domain && !h[:last_wps].nil? })
+      # all_skills.select { |h| h[:skill][:domain] == domain && !h[:last_wps].nil? }.count
+    end
+    all_skills
   end
 end
