@@ -4,11 +4,13 @@ body {
   font-family: $body-font;
 }
 
-.pastouche{
-  min-height: 75vh;
+.pastouche {
+  min-height: 80vh;
+  // text-align: center;
+  padding-top: 3%;
 }
 
-.scroll-progress{
+.scroll-progress {
   height: 0.5rem;
   top: 0;
   position: fixed;
@@ -16,10 +18,9 @@ body {
   background-color: #f241506b;
 }
 
-a{
+a {
   text-decoration: none !important;
 }
-
 
 // .bd-maison .skill:hover{
 //     background-color: $rose;
