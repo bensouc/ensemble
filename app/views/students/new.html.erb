@@ -2,7 +2,7 @@
   <%= simple_form_for [@student] do |form| %>
     <div class='d-flex'>
       <h3>Prénom : </h3>
-      <%= form.input :first_name, label: false, input_html: { class: 'area grow ml-3' } %>
+      <%= form.input :first_name, label: false, input_html: { class: 'area grow me-3' } %>
     </div>
     <%= form.input :classroom,
                     input_html: { value: @classroom.id, class: 'hidden' },

@@ -5,6 +5,7 @@
 .students-names{
    display: grid;
   grid-template-columns: 1fr 1fr 1fr;
+  padding: 0 10px 0 10px;
 }
 .classroom-card {
   min-height: 200px;
@@ -36,7 +37,7 @@
 }
 
 .add-student-btn{
-  margin-bottom: 15px;
+  margin: 15px;
   display: flex;
   align-items: center;
   justify-content: space-around;

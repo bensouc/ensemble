@@ -36,21 +36,21 @@
             <%# cloner un exo %>
           <div class="challenge-mngt">
             <%= link_to  work_plan_skill_clone_path( work_plan_skill, work_plan_skill.challenge.id) ,action: 'clone', method: 'post', class: 'replace-challenge-btn' do %>
-              <i class="far fa-clone ml-2"></i>
+              <i class="far fa-clone me-2"></i>
               <h6>Cloner</h6>
             <% end %>
             <%# <div class="replace-challenge-btn">
-              <i class="far fa-clone ml-2"></i>
+              <i class="far fa-clone me-2"></i>
               <h6>Cloner</h6>
             </div> %>
             <div class="replace-challenge-btn" data-action="click->edit-challenge#displayForm">
-              <i class="fas fa-pen fa-xs ml-2"></i>
+              <i class="fas fa-pen fa-xs me-2"></i>
               <h6>Modifier</h6>
             </div>
             <%# REPLACE A CHALLENGE %>
             <div data-controller="skill-add">
               <div data-edit-challenge-target="button" data-skill-add-target="button" data-action="click->skill-add#displayForm" class='replace-challenge-btn'>
-                <i class="far fa-folder-open ml-2"></i><h6>Charger</h6>
+                <i class="far fa-folder-open me-2"></i><h6>Charger</h6>
               </div>
               <div class="d-none challenge-form" data-skill-add-target="form">
               <%# Selectionner les challenges appartenant à un WP Skill%>

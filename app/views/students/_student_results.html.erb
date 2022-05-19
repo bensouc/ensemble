@@ -2,9 +2,10 @@
   <h1>Progression de <%= @student.first_name.capitalize %></h1>
   <div class="print-date">
     <h4>
-      <%= link_to "your_link_here", :onclick => "window.print();return false;" do %>
+      <%= link_to '#' ,:onclick => "window.print();return false;" do %>
         <i class="fa-solid fa-print printer-logo"></i>
-      <% end %>Le <%=I18n.l(Date.today, format: :long) %>
+      <% end %>
+      Le <%=I18n.l(Date.today, format: :long) %>
     </h4>
   </div>
 </div>
