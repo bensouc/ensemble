@@ -13,9 +13,9 @@
       <div class="classroom-card">
         <%# <img src="" alt=""> %>
         <div class="classroom-card-top">
-          <div class="class-grade ml-5 d-flex">
+          <div class="class-grade me-5 d-flex">
             <%= classroom.grade.upcase %>
-                    <div class='ml-3 pt-1'>
+                    <div class='ms-3 pt-1'>
                     <%= link_to classroom_path(classroom), method: :delete, data: {
                                                          confirm: "Voulez vous Supprimer Cette classe? Vous allez supprimer tous les élèves et les plans de travail associés",
                                                        } do %>
@@ -29,7 +29,7 @@
         <div class="students-names">
           <% (@students_list.select { |s| s.first == classroom }).first[1].each do |student| %>
             <div class="student-fname d-flex">
-              <div class='ml-3'>
+              <div class='ms-3'>
                     <%= link_to student_path(student), method: :delete, data: {
                                                         confirm: "Voulez vous Supprimer Cet élève?",
                                                       } do %>
@@ -39,14 +39,14 @@
                     <% end %>
               </div>
               <%= link_to student_path(student) do %>
-                <h1 class='ml-3 mr-5'>
+                <h1 class='ms-3 me-5'>
                 <%= student.first_name.capitalize %>
                 </h1>
               <% end %>
             </div>
           <% end %>
         </div>
-            <div class="ml-3 add-student-btn">
+            <div class="ms-3 add-student-btn">
                     <%= link_to "Ajouter un élève", new_classroom_student_path(classroom), class: "" %>
             </div>
       </div>

@@ -38,6 +38,7 @@ gem 'autoprefixer-rails', '10.2.5'
 gem 'font-awesome-sass'
 gem 'simple_form'
 gem 'rails-i18n'
+# gem "bootstrap", "~> 5.0.2"
 
 # reduce log size with lograge
 gem "lograge"

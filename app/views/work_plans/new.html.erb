@@ -3,7 +3,7 @@
     <i class='far fa-address-card' style='font-size: 30px'></i> MON PLAN DE TRAVAIL
   </h1>
   <div class='m-top'>
-    <%= simple_form_for @work_plan do |f| %>
+    <%= simple_form_for @work_plan, defaults: { input_html: { class: 'pad-35' } } do |f| %>
       <div class='box-start m-top'>
         <div class='box-column'>
           <p class='pad-35'>Nommez votre plan de travail : *</p>
@@ -20,7 +20,7 @@
                             input_html: {class: 'area grow m-left'}
                             %>
           <%# <i class="far fa-calendar-check font-fa"></i> %>
-          <div class='box-start' data-controller='wp-default-period'>
+          <div class='box-start pad-35' data-controller='wp-default-period'>
           <%# data-wp-default-period-target='start' /// data-action='click->wp-default-period#add' %>
             <div>
               <%= f.input :start_date, as: :string, label: false,  required: true,

@@ -11,7 +11,7 @@
           <td class="updatedat"><%= link_to work_plan_path(wp) do %><%= l(wp.updated_at, format: "%d/%m/%Y") %><% end %></td>
           <div>
                 <%= link_to work_plan_path(wp), method: :delete, data: { confirm: "Voulez vous Supprimer Ce Plan de Travail?" } do %>
-                  <div class='rmv-skill-btn mt-3 mr-2'>
+                  <div class='rmv-skill-btn mt-3 ms-2'>
                     <i class="far fa-times-circle"></i>
                   </div>
                   <% end %>
@@ -50,7 +50,7 @@
           <td class="updatedat"><%= link_to work_plan_path(wp) do %><%= l(wp.updated_at, format: "%d/%m/%Y") %><% end %></td>
           <td>
                 <%= link_to work_plan_path(wp), method: :delete, data: { confirm: "Voulez vous Supprimer Ce Plan de Travail?" } do %>
-                  <div class='rmv-skill-btn mt-3 mr-2'>
+                  <div class='rmv-skill-btn mt-3 ms-2'>
                     <i class="far fa-times-circle"></i>
                   </div>
                   <% end %>
