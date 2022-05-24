@@ -193,13 +193,17 @@
   }
 }
 
+.white{
+  color: $white !important;
+}
 .rmv-skill-btn {
-  color: $rose;
+  color: $grisC;
   cursor: pointer;
   font-size: 1.2rem;
   &:hover {
     transition-duration: 0.3s;
     transform: scale(1.3);
+    color: $rose !important;
   }
 }
 
