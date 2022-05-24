@@ -27,9 +27,9 @@
           </a>
           <div class="dropdown-menu left" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" href="#">Ma classe</a>
-            <a class="dropdown-item" href="#">Mon compte</a>
+            <%=link_to "Mon compte", edit_user_registration_path, class: "dropdown-item"%>
             <%if current_user.admin%>
-              <%= link_to 'ADMIN', '/admin', class: "dropdown-item", target: '_blank' %>
+              <%= link_to 'DATA-ADMIN', '/admin', class: "dropdown-item", target: '_blank' %>
             <% end %>
             <%=link_to "Déconnexion", destroy_user_session_path, method: :delete,class: "dropdown-item"%>
           </div>
