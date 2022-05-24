@@ -56,7 +56,7 @@ class WorkPlanSkillsController < ApplicationController
       }
     )
     # add test if (@work_plan_skill.kind == 'ceinture' && @work_plan_skill.status)
-    if @work_plan_skill.kind == "ceinture"
+    if @work_plan_skill.kind == "ceinture" || @work_plan_skill.kind == "controle"
       case @work_plan_skill.status
       when "completed"
         @work_plan_skill.completed = true
