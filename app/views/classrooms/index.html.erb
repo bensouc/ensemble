@@ -28,7 +28,7 @@
         <div class="students-names">
           <% (@students_list.select { |s| s.first == classroom }).first[1].each do |student| %>
             <div class="student-fname d-flex">
-              <div class=''>
+              <div class='ms-1'>
                 <%= link_to student_path(student), method: :delete, data: {
                                                         confirm: "Voulez vous Supprimer Cet élève?",
                                                       } do %>
