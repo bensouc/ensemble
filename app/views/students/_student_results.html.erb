@@ -7,6 +7,9 @@
       <% end %>
       Le <%=I18n.l(Date.today, format: :long) %>
     </h4>
+    <%= link_to  student_auto_new_wp_path(@student), method: :post do%>
+      <i class="fa-solid fa-gears"></i>
+    <% end %>
   </div>
 </div>
 <div class="top">
@@ -23,26 +26,26 @@
 <div class="results d-flex">
   <div class="left_levels">
     <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
-        <div class="domain-level mb-2">
+      <div class="domain-level mb-2">
         <i class=" fas fa-bacon belt-<%= level %> belt-result font-weight-bold"></i>
-          <strong><%= @belt[level - 1].capitalize %></strong>
-        </div>
+        <strong><%= @belt[level - 1].capitalize %></strong>
+      </div>
     <% end %>
-    </div>
+  </div>
   <div class="right-levels d-flex">
-      <% WorkPlanDomain::DOMAINS.each do |domain| %>
-        <%if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain)%>
+    <% WorkPlanDomain::DOMAINS.each do |domain| %>
+      <%if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain)%>
         <div class="domain-main-col">
-            <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
+          <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
             <%belt = @belts.where(domain: domain, level: level).last%>
-              <%# testouille %>
-                <% if !belt.nil? && belt != [] && belt.completed? %>
-                  <div class="domain-col cells-student mb-2">
-                      <%= render "resultat_belt", level: level, domain: domain, belt: belt %>
-                  </div>
-              <% else  %>
-                <div class="domain-col cells-student mb-2">
-                  <%= render "resultat_cell", level: level, domain: domain %>
+            <%# testouille %>
+            <% if !belt.nil? && belt != [] && belt.completed? %>
+              <div class="domain-col cells-student mb-2">
+                <%= render "resultat_belt", level: level, domain: domain, belt: belt %>
+              </div>
+            <% else  %>
+              <div class="domain-col cells-student mb-2">
+                <%= render "resultat_cell", level: level, domain: domain %>
               <% end %>
               <%# fin testouille %>
             <% end %>
@@ -50,20 +53,20 @@
         <% else %>
           <div class="domain-main-col">
             <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
-            <%belt = @belts.where(domain: domain, level: level).last%>
-  <%# <%raise%>
+              <%belt = @belts.where(domain: domain, level: level).last%>
+              <%# <%raise%>
               <%# testouille %>
-                <% if !belt.nil? && belt != [] && belt.completed? %>
-                  <div class="domain-col cells-student mb-2">
-                      <%= render "resultat_belt", level: level, domain: domain, belt: belt %>
-                  </div>
+              <% if !belt.nil? && belt != [] && belt.completed? %>
+                <div class="domain-col cells-student mb-2">
+                  <%= render "resultat_belt", level: level, domain: domain, belt: belt %>
+                </div>
               <% elsif !belt.nil? %>
                 <div class="domain-col cells-student mb-2">
                   <%= render "resultat_cell", level: level, domain: domain %>
                 </div>
               <% else %>
                 <div class="domain-col cells-student mb-2">
-                      <%# <i class="fa-solid fa-person-digging text-warning digging"></i> %>
+                  <%# <i class="fa-solid fa-person-digging text-warning digging"></i> %>
                 </div>
               <% end %>
               <%# fin testouille %>
@@ -71,5 +74,5 @@
           </div>
         <% end %>
       <% end %>
+    </div>
   </div>
-</div>

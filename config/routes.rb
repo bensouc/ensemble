@@ -8,7 +8,6 @@ Rails.application.routes.draw do
     resources :work_plan_domains, only: [:new, :create]
     post '', to: 'work_plans#clone', as: :clone
   end
-
   get "work_plans/:id/eval", to: "work_plans#eval", as: :eval
 
 
@@ -29,7 +28,9 @@ Rails.application.routes.draw do
     resources :students, only: [:new, :edit] #:create, :destroy
   end
 
-  resources :students, only: [:create, :update, :show, :destroy]
+  resources :students, only: [:create, :update, :show, :destroy] do
+    post '', to: 'work_plans#auto_new_wp', as: :auto_new_wp
+  end
 
   # route for tab editing
   resources :tables, only: [:show, :create, :update]

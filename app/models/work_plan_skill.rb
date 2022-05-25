@@ -25,4 +25,21 @@ class WorkPlanSkill < ApplicationRecord
   def self.last_wps(student_id, skill_id)
     WorkPlanSkill.where(skill_id: skill_id, student_id: student_id).last
   end
+
+  def add_challenges_2_wps(current_user, actual_challenge = nil)
+    challenges = Challenge.where(skill_id: self.skill)
+    name = self.skill.name + (challenges.count + 1).to_s + 'new'
+    challenges = challenges.reject{|c| c == actual_challenge}
+
+    # [1,2,3].reject{|c| c==4}
+    if challenges == []
+      # if no existing challeng 4 that skill
+      # create a empty challenge 4 that skill
+      challenge = Challenge.create_empty(self, name, current_user)
+    else
+      # recuper un des exo existant avec le skill id de @self
+      challenge = challenges.sample
+    end
+    return challenge
+  end
 end

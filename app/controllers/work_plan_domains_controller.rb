@@ -6,7 +6,7 @@ class WorkPlanDomainsController < ApplicationController
     @domain.work_plan = @work_plan
     @domain.save!
 
-    if ["Géométrie", "Grandeurs et Mesures"].include?(@domain.domain)
+    if WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain.domain)
       @domain.level = 1
       if @domain.save
         redirect_to work_plan_path(@work_plan, anchor: "bottom")
@@ -28,7 +28,8 @@ class WorkPlanDomainsController < ApplicationController
           )
           if kind == "exercice"
             ############### refacto START add_challenges_2_wps############
-            challenge = add_challenges_2_wps(work_plan_skill)
+            # challenge = add_challenges_2_wps(work_plan_skill)
+            challenge = work_plan_skill.add_challenges_2_wps(current_user)
             ############ refacto END ############
             work_plan_skill.challenge = challenge
           end
@@ -65,17 +66,17 @@ class WorkPlanDomainsController < ApplicationController
     params.require(:kind)
   end
 
-  def add_challenges_2_wps(work_plan_skill)
-    challenges = Challenge.where(skill_id: work_plan_skill.skill)
-    if challenges == []
-      # if no existing challeng 4 that skill
-      # create a empty challenge 4 that skill
-      name = work_plan_skill.skill.name + (challenges.count + 1).to_s
-      challenge = Challenge.create_empty(work_plan_skill, name, current_user)
-    else
-      # recuper un des exo existant avec le skill id de @work_plan_skill
-      challenge = challenges.sample
-    end
-    return challenge
-  end
+  # def add_challenges_2_wps(work_plan_skill)
+  #   challenges = Challenge.where(skill_id: work_plan_skill.skill)
+  #   if challenges == []
+  #     # if no existing challeng 4 that skill
+  #     # create a empty challenge 4 that skill
+  #     name = work_plan_skill.skill.name + (challenges.count + 1).to_s
+  #     challenge = Challenge.create_empty(work_plan_skill, name, current_user)
+  #   else
+  #     # recuper un des exo existant avec le skill id de @work_plan_skill
+  #     challenge = challenges.sample
+  #   end
+  #   return challenge
+  # end
 end

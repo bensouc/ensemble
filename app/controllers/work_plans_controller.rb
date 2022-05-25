@@ -26,17 +26,6 @@ class WorkPlansController < ApplicationController
   end
 
   def index
-    # @my_work_plans = WorkPlan.where(user: current_user)
-    # if params[:sort] != "avg_ranking"
-    #   @my_work_plans = WorkPlan.where(user: current_user).order(params[:sort])
-    # elsif params[:sort] == "avg_ranking"
-    #   @my_work_plans = WorkPlan.where(user: current_user).sort_by { |player| player.avg_ranking }
-    # else
-
-    # recupere classrooms
-    # recupe wstyudent from class room
-    # recup work plan
-
     @my_classrooms = Classroom.where(user: current_user)
     @my_work_plans = WorkPlan.where(user: current_user).order(created_at: :DESC) #.sort_by(&:student)
     @my_work_plans_unassigned = @my_work_plans.where(student: nil)
@@ -47,8 +36,6 @@ class WorkPlansController < ApplicationController
     @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
     @previous = []
-    # creating data to display previous evals#
-    # retrieving all #workplandomains of @workplan
     @wpds = WorkPlanDomain.where(work_plan: @work_plan)
     @wpds.each do |wpd|
       wpd.work_plan_skills.each do |wps|
@@ -65,11 +52,9 @@ class WorkPlansController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "#{@work_plan.name} #{
-          unless @work_plan.student.nil?
-            @work_plan.student.first_name
-          end
-          }",
+        render pdf: "#{@work_plan.name} #{unless @work_plan.student.nil?
+                 @work_plan.student.first_name
+               end}",
           template: "pdf/show_print.html.erb", # Excluding ".pdf" extension.
           disposition: "attachment",
           encoding: "utf8", # a remettre pour lle DL auto des pdf
@@ -134,6 +119,72 @@ class WorkPlansController < ApplicationController
     redirect_to work_plans_path
   end
 
+  def auto_new_wp
+    @student = Student.find(set_params_student)
+    @work_plan = WorkPlan.create(name: "AUTO-#{@student.first_name.capitalize}",
+                                 grade: @student.classroom.grade,
+                                 student: @student, user: current_user,
+                                 start_date: Date.today.next_occurring(:monday),
+                                 end_date: Date.today.next_occurring(:friday))
+
+    #ajout date intro prendre date => first monday => first friday
+    # based on student classroom level,
+    WorkPlanDomain::DOMAINS.each do |domain|
+      # loop on DOMAINS => create wpdomain
+
+      # to choose which level => 1 find last student.belt.completed true => level +1 else belts level = 1
+      # level = Belt.student_last_belt_level(@student, domain)
+      wpd = WorkPlanDomain.create(domain: domain,
+                                  level: Belt.student_last_belt_level(@student, domain),
+                                  student: @student,
+                                  work_plan: @work_plan)
+      if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain)
+        # mngt of special domains
+        wpd.level = 1
+      else
+        Skill.where(domain: domain, level: wpd.level, grade: @student.classroom.grade).each do |skill|
+          # Loop on skills 4 domain grade level
+          # get last wps
+          last_wps = WorkPlanSkill.last_wps(@student.id, skill.id)
+          # raise
+          new_wps = WorkPlanSkill.new(
+            skill: skill,
+            student: @student,
+            work_plan_domain: wpd,
+            kind: "exercice"
+          )
+          if last_wps.nil?
+            # create a new wps with same kind and
+            new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
+            new_wps.save
+            # if last wps is completed
+          elsif last_wps.status == "completed"
+            case last_wps.kind
+            when "jeu"
+              new_wps[:kind] = "exercice"
+              new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
+              new_wps.save
+            when "exercice"
+              new_wps[:kind] = "ceinture"
+              new_wps.save
+            end
+            # sinon redo failed redo_OK new => a wps with same kind with new status
+          elsif %w(redo failed redo_OK new).include?(last_wps.status)
+            new_wps[:kind] = last_wps.kind
+            # create a new wps with same kind and
+            new_wps.challenge = last_wps.add_challenges_2_wps(current_user, last_wps.challenge) if new_wps.kind == "exercice"
+            new_wps.save
+          end
+        end
+      end
+    end
+    if @work_plan.save
+      redirect_to work_plan_path(@work_plan)
+    else
+      redirect_to student_path(@student), notice: "Génération raté"
+    end
+  end
+
   private
 
   def work_plan_params
@@ -152,6 +203,10 @@ class WorkPlansController < ApplicationController
 
   def work_plan_domain_params
     params[:work_plan].require(:work_plan_domain).permit(:domain, :level)
+  end
+
+  def set_params_student
+    params.require(:student_id)
   end
 
   ###################### Subfonctions ##################

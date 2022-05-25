@@ -12,6 +12,15 @@ class Belt < ApplicationRecord
   #   return obj
   # end
 
+  def self.student_last_belt_level(student, domain)
+    belt = Belt.where(student: student, domain: domain, completed: true).order(:level).last
+    if belt.nil?
+      1
+    else
+      belt.level + 1
+    end
+  end
+
   def self.special_newbelt(work_plan_skill, work_plan)
     count = work_plan_skill.work_plan_domain.all_skills_completed_count
     args = {
