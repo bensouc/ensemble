@@ -1,10 +1,10 @@
 <div class="student-edit mb-5 ">
-  <%= simple_form_for [@student] do |form| %>
+  <%= simple_form_for [@student], html: { novalidate: false } do |form| %>
     <div class='d-flex'>
       <h3>Prénom de l'élève :</h3>
-      <%= form.input :first_name, label: false, input_html: { class: 'area grow ms-3', required: "true" } %>
+      <%= form.input :first_name, label: false, required: true,  input_html: { class: 'area grow ms-3'} %>
     </div>
-    <%= form.input :classroom,
+    <%= form.input :classroom,  required: true,
                     input_html: { value: @classroom.id, class: 'hidden' },
                     label: false%>
     <%= form.submit "Valider", class: "area  btn-valid" %>

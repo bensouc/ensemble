@@ -57,9 +57,9 @@
     Créer une classe
   </button>
   <div class="classroom-form d-none" data-create-classroom-target='form'>
-    <%= simple_form_for Classroom.new do |f|%>
+    <%= simple_form_for Classroom.new, html: { novalidate: false } do |f|%>
       <div class="classroom-field d-flex">
-        <%=f.input :grade, label: false,
+        <%=f.input :grade, label: false, required: true,
                               collection: Classroom::GRADE,
                               input_html: {class: 'area add-grade'}
                                 %>
