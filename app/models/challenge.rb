@@ -22,8 +22,8 @@ class Challenge < ApplicationRecord
   def self.create_empty(work_plan_skill, name, user)
     challenge = Challenge.create({
       skill: work_plan_skill.skill,
-      name: name,
-      user: user,
+      name: "#{name}-NEW",
+      user: user
     })
     challenge.content.body = <<~HTML
       Exercice à REDIGER............................

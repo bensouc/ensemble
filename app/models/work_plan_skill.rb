@@ -28,7 +28,7 @@ class WorkPlanSkill < ApplicationRecord
 
   def add_challenges_2_wps(current_user, actual_challenge = nil)
     challenges = Challenge.where(skill_id: self.skill)
-    name = self.skill.name + (challenges.count + 1).to_s + 'new'
+    name = self.skill.name + (challenges.count + 1).to_s
     challenges = challenges.reject{|c| c == actual_challenge}
 
     # [1,2,3].reject{|c| c==4}
