@@ -1,7 +1,7 @@
 <div data-controller='edit-wpheader'>
   <div class='' data-edit-wpheader-target="button">
     <div class='d-flex justify-content-between align-items-baseline' >
-      <h1><%= work_plan.name%><i style= 'color: #F24150' class="fas fa-pen fa-xs me-2" data-action="click->edit-wpheader#displayForm"></i></h1>
+      <h1><%= work_plan.name%><i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" data-action="click->edit-wpheader#displayForm"></i></h1>
       <p>Niveau : <%= work_plan.grade%></p>
       <center>
         <h4 class='date-domain'>Du <%= work_plan.start_date.strftime("%d/%m/%Y")%> Au <%= work_plan.end_date.strftime("%d/%m/%Y")%></h4>
@@ -10,20 +10,23 @@
   </div>
   <%# edit div for WP header %>
   <div class='edit-wp d-none' data-edit-wpheader-target="form">
-    <%= simple_form_for work_plan, class: 'd-flex justify-content-between align-items-baseline' do |f|%>
+    <%= simple_form_for work_plan, html: { novalidate: false }, class: 'd-flex justify-content-between align-items-baseline' do |f|%>
       <p class='m-left'>Nom :</p>
       <%= f.input :name, label: false,
+                      required: :true,
                       placeholder: 'Nom :',
                       input_html: { class: 'area  m-left' } %>
       <div class=" d-flex">
         <p class='m-left'>Du</p>
         <div class='edit-cal_wp'>
           <%= f.input :start_date, as: :string, label: false,
+                          required: :true,
                           input_html: {class: 'datepicker area m-left ', locale: "fr"} %>
         </div>
         <p class='m-left'>Au</p>
         <div class='edit-cal_wp ms-2'>
           <%= f.input :end_date, as: :string, label: false,
+                          required: :true,
                           input_html: {class: 'datepicker area m-left', locale: "fr"} %>
         </div>
       </div>

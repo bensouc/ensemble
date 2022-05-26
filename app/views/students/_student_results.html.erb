@@ -1,5 +1,14 @@
 <div class='progess-header'>
-  <h1>Progression de <%= @student.first_name.capitalize %></h1>
+  <div class="d-flex align-items-baseline print-date prog-name" data-controller='wps-result'>
+    <h1>Progression de <%= @student.first_name.capitalize %></h1>
+    <%= link_to  student_auto_new_wp_path(@student), method: :post,target: "_blank", data:{ action: "mouseover->wps-result#displayName mouseout->wps-result#hideName"} do%>
+      <i class="fa-solid fa-user-gear printer-logo ms-4"></i>
+    <% end %>
+    <div class="autogene-details d-none" data-wps-result-target='name'>
+      Générer automatiquement le <br>
+      prochain Plan de travail
+    </div>
+  </div>
   <div class="print-date">
     <h4>
       <%= link_to '#' ,:onclick => "window.print();return false;" do %>
@@ -7,9 +16,6 @@
       <% end %>
       Le <%=I18n.l(Date.today, format: :long) %>
     </h4>
-    <%= link_to  student_auto_new_wp_path(@student), method: :post do%>
-      <i class="fa-solid fa-gears"></i>
-    <% end %>
   </div>
 </div>
 <div class="top">
