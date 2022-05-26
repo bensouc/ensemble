@@ -53,8 +53,8 @@ class WorkPlansController < ApplicationController
       format.html
       format.pdf do
         render pdf: "#{@work_plan.name} #{unless @work_plan.student.nil?
-                 @work_plan.student.first_name
-               end}",
+                                            @work_plan.student.first_name
+                                          end}",
           template: "pdf/show_print.html.erb", # Excluding ".pdf" extension.
           disposition: "attachment",
           encoding: "utf8", # a remettre pour lle DL auto des pdf
@@ -62,7 +62,7 @@ class WorkPlansController < ApplicationController
             top: 5,
             bottom: 3,
             left: 5,
-            right: 5,
+            right: 5
           }
         # dpi: 300
       end

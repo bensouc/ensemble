@@ -1,4 +1,7 @@
 // display date and student name
+.prog-name{
+  height: 74px;
+}
 .print-date {
   i {
     font-size: 30px;
@@ -7,11 +10,26 @@
     text-decoration: none;
     color: $rose !important;
     margin: 0 15px;
+    width: 20px;
     &:hover {
       cursor: pointer;
     }
   }
 }
+
+.autogene-details{
+    position: relative;
+  top: -69px;
+  right: -2px;
+  // width: 300px;
+  font-size: smaller;
+  font-weight: bolder;
+  color: $grisF;
+  background-color: #f241507c;
+  padding: 10px;
+  border-radius: 5px;
+}
+
 
 .top {
   display: flex;
