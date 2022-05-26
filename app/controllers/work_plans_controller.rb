@@ -121,7 +121,7 @@ class WorkPlansController < ApplicationController
 
   def auto_new_wp
     @student = Student.find(set_params_student)
-    @work_plan = WorkPlan.create(name: "AUTO - N°#{@student.work_plans.count+1}",
+    @work_plan = WorkPlan.create(name: "AUTO - N°#{@student.work_plans.count + 1}",
                                  grade: @student.classroom.grade,
                                  student: @student, user: current_user,
                                  start_date: Date.today.next_occurring(:monday),
