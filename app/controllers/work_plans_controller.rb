@@ -141,6 +141,7 @@ class WorkPlansController < ApplicationController
       if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain)
         # mngt of special domains
         wpd.level = 1
+        wpd.save
       else
         Skill.where(domain: domain, level: wpd.level, grade: @student.classroom.grade).each do |skill|
           # Loop on skills 4 domain grade level
