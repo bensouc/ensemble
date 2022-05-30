@@ -19,9 +19,9 @@
     if ((document.documentElement.scrollTop < (document.documentElement.scrollHeight - 1100)) ) {
       backToBottomBtn.style.transition = 1;
       backToBottomBtn.style.display = "block";
-      console.log("c'est display")
+      // console.log("c'est display")
     }else {
-      console.log("c'est caché")
+      // console.log("c'est caché")
       backToBottomBtn.style.transition = 1;
       backToBottomBtn.style.display = "none";
     }
