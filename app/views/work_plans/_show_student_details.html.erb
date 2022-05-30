@@ -4,7 +4,7 @@
   <%# data: { edit_challenge_target: 'form' } %>
   <%# data-action="mouseover->wps-result#displayName mouseout->wps-result#hideName"
   data: {action:"click->new-domain#displayBelt"}  %>
-    <%= link_to student_path(work_plan.student),target: "_blank", class: 'student_name_link',
+    <%= link_to student_path(work_plan.student), class: 'student_name_link',
      data:{action: "mouseover->wps-result#displayName mouseout->wps-result#hideName"}  do%>
       <h2><strong><%= work_plan.student.first_name.capitalize %></strong></h2>
     <% end %>
