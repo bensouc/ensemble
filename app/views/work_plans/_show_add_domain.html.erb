@@ -1,10 +1,9 @@
-
 <div class="add-domain" data-controller='new-domain'>
   <div class="add-skill-btn" data-new-domain-target='button' data-action="click->new-domain#displayForm" id='dmn-validate'>
     <h6>Ajouter un domaine</h6>
     <i class="fas fa-chevron-down"></i>
   </div>
-  <div class="add-domain-form d-none" data-new-domain-target='domainform'>
+  <div class="add-domain-form d-none" data-new-domain-target='domainform' data-controller='domain-form'>
     <div class='m-top'>
       <%= simple_form_for work_plan, url: work_plan_work_plan_domains_path(work_plan), method: :post do |f| %>
         <%= f.simple_fields_for  WorkPlanDomain.new do |domain_form| %>
@@ -14,9 +13,9 @@
                                     collection_wrapper_tag: 'div',
                                     collection_wrapper_class: 'wrapper',
                                     item_wrapper_class: 'domain-item',
-                                    input_html: { class: 'selector domain-selector',data: {action:"click->new-domain#displayBelt"} } %>
+                                    input_html: { class: 'selector domain-selector',data: {action:"click->domain-form#displayBelt"} } %>
           </div>
-          <div class='m-top d-none' data-new-domain-target='beltForm'>
+          <div class='m-top d-none' data-domain-form-target='beltForm'>
             <%= domain_form.input :level, label: 'Choisissez une ceinture :', as: :radio_buttons,
                                     collection: WorkPlanDomain::LEVELS,
                                     collection_wrapper_tag: 'div',
@@ -26,7 +25,6 @@
                                     label_method: lambda { |level| render 'show_level_btn', level: level} %>
           </div>
         <% end %>
-
         <div class='m-top box-end' id='dmn-validate'>
           <%#= f.submit "Valider", class: 'validate-domain-btn fs-2'%>
           <%= f.button :button, 'Exercices', type: 'submit', name: 'kind', value: 'exercice',class: 'validate-domain-btn fs-2 ms-3 font-weight-bold' %>
