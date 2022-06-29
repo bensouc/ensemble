@@ -12,4 +12,8 @@ class Student < ApplicationRecord
   has_many :belts, dependent: :destroy
 
   validates :first_name, presence: true
+
+  def all_domains_from_student
+    WorkPlanDomain::DOMAINS.select { |d| d[:grade] == self.classroom.grade }.first[:domains]
+  end
 end

@@ -42,7 +42,7 @@
     <%# Start of a domain %>
     <div class='domains-block'>
       <%# boucle sur les work_plan_domains %>
-      <%WorkPlanDomain::DOMAINS.each do |work_plan_domains|%>
+      <%@domains.each do |work_plan_domains|%>
         <% wpd2 = @work_plan.work_plan_domains.where(domain: "#{work_plan_domains}")%>
         <% unless wpd2.empty? %>
           <%wpd2.order(:level).each do |work_plan_domain|%>

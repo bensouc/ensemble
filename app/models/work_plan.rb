@@ -11,5 +11,7 @@ class WorkPlan < ApplicationRecord
   validates :name, presence: true
   validates :grade, presence: true
 
-
+  def all_domains_from_work_plan
+    WorkPlanDomain::DOMAINS.select { |d| d[:grade] == self.grade }.first[:domains]
+  end
 end

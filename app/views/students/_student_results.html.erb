@@ -22,7 +22,7 @@
   <div class=" results-header domain-level nocolor">
   </div>
   <div class="d-flex">
-    <% WorkPlanDomain::DOMAINS.each do |domain| %>
+    <% @domains.each do |domain| %>
       <div class="domain-header">
         <%= domain %>
       </div>
@@ -39,7 +39,7 @@
     <% end %>
   </div>
   <div class="right-levels d-flex">
-    <% WorkPlanDomain::DOMAINS.each do |domain| %>
+    <% @domains.each do |domain| %>
       <%if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain)%>
         <div class="domain-main-col">
           <% WorkPlanDomain::LEVELS.reverse_each do |level| %>

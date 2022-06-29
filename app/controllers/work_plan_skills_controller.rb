@@ -83,6 +83,7 @@ class WorkPlanSkillsController < ApplicationController
       work_plan_domain_id: params.require(:work_plan_domain_id),
       skill_id: params.require(:skill).to_i,
       kind: params.require(:kind),
+      status: "new"
     }
   end
 

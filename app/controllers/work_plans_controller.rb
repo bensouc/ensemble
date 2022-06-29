@@ -35,6 +35,7 @@ class WorkPlansController < ApplicationController
   def eval
     @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
+    @domains = @work_plan.all_domains_from_work_plan
     @previous = []
     @wpds = WorkPlanDomain.where(work_plan: @work_plan)
     @wpds.each do |wpd|
@@ -49,6 +50,7 @@ class WorkPlansController < ApplicationController
   def show
     @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
+    @domains = @work_plan.all_domains_from_work_plan
     respond_to do |format|
       format.html
       format.pdf do
@@ -121,15 +123,17 @@ class WorkPlansController < ApplicationController
 
   def auto_new_wp
     @student = Student.find(set_params_student)
-    @work_plan = WorkPlan.create(name: "AUTO - N°#{@student.work_plans.count + 1}",
-                                 grade: @student.classroom.grade,
-                                 student: @student, user: current_user,
-                                 start_date: Date.today.next_occurring(:monday),
-                                 end_date: Date.today.next_occurring(:friday))
+    @work_plan = WorkPlan.create(
+      name: "AUTO - N°#{@student.work_plans.count + 1}",
+      grade: @student.classroom.grade,
+      student: @student, user: current_user,
+      start_date: Date.today.next_occurring(:monday),
+      end_date: Date.today.next_occurring(:friday)
+    )
 
     #ajout date intro prendre date => first monday => first friday
     # based on student classroom level,
-    WorkPlanDomain::DOMAINS.each do |domain|
+    @student.all_domains_from_student.each do |domain|
       # loop on DOMAINS => create wpdomain
 
       # to choose which level => 1 find last student.belt.completed true => level +1 else belts level = 1

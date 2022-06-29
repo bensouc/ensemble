@@ -10,6 +10,7 @@ class StudentsController < ApplicationController
     @all_skills = []
     @belts_specials_count = []
     @student_grade = @student.classroom.grade
+    @domains = @student.all_domains_from_student
     Skill.where(grade: @student_grade).each do |skill|
       @all_skills << {
         skill: skill,
