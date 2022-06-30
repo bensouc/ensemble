@@ -19,7 +19,7 @@ class StudentsController < ApplicationController
     end
     # retrive all student belts
     @belts = Belt.where(student: @student, grade: @student_grade)
-    #cleaning of the useless lastwps (eg: special domain, remove the amount)
+    #cleaning the useless lastwps (eg: special domain, remove the amount)
     WorkPlanDomain::DOMAINS_SPECIALS.each do |domain|
       count = @belts.where(domain: domain, completed: true).count
       unless @belts.where(domain: domain).empty? || count.zero?
@@ -31,8 +31,7 @@ class StudentsController < ApplicationController
   def create
     student = {
       first_name: params_student[:first_name],
-      classroom_id: params_student[:classroom].to_i,
-
+      classroom_id: params_student[:classroom].to_i
     }
     @student = Student.create!(student)
     redirect_to classrooms_path
@@ -59,7 +58,9 @@ class StudentsController < ApplicationController
     belt_validation = Belt.score_to_validate(grade)
     to_remove = belt_validation.select { |d| d[:domain] == domain }.first[:validation][count - 1]
     (1..to_remove).to_a.each do
+      # get index for wps completed
       index = all_skills.index { |h| h[:skill][:domain] == domain && !h[:last_wps].nil? && h[:last_wps].status == 'completed'}
+      # delete @ index if index exists
       all_skills.delete_at(index) unless index.nil?
       # all_skills.select { |h| h[:skill][:domain] == domain && !h[:last_wps].nil? }.count
     end
