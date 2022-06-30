@@ -123,7 +123,7 @@
 #   skill46 = Skill.create!(domain: 'Numération', level: 2, symbol: '⬥', name: 'Comparer, ranger, encadrer et situer sur une ligne graduée les nombres jusqu’à 60')
 #   skill47 = Skill.create!(domain: 'Numération', level: 2, symbol: '▲', name: 'Ecrire des suites de nombres jusqu’à 60')
 #   skill48 = Skill.create!(domain: 'Numération', level: 2, symbol: '🞮', name: 'Décomposer et représenter une quantité jusqu’à 60')
-#   skill49 = Skill.create!(domain: 'Numération', level: 3, symbol: '◼', name: 'Connaître les nombres (écrire/nommer) jusqu’à 100')
+#   skill49 = Skill.create!(domain: 'Numération', level: 3, symbol: '', name: 'Connaître les nombres (écrire/nommer) jusqu’à 100')
 #   skill50 = Skill.create!(domain: 'Numération', level: 3, symbol: '⬥', name: 'Comparer, ranger, encadrer et situer sur une ligne graduée les nombres jusqu’à 100')
 #   skill51 = Skill.create!(domain: 'Numération', level: 3, symbol: '▲', name: 'Ecrire des suites de nombres jusqu’à 100')
 #   skill52 = Skill.create!(domain: 'Numération', level: 3, symbol: '🞮', name: 'Décomposer et représenter une quantité jusqu’à 100')

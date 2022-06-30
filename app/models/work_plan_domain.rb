@@ -2,8 +2,12 @@ class WorkPlanDomain < ApplicationRecord
   DOMAINS = [
     {
       grade: "CE1",
-      domains: ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"]
-    }
+      domains: ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"],
+    },
+    {
+      grade: "CE2",
+      domains: ['Conjugaison', "Vocabulaire", 'Orthographe', "Grammaire", "Géométrie", "Grandeurs et Mesures", "Numération", "Calcul"],
+    },
   ]
   # order in the DOMAINS array give the Workplan show domain display ordering
   LEVELS = 1..7
