@@ -1,6 +1,6 @@
 import { Controller } from "stimulus";
 export default class extends Controller {
-  static targets = ['beltForm'];
+  static targets = ['beltForm','box'];
   connect() {
     // console.log('add-domain connected');
   }
@@ -15,6 +15,7 @@ export default class extends Controller {
       // put level 1 checkbox as true
       this.boxTarget.checked = true
     } else {
+      console.log("show ceinture")
       this.beltFormTarget.classList.remove('d-none');
     }
     // document.body.scrollTop = document.body.scrollHeight;

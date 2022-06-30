@@ -9,7 +9,7 @@
         <%= f.simple_fields_for  WorkPlanDomain.new do |domain_form| %>
           <div class='m-top' >
             <%= domain_form.input :domain, label: 'Choisissez un nouveau domaine :', as: :radio_buttons,
-                                    collection: WorkPlanDomain::DOMAINS,
+                                    collection: @domains,
                                     collection_wrapper_tag: 'div',
                                     collection_wrapper_class: 'wrapper',
                                     item_wrapper_class: 'domain-item',
@@ -21,7 +21,7 @@
                                     collection_wrapper_tag: 'div',
                                     collection_wrapper_class: 'wrapper',
                                     item_wrapper_class: 'level-item',
-                                    input_html: { class: 'selector level-selector', data: {new_domain_target:'box'} },
+                                    input_html: { class: 'selector level-selector', data: {domain_form_target:'box'} },
                                     label_method: lambda { |level| render 'show_level_btn', level: level} %>
           </div>
         <% end %>
