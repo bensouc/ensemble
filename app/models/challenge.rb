@@ -6,7 +6,7 @@ class Challenge < ApplicationRecord
 
   has_many :work_plan_skills
 
-  validates :name, presence: true, uniqueness: { message: "Le nom de cet exercice éxiste déja" }
+  validates :name, presence: true, uniqueness: { message: "Le nom de cet exercice éxiste déja", scope: :skill }
   validates :shared, presence: true
 
   def self.new_clone(challenge_original)

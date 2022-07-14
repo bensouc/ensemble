@@ -1,4 +1,4 @@
-puts "Destoy all CE2 skills"
+puts "Destroy all CE2 skills"
 s= Skill.where(grade: "CE2")
 c = s.count
 wp = WorkPlan.where(grade: "CE2" )
