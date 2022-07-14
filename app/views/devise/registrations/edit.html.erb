@@ -1,15 +1,16 @@
 <div class="container mt-2">
   <h2>Edition du Compte  de <%= current_user.first_name.humanize %></h2>
-  <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+  <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
     <%= f.error_notification %>
-
     <div class="form-inputs">
       <%= f.input :email, required: true, autofocus: true %>
-
       <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
         <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
       <% end %>
-
+      <br>
+      <%= f.input :first_name, label: "Prénom" %>
+      <%= f.input :last_name, label: "Nom" %>
+      <br>
       <%= f.input :password,
                   label: "Nouveau mot de passe",
                   hint: "Laissez-le vide si vous ne voulez pas le changer",
@@ -23,9 +24,10 @@
                   hint: "Nous avons besoin de votre mot de passe actuel pour confirmer vos modifications",
                   required: true,
                   input_html: { autocomplete: "Mot de passe actuel" } %>
+      <br>
       <%= f.input :avatar, as: :file, label: 'Modifier ton avatar', class:"btn-flat"%>
     </div>
-
+    <br>
     <div class="form-actions">
       <%= f.button :submit, "Modifier",class: 'add-skill-btn' %>
     </div>
@@ -34,8 +36,8 @@
   <br>
   <br>
   <h3>Annuler son Compte</h3>
-
   <p>Mécontent? <%= link_to "Annuler son Compte", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>
-
-  <%= link_to "Retour au cartable", :back , class: 'add-skill-btn'%>
+  <div>
+    <%= link_to "Retour au cartable", :back , class: 'add-skill-btn'%>
+  </div>
 </div>
