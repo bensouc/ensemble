@@ -1,47 +1,43 @@
+# frozen_string_literal: true
+
 class WorkPlanDomainsController < ApplicationController
   def create
     @work_plan = WorkPlan.find(params_wp_id)
-    @domain = WorkPlanDomain.new(domain: work_plan_domain_params[:domain], level: work_plan_domain_params[:level], student: @work_plan.student)
+    @domain = WorkPlanDomain.new(domain: work_plan_domain_params[:domain], level: work_plan_domain_params[:level],
+                                 student: @work_plan.student)
     kind = params.require(:kind)
     @domain.work_plan = @work_plan
     @domain.save!
 
     if WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain.domain)
       @domain.level = 1
-      if @domain.save
-        redirect_to work_plan_path(@work_plan, anchor: "bottom")
-      else
-        redirect_to work_plan_path(@work_plan, anchor: "dmn-validate")
-      end
     else
       # recupere les skills associé domaine/level dnas un tableau
       skills = Skill.where(domain: @domain.domain, level: @domain.level, grade: @work_plan.grade)
       # loop autour du tableau des skills du domain/level
       ######################### SKILLS loop START ######################
-      unless skills.nil?
-        skills.each do |skill|
-          work_plan_skill = WorkPlanSkill.new(
-            work_plan_domain_id: @domain.id,
-            skill_id: skill.id,
-            kind: kind,
-            student: @work_plan.student,
-          )
-          if kind == "exercice"
-            ############### refacto START add_challenges_2_wps############
-            # challenge = add_challenges_2_wps(work_plan_skill)
-            challenge = work_plan_skill.add_challenges_2_wps(current_user)
-            ############ refacto END ############
-            work_plan_skill.challenge = challenge
-          end
-          work_plan_skill.save!
+      skills&.each do |skill|
+        work_plan_skill = WorkPlanSkill.new(
+          work_plan_domain_id: @domain.id,
+          skill_id: skill.id,
+          kind: kind,
+          student: @work_plan.student
+        )
+        if kind == "exercice"
+          ############### refacto START add_challenges_2_wps############
+          # challenge = add_challenges_2_wps(work_plan_skill)
+          challenge = work_plan_skill.add_challenges_2_wps(current_user)
+          ############ refacto END ############
+          work_plan_skill.challenge = challenge
         end
+        work_plan_skill.save!
       end
       ######################### SKILLS loop END ######################
-      if @domain.save
-        redirect_to work_plan_path(@work_plan, anchor: "bottom")
-      else
-        redirect_to work_plan_path(@work_plan, anchor: "dmn-validate")
-      end
+    end
+    if @domain.save
+      redirect_to work_plan_path(@work_plan, anchor: "bottom")
+    else
+      redirect_to work_plan_path(@work_plan, anchor: "dmn-validate")
     end
   end
 

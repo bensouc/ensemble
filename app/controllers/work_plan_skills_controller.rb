@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class WorkPlanSkillsController < ApplicationController
   def create
     @work_plan_skill = WorkPlanSkill.new(set_params_wpskill)
     @work_plan_skill.student = @work_plan_skill.work_plan_domain.work_plan.student
     challenges = Challenge.where(skill_id: @work_plan_skill.skill)
-    if (@work_plan_skill.kind.downcase == "exercice")
+    if @work_plan_skill.kind.downcase == "exercice"
       if challenges == []
         # if no existing challeng 4 that skill
         # create a empty challenge 4 that skill
@@ -16,9 +18,11 @@ class WorkPlanSkillsController < ApplicationController
     end
 
     if @work_plan_skill.save! && @work_plan_skill.kind.downcase == "exercice"
-      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@work_plan_skill.challenge))
+      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan,
+                                 anchor: helpers.dom_id(@work_plan_skill.challenge))
     elsif @work_plan_skill.save!
-      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
+      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan,
+                                 anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
       # a revoir poour la failedsaveredirection
     else
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan)
@@ -66,14 +70,15 @@ class WorkPlanSkillsController < ApplicationController
           Belt.special_newbelt(@work_plan_skill, @work_plan)
         elsif @work_plan_skill.work_plan_domain.all_skills_completed?
           belt.completed = true
-          belt.validated_date = Time.now
+          belt.validated_date = Time.zone.now
           belt.save
         end
       end
     end
 
     @work_plan_skill.save
-    redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
+    redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan,
+                          anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
   end
 
   private
@@ -88,9 +93,8 @@ class WorkPlanSkillsController < ApplicationController
   end
 
   def add_new_chall_2_wps(work_plan_skill)
-    name = work_plan_skill.skill.name + ((Challenge.where(skill_id: work_plan_skill.skill).count) + 1).to_s
-    challenge = Challenge.create_empty(work_plan_skill, name, current_user)
+    name = work_plan_skill.skill.name + (Challenge.where(skill_id: work_plan_skill.skill).count + 1).to_s
+    Challenge.create_empty(work_plan_skill, name, current_user)
     # @work_plan_skill.challenge = challenge
-    return challenge
   end
 end

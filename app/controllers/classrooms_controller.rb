@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ClassroomsController < ApplicationController
   def index
     @classrooms = Classroom.where(user_id: current_user)
