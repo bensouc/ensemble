@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -6,11 +8,10 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
 
-  has_many :classrooms
-  has_many :work_plans
-  has_many :students, through: :classrooms
-  has_many :challenges
+  has_many :classrooms, dependent: :destroy
+  has_many :work_plans, dependent: :destroy
+  has_many :students, through: :classrooms, dependent: :destroy
+  has_many :challenges, dependent: nil
 
   has_one_attached :avatar
-
 end
