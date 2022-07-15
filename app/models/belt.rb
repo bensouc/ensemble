@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class Belt < ApplicationRecord
-  BELT_COLORS = %w(blanche jaune orange verte bleue marron noire)
+  BELT_COLORS = %w[blanche jaune orange verte bleue marron noire].freeze
   belongs_to :student
 
   def completed?
-    self.completed
+    completed
   end
 
   # def self.update_or_create_by(args, completed)
@@ -28,7 +30,7 @@ class Belt < ApplicationRecord
       domain: work_plan_skill.work_plan_domain.domain,
       grade: work_plan.grade
     }
-      Belt.create_new_special_belt(args, count, work_plan_skill)
+    Belt.create_new_special_belt(args, count, work_plan_skill)
   end
 
   def self.find_or_create_by_level!(args, level)
@@ -45,25 +47,25 @@ class Belt < ApplicationRecord
   def self.score_to_validate(grade)
     case grade
     when "CE1"
-      return [
+      [
         {
           domain: "Géométrie",
-          validation: [2, 4, 7, 10, 13, 17, 21],
+          validation: [2, 4, 7, 10, 13, 17, 21]
         },
         {
           domain: "Grandeurs et Mesures",
-          validation: [2, 4, 6, 9, 12, 15, 18],
+          validation: [2, 4, 6, 9, 12, 15, 18]
         }
       ]
     when "CE2"
-      return [
+      [
         {
           domain: "Géométrie",
-          validation: [4, 8, 7, 12, 17, 22, 27],
+          validation: [4, 8, 7, 12, 17, 22, 27]
         },
         {
           domain: "Grandeurs et Mesures",
-          validation: [5, 10, 15, 20, 25, 30, 35],
+          validation: [5, 10, 15, 20, 25, 30, 35]
         }
       ]
     end
@@ -72,7 +74,8 @@ class Belt < ApplicationRecord
   def self.create_new_special_belt(args, count, work_plan_skill)
     case args[:grade]
     when "CE1"
-      if work_plan_skill.work_plan_domain.domain == "Géométrie"
+      case work_plan_skill.work_plan_domain.domain
+      when "Géométrie"
         case count
         when 2
           Belt.find_or_create_by_level!(args, 1)
@@ -89,7 +92,7 @@ class Belt < ApplicationRecord
         when 21
           Belt.find_or_create_by_level!(args, 7)
         end
-      elsif work_plan_skill.work_plan_domain.domain == "Grandeurs et Mesures"
+      when "Grandeurs et Mesures"
         case count
         when 2
           Belt.find_or_create_by_level!(args, 1)
@@ -108,7 +111,8 @@ class Belt < ApplicationRecord
         end
       end
     when "CE2"
-      if work_plan_skill.work_plan_domain.domain == "Géométrie"
+      case work_plan_skill.work_plan_domain.domain
+      when "Géométrie"
         case count
         when 4
           Belt.find_or_create_by_level!(args, 1)
@@ -125,7 +129,7 @@ class Belt < ApplicationRecord
         when 32
           Belt.find_or_create_by_level!(args, 7)
         end
-      elsif work_plan_skill.work_plan_domain.domain == "Grandeurs et Mesures"
+      when "Grandeurs et Mesures"
         case count
         when 5
           Belt.find_or_create_by_level!(args, 1)

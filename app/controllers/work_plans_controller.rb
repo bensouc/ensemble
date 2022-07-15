@@ -1,16 +1,18 @@
+# frozen_string_literal: true
+
 class WorkPlansController < ApplicationController
   def clone
     wp = WorkPlan.find(wp_id)
     # //crer des copie des WorkPlanDomain et de workplan skill
     new_wp = WorkPlan.create(
       {
-        #work_plan_domain_ids: wp.work_plan_domain_ids,
+        # work_plan_domain_ids: wp.work_plan_domain_ids,
         name: "#{wp.name} - CLONE",
         grade: wp.grade,
         user_id: current_user.id,
         start_date: wp.start_date,
         end_date: wp.end_date,
-        student_id: wp.student_id,
+        student_id: wp.student_id
       }
     )
     domains = WorkPlanDomain.where(work_plan_id: wp)
@@ -27,13 +29,13 @@ class WorkPlansController < ApplicationController
 
   def index
     @my_classrooms = Classroom.where(user: current_user)
-    @my_work_plans = WorkPlan.where(user: current_user).order(created_at: :DESC) #.sort_by(&:student)
+    @my_work_plans = WorkPlan.where(user: current_user).order(created_at: :DESC) # .sort_by(&:student)
     @my_work_plans_unassigned = @my_work_plans.where(student: nil)
     @my_work_plans = @my_work_plans.where.not(student: nil).sort_by(&:student)
   end
 
   def eval
-    @belt = Belt::BELT_COLORS
+    # @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
     @domains = @work_plan.all_domains_from_work_plan
     @previous = []
@@ -54,18 +56,16 @@ class WorkPlansController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "#{@work_plan.name} #{unless @work_plan.student.nil?
-                                            @work_plan.student.first_name
-                                          end}",
-          template: "pdf/show_print.html.erb", # Excluding ".pdf" extension.
-          disposition: "attachment",
-          encoding: "utf8", # a remettre pour lle DL auto des pdf
-          margin: {
-            top: 5,
-            bottom: 3,
-            left: 5,
-            right: 5
-          }
+        render pdf: "#{@work_plan.name} #{@work_plan.student.first_name unless @work_plan.student.nil?}",
+               template: "pdf/show_print.html.erb", # Excluding ".pdf" extension.
+               disposition: "attachment",
+               encoding: "utf8", # a remettre pour lle DL auto des pdf
+               margin: {
+                 top: 5,
+                 bottom: 3,
+                 left: 5,
+                 right: 5
+               }
         # dpi: 300
       end
     end
@@ -77,9 +77,8 @@ class WorkPlansController < ApplicationController
     @students = Student.where(classroom: current_user.classrooms)
     # generate the first work_plan_domain for new work_plan
     @work_plan_domain = @work_plan.work_plan_domains.new
-    @levels = WorkPlanDomain::LEVELS
+    # @levels = WorkPlanDomain::LEVELS
     # generate the first work_plan_skill for first work_plan_domain
-
   end
 
   def create
@@ -131,7 +130,7 @@ class WorkPlansController < ApplicationController
       end_date: Date.today.next_occurring(:friday)
     )
 
-    #ajout date intro prendre date => first monday => first friday
+    # ajout date intro prendre date => first monday => first friday
     # based on student classroom level,
     @student.all_domains_from_student.each do |domain|
       # loop on DOMAINS => create wpdomain
@@ -174,10 +173,13 @@ class WorkPlansController < ApplicationController
               new_wps.save
             end
             # sinon redo failed redo_OK new => a wps with same kind with new status
-          elsif %w(redo failed redo_OK new).include?(last_wps.status)
+          elsif %w[redo failed redo_OK new].include?(last_wps.status)
             new_wps[:kind] = last_wps.kind
             # create a new wps with same kind and
-            new_wps.challenge = last_wps.add_challenges_2_wps(current_user, last_wps.challenge) if new_wps.kind == "exercice"
+            if new_wps.kind == "exercice"
+              new_wps.challenge = last_wps.add_challenges_2_wps(current_user,
+                                                                last_wps.challenge)
+            end
             new_wps.save
           end
         end
@@ -215,14 +217,14 @@ class WorkPlansController < ApplicationController
   end
 
   ###################### Subfonctions ##################
-  def copy_domain(domain, wp, new_wp)
+  def copy_domain(domain, work_plan, new_wp)
     new_wp_domain = domain.dup
-    new_wp_domain.student = wp.student
+    new_wp_domain.student = work_plan.student
     new_wp_domain.work_plan = new_wp
     new_wp_domain.save
     work_plan_skills = WorkPlanSkill.where(work_plan_domain_id: domain)
     work_plan_skills.each do |wps|
-      wps.clone(wp, new_wp_domain)
+      wps.clone(work_plan, new_wp_domain)
     end
     new_wp_domain.save
   end

@@ -1,4 +1,6 @@
-ActionText::ContentHelper.allowed_tags += ['table', 'tr', 'td']
+# frozen_string_literal: true
+
+ActionText::ContentHelper.allowed_tags += %w[table tr td]
 
 class Table < ApplicationRecord
   include GlobalID::Identification

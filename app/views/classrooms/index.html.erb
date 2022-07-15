@@ -26,7 +26,7 @@
           </div>
         </div>
         <div class="students-names">
-          <% (@students_list.select { |s| s.first == classroom }).first[1].each do |student| %>
+          <% (@students_list.select { |s| s.first == classroom }).first[1].order(:first_name).each do |student| %>
             <div class="student-fname d-flex">
               <div class='ms-1'>
                 <%= link_to student_path(student), method: :delete, data: {
