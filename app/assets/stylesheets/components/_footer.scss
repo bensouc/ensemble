@@ -6,7 +6,7 @@
   justify-content: space-between;
   height: 50px;
   padding: 0px 50px;
-  color: rgba(0,0,0,0.3);
+  color: rgba(0, 0, 0, 0.3);
 }
 .footer-links {
   display: flex;
@@ -23,5 +23,10 @@
   opacity: 1;
 }
 .footer .fa-heart {
-  color: #D23333;
+  color: #d23333;
+}
+
+.footer-copyright {
+  width: 562px;
+  font-size: 20px;
 }
