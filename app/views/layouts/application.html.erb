@@ -29,12 +29,12 @@
   <body>
 
     <% # <%console %>
-    
+
 
     <% if ["pages", "devise/registrations", "devise/sessions"].include?(params[:controller]) %>
       <div class="pastouche"><%= yield %></div>
     <% else %>
-      <div class="container2">
+      <div class="">
         <div class="navgauche"><%= render "shared/nav_gauche" %></div>
         <div class="contenu">
           <div data-controller="scroll-progress" class="scroll-progress"></div>

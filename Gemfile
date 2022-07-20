@@ -40,6 +40,11 @@ gem 'simple_form'
 gem 'rails-i18n'
 # gem "bootstrap", "~> 5.0.2"
 
+# add a form_for with bbotstrap
+# gem "bootstrap_form", "~> 5.1"
+
+
+
 # reduce log size with lograge
 gem "lograge"
 
