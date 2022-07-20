@@ -16,7 +16,7 @@ class WorkPlansController < ApplicationController
           user_id: current_user.id,
           start_date: wp.start_date,
           end_date: wp.end_date,
-          student_id: wp.student_id
+          # student_id: wp.student_id
         }
       )
       domains = WorkPlanDomain.where(work_plan_id: wp)
@@ -81,6 +81,9 @@ class WorkPlansController < ApplicationController
     @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
     @domains = @work_plan.all_domains_from_work_plan
+    @classrooms_whithout_current_student = current_user.classrooms
+
+
     respond_to do |format|
       format.html
       format.pdf do
