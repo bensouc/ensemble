@@ -27,18 +27,21 @@
     <script src="https://kit.fontawesome.com/aa9dc78317.js" crossorigin="anonymous"></script>
   </head>
   <body>
-    <% # <%console %>
     <% if ["pages", "devise/registrations", "devise/sessions"].include?(params[:controller]) %>
-      <div class="pastouche"><%= yield %></div>
+      <div class="pastouche">
+        <%= yield %>
+      </div>
     <% else %>
-      <div class="">
-        <div class="navgauche"><%= render "shared/nav_gauche" %></div>
-        <div class="contenu">
-          <div data-controller="scroll-progress" class="scroll-progress"></div>
-          <%= render "shared/nav_haut" %>
-          <div class="pastouche" style="margin: 0 auto"><%= yield %></div>
-          <%= render "shared/footer" %>
+      <div class="navgauche">
+        <%= render "shared/nav_gauche" %>
+      </div>
+      <div class="contenu">
+        <div data-controller="scroll-progress" class="scroll-progress"></div>
+        <%= render "shared/nav_haut" %>
+        <div class="pastouche" style="margin: 0 auto">
+          <%= yield %>
         </div>
+        <%= render "shared/footer" %>
       <% end %>
     </body>
   </html>
