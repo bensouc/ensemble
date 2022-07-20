@@ -8,7 +8,7 @@ class Classroom < ApplicationRecord
 
   validates :grade, presence: true
 
-  def student_list
-    Student.where(classroom_id: id)
-  end
+  # def student_list
+  #   Student.where(classroom_id: id)
+  # end
 end

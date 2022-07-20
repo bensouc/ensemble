@@ -1,16 +1,15 @@
-
 <div class='student-name d-flex justify-content-between' data-controller='wps-result'>
   <% unless work_plan.student.nil? %>
-  <%# data: { edit_challenge_target: 'form' } %>
-  <%# data-action="mouseover->wps-result#displayName mouseout->wps-result#hideName"
+    <%# data: { edit_challenge_target: 'form' } %>
+    <%# data-action="mouseover->wps-result#displayName mouseout->wps-result#hideName"
   data: {action:"click->new-domain#displayBelt"}  %>
     <%= link_to student_path(work_plan.student), class: 'student_name_link',
      data:{action: "mouseover->wps-result#displayName mouseout->wps-result#hideName"}  do%>
       <h2><strong><%= work_plan.student.first_name.capitalize %></strong></h2>
     <% end %>
     <div class="link_details d-none", data-wps-result-target= 'name'}>
-    Ouvrir la progression de<br>
-    <%=work_plan.student.first_name.capitalize%>
+      Ouvrir la progression de<br>
+      <%=work_plan.student.first_name.capitalize%>
     </div>
   <% end %>
   <div class='d-flex'>
@@ -24,8 +23,8 @@
     <%= link_to work_plan_path(@work_plan, format: :pdf), class: "utility-wp-btn" do %>
       <h6>Export PDF</h6>
     <% end %>
-    <%= link_to work_plan_clone_path(@work_plan), method: "post", class: "utility-wp-btn" do %>
+    <div class= "utility-wp-btn" data-action="click->cloning-wp#displayCloningForm">
       <h6>cloner</h6>
-    <% end %>
+    </div>
   </div>
 </div>

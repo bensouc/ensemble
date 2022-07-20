@@ -4,26 +4,54 @@ class WorkPlansController < ApplicationController
   def clone
     wp = WorkPlan.find(wp_id)
     # //crer des copie des WorkPlanDomain et de workplan skill
-    new_wp = WorkPlan.create(
-      {
-        # work_plan_domain_ids: wp.work_plan_domain_ids,
-        name: "#{wp.name} - CLONE",
-        grade: wp.grade,
-        user_id: current_user.id,
-        start_date: wp.start_date,
-        end_date: wp.end_date,
-        student_id: wp.student_id
-      }
-    )
-    domains = WorkPlanDomain.where(work_plan_id: wp)
-    domains.each do |domain|
-      # copy domain
-      copy_domain(domain, wp, new_wp)
-    end
-    if new_wp.save!
-      redirect_to work_plan_path(new_wp), notice: "Clonage réussi"
+
+    # test if multiconing or simple
+    students = multiplecloning_params(wp_id)
+    if students.nil?
+      new_wp = WorkPlan.create(
+        {
+          # work_plan_domain_ids: wp.work_plan_domain_ids,
+          name: "#{wp.name} - CLONE",
+          grade: wp.grade,
+          user_id: current_user.id,
+          start_date: wp.start_date,
+          end_date: wp.end_date,
+          # student_id: wp.student_id
+        }
+      )
+      domains = WorkPlanDomain.where(work_plan_id: wp)
+      domains.each do |domain|
+        # copy domain
+        copy_domain(domain, wp, new_wp)
+      end
+      if new_wp.save!
+        redirect_to work_plan_path(new_wp), notice: "Clonage réussi"
+      else
+        redirect_to work_plan_path(wp), notice: "Clonage raté"
+      end
     else
-      redirect_to work_plan_path(wp), notice: "Clonage raté"
+      students = students.reject(&:blank?)
+      students.each do |clone_student_id|
+
+        new_wp = WorkPlan.create(
+          {
+            # work_plan_domain_ids: wp.work_plan_domain_ids,
+            name: "#{wp.name} - CLONE",
+            grade: wp.grade,
+            user_id: current_user.id,
+            start_date: wp.start_date,
+            end_date: wp.end_date,
+            student_id: Student.find(clone_student_id).id
+          }
+        )
+        domains = WorkPlanDomain.where(work_plan_id: wp)
+        domains.each do |domain|
+          # copy domain
+          copy_domain(domain, wp, new_wp)
+        end
+        new_wp.save!
+      end
+      redirect_to work_plans_path
     end
   end
 
@@ -53,6 +81,9 @@ class WorkPlansController < ApplicationController
     @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
     @domains = @work_plan.all_domains_from_work_plan
+    @classrooms_whithout_current_student = current_user.classrooms
+
+
     respond_to do |format|
       format.html
       format.pdf do
@@ -64,7 +95,7 @@ class WorkPlansController < ApplicationController
                  top: 5,
                  bottom: 3,
                  left: 5,
-                 right: 5
+                 right: 5,
                }
         # dpi: 300
       end
@@ -127,7 +158,7 @@ class WorkPlansController < ApplicationController
       grade: @student.classroom.grade,
       student: @student, user: current_user,
       start_date: Date.today.next_occurring(:monday),
-      end_date: Date.today.next_occurring(:friday)
+      end_date: Date.today.next_occurring(:friday),
     )
 
     # ajout date intro prendre date => first monday => first friday
@@ -155,7 +186,7 @@ class WorkPlansController < ApplicationController
             skill: skill,
             student: @student,
             work_plan_domain: wpd,
-            kind: "exercice"
+            kind: "exercice",
           )
           if last_wps.nil?
             # create a new wps with same kind and
@@ -215,6 +246,18 @@ class WorkPlansController < ApplicationController
   def set_params_student
     params.require(:student_id)
   end
+
+  def multiplecloning_params(id)
+    if params["/work_plans/#{id}"].nil?
+      nil
+    else
+      params["/work_plans/#{id}"].require(:students)
+    end
+  end
+
+  # def test_multiplecloning_params(id)
+  #   params["/work_plans/#{id}"]
+  # end
 
   ###################### Subfonctions ##################
   def copy_domain(domain, work_plan, new_wp)

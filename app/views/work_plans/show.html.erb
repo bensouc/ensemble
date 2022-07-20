@@ -1,5 +1,10 @@
-<div class=' pt ' data-controller='navigation'>
-  <div class='' data-navigation-target='wp'>
+<div class="control-show" data-controller='cloning-wp'>
+  <%# cloning control panel %>
+  <%= render 'show_cloning_panel', work_plan: @work_plan%>
+
+<%# END OF cloning control panel%>
+<div class=' pt' data-controller='navigation' data-cloning-wp-target='wp'>
+  <div class='' data-navigation-target='wp' >
     <div class="top-floating-btn" id='backToBottomBtn' data-action="click->navigation#backFunction">
       <i class="fa-solid fa-circle-arrow-down"></i>
     </div>
@@ -18,3 +23,4 @@
       <i class="fa-solid fa-file-pdf"></i>
     <% end %>
   </div>
+</div>

@@ -1,3 +1,5 @@
+User.create!(email: "bensouc@gmail.com", password: "secret", first_name: "toto", last_name: "titi")
+
 puts "Destroy all CE2 skills"
 s= Skill.where(grade: "CE2")
 c = s.count
