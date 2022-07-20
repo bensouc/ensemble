@@ -1,17 +1,19 @@
-<div class="footer-homemade footer">
-  <div class="footer-links container">
-    <a href="https://github.com/bensouc/ensemble"><i class="fab fa-github"></i></a>
-    <%=mail_to "bensoucdev@gmail.com", "Contact",
+<footer>
+  <div class="footer-homemade footer">
+    <div class="footer-links container">
+      <a href="https://github.com/bensouc/ensemble"><i class="fab fa-github"></i></a>
+      <%=mail_to "bensoucdev@gmail.com", "Contact",
          subject: "Ensemble : Demande d'information", target: '_blank'%>
-    <%# <a href="#"><i class="fab fa-instagram"></i></a> %>
-    <%# <a href="#"><i class="fab fa-facebook"></i></a>
+      <%# <a href="#"><i class="fab fa-instagram"></i></a> %>
+      <%# <a href="#"><i class="fab fa-facebook"></i></a>
     <a href="#"><i class="fab fa-twitter"></i></a>
     <a href="#"><i class="fab fa-linkedin"></i></a> %>
+    </div>
+    <div class="footer-copyright">
+      Ensemble is made with <i class="fas fa-heart"></i> at
+      <%=link_to "https://vroadstudio.fr", target: :_blank, rel: 'noopener'  do %>
+        <%=cl_image_tag('https://res.cloudinary.com/bensoucdev/image/upload/v1646128278/logoVRoad-V1_lmqcji.png', :height => 24)%>
+      <% end %>
+    </div>
   </div>
-  <div class="footer-copyright">
-    Ensemble is made with <i class="fas fa-heart"></i> at
-    <%=link_to "https://vroadstudio.fr", target: :_blank, rel: 'noopener'  do %>
-      <%=cl_image_tag('https://res.cloudinary.com/bensoucdev/image/upload/v1646128278/logoVRoad-V1_lmqcji.png', :height => 24)%>
-    <% end %>
-  </div>
-</div>
+</footer>
