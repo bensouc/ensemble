@@ -7,6 +7,7 @@ class WorkPlansController < ApplicationController
 
     # test if multiconing or simple
     students = multiplecloning_params(wp_id)
+
     if students.nil?
       new_wp = WorkPlan.create(
         {
@@ -16,7 +17,7 @@ class WorkPlansController < ApplicationController
           user_id: current_user.id,
           start_date: wp.start_date,
           end_date: wp.end_date,
-          # student_id: wp.student_id
+        # student_id: wp.student_id
         }
       )
       domains = WorkPlanDomain.where(work_plan_id: wp)
@@ -31,8 +32,8 @@ class WorkPlansController < ApplicationController
       end
     else
       students = students.reject(&:blank?)
+      students.delete("0")
       students.each do |clone_student_id|
-
         new_wp = WorkPlan.create(
           {
             # work_plan_domain_ids: wp.work_plan_domain_ids,
@@ -41,7 +42,7 @@ class WorkPlansController < ApplicationController
             user_id: current_user.id,
             start_date: wp.start_date,
             end_date: wp.end_date,
-            student_id: Student.find(clone_student_id).id
+            student_id: Student.find(clone_student_id).id,
           }
         )
         domains = WorkPlanDomain.where(work_plan_id: wp)
@@ -82,7 +83,6 @@ class WorkPlansController < ApplicationController
     @work_plan = WorkPlan.find(params[:id])
     @domains = @work_plan.all_domains_from_work_plan
     @classrooms_whithout_current_student = current_user.classrooms
-
 
     respond_to do |format|
       format.html

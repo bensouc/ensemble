@@ -31,6 +31,7 @@ import { displayQuote } from "../plugins/quote.js";
 // JS 4 back to top BTN
 
 import "./back_to_top";
+
 // import { scrollFunction } from "./back_to_top";
 
 
