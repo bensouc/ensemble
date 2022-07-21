@@ -2,25 +2,25 @@
   <%# cloning control panel %>
   <%= render 'show_cloning_panel', work_plan: @work_plan%>
   <%# la putain de div  %>
-<%# END OF cloning control panel%>
-<div class=' pt' data-controller='navigation' data-cloning-wp-target='wp'>
-  <div class='' data-navigation-target='wp' >
-    <div class="top-floating-btn" id='backToBottomBtn' data-action="click->navigation#backFunction">
-      <i class="fa-solid fa-circle-arrow-down"></i>
+  <%# END OF cloning control panel%>
+  <div class=' pt' data-controller='navigation' data-cloning-wp-target='wp'>
+    <div class='' data-navigation-target='wp' >
+      <div class="top-floating-btn" id='backToBottomBtn' data-action="click->navigation#backFunction">
+        <i class="fa-solid fa-circle-arrow-down"></i>
+      </div>
+      <%# header WP%>
+      <%= render 'shared_header_wp', work_plan: @work_plan%>
+      <%# Student details %>
+      <%= render 'show_student_details', work_plan: @work_plan%>
     </div>
-    <%# header WP%>
-    <%= render 'shared_header_wp', work_plan: @work_plan%>
-    <%# Student details %>
-    <%= render 'show_student_details', work_plan: @work_plan%>
+    <%# Start of a domain %>
+    <div>
+      <%= render 'show_work_plan_domains', work_plan: @work_plan%>
+    </div>
+    <div class="bottom-floating-btn" id='backToTopBtn' data-action="click->navigation#topFunction">
+      <i class="fa-solid fa-circle-arrow-up" id='backToTopBtn' data-action="click->navigation#topFunction"></i>
+      <%= link_to work_plan_path(@work_plan, format: :pdf) do %>
+        <i class="fa-solid fa-file-pdf"></i>
+      <% end %>
+    </div>
   </div>
-  <%# Start of a domain %>
-  <div>
-    <%= render 'show_work_plan_domains', work_plan: @work_plan%>
-  </div>
-  <div class="bottom-floating-btn" id='backToTopBtn' data-action="click->navigation#topFunction">
-    <i class="fa-solid fa-circle-arrow-up" id='backToTopBtn' data-action="click->navigation#topFunction"></i>
-    <%= link_to work_plan_path(@work_plan, format: :pdf) do %>
-      <i class="fa-solid fa-file-pdf"></i>
-    <% end %>
-  </div>
-</div>

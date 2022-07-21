@@ -1,3 +1,4 @@
+<%# ajouter la fin de div mystereuse pour tester cloning en dev %>
 <div class="cloning-form d-none" data-cloning-wp-target="cloningpanel">
   <div class= "btn-close-cloning-panel" data-action="click->cloning-wp#displayCloningForm">
     <i class="far fa-times-circle"></i>
@@ -20,23 +21,25 @@
           <h3>Classe de <%=classroom.grade%></h3>
           <div class="cloning-classroom-card ">
             <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-              <div class="student-checkbox">
+              <div class="student-checkbox" data-controller='checkboxes'>
                 <%=form.input_field :students,
                 # collection: classroom.students.order(first_name: :asc),
-                collection:classroom.students.reject{ |y| y == @work_plan.student }.sort_by{|e| e[:first_name]},
+                collection:[Student.new(first_name: 'Tous',id: 0, classroom: classroom)]+classroom.students.reject{ |y| y == @work_plan.student }.sort_by{|e| e[:first_name]},
                 label_method: :first_name,
                 value_method: :id,
-                include_blank: '(All)',
                 multiple: true,
                 as: :check_boxes,
-                boolean_style: :inline%>
+                boolean_style: :inline,
+                data: {checkboxes_target: 'boxes',action:"click->checkboxes#add"}
+                %>
               </div>
             </div>
           <% end %>
         </div>
         <%= form.submit 'Assigner le clone aux élèves séléctionnés', class: 'multi-cloning-validate-btn mt-3 mb-3"', data: { confirm: "Etes vous bien sur de vouloir assigner ce plan de travail à tous les élèves sélectionnés" }%>
       </div>
-      <% end %>
-    </div>
+    <% end %>
   </div>
+</div>
+<%# pour prod ajouter la fin de /div %>
 </div>
