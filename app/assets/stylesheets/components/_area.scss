@@ -1,0 +1,28 @@
+.area {
+  border: $grisC solid thin;
+  // border: $rose solid 0.2rem;
+  border-radius: 12px;
+  padding: 5px;
+  // padding: 1rem;
+  color: $grisF;
+  background-color: white;
+  list-style: none;
+}
+
+.rect-xl {
+  width: 200%;
+}
+
+.rect-lg {
+  width: 11ch;
+}
+
+.rect-sm {
+  width: 25%;
+}
+
+.square {
+  padding: 0 !important;
+  width: 7rem;
+  height: 7rem;
+}

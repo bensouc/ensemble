@@ -70,7 +70,7 @@
                     <div class='a-skill'>
                       <div class='border-skill'>
 
-                        <symbol ><%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1659600792/ensemble/#{plan_skill.skill.symbol_pdf}", size: "20x20")%></symbol>
+                        <symbol ><%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1659600792/ensemble/#{plan_skill.skill.symbol_pdf}",:transformation=>[{:radius=>60}], size: "20x20")%></symbol>
                         <%= plan_skill.skill.name%>
                       </div>
                       <%# tab for skill kind %>

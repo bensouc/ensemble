@@ -1,0 +1,81 @@
+//** Fonts **
+.font {
+  font-family: $plan-font;
+  font-size: 18px;
+  // font-size: 2rem;
+  font-weight: 400;
+  // letter-spacing: 1rem;
+  color: $grisF;
+  h1 {
+    font-family: $titres-font;
+    font-size: 36px;
+    // font-size: 4rem;
+    font-weight: 700;
+  }
+}
+
+// .font-fa {
+//   font-size: 36px
+//   font-size: 4rem
+// }
+
+.fa-address-card,
+.fa-desktop,
+.fa-user-circle,
+.fa-calendar-check {
+    color: $rose;
+}
+
+//** Positions **
+.m-top {
+  margin-top: 3rem;
+}
+
+.pad-35 {
+  padding: 0.35rem;
+}
+
+.m-left {
+  margin-left: 1rem;
+}
+
+.box-start {
+  display: flex;
+  justify-content: flex-start;
+  // align-items: flex-bottom;
+}
+
+.box-end {
+  display: flex;
+  justify-content: flex-end;
+  // align-items: flex-bottom;
+}
+
+.box-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+//** Button **
+.btn-valid {
+  border: solid $rose ;
+  border-radius: 12px;
+  color: white;
+  font-size: 24px;
+  background-color: $rose;
+  transition: 0.3s;
+  &:hover {
+    background-color: white;
+    border-color: $rose;
+    color: $rose;
+     cursor: pointer;
+  }
+}
+
+.work_plan_name, .work_plan_grade, .work_plan_student{
+  padding: 0.35rem !important;
+}

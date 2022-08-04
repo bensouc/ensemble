@@ -1,0 +1,73 @@
+.container3 {
+  width: 1000px;
+  margin-bottom: 0 auto;
+  padding: 0 0 15px 15px;
+  // display: grid;
+  // grid-template-columns:  1fr 1fr;
+  h1 {
+    font-weight: 900;
+    color: $rose;
+  }
+  h5 i {
+    color: $rose;
+  }
+}
+
+.wp-one-classroom {
+  // width: 70%;
+  border-bottom: thin solid $grisC;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+}
+
+.student-wp {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0 5px 10px;
+  justify-content: baseline;
+  a {
+    display: flex;
+    justify-content: space-between;
+
+    &:hover {
+      transform: scale(1.05);
+      background-color: $roseL;
+      border-radius: 14px;
+      padding: 2px 0 0 10px;
+
+      cursor: pointer;
+    }
+  }
+}
+.wp-dates {
+  width: 300px;
+  text-align: center;
+  color: #3d3d3d;
+}
+.rmv-wp {
+  padding-top: 3px;
+  width: 40px;
+  display: flex;
+  justify-content: space-around;
+  margin-left: 20px;
+}
+
+.namept {
+  font-weight: 500;
+  width: 43ch;
+  color: #3d3d3d;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.index-folder {
+  color: $roseL;
+}
+
+.invisible {
+  opacity: 0;
+}
+.index-wp-count {
+  font-style: italic;
+  opacity: 0.33;
+}

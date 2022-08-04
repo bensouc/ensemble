@@ -1,0 +1,55 @@
+// reset user agent style sheet
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, button, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+  // color: inherit;
+  // // border-color: inherit;
+  // // background-color: inherit
+}
+
+
+// Graphical variables
+@import "config/fonts";
+@import "config/colors";
+@import "config/global";
+@import "config/bootstrap_variables";
+@import "simple_calendar";
+
+// External libraries
+@import "bootstrap/scss/bootstrap";
+@import "font-awesome-sprockets";
+@import "flatpickr/dist/themes/light";
+
+
+// @import "flatpickr/dist/flatpickr";
+@import "font-awesome";
+@import "trix/dist/trix";
+
+// Your CSS partials
+@import "components/index";
+// @import "pages/eval";
+@import "pages/index";
+@import "home/home";
+@import "work_plans/list_wp";
+@import "work_plans/new";
+@import "work_plans/show";
+@import "work_plans/challenges";
+@import "work_plans/index";
+@import "classrooms/index";
+@import "students/show";
