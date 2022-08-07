@@ -18,12 +18,12 @@ class Skill < ApplicationRecord
     # return a skill object
   end
 
-  def symbol_pdf
+  def symbol_img_name
     case symbol
     when "◼"
       "square2_yhovlm.png"
     when "⬥"
-      "losange2_ancuvm.png"
+      "losange2_zgouqt.png"
     when "⬟"
       "polyhedre2_r6ydug.png"
     when "♥"
@@ -31,7 +31,7 @@ class Skill < ApplicationRecord
     when "⬤"
       "circle2_tvcz8s.png"
     when "♣"
-      "spades2_xuizig.png"
+      "spades2_kb8mjr.png"
     when "🞮"
       "croix2_cosycf.png"
     when "▲"
