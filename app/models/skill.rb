@@ -21,21 +21,21 @@ class Skill < ApplicationRecord
   def symbol_pdf
     case symbol
     when "◼"
-      "square_tu53ju.png"
+      "square2_yhovlm.png"
     when "⬥"
-      "losange_w2zsyz.png"
+      "losange2_ancuvm.png"
     when "⬟"
-      "polyhedre_orzmw2.png"
+      "polyhedre2_r6ydug.png"
     when "♥"
-      "heart_e87l5c.png"
+      "heart2_u2phzr.png"
     when "⬤"
-      "circle_u6lb1y"
+      "circle2_tvcz8s.png"
     when "♣"
-      "spades_hgpeze.png"
+      "spades2_xuizig.png"
     when "🞮"
-      "croix_fddn5r.png"
+      "croix2_cosycf.png"
     when "▲"
-      "triangle_ahjvqq.png"
+      "triangle2_ehwxbb.png"
     end
   end
 end
