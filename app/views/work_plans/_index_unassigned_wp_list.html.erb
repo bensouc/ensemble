@@ -1,15 +1,15 @@
 <h1>
   Non assigné<%= "s" if @my_work_plans_unassigned.count> 1 %>
 </h1>
-<div class='d-flex'>
+<div class='d-flex wp-student-folder' data-action="click->wplistunsigned#displayList">
   <div class="index-folder">
     <i class="fa-solid fa-folder-closed me-4 ms-3" data-wplistunsigned-target="folderopen"
-      data-action="click->wplistunsigned#displayList"></i>
+      ></i>
     <i class="fa-solid fa-folder-open d-none me-4 ms-3" data-wplistunsigned-target="folderclosed"
-      data-action="click->wplistunsigned#displayList"></i>
+      ></i>
   </div>
   <div class='index-wp-name d-flex'>
-    Non assigné
+    <%# Plans de travail %>
     <div class='invisible'>
       --
     </div>
