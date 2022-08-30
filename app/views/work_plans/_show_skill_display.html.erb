@@ -1,48 +1,49 @@
-                <div class='d-flex justify-content-between p-2 '>
-                  <div class='border-skill justify-content-between mt-2'>
-                    <div>
-                      <%= plan_skill.skill.symbol%>
-                      <%= plan_skill.skill.name%>
-                    </div>
-                    <%# Button remmove Skill %>
-                    <div>
-                      <%= link_to work_plan_skill_path(plan_skill), method: :delete, data: { confirm: "Voulez vous enlever cette compétence?" } do %>
-                        <div class='rmv-skill-btn'>
-                          <i class="far fa-times-circle"></i>
-                        </div>
-                      <% end %>
-                    </div>
-                    <%#  %>
-                  </div>
-                  <div class='challenge-kind '>
-                    <%# les entete %>
-                    <div class='d-flex justify-content-between w-100 kind-label'>
-                      <div class='align-items-center'>J</div>
-                      <div class='align-items-center'>E</div>
-                      <div class='align-items-center'>C</div>
-                    </div>
-                    <%# les skills %>
-                    <div class='d-flex justify-content-center w-100 kind-display'>
-                      <div class='align-items-center cells'><% if plan_skill.kind.downcase == 'jeu' %>
-                          <i class="fas fa-circle bullet-color"></i>
-                        <% else %>
-                          <i class="fas fa-circle text-white"></i>
-                        <% end%>
-                      </div>
-                      <div class='align-items-center cells b-middle'>
-                        <% if plan_skill.kind.downcase == 'exercice' %>
-                          <i class="fas fa-circle bullet-color"></i>
-                        <% else %>
-                          <i class="fas fa-circle text-white"></i>
-                        <% end%>
-                      </div>
-                      <div class='align-items-center cells'>
-                        <% if (plan_skill.kind.downcase == 'controle') ||  (plan_skill.kind.downcase == 'ceinture')%>
-                          <i class="fas fa-circle bullet-color"></i>
-                        <% else %>
-                          <i class="fas fa-circle text-white"></i>
-                        <% end%>
-                      </div>
-                    </div>
-                  </div >
-                </div>
+
+<div class='d-flex justify-content-between p-2 '>
+  <div class='border-skill justify-content-between mt-2'>
+    <div>
+      <%= plan_skill.skill.symbol%>
+      <%= plan_skill.skill.name%>
+    </div>
+    <%# Button remmove Skill %>
+    <div>
+      <%= link_to work_plan_skill_path(plan_skill), method: :delete, data: { confirm: "Voulez vous enlever cette compétence?" } do %>
+        <div class='rmv-skill-btn'>
+          <i class="far fa-times-circle"></i>
+        </div>
+      <% end %>
+    </div>
+    <%#  %>
+  </div>
+  <div class='challenge-kind '>
+    <%# les entete %>
+    <div class='d-flex justify-content-between w-100 kind-label'>
+      <div class='align-items-center'>J</div>
+      <div class='align-items-center'>E</div>
+      <div class='align-items-center'>C</div>
+    </div>
+    <%# les skills %>
+    <div class='d-flex justify-content-center w-100 kind-display'>
+      <div class='align-items-center cells'><% if plan_skill.kind.downcase == 'jeu' %>
+          <i class="fas fa-circle bullet-color"></i>
+        <% else %>
+          <i class="fas fa-circle text-white"></i>
+        <% end%>
+      </div>
+      <div class='align-items-center cells b-middle'>
+        <% if plan_skill.kind.downcase == 'exercice' %>
+          <i class="fas fa-circle bullet-color"></i>
+        <% else %>
+          <i class="fas fa-circle text-white"></i>
+        <% end%>
+      </div>
+      <div class='align-items-center cells'>
+        <% if (plan_skill.kind.downcase == 'controle') ||  (plan_skill.kind.downcase == 'ceinture')%>
+          <i class="fas fa-circle bullet-color"></i>
+        <% else %>
+          <i class="fas fa-circle text-white"></i>
+        <% end%>
+      </div>
+    </div>
+  </div >
+</div>

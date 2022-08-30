@@ -1,4 +1,3 @@
-<%# ajouter la fin de div mystereuse pour tester cloning en dev %>
 <div class="cloning-form d-none" data-cloning-wp-target="cloningpanel">
   <div class= "btn-close-cloning-panel" data-action="click->cloning-wp#displayCloningForm">
     <i class="far fa-times-circle"></i>
@@ -34,12 +33,10 @@
                 %>
               </div>
             </div>
-          <% end %>
-        </div>
+          </div>
+        <% end %>
         <%= form.submit 'Assigner le clone aux élèves séléctionnés', class: 'multi-cloning-validate-btn mt-3 mb-3"', data: { confirm: "Etes vous bien sur de vouloir assigner ce plan de travail à tous les élèves sélectionnés" }%>
       </div>
     <% end %>
   </div>
-</div>
-<%# pour prod ajouter la fin de /div %>
 </div>
