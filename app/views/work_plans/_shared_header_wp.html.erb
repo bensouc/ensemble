@@ -1,5 +1,5 @@
-<div data-controller='edit-wpheader'>
-  <div class='' data-edit-wpheader-target="button">
+<div id='shared-header-wp' data-controller='edit-wpheader'>
+  <div id='target-button' data-edit-wpheader-target="button">
     <div class='d-flex justify-content-between align-items-baseline' >
       <h1><%= work_plan.name%><i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" data-action="click->edit-wpheader#displayForm"></i></h1>
       <p>Niveau : <%= work_plan.grade%></p>
