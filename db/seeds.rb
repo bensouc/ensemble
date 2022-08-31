@@ -44,7 +44,7 @@ Skill.create!(domain: 'Conjugaison', level: '7', symbol:'▲', name:'Connaitre l
 
 Skill.create!(domain: 'Vocabulaire', level: '1', symbol:'◼', name:'Classer les lettres dans l’ordre alphabétique', grade: 'CM1')
 Skill.create!(domain: 'Vocabulaire', level: '1', symbol:'⬥', name:'Classer des mots par catégories', grade: 'CM1')
-Skill.create!(domain: 'Vocabulaire', level: '1', symbol:'▲', name:'Trouver le mot étiquette.', grade: 'CM1')
+Skill.create!(domain: 'Vocabulaire', level: '1', symbol:'▲', name:'Trouver le mot étiquette', grade: 'CM1')
 Skill.create!(domain: 'Vocabulaire', level: '2', symbol:'◼', name:'Classer des mots d’après la première lettre', grade: 'CM1')
 Skill.create!(domain: 'Vocabulaire', level: '2', symbol:'⬥', name:'Identifier les mots de la même famille', grade: 'CM1')
 Skill.create!(domain: 'Vocabulaire', level: '3', symbol:'◼', name:'Classer des mots dans l’ordre alphabétique (2 lettres identiques)', grade: 'CM1')
