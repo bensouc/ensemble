@@ -19,7 +19,26 @@
     font-family: $titres-font;
   }
 }
-
+//PT Editing panel
+#wp-edition {
+  .bg-white {
+    background-color: white;
+  }
+  .modal-content{
+    border-radius: 15px !important;
+    border: thin solid #f24150;
+  }
+  .modal-body{
+    padding-right: 68px !important;
+    padding-left: 20px !important;
+  }
+  p{
+    margin-left: 22px;
+  }
+  .datepicker{
+    margin-left: 12px;
+  }
+}
 // cloning V2 form
 .cloning-form {
   position: absolute;
@@ -100,9 +119,9 @@
   transition: 0.3s;
   color: #f24150;
   background-color: white;
-      font-family: "Poppins", sans-serif;
-    font-weight: 500;
-    line-height: 1.2;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  line-height: 1.2;
   &:hover {
     color: white;
     background-color: #f24150;
@@ -113,7 +132,7 @@
   filter: blur(1.5rem);
   cursor: not-allowed;
   pointer-events: none;
-  }
+}
 // END of cloning V2 form
 
 .domain {
