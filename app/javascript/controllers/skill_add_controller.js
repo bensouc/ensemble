@@ -7,7 +7,7 @@ export default class extends Controller {
   }
 
   displayForm() {
-    this.buttonTarget.classList.add('d-none');
-    this.formTarget.classList.remove('d-none');
+    this.buttonTarget.classList.toggle('d-none');
+    this.formTarget.classList.toggle('d-none');
   }
 }

@@ -10,7 +10,7 @@ export default class extends Controller {
     console.log(event.target.value);
     const cell = this
     // if (event.path[0].value == 'Géométrie' || event.path[0].value == 'Grandeurs et Mesures') {
-      if (event.target.value == 'Géométrie' || event.target.value == 'Grandeurs et Mesures') {
+    if (event.target.value == 'Géométrie' || event.target.value == 'Grandeurs et Mesures' || event.target.value == 'Poésie') {
       this.beltFormTarget.classList.add('d-none');
       // put level 1 checkbox as true
       this.boxTarget.checked = true
