@@ -11,6 +11,11 @@ class WorkPlanDomain < ApplicationRecord
       grade: "CE2",
       domains: ["Conjugaison", "Vocabulaire", "Orthographe", "Grammaire", "Géométrie", "Grandeurs et Mesures",
                 "Numération", "Calcul"]
+    },
+    {
+      grade: "CM1",
+      domains: ["Conjugaison", "Vocabulaire", "Orthographe", "Grammaire", "Poesie", "Géométrie", "Grandeurs et Mesures",
+                "Numération", "Calcul"]
     }
   ].freeze
   LEVELS = (1..7).freeze

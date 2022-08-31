@@ -68,6 +68,17 @@ class Belt < ApplicationRecord
           validation: [5, 10, 15, 20, 25, 30, 35]
         }
       ]
+    when "CM1"
+      [
+        {
+          domain: "Géométrie",
+          validation: [2, 5, 8, 12, 16, 21, 26]
+        },
+        {
+          domain: "Grandeurs et Mesures",
+          validation: [3, 7, 11, 16, 21, 27, 33]
+        }
+      ]
     end
   end
 
@@ -144,6 +155,45 @@ class Belt < ApplicationRecord
         when 26
           Belt.find_or_create_by_level!(args, 6)
         when 31
+          Belt.find_or_create_by_level!(args, 7)
+        end
+      end
+    when "CM1"
+      case work_plan_skill.work_plan_domain.domain
+      when "Géométrie"
+        # [2, 5, 8, 12, 16, 21, 26]
+        case count
+        when 2
+          Belt.find_or_create_by_level!(args, 1)
+        when 5
+          Belt.find_or_create_by_level!(args, 2)
+        when 8
+          Belt.find_or_create_by_level!(args, 3)
+        when 12
+          Belt.find_or_create_by_level!(args, 4)
+        when 16
+          Belt.find_or_create_by_level!(args, 5)
+        when 21
+          Belt.find_or_create_by_level!(args, 6)
+        when 26
+          Belt.find_or_create_by_level!(args, 7)
+        end
+      when "Grandeurs et Mesures"
+        case count
+          # [3, 7, 11, 16, 21, 27, 33]
+        when 3
+          Belt.find_or_create_by_level!(args, 1)
+        when 7
+          Belt.find_or_create_by_level!(args, 2)
+        when 11
+          Belt.find_or_create_by_level!(args, 3)
+        when 16
+          Belt.find_or_create_by_level!(args, 4)
+        when 21
+          Belt.find_or_create_by_level!(args, 5)
+        when 27
+          Belt.find_or_create_by_level!(args, 6)
+        when 33
           Belt.find_or_create_by_level!(args, 7)
         end
       end
