@@ -6,7 +6,7 @@ class Skill < ApplicationRecord
 
   validates :domain, presence: true,
                      inclusion: { in: ["Vocabulaire", "Conjugaison", "Orthographe",
-                                      "Grammaire", "Numération", "Calcul", "Géométrie",
+                                      "Grammaire", "Numération", "Calcul", "Poésie", "Géométrie",
                                       "Grandeurs et Mesures"] }
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
   validates :name, presence: true
