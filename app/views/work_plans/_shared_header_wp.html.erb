@@ -1,41 +1,61 @@
-<div id='shared-header-wp' data-controller='edit-wpheader'>
-  <div id='target-button' data-edit-wpheader-target="button">
+<div id="wp-edition" >
+  <div >
     <div class='d-flex justify-content-between align-items-baseline' >
-      <h1><%= work_plan.name%><i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" data-action="click->edit-wpheader#displayForm"></i></h1>
+      <h1><%= work_plan.name%>
+  <!-- Button trigger modal -->
+        <button type="button" class="bg-white" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+          <i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" ></i>
+        </button>
+      </h1>
       <p>Niveau : <%= work_plan.grade%></p>
       <center>
         <h4 class='date-domain'>Du <%= work_plan.start_date.strftime("%d/%m/%Y")%> Au <%= work_plan.end_date.strftime("%d/%m/%Y")%></h4>
       </center>
     </div>
   </div>
-  <%# edit div for WP header %>
-  <div class='edit-wp d-none' data-edit-wpheader-target="form">
-    <%= simple_form_for work_plan, html: { novalidate: false }, class: 'd-flex justify-content-between align-items-baseline' do |f|%>
-      <p class='m-left'>Nom :</p>
-      <%= f.input :name, label: false,
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edition du Plan de Travail</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <%= simple_form_for work_plan, html: { novalidate: false }, class: 'd-flex justify-content-between align-items-baseline pe-3' do |f|%>
+            <%# <p class='m-left'>Nom :</p> %>
+            <%= f.input :name, label: false,
                       required: :true,
-                      placeholder: 'Nom :',
+                      # placeholder: 'Nom :',
                       input_html: { class: 'area  m-left' } %>
-      <div class=" d-flex">
-        <p class='m-left'>Du</p>
-        <div class='edit-cal_wp'>
-          <%= f.input :start_date, as: :string, label: false,
+            <div class=" d-flex mt-2">
+              <p class=''>Du</p>
+              <div class='edit-cal_wp'>
+                <%= f.input :start_date, as: :string, label: false,
                           required: :true,
                           input_html: {class: 'datepicker area m-left ', locale: "fr"} %>
-        </div>
-        <p class='m-left'>Au</p>
-        <div class='edit-cal_wp ms-2'>
-          <%= f.input :end_date, as: :string, label: false,
+              </div>
+              <p class=''>Au</p>
+              <div class='edit-cal_wp ms-2'>
+                <%= f.input :end_date, as: :string, label: false,
                           required: :true,
                           input_html: {class: 'datepicker area m-left', locale: "fr"} %>
-        </div>
-      </div>
-      <p class='m-left'>Elève :</p>
-      <%= f.association :student, label: false,
+              </div>
+            </div>
+            <%# <p class='m-left'>Elève :</p> %>
+            <%= f.association :student, label: false,
                             collection: current_user.students.order(:first_name),
                             input_html: {class: 'area grow m-left'},
                             label_method: :first_name %>
-      <%= f.submit "Valider", class: 'area rect-sm btn-valid' %>
-    <% end %>
+          </div>
+          <div class="modal-footer">
+            <%# <button type="button" class="cancel-btn" data-bs-dismiss="modal"><i class="fas fa-times"></i></button> %>
+            <%# <button type="button" class="btn btn-primary">Save changes</button> %>
+            <%= f.submit "Valider", class: 'area rect-sm btn-valid' %>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </div>
+
 </div>
