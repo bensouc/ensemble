@@ -24,18 +24,18 @@
   .bg-white {
     background-color: white;
   }
-  .modal-content{
+  .modal-content {
     border-radius: 15px !important;
     border: thin solid #f24150;
   }
-  .modal-body{
+  .modal-body {
     padding-right: 68px !important;
     padding-left: 20px !important;
   }
-  p{
+  p {
     margin-left: 22px;
   }
-  .datepicker{
+  .datepicker {
     margin-left: 12px;
   }
 }
@@ -85,28 +85,60 @@
     }
   }
 }
-.student-checkbox {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  justify-content: flex-start !important;
-  align-items: baseline !important;
-  .form-check {
-    min-width: 15ch;
-    height: 20px;
-    font-size: 20px !important;
-    color: #3d3d3d;
-    margin: 10px;
-    input {
-      width: 20px;
-      height: 15px;
-      margin-right: 6px;
-    }
-    label {
-      padding-bottom: 4px;
-    }
+// .student-checkbox {
+//   display: flex !important;
+//   flex-wrap: wrap !important;
+//   justify-content: flex-start !important;
+//   align-items: baseline !important;
+//   .form-check {
+//     min-width: 15ch;
+//     height: 20px;
+//     font-size: 20px !important;
+//     color: #3d3d3d;
+//     margin: 10px;
+//     input {
+//       width: 20px;
+//       height: 15px;
+//       margin-right: 6px;
+//     }
+//     label {
+//       padding-bottom: 4px;
+//     }
+//   }
+// }
+
+// CLoning V3 with pills instead of checkoboxed
+.tag-item {
+  display: inline-block;
+}
+
+.tag-selector {
+  position: absolute;
+  transform: scale(0);
+}
+
+.tag-selector + label {
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1rem;
+  border-radius: 50rem;
+  padding: 0.1rem 0.5rem;
+  background-color: #ffeaed78;
+  color: $rose;
+  // border: 3px solid $rose;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  &:hover {
+    color: white;
+    background-color: #f24150;
   }
 }
 
+.tag-selector:checked + label {
+  background-color: $rose;
+  color: white;
+}
+//
 .multi-cloning-validate-btn {
   margin: 7px 0 0 20px;
   display: flex;
