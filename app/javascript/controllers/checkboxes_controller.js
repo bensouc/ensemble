@@ -1,20 +1,21 @@
 import { Controller } from "stimulus"
 
+let checkBoxes
 export default class extends Controller {
 
   static targets = ["boxes"]
 
   connect() {
-    console.log("checkboxes controller is connected");
+    // console.log(this);
   }
 
   add(event) {
+    console.log(event)
     // console.log(event.target.value)
-    // // console.log("prout")
-    // // this.seetextTarget.classList.toggle('active');
-    // // this.createtextTarget.classList.toggle('active');
-    if (event.target.value == 0) {
-      this.boxesTargets.forEach(
+
+    if (event.target.value <= 0) {
+      checkBoxes = this
+      checkBoxes.boxesTargets.forEach(
         element => {
           console.log(element);
           element.checked = event.target.checked
