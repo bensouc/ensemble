@@ -32,6 +32,7 @@ class WorkPlansController < ApplicationController
       end
     else
       students = students.reject(&:blank?)
+      students = students.reject{ |n| n.to_i.negative? }
       students.delete("0")
       students.each do |clone_student_id|
         new_wp = WorkPlan.create(
