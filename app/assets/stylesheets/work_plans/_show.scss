@@ -128,11 +128,16 @@
   // border: 3px solid $rose;
   margin-right: 1rem;
   margin-bottom: 1rem;
+
+}
+
+  .tag-selector + label{
   &:hover {
     color: white;
     background-color: #f24150;
   }
-}
+  }
+
 
 .tag-selector:checked + label {
   background-color: $rose;
