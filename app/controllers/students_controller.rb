@@ -32,7 +32,7 @@ class StudentsController < ApplicationController
 
   def create
     student = {
-      first_name: params_student[:first_name].capitalize,
+      first_name: params_student[:first_name],
       classroom_id: params_student[:classroom].to_i
     }
     @student = Student.create!(student)
@@ -45,10 +45,21 @@ class StudentsController < ApplicationController
     redirect_to classrooms_path
   end
 
+  def update
+    @student = Student.find(params[:id])
+    @student.first_name = params_student_edit_name[:first_name]
+    @student.save
+    redirect_to classrooms_path
+  end
+
   private
 
   def params_student
     params.require(:student)
+  end
+
+  def params_student_edit_name
+    params.require(:student).permit(:first_name)
   end
 
   def classroom_params_id

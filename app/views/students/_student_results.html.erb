@@ -1,6 +1,6 @@
 <div class='progess-header'>
   <div class="d-flex align-items-baseline print-date prog-name" data-controller='wps-result'>
-    <h1>Progression de <%= @student.first_name.capitalize %></h1>
+    <h1>Progression de <%= @student.first_name %></h1>
     <%= link_to  student_auto_new_wp_path(@student), method: :post, data:{ action: "mouseover->wps-result#displayName mouseout->wps-result#hideName"} do%>
       <i class="fa-solid fa-user-gear printer-logo ms-4"></i>
     <% end %>
