@@ -5,11 +5,11 @@
   data: {action:"click->new-domain#displayBelt"}  %>
     <%= link_to student_path(work_plan.student), class: 'student_name_link',
      data:{action: "mouseover->wps-result#displayName mouseout->wps-result#hideName"}  do%>
-      <h2><strong><%= work_plan.student.first_name.capitalize %></strong></h2>
+      <h2><strong><%= work_plan.student.first_name %></strong></h2>
     <% end %>
     <div class="link_details d-none", data-wps-result-target= 'name'}>
       Ouvrir la progression de<br>
-      <%=work_plan.student.first_name.capitalize%>
+      <%=work_plan.student.first_name%>
     </div>
   <% end %>
   <div class='d-flex'>
