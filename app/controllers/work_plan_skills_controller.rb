@@ -77,8 +77,13 @@ class WorkPlanSkillsController < ApplicationController
     end
 
     @work_plan_skill.save
-    redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan,
-                          anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
+    if is_mobile_device?
+      redirect_to mobile_eval_path(@work_plan_skill.work_plan_domain.work_plan,
+                      anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
+    else
+      redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan,
+                            anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
+    end
   end
 
   private

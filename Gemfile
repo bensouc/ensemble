@@ -60,6 +60,9 @@ gem 'wicked_pdf'
 gem "wkhtmltopdf-heroku", '2.12.6.0'
 # gem "wkhtmltopdf-heroku", group: :production
 
+# Mobile device detection
+gem "active_device"
+
 # group :development, :test do
 # # gem for pdf-output
 #   gem 'wkhtmltopdf-binary', '~> 0.12.5'
