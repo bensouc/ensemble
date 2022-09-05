@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     post '', to: 'work_plans#clone', as: :clone
   end
   get "work_plans/:id/eval", to: "work_plans#eval", as: :eval
+  # post "work_plans/:id", to: "work_plans#share", as: :share
 
 
   resources :work_plan_domains, only: [:destroy] do

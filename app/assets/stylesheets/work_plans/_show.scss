@@ -19,18 +19,26 @@
     font-family: $titres-font;
   }
 }
+// modal bootstrap
+.modal-content {
+  border-radius: 15px !important;
+  border: thin solid #f24150;
+}
+.modal-body {
+  padding-right: 68px !important;
+  padding-left: 20px !important;
+}
+
+// Sharing panel
+.add-teachers{
+  margin-left: 15px;
+  width: 20ch;
+}
+
 //PT Editing panel
 #wp-edition {
   .bg-white {
     background-color: white;
-  }
-  .modal-content {
-    border-radius: 15px !important;
-    border: thin solid #f24150;
-  }
-  .modal-body {
-    padding-right: 68px !important;
-    padding-left: 20px !important;
   }
   p {
     margin-left: 22px;
@@ -200,7 +208,7 @@
   position: relative;
   top: -10px;
   left: -72px;
-  // width: 300px;
+  width: 300px;
   font-size: smaller;
   font-weight: bolder;
   color: white;
@@ -224,6 +232,14 @@
   width: 200px;
   padding-right: 10px;
   height: 80px;
+}
+.shared-by{
+  // position: relative;
+  top: -65px;
+  color: $grisC;
+  font-style: italic;
+  margin: 10px;
+  margin-right: 10px !important;
 }
 
 // add domain

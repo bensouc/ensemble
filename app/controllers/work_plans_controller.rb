@@ -2,54 +2,64 @@
 
 class WorkPlansController < ApplicationController
   def clone
+
     wp = WorkPlan.find(wp_id)
     # //crer des copie des WorkPlanDomain et de workplan skill
 
     # test if multiconing or simple
     students = multiplecloning_params(wp_id)
 
-    if students.nil?
+    if students.nil? || !sharing_params.nil?
       new_wp = WorkPlan.create(
         {
           # work_plan_domain_ids: wp.work_plan_domain_ids,
-          name: "#{wp.name} - CLONE",
+          name: "#{wp.name}",
           grade: wp.grade,
           user_id: current_user.id,
           start_date: wp.start_date,
-          end_date: wp.end_date,
+          end_date: wp.end_date
         # student_id: wp.student_id
         }
       )
+      unless sharing_params.nil?
+        new_wp.user_id = sharing_params[:shared_user_id]
+        new_wp.shared_user_id = current_user.id
+      end
       domains = WorkPlanDomain.where(work_plan_id: wp)
       domains.each do |domain|
         # copy domain
         copy_domain(domain, wp, new_wp)
       end
       if new_wp.save!
-        redirect_to work_plan_path(new_wp), notice: "Clonage réussi"
+        unless sharing_params.nil?
+          redirect_to work_plan_path(wp), notice: "Partage réussi"
+        else
+          redirect_to work_plan_path(new_wp), notice: "Clonage réussi"
+        end
       else
         redirect_to work_plan_path(wp), notice: "Clonage raté"
       end
     else
       students = students.reject(&:blank?)
-      students = students.reject{ |n| n.to_i.negative? }
+      students = students.reject { |n| n.to_i.negative? }
       students.delete("0")
       students.each do |clone_student_id|
-        new_wp = WorkPlan.create(
+        new_wp = WorkPlan.create!(
           {
             # work_plan_domain_ids: wp.work_plan_domain_ids,
-            name: "#{wp.name} - CLONE",
+            name: "#{wp.name}",
             grade: wp.grade,
             user_id: current_user.id,
             start_date: wp.start_date,
             end_date: wp.end_date,
-            student_id: Student.find(clone_student_id).id,
+            student_id: Student.find(clone_student_id).id
           }
         )
         domains = WorkPlanDomain.where(work_plan_id: wp)
         domains.each do |domain|
           # copy domain
           copy_domain(domain, wp, new_wp)
+
         end
         new_wp.save!
       end
@@ -84,7 +94,10 @@ class WorkPlansController < ApplicationController
     @work_plan = WorkPlan.find(params[:id])
     @domains = @work_plan.all_domains_from_work_plan
     @classrooms_whithout_current_student = current_user.classrooms
-
+    unless @work_plan.shared_user_id.nil?
+      @shared_user = User.find(@work_plan.shared_user_id)
+    end
+    @teachers = User.all.reject { |y| y == current_user }
     respond_to do |format|
       format.html
       format.pdf do
@@ -226,6 +239,14 @@ class WorkPlansController < ApplicationController
 
   private
 
+  def sharing_params
+    unless params[:work_plan].nil?
+    params.require(:work_plan).permit(:shared_user_id)
+    else
+      nil
+    end
+  end
+
   def work_plan_params
     params.require(:work_plan).permit(:name, :student_id, :grade, :start_date, :end_date)
     # work_plan_domains_attributes: %i[domain level],
@@ -268,7 +289,7 @@ class WorkPlansController < ApplicationController
     new_wp_domain.save
     work_plan_skills = WorkPlanSkill.where(work_plan_domain_id: domain)
     work_plan_skills.each do |wps|
-      wps.clone(work_plan, new_wp_domain)
+      wps.clone(work_plan, new_wp_domain, new_wp.student)
     end
     new_wp_domain.save
   end
