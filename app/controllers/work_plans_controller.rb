@@ -284,7 +284,7 @@ class WorkPlansController < ApplicationController
   ###################### Subfonctions ##################
   def copy_domain(domain, work_plan, new_wp)
     new_wp_domain = domain.dup
-    new_wp_domain.student = work_plan.student
+    new_wp_domain.student = new_wp.student
     new_wp_domain.work_plan = new_wp
     new_wp_domain.save
     work_plan_skills = WorkPlanSkill.where(work_plan_domain_id: domain)
