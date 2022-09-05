@@ -23,7 +23,7 @@ class WorkPlansController < ApplicationController
       )
       unless sharing_params.nil?
         new_wp.user_id = sharing_params[:shared_user_id]
-        new_wp.shared_user_id = current_user.id
+        new_wp.shared_user = current_user
       end
       domains = WorkPlanDomain.where(work_plan_id: wp)
       domains.each do |domain|
