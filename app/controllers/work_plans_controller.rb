@@ -52,13 +52,14 @@ class WorkPlansController < ApplicationController
             user_id: current_user.id,
             start_date: wp.start_date,
             end_date: wp.end_date,
-            student_id: Student.find(clone_student_id).id,
+            student_id: Student.find(clone_student_id).id
           }
         )
         domains = WorkPlanDomain.where(work_plan_id: wp)
         domains.each do |domain|
           # copy domain
           copy_domain(domain, wp, new_wp)
+
         end
         new_wp.save!
       end
@@ -288,7 +289,7 @@ class WorkPlansController < ApplicationController
     new_wp_domain.save
     work_plan_skills = WorkPlanSkill.where(work_plan_domain_id: domain)
     work_plan_skills.each do |wps|
-      wps.clone(work_plan, new_wp_domain)
+      wps.clone(work_plan, new_wp_domain, new_wp.student)
     end
     new_wp_domain.save
   end

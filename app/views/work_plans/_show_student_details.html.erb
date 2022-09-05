@@ -1,6 +1,6 @@
 <div class='student-name text-right' data-controller='wps-result'>
-  <div class="d-flex"></div>
-  <% unless work_plan.student.nil? %>
+  <div class="d-flex">
+    <% unless work_plan.student.nil? %>
     <%# data: { edit_challenge_target: 'form' } %>
     <%# data-action="mouseover->wps-result#displayName mouseout->wps-result#hideName"
   data: {action:"click->new-domain#displayBelt"}  %>
@@ -9,10 +9,12 @@
       <h2><strong><%= work_plan.student.first_name %></strong></h2>
     <% end %>
     <div class="link_details d-none", data-wps-result-target= 'name'}>
-      Ouvrir la progression de<br>
+      Ouvrir la progression de 
       <%=work_plan.student.first_name%>
     </div>
   <% end %>
+  </div>
+
   <div class='text-right'>
     <div class="d-flex  justify-content-end">
       <!-- Button trigger sharing - modal -->
