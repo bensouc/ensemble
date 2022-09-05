@@ -30,7 +30,7 @@
 }
 
 // Sharing panel
-.add-teachers{
+.add-teachers {
   margin-left: 15px;
   width: 20ch;
 }
@@ -136,16 +136,14 @@
   // border: 3px solid $rose;
   margin-right: 1rem;
   margin-bottom: 1rem;
-
 }
 
-  .tag-selector + label{
+.tag-selector + label {
   &:hover {
     color: white;
     background-color: #f24150;
   }
-  }
-
+}
 
 .tag-selector:checked + label {
   background-color: $rose;
@@ -206,9 +204,8 @@
 }
 .link_details {
   position: relative;
-  top: -10px;
-  left: -72px;
-  width: 300px;
+  top: 34px;
+  left: -40px;
   font-size: smaller;
   font-weight: bolder;
   color: white;
@@ -233,7 +230,7 @@
   padding-right: 10px;
   height: 80px;
 }
-.shared-by{
+.shared-by {
   // position: relative;
   top: -65px;
   color: $grisC;
