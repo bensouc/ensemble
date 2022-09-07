@@ -20,7 +20,13 @@ body {
 
 a {
   text-decoration: none !important;
-  }
+}
+
+.grey-line {
+  margin: 20px 20px;
+  padding-bottom: 10px;
+  border-bottom: thin solid $grisC;
+}
 
 // .bd-maison .skill:hover{
 //     background-color: $rose;
