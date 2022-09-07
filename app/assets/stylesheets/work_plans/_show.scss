@@ -65,10 +65,7 @@
   h3 {
     font-family: $titres-font;
   }
-  .grey-line {
-    margin: 20px 20px;
-    padding-bottom: 10px;
-    border-bottom: thin solid $grisC;
+
     // .class-room{
     //   width: 30%;
     // }
@@ -78,7 +75,7 @@
         display: flex;
       }
     }
-  }
+  
 }
 .btn-close-cloning-panel {
   position: absolute;

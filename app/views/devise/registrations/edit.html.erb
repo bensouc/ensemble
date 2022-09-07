@@ -1,5 +1,5 @@
-<div class="container mt-2">
-  <h2>Edition du Compte  de <%= current_user.first_name.humanize %></h2>
+<div class="deviseboxes mt-2">
+  <h3>Compte  de <%= current_user.first_name.humanize %></h3>
   <%= simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
     <%= f.error_notification %>
     <div class="form-inputs">
@@ -7,10 +7,8 @@
       <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
         <p>Currently waiting confirmation for: <%= resource.unconfirmed_email %></p>
       <% end %>
-      <br>
       <%= f.input :first_name, label: "Prénom" %>
       <%= f.input :last_name, label: "Nom" %>
-      <br>
       <%= f.input :password,
                   label: "Nouveau mot de passe",
                   hint: "Laissez-le vide si vous ne voulez pas le changer",
@@ -23,21 +21,23 @@
       <%= f.input :current_password,
                   hint: "Nous avons besoin de votre mot de passe actuel pour confirmer vos modifications",
                   required: true,
+                  label: "Mot de passe actuel",
                   input_html: { autocomplete: "Mot de passe actuel" } %>
-      <br>
-      <%= f.input :avatar, as: :file, label: 'Modifier ton avatar', class:"btn-flat"%>
+      <label class='mt-1'>Modifier ton avatar</label>
+      <%= f.input :avatar, as: :file, label: false, class:"btn-flat"%>
     </div>
-    <br>
-    <div class="form-actions">
+    <div class="form-actions d-flex flex-row-reverse">
       <%= f.button :submit, "Modifier",class: 'add-skill-btn' %>
     </div>
   <% end %>
-  <br>
-  <br>
-  <br>
-  <h3>Annuler son Compte</h3>
-  <p>Mécontent? <%= link_to "Annuler son Compte", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>
-  <div>
+  <div class="grey-line"></div>
+  <div class= 'pt-2'>
     <%= link_to "Retour au cartable", :back , class: 'add-skill-btn'%>
+  </div>
+  <div class="grey-line"></div>
+  <div class="m-4">
+  <h3>Annuler son Compte</h3>
+  <p>Mécontent? </p>
+  <%= link_to "Annuler son Compte", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete, class: 'delete_acompte_btn' %>
   </div>
 </div>

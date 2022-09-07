@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 class WorkPlansController < ApplicationController
-  def clone
+  def clone #And sharing
 
     wp = WorkPlan.find(wp_id)
     # //crer des copie des WorkPlanDomain et de workplan skill
 
-    # test if multiconing or simple
     students = multiplecloning_params(wp_id)
 
+    # test if multiconing or simple clone/sharing
     if students.nil? || !sharing_params.nil?
       new_wp = WorkPlan.create(
         {
