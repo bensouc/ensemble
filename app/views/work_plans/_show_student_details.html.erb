@@ -1,30 +1,69 @@
-<div class='student-name d-flex justify-content-between' data-controller='wps-result'>
-  <% unless work_plan.student.nil? %>
-    <%# data: { edit_challenge_target: 'form' } %>
-    <%# data-action="mouseover->wps-result#displayName mouseout->wps-result#hideName"
-  data: {action:"click->new-domain#displayBelt"}  %>
-    <%= link_to student_path(work_plan.student), class: 'student_name_link',
-     data:{action: "mouseover->wps-result#displayName mouseout->wps-result#hideName"}  do%>
-      <h2><strong><%= work_plan.student.first_name.capitalize %></strong></h2>
-    <% end %>
-    <div class="link_details d-none", data-wps-result-target= 'name'}>
-      Ouvrir la progression de<br>
-      <%=work_plan.student.first_name.capitalize%>
-    </div>
-  <% end %>
-  <div class='d-flex'>
-    <%# <% if current_user.admin %>
+<div class='student-name text-right' data-controller='wps-result'>
+  <div class="d-flex">
     <% unless work_plan.student.nil? %>
-      <%= link_to eval_path(@work_plan), class: "utility-wp-btn" do %>
-        <h6>Correction</h6>
+      <%# data: { edit_challenge_target: 'form' } %>
+      <%# data-action="mouseover->wps-result#displayName mouseout->wps-result#hideName"
+  data: {action:"click->new-domain#displayBelt"}  %>
+      <%= link_to student_path(work_plan.student), class: 'student_name_link',
+     data:{action: "mouseover->wps-result#displayName mouseout->wps-result#hideName"}  do%>
+        <h2><strong><%= work_plan.student.first_name %></strong></h2>
       <% end %>
+      <div class="link_details d-none", data-wps-result-target= 'name'}>
+        Progression de <%=work_plan.student.first_name%>
+      </div>
     <% end %>
-    <%# end %>
-    <%= link_to work_plan_path(@work_plan, format: :pdf), class: "utility-wp-btn" do %>
-      <h6>Export PDF</h6>
-    <% end %>
-    <div class= "utility-wp-btn" data-action="click->cloning-wp#displayCloningForm">
-      <h6>cloner</h6>
+  </div>
+  <div class='text-right'>
+    <div class="d-flex  justify-content-end">
+      <!-- Button trigger sharing - modal -->
+      <button type="" class="utility-wp-btn" data-bs-toggle="modal" data-bs-target="#sharingModal">
+        Partager
+      </button>
+      <!-- Sharing Modal -->
+      <div class="modal fade" id="sharingModal" tabindex="-1" aria-labelledby="sharingModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="sharingModalLabel">Séléctionnner la personne avec qui partager</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <%= simple_form_for (@work_plan), html: { novalidate: false }, method: "post" do |f|%>
+              <div class="modal-body">
+                <%=f.input :shared_user_id, label: false, required: true,
+                              collection: @teachers,
+                              label_method: :first_name,
+                              # value_method: :id,
+                              input_html: {class: 'area add-teacher me-5'}
+                                %>
+              </div>
+              <div class="modal-footer">
+                <%= f.submit "partager", class: "utility-wp-btn" %>
+                <%# <%= link_to work_plan_path(@work_plan,shared_to: current_user.id), class: "utility-wp-btn", method: "post" do %>
+                  <%# <h6>Partager</h6> %>
+                  <%# <% end %>
+                </div>
+              <% end %>
+            </div>
+          </div>
+        </div>
+        <%# <% if current_user.admin %>
+        <% unless work_plan.student.nil? %>
+          <%= link_to eval_path(@work_plan), class: "utility-wp-btn" do %>
+            <h6>Correction</h6>
+          <% end %>
+        <% end %>
+        <%# end %>
+        <%= link_to work_plan_path(@work_plan, format: :pdf), class: "utility-wp-btn" do %>
+          <h6>Export PDF</h6>
+        <% end %>
+        <div class= "utility-wp-btn" data-action="click->cloning-wp#displayCloningForm">
+          <h6>Cloner</h6>
+        </div>
+      </div>
+      <%unless work_plan.shared_user_id.nil?%>
+        <div class='d-flex  justify-content-end'>
+          <h6 class='shared-by'>Partagé par <%= @shared_user.first_name.capitalize %> </h6>
+        </div>
+      <% end %>
     </div>
   </div>
-</div>

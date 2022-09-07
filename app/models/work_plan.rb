@@ -2,6 +2,7 @@
 
 class WorkPlan < ApplicationRecord
   belongs_to :user
+  belongs_to :shared_user, class_name: "User", optional: true
   belongs_to :student, optional: true
 
   has_many :work_plan_domains, dependent: :destroy

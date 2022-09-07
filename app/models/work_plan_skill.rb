@@ -9,11 +9,12 @@ class WorkPlanSkill < ApplicationRecord
   validates :kind, presence: true, inclusion: { in: %w[jeu exercice controle ceinture] }
   validates :status, inclusion: { in: %w[redo failed redo_OK completed new] }
 
-  def clone(current_wp, new_wp_domain)
+  def clone(current_wp, new_wp_domain, student = nil)
     new_wps = dup
     new_wps.work_plan_domain_id = new_wp_domain.id
-    new_wps.student = current_wp.student
+    new_wps.student = student
     new_wps.status = "new"
+    new_wps.completed = false
     new_wps.save
   end
 

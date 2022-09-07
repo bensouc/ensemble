@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_04_27_081254) do
+ActiveRecord::Schema.define(version: 2022_09_05_095734) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,8 @@ ActiveRecord::Schema.define(version: 2022_04_27_081254) do
     t.date "start_date"
     t.date "end_date"
     t.string "grade"
+    t.bigint "shared_user_id"
+    t.index ["shared_user_id"], name: "index_work_plans_on_shared_user_id"
     t.index ["student_id"], name: "index_work_plans_on_student_id"
     t.index ["user_id"], name: "index_work_plans_on_user_id"
   end
@@ -173,4 +175,5 @@ ActiveRecord::Schema.define(version: 2022_04_27_081254) do
   add_foreign_key "work_plan_skills", "work_plan_domains"
   add_foreign_key "work_plans", "students"
   add_foreign_key "work_plans", "users"
+  add_foreign_key "work_plans", "users", column: "shared_user_id"
 end
