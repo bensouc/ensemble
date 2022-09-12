@@ -24,12 +24,12 @@
           <%# data-wp-default-period-target='start' /// data-action='click->wp-default-period#add' %>
             <div>
               <%= f.input :start_date, as: :string, label: false, required: :true,
-                          input_html: {class: 'datepicker area rect-lg m-left ', locale: "fr", data:{ wp_default_period_target: "start",action:"click->wp-default-period#add"}} %>
+                          input_html: {value: Date.today.at_beginning_of_week.strftime("%d/%m/%Y") ,class: 'datepicker area rect-lg m-left ', locale: "fr", data:{ wp_default_period_target: "start",action:"click->wp-default-period#add"}} %>
             </div>
             <p class='m-left'>au</p>
             <div data-wp-default-period-target='end'>
               <%= f.input :end_date, as: :string, label: false,  required: true,
-                          input_html: {class: 'datepicker area rect-lg m-left', locale: "fr",data:{ wp_default_period_target: "end"}} %>
+                          input_html: {value: ((Date.today.at_end_of_week) - 2).strftime("%d/%m/%Y"), class: 'datepicker area rect-lg m-left', locale: "fr",data:{ wp_default_period_target: "end"}} %>
             </div>
           </div>
           <%= f.association :student, label: false,
