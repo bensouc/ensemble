@@ -1,0 +1,18 @@
+<div class='d-flex wp-student-folder' data-action="click->wp-by-student#displayList">
+  <div class="index-folder">
+      <i class="fa-solid fa-folder-closed me-4 ms-3" data-wp-by-student-target="folderopen"
+        ></i>
+      <i class="fa-solid fa-folder-open me-4 ms-3 d-none" data-wp-by-student-target="folderclosed"
+        ></i>
+  </div>
+  <div class='mobile-index-wp-name d-flex'>
+    <div class="wp-firstname">
+      <%= student.first_name%>
+    </div>
+  <div class='invisible'>
+  --
+  </div>
+  <div class="index-wp-count">
+    ( <%= @my_work_plans.select { |a| a.student_id == student.id }.count%> )</div>
+  </div>
+</div>

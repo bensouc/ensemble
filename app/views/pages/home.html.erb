@@ -3,15 +3,21 @@
     <div class= "logo bg-white mb-5 <% if is_mobile_device?%>mt-6<%end%>">
       <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg">
     </div>
-    <div class="container home-container mt-5">
-      <h1>La solution aux préparations et partages des plans de travail</h1>
-    </div>
+    <% if is_mobile_device? %>
+      <div class= "ms-2 me-2">
+        <h1 class='text-center'>Evaluer vos plans de travail n'importe où !</h1>
+      </div>
+    <% else %>
+      <div class="container home-container mt-5 ">
+        <h1 >La solution aux préparations et partages des plans de travail</h1>
+      </div>
+    <% end %>
   </div>
   <%# BOUTON %>
   <div class="<% unless is_mobile_device?%>description<%end%>">
     <div class="text-center mb-5 ">
       <% if is_mobile_device? %>
-        <%= link_to "Evaluer",dashboard_path, class: "btn btn-flat py-2 px-5 mt-3 m-6 enter-card" %>
+        <%= link_to "Commencer",mobile_work_plans_path, class: "btn btn-flat mobile-begin" %>
       <% else %>
         <%= link_to "Commencer",dashboard_path, class: "btn btn-flat py-2 px-5 mt-3 m-6 enter-card" %>
       <% end %>
@@ -48,3 +54,4 @@
   <% end %>
   <%# <%= image_tag "desc.svg" %>
 </div>
+

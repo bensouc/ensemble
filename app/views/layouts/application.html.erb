@@ -32,16 +32,25 @@
         <%= yield %>
       </div>
     <% else %>
-      <div class="navgauche">
-        <%= render "shared/nav_gauche" %>
-      </div>
+      <% unless is_mobile_device? %>
+        <div class="navgauche">
+          <%= render "shared/nav_gauche" %>
+        </div>
+      <% end %>
       <div class="contenu">
-        <div data-controller="scroll-progress" class="scroll-progress"></div>
-        <%= render "shared/nav_haut" %>
+        <% unless is_mobile_device? %>
+          <div data-controller="scroll-progress" class="scroll-progress"></div>
+          <%= render "shared/nav_haut" %>
+        <% end %>
         <div class="pastouche" style="margin: 0 auto">
           <%= yield %>
         </div>
-        <%= render "shared/footer" %>
+        <% unless is_mobile_device? %>
+          <%= render "shared/footer" %>
+          <% else %>
+          <%= render "shared/mobile_footer" %>
+
+        <% end %>
       <% end %>
     </body>
   </html>

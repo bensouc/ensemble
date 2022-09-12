@@ -1,0 +1,30 @@
+<div class="mobile_index_header">
+  <h1>Partages des Plans de Travail</h1>
+</div>
+<% @my_classrooms.each do |classroom| %>
+  <div class="mobile_wp-one-classroom">
+    <h1>
+      <%= classroom.grade %>
+    </h1>
+    <%# WP assigned %>
+    <% classroom.students.order(:first_name).each do |student| %>
+      <div data-controller='wp-by-student' >
+        <%# START of folder + student name + student wp count %>
+        <%= render "index_wp_student_name", student: student%>
+        <% # END of folder + student name + student wp count %>
+        <div data-wp-by-student-target="wplist" class='d-none'>
+          <% @my_work_plans.select { |a| a.student_id == student.id }.each do |wp| %>
+            <%= render "index_wp_line", wp: wp %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+<%# WP unassigned %>
+<% if @my_work_plans_unassigned.count > 0%>
+  <div data-controller="wplistunsigned" class=''>
+    <%=render 'index_unassigned_wp_list'%>
+  </div>
+<% end %>
+<%# end classroom loop => class wp-one-classroom %>
