@@ -2,6 +2,7 @@
   .banner {
     display: flex;
     flex-direction: column;
+    justify-content: center;
   }
 
   .flex-container {
@@ -47,10 +48,4 @@
 .object-fit {
   object-fit: scale-down;
 }
-}
-
-
-.mobile-begin{
-  position: fixed;
-  bottom: 40px
 }
