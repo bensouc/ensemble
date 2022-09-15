@@ -1,6 +1,107 @@
-.mobile_index_header{
- margin: 5px 10px;
+.mobile_index {
+  width: 100vw !important;
+  height: auto !important;
+  padding: 5vw 5vw 5vw 8vw !important;
+  text-align: center;
 }
-.mobile_wp_one_classroom{
+.mobile_wp_one_classroom {
+  // width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-content: space-around;
+  align-items: flex-start;
+  h1 {
+    font-size: 3vh;
+    font-weight: 700;
+  }
+}
+.w100 {
   width: 100%;
+
+}
+.greyline-mobile {
+  height: 0px;
+  // padding: 0 10px;
+  border-top: solid thin $grisF;
+  margin: 1ch 0;
+}
+.mobile-index-folder {
+  color: $roseL;
+  font-size: 3vh;
+}
+// footer
+.mobile-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 10vh;
+  border-top: thin solid $grisF;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: white !important;
+}
+.logo-home {
+  height: 10vh;
+  padding-top: 1vh;
+  img {
+    height: 8vh;
+    width: 8vh;
+  }
+}
+.logo-indexwp {
+  // height: 10vh;
+  // padding: 5vw;
+  height: 10vh;
+  padding-top: 1vh;
+  img {
+    height: 8vh;
+    width: 8vh;
+  }
+}
+.mobile-user-menu{
+  font-size: 8vh;
+  a{
+    color: $rose !important;
+
+  }
+}
+// en of footer
+.mobile-wp-firstname{
+  font-size: 3vh;
+}
+.mobile-index-wp-count{
+    font-style: italic;
+    opacity: 0.33;
+font-size: 3vh;
+}
+.mobile-index-wp-card {
+  width: 100%;
+  background-color: $rose;
+  color: white !important;
+  margin: 10px 0;
+  border-radius: 15px;
+  padding: 10px;
+}
+.mobile-student-wp {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.mobile-namept {
+  color: white !important;
+  text-align: left;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  font-size: 3vh;
+}
+.mobile-wp-dates {
+  text-align: right;
+  font-size: 2vh;
+  color: $grisC;
+}
+.mobile-rmv-skill-btn {
+  color: #dddddd;
+  cursor: pointer;
+  font-size: 3vh;
 }

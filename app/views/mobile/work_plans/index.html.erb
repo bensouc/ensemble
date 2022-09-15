@@ -1,30 +1,44 @@
-<div class="mobile_index_header">
-  <h1>Partages des Plans de Travail</h1>
-</div>
-<% @my_classrooms.each do |classroom| %>
-  <div class="mobile_wp-one-classroom">
-    <h1>
-      <%= classroom.grade %>
-    </h1>
-    <%# WP assigned %>
-    <% classroom.students.order(:first_name).each do |student| %>
-      <div data-controller='wp-by-student' >
-        <%# START of folder + student name + student wp count %>
-        <%= render "index_wp_student_name", student: student%>
-        <% # END of folder + student name + student wp count %>
-        <div data-wp-by-student-target="wplist" class='d-none'>
-          <% @my_work_plans.select { |a| a.student_id == student.id }.each do |wp| %>
-            <%= render "index_wp_line", wp: wp %>
-          <% end %>
+<div class="mobile_index">
+  <h1>Evaluation des Plans de Travail</h1>
+  <div class="greyline-mobile"></div>
+  <% @my_classrooms.each do |classroom| %>
+    <div class="mobile_wp_one_classroom">
+      <h1>
+        <%= classroom.grade %>
+      </h1>
+      <%# WP assigned %>
+      <% classroom.students.order(:first_name).each do |student| %>
+        <div class="w100" data-controller='wp-by-student' >
+          <%# START of folder + student name + student wp count %>
+          <%= render "index_wp_student_name", student: student%>
+          <% # END of folder + student name + student wp count %>
+          <div data-wp-by-student-target="wplist" class='d-none'>
+            <% @my_work_plans.select { |a| a.student_id == student.id }.each do |wp| %>
+              <%= render "index_wp_line", wp: wp %>
+            <% end %>
+          </div>
         </div>
-      </div>
+      <% end %>
+    </div>
+  <% end %>
+  <%# WP unassigned %>
+  <%# end classroom loop => class wp-one-classroom %>
+</div>
+<div class="mobile-footer">
+  <div class="logo-home bg-white">
+    <%= link_to root_path do %>
+      <%= image_tag "logo_ensemble.svg"%>
+    <% end %>
+    <%# <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg"> %>
+  </div>
+  <div class="logo-indexwp">
+    <%= link_to  mobile_work_plans_path do %>
+      <%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638459822/ico_menu_1_wvddvx.svg" %>
     <% end %>
   </div>
-<% end %>
-<%# WP unassigned %>
-<% if @my_work_plans_unassigned.count > 0%>
-  <div data-controller="wplistunsigned" class=''>
-    <%=render 'index_unassigned_wp_list'%>
+  <div class="mobile-user-menu">
+    <%= link_to destroy_user_session_path, method: :delete do %>
+      <i class="fas fa-sign-out-alt"></i>
+    <% end %>
   </div>
-<% end %>
-<%# end classroom loop => class wp-one-classroom %>
+</div>
