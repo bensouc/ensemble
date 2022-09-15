@@ -2,51 +2,59 @@
   margin-bottom: 15px;
 }
 
-.students-names{
-   display: grid;
+.students-names {
+  display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   padding: 0 10px 0 10px;
 }
 .classroom-card {
-  min-height: 200px;
+  min-height: 160px;
   margin-bottom: 15px;
-  // min-width: 300px;
+  min-width: 550px;
   border: solid $grisC;
   border-radius: 15px;
 }
 
-.classroom-card-top{
+.classroom-card-top {
   background-color: $grisC;
   border-top-left-radius: 11px;
   border-top-right-radius: 11px;
   margin-bottom: 10px;
 }
 
-.class-grade{
+.class-grade {
   font-size: 25px;
   color: $rose;
   font-weight: 900;
 }
 .student-fname {
+
   width: 290px;
   h1 {
-  font-size: 20px !important;
-  color: $grisF;
+    font-size: 20px !important;
+    color: $grisF;
   }
-
 }
+// button {
+//   margin-left: 20px;
+// }
 
-.add-student-btn{
+.add-student-btn {
   margin: 15px 0 15px 10px;
   display: flex;
   align-items: center;
   justify-content: space-around;
   border-radius: 12px;
-  width: 170px;
-  height: 3em;
+  width: auto;
+  padding: 5px 15px;
+
   border: 3px solid $rose;
   transition: 0.3s;
-  a{
+  color: white;
+
+  font-weight: 700;
+  background-color: #f24150;
+  a {
     color: $rose;
   }
 
@@ -54,40 +62,57 @@
     padding: 10px;
     margin: 0;
   }
-  i{
+  i {
     font-size: 12px;
   }
 }
 
-.add-student-btn:hover{
+.add-student-btn:hover {
   transition: 0.2s;
-  background-color: $rose;
+  background-color: white;
   border-color: $rose;
-  color: white;
+  color: $rose;
   cursor: pointer;
-  a, h6{
+  a,
+  h6 {
     color: $white;
   }
 }
 
 // add/create student
-.hidden{
+.hidden {
   visibility: hidden;
 }
 
 // create classroom section
-.add-grade{
+.add-grade {
   width: 8ch;
   margin-right: 20px;
 }
 
-.classroom-form{
+.classroom-form {
   margin-bottom: 20px;
+  border: solid $grisC;
+  border-radius: 15px;
+  padding: 15px;
 }
 
-.classroom-creation{
+.classroom-field {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  i {
+    margin-right: 15px;
+  }
+}
+.left_box{
+  display: flex;
+  margin-left: 12px;
+}
+
+.classroom-creation {
   margin: 15px 0 15px 0;
-  button{
+  button {
     margin-bottom: 15px;
   }
 }
