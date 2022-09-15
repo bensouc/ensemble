@@ -2,7 +2,6 @@
 
 class WorkPlansController < ApplicationController
   def clone #And sharing
-
     wp = WorkPlan.find(wp_id)
     # //crer des copie des WorkPlanDomain et de workplan skill
 
@@ -17,7 +16,7 @@ class WorkPlansController < ApplicationController
           grade: wp.grade,
           user_id: current_user.id,
           start_date: wp.start_date,
-          end_date: wp.end_date
+          end_date: wp.end_date,
         # student_id: wp.student_id
         }
       )
@@ -52,14 +51,13 @@ class WorkPlansController < ApplicationController
             user_id: current_user.id,
             start_date: wp.start_date,
             end_date: wp.end_date,
-            student_id: Student.find(clone_student_id).id
+            student_id: Student.find(clone_student_id).id,
           }
         )
         domains = WorkPlanDomain.where(work_plan_id: wp)
         domains.each do |domain|
           # copy domain
           copy_domain(domain, wp, new_wp)
-
         end
         new_wp.save!
       end
@@ -220,6 +218,9 @@ class WorkPlansController < ApplicationController
             # sinon redo failed redo_OK new => a wps with same kind with new status
           elsif %w[redo failed redo_OK new].include?(last_wps.status)
             new_wps[:kind] = last_wps.kind
+            if last_wps.kind == "ceinture"
+              new_wps[:kind] = "exercice"
+            end
             # create a new wps with same kind and
             if new_wps.kind == "exercice"
               new_wps.challenge = last_wps.add_challenges_2_wps(current_user,
@@ -241,7 +242,7 @@ class WorkPlansController < ApplicationController
 
   def sharing_params
     unless params[:work_plan].nil?
-    params.require(:work_plan).permit(:shared_user_id)
+      params.require(:work_plan).permit(:shared_user_id)
     else
       nil
     end

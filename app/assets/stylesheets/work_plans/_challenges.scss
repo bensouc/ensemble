@@ -187,8 +187,8 @@
   font-weight: 700;
   font-size: 20px;
   color: $white;
-  margin: 4px;
-  padding: 0;
+  // margin: 4px;
+  padding: 10px !important;
   transition: 0.3s;
   padding: 0.5rem 1rem;
   display: inline-block;
@@ -254,5 +254,6 @@ trix-toolbar .trix-button--icon-table::before {
 }
 
 button {
-  padding: 0 10px ;
+  padding: 10px 10px ;
+
 }

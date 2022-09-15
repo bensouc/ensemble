@@ -169,23 +169,4 @@
   -webkit-appearance: none !important;
 }
 
-.validate-btn{
-  border-radius: 12px;
-  width: fit-content;
-  border: 3px solid #53D138;
-  background-color: #53D138;
-  font-weight: 700;
-  font-size: 20px;
-  color: $white;
-  margin: 4px;
-  padding: 0;
-  transition: 0.3s;
-  padding: 0.5rem 1rem;
-  display: inline-block;
 
-  &:hover{
-    background-color: $white;
-    color: #53D138;
-    cursor: pointer;
-  }
-}

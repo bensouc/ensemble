@@ -46,3 +46,11 @@
 trix-editor {
   background-color: rgba(250, 128, 114, 0.308);
 }
+
+#challenge_content {
+  button[type="button"] {
+    margin: 10px 10px;
+    padding: 10px;
+    border-radius: 15px;
+  }
+}
