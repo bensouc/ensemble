@@ -57,14 +57,8 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <%= simple_form_for student, html: { novalidate: false }, class: 'd-flex justify-content-between align-items-baseline pe-3' do |f|%>
-                        <%# <p class='m-left'>Nom :</p> %>
-                        <%= f.input :first_name, label: false, required: :true %>
-                        <div class="modal-footer">
-                          <%# <button type="button" class="cancel-btn" data-bs-dismiss="modal"><i class="fas fa-times"></i></button> %>
-                          <%# <button type="button" class="btn btn-primary">Save changes</button> %>
-                          <%= f.submit "Valider", class: 'area rect-sm btn-valid' %>
-                        </div>
+                      <%= simple_form_for student, html: { novalidate: false }, class: 'd-flex justify-content-between align-items-baseline pe-3' do |form|%>
+                        <%= render 'form', form: form, classroom: classroom %>
                       <% end %>
                     </div>
                   </div>
@@ -72,26 +66,55 @@
               </div>
             </div>
           <% end %>
-          <div class=" add-student-btn">
-            <%= link_to "Ajouter un élève", new_classroom_student_path(classroom), class: "" %>
+          <%# MODAL for student creation %>
+        </div>
+        <button type="button" class="bg-white ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal-<%= classroom.id%>" >
+          <div class=" add-student-btn ">
+            Ajouter un élève
+          </div>
+        </button>
+        <div class="modal fade" id="exampleModal-<%=classroom.id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ajout d'élève</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="student-edit ">
+                  <%= simple_form_for [Student.new], html: { novalidate: false } do |form| %>
+                    <%= render 'form', form: form, classroom: classroom %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+        <%# END MODAL for student creation %>
       </div>
     <% end %>
   </div>
 <% end %>
 <div class="classroom-creation" data-controller='create-classroom'>
-  <button class="validate-btn" data-action='click->create-classroom#displayForm'>
+  <button class="validate-btn" data-action='click->create-classroom#displayForm' data-create-classroom-target='button'>
     Créer une classe
   </button>
   <div class="classroom-form d-none" data-create-classroom-target='form'>
     <%= simple_form_for Classroom.new, html: { novalidate: false } do |f|%>
-      <div class="classroom-field d-flex">
-        <%=f.input :grade, label: false, required: true,
+      <div class="classroom-field ">
+        <div class="left_box">
+          <i class="fa-solid fa-graduation-cap class-grade"></i>
+          <%=f.input :grade, label: false, required: true,
                               collection: Classroom::GRADE,
                               input_html: {class: 'area add-grade'}
                                 %>
-        <%= f.submit "Valider", class: "validate-btn" %>
+        </div>
+        <div class="d-flex flex-row-reverse">
+          <%= f.submit "Valider", class: "validate-btn" %>
+          <div class="cancel-btn me-3" data-action='click->create-classroom#displayForm'>
+            <i class="fas fa-times"></i>
+          </div>
+        </div>
       </div>
     <% end %>
   </div>

@@ -1,0 +1,11 @@
+
+<div class='d-flex align-items-end'>
+  <h6>Prénom</h6>
+  <%= form.input :first_name, label: false, required: true,  input_html: { class: 'area grow ms-3'} %>
+</div>
+<%= form.input :classroom,  required: true,
+                    input_html: { value: classroom.id, class: 'hidden' },
+                    label: false%>
+<div class="d-flex flex-row-reverse">
+  <%= form.submit "Valider", class: "area  btn-valid " %>
+</div>
