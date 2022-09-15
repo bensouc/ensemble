@@ -1,4 +1,4 @@
-.eval-btn{
+.eval-btn {
   width: 200px;
 }
 .eval-btn:hover {
@@ -13,7 +13,6 @@
   width: 32px;
 }
 .previous_eval {
-
   margin-right: 10px;
   width: 15ch;
   height: 40px;
@@ -23,17 +22,25 @@
   align-items: center;
   justify-content: flex-end;
   gap: 3px;
-  padding: 0 2px 0 2px;
+  padding: 0 0px 0 2px;
 }
 
-.orange{
+.last-eval {
+  border-left: solid grey;
+  height: 40px;
+  width: 3ch;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.orange {
   color: orange;
 }
 
-.eval-skill-display{
-  width:500px
+.eval-skill-display {
+  width: 500px;
 }
-
 
 .eval_bull {
   width: 2.5ch;
@@ -45,7 +52,7 @@
   justify-content: space-around;
 }
 
-.eval-mngt{
+.eval-mngt {
   width: 190px;
   display: flex;
   align-items: baseline;
@@ -53,31 +60,31 @@
   padding-top: 10px;
 }
 
-.failed{
+.failed {
   background-color: orange !important;
   color: white !important;
   border-color: orange !important;
 }
 
-.redo{
-    background-color: yellow  !important;
-    border-color: yellow!important;
+.redo {
+  background-color: yellow !important;
+  border-color: yellow !important;
   color: rgb(255, 154, 1) !important;
 }
 
-.completed{
+.completed {
   background-color: green !important;
   border-color: green !important;
   color: antiquewhite !important;
 }
 
-.new{
+.new {
   background-color: white !important;
   color: black !important;
 }
 
-.redo_OK{
-    background-color: green!important;
-    color: yellow !important;
-    border-color: yellow;
+.redo_OK {
+  background-color: green !important;
+  color: yellow !important;
+  border-color: yellow;
 }
