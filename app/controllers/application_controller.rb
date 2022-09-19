@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  include ActiveDevice
+
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
-  skip_before_action :set_mobile_format
+
   # include mobile detection gem
 
   def configure_permitted_parameters
