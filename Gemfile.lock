@@ -68,8 +68,8 @@ GEM
     aws_cf_signer (0.1.3)
     bcrypt (3.1.16)
     bindex (0.8.1)
-    bootsnap (1.9.3)
-      msgpack (~> 1.0)
+    bootsnap (1.13.0)
+      msgpack (~> 1.2)
     builder (3.2.4)
     byebug (11.1.3)
     capybara (3.36.0)
@@ -153,7 +153,10 @@ GEM
     mini_magick (4.11.0)
     mini_mime (1.1.2)
     minitest (5.14.4)
-    msgpack (1.4.2)
+    mobile (0.0.1)
+      activesupport
+      rails
+    msgpack (1.5.6)
     nested_form (0.3.2)
     netrc (0.11.0)
     nio4r (2.5.8)
@@ -346,6 +349,7 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   listen (~> 3.2)
   lograge
+  mobile
   pg (>= 0.18, < 2.0)
   pry-byebug
   pry-rails
