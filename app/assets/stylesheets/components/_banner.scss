@@ -1,8 +1,7 @@
-
 .banner {
   background-size: cover;
   background-position: center;
-  padding: 6vh;
+  padding: 6vh 0 6vh 0;
   height: 600px;
 
   .logo {
@@ -31,18 +30,45 @@
   h2 {
     margin: 0;
     color: white;
-    font-size: 25px;
+    font-size: 30px;
     font-weight: lighter;
     font-family: $plan-font;
   }
 }
 
+// MOBILE css
+.mobile-home {
+  height: 100vh !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  text-align: center;
+  padding: 0 10vw;
+  h1{
+    font-size: 4ch;
+    color: white;
+    font-family:$titres-font;
+  }
+}
+.mobile-banner {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("back_to_school.jpg");
+  background-size: cover;
+}
+.mobile-logo {
+  padding: 3vh;
+  display: flex;
+  justify-content: center;
+  background-color:white;
+  border-radius: 15px;
+}
 
-
-
+.mobile-begin{
+  font-size: 3ch;
+}
 //  .left-card1 {
-    // font-family: $titres-font;
+// font-family: $titres-font;
 //  }
 
 // .content {
-    // font-family: $body-font;
+// font-family: $body-font;

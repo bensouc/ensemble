@@ -1,14 +1,22 @@
-body {
-  // background-image: url("https://res.cloudinary.com/dr50qe2fh/image/upload/v1638810072/bg2_tbato3.svg");
-  background-color: white;
-  font-family: $body-font;
+@media (min-width: 1024px) {
+  body {
+    // background-image: url("https://res.cloudinary.com/dr50qe2fh/image/upload/v1638810072/bg2_tbato3.svg");
+    background-color: white;
+    font-family: $body-font;
+    padding-bottom: 50px !important;
+  }
 }
 
-.pastouche {
-  min-height: 80vh;
-  // text-align: center;
-  // padding-top: 3%;
+@media (max-width: 1024px) {
+  body {
+    padding-bottom: 50px !important;
+  }
 }
+
+// .pastouche {
+
+//   margin-bottom: 50px !important;
+// }
 
 .scroll-progress {
   height: 0.5rem;
@@ -28,7 +36,7 @@ a {
   border-bottom: thin solid $grisC;
 }
 
-button{
+button {
   padding: 0px !important;
 }
 // .bd-maison .skill:hover{

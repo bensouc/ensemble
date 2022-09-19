@@ -5,3 +5,5 @@
 
 # Add pdf MIME type
 Mime::Type.register "application/pdf", :pdf
+
+Mime::Type.register_alias "text/html", :mobile

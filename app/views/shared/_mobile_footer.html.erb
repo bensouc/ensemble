@@ -1,0 +1,20 @@
+<footer>
+  <div class=" mobile-footer">
+    <div class="mobile-user-menu">
+      <%= link_to root_path do %>
+        <i class="fa-solid fa-school"></i>
+      <% end %>
+      <%# <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg"> %>
+    </div>
+    <div class="mobile-user-menu">
+      <%= link_to  mobile_work_plans_path do %>
+        <i class="fa-solid fa-list"></i>
+      <% end %>
+    </div>
+    <div class="mobile-user-menu">
+      <%= link_to destroy_user_session_path, method: :delete do %>
+        <i class="fas fa-sign-out-alt"></i>
+      <% end %>
+    </div>
+  </div>
+</footer>
