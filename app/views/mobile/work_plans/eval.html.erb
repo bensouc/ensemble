@@ -1,0 +1,18 @@
+<div class="mobile_index ">
+  <nav class='mobile-eval-header'>
+    <div class=' mobile-eval-header-details'>
+      <div class= 'first-name'>
+        <h6 class="mobile-wp-dates">
+          <%= @work_plan.start_date.nil? ? "" : l(@work_plan.start_date, format: "%d/%m/%Y") %>
+          <%= @work_plan.end_date.nil? ? "" : l(@work_plan.end_date, format: "%d/%m/%Y") %>
+        </h6>
+        <h4><%=@work_plan.student.first_name %></h4>
+      </div>
+      <h1 class="title"><%=@work_plan.name %> </h1>
+    </div>
+    <%# <div class="greyline-mobile"></div> %>
+  </nav>
+  <div class="mobile-eval-wp">
+    <%= render "eval_mobile_work_plan_domains", work_plan: @work_plan %>
+  </div>
+</div>

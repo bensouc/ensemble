@@ -45,12 +45,12 @@
         <div class="pastouche" style="margin: 0 auto">
           <%= yield %>
         </div>
-        <% unless is_mobile_device? %>
-          <%= render "shared/footer" %>
-          <% else %>
-          <%= render "shared/mobile_footer" %>
-
-        <% end %>
+      </div>
+      <% unless is_mobile_device? %>
+        <%= render "shared/footer" %>
+      <% else %>
+        <%= render "shared/mobile_footer" %>
       <% end %>
-    </body>
-  </html>
+    <% end %>
+  </body>
+</html>
