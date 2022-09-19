@@ -1,51 +1,56 @@
-#home {
-  .banner {
+// Specific CSS for your home-page
+.container2 {
+  display: flex;
+  flex-direction: row;
+}
+@media only screen and (min-width: 768px) {
+  .contenu {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    margin-left: 200px;
+    padding-bottom: 50px;
   }
+}
 
-  .flex-container {
+@media only screen and (max-width: 768px) {
+  .contenu {
     display: flex;
-    width: 47rem;
-
-    h1 {
-      font-size: 1.5rem;
-    }
-
-    p {
-      font-size: .9rem;
-    }
+    flex-direction: column;
+    margin: 0;
+    padding-bottom: 50px;
   }
-
-  .btn-flat {
-  background-color: $rose;
-
-  color: white;
-  border: solid $rose;
-  font-weight: bold;
-  font-family: "Baloo 2", cursive;
-  font-size: 30px;
-  }
-
-  .btn-flat:hover {
-  background-color: white;
-  color: $rose;
-  }
-
-
-.description {
-  margin-top: -50px;
 }
- .logo-bg-white {
-   margin: auto;
- }
+.pledge {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  // justify-items:center;
+  // width: 100%;
 
- .center {
-   width: 300px;
-   height: 300px;
- }
-.object-fit {
-  object-fit: scale-down;
+  row-gap: 140px;
+  h1 {
+    font-family: $titres-font;
+    font-weight: 700;
+    font-size: 28px;
+  }
+  p {
+    font-family: $plan-font;
+    font-weight: 200;
+    font-size: 18px;
+    text-align: center;
+  }
 }
+.row1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.tournicoti {
+  width: 100%;
+  position: absolute;
+
+  top: 46rem;
+  display: flex;
+  justify-content: space-around;
 }

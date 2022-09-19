@@ -37,7 +37,36 @@
   }
 }
 
+// MOBILE css
+.mobile-home {
+  height: 100vh !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  text-align: center;
+  padding: 0 10vw;
+  h1{
+    font-size: 4ch;
+    color: white;
+    font-family:$titres-font;
+  }
+}
+.mobile-banner {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("back_to_school.jpg");
+  background-size: cover;
+}
+.mobile-logo {
+  padding: 3vh;
+  display: flex;
+  justify-content: center;
+  background-color:white;
+  border-radius: 15px;
+}
 
+.mobile-begin{
+  font-size: 3ch;
+}
 
 
 //  .left-card1 {

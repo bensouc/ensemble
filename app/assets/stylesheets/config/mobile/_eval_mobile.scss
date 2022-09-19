@@ -1,0 +1,102 @@
+.mobile_index {
+  width: 100% !important;
+}
+.mobile-eval-header {
+  position: fixed;
+  top: 0rem;
+  background-color: white;
+  height: 100px;
+  width: 90%;
+}
+.mobile-eval-header-details {
+  display: flex;
+  align-items: center;
+  .first-name {
+    padding: 2vh 0 0 0;
+    width: 30%;
+    text-align: left;
+    color: $rose;
+    .mobile-wp-dates {
+      text-align: left;
+    }
+  }
+  .title {
+    padding: 2vh 0 0 0;
+    width: 70%;
+  }
+}
+
+// WP
+.mobile-eval-wp {
+  padding-top: 80px;
+}
+// DOMAIN
+.mobile-domain-level {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 20px;
+  .bd-maison {
+    padding: 5px !important;
+  }
+  h3 {
+    font-weight: 800;
+  }
+}
+.mobile-belt {
+  font-size: 2ch;
+}
+
+// mobile skill card
+.mobile-skill-card {
+  border: solid whitesmoke;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  .title-mobile-skill-card {
+    background-color: $rose;
+    border-radius: 15px 15px 0 0;
+    padding: 15px;
+    display: flex;
+    border-bottom: thin solid white;
+    h3 {
+      text-align: left;
+    }
+  }
+  .previous_eval {
+    width: 9ch !important;
+    background-color: white;
+  }
+}
+.mobile-eval-display {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: space-evenly;
+  padding: 15px;
+//  background-color: $roseL;
+}
+.mobile-last-eval {
+  height: 80px;
+  width: 80px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  // background-color: $roseL;
+  .eval_bull {
+    width: 2ch !important;
+    height: 2ch !important;
+    font-size: 7ch;
+  }
+}
+
+// mobil eval mangt
+.mobile-eval-mngt {
+  display: grid;
+grid-template-columns: 1fr 1fr;
+justify-items: start;
+
+  i {
+    font-size: 8ch;
+  }
+}

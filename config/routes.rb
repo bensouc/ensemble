@@ -4,6 +4,12 @@ Rails.application.routes.draw do
   root to: 'pages#home'
   get '/dashboard', to: "dashboard#show"
 
+  namespace "mobile" do
+  resources :work_plans, only: [:index]
+  resources :students, only: [:index]
+  get "work_plans/:id/eval", to: "work_plans#eval", as: :eval
+end
+
   resources :work_plans, only: [:index, :show, :update, :new, :create, :destroy] do
     resources :work_plan_domains, only: [:new, :create]
     post '', to: 'work_plans#clone', as: :clone
