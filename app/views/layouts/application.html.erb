@@ -18,12 +18,6 @@
     <meta name="twitter:description" content="<%= meta_description %>">
     <meta name="twitter:creator" content="<%= DEFAULT_META["twitter_account"] %>">
     <meta name="twitter:image:src" content="<%= meta_image %>">
-    <%# PWA %>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <link rel="manifest" href="<%= asset_path 'manifest.json' %>">
-     <%= render 'shared/ios_pwa_links' %>
-    <%#  %>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
     <!--Script & Style -->
@@ -38,25 +32,16 @@
         <%= yield %>
       </div>
     <% else %>
-      <% unless is_mobile_device? %>
-        <div class="navgauche">
-          <%= render "shared/nav_gauche" %>
-        </div>
-      <% end %>
+      <div class="navgauche">
+        <%= render "shared/nav_gauche" %>
+      </div>
       <div class="contenu">
-        <% unless is_mobile_device? %>
-          <div data-controller="scroll-progress" class="scroll-progress"></div>
-          <%= render "shared/nav_haut" %>
-        <% end %>
+        <div data-controller="scroll-progress" class="scroll-progress"></div>
+        <%= render "shared/nav_haut" %>
         <div class="pastouche" style="margin: 0 auto">
           <%= yield %>
         </div>
-      </div>
-      <% unless is_mobile_device? %>
         <%= render "shared/footer" %>
-      <% else %>
-        <%= render "shared/mobile_footer" %>
       <% end %>
-    <% end %>
-  </body>
-</html>
+    </body>
+  </html>
