@@ -1,26 +1,15 @@
 // Specific CSS for your home-page
-.container2 {
+.container2{
   display: flex;
   flex-direction: row;
 }
-@media only screen and (min-width: 768px) {
-  .contenu {
-    display: flex;
-    flex-direction: column;
-    margin-left: 200px;
-    padding-bottom: 50px;
-  }
+.contenu{
+  display: flex;
+  flex-direction: column;
+  // flex-grow: 1;
+  margin-left: 200px;
 }
-
-@media only screen and (max-width: 768px) {
-  .contenu {
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    padding-bottom: 50px;
-  }
-}
-.pledge {
+.pledge{
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -29,24 +18,24 @@
   // width: 100%;
 
   row-gap: 140px;
-  h1 {
+  h1{
     font-family: $titres-font;
     font-weight: 700;
     font-size: 28px;
   }
-  p {
+  p{
     font-family: $plan-font;
     font-weight: 200;
     font-size: 18px;
     text-align: center;
   }
 }
-.row1 {
+.row1{
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.tournicoti {
+.tournicoti{
   width: 100%;
   position: absolute;
 
