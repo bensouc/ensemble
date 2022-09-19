@@ -33,13 +33,13 @@
               <div class='edit-cal_wp'>
                 <%= f.input :start_date, as: :string, label: false,
                           required: :true,
-                          input_html: {class: 'datepicker area m-left ', locale: "fr"} %>
+                          input_html: {class: 'datepicker area m-left ', locale: "fr", value: work_plan.start_date.strftime("%d/%m/%Y")} %>
               </div>
               <p class=''>Au</p>
               <div class='edit-cal_wp ms-2'>
                 <%= f.input :end_date, as: :string, label: false,
                           required: :true,
-                          input_html: {class: 'datepicker area m-left', locale: "fr"} %>
+                          input_html: {class: 'datepicker area m-left', locale: "fr", value: work_plan.end_date.strftime("%d/%m/%Y")} %>
               </div>
             </div>
             <%# <p class='m-left'>Elève :</p> %>
