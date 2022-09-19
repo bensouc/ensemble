@@ -37,7 +37,6 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    active_device (1.2.0)
     activejob (6.0.4.1)
       activesupport (= 6.0.4.1)
       globalid (>= 0.3.6)
@@ -334,7 +333,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  active_device
   autoprefixer-rails (= 10.2.5)
   bootsnap (>= 1.4.2)
   byebug
