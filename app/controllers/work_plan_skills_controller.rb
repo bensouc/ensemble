@@ -56,7 +56,7 @@ class WorkPlanSkillsController < ApplicationController
         student_id: @work_plan_skill.student.id,
         domain: @work_plan_skill.work_plan_domain.domain,
         grade: @work_plan.grade,
-        level: @work_plan_skill.work_plan_domain.level
+        level: @work_plan_skill.work_plan_domain.level,
       }
     )
     # add test if (@work_plan_skill.kind == 'ceinture' && @work_plan_skill.status)
@@ -77,8 +77,13 @@ class WorkPlanSkillsController < ApplicationController
     end
 
     @work_plan_skill.save
-    redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan,
-                          anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
+    if is_mobile_device?
+      redirect_to mobile_eval_path(@work_plan_skill.work_plan_domain.work_plan,
+                                   anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
+    else
+      redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan,
+                            anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
+    end
   end
 
   private
@@ -88,7 +93,7 @@ class WorkPlanSkillsController < ApplicationController
       work_plan_domain_id: params.require(:work_plan_domain_id),
       skill_id: params.require(:skill).to_i,
       kind: params.require(:kind),
-      status: "new"
+      status: "new",
     }
   end
 
