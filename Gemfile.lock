@@ -37,7 +37,6 @@ GEM
       erubi (~> 1.4)
       rails-dom-testing (~> 2.0)
       rails-html-sanitizer (~> 1.1, >= 1.2.0)
-    active_device (1.2.0)
     activejob (6.0.4.1)
       activesupport (= 6.0.4.1)
       globalid (>= 0.3.6)
@@ -154,6 +153,9 @@ GEM
     mini_magick (4.11.0)
     mini_mime (1.1.2)
     minitest (5.14.4)
+    mobile (0.0.1)
+      activesupport
+      rails
     msgpack (1.4.2)
     nested_form (0.3.2)
     netrc (0.11.0)
@@ -334,7 +336,6 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
-  active_device
   autoprefixer-rails (= 10.2.5)
   bootsnap (>= 1.4.2)
   byebug
@@ -348,6 +349,7 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   listen (~> 3.2)
   lograge
+  mobile
   pg (>= 0.18, < 2.0)
   pry-byebug
   pry-rails
