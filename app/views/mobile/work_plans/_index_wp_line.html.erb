@@ -1,6 +1,6 @@
-<div class="mobile-index-wp-card ">
-  <div class="mobile-student-wp">
     <%= link_to mobile_eval_path(wp)do %>
+  <div class="mobile-index-wp-card ">
+    <div class="mobile-student-wp">
       <div class="mobile-namept">
         <%= wp.name %>
       </div>
@@ -18,5 +18,5 @@
       <%= wp.start_date.nil? ? "" : l(wp.start_date, format: "%d/%m/%Y") %>
       <%= wp.end_date.nil? ? "" : l(wp.end_date, format: "au %d/%m/%Y") %>
     </div>
-  <% end %>
-</div>
+  </div>
+<% end %>

@@ -8,7 +8,10 @@
         </h6>
         <h4><%=@work_plan.student.first_name %></h4>
       </div>
-      <h1 class="title"><%=@work_plan.name %> </h1>
+      <div class="title d-flex flex-column ">
+        <h3 class=""><%=@work_plan.name %> </h3>
+        <p>Niveau :<%= @work_plan.grade%></p>
+      </div>
     </div>
     <%# <div class="greyline-mobile"></div> %>
   </nav>

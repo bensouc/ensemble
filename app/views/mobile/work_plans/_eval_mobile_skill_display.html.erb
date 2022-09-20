@@ -1,8 +1,8 @@
 <% last_3_wps = @previous.select { |t| t.first == plan_skill.skill_id }.first[1].sort_by(&:created_at) %>
 <div class="mobile-skill-card">
   <div class='title-mobile-skill-card'>
-    <h3 class='me-2'><%= plan_skill.skill.symbol %></h3>
-    <h3><%= plan_skill.skill.name %></h3>
+    <h3 class='me-2 mt-2'><%= plan_skill.skill.symbol %></h3>
+    <h6 class ='mt-2 mb-2'style='text-align:left;margin-bottom: 0'><%= plan_skill.skill.name %></h6>
   </div>
   <div class="mobile-eval-display">
     <div class="previous_eval mt-2">

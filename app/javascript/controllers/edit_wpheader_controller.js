@@ -7,7 +7,7 @@ export default class extends Controller {
   }
 
   displayForm() {
-    console.log('display toggle BMO');
+    // console.log('display toggle BMO');
     this.buttonTarget.classList.add('d-none');
     this.formTarget.classList.remove('d-none');
   }

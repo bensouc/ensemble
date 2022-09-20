@@ -21,8 +21,13 @@
     }
   }
   .title {
-    padding: 2vh 0 0 0;
+    padding: 1vh 2vh 0 0;
     width: 70%;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+    font-size: 15px;
+    font-family: $titres-font !important;
+    font-weight: 400 !important;
   }
 }
 
@@ -50,17 +55,18 @@
 
 // mobile skill card
 .mobile-skill-card {
-  border: solid $grisC;
-  border-radius: 15px;
+  // border: solid $grisC;
+  // border-radius: 16px;
   margin-bottom: 15px;
+  // padding: 5px;
   .title-mobile-skill-card {
     background-color: $rose;
-    border-radius: 15px 15px 0 0;
-    padding: 15px;
+    border-radius: 14px 14px 0 0;
     display: flex;
     border-bottom: thin solid white;
     h3 {
       text-align: left;
+      padding:  0 15px 0 15px;
     }
   }
   .previous_eval {
@@ -69,16 +75,21 @@
   }
 }
 .mobile-eval-display {
-  display: flex;
-  align-items: center;
-  align-content: center;
-  justify-content: space-evenly;
-  padding: 15px;
-//  background-color: $roseL;
+   border-bottom: solid $grisC;
+   border-left: solid $grisC;
+   border-right: solid $grisC;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    display: flex;
+    align-items: flex-end;
+    align-content: center;
+    justify-content: space-evenly;
+    padding: 9px;
 }
+
 .mobile-last-eval {
-  height: 80px;
-  width: 80px;
+  height: 40px;
+  width: 40px;
   display: flex;
   justify-content: space-around;
   align-items: center;
@@ -86,7 +97,9 @@
   .eval_bull {
     width: 2ch !important;
     height: 2ch !important;
-    font-size: 7ch;
+    font-size: 3ch;
+    margin-left: 3px;
+    margin-right: 3px;
   }
 }
 
