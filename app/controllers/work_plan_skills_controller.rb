@@ -66,7 +66,7 @@ class WorkPlanSkillsController < ApplicationController
         @work_plan_skill.completed = true
         # test for each skill of its domain a 'belt is validated'jbiv
         @work_plan_skill.save
-        if WorkPlanDomain::DOMAINS_SPECIALS.include?(@work_plan_skill.work_plan_domain.domain)
+        if WorkPlanDomain::DOMAINS_SPECIALS.include?(@work_plan_skill.work_plan_domain.domain) && @work_plan.grade != "CM2"
           Belt.special_newbelt(@work_plan_skill, @work_plan)
         elsif @work_plan_skill.work_plan_domain.all_skills_completed?
           belt.completed = true
@@ -79,7 +79,7 @@ class WorkPlanSkillsController < ApplicationController
     @work_plan_skill.save
     if is_mobile_device?
       redirect_to mobile_eval_path(@work_plan_skill.work_plan_domain.work_plan,
-                                   anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
+                                   anchor: helpers.dom_id(@work_plan.work_plan_domain))
     else
       redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan,
                             anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))

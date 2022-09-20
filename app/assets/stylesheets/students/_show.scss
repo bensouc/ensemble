@@ -1,5 +1,5 @@
 // display date and student name
-.prog-name{
+.prog-name {
   height: 74px;
 }
 .print-date {
@@ -17,8 +17,8 @@
   }
 }
 
-.autogene-details{
-    position: relative;
+.autogene-details {
+  position: relative;
   top: -69px;
   right: -2px;
   // width: 300px;
@@ -30,9 +30,9 @@
   border-radius: 5px;
 }
 
-
 .top {
   display: flex;
+  margin-left: 15px;
 }
 .nocolor {
   border-color: white !important;
@@ -47,9 +47,8 @@
 .results {
   margin: 0 15px 20px 15px;
 }
-.results-header {
-  margin-left: 15px;
-}
+// .results-header {
+// }
 
 .domain-main-col {
   border-right: thin solid $grisC;
@@ -72,21 +71,40 @@
   height: 120px;
   width: 100px;
   border-bottom: thin solid $grisC;
-
   margin: 0 5px;
+}
+.validate-belt-btn {
+    position: relative;
+    top: 18px;
+    right: 1px;
+    border-radius: 50%;
+  i {
+    color: #008034a3;
+    font-size: 2rem;
+  }
+
+  button {
+    background-color: transparent !important;
+  }
+  button:hover {
+    transform: scale(1.1);
+    transition: 0.3s;
+  }
 }
 
 .domain-header {
+  // margin: 0 20px 0;
   transform: rotate(306deg);
   font-weight: bold;
   position: relative;
-  top: 29px;
+  top: 13px;
   left: 16px;
   color: $rose;
   padding: 5px;
   height: 120px;
-  width: 100px;
-  margin: 0 5px;
+  width: 113px;
+  text-align: center;
+  // margin: 0 5px 8px;
 }
 .cells-student {
   // border: solid rgba(100, 100, 100, 0.541);
@@ -108,19 +126,22 @@
 
 // display the last wps results
 .display-last-wps {
+  // position: sticky;
+  // top: 0;
+  // right: 0;
   height: inherit;
   width: inherit;
   display: flex;
-  align-content: space-around;
+  align-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: -10px;
   flex-direction: column-reverse;
-  flex-wrap: wrap-reverse;
-  margin-top: -14px;
 }
 
 .a-wps {
   height: 25px;
   max-width: 25px;
-  margin: 2px 10px;
+  margin: 2px 3px;
 }
 
 .skill-name {
@@ -138,7 +159,6 @@
 
 .belt-name h6 {
   font-size: 13px !important;
-
 }
 
 .belt-bar {
@@ -167,7 +187,8 @@
   .navhaut,
   .footer,
   .scroll-progress,
-  i.printer-logo {
+  i.printer-logo,
+  .validate-belt-btn {
     display: none;
   }
   // .cells-student {
@@ -181,8 +202,6 @@
     font-size: 10px !important;
     word-break: break-word !important;
   }
-
-
 }
 
 /*END OF This css will only works when you print*/

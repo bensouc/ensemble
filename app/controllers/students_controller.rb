@@ -16,16 +16,18 @@ class StudentsController < ApplicationController
     Skill.where(grade: @student_grade).each do |skill|
       @all_skills << {
         skill: skill,
-        last_wps: WorkPlanSkill.last_wps(@student.id, skill.id)
+        last_wps: WorkPlanSkill.last_wps(@student.id, skill.id),
       }
     end
     # retrive all student belts
     @belts = Belt.where(student: @student, grade: @student_grade)
     # cleaning the useless lastwps (eg: special domain, remove the amount)
-    WorkPlanDomain::DOMAINS_SPECIALS.each do |domain|
-      count = @belts.where(domain: domain, completed: true).count
-      unless @belts.where(domain: domain).empty? || count.zero?
-        @all_skills = wps_cleaned_belt(@all_skills, domain, count, @student_grade)
+    unless @student_grade == "CM2"
+      WorkPlanDomain::DOMAINS_SPECIALS.each do |domain|
+        count = @belts.where(domain: domain, completed: true).count
+        unless @belts.where(domain: domain).empty? || count.zero?
+          @all_skills = wps_cleaned_belt(@all_skills, domain, count, @student_grade)
+        end
       end
     end
   end
@@ -33,7 +35,7 @@ class StudentsController < ApplicationController
   def create
     student = {
       first_name: params_student[:first_name],
-      classroom_id: params_student[:classroom].to_i
+      classroom_id: params_student[:classroom].to_i,
     }
     @student = Student.create!(student)
     redirect_to classrooms_path

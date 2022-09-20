@@ -184,7 +184,8 @@ class WorkPlansController < ApplicationController
                                   level: Belt.student_last_belt_level(@student, domain),
                                   student: @student,
                                   work_plan: @work_plan)
-      if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain)
+
+      if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @work_plan.grade != "CM2"
         # mngt of special domains
         wpd.level = 1
         wpd.save

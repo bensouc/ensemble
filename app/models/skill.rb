@@ -7,11 +7,15 @@ class Skill < ApplicationRecord
   validates :domain, presence: true,
                      inclusion: { in: ["Vocabulaire", "Conjugaison", "Orthographe",
                                       "Grammaire", "Numération", "Calcul", "Poésie", "Géométrie",
-                                      "Grandeurs et Mesures"] }
+                                      "Grandeurs et Mesures","Opérations","Résolution des Problèmes",
+                                      "Calligraphie","Poésie et Expression orale",
+                                      "Production d’écrit", "Lecture"] }
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
   validates :name, presence: true
-  validates :symbol, presence: true
+  validates :symbol, inclusion: { in: ["◼", "⬥", "⬟", "♥", "⬤", "♣", "🞮","▲",""] }
   validates :grade, presence: true
+
+
 
   def resolve_skill_id(domain, level, grade)
     Skill.where(domain: domain, level: level, grade: grade)
@@ -36,6 +40,8 @@ class Skill < ApplicationRecord
       "croix2_cosycf.png"
     when "▲"
       "triangle2_ehwxbb.png"
+    when ""
+      "empty_rrq3rq.png"
     end
   end
 end
