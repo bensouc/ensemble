@@ -1,14 +1,5 @@
-.btn-flat {
-  color: white;
-  padding: 8px 24px;
-  border-radius: 10px;
-  // background: #1EDD88;
-  transition: background 0.3s ease;
-  background-color: #FF8888;
-}
-
 .home-container {
-   width: 75%;
+  width: 75%;
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -19,23 +10,23 @@
   display: flex;
   flex-direction: column;
   text-align: center;
-  border: #FF8888;
+  border: #ff8888;
   background-color: white;
-  border: solid #FF8888;
+  border: solid #ff8888;
   border-radius: 10px;
   padding-top: 20px;
   padding-bottom: 20px;
   margin-top: 20px;
-  }
+}
 
 .space-button {
-  padding : 5%;
+  padding: 5%;
   display: flex;
   margin: auto;
 }
 
 .utility-wp-btn {
-  margin:7px 0 0 20px;
+  margin: 7px 0 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -45,7 +36,7 @@
   border: 3px solid $rose;
   transition: 0.3s;
   color: $rose;
-  background-color:white;
+  background-color: white;
 
   h6 {
     // padding: 10px;
@@ -67,4 +58,4 @@
   h6 {
     color: $white !important;
   }
-  }
+}

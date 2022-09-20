@@ -1,15 +1,15 @@
 .btn-flat {
-  margin-left: 20px;
-  background-color: $rose !important;
   color: white;
-  padding: 6px 24px;
-  border-radius: 15px;
-  background: $blue;
+  padding: 8px 24px;
+  border-radius: 10px;
+  // background: #1EDD88;
   transition: background 0.3s ease;
+  background-color: $rose;
 }
 .btn-flat:hover {
   background: white;
-  color: $blue;
+  color: $rose;
+  border: solid $rose;
 }
 
 .delete_acompte_btn {
