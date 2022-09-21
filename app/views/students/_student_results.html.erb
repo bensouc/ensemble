@@ -40,45 +40,26 @@
   </div>
   <div class="right-levels d-flex">
     <% @domains.each do |domain| %>
-      <%if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain)%>
-        <div class="domain-main-col">
-          <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
-            <%belt = @belts.where(domain: domain, level: level).last%>
-            <%# testouille %>
-            <% if !belt.nil? && belt != [] && belt.completed? %>
-              <div class="domain-col cells-student mb-2">
-                <%= render "resultat_belt", level: level, domain: domain, belt: belt %>
-              </div>
-            <% else  %>
-              <div class="domain-col cells-student mb-2">
-                <%= render "resultat_cell", level: level, domain: domain %>
-              <% end %>
-              <%# fin testouille %>
-            <% end %>
-          </div>
-        <% else %>
-          <div class="domain-main-col">
-            <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
-              <%belt = @belts.where(domain: domain, level: level).last%>
-              <%# <%raise%>
-              <%# testouille %>
-              <% if !belt.nil? && belt != [] && belt.completed? %>
-                <div class="domain-col cells-student mb-2">
-                  <%= render "resultat_belt", level: level, domain: domain, belt: belt %>
-                </div>
-              <% elsif !belt.nil? %>
-                <div class="domain-col cells-student mb-2">
-                  <%= render "resultat_cell", level: level, domain: domain %>
-                </div>
-              <% else %>
-                <div class="domain-col cells-student mb-2">
-                  <%# <i class="fa-solid fa-person-digging text-warning digging"></i> %>
-                </div>
-              <% end %>
-              <%# fin testouille %>
-            <% end %>
-          </div>
+      <div class="domain-main-col">
+        <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
+          <%belt = @belts.where(domain: domain, level: level).last%>
+          <% if !belt.nil? && belt != [] && belt.completed? %>
+            <div class="domain-col cells-student mb-2">
+            <%= render "resultat_belt", level: level, domain: domain , belt: belt%>
+            </div>
+          <% elsif !belt.nil? %>
+            <div class="domain-col cells-student mb-2">
+              <%# <%= render "shared/validate_belt_btn", level: level, domain: domain%>
+              <%= render "resultat_cell", level: level, domain: domain %>
+            </div>
+          <% else %>
+            <div class="domain-col cells-student mb-2">
+              <%= render "resultat_cell", level: level, domain: domain %>
+              <%# <%= render "shared/validate_belt_btn", level: level, domain: domain%>
+            </div>
+          <% end %>
         <% end %>
-      <% end %>
-    </div>
+      </div>
+    <% end %>
   </div>
+</div>

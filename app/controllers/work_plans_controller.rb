@@ -54,6 +54,7 @@ class WorkPlansController < ApplicationController
             student_id: Student.find(clone_student_id).id,
           }
         )
+
         domains = WorkPlanDomain.where(work_plan_id: wp)
         domains.each do |domain|
           # copy domain
@@ -184,7 +185,8 @@ class WorkPlansController < ApplicationController
                                   level: Belt.student_last_belt_level(@student, domain),
                                   student: @student,
                                   work_plan: @work_plan)
-      if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain)
+
+      if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @work_plan.grade != "CM2"
         # mngt of special domains
         wpd.level = 1
         wpd.save

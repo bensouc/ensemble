@@ -1,0 +1,20 @@
+
+<div class="validate-belt-btn">
+  <%= simple_form_for [@student,Belt.new] do |b| %>
+    <%= b.input :level,
+            input_html: { value: level, class: 'd-none' },
+                    label: false%>
+    <%= b.input :domain,
+            input_html: { value: domain, class: 'd-none' },
+                    label: false%>
+    <%= b.input :grade,
+            input_html: { value: @student.classroom.grade, class: 'd-none' },
+                    label: false%>
+    <%# <%= b.input :completed,
+            input_html: { value: true, class: 'd-none' },
+                    label: false%>
+    <button type="submit"  >
+      <i class="fa-solid fa-circle-check"></i>
+    </button>
+  <% end %>
+</div>

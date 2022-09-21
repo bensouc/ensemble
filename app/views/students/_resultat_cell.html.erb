@@ -1,8 +1,9 @@
 <%# render resultat <%= domain %>
-<%if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain)%>
+<%if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @student.classroom.grade != "CM2"%>
   <% skills = Skill.where(domain: domain, grade: @student.classroom.grade)%>
   <div class="display-last-wps ">
     <%# test if level 1 or if level +1 above the higher belt %>
+    <%= render "shared/validate_belt_btn", level: level, domain: domain%>
     <% if (level == 1 || !@belts.where(domain: domain, completed: true).last.nil? && (level == (@belts.where(domain: domain, completed: true).last.level + 1 ) )) %>
       <%skills.order(:id).each do |skill|%>
         <%wps= @all_skills.select {|f| f[:skill]==skill && !f[:last_wps].nil?} %>
@@ -20,10 +21,11 @@
       <% end %>
     <% end %>
   </div>
-</div>
 <% else %>
   <% skills = Skill.where(domain: domain, level: level, grade: @student.classroom.grade)%>
   <div class="display-last-wps">
+      <%= render "shared/validate_belt_btn", level: level, domain: domain%>
+
     <%skills.order(:id).each do |skill|%>
       <%wps= @all_skills.select {|f| f[:skill]==skill}.first[:last_wps] %>
       <%unless wps.nil?%>
