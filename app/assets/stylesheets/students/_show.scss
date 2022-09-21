@@ -74,21 +74,23 @@
   margin: 0 5px;
 }
 .validate-belt-btn {
-    position: relative;
-    top: 18px;
-    right: 1px;
+position: relative;
+    top: 4px;
+    right: 2px;
     border-radius: 50%;
   i {
-    color: #008034a3;
-    font-size: 2rem;
+    color: #008033cb;
+    font-size: 1.5rem;
   }
 
   button {
     background-color: transparent !important;
   }
   button:hover {
-    transform: scale(1.1);
-    transition: 0.3s;
+    transform: scale(3);
+    transition: 0.15s;
+    top: 4px;
+    right: 2px;
   }
 }
 
