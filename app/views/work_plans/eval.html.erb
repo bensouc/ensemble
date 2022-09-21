@@ -1,14 +1,16 @@
 <div class=' pt ' data-controller='navigation'>
-  <div class='' data-navigation-target='wp'>
-    <div class="top-floating-btn" id='backToBottomBtn' data-action="click->navigation#backFunction">
+  <div class='' data-navigation-target='wp' >
+    <div class="top-floating-btn" id='backToBottomBtn' >
       <i class="fa-solid fa-circle-arrow-down"></i>
     </div>
     <% # header WP %>
     <%= render "shared_header_wp", work_plan: @work_plan %>
     <% # Student details %>
     <div class='student-name d-flex justify-content-between'>
-      <% if !@work_plan.student.nil? %>
-        <h2><strong><%= @work_plan.student.first_name %></strong></h2>
+      <% unless @work_plan.student.nil? %>
+        <%= link_to student_path(@work_plan.student),  class: 'student_name_link' do%>
+          <h2><strong><%= @work_plan.student.first_name %></strong></h2>
+        <% end %>
       <% end %>
       <h1>Correction</h1>
       <%= link_to 'Retour Plan de travail', work_plan_path(@work_plan), class: 'utility-wp-btn eval-btn'%>

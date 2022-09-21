@@ -54,6 +54,7 @@ class WorkPlansController < ApplicationController
             student_id: Student.find(clone_student_id).id,
           }
         )
+
         domains = WorkPlanDomain.where(work_plan_id: wp)
         domains.each do |domain|
           # copy domain
