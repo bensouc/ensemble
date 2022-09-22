@@ -1,5 +1,5 @@
 <div data-controller='toggle-panel'>
-  <div class='domain  ' id="<%= dom_id(work_plan_domain) %>">
+  <div class='domain  ' >
     <% # DOMAIN + BELT DISPLAY %>
     <div class="mobile-domain-level" data-action="click->toggle-panel#displayPanel">
       <div class='belt'>
@@ -13,7 +13,7 @@
     </div>
   </div>
   <% # SKILLS DISPLAY %>
-  <div class='mobile-skill-display d-none' data-toggle-panel-target="panel">
+  <div class='mobile-skill-display d-none' id="<%= dom_id(work_plan_domain) %>" data-toggle-panel-target="panel">
     <% work_plan_domain.work_plan_skills.order(:skill_id).each do |plan_skill| %>
       <%= render "eval_mobile_skill_display", plan_skill: plan_skill %>
     <% end %>
