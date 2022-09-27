@@ -20,7 +20,7 @@ class ChallengesController < ApplicationController
                   notice: "Excercice Sauvegardé"
     else
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge)),
-                  notice: "Sauvegarde échouée: #{@challenge.errors.messages}"
+                  alert: "Sauvegarde échouée: #{@challenge.errors.messages[:name].first}"
     end
   end
 

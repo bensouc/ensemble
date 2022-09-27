@@ -6,8 +6,8 @@
   <div class="d-flex " data-controller='edit-challenge' id="<%=dom_id(work_plan_skill.challenge)%>">
     <%# display le content.body d'un exo %>
     <div class="cont-challenge w-100">
-      <div class= "challenge-card pencil-pointor" >
-        <div class="" data-action="click->edit-challenge#displayForm">
+      <div class= " pencil-pointor" >
+        <div class="challenge-card" data-edit-challenge-target="pencil" data-action="click->edit-challenge#displayForm">
           <div class="challenge-infos " data-edit-challenge-target="infos" >
             <%= work_plan_skill.challenge.content.body %>
           </div>

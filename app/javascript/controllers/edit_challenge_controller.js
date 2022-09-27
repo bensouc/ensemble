@@ -1,12 +1,13 @@
 import { Controller } from "stimulus";
 
 export default class extends Controller {
-  static targets = ['infos', 'form', 'preview', 'button'];
+  static targets = ['infos', 'form', 'preview', 'button',"pencil"];
 
   displayForm() {
     this.infosTarget.classList.add('d-none');
-    console.log(this.formTarget)
+    // console.log(this.formTarget)
     this.formTarget.classList.remove('d-none');
+    this.pencilTarget.classList.add('d-none')
   }
 
   preview(event) {
