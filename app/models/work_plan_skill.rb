@@ -32,7 +32,10 @@ class WorkPlanSkill < ApplicationRecord
   def add_challenges_2_wps(current_user, actual_challenge = nil)
     challenges = Challenge.where(skill_id: skill)
     name = skill.name + (challenges.count + 1).to_s
-    challenges = challenges.reject { |c| c == actual_challenge }
+    # get all challenges azssigned 4 current_student and that skill
+    student_challenges = Challenge.assigned_challenges(skill, student)
+    # challenges = challenges.reject { |c| c == actual_challenge }
+    challenges = challenges.reject { |c| student_challenges.include?(c) }
 
     # [1,2,3].reject{|c| c==4}
     if challenges == []

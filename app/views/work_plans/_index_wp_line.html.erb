@@ -1,14 +1,17 @@
 <div class="index-wp-line d-flex">
   <div class="student-wp">
-  <%= link_to work_plan_path(wp), target: '_blank' do %>
-    <div class="namept">
-      <%= wp.name %>
-    </div>
-    <div class="wp-dates">
-      <%= wp.start_date.nil? ? "" : l(wp.start_date, format: "%d/%m/%Y") %>
+    <%= link_to work_plan_path(wp), target: '_blank' do %>
+      <div class="namept">
+        <%= wp.name %>
+      </div>
+      <div class="index-wp-count">
+        <%= wp.grade %>
+      </div>
+      <div class="wp-dates">
+        <%= wp.start_date.nil? ? "" : l(wp.start_date, format: "%d/%m/%Y") %>
         <%= wp.end_date.nil? ? "" : l(wp.end_date, format: "au %a. %d/%m/%Y") %>
-    </div>
-  <% end %>
+      </div>
+    <% end %>
   </div>
   <div class='rmv-wp'>
     <%= link_to work_plan_path(wp), method: :delete, data: {

@@ -8,7 +8,7 @@ export default class extends Controller {
     // console.log(anchor)
     if (anchor != false)
     {
-      console.log(anchor);
+      // console.log(anchor);
       const element = document.getElementById(anchor)
       element.classList.toggle("d-none");
     }
