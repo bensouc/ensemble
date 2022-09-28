@@ -161,7 +161,11 @@ class WorkPlansController < ApplicationController
   def destroy
     @work_plan = WorkPlan.find(params[:id])
     @work_plan.destroy
-    redirect_to work_plans_path
+    if @work_plan.student.nil?
+      redirect_to work_plans_path
+    else
+      redirect_to work_plans_path(anchor: @work_plan.student.id)
+    end
   end
 
   def auto_new_wp

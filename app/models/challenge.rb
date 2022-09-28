@@ -21,6 +21,12 @@ class Challenge < ApplicationRecord
     )
   end
 
+  def self.assigned_challenges(skill, student)
+    wpss = WorkPlanSkill.where(student: student, skill_id: skill.id, kind: "exercice")
+    # challenge = []
+    wpss.map {|wps| wps.challenge}
+  end
+
   def self.create_empty(work_plan_skill, name, user)
     challenge = Challenge.create({
                                    skill: work_plan_skill.skill,
