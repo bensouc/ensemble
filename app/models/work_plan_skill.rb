@@ -29,7 +29,7 @@ class WorkPlanSkill < ApplicationRecord
     WorkPlanSkill.where(skill_id: skill_id, student_id: student_id).last
   end
 
-  def add_challenges_2_wps(current_user, actual_challenge = nil)
+  def add_challenges_2_wps(current_user, _actual_challenge = nil)
     challenges = Challenge.where(skill_id: skill)
     name = skill.name + (challenges.count + 1).to_s
     # get all challenges azssigned 4 current_student and that skill

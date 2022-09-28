@@ -27,11 +27,11 @@ class Challenge < ApplicationRecord
     wpss.map {|wps| wps.challenge}
   end
 
-  def self.create_empty(work_plan_skill, name, user)
+  def self.create_empty(work_plan_skill, name,current_user)
     challenge = Challenge.create({
                                    skill: work_plan_skill.skill,
                                    name: "#{name}-NEW",
-                                   user: user
+                                   user: current_user
                                  })
     challenge.content.body = <<~HTML
       Exercice à REDIGER............................
