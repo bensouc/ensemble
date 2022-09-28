@@ -12,7 +12,7 @@
       <%= render "index_wp_student_name", student: student%>
       <% # END of folder + student name + student wp count %>
 
-      <div data-wp-by-student-target="wplist" class='d-none' id=<%=student.id%>>
+      <div data-wp-by-student-target="wplist" class='list-wp-index d-none' id=<%=student.id%>>
           <% @my_work_plans.select { |a| a.student_id == student.id }.each do |wp| %>
           <%= render "index_wp_line", wp: wp %>
           <% end %>
