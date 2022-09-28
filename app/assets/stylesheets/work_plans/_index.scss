@@ -19,7 +19,10 @@
   margin-bottom: 15px;
   padding-bottom: 10px;
 }
-
+.index-wp-line {
+  display: flex;
+  align-items: center;
+}
 .student-wp {
   display: flex;
   justify-content: space-between;
@@ -52,6 +55,22 @@
   margin-left: 20px;
 }
 
+.eval_link {
+  margin-right: 14px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  &:hover {
+    transition-duration: 0.3s;
+    transform: scale(1.3);
+  }
+  a {
+    color: $roseL !important;
+    &:hover {
+      color: $rose !important;
+    }
+  }
+}
+
 .namept {
   font-weight: 500;
   width: 43ch;
@@ -62,9 +81,12 @@
 }
 .index-folder {
   color: $roseL;
+  i {
+    font-size: 20px;
+  }
 }
-.wp-student-folder:hover{
-  cursor: pointer
+.wp-student-folder:hover {
+  cursor: pointer;
 }
 
 .invisible {

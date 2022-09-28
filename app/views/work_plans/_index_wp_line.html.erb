@@ -1,4 +1,9 @@
-<div class="index-wp-line d-flex">
+<div class="index-wp-line">
+  <div class="eval_link">
+    <%= link_to eval_path(wp) do %>
+      <i class="fa-solid fa-graduation-cap"></i>
+    <% end %>
+  </div>
   <div class="student-wp">
     <%= link_to work_plan_path(wp), target: '_blank' do %>
       <div class="namept">
