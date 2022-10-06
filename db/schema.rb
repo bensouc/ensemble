@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_09_05_095734) do
+ActiveRecord::Schema.define(version: 2022_10_06_135020) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -74,7 +74,17 @@ ActiveRecord::Schema.define(version: 2022_09_05_095734) do
     t.bigint "user_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "name"
     t.index ["user_id"], name: "index_classrooms_on_user_id"
+  end
+
+  create_table "shared_classrooms", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "classroom_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["classroom_id"], name: "index_shared_classrooms_on_classroom_id"
+    t.index ["user_id"], name: "index_shared_classrooms_on_user_id"
   end
 
   create_table "skills", force: :cascade do |t|
@@ -166,6 +176,8 @@ ActiveRecord::Schema.define(version: 2022_09_05_095734) do
   add_foreign_key "challenges", "skills"
   add_foreign_key "challenges", "users"
   add_foreign_key "classrooms", "users"
+  add_foreign_key "shared_classrooms", "classrooms"
+  add_foreign_key "shared_classrooms", "users"
   add_foreign_key "students", "classrooms"
   add_foreign_key "work_plan_domains", "students"
   add_foreign_key "work_plan_domains", "work_plans"
