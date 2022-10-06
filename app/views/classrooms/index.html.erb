@@ -22,7 +22,8 @@
                 </div>
               <% end %>
             </div>
-            <%= classroom.grade.upcase %>
+            <%= classroom.grade.upcase   %>
+            <%=  classroom.name.nil? ? "" : " - #{classroom.name.capitalize}" %>
           </div>
         </div>
         <div class="students-names">
@@ -83,7 +84,7 @@
               <div class="modal-body">
                 <div class="student-edit ">
                   <%= simple_form_for [Student.new], html: { novalidate: false } do |form| %>
-                    <%= render 'form', form: form, classroom: classroom %>
+                    <%= render 'edit_student_form', form: form, classroom: classroom %>
                   <% end %>
                 </div>
               </div>
@@ -95,27 +96,12 @@
     <% end %>
   </div>
 <% end %>
+<%# Classroom Creation %>
 <div class="classroom-creation" data-controller='create-classroom'>
   <button class="validate-btn" data-action='click->create-classroom#displayForm' data-create-classroom-target='button'>
     Créer une classe
   </button>
   <div class="classroom-form d-none" data-create-classroom-target='form'>
-    <%= simple_form_for Classroom.new, html: { novalidate: false } do |f|%>
-      <div class="classroom-field ">
-        <div class="left_box">
-          <i class="fa-solid fa-graduation-cap class-grade"></i>
-          <%=f.input :grade, label: false, required: true,
-                              collection: Classroom::GRADE,
-                              input_html: {class: 'area add-grade'}
-                                %>
-        </div>
-        <div class="d-flex flex-row-reverse">
-          <%= f.submit "Valider", class: "validate-btn" %>
-          <div class="cancel-btn me-3" data-action='click->create-classroom#displayForm'>
-            <i class="fas fa-times"></i>
-          </div>
-        </div>
-      </div>
-    <% end %>
+    <%= render 'form' %>
   </div>
 </div>

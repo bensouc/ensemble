@@ -98,16 +98,23 @@
 }
 
 .classroom-field {
-  display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-  i {
+display: flex !important;
+    align-items: baseline;
+    justify-content: space-around;
+  p {
     margin-right: 15px;
   }
 }
 .left_box{
   display: flex;
   margin-left: 12px;
+}
+
+.center_box{
+  display: flex;
+  p{
+    margin-left: 15px;
+  }
 }
 
 .classroom-creation {

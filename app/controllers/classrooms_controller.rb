@@ -12,6 +12,7 @@ class ClassroomsController < ApplicationController
   def create
     @classroom = Classroom.create(set_classroom_params)
     @classroom.user = current_user
+    @classroom.name = nil if @classroom.name == ""
 
     @classroom.save!
 
@@ -27,6 +28,6 @@ class ClassroomsController < ApplicationController
   private
 
   def set_classroom_params
-    params.require(:classroom).permit(:grade)
+    params.require(:classroom).permit(:grade, :name)
   end
 end
