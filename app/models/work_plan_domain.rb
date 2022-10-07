@@ -22,7 +22,7 @@ class WorkPlanDomain < ApplicationRecord
       domains: ["Calcul", "Géométrie", "Grandeurs et Mesures", "Numération", "Opérations",
                 "Résolution des Problèmes", "Calligraphie", "Conjugaison",
                 "Poésie et Expression orale", "Production d’écrit", "Grammaire",
-                "Lecture","Vocabulaire"]
+                "Lecture", "Vocabulaire"]
     }
   ].freeze
   LEVELS = (1..7).freeze

@@ -1,0 +1,40 @@
+<!-- Modal -->
+<div class="modal fade" id="sharingClassroomModal" tabindex="-1" aria-labelledby="sharingClassroomModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" data-controller='checkboxes'>
+      <div class="modal-header">
+        <h5 class="modal-title" id="sharingClassroomModalLabel">Partager votre Classe</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= simple_form_for :shared_classroom, url:(classroom_shared_classrooms_path(classroom)), html: { novalidate: false }  do |form| %>
+          <div class="cloning-classroom-card" >
+            <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+              <div class="student-checkbox" data-controller='checkboxes'>
+              <h4>Ecole <%= @school.name.capitalize %> </h4>
+                <%=form.input_field :teachers,
+                  collection: @school_teachers,
+                  label_method: :first_name,
+                  value_method: :id,
+                  multiple: true,
+                  as: :check_boxes,
+                  boolean_style: :inline,
+                  data: {checkboxes_target: 'boxes',action:"click->checkboxes#add"},
+                  class: "tag-selector",
+                  item_wrapper_class: 'tag-item'
+                %>
+              </div>
+            </div>
+            <%= form.submit 'Partager',class: 'multi-cloning-validate-btn mt-3 mb-3',
+              data: { confirm: "Etes vous bien sûr de vouloir partager cette Classe?
+Les enseignants sélectionnés pourront agir sur les classes tout comme vous." } %>
+          <% end %>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <%# <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> %>
+        <%# <button type="button" class="btn btn-primary">Save changes</button> %>
+      </div>
+    </div>
+  </div>
+</div>

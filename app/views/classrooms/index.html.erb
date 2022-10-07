@@ -8,114 +8,15 @@
     <h1>Mes Classes</h1>
   <% end %>
   <div class="classrooms-list">
-    <% @classrooms.each do |classroom| %>
-      <div class="classroom-card">
-        <%# <img src="" alt=""> %>
-        <div class="classroom-card-top">
-          <div class="class-grade ps-3 d-flex">
-            <div class='me-3 pt-1'>
-              <%= link_to classroom_path(classroom), method: :delete, data: {
-                                                         confirm: "Voulez vous Supprimer Cette classe? Vous allez supprimer tous les élèves et les plans de travail associés",
-                                                       } do %>
-                <div class='rmv-skill-btn white'>
-                  <i class="far fa-times-circle"></i>
-                </div>
-              <% end %>
-            </div>
-            <%= classroom.grade.upcase %>
-          </div>
-        </div>
-        <div class="students-names">
-          <% (@students_list.select { |s| s.first == classroom }).first[1].order(:first_name).each do |student| %>
-            <div class="student-fname d-flex">
-              <div class='ms-1'>
-                <%= link_to student_path(student), method: :delete, data: {
-                                                        confirm: "Voulez vous Supprimer Cet élève?",
-                                                      } do %>
-                  <div class='rmv-skill-btn '>
-                    <i class="far fa-times-circle"></i>
-                  </div>
-                <% end %>
-              </div>
-              <%= link_to student_path(student) do %>
-                <h1 class='ms-3'>
-                  <%= student.first_name %>
-                </h1>
-              <% end %>
-              <div class="edit-student">
-                <!-- Button trigger modal -->
-                <button type="button" class="bg-white" data-bs-toggle="modal" data-bs-target="#exampleModal-<%= student.id%>" >
-                  <i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" ></i>
-                </button>
-              </div>
-              <%# MODAL STUDENT EDIT %>
-              <div class="modal fade" id="exampleModal-<%=student.id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="exampleModalLabel">Modifiez le Prénom</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <%= simple_form_for student, html: { novalidate: false }, class: 'd-flex justify-content-between align-items-baseline pe-3' do |form|%>
-                        <%= render 'form', form: form, classroom: classroom %>
-                      <% end %>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          <% end %>
-          <%# MODAL for student creation %>
-        </div>
-        <button type="button" class="bg-white ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal-<%= classroom.id%>" >
-          <div class=" add-student-btn ">
-            Ajouter un élève
-          </div>
-        </button>
-        <div class="modal fade" id="exampleModal-<%=classroom.id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ajout d'élève</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <div class="student-edit ">
-                  <%= simple_form_for [Student.new], html: { novalidate: false } do |form| %>
-                    <%= render 'form', form: form, classroom: classroom %>
-                  <% end %>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <%# END MODAL for student creation %>
-      </div>
-    <% end %>
+    <%= render 'classrooms' %>
   </div>
 <% end %>
+<%# Classroom Creation %>
 <div class="classroom-creation" data-controller='create-classroom'>
   <button class="validate-btn" data-action='click->create-classroom#displayForm' data-create-classroom-target='button'>
     Créer une classe
   </button>
   <div class="classroom-form d-none" data-create-classroom-target='form'>
-    <%= simple_form_for Classroom.new, html: { novalidate: false } do |f|%>
-      <div class="classroom-field ">
-        <div class="left_box">
-          <i class="fa-solid fa-graduation-cap class-grade"></i>
-          <%=f.input :grade, label: false, required: true,
-                              collection: Classroom::GRADE,
-                              input_html: {class: 'area add-grade'}
-                                %>
-        </div>
-        <div class="d-flex flex-row-reverse">
-          <%= f.submit "Valider", class: "validate-btn" %>
-          <div class="cancel-btn me-3" data-action='click->create-classroom#displayForm'>
-            <i class="fas fa-times"></i>
-          </div>
-        </div>
-      </div>
-    <% end %>
+    <%= render 'form' %>
   </div>
 </div>

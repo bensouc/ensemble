@@ -1,11 +1,24 @@
-
-<div class='d-flex align-items-end'>
-  <h6>Prénom</h6>
-  <%= form.input :first_name, label: false, required: true,  input_html: { class: 'area grow ms-3'} %>
-</div>
-<%= form.input :classroom,  required: true,
-                    input_html: { value: classroom.id, class: 'hidden' },
-                    label: false%>
-<div class="d-flex flex-row-reverse">
-  <%= form.submit "Valider", class: "area  btn-valid " %>
-</div>
+<%= simple_form_for Classroom.new, html: { novalidate: false } do |f|%>
+  <div class="classroom-field ">
+    <div class="left_box">
+      <i class="fa-solid fa-graduation-cap class-grade"></i>
+      <p>*</p>
+      <%=f.input :grade, label: false, required: true,
+                              include_blank:  "Choisissez un niveau",
+                              collection: Classroom::GRADE,
+                              input_html: {class: 'area add-grade'}
+                                %>
+    </div>
+    <div class="center_box">
+      <%=f.input :name, label: false,
+                            hint: 'Vous pouvez donner un nom à votre classe',
+                            input_html: {class: 'area'}  %>
+    </div>
+    <div class="d-flex flex-row-reverse">
+      <%= f.submit "Valider", class: "validate-btn" %>
+      <div class="cancel-btn me-3" data-action='click->create-classroom#displayForm'>
+        <i class="fas fa-times"></i>
+      </div>
+    </div>
+  </div>
+<% end %>

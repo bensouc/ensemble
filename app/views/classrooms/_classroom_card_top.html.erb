@@ -1,0 +1,42 @@
+<div class="classroom-card-top">
+  <div class="class-grade ps-3 ">
+    <div class="classroom-card-name">
+      <% if classroom.user == current_user%>
+        <%= link_to classroom_path(classroom), method: :delete, data: {
+        confirm: "Voulez vous Supprimer Cette classe? Vous allez supprimer tous les élèves et les plans de travail associés",
+        } do %>
+          <div class='rmv-skill-btn white'>
+            <i class="far fa-times-circle"></i>
+          </div>
+        <% end %>
+      <% else %>
+                <%= link_to  classroom_shared_classroom_path(classroom,shared_classroom.ids.first), method: :delete, data: {
+        confirm: "Voulez vous vraimment Supprimer Cette classe partagée?",
+        } do %>
+          <div class='rmv-skill-btn white'>
+            <i class="far fa-times-circle"></i>
+          </div>
+        <% end %>
+      <% end %>
+      <div class='classroom-name'>
+        <%= classroom.grade.upcase   %>
+        <%= classroom.name.nil? ? "" : " - #{classroom.name.capitalize}" %>
+      </div>
+    </div>
+    <div class="sharing-details">
+      <% if classroom.user != current_user%>
+        <h6>Classe Partagée par <%= classroom.user.first_name.capitalize  %>  </h6>
+      <% end %>
+    </div>
+    <!-- Button trigger modal 4 sharing classroom -->
+    <div class="sharing-btn">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sharingClassroomModal">
+        <%= image_tag "icons/share-red-icon.svg" %>
+      </button>
+    </div>
+  </div>
+  <%# modal for sharing classrom %>
+  <div class="sharing-panel">
+    <%= render "sharing_panel", classroom: classroom%>
+  </div>
+</div>

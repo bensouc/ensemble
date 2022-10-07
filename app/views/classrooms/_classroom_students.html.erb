@@ -1,0 +1,43 @@
+<div class="students-names">
+  <% (@students_list.select { |s| s.first == classroom }).first[1].order(:first_name).each do |student| %>
+    <div class="student-fname d-flex">
+      <div class='ms-1'>
+        <%= link_to student_path(student), method: :delete, data: {
+                                                        confirm: "Voulez vous Supprimer Cet élève?",
+                                                      } do %>
+          <div class='rmv-skill-btn '>
+            <i class="far fa-times-circle"></i>
+          </div>
+        <% end %>
+      </div>
+      <%= link_to student_path(student) do %>
+        <h1 class='ms-3'>
+          <%= student.first_name %>
+        </h1>
+      <% end %>
+      <div class="edit-student">
+        <!-- Button trigger modal -->
+        <button type="button" class="bg-white" data-bs-toggle="modal" data-bs-target="#exampleModal-<%= student.id%>" >
+          <i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" ></i>
+        </button>
+      </div>
+      <%# MODAL STUDENT EDIT %>
+      <div class="modal fade" id="exampleModal-<%=student.id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Modifiez le Prénom</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <%= simple_form_for student, html: { novalidate: false }, class: 'd-flex justify-content-between align-items-baseline pe-3' do |form|%>
+                <%= render 'edit_student_form', form: form, classroom: classroom %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+  <%# MODAL for student creation %>
+</div>

@@ -2,6 +2,25 @@
   margin-bottom: 15px;
 }
 
+.sharing-btn {
+  margin: auto 15px;
+
+  button {
+    background-color: $grisC;
+    border: none;
+  }
+  button:hover {
+    background-color: $grisC;
+  }
+  img {
+    vertical-align: baseline;
+  }
+  img:hover {
+    transform: scale(1.5);
+    transition: 0.5s;
+    color: white;
+  }
+}
 .students-names {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -26,9 +45,29 @@
   font-size: 25px;
   color: $rose;
   font-weight: 900;
+  display: flex !important;
+  justify-content: space-between;
+  align-items: flex-end;
 }
-.student-fname {
 
+.sharing-details {
+  color: rgb(255, 255, 255);
+  font-style: italic;
+  h6 {
+    font-family: $bandeau-haut-font;
+    font-weight: 300;
+  }
+}
+.classroom-card-name {
+  display: flex;
+  align-items: center;
+
+  .classroom-name {
+    margin: auto 15px;
+  }
+}
+
+.student-fname {
   width: 290px;
   h1 {
     font-size: 20px !important;
@@ -86,8 +125,14 @@
 
 // create classroom section
 .add-grade {
-  width: 8ch;
+  width: 18ch;
   margin-right: 20px;
+  color: $grisC;
+  font-style: italic;
+  option {
+    color: $grisF;
+    font-style: italic;
+  }
 }
 
 .classroom-form {
@@ -98,16 +143,23 @@
 }
 
 .classroom-field {
-  display: flex !important;
-  align-items: center;
-  justify-content: space-between;
-  i {
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: space-around;
+  p {
     margin-right: 15px;
   }
 }
-.left_box{
+.left_box {
   display: flex;
   margin-left: 12px;
+}
+
+.center_box {
+  display: flex;
+  p {
+    margin-left: 15px;
+  }
 }
 
 .classroom-creation {

@@ -1,0 +1,11 @@
+<div class="classrooms-list">
+<% @classrooms.each do |classroom| %>
+  <%shared_classroom = @shared_classrooms.where(classroom: classroom) if current_user != classroom.user  %>
+  <div class="classroom-card" data-controller='classroomcheckboxes'>
+    <%# <img src="" alt=""> %>
+    <%= render "classroom_card_top", classroom: classroom, shared_classroom: shared_classroom%>
+    <%= render 'classroom_students', classroom: classroom %>
+    <%= render 'create_student', classroom: classroom %>
+  </div>
+<% end %>
+</div>
