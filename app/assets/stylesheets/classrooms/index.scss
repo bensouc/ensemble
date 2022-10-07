@@ -3,7 +3,7 @@
 }
 
 .sharing-btn {
-  margin-left: 30px;
+  margin: auto 15px;
 
   button {
     background-color: $grisC;
@@ -45,7 +45,28 @@
   font-size: 25px;
   color: $rose;
   font-weight: 900;
+  display: flex !important;
+  justify-content: space-between;
+  align-items: flex-end;
 }
+
+.sharing-details {
+  color: rgb(255, 255, 255);
+  font-style: italic;
+  h6 {
+    font-family: $bandeau-haut-font;
+    font-weight: 300;
+  }
+}
+.classroom-card-name {
+  display: flex;
+  align-items: center;
+
+  .classroom-name {
+    margin: auto 15px;
+  }
+}
+
 .student-fname {
   width: 290px;
   h1 {

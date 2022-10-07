@@ -2,7 +2,9 @@
 
 class ClassroomsController < ApplicationController
   def index
-    @classrooms = current_user.classrooms
+    @shared_classrooms = SharedClassroom.where(user: current_user)
+    shared_classrooms = @shared_classrooms.map(&:classroom)
+    @classrooms = (current_user.classrooms + shared_classrooms).sort_by(&:created_at)
     @students_list = []
     @school_teachers = User.where(school: current_user.school).reject { |y| y == current_user }
     @classrooms.each do |classroom|

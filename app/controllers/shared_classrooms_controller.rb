@@ -8,16 +8,19 @@ class SharedClassroomsController < ApplicationController
         user_id: teacher.id,
         classroom: classroom
       )
-      unless shared_classroom.save
-        redirect_to classrooms_path,
-                    alert: "Partage échoué, cette classe est déjà partagée avec #{teacher.first_name.capitalize}"
-        return
-      end
+      next if shared_classroom.save
+
+      redirect_to classrooms_path,
+                  alert: "Partage échoué, cette classe est déjà partagée avec #{teacher.first_name.capitalize}"
+      return
     end
     redirect_to classrooms_path, notice: "Partage réussi"
   end
 
   def destroy
+    shared_classroom = SharedClassroom.find(params[:id])
+    shared_classroom.destroy
+    redirect_to classrooms_path
   end
 
   private
