@@ -22,8 +22,20 @@
                 </div>
               <% end %>
             </div>
-            <%= classroom.grade.upcase   %>
-            <%=  classroom.name.nil? ? "" : " - #{classroom.name.capitalize}" %>
+            <div>
+              <%= classroom.grade.upcase   %>
+              <%= classroom.name.nil? ? "" : " - #{classroom.name.capitalize}" %>
+            </div>
+              <!-- Button trigger modal 4 sharing classroom -->
+            <div class="sharing-btn">
+              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sharingClassroomModal">
+                <%= image_tag "icons/share-red-icon.svg" %>
+              </button>
+            </div>
+          </div>
+          <%# model for sharing classrom %>
+          <div class="sharing-panel">
+            <%= render "sharing_panel", classroom: classroom%>
           </div>
         </div>
         <div class="students-names">

@@ -5,7 +5,7 @@ class Classroom < ApplicationRecord
   belongs_to :user
 
   has_many :students, dependent: :destroy
-  has_many :shared_classroom, dependent: nil
+  has_many :shared_classrooms, dependent: nil
 
   validates :grade, presence: true
 

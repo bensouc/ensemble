@@ -1,8 +1,10 @@
 <%= simple_form_for Classroom.new, html: { novalidate: false } do |f|%>
   <div class="classroom-field ">
     <div class="left_box">
-      <i class="fa-solid fa-graduation-cap class-grade"></i> <p>*</p>
+      <i class="fa-solid fa-graduation-cap class-grade"></i>
+      <p>*</p>
       <%=f.input :grade, label: false, required: true,
+                              include_blank:  "Choisissez un niveau",
                               collection: Classroom::GRADE,
                               input_html: {class: 'area add-grade'}
                                 %>

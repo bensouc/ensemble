@@ -9,6 +9,7 @@ Rails.application.routes.draw do
     resources :students, only: [:index]
     get "work_plans/:id/eval", to: "work_plans#eval", as: :eval
   end
+  # Add shared classrooms
 
   resources :work_plans, only: [:index, :show, :update, :new, :create, :destroy] do
     resources :work_plan_domains, only: [:new, :create]
@@ -30,6 +31,7 @@ Rails.application.routes.draw do
 
   resources :classrooms, only: [:index, :show, :update, :new, :create, :destroy] do
     resources :students, only: [:new, :edit] # :create, :destroy
+    resources :shared_classrooms, only: [:create, :destroy]
   end
 
   resources :students, only: [:create, :update, :show, :destroy] do
@@ -37,7 +39,6 @@ Rails.application.routes.draw do
     post "", to: "work_plans#auto_new_wp", as: :auto_new_wp
   end
 
-  resources :shared_classroom, only: [:create, :destroy]
 
   # route for tab editing
   resources :tables, only: [:show, :create, :update]

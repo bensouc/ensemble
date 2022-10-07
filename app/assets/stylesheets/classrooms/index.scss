@@ -2,6 +2,25 @@
   margin-bottom: 15px;
 }
 
+.sharing-btn {
+  margin-left: 30px;
+
+  button {
+    background-color: $grisC;
+    border: none;
+  }
+  button:hover {
+    background-color: $grisC;
+  }
+  img {
+    vertical-align: baseline;
+  }
+  img:hover {
+    transform: scale(1.5);
+    transition: 0.5s;
+    color: white;
+  }
+}
 .students-names {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -28,7 +47,6 @@
   font-weight: 900;
 }
 .student-fname {
-
   width: 290px;
   h1 {
     font-size: 20px !important;
@@ -86,8 +104,14 @@
 
 // create classroom section
 .add-grade {
-  width: 8ch;
+  width: 18ch;
   margin-right: 20px;
+  color: $grisC;
+  font-style: italic;
+  option {
+    color: $grisF;
+    font-style: italic;
+  }
 }
 
 .classroom-form {
@@ -98,21 +122,21 @@
 }
 
 .classroom-field {
-display: flex !important;
-    align-items: baseline;
-    justify-content: space-around;
+  display: flex !important;
+  align-items: baseline;
+  justify-content: space-around;
   p {
     margin-right: 15px;
   }
 }
-.left_box{
+.left_box {
   display: flex;
   margin-left: 12px;
 }
 
-.center_box{
+.center_box {
   display: flex;
-  p{
+  p {
     margin-left: 15px;
   }
 }
