@@ -2,6 +2,7 @@
 
 class ClassroomsController < ApplicationController
   def index
+    @school = current_user.school
     @shared_classrooms = SharedClassroom.where(user: current_user)
     shared_classrooms = @shared_classrooms.map(&:classroom)
     @classrooms = (current_user.classrooms + shared_classrooms).sort_by(&:created_at)

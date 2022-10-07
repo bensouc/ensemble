@@ -11,6 +11,7 @@
           <div class="cloning-classroom-card" >
             <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
               <div class="student-checkbox" data-controller='checkboxes'>
+              <h4>Ecole <%= @school.name.capitalize %> </h4>
                 <%=form.input_field :teachers,
                   collection: @school_teachers,
                   label_method: :first_name,

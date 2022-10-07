@@ -31,7 +31,7 @@
             </div>
             <div class="modal-body">
               <%= simple_form_for student, html: { novalidate: false }, class: 'd-flex justify-content-between align-items-baseline pe-3' do |form|%>
-                <%= render 'form', form: form, classroom: classroom %>
+                <%= render 'edit_student_form', form: form, classroom: classroom %>
               <% end %>
             </div>
           </div>

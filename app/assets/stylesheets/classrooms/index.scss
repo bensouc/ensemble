@@ -143,9 +143,9 @@
 }
 
 .classroom-field {
-  display: flex !important;
-  align-items: baseline;
-  justify-content: space-around;
+    display: flex !important;
+    align-items: flex-start;
+    justify-content: space-around;
   p {
     margin-right: 15px;
   }
