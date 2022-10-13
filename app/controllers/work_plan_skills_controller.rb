@@ -70,7 +70,7 @@ class WorkPlanSkillsController < ApplicationController
           Belt.special_newbelt(@work_plan_skill, @work_plan)
         elsif @work_plan_skill.work_plan_domain.all_skills_completed?
           belt.completed = true
-          belt.validated_date = Time.zone.now
+          belt.validated_date = DateTime.now
           belt.save
         end
       end

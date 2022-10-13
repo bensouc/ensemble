@@ -5,8 +5,9 @@ class BeltsController < ApplicationController
     @belt = Belt.create(new_belt_params)
     @belt.completed = true
     @belt.student = Student.find(params[:student_id])
+    @belt.validated_date = DateTime.now
     @belt.save
-  
+
 redirect_to student_path(@belt.student)
   end
 
