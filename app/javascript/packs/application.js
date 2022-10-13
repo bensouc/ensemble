@@ -26,7 +26,8 @@ require("channels")
 import "bootstrap";
 
 import { initFlatpickr } from "../plugins/flatpickr";
-import { displayQuote } from "../plugins/quote.js";
+// import { displayQuote } from "../plugins/quote.js";
+// import {Typed} from 'typed.js';
 // import { scrollFunction } from "./back_to_top";
 // JS 4 back to top BTN
 
