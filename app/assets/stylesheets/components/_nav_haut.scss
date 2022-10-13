@@ -15,40 +15,7 @@
   justify-content: space-around;
 }
 
-.info-btn {
-  width: 22ch;
-  animation: typing 2s steps(22), blink .5s step-end infinite alternate;
-  white-space: nowrap;
-  overflow: hidden;
-  border-right: 3px solid;
-  font-family: monospace;
-  // font-size: 2em;
-  color: $rose;
-  font-family: "Baloo 2", cursive;
-  font-size: 28px;
-  font-weight: 700;
-  // animation: typing 2s steps(22), blink 0.5s step-end infinite alternate !important;
-  // white-space: nowrap;
-  // overflow: hidden;
-  // width: fit-content;
-  cursor: pointer;
 
-}
-.info-btn:hover {
-  transform: scale(1.1);
-  transition: 0.1s;
-}
-@keyframes typing {
-  from {
-    width: 0
-  }
-}
-
-@keyframes blink {
-  50% {
-    border-color: transparent
-  }
-}
 
 img.avatar {
   padding: 0;

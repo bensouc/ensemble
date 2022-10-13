@@ -1,38 +1,79 @@
-.container-dashboard{
+.container-dashboard {
   padding: 0 2rem;
   // background-image: url('https://res.cloudinary.com/dr50qe2fh/image/upload/v1638806517/bg3_lbie1w.svg');
   // background-size: 150%;
 }
 
-.cardcreate, .lastexercices, .lastworkplans{
+.com {
+  position: relative;
+  top: -72px;
+  left: -139px;
+}
+.info-btn {
+  width: 22ch;
+  animation: typing 2s steps(22), blink 0.5s step-end infinite alternate;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 3px solid;
+  font-family: monospace;
+  // font-size: 2em;
+  color: $rose;
+  font-family: "Baloo 2", cursive;
+  font-size: 28px;
+  font-weight: 700;
+  // animation: typing 2s steps(22), blink 0.5s step-end infinite alternate !important;
+  // white-space: nowrap;
+  // overflow: hidden;
+  // width: fit-content;
+  cursor: pointer;
+}
+.info-btn:hover {
+  transform: scale(1.1);
+  transition: 0.1s;
+}
+@keyframes typing {
+  from {
+    width: 0;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+.cardcreate,
+.lastexercices,
+.lastworkplans {
   margin: 0 80px 60px 0;
   width: 400px;
 
-  &:hover{
+  &:hover {
     text-decoration: none;
-     cursor: pointer;
+    cursor: pointer;
   }
 
-  h1{
+  h1 {
     font-family: $titres-font;
     font-size: 28px;
     font-weight: 700;
     color: $grisF;
   }
 
-  .fa-desktop{
+  .fa-desktop {
     font-size: 20px;
     color: $rose;
   }
 
-  h2{
+  h2 {
     font-family: $titres-font;
     font-size: 24px;
     font-weight: 700;
     color: $grisF;
   }
 
-  p{
+  p {
     font-family: $plan-font;
     font-size: 18px;
     font-weight: 400;
@@ -40,11 +81,11 @@
     letter-spacing: 1px;
   }
 
-  .far{
+  .far {
     color: $orange;
   }
 
-  .bg1{
+  .bg1 {
     position: relative;
     background-color: $violet;
     width: 400px;
@@ -53,33 +94,33 @@
     border-radius: 12px;
     transition-property: width;
     transition-duration: 0.2s;
-    transition: .3s;
+    transition: 0.3s;
 
     &:hover {
       transform: scale(1.1);
-       cursor: pointer;
+      cursor: pointer;
     }
 
-    img{
+    img {
       position: absolute;
-      opacity: .5;
-      top: 45px; left: -20px;
+      opacity: 0.5;
+      top: 45px;
+      left: -20px;
       transition-property: opacity;
       transition-duration: 1s;
-      &:hover{
+      &:hover {
         opacity: 1;
-         cursor: pointer;
+        cursor: pointer;
       }
     }
   }
 }
 
-a:hover  {
+a:hover {
   text-decoration: none;
-
 }
 
-.bg2{
+.bg2 {
   align-items: flex-end;
   position: relative;
   flex-direction: column;
@@ -91,16 +132,17 @@ a:hover  {
   border-radius: 12px;
   transition-property: opacity;
   transition-duration: 0.5s;
-  transition: .3s;
+  transition: 0.3s;
 
   &:hover {
     transform: scale(1.1);
   }
 
-  .img1{
-    opacity: .5;
+  .img1 {
+    opacity: 0.5;
     position: absolute;
-    top: -50px; left: 20px;
+    top: -50px;
+    left: 20px;
     transition-property: opacity;
     transition-duration: 1s;
   }
@@ -109,10 +151,11 @@ a:hover  {
     opacity: 1;
   }
 
-  .img2{
-    opacity: .5;
+  .img2 {
+    opacity: 0.5;
     position: absolute;
-    top:208px; left: 350px;
+    top: 208px;
+    left: 350px;
     transition-property: opacity;
     transition-duration: 1s;
   }
@@ -121,36 +164,37 @@ a:hover  {
     opacity: 1;
   }
 
-  h2{
+  h2 {
     order: 5;
   }
 
-  p{
+  p {
     order: 5;
   }
 }
 
-.bg3{
+.bg3 {
   position: relative;
   background-color: $menuOff;
   width: 500px;
   height: 240px;
   padding: 25px;
   border-radius: 12px;
-  transition: .3s;
+  transition: 0.3s;
 
   &:hover {
     transform: scale(1.1);
   }
 
-  img{
-    opacity: .7;
+  img {
+    opacity: 0.7;
     position: absolute;
-    top: 45px; left: -20px;
+    top: 45px;
+    left: -20px;
     transition-property: opacity;
     transition-duration: 1s;
 
-    &:hover{
+    &:hover {
       opacity: 1;
     }
   }
