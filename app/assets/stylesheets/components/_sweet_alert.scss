@@ -1,0 +1,22 @@
+.swal-modal {
+  // background-color: rgba(63,255,106,0.69);
+  border: 3px solid $rose !important;
+  .swal-text, .swal-title {
+    color: white !important;
+  }
+  background-color: $rose !important;
+  width: 560px;
+}
+
+.swal-button {
+  background-color: #7cd1f9 !important;
+  color: #fff !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 5px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  padding: 10px 24px !important;
+  margin: 0 !important;
+  cursor: pointer !important;
+}

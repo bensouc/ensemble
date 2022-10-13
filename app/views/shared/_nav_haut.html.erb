@@ -1,16 +1,14 @@
-<nav class="navbar navhaut pe-5">
+<nav class="navbar navhaut pe-4">
   <div class="quote">
-  </div>
-  <div class="quote">
-    <div id="QuoteOFDay"></div>
+    <div class='info-btn' data-controller='show-com' data-action="click->show-com#displayCom" >
+      <h1>
+        Ensemble change d'adresse !!!
+      </h1>
+    </div>
   </div>
   <div class="navbar navbar-expand-sm navbar-light d-flex">
     <div class='avatar'>
       <h3><%=current_user.first_name.capitalize%> <%=current_user.last_name.capitalize%></h3>
-      <%# <p>Classe : <%current_user.classrooms.each do |classroom|%>
-          <%#= classroom.grade%>
-      <%#</p> %>
-      <%#<% end %>
     </div>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
