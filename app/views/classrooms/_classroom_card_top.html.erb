@@ -21,7 +21,7 @@
       <%# START MODAL EDITING CLASSROOM %>
       <div class='classroom-name '>
         <%= classroom.grade.upcase   %>
-        <%= classroom.name.nil? ? "" : " - #{classroom.name.capitalize}" %>
+        <%= classroom.name.nil? ? "" : " - #{classroom.name}" %>
         <button type="button" data-bs-toggle="modal" data-bs-target="#editingClassroomModal-<%=classroom.id%>">
           <i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" ></i>
         </button>
