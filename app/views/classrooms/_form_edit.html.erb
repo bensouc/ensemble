@@ -1,0 +1,41 @@
+<div class="modal fade" id="editingClassroomModal-<%=classroom.id%>" tabindex="-1" aria-labelledby="editingClassroomModal-<%=classroom.id%>Label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content" >
+      <div class="modal-header">
+        <h5 class="modal-title" id="editingClassroomModal-<%=classroom.id%>Label">Edition de la classe</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" >
+
+
+<%= simple_form_for classroom, html: { novalidate: false } do |f|%>
+  <div class="classroom-field ">
+    <div class="left_box">
+      <%# <i class="fa-solid fa-graduation-cap class-grade"></i>
+      <p>*</p> %>
+      <%=f.input :grade, label: false, required: true,
+                              include_blank:  "Choisissez un niveau",
+                              collection: Classroom::GRADE,
+                              input_html: {class: 'area add-grade d-none'}
+                                %>
+    </div>
+    <div class="center_box">
+      <%=f.input :name, label: false,
+                            hint: 'Vous pouvez donner un nom à votre classe',
+                            input_html: {class: 'area'}  %>
+    </div>
+    <div class="d-flex flex-row-reverse">
+      <%= f.submit "Valider", class: "validate-btn" %>
+    </div>
+  </div>
+<% end %>
+
+
+
+    </div>
+    <div class="modal-footer">
+      <%# <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> %>
+      <%# <button type="button" class="btn btn-primary">Save changes</button> %>
+    </div>
+  </div>
+</div>

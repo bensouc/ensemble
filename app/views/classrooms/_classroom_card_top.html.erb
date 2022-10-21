@@ -10,7 +10,7 @@
           </div>
         <% end %>
       <% else %>
-                <%= link_to  classroom_shared_classroom_path(classroom,shared_classroom.ids.first), method: :delete, data: {
+        <%= link_to  classroom_shared_classroom_path(classroom,shared_classroom.ids.first), method: :delete, data: {
         confirm: "Voulez vous vraimment Supprimer Cette classe partagée?",
         } do %>
           <div class='rmv-skill-btn white'>
@@ -18,25 +18,33 @@
           </div>
         <% end %>
       <% end %>
-      <div class='classroom-name'>
+      <%# START MODAL EDITING CLASSROOM %>
+      <div class='classroom-name '>
         <%= classroom.grade.upcase   %>
-        <%= classroom.name.nil? ? "" : " - #{classroom.name.capitalize}" %>
+        <%= classroom.name.nil? ? "" : " - #{classroom.name}" %>
+        <button type="button" data-bs-toggle="modal" data-bs-target="#editingClassroomModal-<%=classroom.id%>">
+          <i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" ></i>
+        </button>
+        <%# MODAL %>
+        <%= render 'form_edit', classroom: classroom%>
       </div>
     </div>
-    <div class="sharing-details">
-      <% if classroom.user != current_user%>
-        <h6>Classe Partagée par <%= classroom.user.first_name.capitalize  %>  </h6>
-      <% end %>
-    </div>
-    <!-- Button trigger modal 4 sharing classroom -->
-    <div class="sharing-btn">
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sharingClassroomModal-<%=classroom.id%>">
-        <%= image_tag "icons/share-red-icon.svg" %>
-      </button>
-    </div>
+    <%# END MODAL EDITING CLASSROOM %>
   </div>
-  <%# modal for sharing classrom %>
-  <div class="sharing-panel">
-    <%= render "sharing_panel", classroom: classroom%>
+  <div class="sharing-details">
+    <% if classroom.user != current_user%>
+      <h6>Classe Partagée par <%= classroom.user.first_name.capitalize  %>  </h6>
+    <% end %>
   </div>
+  <!-- Button trigger modal 4 sharing classroom -->
+  <div class="sharing-btn">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sharingClassroomModal-<%=classroom.id%>">
+      <%= image_tag "icons/share-red-icon.svg" %>
+    </button>
+  </div>
+</div>
+<%# modal for sharing classrom %>
+<div class="sharing-panel">
+  <%= render "sharing_panel", classroom: classroom%>
+</div>
 </div>

@@ -64,6 +64,24 @@
 
   .classroom-name {
     margin: auto 15px;
+    
+  }
+}
+.classroom-name button {
+  background-color: transparent;
+  color: $rose;
+  }
+
+.classroom-name button :hover{
+  transform: scale(1.1);
+  transition: 0.1s;
+}
+
+.center_box{
+  font-weight: lighter;
+  .form-text{
+    font-weight: 300;
+    font-size: 15px;
   }
 }
 
@@ -143,9 +161,9 @@
 }
 
 .classroom-field {
-    display: flex !important;
-    align-items: flex-start;
-    justify-content: space-around;
+  display: flex !important;
+  align-items: flex-start;
+  justify-content: space-around;
   p {
     margin-right: 15px;
   }
