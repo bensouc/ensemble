@@ -21,7 +21,11 @@ class SharedClassroomsController < ApplicationController
 
   def destroy
     shared_classroom = SharedClassroom.find(params[:id])
+    # get original classroom
+    classroom = shared_classroom.classroom
     shared_classroom.destroy
+    # if sharedclassrooms.count == 0 => classroom.shared = false
+    classroom.shared = false if classroom.shared_classrooms.count
     redirect_to classrooms_path
   end
 

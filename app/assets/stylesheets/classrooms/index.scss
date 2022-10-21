@@ -61,10 +61,15 @@
 .classroom-card-name {
   display: flex;
   align-items: center;
+  p{
+    font-size: smaller;
+    font-weight: lighter;
+    font-style: italic;
+  }
 
   .classroom-name {
     margin: auto 15px;
-    
+
   }
 }
 .classroom-name button {
