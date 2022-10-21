@@ -29,6 +29,17 @@ class ClassroomsController < ApplicationController
     redirect_to classrooms_path
   end
 
+  def update
+    @classroom = Classroom.find(params[:id])
+    if set_classroom_params[:name] == ""
+      @classroom.name = nil
+    else
+      @classroom.name = set_classroom_params[:name]
+    end
+    @classroom.save!
+    redirect_to classrooms_path
+  end
+
   private
 
   def set_classroom_params
