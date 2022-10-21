@@ -1,4 +1,4 @@
-<div class="classroom-card-top">
+<div class="classroom-card-top" >
   <div class="class-grade ps-3 ">
     <div class="classroom-card-name">
       <% if classroom.user == current_user%>
@@ -30,7 +30,7 @@
     </div>
     <!-- Button trigger modal 4 sharing classroom -->
     <div class="sharing-btn">
-      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sharingClassroomModal">
+      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sharingClassroomModal-<%=classroom.id%>">
         <%= image_tag "icons/share-red-icon.svg" %>
       </button>
     </div>

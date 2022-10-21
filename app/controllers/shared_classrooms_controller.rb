@@ -6,12 +6,12 @@ class SharedClassroomsController < ApplicationController
     teachers.each do |teacher|
       shared_classroom = SharedClassroom.new(
         user_id: teacher.id,
-        classroom: classroom
+        classroom: classroom,
       )
       next if shared_classroom.save
 
       redirect_to classrooms_path,
-                  alert: "Partage échoué, cette classe est déjà partagée avec #{teacher.first_name.capitalize}"
+                  alert: "Un partage a échoué, cette classe est déjà partagée avec #{teacher.first_name.capitalize}"
       return
     end
     classroom.shared = true
@@ -28,7 +28,8 @@ class SharedClassroomsController < ApplicationController
   private
 
   def set_shared_classroom_teacher_params
-    params.require(:shared_classroom).require(:teachers)
+    # params.require(:shared_classroom).require(:teachers)
+    params.require(params.require(:classroom_id)).require(:teachers)
   end
 
   def set_classroom
