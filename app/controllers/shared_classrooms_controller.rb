@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class SharedClassroomsController < ApplicationController
   def create
     @teachers_ids = set_shared_classroom_teacher_params.reject(&:blank?)
@@ -6,7 +7,7 @@ class SharedClassroomsController < ApplicationController
     teachers.each do |teacher|
       shared_classroom = SharedClassroom.new(
         user_id: teacher.id,
-        classroom: classroom,
+        classroom: classroom
       )
       next if shared_classroom.save
 
@@ -21,7 +22,11 @@ class SharedClassroomsController < ApplicationController
 
   def destroy
     shared_classroom = SharedClassroom.find(params[:id])
+    # get original classroom
+    classroom = shared_classroom.classroom
     shared_classroom.destroy
+    # if sharedclassrooms.count == 0 => classroom.shared = false
+    classroom.shared = false if classroom.shared_classrooms.count
     redirect_to classrooms_path
   end
 

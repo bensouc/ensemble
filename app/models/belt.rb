@@ -1,7 +1,18 @@
 # frozen_string_literal: true
 
 class Belt < ApplicationRecord
+  
   BELT_COLORS = %w[blanche jaune orange verte bleue marron noire].freeze
+  BELT_PNG = {
+    "1" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698313/ensemble/belts/belt_1_jkd7er.png",
+    "2" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698313/ensemble/belts/belt_2_yuzuqg.png",
+    "3" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666712976/ensemble/belts/belt_3_yntgyk.png",
+    "4" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698313/ensemble/belts/belt_4_s2d5du.png",
+    "5" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698313/ensemble/belts/belt_5_lefmhr.png",
+    "6" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698313/ensemble/belts/belt_6_mqzhbq.png",
+    "7" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698314/ensemble/belts/belt_7_aubna5.png"
+  }.freeze
+
   belongs_to :student
 
   def completed?
