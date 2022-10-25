@@ -56,7 +56,7 @@
                 <div class='belt-display'>
                   <%# belt pic %>
                   <div>
-                    <%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642065142/belt_white_cxov6t.png", size: "100x50")%>
+                    <%=cl_image_tag(Belt::BELT_PNG[work_plan_domain.level.to_s], size: "100x50")%>
                   </div>
                   <%# belt levelname %>
                   <div <%  if ['Géométrie', 'Grandeurs et Mesures'].include?(work_plan_domain.domain) then%> style = 'visibility: hidden'<%end%>>
@@ -69,7 +69,6 @@
                     <%# loop for each skills %>
                     <div class='a-skill'>
                       <div class='border-skill'>
-
                         <symbol ><%=cl_image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1659600792/ensemble/#{plan_skill.skill.symbol_img_name}", size: "10x10")%></symbol>
                         <%= plan_skill.skill.name%>
                       </div>

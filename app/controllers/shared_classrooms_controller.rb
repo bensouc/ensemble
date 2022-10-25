@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class SharedClassroomsController < ApplicationController
   def create
     @teachers_ids = set_shared_classroom_teacher_params.reject(&:blank?)
@@ -6,7 +7,7 @@ class SharedClassroomsController < ApplicationController
     teachers.each do |teacher|
       shared_classroom = SharedClassroom.new(
         user_id: teacher.id,
-        classroom: classroom,
+        classroom: classroom
       )
       next if shared_classroom.save
 
