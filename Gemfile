@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '2.7.4'
+# ruby '2.7.4'
+ruby '3.1.2'
 
 # gem  'nokogiri', '1.12.5'
 
@@ -29,6 +30,10 @@ gem 'image_processing', '~> 1.2'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
+
+# force psych version for ruby 3.1.2 migration
+gem "psych", "< 4"
+
 
 # add sweet alert
 gem 'devise'
@@ -97,6 +102,11 @@ group :test do
   gem 'selenium-webdriver'
   # Easy installation and use of web drivers to run system tests with browsers
   gem 'webdrivers'
+
+  # to resolve rspec issues since migrating to ruby 3.1.2
+gem "net-smtp", require: false
+gem "net-imap", require: false
+gem "net-pop", require: false
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem

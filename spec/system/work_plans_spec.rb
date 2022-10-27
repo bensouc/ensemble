@@ -1,9 +1,10 @@
 require "rails_helper"
-
+# to run rspec
+# bundle exec rspec./ spec / system / work_plans_spec.rb
 RSpec.describe "Workplans", type: :system do
   before do
     driven_by(:rack_test)
-    Rails.application.load_seed
+    # Rails.application.load_seed
     login_as(User.first)
   end
 
