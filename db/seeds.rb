@@ -35,7 +35,7 @@ puts "=========================================="
 
 # creatings students
 student_1 = Student.create(first_name: "first_name 1", classroom: c1)
-student_1.1 = Student.create(first_name: "first_name 1.1", classroom: c1)
+student_1_1 = Student.create(first_name: "first_name 1.1", classroom: c1)
 student_2 = Student.create(first_name: "first_name 2", classroom: c2)
 puts "student 1 et 2 created"
 puts "=========================================="
