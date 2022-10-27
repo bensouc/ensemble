@@ -30,10 +30,14 @@ gem 'image_processing', '~> 1.2'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.2', require: false
-
+# =============== SETUP SINCE ruby 3.1.2 migration===================
 # force psych version for ruby 3.1.2 migration
 gem "psych", "< 4"
-
+# to resolve rspec issues since migrating to ruby 3.1.2
+gem "net-smtp", require: false
+gem "net-imap", require: false
+gem "net-pop", require: false
+# =============== END SETUP SINCE ruby 3.1.2 migration===================
 
 # add sweet alert
 gem 'devise'
@@ -103,10 +107,7 @@ group :test do
   # Easy installation and use of web drivers to run system tests with browsers
   gem 'webdrivers'
 
-  # to resolve rspec issues since migrating to ruby 3.1.2
-gem "net-smtp", require: false
-gem "net-imap", require: false
-gem "net-pop", require: false
+
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
