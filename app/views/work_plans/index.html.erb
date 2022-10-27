@@ -1,31 +1,35 @@
 <div class="container3" data-controller="display-right-anchor" >
   <% @my_classrooms.each do |classroom| %>
-  <div class="wp-one-classroom">
-    <h1>
-      <%= classroom.grade %>
-    </h1>
-    <%# WP assigned %>
-    <% classroom.students.order(:first_name).each do |student| %>
-    <div data-controller='wp-by-student' >
-
-      <%# START of folder + student name + student wp count %>
-      <%= render "index_wp_student_name", student: student%>
-      <% # END of folder + student name + student wp count %>
-
-      <div data-wp-by-student-target="wplist" class='list-wp-index d-none' id=<%=student.id%>>
-          <% @my_work_plans.select { |a| a.student_id == student.id }.each do |wp| %>
-          <%= render "index_wp_line", wp: wp %>
+    <div class="wp-one-classroom">
+      <h1 >
+        <%= "#{classroom.grade.upcase} "%>
+        <p class='ms-2'><%= classroom.name.nil? ? "" : "#{" - "} #{classroom.name}" %></p>
+        <div class="sharing-details">
+          <% if classroom.user != current_user%>
+            <h6>Classe Partagée par <%= classroom.user.first_name.capitalize  %>  </h6>
           <% end %>
+        </div>
+      </h1>
+      <%# WP assigned %>
+      <% classroom.students.order(:first_name).each do |student| %>
+        <div data-controller='wp-by-student' >
+          <%# START of folder + student name + student wp count %>
+          <%= render "index_wp_student_name", student: student%>
+          <% # END of folder + student name + student wp count %>
+          <div data-wp-by-student-target="wplist" class='list-wp-index d-none' id=<%=student.id%>>
+            <% @my_work_plans.select { |a| a.student_id == student.id }.each do |wp| %>
+              <%= render "index_wp_line", wp: wp %>
+            <% end %>
           </div>
-      </div>
-    <% end %>
+        </div>
+      <% end %>
     </div>
   <% end %>
-    <%# WP unassigned %>
-    <% if @my_work_plans_unassigned.count > 0%>
-      <div data-controller="wplistunsigned" class=''>
-        <%=render 'index_unassigned_wp_list'%>
-      </div>
-    <% end %>
+  <%# WP unassigned %>
+  <% if @my_work_plans_unassigned.count > 0%>
+    <div data-controller="wplistunsigned" class=''>
+      <%=render 'index_unassigned_wp_list'%>
+    </div>
+  <% end %>
   <%# end classroom loop => class wp-one-classroom %>
 </div>
