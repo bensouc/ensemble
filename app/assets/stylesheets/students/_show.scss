@@ -79,8 +79,12 @@ position: relative;
     right: 2px;
     border-radius: 50%;
   i {
-    color: #008033cb;
+    color: #00803379;
+
     font-size: 1.5rem;
+  }
+  i:hover{
+    color: #008033cb;
   }
 
   button {

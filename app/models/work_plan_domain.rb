@@ -30,8 +30,9 @@ class WorkPlanDomain < ApplicationRecord
   DOMAINS_SPECIALS = ["Géométrie", "Grandeurs et Mesures"].freeze
 
   belongs_to :work_plan
-  belongs_to :student, optional: true
+  # belongs_to :student, optional: true
 
+  has_one :student, through: :work_plan
   has_many :work_plan_skills, dependent: :destroy
   accepts_nested_attributes_for :work_plan_skills
 

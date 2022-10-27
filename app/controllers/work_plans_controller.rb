@@ -144,15 +144,15 @@ class WorkPlansController < ApplicationController
     @work_plan.start_date = temp_wp.start_date
     @work_plan.end_date = temp_wp.end_date
     @work_plan.student = temp_wp.student
-    # update all domains and workplanskill students
-    @work_plan.work_plan_domains.each do |domain|
-      domain.student = temp_wp.student
-      domain.save
-      domain.work_plan_skills.each do |wps|
-        wps.student = temp_wp.student
-        wps.save
-      end
-    end
+    # NO more needs of it update all domains and workplanskill students
+    # @work_plan.work_plan_domains.each do |domain|
+    #   # domain.student = temp_wp.student
+    #   domain.save
+    #   domain.work_plan_skills.each do |wps|
+    #     wps.student = temp_wp.student
+    #     wps.save
+    #   end
+    # end
     if @work_plan.save
       redirect_to work_plan_path(@work_plan)
     else
@@ -189,7 +189,7 @@ class WorkPlansController < ApplicationController
       # level = Belt.student_last_belt_level(@student, domain)
       wpd = WorkPlanDomain.create(domain: domain,
                                   level: Belt.student_last_belt_level(@student, domain),
-                                  student: @student,
+                                  # student: @student,
                                   work_plan: @work_plan)
 
       if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @work_plan.grade != "CM2"
@@ -204,9 +204,9 @@ class WorkPlansController < ApplicationController
           # raise
           new_wps = WorkPlanSkill.new(
             skill: skill,
-            student: @student,
+            # student: @student,
             work_plan_domain: wpd,
-            kind: "exercice",
+            kind: "exercice"
           )
           if last_wps.nil?
             # create a new wps with same kind and
@@ -293,7 +293,7 @@ class WorkPlansController < ApplicationController
   ###################### Subfonctions ##################
   def copy_domain(domain, work_plan, new_wp)
     new_wp_domain = domain.dup
-    new_wp_domain.student = new_wp.student
+    # new_wp_domain.student = new_wp.student
     new_wp_domain.work_plan = new_wp
     new_wp_domain.save
     work_plan_skills = WorkPlanSkill.where(work_plan_domain_id: domain)
