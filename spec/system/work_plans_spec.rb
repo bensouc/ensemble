@@ -8,10 +8,20 @@ RSpec.describe "Workplans", type: :system do
     login_as(User.first)
   end
 
-  it "load the Workplan index for a user" do
+  it "load the Workplan show for a user" do
     wp = WorkPlan.last
     # p wp
     visit work_plan_path(wp.id)
     expect(page).to have_content(wp.name)
   end
+
+
+  it "can clone an existing workplan" do
+    wp = WorkPlan.last
+    count = WorkPlan.all.count
+    post work_plan_clone_path(wp.id)
+    expect(WorkPlan.all.count).to eq(count + 1)
+  end
+
+
 end
