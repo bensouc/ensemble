@@ -225,6 +225,7 @@ GEM
       nested_form (~> 0.3)
       rails (>= 6.0, < 8)
       turbo-rails (~> 1.0)
+    rails_admin-i18n (1.18.0)
     railties (6.0.4.1)
       actionpack (= 6.0.4.1)
       activesupport (= 6.0.4.1)
@@ -389,6 +390,7 @@ DEPENDENCIES
   rails (~> 6.0.4, >= 6.0.4.1)
   rails-i18n
   rails_admin (>= 3.0.0.rc2, < 4)
+  rails_admin-i18n
   redis (~> 4.0)
   rspec-rails
   rubocop-rails
