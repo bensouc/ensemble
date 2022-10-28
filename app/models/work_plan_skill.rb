@@ -26,8 +26,8 @@ class WorkPlanSkill < ApplicationRecord
     out.last(3)
   end
 
-  def self.last_wps(student, skill_id)
-    WorkPlanSkill.where(skill_id: skill_id).select{|s| s.student == student}.last
+  def self.last_wps(student, skill)
+    WorkPlanSkill.where(skill: skill).select{ |s| s.student == student }.max_by(&:created_at)
 
   end
 
