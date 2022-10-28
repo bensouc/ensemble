@@ -16,7 +16,7 @@ class StudentsController < ApplicationController
     Skill.where(grade: @student_grade).each do |skill|
       @all_skills << {
         skill: skill,
-        last_wps: WorkPlanSkill.last_wps(@student, skill.id)
+        last_wps: WorkPlanSkill.last_wps(@student, skill)
       }
     end
     # retrive all student belts
