@@ -3,7 +3,7 @@
 class WorkPlanSkillsController < ApplicationController
   def create
     @work_plan_skill = WorkPlanSkill.new(set_params_wpskill)
-    @work_plan_skill.student = @work_plan_skill.work_plan_domain.work_plan.student
+    # @work_plan_skill.student = @work_plan_skill.work_plan_domain.work_plan.student
     challenges = Challenge.where(skill_id: @work_plan_skill.skill)
     if @work_plan_skill.kind.downcase == "exercice"
       if challenges == []
@@ -56,7 +56,7 @@ class WorkPlanSkillsController < ApplicationController
         student_id: @work_plan_skill.student.id,
         domain: @work_plan_skill.work_plan_domain.domain,
         grade: @work_plan.grade,
-        level: @work_plan_skill.work_plan_domain.level,
+        level: @work_plan_skill.work_plan_domain.level
       }
     )
     # add test if (@work_plan_skill.kind == 'ceinture' && @work_plan_skill.status)
@@ -93,7 +93,7 @@ class WorkPlanSkillsController < ApplicationController
       work_plan_domain_id: params.require(:work_plan_domain_id),
       skill_id: params.require(:skill).to_i,
       kind: params.require(:kind),
-      status: "new",
+      status: "new"
     }
   end
 

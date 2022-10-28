@@ -3,8 +3,7 @@
 class WorkPlanDomainsController < ApplicationController
   def create
     @work_plan = WorkPlan.find(params_wp_id)
-    @domain = WorkPlanDomain.new(domain: work_plan_domain_params[:domain], level: work_plan_domain_params[:level],
-                                 student: @work_plan.student)
+    @domain = WorkPlanDomain.new(domain: work_plan_domain_params[:domain], level: work_plan_domain_params[:level]) # remove, student: @work_plan.student
     kind = params.require(:kind)
     @domain.work_plan = @work_plan
     @domain.save!
@@ -20,8 +19,8 @@ class WorkPlanDomainsController < ApplicationController
         work_plan_skill = WorkPlanSkill.new(
           work_plan_domain_id: @domain.id,
           skill_id: skill.id,
-          kind: kind,
-          student: @work_plan.student
+          kind: kind
+          # REMOVE student: @work_plan.student
         )
         if kind == "exercice"
           ############### refacto START add_challenges_2_wps############

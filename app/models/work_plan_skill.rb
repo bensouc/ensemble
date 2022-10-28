@@ -4,7 +4,8 @@ class WorkPlanSkill < ApplicationRecord
   belongs_to :work_plan_domain
   belongs_to :skill
   belongs_to :challenge, optional: true
-  belongs_to :student, optional: true
+  # belongs_to :student, optional: true
+  has_one :student, through: :work_plan_domain
 
   validates :kind, presence: true, inclusion: { in: %w[jeu exercice controle ceinture] }
   validates :status, inclusion: { in: %w[redo failed redo_OK completed new] }
@@ -12,7 +13,7 @@ class WorkPlanSkill < ApplicationRecord
   def clone(_current_wp, new_wp_domain, student = nil)
     new_wps = dup
     new_wps.work_plan_domain_id = new_wp_domain.id
-    new_wps.student = student
+    # new_wps.student = student
     new_wps.status = "new"
     new_wps.completed = false
     new_wps.save
@@ -20,13 +21,14 @@ class WorkPlanSkill < ApplicationRecord
 
   def self.last_4_wps(work_plan, wps)
     # retrieve the last 4 wps for the student on this skill ids
-    out = WorkPlanSkill.where(student: work_plan.student, skill: wps.skill_id).sort_by(&:created_at).reverse
+    out = WorkPlanSkill.where(skill_id: wps.skill_id).select { |s| s.student == work_plan.student }.sort_by(&:created_at).reverse
     out.reject { |t| t == wps }
     out.last(3)
   end
 
-  def self.last_wps(student_id, skill_id)
-    WorkPlanSkill.where(skill_id: skill_id, student_id: student_id).last
+  def self.last_wps(student, skill_id)
+    WorkPlanSkill.where(skill_id: skill_id).select{|s| s.student == student}.last
+
   end
 
   def add_challenges_2_wps(current_user, _actual_challenge = nil)

@@ -16,7 +16,7 @@ class StudentsController < ApplicationController
     Skill.where(grade: @student_grade).each do |skill|
       @all_skills << {
         skill: skill,
-        last_wps: WorkPlanSkill.last_wps(@student.id, skill.id),
+        last_wps: WorkPlanSkill.last_wps(@student, skill.id)
       }
     end
     # retrive all student belts
@@ -35,7 +35,7 @@ class StudentsController < ApplicationController
   def create
     student = {
       first_name: params_student[:first_name],
-      classroom_id: params_student[:classroom].to_i,
+      classroom_id: params_student[:classroom].to_i
     }
     @student = Student.create!(student)
     redirect_to classrooms_path
