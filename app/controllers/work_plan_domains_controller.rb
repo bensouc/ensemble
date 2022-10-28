@@ -19,8 +19,8 @@ class WorkPlanDomainsController < ApplicationController
         work_plan_skill = WorkPlanSkill.new(
           work_plan_domain_id: @domain.id,
           skill_id: skill.id,
-          kind: kind,
-          # student: @work_plan.student
+          kind: kind
+          # REMOVE student: @work_plan.student
         )
         if kind == "exercice"
           ############### refacto START add_challenges_2_wps############
