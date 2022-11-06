@@ -70,9 +70,19 @@ class WorkPlansController < ApplicationController
     @shared_classrooms = current_user.shared_classrooms
     shared_classrooms = @shared_classrooms.map(&:classroom)
     @my_classrooms = (current_user.classrooms + shared_classrooms).sort_by(&:created_at)
-    @my_work_plans = WorkPlan.where(user: current_user).order(created_at: :DESC) # .sort_by(&:student)
+    shared_work_plans = []
+    shared_classrooms.each do |classroom|
+      classroom.students.each do |shared_student|
+        WorkPlan.where(student: shared_student).order(created_at: :DESC).each do |work_plan|
+          shared_work_plans << work_plan
+        end
+      end
+    end
+    @my_work_plans = WorkPlan.where(user: current_user).order(created_at: :DESC)
+    # .sort_by(&:student)
     @my_work_plans_unassigned = @my_work_plans.where(student: nil)
     @my_work_plans = @my_work_plans.where.not(student: nil).sort_by(&:student)
+    @my_work_plans += shared_work_plans
   end
 
   def eval
@@ -94,7 +104,11 @@ class WorkPlansController < ApplicationController
     @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
     @domains = @work_plan.all_domains_from_work_plan
-    @classrooms_whithout_current_student = current_user.classrooms
+    shared_classrooms = []
+    current_user.shared_classrooms.each do |sahred_classroom|
+      shared_classrooms << sahred_classroom.classroom
+    end
+    @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms
     unless @work_plan.shared_user_id.nil?
       @shared_user = User.find(@work_plan.shared_user_id)
     end
@@ -206,7 +220,7 @@ class WorkPlansController < ApplicationController
             skill: skill,
             # student: @student,
             work_plan_domain: wpd,
-            kind: "exercice"
+            kind: "exercice",
           )
 
           if last_wps.nil?
