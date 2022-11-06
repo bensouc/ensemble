@@ -4,7 +4,7 @@
   <% @my_classrooms.each do |classroom| %>
     <div class="mobile_wp_one_classroom">
       <h1>
-        <%= classroom.grade %>
+        <%= classroom.grade %> - <%= classroom.name %>
       </h1>
       <%# WP assigned %>
       <% classroom.students.order(:first_name).each do |student| %>
