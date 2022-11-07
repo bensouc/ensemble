@@ -314,7 +314,7 @@ class WorkPlansController < ApplicationController
     new_wp_domain.save
     work_plan_skills = WorkPlanSkill.where(work_plan_domain_id: domain)
     work_plan_skills.each do |wps|
-      wps.clone(work_plan, new_wp_domain, new_wp.student)
+      wps.clone(work_plan, new_wp_domain)
     end
     new_wp_domain.save
   end
