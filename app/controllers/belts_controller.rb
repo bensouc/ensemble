@@ -8,7 +8,14 @@ class BeltsController < ApplicationController
     @belt.validated_date = DateTime.now
     @belt.save
 
-redirect_to student_path(@belt.student)
+    redirect_to student_path(@belt.student)
+  end
+
+  def destroy
+    belt = Belt.find(params[:id])
+    @student = belt.student
+    belt.destroy
+    redirect_to student_path(@student)
   end
 
   private
