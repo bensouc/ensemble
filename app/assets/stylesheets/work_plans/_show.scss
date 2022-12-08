@@ -19,6 +19,13 @@
     font-family: $titres-font;
   }
 }
+
+.show-sticky-header{
+  height: 160px;
+    position: sticky;
+    top: 8px;
+    background-color: rgba(255, 255, 255, 0.876);
+}
 // modal bootstrap
 .modal-content {
   border-radius: 15px !important;
@@ -192,6 +199,9 @@
 
 .student-name {
   height: 60px;
+  // position: sticky;
+  //   top: 118px;
+  //   background-color: white;
 }
 .student_name_link {
   color: $grisF;
@@ -341,7 +351,9 @@
 }
 
 .edit-wp {
-  width: 400px;
+  // position: sticky;
+  //   top: 37px;
+  //   background-color: white;
   // form {
   //   width: auto;
   // }

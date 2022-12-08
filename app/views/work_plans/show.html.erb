@@ -4,15 +4,17 @@
   <%# la putain de div  %>
   <%# END OF cloning control panel%>
   <div class=' pt' data-controller='navigation' data-cloning-wp-target='wp'>
-    <div class='edit-wptest' data-navigation-target='wp' >
-      <div class="top-floating-btn" id='backToBottomBtn' data-action="click->navigation#backFunction">
-        <i class="fa-solid fa-circle-arrow-down"></i>
+    <div class="show-sticky-header">
+      <div class='edit-wp' data-navigation-target='wp' >
+        <div class="top-floating-btn" id='backToBottomBtn' data-action="click->navigation#backFunction">
+          <i class="fa-solid fa-circle-arrow-down"></i>
+        </div>
+        <%# header WP%>
+        <%= render 'shared_header_wp', work_plan: @work_plan%>
+        <%# Student details %>
       </div>
-      <%# header WP%>
-      <%= render 'shared_header_wp', work_plan: @work_plan%>
-      <%# Student details %>
+      <%= render 'show_student_details', work_plan: @work_plan%>
     </div>
-    <%= render 'show_student_details', work_plan: @work_plan%>
     <%# Start of a domain %>
     <div>
       <%= render 'show_work_plan_domains', work_plan: @work_plan%>
