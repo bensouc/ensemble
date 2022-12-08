@@ -1,3 +1,10 @@
+.student-sticky-header{
+  position: sticky;
+    top: 9px;
+    background-color: #ffffffef;
+    z-index: 1;
+}
+
 // display date and student name
 .prog-name {
   height: 74px;
