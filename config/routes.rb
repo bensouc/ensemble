@@ -39,6 +39,7 @@ Rails.application.routes.draw do
     post "", to: "work_plans#auto_new_wp", as: :auto_new_wp
   end
 
+  resources :belts, only: [:destroy]
 
   # route for tab editing
   resources :tables, only: [:show, :create, :update]
