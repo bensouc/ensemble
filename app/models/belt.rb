@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Belt < ApplicationRecord
-  
+
   BELT_COLORS = %w[blanche jaune orange verte bleue marron noire].freeze
   BELT_PNG = {
     "1" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698313/ensemble/belts/belt_1_jkd7er.png",
@@ -52,6 +52,7 @@ class Belt < ApplicationRecord
     )
     belt = Belt.find_or_create_by(args)
     belt.completed = true
+    belt.validated_date = DateTime.now
     belt.save
   end
 
