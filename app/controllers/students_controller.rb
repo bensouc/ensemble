@@ -13,10 +13,13 @@ class StudentsController < ApplicationController
     @belts_specials_count = []
     @student_grade = @student.classroom.grade
     @domains = @student.all_domains_from_student
-    Skill.where(grade: @student_grade).each do |skill|
+    @student_skills = Skill.where(grade: @student_grade)
+    all_last_wps = WorkPlanSkill.last_wps(@student, @student_skills)
+    # WorkPlanSkill.where(student: student).max_by(&:created_at)
+    @student_skills.each do |skill|
       @all_skills << {
         skill: skill,
-        last_wps: WorkPlanSkill.last_wps(@student, skill)
+        last_wps: all_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at)
       }
     end
     # retrive all student belts
@@ -35,7 +38,7 @@ class StudentsController < ApplicationController
   def create
     student = {
       first_name: params_student[:first_name],
-      classroom_id: params_student[:classroom].to_i
+      classroom_id: params_student[:classroom].to_i,
     }
     @student = Student.create!(student)
     redirect_to classrooms_path

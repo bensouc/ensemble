@@ -44,7 +44,7 @@
     <% @domains.each do |domain| %>
       <div class="domain-main-col">
         <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
-          <%belt = @belts.where(domain: domain, level: level).last%>
+          <%belt = @belts.select{|belt| belt.domain == domain && belt.level== level}.last%>
           <% if !belt.nil? && belt != [] && belt.completed? %>
             <div class="domain-col cells-student mb-2">
               <%= render "resultat_belt", level: level, domain: domain , belt: belt%>

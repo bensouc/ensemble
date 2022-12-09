@@ -17,4 +17,5 @@ class Student < ApplicationRecord
   def all_domains_from_student
     WorkPlanDomain::DOMAINS.select { |d| d[:grade] == classroom.grade }.first[:domains]
   end
+
 end
