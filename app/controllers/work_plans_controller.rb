@@ -67,8 +67,10 @@ class WorkPlansController < ApplicationController
   end
 
   def index
-    @shared_classrooms = current_user.shared_classrooms
-    shared_classrooms = @shared_classrooms.map(&:classroom)
+    # @shared_classrooms = current_user.shared_classrooms
+    # shared_classrooms = @shared_classrooms.map(&:classroom)
+    shared_classrooms = current_user.user_shared_classrooms
+
     @my_classrooms = (current_user.classrooms + shared_classrooms).sort_by(&:created_at)
     shared_work_plans = []
     shared_classrooms.each do |classroom|
@@ -80,8 +82,8 @@ class WorkPlansController < ApplicationController
     end
     @my_work_plans = WorkPlan.where(user: current_user).order(created_at: :DESC)
     # .sort_by(&:student)
-    @my_work_plans_unassigned = @my_work_plans.where(student: nil)
-    @my_work_plans = @my_work_plans.where.not(student: nil).sort_by(&:student)
+    @my_work_plans_unassigned = @my_work_plans.select { |my_work_plan| my_work_plan.student.nil? }
+    @my_work_plans = @my_work_plans.reject{ |my_work_plan| my_work_plan.student.nil? }.sort_by(&:student)
     @my_work_plans += shared_work_plans
   end
 
@@ -102,12 +104,13 @@ class WorkPlansController < ApplicationController
 
   def show
     @belt = Belt::BELT_COLORS
-    @work_plan = WorkPlan.find(params[:id])
+    @work_plan = WorkPlan.includes([:work_plan_domains]).find(params[:id])
     @domains = @work_plan.all_domains_from_work_plan
-    shared_classrooms = []
-    current_user.shared_classrooms.each do |sahred_classroom|
-      shared_classrooms << sahred_classroom.classroom
-    end
+    shared_classrooms = current_user.user_shared_classrooms
+    # shared_classrooms = []
+    # current_user.shared_classrooms.each do |sahred_classroom|
+    #   shared_classrooms << sahred_classroom.classroom
+    # end
     @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms
     unless @work_plan.shared_user_id.nil?
       @shared_user = User.find(@work_plan.shared_user_id)
