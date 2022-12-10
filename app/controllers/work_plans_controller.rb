@@ -226,7 +226,7 @@ class WorkPlansController < ApplicationController
             kind: "exercice",
           )
 
-          if last_wps.nil?
+          if last_wps.empty? 
             # create a new wps with same kind and
             new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
             new_wps.save
