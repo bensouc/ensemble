@@ -11,7 +11,7 @@
         <% end %>
       </div>
       <%= link_to student_path(student) do %>
-        <h1 class='ms-3'>
+        <h1 class='ms-3' data-action='click->loadingspinnermgnt#displaySpinner'>
           <%= student.first_name %>
         </h1>
       <% end %>
