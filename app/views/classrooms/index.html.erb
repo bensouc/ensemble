@@ -1,22 +1,22 @@
-<% if @classrooms.empty?%>
-  <h1>Ouups, Vous n'avez pas de Classe.</h1>
-  <h1> Créez en une !</h1>
-<% else %>
-  <% if @classrooms.count == 1 %>
-    <h1>Ma Classe</h1>
+<div data-controller="loadingspinnermgnt">
+  <% if @classrooms.empty?%>
+    <h1>Ouups, Vous n'avez pas de Classe.</h1>
+    <h1> Créez en une !</h1>
   <% else %>
-    <h1>Mes Classes</h1>
-  <% end %>
-
+    <% if @classrooms.count == 1 %>
+      <h1>Ma Classe</h1>
+    <% else %>
+      <h1>Mes Classes</h1>
+    <% end %>
     <%= render 'classrooms' %>
- 
-<% end %>
-<%# Classroom Creation %>
-<div class="classroom-creation" data-controller='create-classroom'>
-  <button class="validate-btn" data-action='click->create-classroom#displayForm' data-create-classroom-target='button'>
-    Créer une classe
-  </button>
-  <div class="classroom-form d-none" data-create-classroom-target='form'>
-    <%= render 'form' %>
+  <% end %>
+  <%# Classroom Creation %>
+  <div class="classroom-creation" data-controller='create-classroom'>
+    <button class="validate-btn" data-action='click->create-classroom#displayForm' data-create-classroom-target='button'>
+      Créer une classe
+    </button>
+    <div class="classroom-form d-none" data-create-classroom-target='form'>
+      <%= render 'form' %>
+    </div>
   </div>
 </div>

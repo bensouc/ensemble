@@ -82,6 +82,7 @@ gem "mobile"
 # end
 
 group :development, :test do
+  gem "bullet"
   gem 'pry-byebug'
   gem 'pry-rails'
   gem 'dotenv-rails'
