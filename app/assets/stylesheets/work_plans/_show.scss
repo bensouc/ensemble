@@ -21,10 +21,11 @@
 }
 
 .show-sticky-header{
-  height: 160px;
-    position: sticky;
-    top: 8px;
-    background-color: rgba(255, 255, 255, 0.876);
+  width: 996px;
+    height: 143px;
+    top: 73px;
+    position: fixed;
+    background-color: rgb(255, 255, 255);
 }
 // modal bootstrap
 .modal-content {
