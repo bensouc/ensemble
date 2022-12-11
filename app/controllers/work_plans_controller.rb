@@ -217,7 +217,7 @@ class WorkPlansController < ApplicationController
         Skill.where(domain: domain, level: wpd.level, grade: @student.classroom.grade).each do |skill|
           # Loop on skills 4 domain grade level
           # get last wps
-          last_wps = WorkPlanSkill.last_wps(@student, skill)
+          last_wps = WorkPlanSkill.last_wps(@student, skill).first
           # raise
           new_wps = WorkPlanSkill.new(
             skill: skill,
@@ -226,7 +226,7 @@ class WorkPlansController < ApplicationController
             kind: "exercice",
           )
 
-          if last_wps.empty? 
+          if last_wps.nil?
             # create a new wps with same kind and
             new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
             new_wps.save

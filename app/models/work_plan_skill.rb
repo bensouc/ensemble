@@ -29,8 +29,8 @@ class WorkPlanSkill < ApplicationRecord
   def self.last_wps(student, skills)
     # WorkPlanSkill.where(skill: skill).select{ |s| s.student == student }.max_by(&:created_at)
 
-    WorkPlanSkill.includes([:skill, :work_plan_domain,:student]).where(skill: skills, student: student)
-    #  wps.select { |wps| wps.student == student }
+    wpss = WorkPlanSkill.includes([:skill, :work_plan_domain,:student]).where(skill: skills)
+    wpss.select { |wps| wps.student == student }
     #  je cherche pour une skill le dernier w
   end
 
