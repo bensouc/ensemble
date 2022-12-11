@@ -26,5 +26,8 @@
       <% end %>
     </div>
   </div>
+  <%# WP SHOW MODALS %>
   <%= render 'show_wp_edit_modal', work_plan: @work_plan%>
+  <%= render 'show_wp_sharing_modal', work_plan: @work_plan, teachers: @teachers %>
+  <%# END WP SHOW MODALS %>
 </div>

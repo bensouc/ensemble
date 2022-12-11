@@ -1,0 +1,27 @@
+<!-- Sharing Modal -->
+<div class="modal fade" id="sharingModal" tabindex="-1" aria-labelledby="sharingModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="sharingModalLabel">Partager avec </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <%= simple_form_for (work_plan), html: { novalidate: false }, method: "post" do |f|%>
+        <div class="modal-body">
+          <%=f.input :shared_user_id, label: false, required: true,
+                              collection: teachers,
+                              label_method: :first_name,
+                              # value_method: :id,
+                              input_html: {class: 'area add-teacher me-5'}
+                                %>
+        </div>
+        <div class="modal-footer">
+          <%= f.submit "partager", class: "utility-wp-btn" %>
+          <%# <%= link_to work_plan_path(@work_plan,shared_to: current_user.id), class: "utility-wp-btn", method: "post" do %>
+            <%# <h6>Partager</h6> %>
+            <%# <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
