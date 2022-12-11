@@ -23,9 +23,10 @@
 .show-sticky-header{
   width: 996px;
     height: 143px;
-    top: 73px;
-    position: fixed;
+    top: 8px;
+    position: sticky;
     background-color: rgb(255, 255, 255);
+    z-index: 1
 }
 // modal bootstrap
 .modal-content {
