@@ -14,6 +14,7 @@ class StudentsController < ApplicationController
     @student_grade = @student.classroom.grade
     @domains = @student.all_domains_from_student
     @student_skills = Skill.where(grade: @student_grade)
+    @belts = Belt.where(student: @student, completed: true)
     all_last_wps = WorkPlanSkill.last_wps(@student, @student_skills)
     # WorkPlanSkill.where(student: student).max_by(&:created_at)
     @student_skills.each do |skill|
@@ -23,12 +24,12 @@ class StudentsController < ApplicationController
       }
     end
     # retrive all student belts
-    @belts = Belt.where(student: @student, grade: @student_grade)
     # cleaning the useless lastwps (eg: special domain, remove the amount)
     unless @student_grade == "CM2"
       WorkPlanDomain::DOMAINS_SPECIALS.each do |domain|
-        count = @belts.where(domain: domain, completed: true).count
-        unless @belts.where(domain: domain).empty? || count.zero?
+        special_belt = @belts.select { |belt| belt.domain == domain }
+        count = special_belt.count
+        unless special_belt.empty? || count.zero?
           @all_skills = wps_cleaned_belt(@all_skills, domain, count, @student_grade)
         end
       end

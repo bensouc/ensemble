@@ -6,7 +6,8 @@
   <div class="display-last-wps ">
     <%# test if level 1 or if level +1 above the higher belt %>
     <%= render "shared/validate_belt_btn", level: level, domain: domain%>
-    <% if (level == 1 || !@belts.select{|belt| belt.domain == domain && belt.completed}.last.nil? && (level == (@belts.where(domain: domain, completed: true).last.level + 1 ) )) %>
+    <% last_belt =  @belts.select{|belt| belt.domain == domain }.last%>
+    <% if (level == 1 || !last_belt.nil? && (level == last_belt.level + 1 ) ) %>
       <%skills.sort_by(&:id).each do |skill|%>
         <%wps= @all_skills.select {|f| f[:skill]==skill && !f[:last_wps].nil?} %>
         <% wps = wps.first[:last_wps] if wps != []%>

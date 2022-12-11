@@ -189,8 +189,12 @@
     left: 42px;
     color: red;
   }
-
+  .delete-btn :hover {
+    transform: scale(1.1);
+    transition: 0.1s;
+  }
 }
+
 .bar-style {
   height: 66px;
   // background-color: white;
