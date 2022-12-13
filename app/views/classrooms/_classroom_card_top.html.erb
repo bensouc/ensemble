@@ -10,7 +10,7 @@
           </div>
         <% end %>
       <% elsif classroom.user != current_user %>
-        <%= link_to  classroom_shared_classroom_path(classroom,shared_classroom.ids.first), method: :delete, data: {
+        <%= link_to  classroom_shared_classroom_path(classroom,shared_classroom.id), method: :delete, data: {
         confirm: "Voulez vous vraimment Supprimer Cette classe partagée?",
         } do %>
           <div class='rmv-skill-btn white'>
