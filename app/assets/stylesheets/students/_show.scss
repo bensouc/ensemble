@@ -52,7 +52,7 @@
 }
 
 .results {
-  margin: 0 15px 20px 15px;
+  margin: 10px 15px 20px 15px;
 }
 // .results-header {
 // }
@@ -178,7 +178,7 @@
   // width: 87px;
   height: 110px;
   padding: 5px;
-  box-shadow: 0px 0px 17px 2px rgba(209, 208, 208, 0.541);
+  // box-shadow: 0px 0px 17px 2px rgba(209, 208, 208, 0.541);
   border-radius: 15px;
   // border-top: thin solid $grisC;
   color: $gray;
@@ -208,6 +208,7 @@
 
 /*This css will only works when you print*/
 @media print {
+
   .navgauche,
   .navhaut,
   .footer,
@@ -223,13 +224,12 @@
   .contenu {
     margin-left: 0;
   }
-
-  .belt-name h6 {
-    font-size: 10px !important;
-    word-break: break-word !important;
-  }
   .student-sticky-header {
   }
+  body{
+    -webkit-print-color-adjust:exact;
+  }
+
 }
 
 /*END OF This css will only works when you print*/
