@@ -1,11 +1,7 @@
 <div class='container container-dashboard d-flex flex-column justify-content-space-around' >
   <div class="com">
-    <div class='info-btn' data-controller='show-com' data-action="click->show-com#displayCom" >
-        <% if (Time.now.to_date - Date.new(2022,12,17)).negative?  %>
-        Allez courage plus que <%= -(Time.now.to_date - Date.new(2022,12,17)).round %> Jours avant les VACANCES!!!
-        <% else %>
-        VACANCES de Fin d'année!!!!!!!
-        <% end %>
+    <div class='info-btn' data-controller='show-com' data-action="click->show-com#" >
+        Bonne Année 2023 !!
     </div>
   </div>
   <div class=" d-flex flex-row justify-content-center dashboardTop">
