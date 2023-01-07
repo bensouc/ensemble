@@ -9,7 +9,7 @@ class WorkPlanDomain < ApplicationRecord
     },
     {
       grade: "CE2",
-      domains: ["Conjugaison", "Vocabulaire", "Orthographe", "Grammaire", "Géométrie", "Grandeurs et Mesures",
+      domains: ["Conjugaison", "Vocabulaire", "Grammaire", "Géométrie", "Grandeurs et Mesures",
                 "Numération", "Calcul"]
     },
     {
