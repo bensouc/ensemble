@@ -1,4 +1,5 @@
-<div class=' pt ' data-controller='navigation'>
+<div class=' pt ' data-controller='navigation loadingspinnermgnt
+'>
   <div class='eval-sticky-header' data-navigation-target='wp' >
     <div class="top-floating-btn" id='backToBottomBtn' data-action="click->navigation#backFunction">
       <i class="fa-solid fa-circle-arrow-down"></i>
@@ -8,7 +9,7 @@
     <% # Student details %>
     <div class='student-name d-flex justify-content-between'>
       <% unless @work_plan.student.nil? %>
-        <%= link_to student_path(@work_plan.student),  class: 'student_name_link' do%>
+        <%= link_to student_path(@work_plan.student),  class: 'student_name_link',data:{action: "click->loadingspinnermgnt#displaySpinner"} do%>
           <h2><strong><%= @work_plan.student.first_name %></strong></h2>
         <% end %>
       <% end %>
