@@ -225,7 +225,6 @@ class WorkPlansController < ApplicationController
             work_plan_domain: wpd,
             kind: "exercice"
           )
-          # raise
           if last_wps.nil?
             # create a new wps with same kind and
             new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
@@ -259,7 +258,7 @@ class WorkPlansController < ApplicationController
         end
       end
     end
-    
+
     if @work_plan.save
       redirect_to work_plan_path(@work_plan)
     else

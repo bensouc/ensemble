@@ -5,7 +5,7 @@
       <%# data-action="mouseover->wps-result#displayName mouseout->wps-result#hideName"
   data: {action:"click->new-domain#displayBelt"}  %>
       <%= link_to student_path(work_plan.student), class: 'student_name_link',
-     data:{action: "mouseover->wps-result#displayName mouseout->wps-result#hideName"}  do%>
+     data:{action: "mouseover->wps-result#displayName mouseout->wps-result#hideName click->loadingspinnermgnt#displaySpinner"}  do%>
         <h2><strong><%= work_plan.student.first_name %></strong></h2>
       <% end %>
       <div class="link_details d-none", data-wps-result-target= 'name'}>
@@ -19,24 +19,24 @@
       <button type="" class="utility-wp-btn" data-bs-toggle="modal" data-bs-target="#sharingModal">
         Partager
       </button>
-        <%# <% if current_user.admin %>
-        <% unless work_plan.student.nil? %>
-          <%= link_to eval_path(@work_plan), class: "utility-wp-btn" do %>
-            <h6>Correction</h6>
-          <% end %>
+      <%# <% if current_user.admin %>
+      <% unless work_plan.student.nil? %>
+        <%= link_to eval_path(@work_plan), class: "utility-wp-btn",data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+          <h6>Correction</h6>
         <% end %>
-        <%# end %>
-        <%= link_to work_plan_path(@work_plan, format: :pdf), class: "utility-wp-btn" do %>
-          <h6>Export PDF</h6>
-        <% end %>
-        <div class= "utility-wp-btn" data-action="click->cloning-wp#displayCloningForm">
-          <h6>Cloner</h6>
-        </div>
-      </div>
-      <%unless work_plan.shared_user_id.nil?%>
-        <div class='d-flex  justify-content-end'>
-          <h6 class='shared-by'>Partagé par <%= @shared_user.first_name.capitalize %> </h6>
-        </div>
       <% end %>
+      <%# end %>
+      <%= link_to work_plan_path(@work_plan, format: :pdf), class: "utility-wp-btn" do %>
+        <h6>Export PDF</h6>
+      <% end %>
+      <div class= "utility-wp-btn" data-action="click->cloning-wp#displayCloningForm">
+        <h6>Cloner</h6>
+      </div>
     </div>
+    <%unless work_plan.shared_user_id.nil?%>
+      <div class='d-flex  justify-content-end'>
+        <h6 class='shared-by'>Partagé par <%= @shared_user.first_name.capitalize %> </h6>
+      </div>
+    <% end %>
   </div>
+</div>
