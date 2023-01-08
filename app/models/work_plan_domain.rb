@@ -52,7 +52,7 @@ class WorkPlanDomain < ApplicationRecord
     student = work_plan.student
     self.completed = all_domain_skills.all? do |skill|
       # test if wps is completed
-      WorkPlanSkill.last_wps(student, skill).completed
+      WorkPlanSkill.last_wps(student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at).completed
     end
     save
     completed

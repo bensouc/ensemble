@@ -217,21 +217,22 @@ class WorkPlansController < ApplicationController
         Skill.where(domain: domain, level: wpd.level, grade: @student.classroom.grade).each do |skill|
           # Loop on skills 4 domain grade level
           # get last wps
-          last_wps = WorkPlanSkill.last_wps(@student, skill).first
+          last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
           # raise
           new_wps = WorkPlanSkill.new(
             skill: skill,
             # student: @student,
             work_plan_domain: wpd,
-            kind: "exercice",
+            kind: "exercice"
           )
-
+          # raise
           if last_wps.nil?
             # create a new wps with same kind and
             new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
             new_wps.save
             # if last wps is completed
           elsif last_wps.status == "completed"
+
             case last_wps.kind
             when "jeu"
               new_wps[:kind] = "exercice"
@@ -242,7 +243,7 @@ class WorkPlansController < ApplicationController
               new_wps.save
             end
             # sinon redo failed redo_OK new => a wps with same kind with new status
-
+            # raise
           elsif %w[redo failed redo_OK new].include?(last_wps.status)
             new_wps[:kind] = last_wps.kind
             if last_wps.kind == "ceinture"
@@ -258,6 +259,7 @@ class WorkPlansController < ApplicationController
         end
       end
     end
+    
     if @work_plan.save
       redirect_to work_plan_path(@work_plan)
     else
