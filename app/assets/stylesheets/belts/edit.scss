@@ -34,6 +34,7 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
+  gap:20px;
   border-left: thin solid $grisC;
   border-right: thin solid $grisC;
   .area {
