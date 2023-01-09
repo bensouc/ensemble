@@ -1,24 +1,30 @@
+.border-round-rose {
+  padding: 2px;
+}
 .belt-edit-header-1 {
-  background-color: $roseL;
+  background-color: $grisC;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
   // border: thin solid $roseL;
   padding: 15px 20px 5px 20px;
-  border-radius: 15px 15px 0 0;
-  h1 {
-    color: white;
+
+  h2 {
+    color: black;
+  }
+  h4 {
+    font-style: italic;
   }
 }
-.belt-edit-header-2{
-  border-top: thin solid $roseL ;
-}
 .belt-edit-header-3 {
-  // border: thin solid $roseL;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
   background-color: $roseL;
   padding: 15px 20px 5px 20px;
-  border-radius: 0 0 15px 15px ;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  h2, h1 {
+  h2,
+  h1 {
     color: white;
   }
 }
@@ -27,28 +33,30 @@
   padding: 15px 30px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
+  border-left: thin solid $grisC;
+  border-right: thin solid $grisC;
   .area {
     width: 13ch;
-    font-size: 18px ;
+    font-size: 18px;
   }
   .btn-valid {
     border: solid $green;
     color: white;
     background-color: $green;
     border-radius: 12px;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     transition: 0.3s;
-    &:hover{
-    border: solid $green;
-    color: $green;
-    background-color: white;
+    &:hover {
+      border: solid $green;
+      color: $green;
+      background-color: white;
     }
   }
 }
-.delete-belt-btn{
-  &:hover{
+.delete-belt-btn {
+  &:hover {
     transform: scale(1.1);
     transition: 0.5s;
   }
