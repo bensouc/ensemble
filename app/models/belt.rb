@@ -19,6 +19,10 @@ class Belt < ApplicationRecord
     completed
   end
 
+  def all_skills
+    Skill.where(level: , grade: , domain:)
+  end
+
   # def self.update_or_create_by(args, completed)
   #   obj = self.find_or_create_by(args)
   #   obj.update(completed)

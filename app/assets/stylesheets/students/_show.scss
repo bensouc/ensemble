@@ -79,6 +79,31 @@
   width: 100px;
   border-bottom: thin solid $grisC;
   margin: 0 5px;
+  .delete-btn {
+    position: relative;
+    top: -20px;
+    left: 56px;
+    font-size: larger;
+    color: rgba(255, 0, 0, 0.728);
+    &:hover {
+      transform: scale(1.1);
+      transition: 0.1s;
+      color: red;
+    }
+  }
+  .edit-btn {
+    z-index:1;
+    position: relative;
+    left: 31px;
+    top: -120px !important;
+    font-size: larger;
+    color: #008033cb !important;
+    &:hover {
+      transform: scale(1.1);
+      transition: 0.1s;
+      color: #008033 !important;
+    }
+  }
 }
 .validate-belt-btn {
   position: relative;
@@ -182,17 +207,6 @@
   border-radius: 15px;
   // border-top: thin solid $grisC;
   color: $gray;
-  .delete-btn {
-    position: relative;
-    top: -112px;
-    font-size: larger;
-    left: 42px;
-    color: red;
-  }
-  .delete-btn :hover {
-    transform: scale(1.1);
-    transition: 0.1s;
-  }
 }
 
 .bar-style {
@@ -208,13 +222,13 @@
 
 /*This css will only works when you print*/
 @media print {
-
   .navgauche,
   .navhaut,
   .footer,
   .scroll-progress,
   i.printer-logo,
   .delete-btn,
+  .edit-btn,
   .validate-belt-btn {
     display: none;
   }
@@ -226,10 +240,9 @@
   }
   .student-sticky-header {
   }
-  body{
-    -webkit-print-color-adjust:exact;
+  body {
+    -webkit-print-color-adjust: exact;
   }
-
 }
 
 /*END OF This css will only works when you print*/

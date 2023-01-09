@@ -161,15 +161,7 @@ class WorkPlansController < ApplicationController
     @work_plan.start_date = temp_wp.start_date
     @work_plan.end_date = temp_wp.end_date
     @work_plan.student = temp_wp.student
-    # NO more needs of it update all domains and workplanskill students
-    # @work_plan.work_plan_domains.each do |domain|
-    #   # domain.student = temp_wp.student
-    #   domain.save
-    #   domain.work_plan_skills.each do |wps|
-    #     wps.student = temp_wp.student
-    #     wps.save
-    #   end
-    # end
+
     if @work_plan.save
       redirect_to work_plan_path(@work_plan)
     else

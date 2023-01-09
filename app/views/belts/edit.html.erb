@@ -1,0 +1,30 @@
+<%= link_to "Retour Avancement", student_path(@belt.student),
+data:{controller: 'loadingspinnermgnt',
+action: "click->loadingspinnermgnt#displaySpinner"}
+  %>
+<div class="border-round-rose" data-controller="loadingspinnermgnt">
+  <%= simple_form_for @belt, html: { novalidate: false } do |f| %>
+    <div class="belt-edit-header-1">
+      <h2>Ceinture <%= "#{@belt.domain.capitalize} - #{Belt::BELT_COLORS[@belt.level-1].capitalize}" %></h2>
+    <h4><%= "#{@belt.student.first_name.capitalize}" %></h4>
+    </div>
+    <div class="date-selection">
+    <p>Obtenue le</p>
+      <%= f.input :validated_date, as: :string, label: false,
+                                          required: :true,
+                                          input_html: {class: 'datepicker area ',
+                                            locale: "fr",
+                                            value: @belt.validated_date.strftime("%d/%m/%Y")
+                                            }%>
+      <%= f.submit "Valider", class: 'area rect-sm btn-valid',data:{action: "click->loadingspinnermgnt#displaySpinner"} %>
+    </div>
+  <% end %>
+  <div class="belt-edit-header-3">
+    <h2>Supprimer la Ceinture</h2>
+    <%= link_to belt_path(@belt),method: :delete,class: 'delete-belt-btn',
+                              data:{confirm:"Voulez vous Supprimer Cette Ceinture?"} do %>
+      <h1><i class="fa-solid fa-trash"></i>
+      </h1>
+    <% end %>
+  </div>
+</div>
