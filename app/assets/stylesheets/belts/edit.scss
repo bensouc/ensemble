@@ -1,0 +1,55 @@
+.belt-edit-header-1 {
+  background-color: $roseL;
+  // border: thin solid $roseL;
+  padding: 15px 20px 5px 20px;
+  border-radius: 15px 15px 0 0;
+  h1 {
+    color: white;
+  }
+}
+.belt-edit-header-2{
+  border-top: thin solid $roseL ;
+}
+.belt-edit-header-3 {
+  // border: thin solid $roseL;
+  background-color: $roseL;
+  padding: 15px 20px 5px 20px;
+  border-radius: 0 0 15px 15px ;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  h2, h1 {
+    color: white;
+  }
+}
+
+.date-selection {
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .area {
+    width: 13ch;
+    font-size: 18px ;
+  }
+  .btn-valid {
+    border: solid $green;
+    color: white;
+    background-color: $green;
+    border-radius: 12px;
+    font-size: 24px;
+    font-weight: 600;
+    transition: 0.3s;
+    &:hover{
+    border: solid $green;
+    color: $green;
+    background-color: white;
+    }
+  }
+}
+.delete-belt-btn{
+  &:hover{
+    transform: scale(1.1);
+    transition: 0.5s;
+  }
+}

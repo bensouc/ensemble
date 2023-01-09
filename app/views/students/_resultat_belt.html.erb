@@ -5,9 +5,13 @@
   </div>
   <div class='pt-2 belt-name'>
     <h6 <%= "class= text-light" if level == 7 || level == 5 %>><%= domain %></h6>
-    <%= link_to belt_path(belt),method: :delete,class: 'delete-btn',
-                              data:{confirm:"Voulez vous Supprimer Cette Ceinture?"} do %>
-      <i class="fa-solid fa-trash"></i>
-    <% end %>
   </div>
 </div>
+<%= link_to belt_path(belt),method: :delete,class: 'delete-btn',
+                              data:{confirm:"Voulez vous Supprimer Cette Ceinture?",
+                              action: "click->loadingspinnermgnt#displaySpinner"} do %>
+  <i class="fa-solid fa-trash"></i>
+<% end %>
+<%= link_to edit_belt_path(belt), class: 'edit-btn' do %>
+  <i class="fa-solid fa-gear"></i>
+<% end %>

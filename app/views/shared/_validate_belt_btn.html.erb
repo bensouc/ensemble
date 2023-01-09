@@ -1,6 +1,6 @@
 
 <div class="validate-belt-btn">
-  <%= simple_form_for [@student,Belt.new] do |b| %>
+  <%= simple_form_for [@student,Belt.new],data:{action: "submit->loadingspinnermgnt#displaySpinner"} do |b| %>
     <%= b.input :level,
             input_html: { value: level, class: 'd-none' },
                     label: false%>
@@ -13,8 +13,8 @@
     <%# <%= b.input :completed,
             input_html: { value: true, class: 'd-none' },
                     label: false%>
-    <button type="submit"  >
-      <i class="fa-solid fa-circle-check"></i>
+    <button type="submit"   >
+      <i class="fa-solid fa-circle-check" ></i>
     </button>
   <% end %>
 </div>
