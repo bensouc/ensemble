@@ -86,6 +86,10 @@ class WorkPlanSkillsController < ApplicationController
     end
   end
 
+  # to add a validated wps on a student on special_wps=true Workplan
+  def add_validated_wps
+    raise
+  end
   private
 
   def set_params_wpskill

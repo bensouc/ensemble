@@ -1,0 +1,8 @@
+<%= link_to student_new_validated_wps_path( @student,
+                                            params:{
+                                              level: level,
+                                              domain: domain}),
+                                              data: { display_student_belt_management_target: 'beltBtn' },
+                                              class: 'add-validated-wps-btn d-none' do%>
+  <i class="fa-solid fa-circle-plus"></i>
+<% end %>

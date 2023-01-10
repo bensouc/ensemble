@@ -129,9 +129,27 @@
     transition: 0.15s;
     top: 4px;
     right: 2px;
+    i {
+      color: #00803379;
+
+      font-size: 1.5rem;
+    }
+    i:hover {
+      color: #008033cb;
+    }
   }
 }
-
+.add-validated-wps-btn {
+  position: relative;
+  bottom: 131px;
+  right: -37px;
+  font-size: 1.5rem;
+  color: $roseL !important;
+  i:hover {
+    transition: 0.15s;
+    transform: scale(3);
+  }
+}
 .domain-header {
   // margin: 0 20px 0;
   transform: rotate(306deg);
