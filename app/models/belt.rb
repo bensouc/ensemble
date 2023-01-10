@@ -23,6 +23,7 @@ class Belt < ApplicationRecord
     Skill.where(level: , grade: , domain:)
   end
 
+  scope :completed, -> { where(completed: true) }
   # def self.update_or_create_by(args, completed)
   #   obj = self.find_or_create_by(args)
   #   obj.update(completed)

@@ -20,7 +20,7 @@ class StudentsController < ApplicationController
     @student_skills.each do |skill|
       @all_skills << {
         skill: skill,
-        last_wps: all_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at)
+        last_wps: all_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at),
       }
     end
     # retrive all student belts
@@ -58,7 +58,30 @@ class StudentsController < ApplicationController
     redirect_to classrooms_path
   end
 
+  def new_validated_wps
+    @student = Student.includes(:classroom).find(params_add_validated_wps[:student_id])
+    student_grade = @student.classroom.grade
+    @special_work_plan = WorkPlan.find_or_create_by(student: @student, grade: student_grade, special_wps: true)
+    domain = params_add_validated_wps[:domain]
+    level = if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && student_grade != "CM2"
+              1
+            else
+              params_add_validated_wps[:level]
+            end
+    @skills = Skill.where(level:,
+                          domain:,
+                          grade: student_grade
+                        )
+    @special_work_plan.user = current_user
+    @special_work_plan.name = "special_work_plan"
+    @special_work_plan.save!
+  end
+
   private
+
+  def params_add_validated_wps
+    params.permit(:student_id, :level, :domain)
+  end
 
   def params_student
     params.require(:student)

@@ -56,7 +56,7 @@ class WorkPlanSkillsController < ApplicationController
         student_id: @work_plan_skill.student.id,
         domain: @work_plan_skill.work_plan_domain.domain,
         grade: @work_plan.grade,
-        level: @work_plan_skill.work_plan_domain.level
+        level: @work_plan_skill.work_plan_domain.level,
       }
     )
     # add test if (@work_plan_skill.kind == 'ceinture' && @work_plan_skill.status)
@@ -88,16 +88,63 @@ class WorkPlanSkillsController < ApplicationController
 
   # to add a validated wps on a student on special_wps=true Workplan
   def add_validated_wps
-    raise
+    data = get_add_validated_wps_skill_student
+    skills = []
+
+    data[:skill_ids].map { |skill_id|
+      skills << Skill.find(skill_id)
+
+    }
+    domain = skills.first.domain
+    @student = Student.includes(:classroom).find(data[:student_id])
+    student_grade = @student.classroom.grade
+    @special_work_plan = WorkPlan.includes(:work_plan_domains).find_or_create_by!(student: @student, grade: student_grade, special_wps: true)
+    @work_plan_domain = @special_work_plan.work_plan_domains.includes(:work_plan_skills).find_or_create_by(work_plan: @special_work_plan, domain: domain,level: skills.first.level)
+    skills.each { |skill|
+      work_plan_skill = WorkPlanSkill.create!(
+        work_plan_domain: @work_plan_domain,
+        skill:,
+        status: "completed",
+        completed: true,
+        kind: "ceinture"
+      )
+      # validate BElt?
+      if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && student_grade != "CM2"
+        Belt.special_newbelt(work_plan_skill, @special_work_plan)
+      elsif @work_plan_domain.all_skills_completed?
+        belt = Belt.find_or_create_by(
+          {     student_id: @student.id,
+                domain:,
+                grade: student_grade,
+                level: skills.first.level,
+                completed: true,
+                validated_date: DateTime.now
+              }
+        )
+        belt.save
+      end
+    }
+    # find or create a belt
+
+
+    redirect_to student_path(@student)
   end
+
   private
+
+  def get_add_validated_wps_skill_student
+    {
+      student_id: params.permit(:student_id)[:student_id],
+       skill_ids: params.require(:new_wps).permit(skills: [])[:skills][1..-1]
+    }
+  end
 
   def set_params_wpskill
     {
       work_plan_domain_id: params.require(:work_plan_domain_id),
       skill_id: params.require(:skill).to_i,
       kind: params.require(:kind),
-      status: "new"
+      status: "new",
     }
   end
 
