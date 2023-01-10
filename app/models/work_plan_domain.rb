@@ -56,12 +56,15 @@ class WorkPlanDomain < ApplicationRecord
   # update completed status
   def all_skills_completed?
     # get all skills for a domain
+    temp_all_domain_skill = all_domain_skills
     student = work_plan.student
-    self.completed = all_domain_skills.all? do |skill|
-      # test if wps is completed
-      WorkPlanSkill.last_wps(student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at).completed
+    if work_plan_skills.count >= temp_all_domain_skill.count
+      self.completed = temp_all_domain_skill.all? do |skill|
+        # test if wps is completed
+        WorkPlanSkill.last_wps(student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at).completed
+      end
+      save
     end
-    save
     completed
   end
 

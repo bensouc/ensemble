@@ -76,7 +76,7 @@ class StudentsController < ApplicationController
                           )
     @skills = @skills.reject{ |skill| validated_skill_id.include?(skill.id) }
     if @skills.empty?
-      render :show
+      redirect_to student_path(@student), flash: {notice: "Il n'y pas de compétence à ajouter pour ce domaine/niveau"}
     else
     @special_work_plan.user = current_user
     @special_work_plan.name = "special_work_plan"
