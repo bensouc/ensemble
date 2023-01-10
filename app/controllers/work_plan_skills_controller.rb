@@ -50,6 +50,7 @@ class WorkPlanSkillsController < ApplicationController
     end
     # :format completed redo failed
     @work_plan_skill.status = params[:format]
+    @work_plan_skill.completed = true if params[:format] == "completed"
     # Create a belt or get the corresponding one
     belt = Belt.find_or_create_by(
       {

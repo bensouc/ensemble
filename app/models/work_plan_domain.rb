@@ -5,25 +5,25 @@ class WorkPlanDomain < ApplicationRecord
     # order in the DOMAINS array give the Workplan show domain display ordering
     {
       grade: "CE1",
-      domains: ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"]
+      domains: ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"],
     },
     {
       grade: "CE2",
       domains: ["Conjugaison", "Vocabulaire", "Grammaire", "Géométrie", "Grandeurs et Mesures",
-                "Numération", "Calcul"]
+                "Numération", "Calcul"],
     },
     {
       grade: "CM1",
       domains: ["Conjugaison", "Vocabulaire", "Orthographe", "Grammaire", "Poesie", "Géométrie", "Grandeurs et Mesures",
-                "Numération", "Calcul"]
+                "Numération", "Calcul"],
     },
     {
       grade: "CM2",
       domains: ["Calcul", "Géométrie", "Grandeurs et Mesures", "Numération", "Opérations",
                 "Résolution des Problèmes", "Calligraphie", "Conjugaison",
                 "Poésie et Expression orale", "Production d’écrit", "Grammaire",
-                "Lecture", "Vocabulaire"]
-    }
+                "Lecture", "Vocabulaire"],
+    },
   ].freeze
   LEVELS = (1..7).freeze
 
@@ -33,6 +33,13 @@ class WorkPlanDomain < ApplicationRecord
   # belongs_to :student, optional: true
 
   has_one :student, through: :work_plan
+
+  def student
+    return work_plan.student if association(:work_plan).loaded?
+
+    super
+  end
+
   has_many :work_plan_skills, dependent: :destroy
   accepts_nested_attributes_for :work_plan_skills
 

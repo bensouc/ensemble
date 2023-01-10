@@ -7,9 +7,17 @@ class WorkPlanSkill < ApplicationRecord
   # belongs_to :student, optional: true
   has_one :student, through: :work_plan_domain
 
+
   validates :kind, presence: true, inclusion: { in: %w[jeu exercice controle ceinture] }
   validates :status, inclusion: { in: %w[redo failed redo_OK completed new] }
 
+  def student
+    return super unless association(:work_plan_domain).loaded? &&
+                        work_plan_domain.association(:work_plan).loaded?
+
+    work_plan_domain.work_plan.student
+  end
+  
   def clone(_current_wp, new_wp_domain)
     new_wps = dup
     new_wps.work_plan_domain_id = new_wp_domain.id
@@ -29,7 +37,7 @@ class WorkPlanSkill < ApplicationRecord
   def self.last_wps(student, skills)
     # WorkPlanSkill.where(skill: skill).select{ |s| s.student == student }.max_by(&:created_at)
 
-    wpss = WorkPlanSkill.includes([:skill, :work_plan_domain,:student]).where(skill: skills)
+    wpss = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill: skills)
     wpss.select { |wps| wps.student == student }
     #  je cherche pour une skill le dernier w
   end

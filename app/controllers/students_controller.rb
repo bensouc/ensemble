@@ -68,13 +68,20 @@ class StudentsController < ApplicationController
             else
               params_add_validated_wps[:level]
             end
-    @skills = Skill.where(level:,
-                          domain:,
-                          grade: student_grade
-                        )
+    validated_work_plan_skills = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(status: "completed").select { |wps| wps.student == @student && wps.skill.domain == domain && wps.skill.level == level.to_i }
+    validated_skill_id = validated_work_plan_skills.map { |wps| wps.skill.id}
+    @skills = Skill.where(  level:,
+                            domain:,
+                            grade: student_grade
+                          )
+    @skills = @skills.reject{ |skill| validated_skill_id.include?(skill.id) }
+    if @skills.empty?
+      render :show
+    else
     @special_work_plan.user = current_user
     @special_work_plan.name = "special_work_plan"
     @special_work_plan.save!
+    end
   end
 
   private
