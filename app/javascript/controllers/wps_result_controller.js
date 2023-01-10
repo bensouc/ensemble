@@ -7,7 +7,7 @@ export default class extends Controller {
   // }
 
   displayName() {
-    console.log(this.nameTarget);
+    // console.log(this.nameTarget);
     this.nameTarget.classList.toggle('d-none');
       }
 

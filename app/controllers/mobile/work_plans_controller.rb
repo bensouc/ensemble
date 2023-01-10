@@ -10,12 +10,12 @@ class Mobile::WorkPlansController < ApplicationController
     shared_work_plans = []
     shared_classrooms.each do |classroom|
       classroom.students.each do |shared_student|
-        WorkPlan.where(student: shared_student).order(created_at: :DESC).each do |work_plan|
+        WorkPlan.where(student: shared_student, special_wps: false).order(created_at: :DESC).each do |work_plan|
           shared_work_plans << work_plan
         end
       end
     end
-    @my_work_plans = WorkPlan.where(user: current_user).order(created_at: :DESC)
+    @my_work_plans = WorkPlan.where(user: current_user, special_wps: false).order(created_at: :DESC)
     # .sort_by(&:student)
     @my_work_plans_unassigned = @my_work_plans.where(student: nil)
     @my_work_plans = @my_work_plans.where.not(student: nil).sort_by(&:student)

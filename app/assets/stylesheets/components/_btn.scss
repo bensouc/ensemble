@@ -15,3 +15,17 @@
 .delete_acompte_btn {
   color: $rose;
 }
+
+.btn-flat-green {
+  color: white;
+  padding: 8px 24px;
+  border-radius: 10px;
+  // background: #1EDD88;
+  transition: background 0.3s ease;
+  background-color: $green;
+}
+.btn-flat-green:hover {
+  background: white;
+  color: $green;
+  border: solid $green;
+}

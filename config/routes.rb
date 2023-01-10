@@ -37,6 +37,8 @@ Rails.application.routes.draw do
   resources :students, only: [:create, :update, :show, :destroy] do
     resources :belts, only: %w[create]
     post "", to: "work_plans#auto_new_wp", as: :auto_new_wp
+    get "new_validated_wps", to: "students#new_validated_wps", as: :new_validated_wps
+    post "new_validated_wps", to: "work_plan_skills#add_validated_wps", as: :add_validated_wps
   end
 
   resources :belts, only: [:destroy, :edit, :update]
