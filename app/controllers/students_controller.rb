@@ -16,7 +16,7 @@ class StudentsController < ApplicationController
     @student_skills = Skill.where(grade: @student_grade)
     @belts = Belt.where(student: @student, completed: true)
     all_last_wps = WorkPlanSkill.last_wps(@student, @student_skills)
-    # WorkPlanSkill.where(student: student).max_by(&:created_at)
+    # WorkPlanSkill.where(student: student).max_by(&:created_at) fdf
     @student_skills.each do |skill|
       @all_skills << {
         skill: skill,
