@@ -2,17 +2,23 @@
   padding: 2px;
 }
 .belt-edit-header-1 {
-  background-color: $grisC;
+  // background-color: $grisC;
   border-top-left-radius: 15px;
   border-top-right-radius: 15px;
+  border: thin solid $grisC;
   // border: thin solid $roseL;
   padding: 15px 20px 5px 20px;
 
   h2 {
     color: black;
+    i{
+      font-size: 2rem;
+    }
   }
   h4 {
-    text-align: right;
+    // text-align: right;
+    margin-left: 45px;
+    color:$grisC;
     font-style: italic;
   }
 }
