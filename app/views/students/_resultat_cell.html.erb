@@ -1,48 +1,41 @@
-<%# render resultat <%= domain %>
 <%if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @student.classroom.grade != "CM2"%>
-  <%# select from @all_skill domain: domain %>
   <% skills = @student_skills.select{|skill| skill.domain == domain}%>
-  <%# <% skills = Skill.where(domain: domain, grade: @student.classroom.grade)%>
   <div class="display-last-wps ">
-    <%# test if level 1 or if level +1 above the higher belt %>
     <%= render "shared/validate_belt_btn", level: level, domain: domain%>
-    <% last_belt =  @belts.select{|belt| belt.domain == domain }.last%>
+    <%# test if level 1 or if level +1 above the higher belt %>
     <% if (level == 1 || !last_belt.nil? && (level == last_belt.level + 1 ) ) %>
+      <%# afficher les wps specials du domain %>
+        <% @all_skills_and_last_wps.select {|f| f[:skill][:domain]== domain}.sort_by{|f| f[:last_wps][:updated_date]}.each do |wps|%>
+          <%unless wps.nil? || wps.empty?%>
+            <div class="a-wps" data-controller='wps-result'>
+              <%= render 'challenge_status', wps: wps[:last_wps]%>
+              <div class="skill-name d-none" data-wps-result-target='name'>
+                <%=wps[:last_wps].skill.name%>
+                -
+                <%=render 'wps_status', wps: wps[:last_wps]%>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  <% else %>
+    <% skills = @student_skills.select{|skill| skill.domain == domain && skill.level == level} %>
+    <div class="display-last-wps">
       <%skills.sort_by(&:id).each do |skill|%>
-        <%wps= @all_skills.select {|f| f[:skill]==skill && !f[:last_wps].nil?} %>
-        <% wps = wps.first[:last_wps] if wps != []%>
-        <%unless wps.nil? || wps==[]%>
+        <%wps= @all_skills_and_last_wps.select {|f| f[:skill]==skill} %>
+        <%unless wps.empty?%>
           <div class="a-wps" data-controller='wps-result'>
-            <%= render 'challenge_status', wps: wps%>
+            <%= render 'challenge_status', wps: wps.last[:last_wps]%>
             <div class="skill-name d-none" data-wps-result-target='name'>
               <%=skill.name%>
               -
-              <%=render 'wps_status', wps: wps%>
+              <%=render 'wps_status', wps: wps.last[:last_wps]%>
             </div>
           </div>
         <% end %>
       <% end %>
-    <% end %>
-  </div>
-<% else %>
-  <%# select from @all_skill domain: domain & level: level %>
-  <% skills = @student_skills.select{|skill| skill.domain == domain && skill.level == level} %>
-  <%# <% skills = Skill.where(domain: domain, level: level, grade: @student.classroom.grade)%>
-  <div class="display-last-wps">
-    <%= render "shared/validate_belt_btn", level: level, domain: domain%>
-    <%skills.sort_by(&:id).each do |skill|%>
-      <%wps= @all_skills.select {|f| f[:skill]==skill}.first[:last_wps] %>
-      <%unless wps.nil?%>
-        <div class="a-wps" data-controller='wps-result'>
-          <%= render 'challenge_status', wps: wps%>
-          <div class="skill-name d-none" data-wps-result-target='name'>
-            <%=skill.name%>
-            -
-            <%=render 'wps_status', wps: wps%>
-          </div>
-        </div>
-      <% end %>
-    <% end %>
-  </div>
-<% end %>
+      <%= render "shared/validate_belt_btn", level: level, domain: domain%>
+    </div>
+  <% end %>
   <%= render 'shared/add_validated_wps_btn', level: level, domain: domain %>

@@ -7,7 +7,7 @@ action: "click->loadingspinnermgnt#displaySpinner"} do%>
 <div class="border-round-rose" data-controller="loadingspinnermgnt">
   <%= simple_form_for @belt, html: { novalidate: false } do |f| %>
     <div class="belt-edit-header-1">
-      <h2>Ceinture <%= "#{@belt.domain.capitalize} - #{Belt::BELT_COLORS[@belt.level-1].capitalize}" %></h2>
+      <h2><i class=" fas fa-bacon belt-<%= @belt.level %>"></i><%= " #{@belt.domain.capitalize}  "%></h2>
       <h4><%= "#{@belt.student.first_name.capitalize}" %></h4>
     </div>
     <div class="date-selection">

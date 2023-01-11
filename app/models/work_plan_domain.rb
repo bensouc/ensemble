@@ -72,7 +72,8 @@ class WorkPlanDomain < ApplicationRecord
   def all_skills_completed_count
     student = work_plan.student
     out = all_domain_skills.select do |skill|
-      !WorkPlanSkill.last_wps(student, skill).nil? && WorkPlanSkill.last_wps(student, skill).completed
+      temp_last_wpss = WorkPlanSkill.last_wps(student, skill)[-1]
+      !temp_last_wpss.nil? && temp_last_wpss.completed
     end
     out.count
   end

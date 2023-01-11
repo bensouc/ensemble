@@ -50,15 +50,17 @@ class Belt < ApplicationRecord
   end
 
   def self.find_or_create_by_level!(args, level)
-    args.merge!(
-      {
-        level: level
-      }
-    )
-    belt = Belt.find_or_create_by(args)
-    belt.completed = true
-    belt.validated_date = DateTime.now
-    belt.save
+     (1..level).each do
+      args.merge!(
+        {
+          level: level
+        }
+      )
+      belt = Belt.find_or_create_by(args)
+      belt.completed = true
+      belt.validated_date = DateTime.now
+      belt.save
+    end
   end
 
   def self.score_to_validate(grade)
@@ -110,15 +112,18 @@ class Belt < ApplicationRecord
         when 4
           Belt.find_or_create_by_level!(args, 2)
         when 7
-          Belt.find_or_create_by_level!(args, 3)
+                   Belt.find_or_create_by_level!(args, 3)
         when 10
+
           Belt.find_or_create_by_level!(args, 4)
         when 13
+
           Belt.find_or_create_by_level!(args, 5)
         when 17
+
           Belt.find_or_create_by_level!(args, 6)
         when 21
-          Belt.find_or_create_by_level!(args, 7)
+                    Belt.find_or_create_by_level!(args, 7)
         end
       when "Grandeurs et Mesures"
         case count

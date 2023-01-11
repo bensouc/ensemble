@@ -53,7 +53,7 @@
             <div class="domain-col cells-student mb-2"
                 data-controller='display-student-belt-management'
                 data-action='mouseover->display-student-belt-management#displayBtn mouseout->display-student-belt-management#hideBtn'>
-              <%= render "resultat_cell", level: level, domain: domain %>
+              <%= render "resultat_cell", level: level, domain: domain, last_belt: @belts.select{|belt| belt.domain == domain && :completed}.max_by(&:updated_at) %>
               <%# <%= render "shared/validate_belt_btn", level: level, domain: domain%>
             </div>
           <% end %>
