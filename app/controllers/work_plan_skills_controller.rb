@@ -50,7 +50,7 @@ class WorkPlanSkillsController < ApplicationController
     end
     # :format completed redo failed
     @work_plan_skill.status = params[:format]
-    @work_plan_skill.completed = true if params[:format] == "completed"
+    # @work_plan_skill.completed = true if @work_plan_skill.kind == "ceinture" && params[:format] == "completed"
     # Create a belt or get the corresponding one
     belt = Belt.find_or_create_by(
       {
@@ -65,19 +65,21 @@ class WorkPlanSkillsController < ApplicationController
       case @work_plan_skill.status
       when "completed"
         @work_plan_skill.completed = true
+        @work_plan_skill.save!
+
         # test for each skill of its domain a 'belt is validated'jbiv
-        @work_plan_skill.save
         if WorkPlanDomain::DOMAINS_SPECIALS.include?(@work_plan_skill.work_plan_domain.domain) && @work_plan.grade != "CM2"
           Belt.special_newbelt(@work_plan_skill, @work_plan)
         elsif @work_plan_skill.work_plan_domain.all_skills_completed?
+
           belt.completed = true
           belt.validated_date = DateTime.now
-          belt.save
+          belt.save!
         end
       end
     end
 
-    @work_plan_skill.save
+    @work_plan_skill.save!
     if is_mobile_device?
       redirect_to mobile_eval_path(@work_plan_skill.work_plan_domain.work_plan,
                                    anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
