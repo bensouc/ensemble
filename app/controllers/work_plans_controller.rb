@@ -92,7 +92,7 @@ class WorkPlansController < ApplicationController
     @work_plan = WorkPlan.find(params[:id])
     @domains = @work_plan.all_domains_from_work_plan
     @previous = []
-    @wpds = WorkPlanDomain.where(work_plan: @work_plan)
+    @wpds = WorkPlanDomain.includes([:work_plan_skills]).where(work_plan: @work_plan)
     @wpds.each do |wpd|
       wpd.work_plan_skills.each do |wps|
         # last_4_wps = WorkPlanSkill.where(student: @work_plan.student, skill: wps.skill_id).sort_by(&:created_at).reverse[1..3]

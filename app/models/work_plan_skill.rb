@@ -17,7 +17,7 @@ class WorkPlanSkill < ApplicationRecord
 
     work_plan_domain.work_plan.student
   end
-  
+
   def clone(_current_wp, new_wp_domain)
     new_wps = dup
     new_wps.work_plan_domain_id = new_wp_domain.id
@@ -29,7 +29,8 @@ class WorkPlanSkill < ApplicationRecord
 
   def self.last_4_wps(work_plan, wps)
     # retrieve the last 4 wps for the student on this skill ids
-    out = WorkPlanSkill.where(skill_id: wps.skill_id).select { |s| s.student == work_plan.student }.sort_by(&:created_at).reverse
+    out = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill_id: wps.skill_id)
+    out = out.select { |s| s.student == work_plan.student }.sort_by(&:created_at).reverse
     out.reject { |t| t == wps }
     out.last(3)
   end
