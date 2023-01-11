@@ -49,11 +49,6 @@
             <div class="domain-col cells-student mb-2">
               <%= render "resultat_belt", level: level, domain: domain , belt: belt%>
             </div>
-          <%# <% elsif !belt.nil? %>
-            <%# <div class="domain-col cells-student mb-2"> %>
-              <%# <%= render "shared/validate_belt_btn", level: level, domain: domain%>
-              <%# <%= render "resultat_cell", level: level, domain: domain %>
-            <%# </div> %>
           <% else %>
             <div class="domain-col cells-student mb-2"
                 data-controller='display-student-belt-management'

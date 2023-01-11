@@ -96,7 +96,7 @@ class WorkPlansController < ApplicationController
     @wpds.each do |wpd|
       wpd.work_plan_skills.each do |wps|
         # last_4_wps = WorkPlanSkill.where(student: @work_plan.student, skill: wps.skill_id).sort_by(&:created_at).reverse[1..3]
-        last_4_wps = WorkPlanSkill.last_4_wps(@work_plan, wps)
+        last_4_wps = WorkPlanSkill.last_4_wps(@work_plan, wps,@work_plan.student)
         @previous << [wps.skill_id, last_4_wps]
       end
     end
