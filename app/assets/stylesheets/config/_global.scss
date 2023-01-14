@@ -43,3 +43,10 @@ button {
 //     background-color: $rose;
 //     color: $grisC;
 // }
+
+.--grow-on-hover {
+  &:hover {
+    transform: scale(1.5);
+    transition: 0.5s;
+  }
+}

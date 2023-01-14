@@ -38,7 +38,10 @@
   </div>
   <!-- Button trigger modal 4 sharing classroom -->
   <div class="sharing-btn">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#sharingClassroomModal-<%=classroom.id%>">
+  <%= link_to classroom_results_path(classroom) do %>
+  <i class="fa-solid fa-graduation-cap --rose --grow-on-hover me-1 "></i>
+  <% end %>
+    <button type="button" class="btn-primary" data-bs-toggle="modal" data-bs-target="#sharingClassroomModal-<%=classroom.id%>">
       <%= image_tag "icons/share-red-icon.svg" %>
     </button>
   </div>

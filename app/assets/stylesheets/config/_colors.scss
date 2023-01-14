@@ -21,6 +21,18 @@ $blanc: #FFFFFF;
 $rose: #F24150;
 $roseL: #e72c3ca4;
 
+// class color
+.--orange { color:$orange}
+.--grisF { color:$grisF}
+.--grisC { color:$grisC}
+.--violet { color:$violet}
+.--jaune { color:$jaune}
+.--bleuC { color:$bleuC}
+.--menuOff { color:$menuOff}
+.--blanc { color:$blanc}
+.--rose { color:$rose}
+.--roseL { color:$roseL}
+
 /* _colors.scss */
 $belt-1: rgb(240, 230, 230);
 $belt-2: rgb(248, 244, 6);
