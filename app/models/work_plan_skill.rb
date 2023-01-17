@@ -11,12 +11,12 @@ class WorkPlanSkill < ApplicationRecord
   validates :kind, presence: true, inclusion: { in: %w[jeu exercice controle ceinture] }
   validates :status, inclusion: { in: %w[redo failed redo_OK completed new] }
 
-  # def student
-  #   return super unless association(:work_plan_domain).loaded? &&
-  #                       work_plan_domain.association(:work_plan).loaded?
+  def student
+    return super unless association(:work_plan_domain).loaded? &&
+                        work_plan_domain.association(:work_plan).loaded?
 
-  #   work_plan_domain.work_plan.student
-  # end
+    work_plan_domain.work_plan.student
+  end
 
   def clone(_current_wp, new_wp_domain)
     new_wps = dup
@@ -40,7 +40,7 @@ class WorkPlanSkill < ApplicationRecord
 
     wpss = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill: skills)
     wpss.select { |wps| wps.student == student }
-    #  je cherche pour une skill le dernier w
+    
   end
 
   def add_challenges_2_wps(current_user, _actual_challenge = nil)

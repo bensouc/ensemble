@@ -1,0 +1,37 @@
+	<% WorkPlanDomain::LEVELS.each  do |level|%>
+	<%# if domain special et level = 2 break break from each  %>
+	<% if @special_domain && level == 2 %>
+		<% break %>
+	<% end %>
+	<% belt_on_level = @all_completed_belts.select{|belt| belt.level == level} %>
+	<div class="classroom-left-data-results" data-display-results-classroom-domain='<%=@domain.capitalize%>' level=" <%=level%> ">
+		<div class="level-results">
+			<div class="belt-logo">
+				<i class=" fas fa-bacon belt-<%=level %>"></i>
+			</div>
+			<div class="belt-skill_names">
+				<% @skills.select{|skill| skill.domain == @domain && skill.level == level}.each do |skill| %>
+					<div class="results-line" skill=" <%=skill.name%>">
+						<div class="belt-skill-name">
+							<%= skill.name.capitalize %>
+						</div>
+						<div class="classroom-right-data-results" >
+							<% @students_list.each do |student| %>
+								<div class="result-cell">
+									<% unless @special_domain || belt_on_level.nil? || belt_on_level.select{ |belt| belt.student == student}.empty? %>
+										<%#If special domain true ou ceinture  %>
+										<i class="fa-solid fa-circle-check --vert"></i>
+									<% else %>
+										<% unless @all_completed_work_plan_skills.nil? || @all_completed_work_plan_skills[student.id.to_s].nil? || @all_completed_work_plan_skills[student.id.to_s].select{|wps| wps.skill == skill }.empty? %>
+											<i class="fa-solid fa-circle-check --vert"></i>
+										<% end %>
+									<% end %>
+								</div>
+							<% end %>
+						</div>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+<% end %>

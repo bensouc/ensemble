@@ -1,30 +1,18 @@
 # frozen_string_literal: true
 
 class WorkPlanDomain < ApplicationRecord
-  DOMAINS = [
+  DOMAINS = {
     # order in the DOMAINS array give the Workplan show domain display ordering
-    {
-      grade: "CE1",
-      domains: ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"],
-    },
-    {
-      grade: "CE2",
-      domains: ["Conjugaison", "Vocabulaire", "Grammaire", "Géométrie", "Grandeurs et Mesures",
-                "Numération", "Calcul"],
-    },
-    {
-      grade: "CM1",
-      domains: ["Conjugaison", "Vocabulaire", "Orthographe", "Grammaire", "Poesie", "Géométrie", "Grandeurs et Mesures",
-                "Numération", "Calcul"],
-    },
-    {
-      grade: "CM2",
-      domains: ["Calcul", "Géométrie", "Grandeurs et Mesures", "Numération", "Opérations",
-                "Résolution des Problèmes", "Calligraphie", "Conjugaison",
-                "Poésie et Expression orale", "Production d’écrit", "Grammaire",
-                "Lecture", "Vocabulaire"],
-    },
-  ].freeze
+    "CE1" => ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"],
+    "CE2" => ["Conjugaison", "Vocabulaire", "Grammaire", "Géométrie", "Grandeurs et Mesures",
+              "Numération", "Calcul"],
+    "CM1" => ["Conjugaison", "Vocabulaire", "Orthographe", "Grammaire", "Poesie", "Géométrie", "Grandeurs et Mesures",
+              "Numération", "Calcul"],
+    "CM2" => ["Calcul", "Géométrie", "Grandeurs et Mesures", "Numération", "Opérations",
+              "Résolution des Problèmes", "Calligraphie", "Conjugaison",
+              "Poésie et Expression orale", "Production d’écrit", "Grammaire",
+              "Lecture", "Vocabulaire"]
+  }.freeze
   LEVELS = (1..7).freeze
 
   DOMAINS_SPECIALS = ["Géométrie", "Grandeurs et Mesures"].freeze
@@ -43,10 +31,7 @@ class WorkPlanDomain < ApplicationRecord
   has_many :work_plan_skills, dependent: :destroy
   accepts_nested_attributes_for :work_plan_skills
 
-  # validates :domain, presence: true, inclusion: { in: DOMAINS } => can not be other
   validates :level, presence: true, inclusion: { in: LEVELS }
-  # validates :domain, presence: true, inclusion: { in: %w(Vocabulaire Grammaire Numération Calcul)}
-  # validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
 
   def all_domain_skills
     Skill.where(domain: domain, level: level, grade: work_plan.grade)
@@ -60,12 +45,11 @@ class WorkPlanDomain < ApplicationRecord
     student = work_plan.student
     self.completed = all_domain_skills.all? do |skill|
       # test if wps is completed
-      temp_wps = WorkPlanSkill.last_wps(student, skill).select { |wps| wps.skill == skill && wps.kind == 'ceinture' }.max_by(&:created_at)
+      temp_wps = WorkPlanSkill.last_wps(student, skill).select { |wps| wps.skill == skill && wps.kind == "ceinture" }.max_by(&:created_at)
       temp_wps.completed unless temp_wps.nil?
     end
     save
     completed
-
   end
 
   # return the number of validated skill for a domain

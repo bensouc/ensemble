@@ -9,7 +9,8 @@ class Classroom < ApplicationRecord
 
   validates :grade, presence: true
 
-  # def student_list
-  #   Student.where(classroom_id: id)
-  # end
+  def students_list
+    # Student.includes([:work_plans, :work_plan_skills]).where(classroom: self)
+    Student.where(classroom: self)
+  end
 end

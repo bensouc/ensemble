@@ -1,0 +1,91 @@
+.classroom-results-header {
+  display: flex;
+  border-bottom: thin solid $grisC;
+  width: fit-content;
+  .skill {
+    width: 24ch;
+    text-align: center;
+    padding-top: 7ch;
+    font-size: 26px;
+    border-right: thin solid $grisC;
+  }
+  .student-name {
+    height: 15ch;
+    width: 2rem;
+    writing-mode: vertical-rl;
+    transform: rotateZ(-180deg);
+    text-align: center;
+    border-left: thin solid $grisC;
+  }
+}
+.classroom-data-results {
+  display: flex;
+  flex-direction: column;
+}
+
+.classroom-left-data-results {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  .level-results {
+    font-size: 26px;
+    border-right: thin solid $grisC;
+        border-bottom:  solid $grisC;
+
+    // width: 24ch;
+    display: flex;
+    padding: 0px 0 0px 5px;
+  }
+  .belt-logo {
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    // border-bottom: thin solid $grisC;
+    i{
+      font-size: 24px;
+      width: 1.85rem;
+    }
+  }
+  .belt-skill_names {
+    display: flex;
+    flex-direction: column;
+  }
+  .results-line {
+    display: flex;
+    border-bottom: thin solid $grisC;
+    // min-height: 2.3rem;
+  }
+  .belt-skill-name {
+    width: 46ch;
+    // width: 100%;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+line-height: 2.2rem;
+    overflow: hidden;
+  }
+}
+
+.classroom-right-data-results {
+  display: flex;
+  .student-collumn {
+    width: 2rem;
+
+  }
+  .level-cells {
+    padding: 5px 0;
+    width: 2rem;
+  }
+  .result-cell {
+    height: 2.2rem;
+
+    width: 2rem;
+    border-left: thin solid $grisC;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    i{
+      font-size: 1.1rem;
+    }
+  }
+}

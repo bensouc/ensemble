@@ -1,0 +1,18 @@
+<div data-controller= "display-results-classroom">
+	<h1><%=@classroom.grade %> -  <%=@classroom.name %></h1>
+	<% @domains.each do |domain| %>
+		<%= render 'tab_for_domain_on_classroom_results', domain: %>
+	<% end %>
+	<div class="classroom-results-header">
+		<div class="skill" data-display-results-classroom-target='domainnamedisplay'><%= @domain.capitalize %></div>
+		<%@students_list.each do |student|  %>
+			<div class="student-name">
+				<%= link_to student.first_name.capitalize, student_path(student) %>
+			</div>
+		<% end %>
+	</div>
+	<div class="classroom-data-results"
+        data-display-results-classroom-target='results'>
+		<%= render 'classroom_domain_results' %>
+	</div>
+</div>
