@@ -80,7 +80,7 @@ gem "mobile"
 # # gem for pdf-output
 #   gem 'wkhtmltopdf-binary', '~> 0.12.5'
 # end
-
+ gem 'erb-formatter'
 group :development, :test do
   gem "bullet"
   gem 'pry-byebug'

@@ -3,9 +3,14 @@
   border-bottom: thin solid $grisC;
   width: fit-content;
   .skill {
+    display: flex;
+    flex-direction: column;
+        justify-content: space-evenly;
+    align-items: center;
+    flex-wrap: nowrap;
     width: 24ch;
     text-align: center;
-    padding-top: 7ch;
+
     font-size: 26px;
     border-right: thin solid $grisC;
   }
