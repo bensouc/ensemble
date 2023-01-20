@@ -5,6 +5,9 @@
   display: flex;
   // border-bottom: thin solid $grisC;
   width: fit-content;
+  position: sticky;
+  top: 10px;
+  background-color: $white;
   .skill {
     display: flex;
     flex-direction: column;
