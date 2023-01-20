@@ -1,7 +1,9 @@
 <div data-controller= "display-results-classroom">
-	<% @domains.each do |domain| %>
-		<%= render 'tab_for_domain_on_classroom_results', domain: %>
-	<% end %>
+	<div class="skills">
+		<% @domains.each do |domain| %>
+			<%= render 'tab_for_domain_on_classroom_results', domain: %>
+		<% end %>
+	</div>
 	<div class="classroom-results-header">
 		<div class="skill" >
 			<h1><%=@classroom.grade %> -  <%=@classroom.name %></h1>

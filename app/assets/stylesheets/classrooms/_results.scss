@@ -5,7 +5,7 @@
   .skill {
     display: flex;
     flex-direction: column;
-        justify-content: space-evenly;
+    justify-content: space-evenly;
     align-items: center;
     flex-wrap: nowrap;
     width: 24ch;
@@ -23,6 +23,30 @@
     border-left: thin solid $grisC;
   }
 }
+.skills {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.domain-tab {
+  padding: 5px 10px;
+  border: 2px solid $rose;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  color: $roseL;
+  margin-bottom: 5px;
+  &:hover {
+    transform: scale(1.1);
+    transition: 0.5s;
+    background-color: $rose;
+    color: $white;
+  }
+  &.active {
+    background-color: $rose;
+    color: $white;
+  }
+}
 .classroom-data-results {
   display: flex;
   flex-direction: column;
@@ -35,7 +59,7 @@
   .level-results {
     font-size: 26px;
     border-right: thin solid $grisC;
-        border-bottom:  solid $grisC;
+    border-bottom: solid $grisC;
 
     // width: 24ch;
     display: flex;
@@ -46,7 +70,7 @@
     display: flex;
     align-items: center;
     // border-bottom: thin solid $grisC;
-    i{
+    i {
       font-size: 24px;
       width: 1.85rem;
     }
@@ -66,7 +90,7 @@
     font-size: 0.75rem;
     white-space: nowrap;
     text-overflow: ellipsis;
-line-height: 2.2rem;
+    line-height: 2.2rem;
     overflow: hidden;
   }
 }
@@ -75,7 +99,6 @@ line-height: 2.2rem;
   display: flex;
   .student-collumn {
     width: 2rem;
-
   }
   .level-cells {
     padding: 5px 0;
@@ -89,7 +112,7 @@ line-height: 2.2rem;
     display: flex;
     justify-content: center;
     align-items: center;
-    i{
+    i {
       font-size: 1.1rem;
     }
   }

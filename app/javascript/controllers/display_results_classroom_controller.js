@@ -3,10 +3,16 @@ import { Controller } from "stimulus";
 export default class extends Controller {
   static targets = ["tab", 'results', 'domainnamedisplay', "domainName"]
   connect() {
-    // console.log('test dds connected');
+    this.tabTargets[0].classList.add('active')
+  }
+
+  getActiveTab(event) {
+    this.tabTargets.forEach(element => {
+      element.classList.remove('active')
+      event.target.classList.add('active')
+    });
   }
   toggle(event) {
-    // console.log(event.target.href)
     event.preventDefault()
     this.request = new Request(event.target.href);
     this.fetchContent(this.request);
@@ -20,7 +26,7 @@ export default class extends Controller {
         if (response.status == 200) {
           response.text().then((text) => this.resultsTarget.innerHTML = text);
         } else {
-          console.log("Couldn't load data");
+          this.resultsTarget.outerHTML = "Ce domaine ne dispose pas compétence";
         }
       })
   }
