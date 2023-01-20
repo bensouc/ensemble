@@ -104,6 +104,7 @@ GEM
     dotenv-rails (2.7.6)
       dotenv (= 2.7.6)
       railties (>= 3.2)
+    erb-formatter (0.3.0)
     erubi (1.10.0)
     execjs (2.7.0)
     ffi (1.15.4)
@@ -377,6 +378,7 @@ DEPENDENCIES
   cloudinary (~> 1.16.0)
   devise
   dotenv-rails
+  erb-formatter
   font-awesome-sass
   htmlbeautifier
   image_processing (~> 1.2)

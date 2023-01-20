@@ -1,0 +1,7 @@
+<%= link_to  results_by_domain_path(@classroom, params:{domain:}),
+              class: 'domain-tab',
+              data:{
+                display_results_classroom_target:'tab',
+                action: 'click->display-results-classroom#toggle click->display-results-classroom#getActiveTab' } do%>
+	<%= domain %>
+<% end %>

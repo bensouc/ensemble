@@ -33,6 +33,8 @@ Rails.application.routes.draw do
     resources :students, only: [:new, :edit] # :create, :destroy
     resources :shared_classrooms, only: [:create, :destroy]
   end
+  get "classrooms/:id/results_by_domain", to: "classrooms#results_by_domain", as: :results_by_domain
+  get "classrooms/:id/results", to: "classrooms#results", as: :classroom_results
 
   resources :students, only: [:create, :update, :show, :destroy] do
     resources :belts, only: %w[create]
@@ -40,6 +42,7 @@ Rails.application.routes.draw do
     get "new_validated_wps", to: "students#new_validated_wps", as: :new_validated_wps
     post "new_validated_wps", to: "work_plan_skills#add_validated_wps", as: :add_validated_wps
   end
+
 
   resources :belts, only: [:destroy, :edit, :update]
 
