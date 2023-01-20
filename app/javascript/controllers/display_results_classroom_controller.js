@@ -26,10 +26,8 @@ export default class extends Controller {
         if (response.status == 200) {
           response.text().then((text) => this.resultsTarget.innerHTML = text);
         } else {
-          this.resultsTarget.outerHTML = "Ce domaine ne dispose pas compétence";
+          this.resultsTarget.innerHTML = "Ce domaine ne dispose pas compétence";
         }
       })
   }
-
-
 }
