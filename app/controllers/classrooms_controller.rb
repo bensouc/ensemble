@@ -38,8 +38,12 @@ class ClassroomsController < ApplicationController
 
   def results
     @domains = WorkPlanDomain::DOMAINS[@classroom.grade]
-    @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != 'CM2')
     @skills = Skill.where(grade: @classroom.grade)
+    # raise
+    @domains.map do |domain|
+      @domains.delete(domain) if @skills.select{|skill| skill.domain == domain}.empty?
+    end
+    @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != "CM2")
     @domain = @domains.first
     @students_list = @classroom.students_list.sort_by{|student| student.first_name.downcase}
 

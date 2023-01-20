@@ -1,6 +1,9 @@
+.all-results {
+  min-width: 100%;
+}
 .classroom-results-header {
   display: flex;
-  border-bottom: thin solid $grisC;
+  // border-bottom: thin solid $grisC;
   width: fit-content;
   .skill {
     display: flex;
@@ -10,34 +13,47 @@
     flex-wrap: nowrap;
     width: 24ch;
     text-align: center;
-
+    margin-right: 17px;
     font-size: 26px;
-    border-right: thin solid $grisC;
+    // border-top: thin solid $grisC;
+    // border-right: thin solid $grisC;
   }
   .student-name {
     height: 15ch;
     width: 2rem;
     writing-mode: vertical-rl;
-    transform: rotateZ(-180deg);
-    text-align: center;
+    transform: rotateZ(193deg);
+    // text-align: left;
+    // padding-left: 10px;
     border-left: thin solid $grisC;
+    display: flex;
+    align-items: center;
+  }
+  a {
+    margin-top: 10px;
   }
 }
+
 .skills {
   margin-bottom: 10px;
   display: flex;
   flex-direction: row;
+  gap: 2px;
   flex-wrap: wrap;
+  padding-left: 15px;
+
 }
 .domain-tab {
+
+  height: 36px;
   padding: 5px 10px;
-  border: 2px solid $rose;
+  border: thin solid $rose;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   color: $roseL;
   margin-bottom: 5px;
   &:hover {
-    transform: scale(1.1);
+    transform: scaleY(1.1);
     transition: 0.5s;
     background-color: $rose;
     color: $white;
@@ -58,6 +74,7 @@
   flex-wrap: nowrap;
   .level-results {
     font-size: 26px;
+    border-top: thin solid $grisC;
     border-right: thin solid $grisC;
     border-bottom: solid $grisC;
 
