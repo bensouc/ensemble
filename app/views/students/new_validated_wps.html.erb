@@ -1,12 +1,14 @@
 <div class="container">
-  <%= simple_form_for :new_wps, data: {controller: 'loadingspinnermgnt',
+	<%= simple_form_for :new_wps, data: {controller: 'loadingspinnermgnt',
                                           action: "submit->loadingspinnermgnt#displaySpinner"
                                         } do |form|%>
-    <h3>Sélectionner les compétences à valider pour <%= @student.first_name.capitalize %></h3>
-    <div class="cloning-classroom-card" >
-      <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-        <div class="student-checkbox" data-controller='checkboxes'>
-          <%=form.input_field :skills,
+		<h3>Sélectionner les compétences à valider pour <%= @student.first_name.capitalize %></h3>
+		<div class="new-wps-card" >
+			<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+				<div class="student-checkbox" data-controller='checkboxes'>
+					<% if @sub_domains.nil? || @sub_domains.empty?  %>
+
+						<%=form.input_field :skills,
                 collection:@skills,
                 label_method: lambda {|skill| skill.name},
                 value_method: lambda {|skill| skill.id},
@@ -17,12 +19,30 @@
                 class: "tag-selector",
                 item_wrapper_class: 'tag-item'
                 %>
-        </div>
-      </div>
-    </div>
-    <%= form.submit 'Valider',class: 'btn-flat-green',
+					<% else %>
+                    <%# <%raise%>
+
+						<%@sub_domains.each do |sub_domain|%>
+							<h6><%= sub_domain.capitalize %></h6>
+							<%=form.input_field :skills,
+                collection:@skills.select{|skill| skill.sub_domain == sub_domain},
+                label_method: lambda {|skill| skill.name},
+                value_method: lambda {|skill| skill.id},
+                multiple: true,
+                as: :check_boxes,
+                boolean_style: :inline,
+                data: {checkboxes_target: 'boxes',action:"click->checkboxes#add"},
+                class: "tag-selector",
+                item_wrapper_class: 'tag-item'
+                %>
+						<% end %>
+					<% end %>
+				</div>
+			</div>
+		</div>
+		<%= form.submit 'Valider',class: 'btn-flat-green',
       data:{confirm: "Etes vous certain de vouloir valider ces compétences?",
 
       } %>
-  <% end %>
+	<% end %>
 </div>
