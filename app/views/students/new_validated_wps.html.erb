@@ -2,8 +2,8 @@
 	<%= simple_form_for :new_wps, data: {controller: 'loadingspinnermgnt',
                                           action: "submit->loadingspinnermgnt#displaySpinner"
                                         } do |form|%>
-		<h3>Sélectionner les compétences à valider pour <%= @student.first_name.capitalize %></h3>
 		<div class="new-wps-card" >
+		<h3>Sélectionner les compétences à valider pour <%= @student.first_name.capitalize %></h3>
 			<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
 				<div class="student-checkbox" data-controller='checkboxes'>
 					<% if @sub_domains.nil? || @sub_domains.empty?  %>
