@@ -26,7 +26,7 @@ Rails.application.routes.draw do
     resources :challenges, only: [:create, :update]
     post "/challenges/:id", to: "challenges#clone", as: :clone
     # completed / failed / redo
-    post "", to: "work_plan_skills#update_eval", as: :update_eval
+    # post "", to: "work_plan_skills#update_eval", as: :update_eval
   end
 
   resources :classrooms, only: [:index, :show, :update, :new, :create, :destroy] do

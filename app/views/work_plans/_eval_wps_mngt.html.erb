@@ -3,10 +3,10 @@
   <% # #si plan_skill kind jeux %>
   <div class=''>
     <% if plan_skill.kind.downcase == "jeu" %>
-      <%= link_to work_plan_skill_update_eval_path(plan_skill, :redo_OK), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+      <%= link_to work_plan_skill_path(plan_skill, status: :redo_OK), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
         <i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i>
       <% end %>
-      <%= link_to work_plan_skill_update_eval_path(plan_skill, :completed), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+      <%= link_to work_plan_skill_path(plan_skill, status: :completed), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
         <i class="fas fa-pen text-primary eval-icon"></i>
       <% end %>
     <% end %>
@@ -14,16 +14,16 @@
   <% # #si plan_skill kind exo %>
   <div class=''>
     <% if plan_skill.kind.downcase == "exercice" %>
-      <%= link_to work_plan_skill_update_eval_path(plan_skill, :failed), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+      <%= link_to work_plan_skill_path(plan_skill, status: :failed), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
         <i class="fa-solid fa-xmark text-danger eval-icon"></i>
       <% end %>
-      <%= link_to work_plan_skill_update_eval_path(plan_skill, :redo), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+      <%= link_to work_plan_skill_path(plan_skill, status: :redo), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
         <i class="fa-solid fa-arrow-rotate-left orange eval-icon"></i>
       <% end %>
-      <%= link_to work_plan_skill_update_eval_path(plan_skill, :redo_OK), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+      <%= link_to work_plan_skill_path(plan_skill, status: :redo_OK), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
         <i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i>
       <% end %>
-      <%= link_to work_plan_skill_update_eval_path(plan_skill, :completed), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+      <%= link_to work_plan_skill_path(plan_skill, status: :completed), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
         <i class="fa-solid fa-graduation-cap text-primary eval-icon"></i>
       <% end %>
     <% end %>
@@ -31,10 +31,10 @@
   <% # #si plan_skill kind ceinture %>
   <div class=''>
     <% if (plan_skill.kind.downcase == "controle") || (plan_skill.kind.downcase == "ceinture") %>
-      <%= link_to work_plan_skill_update_eval_path(plan_skill, :redo), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+      <%= link_to work_plan_skill_path(plan_skill, status: :redo), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
         <i class="fa-solid fa-arrow-rotate-left orange eval-icon"></i>
       <% end %>
-      <%= link_to work_plan_skill_update_eval_path(plan_skill, :completed), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+      <%= link_to work_plan_skill_path(plan_skill, status: :completed), method: :patch, data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
         <i class="fa-solid fa-graduation-cap text-primary eval-icon"></i>
       <% end %>
     <% end %>

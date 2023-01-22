@@ -41,16 +41,16 @@ class WorkPlanSkillsController < ApplicationController
     @work_plan_skill = WorkPlanSkill.find(params[:id])
     @work_plan = @work_plan_skill.work_plan_domain.work_plan
     # if format nil => no evaluation
-    if params[:format].nil? || !params[:challenge].nil?
+    if params[:status].nil? || !params[:challenge].nil?
       @challenge = Challenge.find(params[:challenge])
       @work_plan_skill.challenge = @challenge
       @work_plan_skill.save!
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge))
       return
     end
-    # :format completed redo failed
-    @work_plan_skill.status = params[:format]
-    # @work_plan_skill.completed = true if @work_plan_skill.kind == "ceinture" && params[:format] == "completed"
+    # :status completed redo failed
+    @work_plan_skill.status = params[:status]
+    # @work_plan_skill.completed = true if @work_plan_skill.kind == "ceinture" && params[:status] == "completed"
     # Create a belt or get the corresponding one
     belt = Belt.find_or_create_by(
       {
