@@ -79,6 +79,7 @@ class StudentsController < ApplicationController
                             grade: student_grade
                           )
     @skills = @skills.reject{ |skill| validated_skill_id.include?(skill.id) }
+        @sub_domains = @skills.map { |skill| skill.sub_domain }.compact.uniq
     if @skills.empty?
       redirect_to student_path(@student), flash: {notice: "Il n'y pas de compétence à ajouter pour ce domaine/niveau"}
     else
