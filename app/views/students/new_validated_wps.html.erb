@@ -9,7 +9,7 @@
 					<% if @sub_domains.nil? || @sub_domains.empty?  %>
 
 						<%=form.input_field :skills,
-                collection:@skills,
+                collection:@skills.sort_by(&:name),
                 label_method: lambda {|skill| skill.name},
                 value_method: lambda {|skill| skill.id},
                 multiple: true,
@@ -25,7 +25,7 @@
 						<%@sub_domains.each do |sub_domain|%>
 							<h6><%= sub_domain.capitalize %></h6>
 							<%=form.input_field :skills,
-                collection:@skills.select{|skill| skill.sub_domain == sub_domain},
+                collection:@skills.select{|skill| skill.sub_domain == sub_domain}.sort_by(&:name),
                 label_method: lambda {|skill| skill.name},
                 value_method: lambda {|skill| skill.id},
                 multiple: true,
