@@ -24,11 +24,6 @@ class Belt < ApplicationRecord
   end
 
   scope :completed, -> { where(completed: true) }
-  # def self.update_or_create_by(args, completed)
-  #   obj = self.find_or_create_by(args)
-  #   obj.update(completed)
-  #   return obj
-  # end
 
   def self.student_last_belt_level(student, domain)
     belt = Belt.where(student: student, domain: domain, completed: true).order(:level).last
@@ -38,7 +33,7 @@ class Belt < ApplicationRecord
       belt.level + 1
     end
   end
-
+  # Belt.special_newbelt(work_plan_skill, special_work_plan)
   def self.special_newbelt(work_plan_skill, work_plan)
     count = work_plan_skill.work_plan_domain.all_skills_completed_count
     args = {
@@ -47,6 +42,7 @@ class Belt < ApplicationRecord
       grade: work_plan.grade
     }
     Belt.create_new_special_belt(args, count, work_plan_skill)
+    # raise
   end
 
   def self.find_or_create_by_level!(args, level)
@@ -107,37 +103,37 @@ class Belt < ApplicationRecord
       case work_plan_skill.work_plan_domain.domain
       when "Géométrie"
         case count
-        when 2
+        when 2...4
           Belt.find_or_create_by_level!(args, 1)
-        when 4
+        when 4...7
           Belt.find_or_create_by_level!(args, 2)
-        when 7
-                   Belt.find_or_create_by_level!(args, 3)
-        when 10
+        when 7...10
+          Belt.find_or_create_by_level!(args, 3)
+        when 10...13
 
           Belt.find_or_create_by_level!(args, 4)
-        when 13
+        when 13...17
 
           Belt.find_or_create_by_level!(args, 5)
-        when 17
+        when 17...21
 
           Belt.find_or_create_by_level!(args, 6)
         when 21
-                    Belt.find_or_create_by_level!(args, 7)
+          Belt.find_or_create_by_level!(args, 7)
         end
       when "Grandeurs et Mesures"
         case count
-        when 2
+        when 2...4
           Belt.find_or_create_by_level!(args, 1)
-        when 4
+        when 4...5
           Belt.find_or_create_by_level!(args, 2)
-        when 5
+        when 5...9
           Belt.find_or_create_by_level!(args, 3)
-        when 9
+        when 9...12
           Belt.find_or_create_by_level!(args, 4)
-        when 12
+        when 12...15
           Belt.find_or_create_by_level!(args, 5)
-        when 15
+        when 15...18
           Belt.find_or_create_by_level!(args, 6)
         when 18
           Belt.find_or_create_by_level!(args, 7)
@@ -147,34 +143,34 @@ class Belt < ApplicationRecord
       case work_plan_skill.work_plan_domain.domain
       when "Géométrie"
         case count
-        when 2
+        when 2...5
           Belt.find_or_create_by_level!(args, 1)
-        when 5
+        when 5...8
           Belt.find_or_create_by_level!(args, 2)
-        when 8
+        when 8...12
           Belt.find_or_create_by_level!(args, 3)
-        when 12
+        when 12...17
           Belt.find_or_create_by_level!(args, 4)
-        when 17
+        when 17...22
           Belt.find_or_create_by_level!(args, 5)
-        when 22
+        when 22...27
           Belt.find_or_create_by_level!(args, 6)
         when 27
           Belt.find_or_create_by_level!(args, 7)
         end
       when "Grandeurs et Mesures"
         case count
-        when 3
+        when 3...7
           Belt.find_or_create_by_level!(args, 1)
-        when 7
+        when 7...11
           Belt.find_or_create_by_level!(args, 2)
-        when 11
+        when 11...16
           Belt.find_or_create_by_level!(args, 3)
-        when 16
+        when 16...21
           Belt.find_or_create_by_level!(args, 4)
-        when 21
+        when 21...26
           Belt.find_or_create_by_level!(args, 5)
-        when 26
+        when 26...31
           Belt.find_or_create_by_level!(args, 6)
         when 31
           Belt.find_or_create_by_level!(args, 7)
@@ -185,15 +181,15 @@ class Belt < ApplicationRecord
       when "Géométrie"
         # [2, 5, 8, 12, 16, 21, 26]
         case count
-        when 2
+        when 2...5
           Belt.find_or_create_by_level!(args, 1)
-        when 5
+        when 5...8
           Belt.find_or_create_by_level!(args, 2)
-        when 8
+        when 8...12
           Belt.find_or_create_by_level!(args, 3)
-        when 12
+        when 12...16
           Belt.find_or_create_by_level!(args, 4)
-        when 16
+        when 16...21
           Belt.find_or_create_by_level!(args, 5)
         when 21
           Belt.find_or_create_by_level!(args, 6)
@@ -203,17 +199,17 @@ class Belt < ApplicationRecord
       when "Grandeurs et Mesures"
         case count
           # [3, 7, 11, 16, 21, 27, 33]
-        when 3
+        when 3...7
           Belt.find_or_create_by_level!(args, 1)
-        when 7
+        when 7...11
           Belt.find_or_create_by_level!(args, 2)
-        when 11
+        when 11...16
           Belt.find_or_create_by_level!(args, 3)
-        when 16
+        when 16...21
           Belt.find_or_create_by_level!(args, 4)
-        when 21
+        when 21...27
           Belt.find_or_create_by_level!(args, 5)
-        when 27
+        when 27...33
           Belt.find_or_create_by_level!(args, 6)
         when 33
           Belt.find_or_create_by_level!(args, 7)

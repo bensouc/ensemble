@@ -89,7 +89,27 @@ class StudentsController < ApplicationController
     end
   end
 
+  def add_completed_wps
+    student = Student.find(params_new_validated_wps[:student_id])
+    skill = []
+    skill << Skill.find(params_new_validated_wps[:skill_id])
+
+    special_work_plan = student.find_special_workplan
+    work_plan_domain = special_work_plan.work_plan_domains.find_or_create_by(
+      domain: skill.first.domain,
+      work_plan: special_work_plan,
+      level: skill.first.level
+      )
+    # work_plan_domai.save
+    WorkPlanDomain.add_wps_completed(skill, work_plan_domain, special_work_plan)
+    render partial: "classrooms/results_wps_completed"
+  end
+
   private
+
+  def params_new_validated_wps
+    params.permit(:student_id, :skill_id)
+  end
 
   def params_add_validated_wps
     params.permit(:student_id, :level, :domain)

@@ -17,14 +17,22 @@
 						</div>
 						<div class="classroom-right-data-results" >
 							<% @students_list.each do |student| %>
-								<div class="result-cell">
-									<% unless @special_domain || belt_on_level.nil? || belt_on_level.select{ |belt| belt.student == student}.empty? %>
+								<div class="result-cell" data-controller='classroom-add-wps' data-classroom-add-wps-target='wpsBox'>
+									<% if !(@special_domain || belt_on_level.nil? || belt_on_level.select{ |belt| belt.student == student}.empty?) %>
 										<%#If special domain true ou ceinture  %>
 										<i class="fa-solid fa-circle-check --vert"></i>
+									<% elsif !(@all_completed_work_plan_skills.nil? || @all_completed_work_plan_skills[student.id.to_s].nil? || @all_completed_work_plan_skills[student.id.to_s].select{|wps| wps.skill == skill }.empty?) %>
+										<%# <% unless @all_completed_work_plan_skills.nil? || @all_completed_work_plan_skills[student.id.to_s].nil? || @all_completed_work_plan_skills[student.id.to_s].select{|wps| wps.skill == skill }.empty? %>
+										<i class="fa-solid fa-circle-check --vert"></i>
 									<% else %>
-										<% unless @all_completed_work_plan_skills.nil? || @all_completed_work_plan_skills[student.id.to_s].nil? || @all_completed_work_plan_skills[student.id.to_s].select{|wps| wps.skill == skill }.empty? %>
-											<i class="fa-solid fa-circle-check --vert"></i>
-										<% end %>
+										<div class='w-100 h-100 text-center' data-controller='wps-result' data-action='mouseover->wps-result#displayName mouseout->wps-result#hideName'>
+											<%= link_to "+", student_add_completed_wps_path(student, params:{skill_id: skill.id}),
+                                                class: "d-inline bg-transparent p-0 --green d-none",
+                                                form_class: "d-inline ",
+                                                data:{ wps_result_target:'name',
+                                                action:'click->classroom-add-wps#validateWps'
+                                                }%>
+										</div>
 									<% end %>
 								</div>
 							<% end %>

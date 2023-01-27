@@ -16,11 +16,19 @@ class Student < ApplicationRecord
 
   validates :first_name, presence: true
 
+  def grade
+    classroom.grade
+  end
+
   def all_domains_from_student
     WorkPlanDomain::DOMAINS[classroom.grade]
   end
 
   def all_completed_work_plan_skills(domain, grade)
     work_plan_skills.includes([:skill]).select { |wps| wps.completed && wps.skill.grade == grade && wps.skill.domain == domain }
+  end
+
+  def find_special_workplan
+    WorkPlan.includes(:work_plan_domains).find_or_create_by!(student: self, grade: , special_wps: true)
   end
 end
