@@ -26,7 +26,6 @@ Rails.application.routes.draw do
     resources :challenges, only: [:create, :update]
     post "/challenges/:id", to: "challenges#clone", as: :clone
     # completed / failed / redo
-    # post "", to: "work_plan_skills#update_eval", as: :update_eval
   end
 
   resources :classrooms, only: [:index, :show, :update, :new, :create, :destroy] do
@@ -41,6 +40,7 @@ Rails.application.routes.draw do
     post "", to: "work_plans#auto_new_wp", as: :auto_new_wp
     get "new_validated_wps", to: "students#new_validated_wps", as: :new_validated_wps
     post "new_validated_wps", to: "work_plan_skills#add_validated_wps", as: :add_validated_wps
+    get "add_completed_wps", to: "students#add_completed_wps", as: :add_completed_wps
   end
 
 

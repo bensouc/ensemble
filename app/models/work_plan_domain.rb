@@ -37,6 +37,36 @@ class WorkPlanDomain < ApplicationRecord
     Skill.where(domain: domain, level: level, grade: work_plan.grade)
   end
 
+  def self.add_wps_completed(skills, work_plan_domain, special_work_plan)
+  
+    skills.each do |skill|
+      work_plan_skill = WorkPlanSkill.create!(
+        work_plan_domain: work_plan_domain,
+        skill:,
+        status: "completed",
+        completed: true,
+        kind: "ceinture"
+      )
+      # validate BElt?
+      # raise
+      if WorkPlanDomain::DOMAINS_SPECIALS.include?(work_plan_domain.domain) && skill.grade != "CM2"
+        Belt.special_newbelt(work_plan_skill, special_work_plan)
+      elsif work_plan_domain.all_skills_completed?
+        belt = Belt.find_or_create_by(
+          {     student_id: special_work_plan.student.id,
+                domain: work_plan_domain.domain,
+                grade: skill.grade,
+                level: skill.level,
+                completed: true,
+                validated_date: DateTime.now
+              }
+        )
+        belt.save
+      end
+    end
+
+  end
+
   # test if a all skills are validated on a domain and
   # update completed status
   def all_skills_completed?

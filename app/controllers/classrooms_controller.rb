@@ -41,16 +41,14 @@ class ClassroomsController < ApplicationController
     @skills = Skill.where(grade: @classroom.grade)
     # raise
     @domains.map do |domain|
-      @domains.delete(domain) if @skills.select{|skill| skill.domain == domain}.empty?
+      @domains.delete(domain) if @skills.select { |skill| skill.domain == domain }.empty?
     end
     @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != "CM2")
     @domain = @domains.first
-    @students_list = @classroom.students_list.sort_by{|student| student.first_name.downcase}
+    @students_list = @classroom.students_list.sort_by { |student| student.first_name.downcase }
 
     # get all validated belts for all classroom student
     @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain: @domain, completed: true)
-    # @all_completed_belts = Belt.includes([:students]).where(students: @students_list, domain: domain, completed: true)
-    # raise
     @all_completed_work_plan_skills = @students_list.map do |student|
       completed_wps = student.all_completed_work_plan_skills(@domain, @classroom.grade)
       {
@@ -80,7 +78,7 @@ class ClassroomsController < ApplicationController
   private
 
   def set_classroom
-    @classroom = Classroom.includes([:students]).find(params[:id])
+    @classroom = Classroom.find(params[:id])
   end
 
   def set_domain

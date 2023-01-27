@@ -2,9 +2,9 @@ import { Controller } from "stimulus";
 
 export default class extends Controller {
   static targets = ['button','name'];
-  // connect() {
-  //   console.log('WPS edit connected');
-  // }
+  connect() {
+    console.log('WPS edit connected');
+  }
 
   displayName() {
     // console.log(this.nameTarget);
