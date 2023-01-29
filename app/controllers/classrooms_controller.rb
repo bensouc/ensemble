@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ClassroomsController < ApplicationController
-  before_action :set_classroom, only: [:update, :destroy, :results,:results_by_domain]
+  before_action :set_classroom, only: [:update, :destroy, :results, :results_by_domain]
 
   def index
     @school = current_user.school
@@ -41,38 +41,18 @@ class ClassroomsController < ApplicationController
     @skills = Skill.where(grade: @classroom.grade)
     # raise
     @domains.map do |domain|
+      # remove domains without skills eg:poesie
       @domains.delete(domain) if @skills.select { |skill| skill.domain == domain }.empty?
     end
-    @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != "CM2")
     @domain = @domains.first
-    @students_list = @classroom.students_list.sort_by { |student| student.first_name.downcase }
-
-    # get all validated belts for all classroom student
-    @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain: @domain, completed: true)
-    @all_completed_work_plan_skills = @students_list.map do |student|
-      completed_wps = student.all_completed_work_plan_skills(@domain, @classroom.grade)
-      {
-        student.id.to_s => completed_wps
-      } unless completed_wps.empty?
-    end
-    @all_completed_work_plan_skills = @all_completed_work_plan_skills.first
+    results_factory # create all  variables shared with the results_by_domain Action
   end
 
   def results_by_domain
     @domain = set_domain
-    @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != 'CM2')
     @skills = Skill.where(grade: @classroom.grade, domain: @domain)
-    @students_list = @classroom.students_list
-    @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain: @domain, completed: true)
-    @all_completed_work_plan_skills = @students_list.map do |student|
-      completed_wps = student.all_completed_work_plan_skills(@domain, @classroom.grade)
-      {
-        student.id.to_s => completed_wps
-      } unless completed_wps.empty?
-    end
-    @all_completed_work_plan_skills = @all_completed_work_plan_skills.first
-    # raise
-    render partial:'classrooms/classroom_domain_results'
+    results_factory # create all  variables shared with the results Action
+    render partial: "classrooms/classroom_domain_results"
   end
 
   private
@@ -87,5 +67,20 @@ class ClassroomsController < ApplicationController
 
   def set_classroom_params
     params.require(:classroom).permit(:grade, :name)
+  end
+
+  # COntroller Method
+  def results_factory
+    @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != "CM2")
+    @students_list = @classroom.students_list.sort_by { |student| student.first_name.downcase }
+    # get all validated belts for all classroom student
+    @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain: @domain, completed: true)
+    @all_completed_work_plan_skills = {}
+    @students_list.each do |student|
+      completed_wps = student.all_completed_work_plan_skills(@domain, @classroom.grade)
+      unless completed_wps.empty?
+        @all_completed_work_plan_skills[student.id.to_s] = completed_wps
+      end
+    end
   end
 end
