@@ -106,10 +106,12 @@ class WorkPlanSkillsController < ApplicationController
   end
 
   def remove_special_wps
-    wps = WorkPlanSkill.find(params[:work_plan_skill_id])
-    skill = wps.skill
-    student = wps.student
-    binding.pry
+    @wps = WorkPlanSkill.find(params[:work_plan_skill_id])
+    @skill = @wps.skill
+    @student = @wps.student
+    @wps.destroy
+
+    render partial: 'remove_special_wps'
   end
 
   private

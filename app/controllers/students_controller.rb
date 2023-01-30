@@ -101,8 +101,12 @@ class StudentsController < ApplicationController
       level: skill.first.level
       )
     # work_plan_domai.save
-    WorkPlanDomain.add_wps_completed(skill, work_plan_domain, special_work_plan)
-    render partial: "classrooms/results_wps_completed"
+    @wps = WorkPlanDomain.add_wps_completed(skill, work_plan_domain, special_work_plan)
+    if @wps.nil?
+      render partial: "classrooms/results_wps_completed"
+    else
+      render partial: "work_plan_skills/add-special_wps"
+    end
   end
 
   private
