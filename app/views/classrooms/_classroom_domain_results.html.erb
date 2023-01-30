@@ -22,17 +22,25 @@
 										<%#If special domain true ou ceinture  %>
 										<i class="fa-solid fa-circle-check --vert"></i>
 									<% elsif !(@all_completed_work_plan_skills.nil? || @all_completed_work_plan_skills[student.id.to_s].nil? || @all_completed_work_plan_skills[student.id.to_s].select{|wps| wps.skill == skill }.empty?) %>
-										<%# <% unless @all_completed_work_plan_skills.nil? || @all_completed_work_plan_skills[student.id.to_s].nil? || @all_completed_work_plan_skills[student.id.to_s].select{|wps| wps.skill == skill }.empty? %>
-										<i class="fa-solid fa-circle-check --vert"></i>
+										<% wps = @all_completed_work_plan_skills[student.id.to_s].select{|wps| wps.skill == skill }.last %>
+										<% wp_s = wps.work_plan_domain.work_plan %>
+										<% if wp_s.special_wps? %>
+											<div class='--cursor-pointer' data-controller='display-special-wps-mngt' data-action='mouseover->display-special-wps-mngt#displayWps mouseout->display-special-wps-mngt#hideWps'>
+												<div data-display-special-wps-mngt-target='show'>
+													<i class="fa-solid fa-circle-check --vert"></i>
+												</div>
+												<div class="--cursor-pointer d-none" data-display-special-wps-mngt-target='delete'>
+													<%= link_to '-', work_plan_skill_remove_special_wps_path(wps),
+                                    class: '--roseL',
+                                    method: 'delete',
+                                    data:{ action:'click->classroom-add-wps#validateWps'}%>
+												</div>
+											</div>
+										<% else %>
+											<i class="fa-solid fa-circle-check --vert"></i>
+										<% end %>
 									<% else %>
-										<div class='w-100 h-100 text-center' data-controller='wps-result' data-action='mouseover->wps-result#displayName mouseout->wps-result#hideName'>
-											<%= link_to "+", student_add_completed_wps_path(student, params:{skill_id: skill.id}),
-                                                class: "d-inline bg-transparent p-0 --green d-none",
-                                                form_class: "d-inline ",
-                                                data:{ wps_result_target:'name',
-                                                action:'click->classroom-add-wps#validateWps'
-                                                }%>
-										</div>
+										<%= render 'results_add_wps_completed',student: student, skill: skill%>
 									<% end %>
 								</div>
 							<% end %>

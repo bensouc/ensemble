@@ -92,7 +92,7 @@ class WorkPlanSkillsController < ApplicationController
   # to add a validated wps on a student on special_wps=true Workplan
   def add_validated_wps
     skills_and_student = get_all_skills_to_add_completed_wps #call private method to get all the needed skills to be completed
-    skills =  skills_and_student[:skills]
+    skills = skills_and_student[:skills]
     domain = skills.first.domain # get domain to work on
     @student = skills_and_student[:student] # get the student
     student_grade = skills.first.grade # the grade to work on
@@ -101,37 +101,16 @@ class WorkPlanSkillsController < ApplicationController
     @work_plan_domain = @special_work_plan.work_plan_domains.includes(:work_plan_skills).find_or_create_by(work_plan: @special_work_plan, domain: domain,level: skills.first.level)
 
     WorkPlanDomain.add_wps_completed(skills, @work_plan_domain,@special_work_plan)
-    # skills.each { |skill|
-    #   work_plan_skill = WorkPlanSkill.create!(
-    #     work_plan_domain: @work_plan_domain,
-    #     skill:,
-    #     status: "completed",
-    #     completed: true,
-    #     kind: "ceinture"
-    #   )
-    #   # validate BElt?
-    #   if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && student_grade != "CM2"
-    #     raise
-    #     Belt.special_newbelt(work_plan_skill, @special_work_plan)
-    #   elsif @work_plan_domain.all_skills_completed?
-    #     belt = Belt.find_or_create_by(
-    #       {     student_id: @student.id,
-    #             domain:,
-    #             grade: student_grade,
-    #             level: skills.first.level,
-    #             completed: true,
-    #             validated_date: DateTime.now
-    #           }
-    #     )
-    #     belt.save
-    #   end
-    # }
-    # # find or create a belt
-
 
     redirect_to student_path(@student)
   end
 
+  def remove_special_wps
+    wps = WorkPlanSkill.find(params[:work_plan_skill_id])
+    skill = wps.skill
+    student = wps.student
+    binding.pry
+  end
 
   private
 

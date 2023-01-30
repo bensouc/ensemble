@@ -8,7 +8,7 @@ export default class extends Controller {
   }
 
     validateWps(event) {
-    console.log(event.target);
+      console.log(event.target.href);
       event.preventDefault()
       this.request = new Request(event.target.href);
       this.fetchContent(this.request);
