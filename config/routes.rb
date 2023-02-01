@@ -25,6 +25,7 @@ Rails.application.routes.draw do
   resources :work_plan_skills, only: [:update, :destroy] do
     resources :challenges, only: [:create, :update]
     post "/challenges/:id", to: "challenges#clone", as: :clone
+    get "remove_special_wps", to: "work_plan_skills#remove_special_wps", as: :remove_special_wps
     # completed / failed / redo
   end
 

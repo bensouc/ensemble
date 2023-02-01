@@ -18,6 +18,10 @@ class WorkPlanSkill < ApplicationRecord
     work_plan_domain.work_plan.student
   end
 
+  def special_wps?
+    work_plan_domain.work_plan.special_wps
+  end
+
   def clone(_current_wp, new_wp_domain)
     new_wps = dup
     new_wps.work_plan_domain_id = new_wp_domain.id
@@ -40,7 +44,7 @@ class WorkPlanSkill < ApplicationRecord
 
     wpss = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill: skills)
     wpss.select { |wps| wps.student == student }
-    
+
   end
 
   def add_challenges_2_wps(current_user, _actual_challenge = nil)

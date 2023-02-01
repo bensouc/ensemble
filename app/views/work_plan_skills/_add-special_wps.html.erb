@@ -1,0 +1,10 @@
+<div class='--cursor-pointer' data-controller='display-special-wps-mngt' data-action='mouseover->display-special-wps-mngt#displayWps mouseout->display-special-wps-mngt#hideWps'>
+	<div data-display-special-wps-mngt-target='show'>
+		<i class="fa-solid fa-circle-check --vert"></i>
+	</div>
+	<div class="--cursor-pointer d-none" data-display-special-wps-mngt-target='delete'>
+		<%= link_to '-', work_plan_skill_remove_special_wps_path(@wps),
+                                    class: '--roseL',
+                                    method: 'delete',
+                                    data:{ action:'click->classroom-add-wps#validateWps'}%>
+	</div>

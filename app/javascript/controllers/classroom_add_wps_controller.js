@@ -8,8 +8,12 @@ export default class extends Controller {
   }
 
     validateWps(event) {
-    console.log(event.target);
       event.preventDefault()
+      event.stopImmediatePropagation()
+      console.log(event.target.href);
+      // let method = 'POST'
+      // if (event.target.href.includes('remove'))
+      // {method = 'DELETE' }
       this.request = new Request(event.target.href);
       this.fetchContent(this.request);
       // change domain name
