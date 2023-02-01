@@ -37,6 +37,51 @@ class WorkPlanSkillsController < ApplicationController
     redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(work_plan_domain))
   end
 
+  def eval_update
+    # binding.pry
+    @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
+    @work_plan = @work_plan_skill.work_plan_domain.work_plan
+    @work_plan_skill.status = params[:status]
+    # @work_plan_skill.completed = true if @work_plan_skill.kind == "ceinture" && params[:status] == "completed"
+    # Create a belt or get the corresponding one
+    belt = Belt.find_or_create_by(
+      {
+        student_id: @work_plan_skill.student.id,
+        domain: @work_plan_skill.work_plan_domain.domain,
+        grade: @work_plan.grade,
+        level: @work_plan_skill.work_plan_domain.level,
+      }
+    )
+    # add test if (@work_plan_skill.kind == 'ceinture' && @work_plan_skill.status)
+    if @work_plan_skill.kind == "ceinture" || @work_plan_skill.kind == "controle"
+      case @work_plan_skill.status
+      when "completed"
+        @work_plan_skill.completed = true
+        @work_plan_skill.save!
+
+        # test for each skill of its domain a 'belt is validated'jbiv
+        if WorkPlanDomain::DOMAINS_SPECIALS.include?(@work_plan_skill.work_plan_domain.domain) && @work_plan.grade != "CM2"
+          Belt.special_newbelt(@work_plan_skill, @work_plan)
+        elsif @work_plan_skill.work_plan_domain.all_skills_completed?
+          belt.completed = true
+          belt.validated_date = DateTime.now
+          belt.save!
+        end
+      end
+    end
+
+    @work_plan_skill.save!
+    # if is_mobile_device?
+    #   render partial: "mobile/work_plans/eval_mobile_last_wps_ajax"
+    #   # redirect_to mobile_eval_path(@work_plan_skill.work_plan_domain.work_plan,
+    #   #                              anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
+    # else
+    #   # redirect_to eval_path(@work_plan_skill.work_plan_domain.work_plan,
+    #   #                       anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
+      render partial: "work_plans/eval_last_wps_ajax"
+    # end
+  end
+
   def update
     @work_plan_skill = WorkPlanSkill.find(params[:id])
     @work_plan = @work_plan_skill.work_plan_domain.work_plan

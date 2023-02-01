@@ -3,7 +3,7 @@ import { Controller } from "stimulus";
 export default class extends Controller {
   static targets = ['panel'];
   connect() {
-    console.log('toogle panel controller connected');
+    // console.log('toogle panel controller connected');
   }
 
   displayPanel() {

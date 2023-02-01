@@ -1,36 +1,44 @@
-<div class="mobile-eval-mngt">
+<div class="mobile-eval-mngt" data-bs-dismiss="modal" aria-label="Close">
   <%# raise %>
   <% # #si plan_skill kind jeux %>
   <% if plan_skill.kind.downcase == "jeu" %>
-    <%= link_to work_plan_skill_path(plan_skill, status: :redo_OK), method: :patch do %>
-      <div><i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i></div>
+    <%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo_OK),
+                                  data:{action: "click->ajax-work-plan#toggle"} do %>
+      <i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i>
     <% end %>
-    <%= link_to work_plan_skill_path(plan_skill, status: :completed), method: :patch do %>
-      <div><i class="fas fa-pen text-primary eval-icon"></i></div>
+    <%= link_to work_plan_skill_eval_update_path(plan_skill, status: :completed),
+                                  data:{action: "click->ajax-work-plan#toggle"} do %>
+      <i class="fas fa-pen text-primary eval-icon"></i>
     <% end %>
   <% end %>
   <% # #si plan_skill kind exo %>
   <% if plan_skill.kind.downcase == "exercice" %>
-    <%= link_to work_plan_skill_path(plan_skill, status: :failed), method: :patch do %>
-      <div><i class="fa-solid fa-xmark text-danger eval-icon"></i></div>
+    <%= link_to work_plan_skill_eval_update_path(plan_skill, status: :failed),
+                                  data:{action: "click->ajax-work-plan#toggle"} do %>
+      <i class="fa-solid fa-xmark text-danger eval-icon"></i>
     <% end %>
-    <%= link_to work_plan_skill_path(plan_skill, status: :redo), method: :patch do %>
-      <div><i class="fa-solid fa-arrow-rotate-left orange eval-icon"></i></div>
+    <%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo),
+                                  data:{action: "click->ajax-work-plan#toggle"} do %>
+      <i class="fa-solid fa-arrow-rotate-left orange eval-icon"></i>
     <% end %>
-    <%= link_to work_plan_skill_path(plan_skill, status: :redo_OK), method: :patch do %>
-      <div><i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i></div>
+    <%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo_OK),
+                                  data:{action: "click->ajax-work-plan#toggle"} do %>
+      <i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i>
     <% end %>
-    <%= link_to work_plan_skill_path(plan_skill, status: :completed), method: :patch do %>
-      <div><i class="fa-solid fa-graduation-cap text-primary eval-icon"></i></div>
+    <%= link_to work_plan_skill_eval_update_path(plan_skill, status: :completed),
+                                  data:{action: "click->ajax-work-plan#toggle"} do %>
+      <i class="fa-solid fa-graduation-cap text-primary eval-icon"></i>
     <% end %>
   <% end %>
   <% # #si plan_skill kind ceinture %>
   <% if (plan_skill.kind.downcase == "controle") || (plan_skill.kind.downcase == "ceinture") %>
-    <%= link_to work_plan_skill_path(plan_skill, status: :redo), method: :patch do %>
-      <div><i class="fa-solid fa-arrow-rotate-left orange eval-icon"></i></div>
+    <%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo),
+                                  data:{action: "click->ajax-work-plan#toggle"} do %>
+      <i class="fa-solid fa-arrow-rotate-left orange eval-icon"></i>
     <% end %>
-    <%= link_to work_plan_skill_path(plan_skill, status: :completed), method: :patch do %>
-      <div><i class="fa-solid fa-graduation-cap text-primary eval-icon"></i></div>
+    <%= link_to work_plan_skill_eval_update_path(plan_skill, status: :completed),
+                                  data:{action: "click->ajax-work-plan#toggle"} do %>
+      <i class="fa-solid fa-graduation-cap text-primary eval-icon"></i>
     <% end %>
   <% end %>
 </div>
