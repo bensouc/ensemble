@@ -62,13 +62,12 @@ class WorkPlanDomain < ApplicationRecord
                 level: skill.level,
                 completed: true,
                 validated_date: DateTime.now
-              }
+          }
         )
         belt.save
-        last_work_plan_skill = nil
       end
     end
-
+    last_work_plan_skill
   end
 
   # test if a all skills are validated on a domain and

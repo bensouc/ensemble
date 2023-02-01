@@ -95,7 +95,7 @@ class WorkPlanSkillsController < ApplicationController
     skills = skills_and_student[:skills]
     domain = skills.first.domain # get domain to work on
     @student = skills_and_student[:student] # get the student
-    student_grade = skills.first.grade # the grade to work on
+    # student_grade = skills.first.grade # the grade to work on
     # find or create the student special work_pal vreate student.find_special_workplan
     @special_work_plan = @student.find_special_workplan
     @work_plan_domain = @special_work_plan.work_plan_domains.includes(:work_plan_skills).find_or_create_by(work_plan: @special_work_plan, domain: domain,level: skills.first.level)
@@ -109,8 +109,11 @@ class WorkPlanSkillsController < ApplicationController
     @wps = WorkPlanSkill.find(params[:work_plan_skill_id])
     @skill = @wps.skill
     @student = @wps.student
+    # exist il une belt poru lestudent le skill
+    belt = Belt.where(domain: @skill.domain, student: @student, level: @skill.level, grade: @skill.grade)
+    # belt to be destroy?
+    belt.first.destroy unless belt.empty?
     @wps.destroy
-
     render partial: 'remove_special_wps'
   end
 
