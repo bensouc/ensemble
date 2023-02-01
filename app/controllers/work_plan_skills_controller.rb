@@ -71,7 +71,6 @@ class WorkPlanSkillsController < ApplicationController
         if WorkPlanDomain::DOMAINS_SPECIALS.include?(@work_plan_skill.work_plan_domain.domain) && @work_plan.grade != "CM2"
           Belt.special_newbelt(@work_plan_skill, @work_plan)
         elsif @work_plan_skill.work_plan_domain.all_skills_completed?
-
           belt.completed = true
           belt.validated_date = DateTime.now
           belt.save!
@@ -98,9 +97,9 @@ class WorkPlanSkillsController < ApplicationController
     # student_grade = skills.first.grade # the grade to work on
     # find or create the student special work_pal vreate student.find_special_workplan
     @special_work_plan = @student.find_special_workplan
-    @work_plan_domain = @special_work_plan.work_plan_domains.includes(:work_plan_skills).find_or_create_by(work_plan: @special_work_plan, domain: domain,level: skills.first.level)
+    @work_plan_domain = @special_work_plan.work_plan_domains.includes(:work_plan_skills).find_or_create_by(work_plan: @special_work_plan, domain: domain, level: skills.first.level)
 
-    WorkPlanDomain.add_wps_completed(skills, @work_plan_domain,@special_work_plan)
+    WorkPlanDomain.add_wps_completed(skills, @work_plan_domain, @special_work_plan)
 
     redirect_to student_path(@student)
   end
@@ -109,12 +108,15 @@ class WorkPlanSkillsController < ApplicationController
     @wps = WorkPlanSkill.find(params[:work_plan_skill_id])
     @skill = @wps.skill
     @student = @wps.student
-    # exist il une belt poru lestudent le skill
-    belt = Belt.where(domain: @skill.domain, student: @student, level: @skill.level, grade: @skill.grade)
-    # belt to be destroy?
-    belt.first.destroy unless belt.empty?
+    # test if special domain
+    unless WorkPlanDomain::DOMAINS_SPECIALS.include?(@skill.domain) && @skill.grade != "CM2"
+      # exist il une belt pour lestudent le skill
+      belt = Belt.where(domain: @skill.domain, student: @student, level: @skill.level, grade: @skill.grade)
+      # belt to be destroy?
+      belt.first.destroy unless belt.empty?
+    end
     @wps.destroy
-    render partial: 'remove_special_wps'
+    render partial: "remove_special_wps"
   end
 
   private
@@ -124,7 +126,7 @@ class WorkPlanSkillsController < ApplicationController
   def get_add_validated_wps_skill_student
     {
       student_id: params.permit(:student_id)[:student_id],
-       skill_ids: params.require(:new_wps).permit(skills: [])[:skills][1..-1]
+      skill_ids: params.require(:new_wps).permit(skills: [])[:skills][1..-1],
     }
   end
 
@@ -153,7 +155,7 @@ class WorkPlanSkillsController < ApplicationController
     }
     {
       skills: skills,
-      student: Student.includes(:classroom).find(data[:student_id])
+      student: Student.includes(:classroom).find(data[:student_id]),
     }
   end
 end

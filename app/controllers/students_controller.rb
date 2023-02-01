@@ -102,7 +102,7 @@ class StudentsController < ApplicationController
       )
     # work_plan_domai.save
     @wps = WorkPlanDomain.add_wps_completed(skill, work_plan_domain, special_work_plan)
-    if @wps.nil?
+    if @wps.nil? # nil only if special domain
       render partial: "classrooms/results_wps_completed"
     else
       render partial: "work_plan_skills/add-special_wps"
