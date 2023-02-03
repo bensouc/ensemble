@@ -7,10 +7,8 @@
       <%=@work_plan.name.capitalize%>
     </h1>
     <h4> Niveau: <%=@work_plan.grade.capitalize%></h4>
-    <%= link_to work_plan_clone_path(@work_plan), method: "post",
-                                                  class: "utility-wp-btn mt-3 mb-3",
-                                                  data: { confirm: "Cette copie ne sera assignée à aucun élève" } do %>
-      <h6>Copier</h6>
+    <%= link_to work_plan_clone_path(@work_plan), method: "post", class: "utility-wp-btn mt-3 mb-3" do %>
+      <h6>Cloner</h6>
     <% end %>
   </div>
   <div class="grey-line"></div>

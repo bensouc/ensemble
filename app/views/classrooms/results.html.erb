@@ -1,4 +1,4 @@
-<div class='all-results' data-controller= "ajax-display-results-classroom">
+<div class='all-results' data-controller= "display-results-classroom">
 	<div class="skills">
 		<% @domains.each do |domain| %>
 			<%= render 'tab_for_domain_on_classroom_results', domain: %>
@@ -7,7 +7,7 @@
 	<div class="classroom-results-header">
 		<div class="skill" >
 			<h1><%=@classroom.grade %> -  <%=@classroom.name %></h1>
-			<div data-ajax-display-results-classroom-target='domainnamedisplay'>
+			<div data-display-results-classroom-target='domainnamedisplay'>
 				<%= @domain.capitalize %>
 			</div>
 		</div>
@@ -18,7 +18,7 @@
 		<% end %>
 	</div>
 	<div class="classroom-data-results"
-        data-ajax-display-results-classroom-target='results'>
+        data-display-results-classroom-target='results'>
 		<%= render 'classroom_domain_results' %>
 	</div>
 </div>

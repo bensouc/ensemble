@@ -35,7 +35,6 @@ fr:
       default: "%d/%m/%Y"
       long: "%e %B %Y"
       short: "%e %b"
-      year_only: "%Y"
     month_names:
     -
     - janvier
