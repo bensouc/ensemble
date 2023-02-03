@@ -45,7 +45,6 @@ Rails.application.routes.draw do
     get "add_completed_wps", to: "students#add_completed_wps", as: :add_completed_wps
   end
 
-
   resources :belts, only: [:destroy, :edit, :update]
 
   # route for tab editing

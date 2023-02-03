@@ -1,3 +1,3 @@
 <div class='w-100 h-100 text-center' data-controller='wps-result' data-action='mouseover->wps-result#displayName mouseout->wps-result#hideName'>
-	<a class="d-inline bg-transparent p-0 --green d-none" form_class="d-inline " data-wps-result-target="name" data-action="click->classroom-add-wps#validateWps" href="/students/<%=@student.id%>/add_completed_wps?skill_id=<%=@skill.id%>">+</a>
+	<a class="d-inline bg-transparent p-0 --green d-none" form_class="d-inline " data-wps-result-target="name" data-action="click->ajax-classroom-add-wps#validateWps" href="/students/<%=@student.id%>/add_completed_wps?skill_id=<%=@skill.id%>">+</a>
 </div>

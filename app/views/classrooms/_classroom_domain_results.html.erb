@@ -17,7 +17,7 @@
 						</div>
 						<div class="classroom-right-data-results" >
 							<% @students_list.each do |student| %>
-								<div class="result-cell" data-controller='classroom-add-wps' data-classroom-add-wps-target='wpsBox'>
+								<div class="result-cell" data-controller='ajax-classroom-add-wps' data-ajax-classroom-add-wps-target='wpsBox'>
 									<% if !(@special_domain || belt_on_level.nil? || belt_on_level.select{ |belt| belt.student == student}.empty?) %>
 										<%#If special domain true ou ceinture  %>
 										<i class="fa-solid fa-circle-check --vert"></i>
@@ -33,7 +33,7 @@
 													<%= link_to '-', work_plan_skill_remove_special_wps_path(wps),
                                     class: '--roseL',
                                     method: 'delete',
-                                    data:{ action:'click->classroom-add-wps#validateWps'}%>
+                                    data:{ action:'click->ajax-classroom-add-wps#validateWps'}%>
 												</div>
 											</div>
 										<% else %>
