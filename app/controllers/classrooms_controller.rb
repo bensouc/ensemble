@@ -45,13 +45,18 @@ class ClassroomsController < ApplicationController
       @domains.delete(domain) if @skills.select { |skill| skill.domain == domain }.empty?
     end
     @domain = @domains.first
+    @skills = @skills.select { |skill| skill.domain == @domain }.sort
     results_factory # create all  variables shared with the results_by_domain Action
   end
 
   def results_by_domain
     @domain = set_domain
-    @skills = Skill.where(grade: @classroom.grade, domain: @domain)
     results_factory # create all  variables shared with the results Action
+    @skills = if @special_domain
+                Skill.where(grade: @classroom.grade, domain: @domain).sort_by(&:sub_domain)
+              else
+                Skill.where(grade: @classroom.grade, domain: @domain).sort
+              end
     render partial: "classrooms/classroom_domain_results"
   end
 
