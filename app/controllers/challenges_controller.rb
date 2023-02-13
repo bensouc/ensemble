@@ -12,7 +12,7 @@ class ChallengesController < ApplicationController
     @work_plan_skill.save
     respond_to do |format|
       format.html {
-        redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge)),
+        redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@new_challenge)),
                     notice: "Clonage réussi"
       }
       format.json { render @challenge }
