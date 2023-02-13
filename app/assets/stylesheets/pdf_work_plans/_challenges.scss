@@ -11,6 +11,9 @@
   border:  solid #dddddd ;
   border-radius: 14px;
 }
+.challenge-name-in-content {
+  display: none;
+}
 
 .challenge-mngt{
   margin-top: 20px;
@@ -168,5 +171,3 @@
 [type="submit"] {
   -webkit-appearance: none !important;
 }
-
-

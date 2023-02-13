@@ -3,16 +3,21 @@
 }
 
 .cont-challenge {
-  padding-top: 20px;
+  padding-top: 5px;
   padding-bottom: 20px;
   padding-left: 30px;
   padding-right: 20px;
   margin: 20px 20px 30px 30px;
   border: solid #dddddd;
   border-radius: 14px;
+  .challenge-name-in-content {
+    font-size: small !important;
+    color: #9c9c9c !important;
+    font-style: italic !important;
+  }
 }
 
-.challenge-card{
+.challenge-card {
   min-height: 50px;
 }
 .challenge-mngt {
@@ -155,7 +160,7 @@
   h6 {
     color: $white;
   }
-  }
+}
 
 .cancel-btn {
   border-radius: 12px;
@@ -257,6 +262,5 @@ trix-toolbar .trix-button--icon-table::before {
 }
 
 button {
-  padding: 10px 10px ;
-
+  padding: 10px 10px;
 }
