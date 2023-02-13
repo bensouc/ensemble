@@ -83,7 +83,7 @@ class WorkPlansController < ApplicationController
     @my_work_plans = WorkPlan.includes([:student]).where(user: current_user, special_wps: false).order(created_at: :DESC)
     # .sort_by(&:student)
     @my_work_plans_unassigned = @my_work_plans.select { |my_work_plan| my_work_plan.student.nil? }
-    @my_work_plans = @my_work_plans.reject{ |my_work_plan| my_work_plan.student.nil? }.sort_by(&:student)
+    @my_work_plans = @my_work_plans.reject { |my_work_plan| my_work_plan.student.nil? }.sort_by(&:student)
     @my_work_plans += shared_work_plans
   end
 
@@ -96,7 +96,7 @@ class WorkPlansController < ApplicationController
     @wpds.each do |wpd|
       wpd.work_plan_skills.each do |wps|
         # last_4_wps = WorkPlanSkill.where(student: @work_plan.student, skill: wps.skill_id).sort_by(&:created_at).reverse[1..3]
-        last_4_wps = WorkPlanSkill.last_4_wps(@work_plan, wps,@work_plan.student)
+        last_4_wps = WorkPlanSkill.last_4_wps(@work_plan, wps, @work_plan.student)
         @previous << [wps.skill_id, last_4_wps]
       end
     end
@@ -181,12 +181,16 @@ class WorkPlansController < ApplicationController
 
   def auto_new_wp
     @student = Student.find(set_params_student)
+
+    # start_date =  Time.zone.today.monday? ? Time.zone.today : Time.zone.today.next_occurring(:monday)
+    start_date = Time.zone.today.next_occurring(:monday)
+    end_date = start_date + 4
     @work_plan = WorkPlan.create(
       name: "AUTO - N°#{@student.work_plans.count + 1}",
       grade: @student.classroom.grade,
       student: @student, user: current_user,
-      start_date: Date.today.next_occurring(:monday),
-      end_date: Date.today.next_occurring(:friday),
+      start_date:,
+      end_date:
     )
 
     # ajout date intro prendre date => first monday => first friday
@@ -215,7 +219,7 @@ class WorkPlansController < ApplicationController
             skill: skill,
             # student: @student,
             work_plan_domain: wpd,
-            kind: "exercice"
+            kind: "exercice",
           )
           if last_wps.nil?
             # create a new wps with same kind and
@@ -223,7 +227,6 @@ class WorkPlansController < ApplicationController
             new_wps.save
             # if last wps is completed
           elsif last_wps.status == "completed"
-
             case last_wps.kind
             when "jeu"
               new_wps[:kind] = "exercice"
