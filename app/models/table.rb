@@ -9,4 +9,11 @@ class Table < ApplicationRecord
   def to_trix_content_attachment_partial_path
     "tables/editor"
   end
+
+  def clone
+    clone_table = self.dup
+    clone_table.save!
+    clone_table
+  end
+
 end

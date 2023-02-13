@@ -2,13 +2,13 @@
 <div class='display-challenge-name'>
   <h4><%= work_plan_skill.skill.name%></h4>
 </div>
-<div>
-  <div class="d-flex " data-controller='edit-challenge' id="<%=dom_id(work_plan_skill.challenge)%>">
+<div data-controller='replace-challenge'>
+  <div class="d-flex " data-controller='edit-challenge'  id="<%=dom_id(work_plan_skill.challenge)%>">
     <%# display le content.body d'un exo %>
     <div class="cont-challenge w-100">
       <div class= " pencil-pointor" >
         <div class="challenge-card" data-edit-challenge-target="pencil" data-action="click->edit-challenge#displayForm">
-          <div class="challenge-infos " data-edit-challenge-target="infos" >
+          <div class="challenge-infos " data-edit-challenge-target="infos" data-replace-challenge-target='content' id='<%=work_plan_skill.challenge.id %>'>
             <%= work_plan_skill.challenge.content.body %>
           </div>
         </div>
@@ -36,7 +36,10 @@
     </div>
     <%# cloner un exo %>
     <div class="challenge-mngt">
-      <%= link_to  work_plan_skill_clone_path( work_plan_skill, work_plan_skill.challenge.id) ,action: 'clone', method: 'post', class: 'replace-challenge-btn' do %>
+      <%= link_to  work_plan_skill_clone_path( work_plan_skill, work_plan_skill.challenge.id),
+                              action: 'clone', method: 'post',
+                              class: 'replace-challenge-btn' do %> <%#data:{ action: "click->replace-challenge#cloneChallenge"}%>
+
         <i class="far fa-clone me-2"></i>
         <h6>Cloner</h6>
       <% end %>
