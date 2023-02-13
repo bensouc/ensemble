@@ -3,7 +3,7 @@ import { Controller } from "stimulus"
 export default class extends Controller {
   static targets = ['spinner']
   connect() {
-    console.log("spinner OK")
+    // console.log("spinner OK")
     if (this.spinnerTarget) {
       this.spinnerTarget.classList.remove('d-none')
       this.spinnerTarget.classList.add('d-none')

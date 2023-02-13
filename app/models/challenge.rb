@@ -11,12 +11,22 @@ class Challenge < ApplicationRecord
   validates :name, presence: true, uniqueness: { message: "Le nom de cet exercice éxiste déja", scope: :skill }
   validates :shared, presence: true
 
-  def self.new_clone(challenge_original)
+  def new_clone
+    #  get sgid clone the attachement if table and attache it content
+
+    content = self.content
+    if self.content.body.to_s.include?("application/octet-stream")
+      content.body.to_s.gsub('"', "'").gsub(/sgid=\W(.*?)\W\scontent-type=\W+application/, "sgid='#{clone_table.attachable_sgid}' content-type='application")
+      content = self.content.body.to_s.gsub('"', "'").gsub(/sgid=\W(.*?)\W\scontent-type=\W+application/) do |match|
+        clone_table_challenge_from_sgid(match)
+      end
+    end
+
     Challenge.new(
       {
-        name: "#{challenge_original.name}-Clone#{rand(1..10)}",
-        content: challenge_original.content,
-        skill_id: challenge_original.skill_id
+        name: "#{self.name}-Clone#{rand(1..100)}",
+        content: content,
+        skill_id: self.skill_id,
       }
     )
   end
@@ -24,19 +34,28 @@ class Challenge < ApplicationRecord
   def self.assigned_challenges(skill, student)
     wpss = WorkPlanSkill.where(student: student, skill_id: skill.id, kind: "exercice")
     # challenge = []
-    wpss.map {|wps| wps.challenge}
+    wpss.map(&:challenge)
   end
 
-  def self.create_empty(work_plan_skill, name,current_user)
+  def self.create_empty(work_plan_skill, name, current_user)
     challenge = Challenge.create({
                                    skill: work_plan_skill.skill,
                                    name: "#{name}-NEW",
-                                   user: current_user
+                                   user: current_user,
                                  })
     challenge.content.body = <<~HTML
       Exercice à REDIGER............................
     HTML
     challenge.save!
     challenge
+  end
+
+  private
+
+  def clone_table_challenge_from_sgid(match)
+    original_table = ActionText::Attachable.from_attachable_sgid(match.match(/sgid=\W(.*?)\W\scontent-type=\W+application/)[1])
+    clone_table = original_table.clone
+    # raise
+    "sgid='#{clone_table.attachable_sgid}' content-type='application"
   end
 end
