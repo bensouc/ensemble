@@ -16,7 +16,7 @@ class Challenge < ApplicationRecord
 
     content = self.content
     if self.content.body.to_s.include?("application/octet-stream")
-      content.body.to_s.gsub('"', "'").gsub(/sgid=\W(.*?)\W\scontent-type=\W+application/, "sgid='#{clone_table.attachable_sgid}' content-type='application")
+      # content.body.to_s.gsub('"', "'").gsub(/sgid=\W(.*?)\W\scontent-type=\W+application/, "sgid='#{clone_table.attachable_sgid}' content-type='application")
       content = self.content.body.to_s.gsub('"', "'").gsub(/sgid=\W(.*?)\W\scontent-type=\W+application/) do |match|
         clone_table_challenge_from_sgid(match)
       end
