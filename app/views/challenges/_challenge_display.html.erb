@@ -1,0 +1,84 @@
+        <%# titre de la skill %>
+<div class='display-challenge-name'>
+	<h4><%= work_plan_skill.skill.name%></h4>
+</div>
+<div data-controller='replace-challenge'>
+	<div class="d-flex " data-controller='edit-challenge'  id="<%=dom_id(work_plan_skill.challenge)%>">
+		<%# display le content.body d'un exo %>
+		<div class="cont-challenge w-100">
+			<div class= "pencil-pointor" >
+				<div class="challenge-card" data-edit-challenge-target="pencil" data-action="click->edit-challenge#displayForm">
+					<div class="challenge-infos " data-edit-challenge-target="infos" data-replace-challenge-target='content' id='<%=work_plan_skill.challenge.id %>'>
+						<div class="challenge-name-in-content"><%= work_plan_skill.challenge.name%> </div>
+						<%= work_plan_skill.challenge.content.body %>
+					</div>
+				</div>
+				<div class="challenge-infos d-none" data-edit-challenge-target="preview" >
+				</div>
+			</div>
+			<%# Display editeur, en d-none de base %>
+			<div>
+				<%= form_for [work_plan_skill, work_plan_skill.challenge],
+                html: { class: 'd-none', data: { edit_challenge_target: 'form' } } do |form| %>
+					<div class="field pt-2 pb-2" data-controller="rich-text-table">
+						<div>
+							<%= form.text_field :name, class: "challenge-title"%>
+						</div>
+						<%= form.rich_text_area :content %>
+					</div>
+					<div class="form-actions d-flex justify-content-end height-validate-challenge">
+						<%= link_to work_plan_path(@work_plan, anchor: "challenge_#{work_plan_skill.challenge.id}"), class: 'cancel-btn' do %>
+							<i class="fas fa-times"></i>
+						<% end %>
+						<%= form.submit 'Enregistrer', class: 'validate-challenge-btn', data: { confirm: "Attention, modifier cet excercice impactera les autres Plans l'utilisant. Sinon vous pouvez cloner l'exercice." }%>
+					</div>
+				<% end %>
+			</div>
+		</div>
+		<%# cloner un exo %>
+		<div class="challenge-mngt">
+			<%= link_to  work_plan_skill_clone_path( work_plan_skill, work_plan_skill.challenge.id),
+                              action: 'clone', method: 'post',
+                              class: 'replace-challenge-btn' do %> <%#data:{ action: "click->replace-challenge#cloneChallenge"}%>
+				<i class="far fa-clone me-2"></i>
+				<h6>Cloner</h6>
+			<% end %>
+			<%# REPLACE A CHALLENGE %>
+			<div data-controller="skill-add">
+				<%=  link_to display_challenges_path(work_plan_skill.challenge) do%>
+					<div data-edit-challenge-target="button" data-skill-add-target="button" data-action="click->skill-ad#displayForm" class='replace-challenge-btn'>
+						<i class="far fa-folder-open me-2"></i>
+						<h6>Charger</h6>
+					</div>
+				<% end %>
+				<div class="d-none challenge-form" data-skill-add-target="form">
+					<%# Selectionner les challenges appartenant à un WP Skill%>
+					<%= simple_form_for work_plan_skill, method: :patch, class:'d-flex'  do |f| %>
+						<div class=" d-flex justify-content-between pb-1 w-100">
+							<div class='d-flex '>
+								<%# challenge qui appartient à un skill %>
+								<select name="challenge" id="challenge" class="challenge-selector" data-action="change->edit-challenge#preview">
+									<option value>Sélectionner un exercice</option>
+									<% challenges = work_plan_skill.skill.challenges.reject{|chal| chal == work_plan_skill.challenge}%>
+									<% challenges.each do |challenge| %>
+										<%# VOIR edit_challenge_controller.js pour le parse %>
+										<option data-content="<%= challenge.content.body.to_json %>" value=<%=challenge.id%>><%= challenge.name %></option>
+										<% end %>
+									</select>
+								</div>
+							</div>
+							<div>
+								<button class="validate-btn" type="submit">
+									<i class="far fa-save"></i>
+								</button>
+								<%= link_to work_plan_path(@work_plan, anchor: "challenge_#{work_plan_skill.challenge.id}"), class: 'cancel-btn' do %>
+									<i class="fas fa-times"></i>
+								<% end %>
+							</div>
+						<% end %>
+					</div>
+				</div>
+				<%# REPLACE A CHALLENGE END %>
+			</div>
+		</div>
+	</div>

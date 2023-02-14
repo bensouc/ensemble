@@ -59,7 +59,7 @@
   <div >
     <% work_plan_domain.work_plan_skills.order(:skill_id).each do |work_plan_skill| %>
       <% if (work_plan_skill.kind == 'exercice') %>
-        <%= render 'challenge_display', work_plan_skill: work_plan_skill%>
+        <%= render './challenges/challenge_display', work_plan_skill: work_plan_skill%>
       <% end %>
     <% end %>
   </div>

@@ -2,7 +2,7 @@
 
 class ChallengesController < ApplicationController
   before_action :get_work_plan_skill, only: [:clone, :update]
-  before_action :get_challenge, only: [:clone, :update]
+  before_action :get_challenge, only: [:clone, :update, :display_challenges]
 
   def clone
     @new_challenge = @challenge.new_clone
@@ -29,6 +29,11 @@ class ChallengesController < ApplicationController
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge)),
                   alert: "Sauvegarde échouée: #{@challenge.errors.messages[:name].first}"
     end
+  end
+  
+  def display_challenges
+    @challenges = Challenge.where(skill: @challenge.skill).reject{ |chal| chal == @challenge }
+    render "challenges/challenges_carroussel"
   end
 
   private
