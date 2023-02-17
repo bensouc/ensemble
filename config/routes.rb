@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     get "remove_special_wps", to: "work_plan_skills#remove_special_wps", as: :remove_special_wps
     get "eval_update", to: "work_plan_skills#eval_update", as: :eval_update
     # completed / failed / redo
+    get "change_challenge", to: "work_plan_skills#change_challenge", as: :change_challenge
   end
 
   resources :classrooms, only: [:index, :show, :update, :new, :create, :destroy] do
@@ -45,8 +46,9 @@ Rails.application.routes.draw do
     get "add_completed_wps", to: "students#add_completed_wps", as: :add_completed_wps
   end
 
-
   resources :belts, only: [:destroy, :edit, :update]
+
+  get "challenges/:id/display_challenges", to: "challenges#display_challenges", as: :display_challenges
 
   # route for tab editing
   resources :tables, only: [:show, :create, :update]

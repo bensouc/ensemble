@@ -3,9 +3,13 @@ import { Controller } from "stimulus";
 export default class extends Controller {
   static targets = ['infos', 'form', 'preview', 'button',"pencil"];
 
+  connect(){
+    // console.log('pencil connectéééé')
+  }
+
   displayForm() {
+    console.log(this.targets)
     this.infosTarget.classList.add('d-none');
-    // console.log(this.formTarget)
     this.formTarget.classList.remove('d-none');
     this.pencilTarget.classList.add('d-none')
   }

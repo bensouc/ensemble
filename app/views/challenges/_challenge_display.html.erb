@@ -1,17 +1,17 @@
 <div class='display-challenge-name'>         <%# titre de la skill %>
-	<h4><%= work_plan_skill.skill.name%></h4>
+	<h4><%= @work_plan_skill.skill.name%></h4>
 </div>
 <div class="challenge-card">
-	<div class="d-flex " data-controller='edit-challenge'  id="<%=dom_id(work_plan_skill.challenge)%>">
+	<div class="d-flex " data-controller='edit-challenge'  id="<%=dom_id(@challenge)%>">
 		<%# display le content.body d'un exo %>
-		<div class="cont-challenge w-100" data-ajax-replace-challenge-target='content' id="<%= work_plan_skill.challenge.id%>">
+		<div class="cont-challenge w-100" data-ajax-replace-challenge-target='content' id="<%= @challenge.id%>">
 			<div class= "pencil-pointor" >
 				<div  data-edit-challenge-target="infos" data-action="click->edit-challenge#displayForm">
-					<div class="challenge-infos"   data-ajax-replace-challenge-target='content' id='<%=work_plan_skill.challenge.id %>'>
+					<div class="challenge-infos"   data-ajax-replace-challenge-target='content' id='<%=@challenge.id %>'>
 						<div class="challenge-name-in-content">
-							<%= work_plan_skill.challenge.name%>
+							<%= @challenge.name%>
 						</div>
-						<%= work_plan_skill.challenge.content.body %>
+						<%= @challenge.content.body %>
 					</div>
 				</div>
 				<div class="challenge-infos d-none" data-edit-challenge-target="preview" >
@@ -19,7 +19,7 @@
 			</div>
 			<%# Display editeur, en d-none de base %>
 			<div>
-				<%= form_for [work_plan_skill, work_plan_skill.challenge],
+				<%= form_for [@work_plan_skill, @challenge],
                 html: { class: 'd-none', data: { edit_challenge_target: 'form' } } do |form| %>
 					<div class="field pt-2 pb-2" data-controller="rich-text-table">
 						<div>
@@ -28,7 +28,7 @@
 						<%= form.rich_text_area :content %>
 					</div>
 					<div class="form-actions d-flex justify-content-end height-validate-challenge">
-						<%= link_to work_plan_path(@work_plan, anchor: "challenge_#{work_plan_skill.challenge.id}"), class: 'cancel-btn' do %>
+						<%= link_to work_plan_path(@work_plan, anchor: "challenge_#{@challenge.id}"), class: 'cancel-btn' do %>
 							<i class="fas fa-times"></i>
 						<% end %>
 						<%= form.submit 'Enregistrer', class: 'validate-challenge-btn', data: { confirm: "Attention, modifier cet excercice impactera les autres Plans l'utilisant. Sinon vous pouvez cloner l'exercice." }%>
@@ -38,14 +38,14 @@
 		</div>
 		<div class="challenge-mngt">
 			<%# cloner un exo %>
-			<%= link_to work_plan_skill_clone_path( work_plan_skill, work_plan_skill.challenge.id),
+			<%= link_to work_plan_skill_clone_path( @work_plan_skill, @challenge.id),
                               action: 'clone', method: 'post',
                               class: 'replace-challenge-btn' do %> <%#data:{ action: "click->replace-challenge#cloneChallenge"}%>
 				<i class="far fa-clone me-2"></i>
 				<h6>Cloner</h6>
 			<% end %>
 			<%# REPLACE A CHALLENGE %>
-			<div data-controller="skill-add" data-ajax-replace-challenge-exo-value="<%=work_plan_skill.challenge.id%>">
+			<div data-controller="skill-add" data-ajax-replace-challenge-exo-value="<%=@challenge.id%>">
 				<div data-edit-challenge-target="button" data-skill-add-target="button" data-action="click->ajax-replace-challenge#showCarrousel" class='replace-challenge-btn'>
 					<i class="far fa-folder-open me-2"></i>
 					<h6>Charger</h6>

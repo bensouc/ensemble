@@ -2,7 +2,7 @@
 
 class ChallengesController < ApplicationController
   before_action :get_work_plan_skill, only: [:clone, :update]
-  before_action :get_challenge, only: [:clone, :update]
+  before_action :get_challenge, only: [:clone, :update, :display_challenges]
 
   def clone
     @new_challenge = @challenge.new_clone
@@ -28,6 +28,18 @@ class ChallengesController < ApplicationController
     else
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge)),
                   alert: "Sauvegarde échouée: #{@challenge.errors.messages[:name].first}"
+    end
+  end
+
+  def display_challenges
+    @challenges = Challenge.where(skill: @challenge.skill).reject { |chal| chal == @challenge }
+    # raise
+    if @challenges.empty?
+      @work_plan_skill = WorkPlanSkill.find(@challenge.work_plan_skill_ids.first)
+      @work_plan = @work_plan_skill.work_plan_domain.work_plan
+      render partial: "challenges/challenge_display", notice: "Il n'existe pas d'autre excercice pour cette compétence"
+    else
+      render partial: "challenges/challenges_carroussel"
     end
   end
 

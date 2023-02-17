@@ -16,9 +16,25 @@
     font-style: italic !important;
   }
 }
+.carrousel-validation {
+  // padding: 34px;
+  position: relative;
+    height: 0;
+    width: 0;
+    top: 70px;
+    right: -50%;
+    font-size: 34px;
+    transition: 0.3s;
+    z-index: 8;
+
+  &:hover {
+    transition: 0.3s;
+    transform: translatex(-7px) translateY(-18px) scale(1.5);
+  }
+}
 
 .challenge-card {
-  min-height: 50px;
+  min-height: 115px;
 }
 .challenge-mngt {
   margin-top: 20px;
