@@ -1,17 +1,16 @@
 <div class='display-challenge-name'>         <%# titre de la skill %>
 	<h4><%= work_plan_skill.skill.name%></h4>
 </div>
-<div>
+<div class="challenge-card">
 	<div class="d-flex " data-controller='edit-challenge'  id="<%=dom_id(work_plan_skill.challenge)%>">
 		<%# display le content.body d'un exo %>
 		<div class="cont-challenge w-100" data-ajax-replace-challenge-target='content' id="<%= work_plan_skill.challenge.id%>">
 			<div class= "pencil-pointor" >
-				<div class="challenge-card" >
-					<div class="challenge-infos"
-          data-edit-challenge-target="pencil" data-action="click->edit-challenge#displayForm"
-						data-edit-challenge-target="infos" data-ajax-replace-challenge-target='content'
-						id='<%=work_plan_skill.challenge.id %>'>
-						<div class="challenge-name-in-content"><%= work_plan_skill.challenge.name%> </div>
+				<div  data-edit-challenge-target="infos" data-action="click->edit-challenge#displayForm">
+					<div class="challenge-infos"   data-ajax-replace-challenge-target='content' id='<%=work_plan_skill.challenge.id %>'>
+						<div class="challenge-name-in-content">
+							<%= work_plan_skill.challenge.name%>
+						</div>
 						<%= work_plan_skill.challenge.content.body %>
 					</div>
 				</div>
