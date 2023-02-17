@@ -83,7 +83,7 @@ class WorkPlanSkillsController < ApplicationController
     @challenge = Challenge.find(params[:challenge])
     @work_plan_skill.challenge = @challenge
     @work_plan_skill.save!
-    render partial: "/challenges/challenge_display"
+    render partial: "/challenges/full_challenge_display"
   end
 
   # to add a validated wps on a student on special_wps=true Workplan

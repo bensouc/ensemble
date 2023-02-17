@@ -1,4 +1,5 @@
-import { add, Controller } from "stimulus";
+import {  Controller } from "stimulus";
+import swal from 'sweetalert';
 import Trix from "trix"
 import Rails from "@rails/ujs"
 import { type } from "jquery";
@@ -60,8 +61,10 @@ export default class extends Controller {
           // hide exo
           // add carrousel
           response.text().then((text) => this.contentTarget.innerHTML = text);
-        } else {
-          console.log("Raté l eval")
+        } else   {
+          swal({
+            title: "Il n'existe pas d'autre excercice pour cette compétence \n"
+                      });
         }
       })
   }

@@ -35,9 +35,10 @@ class ChallengesController < ApplicationController
     @challenges = Challenge.where(skill: @challenge.skill).reject { |chal| chal == @challenge }
     # raise
     if @challenges.empty?
-      @work_plan_skill = WorkPlanSkill.find(@challenge.work_plan_skill_ids.first)
-      @work_plan = @work_plan_skill.work_plan_domain.work_plan
-      render partial: "challenges/challenge_display", notice: "Il n'existe pas d'autre excercice pour cette compétence"
+      # @work_plan_skill = WorkPlanSkill.find(@challenge.work_plan_skill_ids.first)
+      # @work_plan = @work_plan_skill.work_plan_domain.work_plan
+      # render partial: "challenges/challenge_display", notice: "Il n'existe pas d'autre excercice pour cette compétence"
+       flash.now[:notice] = "Il n'existe pas d'autre excercice pour cette compétence"
     else
       render partial: "challenges/challenges_carroussel"
     end
