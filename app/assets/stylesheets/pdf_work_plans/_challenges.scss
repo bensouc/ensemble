@@ -1,69 +1,70 @@
-.display-challenge-name{
-  margin: 20px 0 -20px 0 ;
+.display-challenge-name {
+  margin: 20px 0 -20px 0;
 }
 
-.cont-challenge{
+.cont-challenge {
   padding-top: 5px;
   padding-bottom: 5px;
   padding-left: 30px;
   padding-right: 20px;
   margin: 20px 20px 30px 30px;
-  border:  solid #dddddd ;
+  border: solid #dddddd;
   border-radius: 14px;
 }
+
+
 .challenge-name-in-content {
   display: none;
 }
 
-.challenge-mngt{
+.challenge-mngt {
   margin-top: 20px;
-  padding: 0 5px 0 0 ;
+  padding: 0 5px 0 0;
 }
 
-.edit-challenge{
+.edit-challenge {
   background-color: $rose;
 }
 
-.height-validate-challenge{
+.height-validate-challenge {
   height: 50px;
 }
-.validate-challenge-btn{
+.validate-challenge-btn {
   display: flex;
   vertical-align: text-top;
-  border: solid #53D138 ;
+  border: solid #53d138;
   border-radius: 12px;
   width: fit-content;
 
   margin-left: 8px;
   background-color: white;
   transition: 0.3s;
-  color: #53D138;
-  h6{
+  color: #53d138;
+  h6 {
     padding-left: 4px;
-    padding-top: 3px ;
+    padding-top: 3px;
   }
-  i{
+  i {
     color: $white;
     // padding-top: 6px;
     margin-left: 10px;
     margin-right: 10px;
   }
-
 }
 
-.validate-challenge-btn:hover{
+.validate-challenge-btn:hover {
   cursor: pointer;
   transition: 0.2s;
-  background-color: #53D138;
-  border-color: #53D138;
+  background-color: #53d138;
+  border-color: #53d138;
   color: white;
-  i{
+  i {
     color: white;
   }
-  }
+}
 
-.btn-maison{
-  border:  solid $menuOff;
+.btn-maison {
+  border: solid $menuOff;
   background-color: inherit;
   color: $grisF;
   font-family: "Poppins", sans-serif;
@@ -72,13 +73,13 @@
   padding: 10px 10px 0 5px;
   display: flex;
   align-items: baseline;
-    p{
-      font-size: 1rem;
-      margin-left: 5px;
-    }
+  p {
+    font-size: 1rem;
+    margin-left: 5px;
   }
+}
 
-.modify-challenge-btn{
+.modify-challenge-btn {
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -96,24 +97,25 @@
     padding: 16px;
     margin: 0;
   }
-  i{
+  i {
     font-size: 12px;
     padding-left: 1px;
   }
 }
 
-.modify-challenge-btn:hover{
+.modify-challenge-btn:hover {
   transition: 0.2s;
   background-color: $rose;
 
   border-color: $rose;
   color: $rose;
-  i, h6{
+  i,
+  h6 {
     color: $white;
   }
 }
 
-.replace-challenge-btn{
+.replace-challenge-btn {
   margin-bottom: 15px;
   padding: 22px;
   display: flex;
@@ -130,23 +132,24 @@
     padding: 10px;
     margin: 0;
   }
-  i{
+  i {
     font-size: 12px;
   }
 }
 
-.replace-challenge-btn:hover{
+.replace-challenge-btn:hover {
   transition: 0.2s;
   background-color: $rose;
   border-color: $rose;
   color: $rose;
   cursor: pointer;
-  i, h6{
+  i,
+  h6 {
     color: $white;
   }
 }
 
-.cancel-btn{
+.cancel-btn {
   border-radius: 12px;
   width: fit-content;
   border: 3px solid $grisC;
@@ -160,8 +163,7 @@
   padding: 0.5rem 1rem;
   display: inline-block;
 
-
-  &:hover{
+  &:hover {
     background-color: $white;
     color: $grisC;
     cursor: pointer;
