@@ -30,10 +30,17 @@ class ChallengesController < ApplicationController
                   alert: "Sauvegarde échouée: #{@challenge.errors.messages[:name].first}"
     end
   end
-  
+
   def display_challenges
-    @challenges = Challenge.where(skill: @challenge.skill).reject{ |chal| chal == @challenge }
-    render "challenges/challenges_carroussel"
+    @challenges = Challenge.where(skill: @challenge.skill).reject { |chal| chal == @challenge }
+    # raise
+    if @challenges.empty?
+      @work_plan_skill = WorkPlanSkill.find(@challenge.work_plan_skill_ids.first)
+      @work_plan = @work_plan_skill.work_plan_domain.work_plan
+      render partial: "challenges/challenge_display", notice: "Il n'existe pas d'autre excercice pour cette compétence"
+    else
+      render "challenges/challenges_carroussel"
+    end
   end
 
   private
