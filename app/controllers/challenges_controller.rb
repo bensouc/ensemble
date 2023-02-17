@@ -39,7 +39,7 @@ class ChallengesController < ApplicationController
       @work_plan = @work_plan_skill.work_plan_domain.work_plan
       render partial: "challenges/challenge_display", notice: "Il n'existe pas d'autre excercice pour cette compétence"
     else
-      render "challenges/challenges_carroussel"
+      render partial: "challenges/challenges_carroussel"
     end
   end
 

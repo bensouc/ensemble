@@ -2,31 +2,27 @@
 	<div class="carousel-inner">
 		<%# for  each challenge %>
 		<div class="carousel-item active">
-			<div class="cont-challenge carroussel-margin">
-				<div class="challenge-card" >
-					<div class="challenge-infos " id='<%=@challenges.first.id %>'>
-						<div class="@challenges.first-name-in-content"><%= @challenges.first.name%> </div>
-						<%= @challenges.first.content.body %>
-					</div>
-					<div class="carrousel-validation --vert --cursor-pointer">
-						<i class="fa-solid fa-circle-check"></i>
-					</div>
+			<%# <div class="cont-challenge carroussel-margin"> %>
+			<div class="challenge-card " id='<%=@challenges.first.id%>'>
+				<%= render 'btn_validation_challenges_carrousel.html', challenge: @challenges.first %>
+				<div class="challenge-infos carrousel-margin"  %>
+					<div class="challenge-name-in-content"><%= @challenges.first.name%> </div>
+					<%= @challenges.first.content.body %>
 				</div>
 			</div>
+			<%# </div> %>
 		</div>
 		<% @challenges[1..-1].each do |challenge|  %>
 			<div class="carousel-item">
-				<div class="cont-challenge carroussel-margin">
-					<div class="challenge-card" >
-						<div class="challenge-infos " id='<%=challenge.id %>'>
-							<div class="challenge-name-in-content"><%= challenge.name%> </div>
-							<%= challenge.content.body %>
-						</div>
-						<div class="carrousel-validation --vert --cursor-pointer">
-							<i class="fa-solid fa-circle-check"></i>
-						</div>
+				<%# <div class="cont-challenge carroussel-margin"> %>
+				<div class="challenge-card " id='<%=challenge.id%>' >
+					<%= render 'btn_validation_challenges_carrousel.html', challenge: challenge %>
+					<div class="challenge-infos carrousel-margin " >
+						<div class="challenge-name-in-content"><%= challenge.name%> </div>
+						<%= challenge.content.body %>
 					</div>
 				</div>
+				<%# </div> %>
 			</div>
 		<% end %>
 		<%# end of for each challenge %>
