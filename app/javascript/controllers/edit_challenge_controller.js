@@ -13,7 +13,15 @@ export default class extends Controller {
     this.formTarget.innerHTML = this.formTarget.innerHTML.replace('www.ensemble.lt', 'www.app-ensemble.fr')
     this.infosTarget.classList.add('d-none');
     this.formTarget.classList.remove('d-none');
-    this.pencilTarget.classList.add('d-none')
+    // this.pencilTarget.classList.add('d-none')
+  }
+
+  hideForm(){
+    console.log('prout')
+    this.infosTarget.classList.remove('d-none');
+    // this.pencilTarget.classList.remove('d-none')
+    this.formTarget.classList.add('d-none');
+
   }
 
   preview(event) {
