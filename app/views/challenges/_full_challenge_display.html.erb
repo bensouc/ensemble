@@ -28,15 +28,16 @@
 						<%= form.rich_text_area :content %>
 					</div>
 					<div class="form-actions d-flex justify-content-end height-validate-challenge">
-						<%= link_to work_plan_path(@work_plan, anchor: "challenge_#{@challenge.id}"), class: 'cancel-btn' do %>
-							<i class="fas fa-times"></i>
-						<% end %>
-						<%= form.submit 'Enregistrer', class: 'validate-challenge-btn', data: { confirm: "Attention, modifier cet excercice impactera les autres Plans l'utilisant. Sinon vous pouvez cloner l'exercice." }%>
-					</div>
-				<% end %>
+						<%# <%= link_to work_plan_path(@work_plan, anchor: "challenge_#{@challenge.id}"), class: 'cancel-btn' do %>
+							<div class="cancel-btn" data-action="click->edit-challenge#hideForm">
+								<i class="fas fa-times"></i>
+							</div>
+							<%# <% end %>
+							<%= form.submit 'Enregistrer', class: 'validate-challenge-btn', data: { confirm: "Attention, modifier cet excercice impactera les autres Plans l'utilisant. Sinon vous pouvez cloner l'exercice." }%>
+						</div>
+					<% end %>
+				</div>
 			</div>
+			<%= render 'challenges/challenge_mngt' %>
 		</div>
-    <%= render 'challenges/challenge_mngt' %>
-
 	</div>
-</div>

@@ -28,30 +28,32 @@
 						<%= form.rich_text_area :content %>
 					</div>
 					<div class="form-actions d-flex justify-content-end height-validate-challenge">
-						<%= link_to work_plan_path(@work_plan, anchor: "challenge_#{work_plan_skill.challenge.id}"), class: 'cancel-btn' do %>
-							<i class="fas fa-times"></i>
-						<% end %>
-						<%= form.submit 'Enregistrer', class: 'validate-challenge-btn', data: { confirm: "Attention, modifier cet excercice impactera les autres Plans l'utilisant. Sinon vous pouvez cloner l'exercice." }%>
-					</div>
-				<% end %>
-			</div>
-		</div>
-		<div class="challenge-mngt">
-			<%# cloner un exo %>
-			<%= link_to work_plan_skill_clone_path( work_plan_skill, work_plan_skill.challenge.id),
-                              action: 'clone', method: 'post',
-                              class: 'replace-challenge-btn' do %> <%#data:{ action: "click->replace-challenge#cloneChallenge"}%>
-				<i class="far fa-clone me-2"></i>
-				<h6>Cloner</h6>
-			<% end %>
-			<%# REPLACE A CHALLENGE %>
-			<div data-controller="skill-add" data-ajax-replace-challenge-exo-value="<%=work_plan_skill.challenge.id%>">
-				<div data-edit-challenge-target="button" data-skill-add-target="button" data-action="click->ajax-replace-challenge#showCarrousel" class='replace-challenge-btn'>
-					<i class="far fa-folder-open me-2"></i>
-					<h6>Charger</h6>
+						<%# <%= link_to work_plan_path(@work_plan, anchor: "challenge_#{@challenge.id}"), class: 'cancel-btn' do %>
+							<div class="cancel-btn" data-action="click->edit-challenge#hideForm">
+								<i class="fas fa-times"></i>
+							</div>
+							<%# <% end %>
+							<%= form.submit 'Enregistrer', class: 'validate-challenge-btn', data: { confirm: "Attention, modifier cet excercice impactera les autres Plans l'utilisant. Sinon vous pouvez cloner l'exercice." }%>
+						</div>
+					<% end %>
 				</div>
 			</div>
-			<%# REPLACE A CHALLENGE END %>
+			<div class="challenge-mngt">
+				<%# cloner un exo %>
+				<%= link_to work_plan_skill_clone_path( work_plan_skill, work_plan_skill.challenge.id),
+                              action: 'clone', method: 'post',
+                              class: 'replace-challenge-btn' do %> <%#data:{ action: "click->replace-challenge#cloneChallenge"}%>
+					<i class="far fa-clone me-2"></i>
+					<h6>Cloner</h6>
+				<% end %>
+				<%# REPLACE A CHALLENGE %>
+				<div data-controller="skill-add" data-ajax-replace-challenge-exo-value="<%=work_plan_skill.challenge.id%>">
+					<div data-edit-challenge-target="button" data-skill-add-target="button" data-action="click->ajax-replace-challenge#showCarrousel" class='replace-challenge-btn'>
+						<i class="far fa-folder-open me-2"></i>
+						<h6>Charger</h6>
+					</div>
+				</div>
+				<%# REPLACE A CHALLENGE END %>
+			</div>
 		</div>
 	</div>
-</div>
