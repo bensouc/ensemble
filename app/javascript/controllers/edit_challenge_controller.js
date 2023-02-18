@@ -8,7 +8,9 @@ export default class extends Controller {
   }
 
   displayForm() {
-    console.log(this.targets)
+    // console.log(this.targets)
+    // In order resolve bad URL
+    this.formTarget.innerHTML = this.formTarget.innerHTML.replace('www.ensemble.lt', 'www.app-ensemble.fr')
     this.infosTarget.classList.add('d-none');
     this.formTarget.classList.remove('d-none');
     this.pencilTarget.classList.add('d-none')
