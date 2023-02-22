@@ -12,6 +12,10 @@ export default class extends Controller {
 
 
   connect() {
+    // this.token = document.querySelector(
+    //   'meta[name="csrf-token"]'
+    // ).content;
+    // console.log(this.token)
     // console.log(this.exoValue)
     // this.infosTarget.classList.add('d-none');
     // this.formTarget.classList.remove('d-none');
@@ -55,7 +59,9 @@ export default class extends Controller {
   }
 
   fetchContent(request) {
-    fetch(request,)
+
+    fetch(request,
+      )
       .then((response) => {
         if (response.status == 200) {
           // hide exo
@@ -74,12 +80,20 @@ export default class extends Controller {
     const newChallengeId = event.target.parentElement.parentElement.id
     const workplanskillId = this.element.id
       // / work_plan_skills /: work_plan_skill_id/change_challenge
+    // const request = `../work_plan_skills/${workplanskillId}/change_challenge`
     const request = `../work_plan_skills/${workplanskillId}/change_challenge?${new URLSearchParams({ challenge: newChallengeId  })}`
-    this.fetchChallengeContent(request)
+    this.fetchChallengeContent(request, newChallengeId)
   }
 
-  fetchChallengeContent(request) {
-    fetch(request)
+  fetchChallengeContent(request, newChallengeId) {
+    fetch(request, {
+      method: 'PATCH',
+      credentials: "include",
+      headers: {
+        "X-CSRF-Token": document.querySelector(
+          'meta[name="csrf-token"]'
+        ).content
+      }})
       .then((response) => {
         if (response.status == 200) {
           // hide exo

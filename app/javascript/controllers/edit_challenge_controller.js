@@ -24,14 +24,14 @@ export default class extends Controller {
 
   }
 
-  preview(event) {
-    const selectTag = event.target
-    const options = selectTag.options
-    const selectedOption = options[options.selectedIndex]
-    const content = `${selectedOption.dataset.content}`
+  // preview(event) {
+  //   const selectTag = event.target
+  //   const options = selectTag.options
+  //   const selectedOption = options[options.selectedIndex]
+  //   const content = `${selectedOption.dataset.content}`
 
-    this.infosTarget.classList.add('d-none');
-    this.previewTarget.innerHTML = JSON.parse(content)
-    this.previewTarget.classList.remove('d-none');
-  }
+  //   this.infosTarget.classList.add('d-none');
+  //   this.previewTarget.innerHTML = JSON.parse(content)
+  //   this.previewTarget.classList.remove('d-none');
+  // }
 }

@@ -78,8 +78,6 @@ class WorkPlanSkillsController < ApplicationController
     # binding.pry
     @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
     @work_plan = @work_plan_skill.work_plan_domain.work_plan
-    # if format nil => no evaluation
-    # if params[:status].nil? || !params[:challenge].nil?
     @challenge = Challenge.find(params[:challenge])
     @work_plan_skill.challenge = @challenge
     @work_plan_skill.save!

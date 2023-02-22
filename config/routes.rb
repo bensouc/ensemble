@@ -28,7 +28,7 @@ Rails.application.routes.draw do
     get "remove_special_wps", to: "work_plan_skills#remove_special_wps", as: :remove_special_wps
     get "eval_update", to: "work_plan_skills#eval_update", as: :eval_update
     # completed / failed / redo
-    get "change_challenge", to: "work_plan_skills#change_challenge", as: :change_challenge
+    patch "change_challenge", to: "work_plan_skills#change_challenge", as: :change_challenge
   end
 
   resources :classrooms, only: [:index, :show, :update, :new, :create, :destroy] do
