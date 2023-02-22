@@ -1,4 +1,4 @@
-import {  Controller } from "stimulus";
+import { Controller } from "stimulus";
 import swal from 'sweetalert';
 import Trix from "trix"
 import Rails from "@rails/ujs"
@@ -26,78 +26,27 @@ export default class extends Controller {
     event.stopImmediatePropagation()
     // console.log('challenge clonig start')
     const challengeId = this.contentTarget.id
-
-    if (this.contentTarget.getElementsByTagName("action-text-attachment")[0].attributes[1].value == "application/octet-stream") {
-
-      const originalSgid = this.contentTarget.getElementsByTagName("action-text-attachment")[0].attributes.sgid.value
-      this.cloneChallengeWithTable(originalSgid, challengeId)
-    }
-
-  }
-
-
-  cloneChallengeWithTable(sgid, challengeId) {
-    // console.log(sgid)
-    const request = `/tables/${sgid}/clone?challenge_id=${challengeId}`
-    fetch(request, {
-      headers: {
-        'Accept': 'application/json',
-      }
-    })
-      .then((response) => response.json())
-      // .then(text => console.log(text))
-      .then(json => {
-        // console.log(json)
-        return json
-      })
-  }
-
-  showCarrousel(event) {
-    const challengeId = this.contentTarget.id
-    const request = `../challenges/${challengeId}/display_challenges`
-    this.fetchContent(request)
-  }
-
-  fetchContent(request) {
-
-    fetch(request,
-      )
-      .then((response) => {
-        if (response.status == 200) {
-          // hide exo
-          // add carrousel
-          response.text().then((text) => this.contentTarget.innerHTML = text);
-        } else   {
-          swal({
-            title: "Il n'existe pas d'autre excercice pour cette compétence \n"
-                      });
-        }
-      })
-  }
-  // data-action="click->ajax-replace-challenge#replaceChallenge"
-  replaceChallenge(event) {
-    console.log(event.target.parentElement.parentElement.id)
-    const newChallengeId = event.target.parentElement.parentElement.id
-    const workplanskillId = this.element.id
-      // / work_plan_skills /: work_plan_skill_id/change_challenge
-    // const request = `../work_plan_skills/${workplanskillId}/change_challenge`
-    const request = `../work_plan_skills/${workplanskillId}/change_challenge?${new URLSearchParams({ challenge: newChallengeId  })}`
-    this.fetchChallengeContent(request, newChallengeId)
-  }
-
-  fetchChallengeContent(request, newChallengeId) {
-    fetch(request, {
-      method: 'PATCH',
+    // const workplanskillId =this.con
+    console.log(event.target.parentElement.parentElement.action)
+    this.request = new Request(event.target.parentElement.parentElement.action, {
+      method: 'POST',
       credentials: "include",
       headers: {
         "X-CSRF-Token": document.querySelector(
           'meta[name="csrf-token"]'
         ).content
-      }})
+      }
+    })
+    this.fetchFullChallenge(this.request)
+  }
+
+
+  fetchFullChallenge(request) {
+    // console.log(sgid)
+
+    fetch(request)
       .then((response) => {
         if (response.status == 200) {
-          // hide exo
-          // add carrousel
           response.text().then((text) => this.challengeDisplayTarget.innerHTML = text);
         } else {
           console.log("Raté l eval")
@@ -105,4 +54,45 @@ export default class extends Controller {
       })
   }
 
+  showCarrousel(event) {
+    const challengeId = this.contentTarget.id
+    const request = `../challenges/${challengeId}/display_challenges`
+    this.fetchCarrouselContent(request)
+  }
+
+  fetchCarrouselContent(request) {
+
+    fetch(request,
+    )
+      .then((response) => {
+        if (response.status == 200) {
+          // hide exo
+          // add carrousel
+          response.text().then((text) => this.contentTarget.innerHTML = text);
+        } else {
+          swal({
+            title: "Il n'existe pas d'autre excercice pour cette compétence \n"
+          });
+        }
+      })
+  }
+  // data-action="click->ajax-replace-challenge#replaceChallenge"
+  replaceChallenge(event) {
+    // console.log(event.target.parentElement.parentElement.id)
+    const newChallengeId = event.target.parentElement.parentElement.id
+    const workplanskillId = this.element.id
+    // / work_plan_skills /: work_plan_skill_id/change_challenge
+    // const request = `../work_plan_skills/${workplanskillId}/change_challenge`
+    const url = `../work_plan_skills/${workplanskillId}/change_challenge?${new URLSearchParams({ challenge: newChallengeId })}`
+    this.request = new Request(url, {
+      method: 'PATCH',
+      credentials: "include",
+      headers: {
+        "X-CSRF-Token": document.querySelector(
+          'meta[name="csrf-token"]'
+        ).content
+      }
+    })
+    this.fetchFullChallenge(this.request)
+  }
 }
