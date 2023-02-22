@@ -1,4 +1,4 @@
-<div class="index-wp-line">
+<div class="index-wp-line" data-wp-by-student-target='wpLine'>
   <div class="eval_link">
     <%= link_to eval_path(wp) do %>
       <i class="fa-solid fa-graduation-cap"></i>
@@ -19,7 +19,10 @@
     <% end %>
   </div>
   <div class='rmv-wp'>
-    <%= link_to work_plan_path(wp), method: :delete, data: {
+    <%= button_to work_plan_path(wp), method: :delete,
+                                    class: '--bgc-blanc',
+                                    data: {
+                                      action: "click->wp-by-student#deleteWorkPlan",
                                       confirm: "Voulez vous Supprimer Ce Plan de Travail?",
                                     } do %>
       <div class='rmv-skill-btn '>

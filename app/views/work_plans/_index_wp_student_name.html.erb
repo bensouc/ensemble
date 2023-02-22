@@ -12,7 +12,7 @@
   <div class='invisible'>
   --
   </div>
-  <div class="index-wp-count">
+  <div class="index-wp-count" data-wp-by-student-target='count'>
     ( <%= @my_work_plans.select { |a| a.student_id == student.id }.count %> Plan<%= "s" if @my_work_plans.select { |a| a.student_id == student.id }.count > 1 %> de travail )</div>
   </div>
 </div>
