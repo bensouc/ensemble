@@ -5,18 +5,21 @@ class ChallengesController < ApplicationController
   before_action :get_challenge, only: [:clone, :update, :display_challenges]
 
   def clone
-    @new_challenge = @challenge.new_clone
-    @new_challenge.user = current_user
-    @new_challenge.save!
-    @work_plan_skill.challenge_id = @new_challenge.id
+    new_challenge = @challenge.new_clone
+    new_challenge.user = current_user
+    new_challenge.save!
+    @challenge = new_challenge
+    @work_plan_skill.challenge_id = @challenge.id
     @work_plan_skill.save
-    respond_to do |format|
-      format.html {
-        redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@new_challenge)),
-                    notice: "Clonage réussi"
-      }
-      format.json { render @challenge }
-    end
+    @work_plan = @work_plan_skill.work_plan_domain.work_plan
+    # respond_to do |format|
+    #   format.html {
+    #     redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@new_challenge)),
+    #                 notice: "Clonage réussi"
+    #   }
+    #   format.json { render @challenge }
+    # end
+    render partial: "/challenges/full_challenge_display"
   end
 
   def update

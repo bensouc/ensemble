@@ -7,8 +7,14 @@ export default class extends Controller {
   }
 
   toggle(event) {
-    this.request = new Request(event.target.parentElement.href);
-    console.log(this.request)
+    this.request = new Request(event.target.parentElement.href, {
+      method: 'PATCH',
+      credentials: "include",
+      headers: {
+        "X-CSRF-Token": document.querySelector(
+          'meta[name="csrf-token"]'
+        ).content
+      }});
     event.preventDefault()
     event.stopImmediatePropagation()
     this.fetchContent(this.request);
@@ -17,7 +23,7 @@ export default class extends Controller {
   }
 
   fetchContent(request) {
-    fetch(request,)
+    fetch(request)
       .then((response) => {
         if (response.status == 200) {
           response.text().then((text) => this.lastEvalTarget.innerHTML = text);
