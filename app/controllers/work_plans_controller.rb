@@ -170,13 +170,14 @@ class WorkPlansController < ApplicationController
   end
 
   def destroy
-    @work_plan = WorkPlan.find(params[:id])
+    @work_plan = WorkPlan.includes([:work_plan_domains, :work_plan_skills]).find(params[:id])
     @work_plan.destroy
-    if @work_plan.student.nil?
-      redirect_to work_plans_path
-    else
-      redirect_to work_plans_path(anchor: @work_plan.student.id)
-    end
+    head 200, content_type: "text/html"
+    # if @work_plan.student.nil?
+    #   redirect_to work_plans_path
+    # else
+    #   redirect_to work_plans_path(anchor: @work_plan.student.id)
+    # end
   end
 
   def auto_new_wp
