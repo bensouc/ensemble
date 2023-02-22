@@ -26,7 +26,7 @@ Rails.application.routes.draw do
     resources :challenges, only: [:create, :update]
     post "/challenges/:id", to: "challenges#clone", as: :clone
     get "remove_special_wps", to: "work_plan_skills#remove_special_wps", as: :remove_special_wps
-    get "eval_update", to: "work_plan_skills#eval_update", as: :eval_update
+    patch "eval_update", to: "work_plan_skills#eval_update", as: :eval_update
     # completed / failed / redo
     patch "change_challenge", to: "work_plan_skills#change_challenge", as: :change_challenge
   end
