@@ -7,7 +7,6 @@ class WorkPlanSkill < ApplicationRecord
   # belongs_to :student, optional: true
   has_one :student, through: :work_plan_domain
 
-
   validates :kind, presence: true, inclusion: { in: %w[jeu exercice controle ceinture] }
   validates :status, inclusion: { in: %w[redo failed redo_OK completed new] }
 
@@ -44,7 +43,6 @@ class WorkPlanSkill < ApplicationRecord
 
     wpss = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill: skills)
     wpss.select { |wps| wps.student == student }
-
   end
 
   def add_challenges_2_wps(current_user, _actual_challenge = nil)

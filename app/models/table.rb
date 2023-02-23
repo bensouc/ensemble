@@ -11,9 +11,8 @@ class Table < ApplicationRecord
   end
 
   def clone
-    clone_table = self.dup
+    clone_table = dup
     clone_table.save!
     clone_table
   end
-
 end
