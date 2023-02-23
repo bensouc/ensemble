@@ -74,7 +74,7 @@ class Belt < ApplicationRecord
       "CE2" => [
         {
           domain: "Géométrie",
-          validation: [4, 8, 7, 12, 17, 22, 27]
+          validation: [2, 4, 7, 10, 13, 17, 21]
         },
         {
           domain: "Grandeurs et Mesures",
@@ -139,20 +139,21 @@ class Belt < ApplicationRecord
     when "CE2"
       case work_plan_skill.work_plan_domain.domain
       when "Géométrie"
+        # [2, 4, 7, 10, 13, 17, 21]
         case count
-        when 2...5
+        when 2...4
           Belt.find_or_create_by_level!(args, 1)
-        when 5...8
+        when 4...7
           Belt.find_or_create_by_level!(args, 2)
-        when 8...12
+        when 7...10
           Belt.find_or_create_by_level!(args, 3)
-        when 12...17
+        when 10...13
           Belt.find_or_create_by_level!(args, 4)
-        when 17...22
+        when 13...17
           Belt.find_or_create_by_level!(args, 5)
-        when 22...27
+        when 17...21
           Belt.find_or_create_by_level!(args, 6)
-        when 27
+        when 21
           Belt.find_or_create_by_level!(args, 7)
         end
       when "Grandeurs et Mesures"
