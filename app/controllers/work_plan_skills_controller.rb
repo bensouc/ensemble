@@ -60,7 +60,7 @@ class WorkPlanSkillsController < ApplicationController
         @work_plan_skill.save!
 
         # test for each skill of its domain a 'belt is validated'jbiv
-        if WorkPlanDomain::DOMAINS_SPECIALS.include?(@work_plan_skill.work_plan_domain.domain) && @work_plan.grade != "CM2"
+        if @work_plan_skill.work_plan_domain.specials? && @work_plan.grade != "CM2"
           Belt.special_newbelt(@work_plan_skill, @work_plan)
         elsif @work_plan_skill.work_plan_domain.all_skills_completed?
           belt.completed = true
@@ -105,7 +105,7 @@ class WorkPlanSkillsController < ApplicationController
     @skill = @wps.skill
     @student = @wps.student
     # test if special domain
-    unless WorkPlanDomain::DOMAINS_SPECIALS.include?(@skill.domain) && @skill.grade != "CM2"
+    unless @skill.specials? && @skill.grade != "CM2"
       # exist il une belt pour lestudent le skill
       belt = Belt.where(domain: @skill.domain, student: @student, level: @skill.level, grade: @skill.grade)
       # belt to be destroy?

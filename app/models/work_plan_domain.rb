@@ -28,6 +28,10 @@ class WorkPlanDomain < ApplicationRecord
     super
   end
 
+  def specials?
+    domain.in?(DOMAINS_SPECIALS)
+  end
+
   has_many :work_plan_skills, dependent: :destroy
   accepts_nested_attributes_for :work_plan_skills
 

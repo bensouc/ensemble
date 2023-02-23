@@ -8,7 +8,7 @@ class WorkPlanDomainsController < ApplicationController
     @domain.work_plan = @work_plan
     @domain.save!
 # test if work_plan.grade == "CM2" no special dmoains AND no domains specials for other grades
-    if @work_plan.grade != "CM2" && WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain.domain)
+    if @work_plan.grade != "CM2" && @domain.specials?
       @domain.level = 1
     else
       # recupere les skills associé domaine/level dnas un tableau

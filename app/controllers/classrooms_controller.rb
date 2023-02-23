@@ -78,6 +78,7 @@ class ClassroomsController < ApplicationController
 
   # refacto of result and result_by_domain actions
   def results_factory
+    # @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != "CM2")
     @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != "CM2")
     @students_list = @classroom.students_list.sort_by { |student| student.first_name.downcase }
     # get all validated belts for all classroom student

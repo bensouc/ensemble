@@ -201,12 +201,12 @@ class WorkPlansController < ApplicationController
 
       # to choose which level => 1 find last student.belt.completed true => level +1 else belts level = 1
       # level = Belt.student_last_belt_level(@student, domain)
-      wpd = WorkPlanDomain.create(domain: domain,
+      wpd = WorkPlanDomain.create(domain:,
                                   level: Belt.student_last_belt_level(@student, domain),
                                   # student: @student,
                                   work_plan: @work_plan)
 
-      if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @work_plan.grade != "CM2"
+      if wpd.specials? && @work_plan.grade != "CM2"
         # mngt of special domains
         wpd.level = 1
         wpd.save
