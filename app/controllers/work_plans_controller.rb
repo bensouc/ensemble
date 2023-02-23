@@ -87,7 +87,7 @@ class WorkPlansController < ApplicationController
     @my_work_plans += shared_work_plans
   end
 
-  def eval
+  def evaluation
     # @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
     @domains = @work_plan.all_domains_from_work_plan

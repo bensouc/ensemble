@@ -21,7 +21,7 @@
       </button>
       <%# <% if current_user.admin %>
       <% unless work_plan.student.nil? %>
-        <%= link_to eval_path(@work_plan), class: "utility-wp-btn",data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+        <%= link_to evaluation_path(@work_plan), class: "utility-wp-btn",data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
           <h6>Correction</h6>
         <% end %>
       <% end %>
