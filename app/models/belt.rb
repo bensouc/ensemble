@@ -78,7 +78,7 @@ class Belt < ApplicationRecord
         },
         {
           domain: "Grandeurs et Mesures",
-          validation: [5, 10, 15, 20, 25, 30, 35]
+          validation: [3, 7, 11, 15, 19, 23, 28]
         }
       ],
       "CM1" => [
@@ -157,20 +157,21 @@ class Belt < ApplicationRecord
           Belt.find_or_create_by_level!(args, 7)
         end
       when "Grandeurs et Mesures"
+        # validation: [3, 7, 11, 15, 19, 23, 28]
         case count
         when 3...7
           Belt.find_or_create_by_level!(args, 1)
         when 7...11
           Belt.find_or_create_by_level!(args, 2)
-        when 11...16
+        when 11...15
           Belt.find_or_create_by_level!(args, 3)
-        when 16...21
+        when 15...19
           Belt.find_or_create_by_level!(args, 4)
-        when 21...26
+        when 19...23
           Belt.find_or_create_by_level!(args, 5)
-        when 26...31
+        when 23...28
           Belt.find_or_create_by_level!(args, 6)
-        when 31
+        when 28
           Belt.find_or_create_by_level!(args, 7)
         end
       end
