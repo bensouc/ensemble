@@ -50,6 +50,7 @@ class ClassroomsController < ApplicationController
   end
 
   def results_by_domain
+    # binding.pry
     @domain = set_domain
     results_factory # create all  variables shared with the results Action
     @skills = if @special_domain

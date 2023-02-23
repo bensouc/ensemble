@@ -94,7 +94,7 @@ class Belt < ApplicationRecord
     }.freeze
 
   def self.score_to_validate(grade)
-    SCORE_TO_VALIDATES[grade]
+    Belt::SCORES_TO_VALIDATES[grade]
   end
 
   def self.create_new_special_belt(args, count, work_plan_skill)

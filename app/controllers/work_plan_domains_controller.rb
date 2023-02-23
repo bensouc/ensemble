@@ -7,7 +7,7 @@ class WorkPlanDomainsController < ApplicationController
     kind = params.require(:kind)
     @domain.work_plan = @work_plan
     @domain.save!
-# test if work_plan.grade == "CM2" no special dmoains AND no domains specials for other grades
+  # test if work_plan.grade == "CM2" no special dmoains AND no domains specials for other grades
     if @work_plan.grade != "CM2" && @domain.specials?
       @domain.level = 1
     else
