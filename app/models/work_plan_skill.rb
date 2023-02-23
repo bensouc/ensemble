@@ -7,7 +7,6 @@ class WorkPlanSkill < ApplicationRecord
   # belongs_to :student, optional: true
   has_one :student, through: :work_plan_domain
 
-
   validates :kind, presence: true, inclusion: { in: %w[jeu exercice controle ceinture] }
   validates :status, inclusion: { in: %w[redo failed redo_OK completed new] }
 
@@ -34,7 +33,7 @@ class WorkPlanSkill < ApplicationRecord
   def self.last_4_wps(_work_plan, wps, current_student)
     # retrieve the last 4 wps for the student on this skill ids
     out = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill_id: wps.skill_id)
-    out = out.select { |s| s.student == current_student }.sort_by(&:created_at).reverse
+    out = out.select { |work_plan_skill| work_plan_skill.student == current_student }.sort_by(&:created_at).reverse
     out.reject { |t| t == wps }
     out.last(3)
   end
@@ -44,7 +43,6 @@ class WorkPlanSkill < ApplicationRecord
 
     wpss = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill: skills)
     wpss.select { |wps| wps.student == student }
-
   end
 
   def add_challenges_2_wps(current_user, _actual_challenge = nil)

@@ -31,9 +31,9 @@ class StudentsController < ApplicationController
     # cleaning the useless lastwps (eg: special domain, remove the amount)
     unless @student_grade == "CM2"
       WorkPlanDomain::DOMAINS_SPECIALS.each do |domain|
-        special_belt = @belts.select { |belt| belt.domain == domain }
-        count = special_belt.count
-        unless special_belt.empty? || count.zero?
+        special_domain_belts = @belts.select { |belt| belt.domain == domain }
+        count = special_domain_belts.count
+        unless special_domain_belts.empty? || count.zero?
           @all_skills_and_last_wps = wps_cleaned_belt(@all_skills_and_last_wps, domain, count, @student_grade)
         end
       end
@@ -73,7 +73,7 @@ class StudentsController < ApplicationController
               params_add_validated_wps[:level]
             end
     validated_work_plan_skills = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(status: "completed").select { |wps| wps.student == @student && wps.skill.domain == domain && wps.skill.level == level.to_i }
-    validated_skill_id = validated_work_plan_skills.map { |wps| wps.skill.id}
+    validated_skill_id = validated_work_plan_skills.map { |wps| wps.skill.id }
     @skills = Skill.where(  level:,
                             domain:,
                             grade: student_grade
@@ -134,7 +134,7 @@ class StudentsController < ApplicationController
   def wps_cleaned_belt(all_skills_last_wpss, domain, count, grade)
     # "Géométrie", "Grandeurs et Mesures"
     belt_validation = Belt.score_to_validate(grade)
-    to_remove = belt_validation.select { |d| d[:domain] == domain }.first[:validation][count - 1]
+    to_remove = belt_validation.find { |d| d[:domain] == domain }[:validation][count - 1]
     (1..to_remove).to_a.each do
       # get index for wps completed
       index = all_skills_last_wpss.index do |h|

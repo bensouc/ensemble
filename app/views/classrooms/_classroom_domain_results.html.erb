@@ -21,8 +21,9 @@
 									<% if !(@special_domain || belt_on_level.nil? || belt_on_level.select{ |belt| belt.student == student}.empty?) %>
 										<%#If special domain true ou ceinture  %>
 										<i class="fa-solid fa-circle-check --vert"></i>
-									<% elsif !(@all_completed_work_plan_skills.nil? || @all_completed_work_plan_skills[student.id.to_s].nil? || @all_completed_work_plan_skills[student.id.to_s].select{|wps| wps.skill == skill }.empty?) %>
-										<% wps = @all_completed_work_plan_skills[student.id.to_s].select{|wps| wps.skill == skill }.last %>
+									<% elsif !(@all_completed_work_plan_skills.nil? || @all_completed_work_plan_skills[student.id.to_s].nil? || @all_completed_work_plan_skills[student.id.to_s].find{|wps| wps.skill == skill }.nil?) %>
+										<%# <% wps = @all_completed_work_plan_skills[student.id.to_s].select{|wps| wps.skill == skill }.last %> 
+										<% wps = @all_completed_work_plan_skills[student.id.to_s].reverse.find { |wps| wps.skill == skill } %>
 										<% wp_s = wps.work_plan_domain.work_plan %>
 										<% if wp_s.special_wps? %>
 											<div class='--cursor-pointer' data-controller='display-special-wps-mngt' data-action='mouseover->display-special-wps-mngt#displayWps mouseout->display-special-wps-mngt#hideWps'>

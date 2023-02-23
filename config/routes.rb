@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   namespace "mobile" do
     resources :work_plans, only: [:index]
     resources :students, only: [:index]
-    get "work_plans/:id/eval", to: "work_plans#eval", as: :eval
+    get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
   end
   # Add shared classrooms
 
@@ -15,7 +15,7 @@ Rails.application.routes.draw do
     resources :work_plan_domains, only: [:new, :create]
     post "", to: "work_plans#clone", as: :clone
   end
-  get "work_plans/:id/eval", to: "work_plans#eval", as: :eval
+  get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
   # post "work_plans/:id", to: "work_plans#share", as: :share
 
   resources :work_plan_domains, only: [:destroy] do

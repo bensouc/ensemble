@@ -4,8 +4,8 @@ class WorkPlanDomain < ApplicationRecord
   DOMAINS = {
     # order in the DOMAINS array give the Workplan show domain display ordering
     "CE1" => ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"],
-    "CE2" => ["Conjugaison", "Vocabulaire", "Grammaire", "Géométrie", "Grandeurs et Mesures",
-              "Numération", "Calcul"],
+    "CE2" => ["Conjugaison", "Vocabulaire", "Grammaire", "Numération", "Calcul",
+              "Géométrie", "Grandeurs et Mesures"],
     "CM1" => ["Conjugaison", "Vocabulaire", "Orthographe", "Grammaire", "Poesie", "Géométrie", "Grandeurs et Mesures",
               "Numération", "Calcul"],
     "CM2" => ["Calcul", "Géométrie", "Grandeurs et Mesures", "Numération", "Opérations",
@@ -13,7 +13,7 @@ class WorkPlanDomain < ApplicationRecord
               "Poésie et Expression orale", "Production d’écrit", "Grammaire",
               "Lecture", "Vocabulaire"]
   }.freeze
-  LEVELS = (1..7).freeze
+  LEVELS = (1..7)
 
   DOMAINS_SPECIALS = ["Géométrie", "Grandeurs et Mesures"].freeze
 
@@ -28,20 +28,24 @@ class WorkPlanDomain < ApplicationRecord
     super
   end
 
+  def specials?
+    domain.in?(DOMAINS_SPECIALS)
+  end
+
   has_many :work_plan_skills, dependent: :destroy
   accepts_nested_attributes_for :work_plan_skills
 
   validates :level, presence: true, inclusion: { in: LEVELS }
 
   def all_domain_skills
-    Skill.where(domain: domain, level: level, grade: work_plan.grade)
+    Skill.where(domain:, level:, grade: work_plan.grade)
   end
 
   def self.add_wps_completed(skills, work_plan_domain, special_work_plan)
     last_work_plan_skill = nil
     skills.each do |skill|
       work_plan_skill = WorkPlanSkill.create!(
-        work_plan_domain: work_plan_domain,
+        work_plan_domain:,
         skill:,
         status: "completed",
         completed: true,
@@ -61,8 +65,7 @@ class WorkPlanDomain < ApplicationRecord
                 grade: skill.grade,
                 level: skill.level,
                 completed: true,
-                validated_date: DateTime.now
-          }
+                validated_date: DateTime.now }
         )
         belt.save
       end
@@ -78,7 +81,9 @@ class WorkPlanDomain < ApplicationRecord
     student = work_plan.student
     self.completed = all_domain_skills.all? do |skill|
       # test if wps is completed
-      temp_wps = WorkPlanSkill.last_wps(student, skill).select { |wps| wps.skill == skill && wps.kind == "ceinture" }.max_by(&:created_at)
+      temp_wps = WorkPlanSkill.last_wps(student, skill).select do |wps|
+        wps.skill == skill && wps.kind == "ceinture"
+      end.max_by(&:created_at)
       temp_wps.completed unless temp_wps.nil?
     end
     save

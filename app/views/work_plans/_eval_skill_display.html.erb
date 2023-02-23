@@ -1,4 +1,4 @@
-<% last_3_wps = @previous.select { |t| t.first == plan_skill.skill_id }.first[1].sort_by(&:created_at) %>
+<% last_3_wps = @previous.find { |t| t.first == plan_skill.skill_id }[1].sort_by(&:created_at) %>
 <div class='d-flex justify-content-between p-2 ' data-controller='ajax-work-plan'>
   <div class="previous_eval mt-2">
     <% unless last_3_wps.count == 1 %>

@@ -24,15 +24,15 @@ class Challenge < ApplicationRecord
 
     Challenge.new(
       {
-        name: "#{self.name}-Clone#{rand(1..100)}",
-        content: content,
-        skill_id: self.skill_id,
+        name: "#{name}-Clone#{rand(1..100)}",
+        content:,
+        skill_id:
       }
     )
   end
 
   def self.assigned_challenges(skill, student)
-    wpss = WorkPlanSkill.where(student: student, skill_id: skill.id, kind: "exercice")
+    wpss = WorkPlanSkill.where(student:, skill_id: skill.id, kind: "exercice")
     # challenge = []
     wpss.map(&:challenge)
   end
@@ -41,7 +41,7 @@ class Challenge < ApplicationRecord
     challenge = Challenge.create({
                                    skill: work_plan_skill.skill,
                                    name: "#{name}-NEW",
-                                   user: current_user,
+                                   user: current_user
                                  })
     challenge.content.body = <<~HTML
       Exercice à REDIGER............................
