@@ -78,6 +78,7 @@ gem "mobile"
 # end
 group :development, :test do
   gem "erb-formatter"
+  gem 'htmlbeautifier'
   gem "bullet"
   gem "pry-byebug"
   gem "pry-rails"

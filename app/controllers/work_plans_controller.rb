@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class WorkPlansController < ApplicationController
+  before_action :set_params_student, only: ['auto_new_wp']
+
   def clone #And sharing
     wp = WorkPlan.find(wp_id)
     # //crer des copie des WorkPlanDomain et de workplan skill
@@ -181,8 +183,14 @@ class WorkPlansController < ApplicationController
   end
 
   def auto_new_wp
-    @student = Student.find(set_params_student)
 
+    if @domains.empty?
+      redirect_to student_path(@student), notice:"Vous n'avez pas sélectionné de domaine"
+
+      return
+    end
+
+    # raise
     # start_date =  Time.zone.today.monday? ? Time.zone.today : Time.zone.today.next_occurring(:monday)
     start_date = Time.zone.today.next_occurring(:monday)
     end_date = start_date + 4
@@ -196,7 +204,7 @@ class WorkPlansController < ApplicationController
 
     # ajout date intro prendre date => first monday => first friday
     # based on student classroom level,
-    @student.all_domains_from_student.each do |domain|
+    @domains.each do |domain|
       # loop on DOMAINS => create wpdomain
 
       # to choose which level => 1 find last student.belt.completed true => level +1 else belts level = 1
@@ -291,7 +299,8 @@ class WorkPlansController < ApplicationController
   end
 
   def set_params_student
-    params.require(:student_id)
+    @student = Student.find(params.require(:student_id))
+    @domains = params.require(:"/students/#{@student.id}")[:domains][1..]
   end
 
   def multiplecloning_params(id)
