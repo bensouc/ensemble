@@ -7,3 +7,23 @@
   </div>
 </div>
 <%# revoir les constantes, à envoyer depuis le controller %>
+<!-- Modal select domains on auto gen-->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Séléctionner les domaines pour la génération du le Plan de travail</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%@domains.each do |domain| %>
+          <%= domain %>
+        <% end %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">X</button>
+        <button type="button" class="btn btn-secondary --bgc-vert --borderc-vert ">Valider</button>
+      </div>
+    </div>
+  </div>
+</div>
