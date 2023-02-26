@@ -204,40 +204,42 @@ class WorkPlansController < ApplicationController
 
     # ajout date intro prendre date => first monday => first friday
     # based on student classroom level,
+    # Iterate through each domain in the list of domains
     @domains.each do |domain|
-      # loop on DOMAINS => create wpdomain
 
-      # to choose which level => 1 find last student.belt.completed true => level +1 else belts level = 1
-      # level = Belt.student_last_belt_level(@student, domain)
+      # Create a new WorkPlanDomain object and set its attributes
       wpd = WorkPlanDomain.create(domain:,
                                   level: Belt.student_last_belt_level(@student, domain),
-                                  # student: @student,
                                   work_plan: @work_plan)
 
+      # Check if the WorkPlanDomain has any specials and if the work plan grade is not "CM2"
       if wpd.specials? && @work_plan.grade != "CM2"
-        # mngt of special domains
+        # Set the WorkPlanDomain's level to 1 and save it
         wpd.level = 1
         wpd.save
       else
+        # Find all the skills for the current domain, level, and grade
         Skill.where(domain: domain, level: wpd.level, grade: @student.classroom.grade).each do |skill|
-          # Loop on skills 4 domain grade level
-          # get last wps
+
+          # Find the most recent WorkPlanSkill object for the current student and skill
           last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
-          # raise
+
+          # Create a new WorkPlanSkill object and set its attributes
           new_wps = WorkPlanSkill.new(
             skill: skill,
-            # student: @student,
             work_plan_domain: wpd,
             kind: "exercice",
           )
+
+          # If there is no previous WorkPlanSkill, create a new challenge and save the new WorkPlanSkill
           if last_wps.nil?
-            # create a new wps with same kind and
             new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
             new_wps.save
-            # if last wps is completed
+
+          # If the previous WorkPlanSkill is completed, create a new WorkPlanSkill of the appropriate kind and save it
           elsif last_wps.status == "completed"
             case last_wps.kind
-            when "jeu"
+            when "jeu" 
               new_wps[:kind] = "exercice"
               new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
               new_wps.save
@@ -245,14 +247,13 @@ class WorkPlansController < ApplicationController
               new_wps[:kind] = "ceinture"
               new_wps.save
             end
-            # sinon redo failed redo_OK new => a wps with same kind with new status
-            # raise
+
+          # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
           elsif %w[redo failed redo_OK new].include?(last_wps.status)
             new_wps[:kind] = last_wps.kind
             if last_wps.kind == "ceinture"
               new_wps[:kind] = "exercice"
             end
-            # create a new wps with same kind and
             if new_wps.kind == "exercice"
               new_wps.challenge = last_wps.add_challenges_2_wps(current_user,
                                                                 last_wps.challenge)
@@ -263,6 +264,7 @@ class WorkPlansController < ApplicationController
       end
     end
 
+  # Save the work plan and redirect to the appropriate page
     if @work_plan.save
       redirect_to work_plan_path(@work_plan)
     else

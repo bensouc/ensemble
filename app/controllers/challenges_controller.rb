@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 class ChallengesController < ApplicationController
-  before_action :get_work_plan_skill, only: [:clone, :update]
-  before_action :get_challenge, only: [:clone, :update, :display_challenges]
+  before_action :get_work_plan_skill, only: [:clone, :update, :show]
+  before_action :get_challenge, only: [:clone, :update, :display_challenges, :show]
+
+  def show
+    @work_plan = @work_plan_skill.work_plan_domain.work_plan
+    render partial: "/challenges/full_challenge_display"
+  end
 
   def clone
     new_challenge = @challenge.new_clone
@@ -12,13 +17,6 @@ class ChallengesController < ApplicationController
     @work_plan_skill.challenge_id = @challenge.id
     @work_plan_skill.save
     @work_plan = @work_plan_skill.work_plan_domain.work_plan
-    # respond_to do |format|
-    #   format.html {
-    #     redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@new_challenge)),
-    #                 notice: "Clonage réussi"
-    #   }
-    #   format.json { render @challenge }
-    # end
     render partial: "/challenges/full_challenge_display"
   end
 
@@ -41,7 +39,7 @@ class ChallengesController < ApplicationController
       # @work_plan_skill = WorkPlanSkill.find(@challenge.work_plan_skill_ids.first)
       # @work_plan = @work_plan_skill.work_plan_domain.work_plan
       # render partial: "challenges/challenge_display", notice: "Il n'existe pas d'autre excercice pour cette compétence"
-       flash.now[:notice] = "Il n'existe pas d'autre excercice pour cette compétence"
+      flash.now[:notice] = "Il n'existe pas d'autre excercice pour cette compétence"
     else
       render partial: "challenges/challenges_carroussel"
     end

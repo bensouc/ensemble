@@ -48,6 +48,8 @@ Rails.application.routes.draw do
 
   resources :belts, only: [:destroy, :edit, :update]
 
+  resources :challenges, only: [:show]
+
   get "challenges/:id/display_challenges", to: "challenges#display_challenges", as: :display_challenges
 
   # route for tab editing

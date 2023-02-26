@@ -95,4 +95,15 @@ export default class extends Controller {
     })
     this.fetchFullChallenge(this.request)
   }
+
+  closeCarrousel(event){
+    const workplanskillId = this.element.id
+    const challengeId = this.contentTarget.id
+    console.log(challengeId)
+    this.request = new Request(`../challenges/${challengeId}?work_plan_skill_id=${workplanskillId}`)
+
+
+    this.fetchFullChallenge(this.request)
+
+  }
 }
