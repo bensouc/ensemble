@@ -37,6 +37,8 @@ export default class extends Controller {
         ).content
       }
     })
+    // show temp
+    this.contentTarget.innerHTML = '<div class="spinner-border --rose " role="status"></div >'
     this.fetchFullChallenge(this.request)
   }
 

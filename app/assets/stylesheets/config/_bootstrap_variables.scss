@@ -4,23 +4,28 @@
 // 3. You can override them below!
 
 // General style
-$font-family-sans-serif:  $body-font;
-$headings-font-family:    $headers-font;
-$body-bg:                 white;
+$font-family-sans-serif: $body-font;
+$headings-font-family: $headers-font;
+$body-bg: white;
 $font-size-base: 1rem;
 
 // Colors
 $body-color: $grisF;
-$primary:    $blue;
-$success:    $green;
-$info:       $yellow;
-$danger:     $red;
-$warning:    $orange;
+$primary: $blue;
+$success: $green;
+$info: $yellow;
+$danger: $red;
+$warning: $orange;
 
 // Buttons & inputs' radius
-$border-radius:    2px;
+$border-radius: 2px;
 $border-radius-lg: 2px;
 $border-radius-sm: 2px;
 
-
 // Override other variables below!
+
+// spinner Bootstrap
+.spinner-border {
+  margin-left: 40% !important;
+  margin-top: 27px !important;
+}
