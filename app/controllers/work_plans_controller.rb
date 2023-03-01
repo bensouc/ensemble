@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class WorkPlansController < ApplicationController
-  before_action :set_params_student, only: ['auto_new_wp']
+  before_action :set_params_student, only: ["auto_new_wp"]
 
   def clone #And sharing
     wp = WorkPlan.find(wp_id)
@@ -183,9 +183,8 @@ class WorkPlansController < ApplicationController
   end
 
   def auto_new_wp
-
     if @domains.empty?
-      redirect_to student_path(@student), notice:"Vous n'avez pas sélectionné de domaine"
+      redirect_to student_path(@student), notice: "Vous n'avez pas sélectionné de domaine"
 
       return
     end
@@ -199,7 +198,7 @@ class WorkPlansController < ApplicationController
       grade: @student.classroom.grade,
       student: @student, user: current_user,
       start_date:,
-      end_date:
+      end_date:,
     )
 
     # ajout date intro prendre date => first monday => first friday
@@ -222,7 +221,14 @@ class WorkPlansController < ApplicationController
         Skill.where(domain: domain, level: wpd.level, grade: @student.classroom.grade).each do |skill|
 
           # Find the most recent WorkPlanSkill object for the current student and skill
-          last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
+          # last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
+          temp_last_wps = WorkPlanSkill.last_wps(@student, skill)
+          last_wps = temp_last_wps.select { |wps| wps.skill == skill && wps.completed }.max_by(&:created_at)
+          # find if one is completed then select it
+          if last_wps.nil?
+            last_wps = temp_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at)
+          end
+          # else take the moste recent
 
           # Create a new WorkPlanSkill object and set its attributes
           new_wps = WorkPlanSkill.new(
@@ -236,10 +242,10 @@ class WorkPlansController < ApplicationController
             new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
             new_wps.save
 
-          # If the previous WorkPlanSkill is completed, create a new WorkPlanSkill of the appropriate kind and save it
+            # If the previous WorkPlanSkill is completed, create a new WorkPlanSkill of the appropriate kind and save it
           elsif last_wps.status == "completed"
             case last_wps.kind
-            when "jeu" 
+            when "jeu"
               new_wps[:kind] = "exercice"
               new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
               new_wps.save
@@ -248,7 +254,7 @@ class WorkPlansController < ApplicationController
               new_wps.save
             end
 
-          # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
+            # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
           elsif %w[redo failed redo_OK new].include?(last_wps.status)
             new_wps[:kind] = last_wps.kind
             if last_wps.kind == "ceinture"
@@ -264,7 +270,7 @@ class WorkPlansController < ApplicationController
       end
     end
 
-  # Save the work plan and redirect to the appropriate page
+    # Save the work plan and redirect to the appropriate page
     if @work_plan.save
       redirect_to work_plan_path(@work_plan)
     else
