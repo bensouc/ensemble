@@ -234,7 +234,7 @@ class WorkPlansController < ApplicationController
           new_wps = WorkPlanSkill.new(
             skill: skill,
             work_plan_domain: wpd,
-            kind: "exercice",
+            kind: "exercice"
           )
 
           # If there is no previous WorkPlanSkill, create a new challenge and save the new WorkPlanSkill

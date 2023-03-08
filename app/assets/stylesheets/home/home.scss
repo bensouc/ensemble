@@ -15,6 +15,7 @@
     padding: 20px !important;
     font-size: 30px !important;
     font-weight: 700;
+    border: solid &rose;
   }
 }
 
@@ -24,6 +25,12 @@
     flex-direction: column;
     margin: 0;
     padding-bottom: 50px;
+  }
+}
+
+.banner{
+  h2{
+    font-size: 2.5rem;
   }
 }
 .pledge {
@@ -38,12 +45,13 @@
   h1 {
     font-family: $titres-font;
     font-weight: 700;
-    font-size: 28px;
+    font-size: 2rem;
   }
+
   p {
     font-family: $plan-font;
     font-weight: 200;
-    font-size: 18px;
+    font-size: 1.5rem;
     text-align: center;
   }
 }
@@ -56,7 +64,7 @@
   width: 100%;
   position: absolute;
 
-  top: 46rem;
+  top: 45rem;
   display: flex;
   justify-content: space-around;
 }

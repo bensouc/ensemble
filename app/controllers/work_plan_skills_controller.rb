@@ -105,7 +105,7 @@ class WorkPlanSkillsController < ApplicationController
     @skill = @wps.skill
     @student = @wps.student
     # test if special domain
-    unless @skill.specials? && @skill.grade != "CM2"
+    unless @skill.specials?
       # exist il une belt pour lestudent le skill
       belt = Belt.where(domain: @skill.domain, student: @student, level: @skill.level, grade: @skill.grade)
       # belt to be destroy?
