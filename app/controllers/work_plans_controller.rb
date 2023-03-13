@@ -5,6 +5,7 @@ class WorkPlansController < ApplicationController
 
   def clone #And sharing
     wp = WorkPlan.find(wp_id)
+    # binding.pry
     # //crer des copie des WorkPlanDomain et de workplan skill
 
     students = multiplecloning_params(wp_id)
@@ -163,8 +164,7 @@ class WorkPlansController < ApplicationController
     @work_plan.start_date = temp_wp.start_date
     @work_plan.end_date = temp_wp.end_date
     @work_plan.student = temp_wp.student
-
-    if @work_plan.save
+    if @work_plan.save!
       redirect_to work_plan_path(@work_plan)
     else
       render :show

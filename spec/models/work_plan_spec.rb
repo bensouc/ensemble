@@ -1,5 +1,5 @@
 require "rails_helper"
-RSpec.describe :work_plan, type: :model do
+RSpec.describe WorkPlan, type: :model do
   before(:all) do
     WorkPlan.destroy_all
     WorkPlanDomain.destroy_all
