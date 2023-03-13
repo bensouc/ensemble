@@ -1,11 +1,12 @@
 require "rails_helper"
 RSpec.describe User, type: :model do
-
   before(:all) do
+    WorkPlan.destroy_all
+    WorkPlanDomain.destroy_all
+    Challenge.destroy_all
     User.destroy_all
     @user1 = create(:user)
   end
-
 
   it "is valid with valid attributes" do
     expect(@user1).to be_valid
@@ -31,5 +32,4 @@ RSpec.describe User, type: :model do
     user2 = build(:user, email: nil)
     expect(user2).to_not be_valid
   end
-
 end

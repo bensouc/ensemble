@@ -183,6 +183,8 @@ class WorkPlansController < ApplicationController
   end
 
   def auto_new_wp
+
+    # binding.pry
     if @domains.empty?
       redirect_to student_path(@student), notice: "Vous n'avez pas sélectionné de domaine"
 
@@ -308,6 +310,7 @@ class WorkPlansController < ApplicationController
 
   def set_params_student
     @student = Student.find(params.require(:student_id))
+    # binding.pry
     @domains = params.require(:"/students/#{@student.id}")[:domains][1..]
   end
 
