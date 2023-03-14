@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 RSpec.describe WorkPlansController, type: :controller do
   let(:user) { User.last }
-  let(:work_plan) { create(:work_plan, user: user) }
-  let(:classroom) { create(:classroom, user: user) }
+  let(:work_plan) { create(:work_plan, user:) }
+  let(:classroom) { create(:classroom, user:) }
   let(:valid_params) { { work_plan_id: work_plan.id } }
 
   before { sign_in user }
@@ -47,18 +49,18 @@ RSpec.describe WorkPlansController, type: :controller do
 
   describe "#update" do
     context "with valid params" do
-      let(:new_attributes) {
+      let(:new_attributes) do
         { name: "new name",
           student_id: work_plan.student,
-          start_date: Date.today, end_date: Date.today + 1 }
-      }
+          start_date: Time.zone.today, end_date: Time.zone.today + 1 }
+      end
 
       it "updates the work_plan name/ start_date /end_date" do
         put :update, params: { id: work_plan.id, work_plan: new_attributes }
         work_plan.reload
         expect(work_plan.name).to eq("new name")
-        expect(work_plan.start_date).to eq(Date.today)
-        expect(work_plan.end_date).to eq(Date.today + 1)
+        expect(work_plan.start_date).to eq(Time.zone.today)
+        expect(work_plan.end_date).to eq(Time.zone.today + 1)
       end
 
       it "redirects to the work_plan" do
@@ -70,16 +72,18 @@ RSpec.describe WorkPlansController, type: :controller do
 
   describe "#auto_gen" do
     context "with valid params" do
-      let(:student) { create(:student, classroom: classroom) }
-      let(:params) do {
-        "/students/#{student.id}" => {
-          domains: ["", "Conjugaison", "Vocabulaire", "Orthographe", "Grandeurs et Mesures"],
-        },
-      }       end
+      let(:student) { create(:student, classroom:) }
+      let(:params) do
+        {
+          "/students/#{student.id}" => {
+            domains: ["", "Conjugaison", "Vocabulaire", "Orthographe", "Grandeurs et Mesures"]
+          }
+        }
+      end
       it "generate a new work_plan, based on the student's actual progression" do
-        expect {
+        expect do
           post :auto_new_wp, params: params.merge(student_id: student.id)
-        }.to change(WorkPlan, :count).by(1)
+        end.to change(WorkPlan, :count).by(1)
         # expect(response).to redirect_to(work_plan_path(WorkPlan.last))
       end
       it "redirects to the Auto Generated WorkPlan " do
