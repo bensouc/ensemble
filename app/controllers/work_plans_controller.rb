@@ -3,11 +3,12 @@
 class WorkPlansController < ApplicationController
   before_action :set_params_student, only: ["auto_new_wp"]
 
-  def clone #And sharing
+  # And sharing
+  def clone
     wp = WorkPlan.find(wp_id)
     # binding.pry
     # //crer des copie des WorkPlanDomain et de workplan skill
-
+    # binding.pry
     students = multiplecloning_params(wp_id)
 
     # test if multiconing or simple clone/sharing
@@ -15,12 +16,12 @@ class WorkPlansController < ApplicationController
       new_wp = WorkPlan.create(
         {
           # work_plan_domain_ids: wp.work_plan_domain_ids,
-          name: "#{wp.name}",
+          name: wp.name.to_s,
           grade: wp.grade,
           user_id: current_user.id,
           start_date: wp.start_date,
-          end_date: wp.end_date,
-        # student_id: wp.student_id
+          end_date: wp.end_date
+          # student_id: wp.student_id
         }
       )
       unless sharing_params.nil?
@@ -33,10 +34,10 @@ class WorkPlansController < ApplicationController
         copy_domain(domain, wp, new_wp)
       end
       if new_wp.save!
-        unless sharing_params.nil?
-          redirect_to work_plan_path(wp), notice: "Partage réussi"
-        else
+        if sharing_params.nil?
           redirect_to work_plan_path(new_wp), notice: "Clonage réussi"
+        else
+          redirect_to work_plan_path(wp), notice: "Partage réussi"
         end
       else
         redirect_to work_plan_path(wp), notice: "Clonage raté"
@@ -49,12 +50,12 @@ class WorkPlansController < ApplicationController
         new_wp = WorkPlan.create!(
           {
             # work_plan_domain_ids: wp.work_plan_domain_ids,
-            name: "#{wp.name}",
+            name: wp.name.to_s,
             grade: wp.grade,
             user_id: current_user.id,
             start_date: wp.start_date,
             end_date: wp.end_date,
-            student_id: Student.find(clone_student_id).id,
+            student_id: Student.find(clone_student_id).id
           }
         )
 
@@ -83,7 +84,8 @@ class WorkPlansController < ApplicationController
         end
       end
     end
-    @my_work_plans = WorkPlan.includes([:student]).where(user: current_user, special_wps: false).order(created_at: :DESC)
+    @my_work_plans = WorkPlan.includes([:student]).where(user: current_user,
+                                                         special_wps: false).order(created_at: :DESC)
     # .sort_by(&:student)
     @my_work_plans_unassigned = @my_work_plans.select { |my_work_plan| my_work_plan.student.nil? }
     @my_work_plans = @my_work_plans.reject { |my_work_plan| my_work_plan.student.nil? }.sort_by(&:student)
@@ -115,9 +117,7 @@ class WorkPlansController < ApplicationController
     #   shared_classrooms << sahred_classroom.classroom
     # end
     @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms
-    unless @work_plan.shared_user_id.nil?
-      @shared_user = User.find(@work_plan.shared_user_id)
-    end
+    @shared_user = User.find(@work_plan.shared_user_id) unless @work_plan.shared_user_id.nil?
     @teachers = User.all.reject { |y| y == current_user }
     respond_to do |format|
       format.html
@@ -130,7 +130,7 @@ class WorkPlansController < ApplicationController
                  top: 5,
                  bottom: 3,
                  left: 5,
-                 right: 5,
+                 right: 5
                }
         # dpi: 300
       end
@@ -174,7 +174,7 @@ class WorkPlansController < ApplicationController
   def destroy
     @work_plan = WorkPlan.find(params[:id])
     @work_plan.destroy
-    head 200, content_type: "text/html"
+    head :ok, content_type: "text/html"
     # if @work_plan.student.nil?
     #   redirect_to work_plans_path
     # else
@@ -183,7 +183,6 @@ class WorkPlansController < ApplicationController
   end
 
   def auto_new_wp
-
     # binding.pry
     if @domains.empty?
       redirect_to student_path(@student), notice: "Vous n'avez pas sélectionné de domaine"
@@ -200,14 +199,13 @@ class WorkPlansController < ApplicationController
       grade: @student.classroom.grade,
       student: @student, user: current_user,
       start_date:,
-      end_date:,
+      end_date:
     )
 
     # ajout date intro prendre date => first monday => first friday
     # based on student classroom level,
     # Iterate through each domain in the list of domains
     @domains.each do |domain|
-
       # Create a new WorkPlanDomain object and set its attributes
       wpd = WorkPlanDomain.create(domain:,
                                   level: Belt.student_last_belt_level(@student, domain),
@@ -220,21 +218,18 @@ class WorkPlansController < ApplicationController
         wpd.save
       else
         # Find all the skills for the current domain, level, and grade
-        Skill.where(domain: domain, level: wpd.level, grade: @student.classroom.grade).each do |skill|
-
+        Skill.where(domain:, level: wpd.level, grade: @student.classroom.grade).each do |skill|
           # Find the most recent WorkPlanSkill object for the current student and skill
           # last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
           temp_last_wps = WorkPlanSkill.last_wps(@student, skill)
           last_wps = temp_last_wps.select { |wps| wps.skill == skill && wps.completed }.max_by(&:created_at)
           # find if one is completed then select it
-          if last_wps.nil?
-            last_wps = temp_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at)
-          end
+          last_wps = temp_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at) if last_wps.nil?
           # else take the moste recent
 
           # Create a new WorkPlanSkill object and set its attributes
           new_wps = WorkPlanSkill.new(
-            skill: skill,
+            skill:,
             work_plan_domain: wpd,
             kind: "exercice"
           )
@@ -259,9 +254,7 @@ class WorkPlansController < ApplicationController
             # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
           elsif %w[redo failed redo_OK new].include?(last_wps.status)
             new_wps[:kind] = last_wps.kind
-            if last_wps.kind == "ceinture"
-              new_wps[:kind] = "exercice"
-            end
+            new_wps[:kind] = "exercice" if last_wps.kind == "ceinture"
             if new_wps.kind == "exercice"
               new_wps.challenge = last_wps.add_challenges_2_wps(current_user,
                                                                 last_wps.challenge)
@@ -283,11 +276,9 @@ class WorkPlansController < ApplicationController
   private
 
   def sharing_params
-    unless params[:work_plan].nil?
-      params.require(:work_plan).permit(:shared_user_id)
-    else
-      nil
-    end
+    return if params[:work_plan].nil?
+
+    params.require(:work_plan).permit(:shared_user_id)
   end
 
   def work_plan_params

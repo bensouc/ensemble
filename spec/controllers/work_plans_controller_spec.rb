@@ -32,9 +32,20 @@ RSpec.describe WorkPlansController, type: :controller do
       end
     end
 
-    context "to two students" do
+    context "with two students" do
+      let(:student1) { create(:student, classroom:) }
+      let(:student2) { create(:student, classroom:) }
+
       it "creates a two new wp and redirect to index" do
-        post :clone, params: valid_params
+        valid_params = {
+          work_plan_id: work_plan.id,
+          "/work_plans/#{work_plan.id}" => {
+            students: [student1, student2]
+          }
+        }
+        expect do
+          post :clone, params: valid_params
+        end.to change(WorkPlan, :count).by(2)
         expect(response).to redirect_to(work_plans_path)
       end
     end
