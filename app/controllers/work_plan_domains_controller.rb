@@ -7,12 +7,18 @@ class WorkPlanDomainsController < ApplicationController
     kind = params.require(:kind)
     @domain.work_plan = @work_plan
     @domain.save!
+    student = @work_plan.student
   # test if work_plan.grade == "CM2" no special dmoains AND no domains specials for other grades
     if @work_plan.grade != "CM2" && @domain.specials?
       @domain.level = 1
     else
       # recupere les skills associé domaine/level dnas un tableau
       skills = Skill.where(domain: @domain.domain, level: @domain.level, grade: @work_plan.grade)
+      # get COMPLETED skills for this student for this domain/grade and level
+      completed_skills = student.all_completed_work_plan_skills(@domain.domain, @domain.level).select{|wps| wps.skill.level == @domain.level}.map(&:skill)
+      # validated_challenge_skills = WorkPlanSkill.where(skill: skills, kind: "excercice", status: "completed")
+      # binding.pry
+      skills = skills.reject{|skill| completed_skills.include?(skill)}
       # loop autour du tableau des skills du domain/level
       ######################### SKILLS loop START ######################
       skills&.each do |skill|
