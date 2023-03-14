@@ -85,7 +85,10 @@ group :development, :test do
   gem "dotenv-rails"
   # autoindent erb file
 
+  gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "faker"
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
 end
@@ -97,7 +100,6 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem "spring"
   gem "spring-watcher-listen", "~> 2.0.0"
-  gem "htmlbeautifier"
   gem "rubocop-rails", require: false
 end
 
