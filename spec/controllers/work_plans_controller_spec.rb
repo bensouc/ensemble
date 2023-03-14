@@ -70,7 +70,7 @@ RSpec.describe WorkPlansController, type: :controller do
 
   describe "#auto_gen" do
     context "with valid params" do
-      let(:student) { create (:student) }
+      let(:student) { create(:student, classroom: classroom) }
       let(:params) do {
         "/students/#{student.id}" => {
           domains: ["", "Conjugaison", "Vocabulaire", "Orthographe", "Grandeurs et Mesures"],
