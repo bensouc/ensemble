@@ -41,6 +41,8 @@ class WorkPlanSkillsController < ApplicationController
     # binding.pry
     @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
     @work_plan = @work_plan_skill.work_plan_domain.work_plan
+    #  binding.pry
+
     @work_plan_skill.status = params[:status]
     # @work_plan_skill.completed = true if @work_plan_skill.kind == "ceinture" && params[:status] == "completed"
     # Create a belt or get the corresponding one

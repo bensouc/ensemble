@@ -1,10 +1,12 @@
- FactoryBot.define do
-   factory :user do
-    email {"#{Faker::Name}@gmail.com"}
-    password {"123456"}
-    first_name {"adminJoe"}
-    last_name {"adminSouc"}
-    admin {true}
+# frozen_string_literal: true
+
+FactoryBot.define do
+  factory :user do
+    email { Faker::Internet.email }
+    password { "123456" }
+    first_name { "adminJoe" }
+    last_name { "adminSouc" }
+    admin { true }
     school
   end
 end

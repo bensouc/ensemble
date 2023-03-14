@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 RSpec.describe WorkPlan, type: :model do
   before(:all) do
@@ -13,8 +15,8 @@ RSpec.describe WorkPlan, type: :model do
   end
 
   it " can have many work_plan_domains attached" do
-    work_plan_domain1 = create(:work_plan_domain, work_plan: @work_plan1)
-    work_plan_domain2 = create(:work_plan_domain, work_plan: @work_plan1)
+    create(:work_plan_domain, work_plan: @work_plan1)
+    create(:work_plan_domain, work_plan: @work_plan1)
     expect(@work_plan1.work_plan_domains.count).to eq(2)
   end
 

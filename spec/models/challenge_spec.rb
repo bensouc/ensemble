@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 RSpec.describe Challenge, type: :model do
   before(:all) do
@@ -14,5 +16,4 @@ RSpec.describe Challenge, type: :model do
     challenge2 = build(:challenge, name: @challenge1.name, skill: @challenge1.skill)
     expect(challenge2).to_not be_valid
   end
-
 end

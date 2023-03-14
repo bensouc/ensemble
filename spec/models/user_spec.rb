@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "rails_helper"
 RSpec.describe User, type: :model do
   before(:all) do
@@ -14,7 +16,7 @@ RSpec.describe User, type: :model do
   end
 
   it "has a unique email" do
-    user2 = build(:user, first_name: "Bob")
+    user2 = build(:user, email: @user1.email)
     expect(user2).to_not be_valid
   end
 
