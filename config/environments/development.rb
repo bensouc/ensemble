@@ -14,7 +14,7 @@ Rails.application.configure do
   config.action_mailer.smtp_settings = {
                  address: "mail.gandi.net",
                     port: 587,
-               user_name: "contact@app-ensemble.fr",
+               user_name: ENV['GANDI_MAIL_NAME'],
                 password: ENV['GANDI_MAIL_PSWORD'],
           authentication: "plain",
     enable_starttls_auto: true}
