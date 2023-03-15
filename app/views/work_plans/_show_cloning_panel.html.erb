@@ -35,7 +35,8 @@
 					</div>
 					<div class="grey-line"></div>
 				<% end %>
-				<div class='d-flex'>
+				<div class='d-flex ps-3
+'>
 					<%= form.submit 'Assigner aux élèves', class: 'btn-flat mt-3 mb-3 me-3', data: { confirm: "Etes vous bien sur de vouloir assigner ce plan de travail à tous les élèves sélectionnés" }%>
 					<%= link_to work_plan_clone_path(@work_plan), method: "post", class: "btn-flat mt-3 mb-3 me-3  align-baseline" do %>
 						<h6>Créer une copie sans élève assigné</h6>
