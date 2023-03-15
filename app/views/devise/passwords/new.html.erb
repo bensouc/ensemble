@@ -1,6 +1,11 @@
 <div class="container d-flex pt-5">
 	<%= image_tag "back_to_school.jpg", class:'w-50' %>
-	<div class="right p-5">
+	<div class="right ps-5 pe-5">
+		<h2>
+			<%= link_to  root_path(), class:'w-100 mb-3 d-flex justify-content-start align-items-center' do%>
+				<i class="fa-solid fa-circle-left me-2"></i>
+			<% end %>
+		</h2>
 		<h2>Oubli de mot de passe?</h2>
 		<%= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f| %>
 			<%= f.error_notification %>
@@ -12,7 +17,9 @@
 			</div>
 			<div class="form-actions">
 			</div>
-			<%= f.button :submit, "Envoyez moi les instructions pour changer mon mot de passe" %>
-		<% end %><%= render "devise/shared/links" %>
+			<%= f.button :submit, "Envoyez moi les instructions pour changer de mot de passe",
+      class: 'mt-3 btn-flat'%>
+		<% end %>
+		<%#= render "devise/shared/links" %>
 	</div>
 </div>
