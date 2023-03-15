@@ -1,27 +1,24 @@
 <div class="cloning-form d-none" data-cloning-wp-target="cloningpanel">
-  <div class= "btn-close-cloning-panel" data-action="click->cloning-wp#displayCloningForm">
-    <i class="far fa-times-circle"></i>
-  </div>
-  <div class="simple-cloning d-flex d-flex justify-content-around align-items-center">
-    <h1 >
-      <%=@work_plan.name.capitalize%>
-    </h1>
-    <h4> Niveau: <%=@work_plan.grade.capitalize%></h4>
-    <%= link_to work_plan_clone_path(@work_plan), method: "post", class: "utility-wp-btn mt-3 mb-3" do %>
-      <h6>Cloner</h6>
-    <% end %>
-  </div>
-  <div class="grey-line"></div>
-  <div class="multiple-cloning">
-    <h2>Clonage  et  Assignation</h2>
-    <div class="class-list">
-      <%= simple_form_for work_plan_clone_path(@work_plan) do |form|%>
-        <% @classrooms_whithout_current_student.each do |classroom| %>
-          <h3  class='ps-3'><%=classroom.grade%>-<%=classroom.name%></h3>
-          <div class="cloning-classroom-card" >
-            <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-              <div class="student-checkbox" data-controller='checkboxes'>
-                <%=form.input_field :students,
+	<div class= "btn-close-cloning-panel" data-action="click->cloning-wp#displayCloningForm">
+		<i class="far fa-times-circle"></i>
+	</div>
+	<div class="simple-cloning d-flex d-flex justify-content-around align-items-center">
+		<h1 >
+			<%=@work_plan.name.capitalize%>
+		</h1>
+		<h4> Niveau: <%=@work_plan.grade.capitalize%></h4>
+	</div>
+	<div class="grey-line"></div>
+	<div class="multiple-cloning">
+		<h2>Clonage  et  Assignation</h2>
+		<div class="class-list">
+			<%= simple_form_for work_plan_clone_path(@work_plan) do |form|%>
+				<% @classrooms_whithout_current_student.each do |classroom| %>
+					<h3  class='ps-3'><%=classroom.grade%>-<%=classroom.name%></h3>
+					<div class="cloning-classroom-card" >
+						<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+							<div class="student-checkbox" data-controller='checkboxes'>
+								<%=form.input_field :students,
                 # collection: classroom.students.order(first_name: :asc),
                 collection:[Student.new(first_name: 'Tous',id: rand(-1000..0), classroom: classroom)]+classroom.students.reject{ |y| y == @work_plan.student }.sort_by{|e| e[:first_name]},
                 label_method: :first_name,
@@ -33,13 +30,18 @@
                 class: "tag-selector",
                 item_wrapper_class: 'tag-item'
                 %>
-              </div>
-            </div>
-          </div>
-          <div class="grey-line"></div>
-        <% end %>
-        <%= form.submit 'Assigner aux élèves', class: 'multi-cloning-validate-btn mt-3 mb-3', data: { confirm: "Etes vous bien sur de vouloir assigner ce plan de travail à tous les élèves sélectionnés" }%>
-      <% end %>
-    </div>
-  </div>
+							</div>
+						</div>
+					</div>
+					<div class="grey-line"></div>
+				<% end %>
+				<div class='d-flex'>
+					<%= form.submit 'Assigner aux élèves', class: 'btn-flat mt-3 mb-3 me-3', data: { confirm: "Etes vous bien sur de vouloir assigner ce plan de travail à tous les élèves sélectionnés" }%>
+					<%= link_to work_plan_clone_path(@work_plan), method: "post", class: "btn-flat mt-3 mb-3 me-3  align-baseline" do %>
+						<h6>Créer une copie sans élève assigné</h6>
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+	</div>
 </div>
