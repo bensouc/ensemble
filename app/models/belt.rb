@@ -13,6 +13,7 @@ class Belt < ApplicationRecord
   }.freeze
 
   belongs_to :student
+  scope :completed, -> { where(completed: true) }
 
   def completed?
     completed
@@ -22,7 +23,6 @@ class Belt < ApplicationRecord
     Skill.where(level:, grade:, domain:)
   end
 
-  scope :completed, -> { where(completed: true) }
 
   def self.student_last_belt_level(student, domain)
     belt = Belt.where(student:, domain:, completed: true).order(:level).last
