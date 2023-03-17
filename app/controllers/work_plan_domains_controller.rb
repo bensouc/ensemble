@@ -7,33 +7,44 @@ class WorkPlanDomainsController < ApplicationController
     kind = params.require(:kind)
     @domain.work_plan = @work_plan
     @domain.save!
-  # test if work_plan.grade == "CM2" no special dmoains AND no domains specials for other grades
-    if @work_plan.grade != "CM2" && @domain.specials?
+    student = @work_plan.student
+    # test if work_plan.grade == "CM2" no special dmoains AND no domains specials for other grades
+    is_domain_special = (@work_plan.grade != "CM2" && @domain.specials?)
+    if is_domain_special
       @domain.level = 1
     else
       # recupere les skills associé domaine/level dnas un tableau
       skills = Skill.where(domain: @domain.domain, level: @domain.level, grade: @work_plan.grade)
+      # binding.pry
       # loop autour du tableau des skills du domain/level
       ######################### SKILLS loop START ######################
       skills&.each do |skill|
-        work_plan_skill = WorkPlanSkill.new(
-          work_plan_domain_id: @domain.id,
-          skill_id: skill.id,
-          kind: kind
-          # REMOVE student: @work_plan.student
-        )
-        if kind == "exercice"
-          ############### refacto START add_challenges_2_wps############
-          # challenge = add_challenges_2_wps(work_plan_skill)
-          challenge = work_plan_skill.add_challenges_2_wps(current_user)
-          ############ refacto END ############
-          work_plan_skill.challenge = challenge
+        # unless kind is 'exercice' and student.skill_status(skill) == 'skill_status_belt'
+        current_skill_status = student.skill_status(skill, kind) unless student.nil?
+        # binding.pry
+        unless current_skill_status == "skill_status_completed" || (kind == "exercice" && current_skill_status == "skill_status_belt")
+          work_plan_skill = WorkPlanSkill.new(
+            work_plan_domain_id: @domain.id,
+            skill_id: skill.id,
+            kind: kind,
+            # REMOVE student: @work_plan.student
+          )
+          if kind == "exercice"
+            ############### refacto START add_challenges_2_wps############
+            # challenge = add_challenges_2_wps(work_plan_skill)
+            challenge = work_plan_skill.add_challenges_2_wps(current_user)
+            ############ refacto END ############
+            work_plan_skill.challenge = challenge
+          end
+          work_plan_skill.save!
         end
-        work_plan_skill.save!
       end
       ######################### SKILLS loop END ######################
     end
-    if @domain.save
+    if @domain.work_plan_skills.count.zero? && !is_domain_special
+      @domain.destroy
+      redirect_to work_plan_path(@work_plan), notice: "Il n'est plus d'exercice ou de ceinture non validé pour cette couleur"
+    elsif @domain.save
       redirect_to work_plan_path(@work_plan, anchor: "bottom")
     else
       redirect_to work_plan_path(@work_plan, anchor: "dmn-validate")
