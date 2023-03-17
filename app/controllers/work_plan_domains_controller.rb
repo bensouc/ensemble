@@ -20,7 +20,7 @@ class WorkPlanDomainsController < ApplicationController
       ######################### SKILLS loop START ######################
       skills&.each do |skill|
         # unless kind is 'exercice' and student.skill_status(skill) == 'skill_status_belt'
-        current_skill_status = student.skill_status(skill, kind)
+        current_skill_status = student.skill_status(skill, kind) unless student.nil?
         # binding.pry
         unless current_skill_status == "skill_status_completed" || (kind == "exercice" && current_skill_status == "skill_status_belt")
           work_plan_skill = WorkPlanSkill.new(
