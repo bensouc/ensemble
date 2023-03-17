@@ -10,9 +10,11 @@ class WorkPlanDomainsController < ApplicationController
     student = @work_plan.student
     # test if work_plan.grade == "CM2" no special dmoains AND no domains specials for other grades
     is_domain_special = (@work_plan.grade != "CM2" && @domain.specials?)
+    is_belt_validated = student.nil? ? false : student.belt_status(@domain.domain, @domain.level)
     if is_domain_special
       @domain.level = 1
-    else
+    elsif !is_belt_validated
+      # binding.pry
       # recupere les skills associé domaine/level dnas un tableau
       skills = Skill.where(domain: @domain.domain, level: @domain.level, grade: @work_plan.grade)
       # binding.pry

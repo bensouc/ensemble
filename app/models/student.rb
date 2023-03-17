@@ -24,6 +24,10 @@ class Student < ApplicationRecord
     WorkPlanDomain::DOMAINS[classroom.grade]
   end
 
+  def belt_status(domain, level)
+    Belt.completed.where(student: self, domain:, level:).count.positive?
+  end
+
   def skill_status(skill, kind = nil)
     # get all wps for this student and this skill
     # binding.pry
