@@ -2,9 +2,13 @@
   color: white;
   padding: 8px 24px;
   border-radius: 10px;
+  border: solid $rose;
   // background: #1EDD88;
   transition: background 0.3s ease;
   background-color: $rose;
+  input, h6{
+    margin: 0;
+  }
 }
 .btn-flat:hover {
   background: white;
@@ -29,5 +33,3 @@
   color: $green;
   border: solid $green;
 }
-
-
