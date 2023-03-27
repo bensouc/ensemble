@@ -13,7 +13,7 @@ class StudentsController < ApplicationController
     @belts_specials_count = []
     @student_grade = @student.classroom.grade
     @domains = @student.all_domains_from_student
-    @student_skills = Skill.where(grade: @student_grade)
+    @student_skills = Skill.for_school(current_user.school).where(grade: @student_grade)
     @belts = Belt.where(student: @student)
     @belts = @belts.select(&:completed)
     puts "Le last_wps :!!!!"
@@ -74,7 +74,7 @@ class StudentsController < ApplicationController
       end
     validated_work_plan_skills = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(status: "completed").select { |wps| wps.student == @student && wps.skill.domain == domain && wps.skill.level == level.to_i }
     validated_skill_id = validated_work_plan_skills.map { |wps| wps.skill.id }
-    @skills = Skill.where(level:,
+    @skills = Skill.for_school(current_user.school).where(level:,
                           domain:,
                           grade: student_grade)
     @skills = @skills.reject { |skill| validated_skill_id.include?(skill.id) }
@@ -91,7 +91,7 @@ class StudentsController < ApplicationController
   def add_completed_wps
     student = Student.find(params_new_validated_wps[:student_id])
     skill = []
-    skill << Skill.find(params_new_validated_wps[:skill_id])
+    skill << Skill.for_school(current_user.school).find(params_new_validated_wps[:skill_id])
 
     special_work_plan = student.find_special_workplan
     work_plan_domain = special_work_plan.work_plan_domains.find_or_create_by(

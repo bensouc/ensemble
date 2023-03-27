@@ -3,6 +3,8 @@
 class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  before_validation :set_defaults
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   validates :first_name, presence: true
@@ -19,6 +21,12 @@ class User < ApplicationRecord
   has_many :challenges, dependent: nil
 
   has_one_attached :avatar
+
+  private
+
+  def set_defaults
+    school = School.where(name: "Ensemble") if school.blank?
+  end
 
 
 end

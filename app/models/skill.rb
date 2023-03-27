@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 class Skill < ApplicationRecord
+  belongs_to :school
   has_many :work_plan_skills, dependent: nil
   has_many :challenges, dependent: :destroy
 
   validates :domain, presence: true,
-                     inclusion: { in: ["Vocabulaire", "Conjugaison", "Orthographe",
-                                       "Grammaire", "Numération", "Calcul", "Poésie", "Géométrie",
+  inclusion: { in: ["Vocabulaire", "Conjugaison", "Orthographe",
+    "Grammaire", "Numération", "Calcul", "Poésie", "Géométrie",
                                        "Grandeurs et Mesures", "Opérations", "Résolution des Problèmes",
                                        "Calligraphie", "Poésie et Expression orale",
                                        "Production d’écrit", "Lecture"] }
@@ -15,8 +16,12 @@ class Skill < ApplicationRecord
   validates :symbol, inclusion: { in: ["◼", "⬥", "⬟", "♥", "⬤", "♣", "🞮", "▲", ""] }
   validates :grade, presence: true
 
+  def self.for_school(school)
+    where(school:)
+  end
+
   def resolve_skill_id(domain, level, grade)
-    Skill.where(domain:, level:, grade:)
+    Skill.for_school(current_user.school).where(domain:, level:, grade:)
     # return a skill object
   end
 

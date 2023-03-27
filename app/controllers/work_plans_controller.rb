@@ -218,7 +218,7 @@ class WorkPlansController < ApplicationController
         wpd.save
       else
         # Find all the skills for the current domain, level, and grade
-        Skill.where(domain:, level: wpd.level, grade: @student.classroom.grade).each do |skill|
+        Skill.for_school(current_user.school).where(domain:, level: wpd.level, grade: @student.classroom.grade).each do |skill|
           # Find the most recent WorkPlanSkill object for the current student and skill
           # last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
           temp_last_wps = WorkPlanSkill.last_wps(@student, skill)

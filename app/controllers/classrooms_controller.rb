@@ -38,7 +38,7 @@ class ClassroomsController < ApplicationController
 
   def results
     @domains = WorkPlanDomain::DOMAINS[@classroom.grade]
-    @skills = Skill.where(grade: @classroom.grade)
+    @skills = Skill.for_school(current_user.school).where(grade: @classroom.grade)
     # raise
     @domains.map do |domain|
       # remove domains without skills eg:poesie
@@ -54,9 +54,9 @@ class ClassroomsController < ApplicationController
     @domain = set_domain
     results_factory # create all  variables shared with the results Action
     @skills = if @special_domain
-                Skill.where(grade: @classroom.grade, domain: @domain).sort_by(&:sub_domain)
+                Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort_by(&:sub_domain)
               else
-                Skill.where(grade: @classroom.grade, domain: @domain).sort
+                Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
               end
     render partial: "classrooms/classroom_domain_results"
   end

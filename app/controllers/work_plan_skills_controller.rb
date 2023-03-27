@@ -149,7 +149,7 @@ class WorkPlanSkillsController < ApplicationController
     data = get_add_validated_wps_skill_student
     data[:skill_ids].delete("")
     data[:skill_ids].map { |skill_id|
-      skills << Skill.find(skill_id)
+      skills << Skill.for_school(current_user.school).find(skill_id)
     }
     {
       skills: skills,

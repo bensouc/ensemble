@@ -20,7 +20,7 @@ class Belt < ApplicationRecord
   end
 
   def all_skills
-    Skill.where(level:, grade:, domain:)
+    Skill.for_school(current_user.school).where(level:, grade:, domain:)
   end
 
 
