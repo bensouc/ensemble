@@ -22,6 +22,10 @@ class User < ApplicationRecord
 
   has_one_attached :avatar
 
+  def self.for_school(school)
+    where(school:)
+  end
+
   private
 
   def set_defaults
