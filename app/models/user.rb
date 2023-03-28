@@ -14,7 +14,8 @@ class User < ApplicationRecord
 
   has_many :classrooms, dependent: :destroy
   has_many :work_plans, dependent: :destroy
-  has_many :shared_work_plans, class_name: "WorkPlan", foreign_key: "shared_user_id", dependent: nil
+  has_many :shared_work_plans, class_name: "WorkPlan", foreign_key: "shared_user_id",
+                               dependent: nil, inverse_of: :work_plans
   has_many :shared_classrooms, dependent: :destroy
   has_many :user_shared_classrooms, through: :shared_classrooms, source: "classroom"
   has_many :students, through: :classrooms, dependent: :destroy
@@ -29,8 +30,6 @@ class User < ApplicationRecord
   private
 
   def set_defaults
-    school = School.where(name: "Ensemble") if school.blank?
+    self.school = School.where(name: "Ensemble") if school.blank?
   end
-
-
 end
