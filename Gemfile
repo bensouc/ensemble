@@ -76,6 +76,10 @@ gem "mobile"
 # # gem for pdf-output
 #   gem 'wkhtmltopdf-binary', '~> 0.12.5'
 # end
+
+# Simple cov test
+gem 'simplecov', require: false, group: :test
+
 group :development, :test do
   gem "erb-formatter"
   gem 'htmlbeautifier'
