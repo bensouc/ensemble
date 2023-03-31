@@ -20,8 +20,8 @@ class WorkPlansController < ApplicationController
           grade: wp.grade,
           user_id: current_user.id,
           start_date: wp.start_date,
-          end_date: wp.end_date
-          # student_id: wp.student_id
+          end_date: wp.end_date,
+        # student_id: wp.student_id
         }
       )
       unless sharing_params.nil?
@@ -55,7 +55,7 @@ class WorkPlansController < ApplicationController
             user_id: current_user.id,
             start_date: wp.start_date,
             end_date: wp.end_date,
-            student_id: Student.find(clone_student_id).id
+            student_id: Student.find(clone_student_id).id,
           }
         )
 
@@ -132,7 +132,7 @@ class WorkPlansController < ApplicationController
                  top: 5,
                  bottom: 3,
                  left: 5,
-                 right: 5
+                 right: 5,
                }
         # dpi: 300
       end
@@ -201,7 +201,7 @@ class WorkPlansController < ApplicationController
       grade: @student.classroom.grade,
       student: @student, user: current_user,
       start_date:,
-      end_date:
+      end_date:,
     )
 
     # ajout date intro prendre date => first monday => first friday
@@ -234,7 +234,7 @@ class WorkPlansController < ApplicationController
           new_wps = WorkPlanSkill.new(
             skill:,
             work_plan_domain: wpd,
-            kind: "exercice"
+            kind: "exercice",
           )
 
           # If there is no previous WorkPlanSkill, create a new challenge and save the new WorkPlanSkill
@@ -305,7 +305,11 @@ class WorkPlansController < ApplicationController
   def set_params_student
     @student = Student.find(params.require(:student_id))
     # binding.pry
-    @domains = params.require(:"/students/#{@student.id}")[:domains][1..]
+    if params[:student].nil?
+      @domains = params.require(:"/students/#{@student.id}")[:domains][1..]
+    else
+      @domains = params.require(:student)[:domains][1..]
+    end
   end
 
   def multiplecloning_params(id)

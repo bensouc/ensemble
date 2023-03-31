@@ -32,8 +32,17 @@
     display: flex;
     align-items: center;
   }
+  .student-result-name {
+    height: 0px;
+    margin-bottom: 6px;
+  }
   a {
     margin-top: 10px;
+    max-width: 2ch;
+    max-height: 12ch;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 }
 
@@ -44,10 +53,8 @@
   gap: 2px;
   flex-wrap: wrap;
   padding-left: 15px;
-
 }
 .domain-tab {
-
   height: 36px;
   padding: 5px 10px;
   border: thin solid $rose;
@@ -136,4 +143,14 @@
       font-size: 1.1rem;
     }
   }
+}
+
+.auto-logo {
+  color: $rose;
+  position: relative;
+  bottom: 0px;
+  right: -6px;
+  height: 0;
+  width: 0px;
+  transform: rotateZ(90deg);
 }
