@@ -16,7 +16,7 @@ class WorkPlanDomainsController < ApplicationController
     elsif !is_belt_validated
       # binding.pry
       # recupere les skills associé domaine/level dnas un tableau
-      skills = Skill.where(domain: @domain.domain, level: @domain.level, grade: @work_plan.grade)
+      skills = Skill.for_school(current_user.school).where(domain: @domain.domain, level: @domain.level, grade: @work_plan.grade)
       # binding.pry
       # loop autour du tableau des skills du domain/level
       ######################### SKILLS loop START ######################

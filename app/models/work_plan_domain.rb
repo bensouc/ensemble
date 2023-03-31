@@ -37,8 +37,8 @@ class WorkPlanDomain < ApplicationRecord
 
   validates :level, presence: true, inclusion: { in: LEVELS }
 
-  def all_domain_skills
-    Skill.where(domain:, level:, grade: work_plan.grade)
+  def all_domain_skills(user)
+    Skill.for_school(user.school).where(domain:, level:, grade: work_plan.grade)
   end
 
   def self.add_wps_completed(skills, work_plan_domain, special_work_plan)
@@ -79,7 +79,7 @@ class WorkPlanDomain < ApplicationRecord
     # get all skills for a domain
     # temp_all_domain_skill = all_domain_skills
     student = work_plan.student
-    self.completed = all_domain_skills.all? do |skill|
+    self.completed = all_domain_skills(work_plan.user).all? do |skill|
       # test if wps is completed
       temp_wps = WorkPlanSkill.last_wps(student, skill).select do |wps|
         wps.skill == skill && wps.kind == "ceinture"
@@ -93,7 +93,7 @@ class WorkPlanDomain < ApplicationRecord
   # return the number of validated skill for a domain
   def all_skills_completed_count
     student = work_plan.student
-    out = all_domain_skills.select do |skill|
+    out = all_domain_skills(work_plan.user).select do |skill|
       temp_last_wpss = WorkPlanSkill.last_wps(student, skill)[-1]
       !temp_last_wpss.nil? && temp_last_wpss.completed
     end

@@ -10,7 +10,7 @@ class ClassroomsController < ApplicationController
     shared_classrooms = @shared_classrooms.includes([:classroom]).map(&:classroom)
     @classrooms = (current_user.classrooms + shared_classrooms).sort_by(&:created_at)
     @students_list = []
-    @school_teachers = User.where(school: @school).reject { |y| y == current_user }
+    @school_teachers = User.for_school(@school).reject { |y| y == current_user }
     @classrooms.each do |classroom|
       @students_list << [classroom, classroom.students]
     end
@@ -38,7 +38,7 @@ class ClassroomsController < ApplicationController
 
   def results
     @domains = WorkPlanDomain::DOMAINS[@classroom.grade]
-    @skills = Skill.where(grade: @classroom.grade)
+    @skills = Skill.for_school(current_user.school).where(grade: @classroom.grade)
     # raise
     @domains.map do |domain|
       # remove domains without skills eg:poesie
@@ -54,9 +54,10 @@ class ClassroomsController < ApplicationController
     @domain = set_domain
     results_factory # create all  variables shared with the results Action
     @skills = if @special_domain
-                Skill.where(grade: @classroom.grade, domain: @domain).sort_by(&:sub_domain)
+                Skill.for_school(current_user.school).where(grade: @classroom.grade,
+                                                            domain: @domain).sort_by(&:sub_domain)
               else
-                Skill.where(grade: @classroom.grade, domain: @domain).sort
+                Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
               end
     render partial: "classrooms/classroom_domain_results"
   end
@@ -81,15 +82,13 @@ class ClassroomsController < ApplicationController
   def results_factory
     # @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != "CM2")
     @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != "CM2")
-    @students_list = @classroom.students_list.sort_by { |student| student.first_name.downcase }
+    @students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     # get all validated belts for all classroom student
     @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain: @domain, completed: true)
     @all_completed_work_plan_skills = {}
     @students_list.each do |student|
       completed_wps = student.all_completed_work_plan_skills(@domain, @classroom.grade)
-      unless completed_wps.empty?
-        @all_completed_work_plan_skills[student.id.to_s] = completed_wps
-      end
+      @all_completed_work_plan_skills[student.id.to_s] = completed_wps unless completed_wps.empty?
     end
   end
 end

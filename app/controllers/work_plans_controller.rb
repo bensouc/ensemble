@@ -117,8 +117,10 @@ class WorkPlansController < ApplicationController
     #   shared_classrooms << sahred_classroom.classroom
     # end
     @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms
-    @shared_user = User.find(@work_plan.shared_user_id) unless @work_plan.shared_user_id.nil?
-    @teachers = User.all.reject { |y| y == current_user }
+    unless @work_plan.shared_user_id.nil?
+      @shared_user = User.for_school(current_user.school).find(@work_plan.shared_user_id)
+    end
+    @teachers = User.for_school(current_user.school).all.reject { |y| y == current_user }
     respond_to do |format|
       format.html
       format.pdf do
@@ -218,7 +220,8 @@ class WorkPlansController < ApplicationController
         wpd.save
       else
         # Find all the skills for the current domain, level, and grade
-        Skill.where(domain:, level: wpd.level, grade: @student.classroom.grade).each do |skill|
+        Skill.for_school(current_user.school).where(domain:, level: wpd.level,
+                                                    grade: @student.classroom.grade).each do |skill|
           # Find the most recent WorkPlanSkill object for the current student and skill
           # last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
           temp_last_wps = WorkPlanSkill.last_wps(@student, skill)
