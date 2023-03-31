@@ -13,7 +13,8 @@
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="staticBackdropLabel">Déselectionner les domaines pour la génération du Plan de travail de <%= @student.first_name.capitalize %> </h5>
+					<h5 class="modal-title" id="staticBackdropLabel">Déselectionner les domaines non souhaités pour
+						<%= @student.first_name.capitalize %> </h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
@@ -39,6 +40,7 @@
 					</div>
 				</div>
 				<div class="modal-footer">
+					<p class="--grisC w-100"> <em>La plan de travail s'ouvrira dans un nouvel onglet</em></p>
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">X</button>
 					<%= form.submit 'Valider', class: 'btn btn-secondary --bgc-vert --borderc-vert', data: { action:"click->loadingspinnermgnt#displaySpinner" }%>
 					<%# <button type="button" class="btn btn-secondary --bgc-vert --borderc-vert ">Valider</button> %>
