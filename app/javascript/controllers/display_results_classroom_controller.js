@@ -14,7 +14,8 @@ export default class extends Controller {
   }
   toggle(event) {
     event.preventDefault()
-    console.log(event.target.href)
+    this.resultsTarget.innerHTML = '<div class="spinner-border --rose  " role="status"></div >'
+    // console.log(event.target.href)
     this.request = new Request(event.target.href);
     this.fetchContent(this.request);
     // change domain name
