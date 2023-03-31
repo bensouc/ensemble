@@ -12,10 +12,11 @@
 			</div>
 		</div>
 		<%@students_list.each do |student|  %>
-			<div class="student-name" data-controller="wps-result">
+			<div class="student-name">
 				<%# link to autogen Workplan for this student %>
-				<button type="button" class="--bgc-blanc student-result-name" data-bs-toggle="modal" data-bs-target="#staticBackdrop-student-<%=student.id%>" data-action= "mouseover->wps-result#displayName mouseout->wps-result#hideName">
-					<i class="fa-solid fa-user-gear printer-logo auto-logo"></i>
+				<button type="button" class="--bgc-transparent
+ student-result-name" data-bs-toggle="modal" data-bs-target="#staticBackdrop-student-<%=student.id%>" data-action= "mouseover->wps-result#displayName mouseout->wps-result#hideName" data-bs-toggle="tooltip" data-bs-placement="top" title="Générer un plan de travail">
+					<i class="fa-solid fa-user-gear printer-logo auto-logo" data-bs-toggle="tooltip" data-bs-placement="top" title="Générer un plan de travail"></i>
 				</button>
 				<%# model for auto gen %>
 				<%# END of autogen %>
