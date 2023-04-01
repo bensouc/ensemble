@@ -16,10 +16,12 @@
 		<%@students_list.each do |student|  %>
 			<div class="student-name">
 				<%# link to autogen Workplan for this student %>
-				<button type="button" class="--bgc-transparent student-result-name" data-action="click->addstudenttoautogen#addStudentId" data-student-id="<%=student.id%>" data-student-name="<%=student.first_name.capitalize%>"
+				<!--
+        <button type="button" class="--bgc-transparent student-result-name" data-action="click->addstudenttoautogen#addStudentId" data-student-id="<%=student.id%>" data-student-name="<%=student.first_name.capitalize%>"
  data-bs-toggle="modal" data-bs-target="#staticBackdrop-student" data-action= "mouseover->wps-result#displayName mouseout->wps-result#hideName" data-bs-toggle="tooltip" data-bs-placement="top" title="Générer un plan de travail">
 					<i class="fa-solid fa-user-gear printer-logo auto-logo" data-bs-toggle="tooltip" data-bs-placement="top" title="Générer un plan de travail"></i>
 				</button>
+        -->
 				<%# model for auto gen %>
 				<%# END of autogen %>
 				<%= link_to student.first_name.capitalize, student_path(student) %>
