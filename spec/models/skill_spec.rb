@@ -31,4 +31,5 @@ RSpec.describe Skill, type: :model do
     skill2 = build(:skill, symbol: "⬤⬤")
     expect(skill2).to_not be_valid
   end
+
 end

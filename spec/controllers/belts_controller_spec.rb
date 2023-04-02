@@ -10,8 +10,8 @@ RSpec.describe BeltsController, type: :controller do
   before { sign_in user }
 
   describe "create" do
-    let (:valid_params) { { belt: { grade: "CM1", domain: "Vocabulaire", level: "1", validated_date: Faker::Date }, student_id: student.id } }
-    let (:unvalid_params) { { belt: { grade: "CM1", level: "0", validated_date: Faker::Date }, student_id: student.id } }
+    let(:valid_params) { { belt: { grade: "CM1", domain: "Vocabulaire", level: "1", validated_date: Faker::Date }, student_id: student.id } }
+    let(:unvalid_params) { { belt: { grade: "CM1", level: "0", validated_date: Faker::Date }, student_id: student.id } }
     # params.require(:belt).permit(:grade, :domain, :level, :grade, :validated_date)
     it "creates a new Belt with the right params" do
       expect do
@@ -26,8 +26,8 @@ RSpec.describe BeltsController, type: :controller do
   end
 
   describe "update" do
-    let (:belt) { create(:belt, student:, grade: "CM1", domain: "Vocabulaire", level: "1") }
-    let (:valid_params) { { belt: { validated_date: (DateTime.now + 2) }, id: belt.id } }
+    let(:belt) { create(:belt, student:, grade: "CM1", domain: "Vocabulaire", level: "1") }
+    let(:valid_params) { { belt: { validated_date: (DateTime.now + 2) }, id: belt.id } }
     it "updates a Belt with the right new date" do
       original_date = belt.validated_date
       patch :update, params: valid_params
