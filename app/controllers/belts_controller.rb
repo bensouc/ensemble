@@ -18,6 +18,7 @@ class BeltsController < ApplicationController
 
   def update
     @belt = Belt.find(params[:id])
+    # binding.pry
     @belt.validated_date = new_belt_params[:validated_date]
     if @belt.save
       redirect_to student_path(@belt.student)
