@@ -47,6 +47,7 @@ class Belt < ApplicationRecord
 
   # Belt.special_newbelt(work_plan_skill, special_work_plan)
   def self.special_newbelt(work_plan_skill, work_plan)
+    binding.pry
     count = work_plan_skill.work_plan_domain.all_skills_completed_count
     args = {
       student_id: work_plan_skill.student.id,

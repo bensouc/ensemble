@@ -87,11 +87,18 @@ RSpec.describe Belt, type: :model do
     let(:work_plan) { create(:work_plan, grade: 'CM1', student: ) }
     let(:work_plan_domain) { create(:work_plan_domain, work_plan: work_plan, domain: WorkPlanDomain::DOMAINS_SPECIALS.sample, level:1) }
     let(:skill) { create(:skill, domain: work_plan_domain.domain, grade: work_plan_domain.work_plan.grade, level: work_plan_domain.level)}
-    let(:work_plan_skill) { create(:work_plan_skill, work_plan_domain: work_plan_domain, kind: 'ceinture', completed: true) }
+    let(:work_plan_skill) { create(:work_plan_skill, work_plan_domain: work_plan_domain, kind: 'ceinture', completed: true, status: "completed") }
     it "does not create a first new belt on special domains if its the first" do
       expect {
         Belt.special_newbelt(work_plan_skill, work_plan)
       }.to change(Belt, :count).by(0)
     end
+    # let(:work_plan_skill2) { create(:work_plan_skill, work_plan_domain: work_plan_domain, kind: 'ceinture', completed: true, status: "completed") }
+    # it "create a first new belt on special domains if its the second wps validated" do
+    #   work_plan_skill2
+    #   expect {
+    #     Belt.special_newbelt(work_plan_skill, work_plan)
+    #   }.to change(Belt, :count).by(1)
+    # end
   end
 end
