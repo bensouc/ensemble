@@ -14,7 +14,7 @@
       <img src="./assets/0.12.3/loading.gif" alt="loading"/>
     </div>
     <div id="wrapper" class="hide">
-      <div class="timestamp">Generated <abbr class="timeago" title="2023-03-29T18:23:35+02:00">2023-03-29T18:23:35+02:00</abbr></div>
+      <div class="timestamp">Generated <abbr class="timeago" title="2023-04-02T10:27:45+02:00">2023-04-02T10:27:45+02:00</abbr></div>
       <ul class="group_tabs"></ul>
 
       <div id="content">
@@ -23,7 +23,7 @@
     <span class="group_name">All Files</span>
     (<span class="covered_percent">
       <span class="red">
-  76.75%
+  76.71%
 </span>
 
      </span>
@@ -43,11 +43,11 @@
   </div>
 
   <div class="t-line-summary">
-    <b>1127</b> relevant lines,
-    <span class="green"><b>865</b> lines covered</span> and
-    <span class="red"><b>262</b> lines missed. </span>
+    <b>1129</b> relevant lines,
+    <span class="green"><b>866</b> lines covered</span> and
+    <span class="red"><b>263</b> lines missed. </span>
     (<span class="red">
-  76.75%
+  76.71%
 </span>
 )
   </div>
@@ -94,12 +94,12 @@
         
           <tr class="t-file">
             <td class="strong t-file__name"><a href="#103327a2eeba0f92cd8dad0e439d7501e06ebfe8" class="src_link" title="app/controllers/work_plans_controller.rb">app/controllers/work_plans_controller.rb</a></td>
-            <td class="red strong cell--number t-file__coverage">56.76 %</td>
-            <td class="cell--number">335</td>
-            <td class="cell--number">148</td>
-            <td class="cell--number">84</td>
-            <td class="cell--number">64</td>
-            <td class="cell--number">1.01</td>
+            <td class="red strong cell--number t-file__coverage">56.67 %</td>
+            <td class="cell--number">339</td>
+            <td class="cell--number">150</td>
+            <td class="cell--number">85</td>
+            <td class="cell--number">65</td>
+            <td class="cell--number">1.03</td>
             
           </tr>
         
@@ -2717,7 +2717,7 @@
     <h3>app/controllers/work_plans_controller.rb</h3>
     <h4>
       <span class="red">
-  56.76%
+  56.67%
 </span>
 
       lines covered
@@ -2726,9 +2726,9 @@
     
 
     <div class="t-line-summary">
-      <b>148</b> relevant lines.
-      <span class="green"><b>84</b> lines covered</span> and
-      <span class="red"><b>64</b> lines missed.</span>
+      <b>150</b> relevant lines.
+      <span class="green"><b>85</b> lines covered</span> and
+      <span class="red"><b>65</b> lines missed.</span>
     </div>
 
     
@@ -2987,7 +2987,7 @@
 
             
 
-            <code class="ruby">          end_date: wp.end_date</code>
+            <code class="ruby">          end_date: wp.end_date,</code>
           </li>
         </div>
       
@@ -2998,7 +2998,7 @@
 
             
 
-            <code class="ruby">          # student_id: wp.student_id</code>
+            <code class="ruby">        # student_id: wp.student_id</code>
           </li>
         </div>
       
@@ -3372,7 +3372,7 @@
 
             
 
-            <code class="ruby">            student_id: Student.find(clone_student_id).id</code>
+            <code class="ruby">            student_id: Student.find(clone_student_id).id,</code>
           </li>
         </div>
       
@@ -3718,8 +3718,8 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="90">
-            <span class="hits">1</span>
+          <li class="covered" data-hits="2" data-linenumber="90">
+            <span class="hits">2</span>
             
 
             
@@ -3729,8 +3729,8 @@
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="91">
-            <span class="hits">1</span>
+          <li class="covered" data-hits="2" data-linenumber="91">
+            <span class="hits">2</span>
             
 
             
@@ -4219,7 +4219,7 @@
 
             
 
-            <code class="ruby">                 right: 5</code>
+            <code class="ruby">                 right: 5,</code>
           </li>
         </div>
       
@@ -4978,7 +4978,7 @@
 
             
 
-            <code class="ruby">      end_date:</code>
+            <code class="ruby">      end_date:,</code>
           </li>
         </div>
       
@@ -5341,7 +5341,7 @@
 
             
 
-            <code class="ruby">            kind: &quot;exercice&quot;</code>
+            <code class="ruby">            kind: &quot;exercice&quot;,</code>
           </li>
         </div>
       
@@ -6122,18 +6122,18 @@
 
             
 
-            <code class="ruby">    @domains = params.require(:&quot;/students/#{@student.id}&quot;)[:domains][1..]</code>
+            <code class="ruby">    if params[:student].nil?</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="309">
-            
-            
-
+          <li class="covered" data-hits="2" data-linenumber="309">
+            <span class="hits">2</span>
             
 
-            <code class="ruby">  end</code>
+            
+
+            <code class="ruby">      @domains = params.require(:&quot;/students/#{@student.id}&quot;)[:domains][1..]</code>
           </li>
         </div>
       
@@ -6144,67 +6144,23 @@
 
             
 
-            <code class="ruby"></code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="1" data-linenumber="311">
-            <span class="hits">1</span>
-            
-
-            
-
-            <code class="ruby">  def multiplecloning_params(id)</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="covered" data-hits="2" data-linenumber="312">
-            <span class="hits">2</span>
-            
-
-            
-
-            <code class="ruby">    if params[&quot;/work_plans/#{id}&quot;].nil?</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="313">
-            
-            
-
-            
-
-            <code class="ruby">      nil</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="never" data-hits="" data-linenumber="314">
-            
-            
-
-            
-
             <code class="ruby">    else</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="315">
-            <span class="hits">1</span>
+          <li class="missed" data-hits="0" data-linenumber="311">
+            
             
 
             
 
-            <code class="ruby">      params[&quot;/work_plans/#{id}&quot;].require(:students)</code>
+            <code class="ruby">      @domains = params.require(:student)[:domains][1..]</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="316">
+          <li class="never" data-hits="" data-linenumber="312">
             
             
 
@@ -6215,7 +6171,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="317">
+          <li class="never" data-hits="" data-linenumber="313">
             
             
 
@@ -6226,7 +6182,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="318">
+          <li class="never" data-hits="" data-linenumber="314">
             
             
 
@@ -6237,13 +6193,57 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="319">
+          <li class="covered" data-hits="1" data-linenumber="315">
+            <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">  def multiplecloning_params(id)</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="2" data-linenumber="316">
+            <span class="hits">2</span>
+            
+
+            
+
+            <code class="ruby">    if params[&quot;/work_plans/#{id}&quot;].nil?</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="317">
             
             
 
             
 
-            <code class="ruby">  # def test_multiplecloning_params(id)</code>
+            <code class="ruby">      nil</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="318">
+            
+            
+
+            
+
+            <code class="ruby">    else</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="covered" data-hits="1" data-linenumber="319">
+            <span class="hits">1</span>
+            
+
+            
+
+            <code class="ruby">      params[&quot;/work_plans/#{id}&quot;].require(:students)</code>
           </li>
         </div>
       
@@ -6254,7 +6254,7 @@
 
             
 
-            <code class="ruby">  #   params[&quot;/work_plans/#{id}&quot;]</code>
+            <code class="ruby">    end</code>
           </li>
         </div>
       
@@ -6265,7 +6265,7 @@
 
             
 
-            <code class="ruby">  # end</code>
+            <code class="ruby">  end</code>
           </li>
         </div>
       
@@ -6287,29 +6287,29 @@
 
             
 
-            <code class="ruby">  ###################### Subfonctions ##################</code>
+            <code class="ruby">  # def test_multiplecloning_params(id)</code>
           </li>
         </div>
       
         <div>
-          <li class="covered" data-hits="1" data-linenumber="324">
-            <span class="hits">1</span>
+          <li class="never" data-hits="" data-linenumber="324">
+            
             
 
             
 
-            <code class="ruby">  def copy_domain(domain, work_plan, new_wp)</code>
+            <code class="ruby">  #   params[&quot;/work_plans/#{id}&quot;]</code>
           </li>
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="325">
+          <li class="never" data-hits="" data-linenumber="325">
             
             
 
             
 
-            <code class="ruby">    new_wp_domain = domain.dup</code>
+            <code class="ruby">  # end</code>
           </li>
         </div>
       
@@ -6320,29 +6320,29 @@
 
             
 
-            <code class="ruby">    # new_wp_domain.student = new_wp.student</code>
+            <code class="ruby"></code>
           </li>
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="327">
+          <li class="never" data-hits="" data-linenumber="327">
             
             
 
             
 
-            <code class="ruby">    new_wp_domain.work_plan = new_wp</code>
+            <code class="ruby">  ###################### Subfonctions ##################</code>
           </li>
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="328">
-            
-            
-
+          <li class="covered" data-hits="1" data-linenumber="328">
+            <span class="hits">1</span>
             
 
-            <code class="ruby">    new_wp_domain.save</code>
+            
+
+            <code class="ruby">  def copy_domain(domain, work_plan, new_wp)</code>
           </li>
         </div>
       
@@ -6353,18 +6353,18 @@
 
             
 
-            <code class="ruby">    work_plan_skills = WorkPlanSkill.where(work_plan_domain_id: domain)</code>
+            <code class="ruby">    new_wp_domain = domain.dup</code>
           </li>
         </div>
       
         <div>
-          <li class="missed" data-hits="0" data-linenumber="330">
+          <li class="never" data-hits="" data-linenumber="330">
             
             
 
             
 
-            <code class="ruby">    work_plan_skills.each do |wps|</code>
+            <code class="ruby">    # new_wp_domain.student = new_wp.student</code>
           </li>
         </div>
       
@@ -6375,23 +6375,12 @@
 
             
 
-            <code class="ruby">      wps.clone(work_plan, new_wp_domain)</code>
+            <code class="ruby">    new_wp_domain.work_plan = new_wp</code>
           </li>
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="332">
-            
-            
-
-            
-
-            <code class="ruby">    end</code>
-          </li>
-        </div>
-      
-        <div>
-          <li class="missed" data-hits="0" data-linenumber="333">
+          <li class="missed" data-hits="0" data-linenumber="332">
             
             
 
@@ -6402,7 +6391,62 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="334">
+          <li class="missed" data-hits="0" data-linenumber="333">
+            
+            
+
+            
+
+            <code class="ruby">    work_plan_skills = WorkPlanSkill.where(work_plan_domain_id: domain)</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="334">
+            
+            
+
+            
+
+            <code class="ruby">    work_plan_skills.each do |wps|</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="335">
+            
+            
+
+            
+
+            <code class="ruby">      wps.clone(work_plan, new_wp_domain)</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="336">
+            
+            
+
+            
+
+            <code class="ruby">    end</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="missed" data-hits="0" data-linenumber="337">
+            
+            
+
+            
+
+            <code class="ruby">    new_wp_domain.save</code>
+          </li>
+        </div>
+      
+        <div>
+          <li class="never" data-hits="" data-linenumber="338">
             
             
 
@@ -6413,7 +6457,7 @@
         </div>
       
         <div>
-          <li class="never" data-hits="" data-linenumber="335">
+          <li class="never" data-hits="" data-linenumber="339">
             
             
 

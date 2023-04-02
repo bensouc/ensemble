@@ -19,8 +19,8 @@ class Belt < ApplicationRecord
     completed
   end
 
-  def all_skills
-    Skill.for_school(current_user.school).where(level:, grade:, domain:)
+  def all_skills(user)
+    Skill.for_school(user.school).where(level:, grade:, domain:)
   end
 
 

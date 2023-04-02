@@ -3,7 +3,7 @@
 class BeltsController < ApplicationController
   def edit
     @belt = Belt.find(params[:id])
-    @skills = @belt.all_skills
+    @skills = @belt.all_skills(current_user)
   end
 
   def create
