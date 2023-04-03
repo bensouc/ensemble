@@ -29,7 +29,7 @@ class WorkPlanDomain < ApplicationRecord
   end
 
   def specials?
-    domain.in?(DOMAINS_SPECIALS)
+    domain.in?(DOMAINS_SPECIALS) && work_plan.grade != "CM2"
   end
 
   has_many :work_plan_skills, dependent: :destroy

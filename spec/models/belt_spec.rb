@@ -93,12 +93,5 @@ RSpec.describe Belt, type: :model do
         Belt.special_newbelt(work_plan_skill, work_plan)
       }.to change(Belt, :count).by(0)
     end
-    # let(:work_plan_skill2) { create(:work_plan_skill, work_plan_domain: work_plan_domain, kind: 'ceinture', completed: true, status: "completed") }
-    # it "create a first new belt on special domains if its the second wps validated" do
-    #   work_plan_skill2
-    #   expect {
-    #     Belt.special_newbelt(work_plan_skill, work_plan)
-    #   }.to change(Belt, :count).by(1)
-    # end
   end
 end
