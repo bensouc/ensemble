@@ -15,17 +15,29 @@ class Belt < ApplicationRecord
   belongs_to :student
   scope :completed, -> { where(completed: true) }
 
+  # validations
+  # validates :student, presence: true
+  # validates :level, presence: true
+  validates :domain, presence: true, inclusion: { in: ["Vocabulaire", "Conjugaison", "Orthographe",
+       "Grammaire", "Numération", "Calcul", "Poésie", "Géométrie",
+       "Grandeurs et Mesures", "Opérations", "Résolution des Problèmes",
+       "Calligraphie", "Poésie et Expression orale",
+       "Production d’écrit", "Lecture"] }
+  validates :grade, presence: true, inclusion: { in: %w[CP CE1 CE2 CM1 CM2] }
+  validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
+  validates :student, uniqueness: { scope: %i[domain grade level] }
+
   def completed?
     completed
   end
 
-  def all_skills
-    Skill.for_school(current_user.school).where(level:, grade:, domain:)
+  def all_skills(user)
+    Skill.for_school(user.school).where(level:, grade:, domain:)
   end
 
 
   def self.student_last_belt_level(student, domain)
-    belt = Belt.where(student:, domain:, completed: true).order(:level).last
+    belt = Belt.where(student:, domain:, completed: true).order(level: :desc).first
     if belt.nil?
       1
     else

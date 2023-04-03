@@ -1,3 +1,5 @@
+<div data-controller='addstudenttoautogen'>
+
 <div class='all-results' data-controller= "display-results-classroom">
 	<div class="skills">
 		<% @domains.each do |domain| %>
@@ -14,10 +16,12 @@
 		<%@students_list.each do |student|  %>
 			<div class="student-name">
 				<%# link to autogen Workplan for this student %>
-				<button type="button" class="--bgc-transparent
- student-result-name" data-bs-toggle="modal" data-bs-target="#staticBackdrop-student-<%=student.id%>" data-action= "mouseover->wps-result#displayName mouseout->wps-result#hideName" data-bs-toggle="tooltip" data-bs-placement="top" title="Générer un plan de travail">
+				<!--
+        <button type="button" class="--bgc-transparent student-result-name" data-action="click->addstudenttoautogen#addStudentId" data-student-id="<%=student.id%>" data-student-name="<%=student.first_name.capitalize%>"
+ data-bs-toggle="modal" data-bs-target="#staticBackdrop-student" data-action= "mouseover->wps-result#displayName mouseout->wps-result#hideName" data-bs-toggle="tooltip" data-bs-placement="top" title="Générer un plan de travail">
 					<i class="fa-solid fa-user-gear printer-logo auto-logo" data-bs-toggle="tooltip" data-bs-placement="top" title="Générer un plan de travail"></i>
 				</button>
+        -->
 				<%# model for auto gen %>
 				<%# END of autogen %>
 				<%= link_to student.first_name.capitalize, student_path(student) %>
@@ -29,48 +33,46 @@
 		<%= render 'classroom_domain_results' %>
 	</div>
 </div>
-<%# MODALS for autogen %>
-<%@students_list.each do |student|  %>
-	<%# model for auto gen %>
-	<div class="modal fade" id="staticBackdrop-student-<%=student.id%>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-		<%= simple_form_for [student], url:student_auto_new_wp_path(student), method: :post, html:{target:"_blank"} do |form|%>
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="staticBackdropLabel">Déselectionner les domaines non souhaités pour <%= student.first_name.capitalize %> </h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-					</div>
-					<div class="modal-body">
-						<div class="cloning-classroom-card" >
-							<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-								<div class="domain-checkbox" data-controller='checkboxes'>
-									<%=form.input_field :domains,
-                        # collection: classroom.students.order(first_name: :asc),
+<%# model for auto gen %>
+<div class="modal fade"  id="staticBackdrop-student" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<%= simple_form_for [Student.new], url:"/students/", method: :post, html:{target:"_blank", data:{addstudenttoautogen_target:'form' } } do |form|%>
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="staticBackdropLabel" data-addstudenttoautogen-target="text"></h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="cloning-classroom-card" >
+						<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+							<div class="domain-checkbox" >
+								<%=form.input_field :domains,
                         collection:@domains,
-                        # label_method: ,
+                        label_method: lambda {|domain| domain},
                         value_method: lambda {|domain| domain},
+                        # id: "object_id" +"_"+student.id.to_s,
                         multiple: true,
                         as: :check_boxes,
                         boolean_style: :inline,
-                        data: {checkboxes_target: 'boxes',action:"click->checkboxes#add"},
                         class: "tag-selector",
                         item_wrapper_class: 'tag-item',
                         required: true,
                         checked: @domains
                         %>
-								</div>
 							</div>
 						</div>
 					</div>
-					<div class="modal-footer">
-						<p class="--grisC w-100"> <em>La plan de travail s'ouvrira dans un nouvel onglet</em></p>
-						<button type="button" class="btn btn-secondary --border-10px" data-bs-dismiss="modal">X</button>
-						<%= form.submit 'Valider', class: 'btn btn-secondary --bgc-vert --borderc-vert --border-15px', data: { bs_dismiss:"modal" }%>
-            <%# <button type="button" class="btn btn-secondary --bgc-vert --borderc-vert ">Valider</button> %>
-					</div>
+				</div>
+				<div class="modal-footer">
+					<p class="--grisC w-100"> <em>La plan de travail s'ouvrira dans un nouvel onglet</em></p>
+					<button type="button" class="btn btn-secondary --border-10px" data-bs-dismiss="modal">X</button>
+					<%= form.submit 'Valider', class: 'btn btn-secondary --bgc-vert --borderc-vert --border-15px', data: { bs_dismiss:"modal" }%>
+					<%# <button type="button" class="btn btn-secondary --bgc-vert --borderc-vert ">Valider</button> %>
 				</div>
 			</div>
-		<% end %>
-	</div>
-<% end %>
+		</div>
+	<% end %>
+</div>
+<%# <% end %>
 <%# END of autogen %>
+</div>

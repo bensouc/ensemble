@@ -214,7 +214,8 @@ class WorkPlansController < ApplicationController
                                   work_plan: @work_plan)
 
       # Check if the WorkPlanDomain has any specials and if the work plan grade is not "CM2"
-      if wpd.specials? && @work_plan.grade != "CM2"
+      # if wpd.specials? && @work_plan.grade != "CM2"
+      if wpd.specials?
         # Set the WorkPlanDomain's level to 1 and save it
         wpd.level = 1
         wpd.save

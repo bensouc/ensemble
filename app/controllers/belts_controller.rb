@@ -3,7 +3,7 @@
 class BeltsController < ApplicationController
   def edit
     @belt = Belt.find(params[:id])
-    @skills = @belt.all_skills
+    @skills = @belt.all_skills(current_user)
   end
 
   def create
@@ -18,6 +18,7 @@ class BeltsController < ApplicationController
 
   def update
     @belt = Belt.find(params[:id])
+    # binding.pry
     @belt.validated_date = new_belt_params[:validated_date]
     if @belt.save
       redirect_to student_path(@belt.student)
