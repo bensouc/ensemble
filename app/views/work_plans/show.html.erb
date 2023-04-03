@@ -19,12 +19,14 @@
     <div  style="margin-top: 85px;">
       <%= render 'show_work_plan_domains', work_plan: @work_plan%>
     </div>
+    <%# navigation menu %>
     <div class="bottom-floating-btn" id='backToTopBtn' data-action="click->navigation#topFunction">
       <i class="fa-solid fa-circle-arrow-up" id='backToTopBtn' data-action="click->navigation#topFunction"></i>
       <%= link_to work_plan_path(@work_plan, format: :pdf) do %>
         <i class="fa-solid fa-file-pdf"></i>
       <% end %>
     </div>
+    <%# End of navigation menu %>
   </div>
   <%# WP SHOW MODALS %>
   <%= render 'show_wp_edit_modal', work_plan: @work_plan%>

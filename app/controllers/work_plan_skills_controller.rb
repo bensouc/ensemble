@@ -62,7 +62,8 @@ class WorkPlanSkillsController < ApplicationController
         @work_plan_skill.save!
 
         # test for each skill of its domain a 'belt is validated'jbiv
-        if @work_plan_skill.work_plan_domain.specials? && @work_plan.grade != "CM2"
+        # if @work_plan_skill.work_plan_domain.specials? && @work_plan.grade != "CM2"
+        if @work_plan_skill.work_plan_domain.specials?
           Belt.special_newbelt(@work_plan_skill, @work_plan)
         elsif @work_plan_skill.work_plan_domain.all_skills_completed?
           belt.completed = true
