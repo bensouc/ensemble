@@ -9,7 +9,7 @@
 <%# revoir les constantes, à envoyer depuis le controller %>
 <!-- Modal select domains on auto gen-->
 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-	<%= simple_form_for student_auto_new_wp_path(@student), method: :post do |form|%>
+	<%= simple_form_for student_auto_new_wp_path(@student), method: :post, html:{target:"_blank"} do |form|%>
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
