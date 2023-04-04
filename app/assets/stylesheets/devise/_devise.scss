@@ -20,25 +20,28 @@
 }
 
 @media (min-width: 750px) {
-.devise-mainbox {
- display: flex !important;
+  .devise-mainbox {
+    display: flex !important;
     flex-direction: row;
     flex-wrap: nowrap;
     justify-content: space-evenly;
-}
-#contact{
-  border-left: thin solid $grisC;
+  }
+  #contact {
+    border-left: thin solid $grisC;
     width: 70%;
     padding-left: 39px;
     margin: 5px 10px;
-}}
+  }
+}
 @media (max-width: 750px) {
-.devise-mainbox {
-  display: flex !important;
-  flex-direction: column;
-  flex-wrap: nowrap;
-}
-#contact{
-  margin: 5px 10px
-}
+  .devise-mainbox {
+    display: flex !important;
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+  #contact {
+    margin: 20px 0px;
+    padding: 15px 0 0 0;
+    border-top: thin solid $grisC;
+  }
 }
