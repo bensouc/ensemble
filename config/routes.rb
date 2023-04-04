@@ -4,12 +4,16 @@ Rails.application.routes.draw do
   root to: "pages#home"
   get "/dashboard", to: "dashboard#show"
 
+
+
   namespace "mobile" do
     resources :work_plans, only: [:index]
     resources :students, only: [:index]
     get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
   end
   # Add shared classrooms
+
+  post "", to: "contact#create", as: :contact_create
 
   resources :work_plans, only: [:index, :show, :update, :new, :create, :destroy] do
     resources :work_plan_domains, only: [:new, :create]

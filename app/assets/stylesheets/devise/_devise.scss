@@ -1,6 +1,6 @@
 .deviseboxes {
   width: 50%;
-  margin: 0 auto;
+  margin: 10px auto;
   input {
     margin-bottom: 5px;
   }
@@ -19,4 +19,26 @@
   }
 }
 
-
+@media (min-width: 750px) {
+.devise-mainbox {
+ display: flex !important;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+}
+#contact{
+  border-left: thin solid $grisC;
+    width: 70%;
+    padding-left: 39px;
+    margin: 5px 10px;
+}}
+@media (max-width: 750px) {
+.devise-mainbox {
+  display: flex !important;
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+#contact{
+  margin: 5px 10px
+}
+}
