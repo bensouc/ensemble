@@ -31,6 +31,7 @@ original_skills.each do |original_skill|
     new_exo = exo.new_clone
     new_exo.user = user_school_ensemble
     new_exo.skill_id = new_skill.id
+    new_exo.name = new_skill.name+"-V1"
     new_exo.save!
     puts "new exo created #{new_exo.id}"
   end
