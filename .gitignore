@@ -45,3 +45,5 @@ yarn-debug.log*
 *.swp
 .DS_Store
 .env*
+coverage/.resultset.json
+coverage/.last_run.json
