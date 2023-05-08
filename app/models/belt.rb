@@ -21,7 +21,7 @@ class Belt < ApplicationRecord
   validates :domain, presence: true, inclusion: { in: ["Vocabulaire", "Conjugaison", "Orthographe",
        "Grammaire", "Numération", "Calcul", "Poésie", "Géométrie",
        "Grandeurs et Mesures", "Opérations", "Résolution des Problèmes",
-       "Calligraphie", "Poésie et Expression orale",
+       "Calligraphie","Poésie", "Poésie et Expression orale",
        "Production d’écrit", "Lecture"] }
   validates :grade, presence: true, inclusion: { in: %w[CP CE1 CE2 CM1 CM2] }
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
@@ -57,7 +57,7 @@ class Belt < ApplicationRecord
     # raise
   end
 
-  def self.find_or_create_by_level!(args, level)
+  def self.posei(args, level)
     (1..level).each do
       args.merge!(
         {

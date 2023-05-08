@@ -7,9 +7,11 @@ class BeltsController < ApplicationController
   end
 
   def create
-    @belt = Belt.create(new_belt_params)
+    args = new_belt_params
+    args[:student_id] = params[:student_id]
+    @belt = Belt.find_or_create_by(args)
     @belt.completed = true
-    @belt.student = Student.find(params[:student_id])
+    # @belt.student = Student.find(params[:student_id])
     @belt.validated_date = DateTime.now
     @belt.save
 

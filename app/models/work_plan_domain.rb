@@ -6,7 +6,7 @@ class WorkPlanDomain < ApplicationRecord
     "CE1" => ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"],
     "CE2" => ["Conjugaison", "Vocabulaire", "Grammaire", "Numération", "Calcul",
               "Géométrie", "Grandeurs et Mesures"],
-    "CM1" => ["Conjugaison", "Vocabulaire", "Orthographe", "Grammaire", "Poesie", "Géométrie", "Grandeurs et Mesures",
+    "CM1" => ["Conjugaison", "Vocabulaire", "Orthographe", "Grammaire", "Poésie", "Géométrie", "Grandeurs et Mesures",
               "Numération", "Calcul"],
     "CM2" => ["Calcul", "Géométrie", "Grandeurs et Mesures", "Numération", "Opérations",
               "Résolution des Problèmes", "Calligraphie", "Conjugaison",
