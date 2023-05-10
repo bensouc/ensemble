@@ -53,7 +53,7 @@ ActiveRecord::Schema.define(version: 2023_03_27_075626) do
     t.boolean "completed"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.date "validated_date", default: "2022-04-26"
+    t.date "validated_date", default: "2023-05-10"
     t.integer "level", null: false
     t.index ["student_id"], name: "index_belts_on_student_id"
   end
