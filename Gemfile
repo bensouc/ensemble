@@ -63,7 +63,7 @@ gem "rails_admin-i18n"
 gem "simple_calendar", "~> 2.4"
 # gem 'install faker'
 
-# gem for pdf-output
+# gem for pdf-output  vdf
 gem "wicked_pdf"
 gem 'wkhtmltopdf-binary', '~> 0.12.3', group: :development
 # gem "wkhtmltopdf-binary", group: :development
