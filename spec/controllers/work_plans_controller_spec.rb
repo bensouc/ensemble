@@ -2,7 +2,7 @@
 
 require "rails_helper"
 RSpec.describe WorkPlansController, type: :controller do
-  let(:user) { User.last }
+  let(:user) { create(:user) }
   let(:work_plan) { create(:work_plan, user:) }
   let(:classroom) { create(:classroom, user:) }
   let(:valid_params) { { work_plan_id: work_plan.id } }

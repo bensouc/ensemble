@@ -47,3 +47,5 @@ yarn-debug.log*
 .env*
 coverage/.resultset.json
 coverage/.last_run.json
+coverage/.resultset.json
+coverage/.resultset.json
