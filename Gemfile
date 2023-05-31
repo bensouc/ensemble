@@ -8,7 +8,13 @@ ruby "3.1.2"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 # gem "rails", "~> 6.0.4", ">= 6.0.4.1"
+
+# 7.0.0 UPGRADE
 gem "rails", "~> 7.0.0"
+gem "sprockets-rails"
+# end of 7.0.0 UPGRADE
+
+
 # Use postgresql as the database for Active Record
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
