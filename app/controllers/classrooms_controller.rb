@@ -17,7 +17,7 @@ class ClassroomsController < ApplicationController
   end
 
   def create
-    @classroom = Classroom.create(set_classroom_params)
+    @classroom = Classroom.new(set_classroom_params)
     @classroom.user = current_user
     @classroom.name = nil if @classroom.name == ""
     @classroom.save!

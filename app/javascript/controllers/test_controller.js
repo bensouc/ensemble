@@ -3,7 +3,7 @@ import { Controller } from "stimulus";
 export default class extends Controller {
 
   connect() {
-    // console.log('test OK connected');
+    console.log('test OK connected');
   }
 
 }

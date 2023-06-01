@@ -125,14 +125,15 @@ class WorkPlansController < ApplicationController
       format.html
       format.pdf do
         render pdf: "#{@work_plan.name} #{@work_plan.student.first_name unless @work_plan.student.nil?}",
-               template: "pdf/show_print.html.erb", # Excluding ".pdf" extension.
+               template: "pdf/show_print",
+               formats: [:html],
                disposition: "attachment",
                encoding: "utf8", # a remettre pour lle DL auto des pdf
                margin: {
                  top: 5,
                  bottom: 3,
                  left: 5,
-                 right: 5,
+                 right: 5
                }
         # dpi: 300
       end

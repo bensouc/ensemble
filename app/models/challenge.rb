@@ -32,7 +32,7 @@ class Challenge < ApplicationRecord
   end
 
   def self.assigned_challenges(skill, student)
-    wpss = WorkPlanSkill.where(student:, skill_id: skill.id, kind: "exercice")
+    wpss = WorkPlanSkill.where(skill_id: skill.id, kind: "exercice").select{|wps|wps.student == student}
     # challenge = []
     wpss.map(&:challenge)
   end

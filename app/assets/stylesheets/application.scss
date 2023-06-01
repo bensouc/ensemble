@@ -32,12 +32,14 @@ time, mark, audio, video {
 @import "simple_calendar";
 
 // External libraries
-@import "bootstrap/scss/bootstrap";
-@import "font-awesome-sprockets";
+// @import "bootstrap/scss/bootstrap";
+@import "bootstrap";
+
+// @import "font-awesome-sprockets";
 @import "flatpickr/dist/themes/light";
 
 
-// @import "flatpickr/dist/flatpickr";
+@import "flatpickr/dist/flatpickr";
 @import "font-awesome";
 @import "trix/dist/trix";
 

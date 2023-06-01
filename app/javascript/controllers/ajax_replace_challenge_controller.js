@@ -73,7 +73,7 @@ export default class extends Controller {
           response.text().then((text) => this.contentTarget.innerHTML = text);
         } else {
           swal({
-            title: "Il n'existe pas d'autre excercice pour cette compétence \n"
+            title: "Il n'existe pas d'autre exercice pour cette compétence \n"
           });
         }
       })
