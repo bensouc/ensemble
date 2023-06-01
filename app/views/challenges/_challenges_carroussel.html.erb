@@ -1,8 +1,7 @@
-<div id="carouselExampleControls" class="carousel slide " data-bs-ride="carousel" data-bs-interval="false"> <!-- no cycling on carroussel -->
+<div id="carouselChallengesControls" class="carousel slide " data-bs-ride="carousel" > <!-- no cycling on carroussel -->
 	<div class="carousel-inner">
-		<%# for  each challenge %>
+		<%# first challenge %>
 		<div class="carousel-item active">
-			<%# <div class="cont-challenge carroussel-margin"> %>
 			<div class="challenge-card " id='<%=@challenges.first.id%>'>
 				<%= render 'btn_validation_challenges_carrousel', challenge: @challenges.first %>
 				<div class="challenge-infos carrousel-margin"  %>
@@ -10,11 +9,11 @@
 					<%= @challenges.first.content.body %>
 				</div>
 			</div>
-			<%# </div> %>
+
 		</div>
+		<%# for  each challenge %>
 		<% @challenges[1..-1].each do |challenge|  %>
 			<div class="carousel-item">
-				<%# <div class="cont-challenge carroussel-margin"> %>
 				<div class="challenge-card " id='<%=challenge.id%>' >
 					<%= render 'btn_validation_challenges_carrousel', challenge: challenge %>
 					<div class="challenge-infos carrousel-margin " >
@@ -22,17 +21,16 @@
 						<%= challenge.content.body %>
 					</div>
 				</div>
-				<%# </div> %>
 			</div>
 		<% end %>
 		<%# end of for each challenge %>
 	</div>
 	<% if @challenges.count > 1%>
-		<button class="carousel-control-prev " type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+		<button class="carousel-control-prev " type="button" data-bs-target="#carouselChallengesControls" data-bs-slide="prev">
 			<span class="carousel-control-prev-icon  --bgc-rose --circle" aria-hidden="true"></span>
 			<span class="visually-hidden">Previous</span>
 		</button>
-		<button class="carousel-control-next " type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+		<button class="carousel-control-next " type="button" data-bs-target="#carouselChallengesControls" data-bs-slide="next">
 			<span class="carousel-control-next-icon  --bgc-rose --circle" --circle aria-hidden="true"></span>
 			<span class="visually-hidden">Next</span>
 		</button>
