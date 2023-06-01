@@ -2,7 +2,8 @@
   "name": "ensemble",
   "private": true,
   "dependencies": {
-    "@popperjs/core": "^2.11.5",
+    "@hotwired/stimulus": "^3.2.1",
+    "@popperjs/core": "^2.11.8",
     "@rails/actioncable": "^7.0.5",
     "@rails/actiontext": "^7.0.5",
     "@rails/activestorage": "^7.0.5",
@@ -13,7 +14,6 @@
     "jquery": "^3.6.0",
     "node-sass": "^7.0.1",
     "popper.js": "^1.16.1",
-    "rails_admin": "3.1.2",
     "stimulus": "^3.0.1",
     "stimulus-scroll-progress": "^4.0.0",
     "sweetalert": "^2.1.2",
@@ -33,8 +33,5 @@
     "node": "v14.15.5",
     "yarn": "v1.22.19",
     "npm": "v6.14.11"
-  },
-  "resolutions": {
-    "rails_admin/@fortawesome/fontawesome-free": "^5.15.0"
   }
 }

@@ -63,9 +63,8 @@ gem "bootstrap", "~> 5.2"
 gem "lograge"
 
 # admin
-gem "rails_admin", [">= 3.0.0.rc2", "< 4"]
-# trad for rails admins
-gem "rails_admin-i18n"
+# gem "rails_admin"
+
 # gem de navbar
 gem "simple_calendar", "~> 2.4"
 # gem 'install faker'
