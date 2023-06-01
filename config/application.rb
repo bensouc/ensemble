@@ -12,7 +12,7 @@ module Ensemble
     config.load_defaults 6.0
     config.i18n.default_locale = :fr
     # Configuration for the application, engines, and railties goes here.
-    #
+    config.active_support.key_generator_hash_digest_class = OpenSSL::Digest::SHA1
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
