@@ -11,7 +11,7 @@ ruby "3.1.2"
 
 # 7.0.0 UPGRADE
 gem "rails", "~> 7.0.0"
-gem "sprockets-rails"
+# gem "sprockets-rails"
 # end of 7.0.0 UPGRADE
 
 
@@ -54,7 +54,7 @@ gem "autoprefixer-rails", "10.2.5"
 gem "font-awesome-sass"
 gem "simple_form"
 gem "rails-i18n"
-# gem "bootstrap", "~> 5.0.2"
+gem "bootstrap", "~> 5.2"
 
 # add a form_for with bbotstrap
 # gem "bootstrap_form", "~> 5.1"
