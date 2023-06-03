@@ -15,7 +15,6 @@
     "jquery": "^3.6.0",
     "node-sass": "^7.0.1",
     "popper.js": "^1.16.1",
-    "rails_admin": "3.1.2",
     "stimulus": "^3.0.1",
     "stimulus-scroll-progress": "^4.0.0",
     "sweetalert": "^2.1.2",
@@ -34,8 +33,5 @@
     "node": "v14.15.5",
     "yarn": "v1.22.19",
     "npm": "v6.14.11"
-  },
-  "resolutions": {
-    "rails_admin/@fortawesome/fontawesome-free": "^5.15.0"
   }
 }

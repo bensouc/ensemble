@@ -11,6 +11,7 @@ module Ensemble
     # Initialize configuration defaults for originally generated Rails version.
     config.active_support.cache_format_version = 7.0
     config.i18n.default_locale = :fr
+    config.active_record.legacy_connection_handling = false
     # Configuration for the application, engines, and railties goes here.
     config.active_support.key_generator_hash_digest_class = OpenSSL::Digest::SHA1
     Rails.application.config.active_storage.variant_processor = :mini_magick

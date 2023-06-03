@@ -46,7 +46,7 @@ class Challenge < ApplicationRecord
     challenge.content.body = <<~HTML
       Exercice à REDIGER............................
     HTML
-    challenge.save!
+    challenge.save
     challenge
   end
 
