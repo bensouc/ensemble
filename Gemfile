@@ -12,7 +12,6 @@ ruby "3.1.2"
 # 7.0.0 UPGRADE
 gem "rails", "~> 7.0.0"
 gem "turbo-rails"
-# gem "sprockets-rails"
 # end of 7.0.0 UPGRADE
 
 
@@ -62,7 +61,7 @@ gem "bootstrap", "~> 5.2"
 gem "lograge"
 
 # admin
-gem 'rails_admin', '~> 3.1', '>= 3.1.2'
+# gem 'rails_admin', '~> 3.1', '>= 3.1.2'
 
 # gem de navbar
 gem "simple_calendar", "~> 2.4"
