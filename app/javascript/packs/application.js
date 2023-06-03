@@ -4,7 +4,6 @@
 // that code so it'll be compiled.
 
 require("@rails/ujs").start()
-require("turbolinks").start()
 require("@rails/activestorage").start()
 require("channels")
 
@@ -24,7 +23,7 @@ require("channels")
 
 // External imports
 import "bootstrap";
-
+import "@hotwired/turbo-rails";
 import { initFlatpickr } from "../plugins/flatpickr";
 // import { displayQuote } from "../plugins/quote.js";
 // import {Typed} from 'typed.js';
@@ -42,7 +41,7 @@ import "./get_anchor"
 // import { initSelect2 } from '../components/init_select2';
 
 
-document.addEventListener('turbolinks:load', () => {
+document.addEventListener('turbo:load', () => {
   // Call your functions here, e.g:
   // initSelect2();
   // displayQuote();
@@ -52,7 +51,6 @@ document.addEventListener('turbolinks:load', () => {
 
 require("trix")
 require("@rails/actiontext")
-require("@rails/ujs").start();
 
 
 
@@ -60,3 +58,12 @@ import "controllers"
 import "../plugins/quote"
 import "../plugins/trix-editor-overrides"
 import "../plugins/stimulus_scroll_progress"
+
+
+// TEST FOR TURBO
+// document.addEventListener("turbolinks:load", () => {
+//   console.log("turbolinks!");
+// });
+// document.addEventListener("turbo:load", () => {
+//   console.log("turbo!");
+// });
