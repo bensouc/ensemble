@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "@hotwired/stimulus": "^3.2.1",
+    "@hotwired/turbo-rails": "^7.3.0",
     "@popperjs/core": "^2.11.8",
     "@rails/actioncable": "^7.0.5",
     "@rails/actiontext": "^7.0.5",
@@ -19,7 +20,6 @@
     "sweetalert": "^2.1.2",
     "sweetalert2": "^11.7.2",
     "trix": "^1.2.0",
-    "turbolinks": "^5.2.0",
     "typed.js": "^2.0.12"
   },
   "version": "0.1.0",

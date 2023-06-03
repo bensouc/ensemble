@@ -18,11 +18,20 @@
 //   margin-bottom: 50px !important;
 // }
 
+.scroll-bar-tab {
+  z-index: 1;
+  width: 100%;
+  height: 0.5rem;
+  top: 0;
+  position: fixed;
+  background-color: $blanc;
+}
+
 .scroll-progress {
   height: 0.5rem;
   top: 0;
   position: fixed;
-
+  z-index: 2;
   background-color: #ffa2a9;
 }
 
@@ -44,8 +53,6 @@ a {
 //     color: $grisC;
 // }
 
-
-
 .--grow-on-hover {
   &:hover {
     transform: scale(1.5);
@@ -53,21 +60,21 @@ a {
   }
 }
 
-.--cursor-pointer{
+.--cursor-pointer {
   cursor: pointer;
 }
 
-.--circle{
+.--circle {
   border-radius: 50% !important;
 }
 
-.--centerabsoluteposition{
+.--centerabsoluteposition {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
 
-.--border-10px{
+.--border-10px {
   border-radius: 10px !important;
 }
