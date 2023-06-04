@@ -5,8 +5,8 @@
   display: flex;
   // border-bottom: thin solid $grisC;
   width: fit-content;
-  position: sticky;
-  top: 10px;
+  margin: 0 auto;
+  padding-left: 17px;
   background-color: $white;
   .skill {
     display: flex;
@@ -77,6 +77,8 @@
 .classroom-data-results {
   display: flex;
   flex-direction: column;
+  margin: 0 auto;
+  width: fit-content;
 }
 
 .classroom-left-data-results {

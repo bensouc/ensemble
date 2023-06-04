@@ -54,18 +54,15 @@ gem "simple_form"
 gem "rails-i18n"
 gem "bootstrap", "~> 5.2"
 
-# add a form_for with bbotstrap
-# gem "bootstrap_form", "~> 5.1"
-
+# xlsx spreadsheet generation
+gem 'caxlsx'
+gem 'caxlsx_rails'
 # reduce log size with lograge
 gem "lograge"
 
-# admin
-# gem 'rails_admin', '~> 3.1', '>= 3.1.2'
 
 # gem de navbar
 gem "simple_calendar", "~> 2.4"
-# gem 'install faker'
 
 # gem for pdf-output
 gem "wicked_pdf"
