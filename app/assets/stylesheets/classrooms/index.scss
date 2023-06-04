@@ -7,6 +7,12 @@
 
 .sharing-btn {
   margin: auto 15px;
+  display: flex;
+    width: fit-content;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
 
   button {
     background-color: $grisC;

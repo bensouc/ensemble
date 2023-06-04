@@ -1,53 +1,56 @@
 <div class="classroom-card-top" >
-  <div class="class-grade ps-3 ">
-    <div class="classroom-card-name">
-      <% if classroom.user == current_user && !classroom.shared %>
-        <%= link_to classroom_path(classroom), method: :delete, data: {
+	<div class="class-grade ps-3 ">
+		<div class="classroom-card-name">
+			<% if classroom.user == current_user && !classroom.shared %>
+				<%= link_to classroom_path(classroom), method: :delete, data: {
         confirm: "Voulez vous Supprimer Cette classe? Vous allez supprimer tous les élèves et les plans de travail associés",
         } do %>
-          <div class='rmv-skill-btn white'>
-            <i class="far fa-times-circle"></i>
-          </div>
-        <% end %>
-      <% elsif classroom.user != current_user %>
-        <%= link_to  classroom_shared_classroom_path(classroom,shared_classroom.id), method: :delete, data: {
+					<div class='rmv-skill-btn white'>
+						<i class="far fa-times-circle"></i>
+					</div>
+				<% end %>
+			<% elsif classroom.user != current_user %>
+				<%= link_to  classroom_shared_classroom_path(classroom,shared_classroom.id), method: :delete, data: {
         confirm: "Voulez vous vraimment Supprimer Cette classe partagée?",
         } do %>
-          <div class='rmv-skill-btn white'>
-            <i class="far fa-times-circle"></i>
-          </div>
-        <% end %>
-      <% end %>
-      <%# START MODAL EDITING CLASSROOM %>
-      <div class='classroom-name d-flex  align-items-baseline'>
-        <%= "#{classroom.grade.upcase} "%>
-        <p class='ms-1'><%= classroom.name.nil? ? "" : "#{" - "} #{classroom.name}" %></p>
-        <button type="button" data-bs-toggle="modal" data-bs-target="#editingClassroomModal-<%=classroom.id%>">
-          <i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" ></i>
-        </button>
-        <%# MODAL %>
-        <%= render 'form_edit', classroom: classroom%>
-      </div>
-    </div>
-    <%# END MODAL EDITING CLASSROOM %>
-  </div>
-  <div class="sharing-details">
-    <% if classroom.user != current_user%>
-      <h6>Classe Partagée par <%= classroom.user.first_name.capitalize  %>  </h6>
-    <% end %>
-  </div>
-  <!-- Button trigger modal 4 sharing classroom -->
-  <div class="sharing-btn">
-  <%= link_to classroom_results_path(classroom) do %>
-  <i class="fa-solid fa-graduation-cap --rose --grow-on-hover me-1 "></i>
-  <% end %>
-    <button type="button" class="btn-primary" data-bs-toggle="modal" data-bs-target="#sharingClassroomModal-<%=classroom.id%>">
-      <%= image_tag "icons/share-red-icon.svg" %>
-    </button>
-  </div>
+					<div class='rmv-skill-btn white'>
+						<i class="far fa-times-circle"></i>
+					</div>
+				<% end %>
+			<% end %>
+			<%# START MODAL EDITING CLASSROOM %>
+			<div class='classroom-name d-flex  align-items-baseline'>
+				<%= "#{classroom.grade.upcase} "%>
+				<p class='ms-1'><%= classroom.name.nil? ? "" : "#{" - "} #{classroom.name}" %></p>
+				<button type="button" data-bs-toggle="modal" data-bs-target="#editingClassroomModal-<%=classroom.id%>">
+					<i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" ></i>
+				</button>
+				<%# MODAL %>
+				<%= render 'form_edit', classroom: classroom%>
+			</div>
+		</div>
+		<%# END MODAL EDITING CLASSROOM %>
+	</div>
+	<div class="sharing-details">
+		<% if classroom.user != current_user%>
+			<h6>Classe Partagée par <%= classroom.user.first_name.capitalize  %>  </h6>
+		<% end %>
+	</div>
+	<!-- Button trigger modal 4 sharing classroom -->
+	<div class="sharing-btn">
+		<%= link_to classroom_results_path(classroom) do %>
+			<i class="fa-solid fa-graduation-cap --rose  me-1 --grow-on-hover"></i>
+			<%= link_to classroom_results_path(classroom, format: :xlsx) do %>
+				<i class="fa-solid fa-file-excel --vert --grow-on-hover"></i>
+			<% end %>
+		<% end %>
+		<button type="button" class="btn-primary p-0" data-bs-toggle="modal" data-bs-target="#sharingClassroomModal-<%=classroom.id%>">
+			<%= image_tag "icons/share-red-icon.svg" %>
+		</button>
+	</div>
 </div>
 <%# modal for sharing classrom %>
 <div class="sharing-panel">
-  <%= render "sharing_panel", classroom: classroom%>
+	<%= render "sharing_panel", classroom: classroom%>
 </div>
 </div>

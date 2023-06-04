@@ -39,14 +39,22 @@ class ClassroomsController < ApplicationController
   def results
     @domains = WorkPlanDomain::DOMAINS[@classroom.grade]
     @skills = Skill.for_school(current_user.school).where(grade: @classroom.grade)
-    # raise
     @domains.map do |domain|
       # remove domains without skills eg:poesie
-      @domains.delete(domain) if @skills.select { |skill| skill.domain == domain }.empty?
+      @domains.delete(domain) if @skills.none? { |skill| skill.domain == domain }
     end
-    @domain = @domains.first
-    @skills = @skills.select { |skill| skill.domain == @domain }.sort
-    results_factory # create all  variables shared with the results_by_domain Action
+    # raise
+    respond_to do |format|
+      format.html {
+        @domain = @domains.first
+        @skills = @skills.select { |skill| skill.domain == @domain }.sort
+        results_factory # create all  variables shared with the results_by_domain Action
+      }
+      format.xlsx {
+        response.headers["Content-Disposition"] = 'attachment; filename="my_new_filename.xlsx"'
+        generate_xlsx_file
+      }
+    end
   end
 
   def results_by_domain
@@ -54,11 +62,11 @@ class ClassroomsController < ApplicationController
     @domain = set_domain
     results_factory # create all  variables shared with the results Action
     @skills = if @special_domain
-                Skill.for_school(current_user.school).where(grade: @classroom.grade,
-                                                            domain: @domain).sort_by(&:sub_domain)
-              else
-                Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
-              end
+        Skill.for_school(current_user.school).where(grade: @classroom.grade,
+                                                    domain: @domain).sort_by(&:sub_domain)
+      else
+        Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
+      end
     render partial: "classrooms/classroom_domain_results"
   end
 
@@ -77,6 +85,39 @@ class ClassroomsController < ApplicationController
   end
 
   # COntroller Method
+
+  def generate_xlsx_file
+    package = Axlsx::Package.new
+    workbook = package.workbook
+    header = ["Ceinture", "Compétences"]
+    students_list = @classroom.students
+    students_list.map { |student| header << student.first_name }
+    # create a tab for each domain
+    @domains.each do |domain|
+      all_completed_belts = Belt.includes([:student]).where(student: students_list, domain: domain, completed: true)
+      workbook.add_worksheet(name: "#{domain.capitalize}") do |sheet|
+        sheet.add_row header
+        @skills.select { |skill| skill.domain == domain }.each do |skill|
+          sheet.add_row create_result_row(skill, students_list)
+        end
+      end
+    end
+
+    # Enregistrez le fichier XLSX dans un temp file et envoyez-le en tant que pièce jointe
+    temp_file = Tempfile.new("temp.xlsx")
+    package.serialize(temp_file.path)
+    send_file temp_file,
+              filename: "#{@classroom.name}_resultats_#{Time.zone.today}.xlsx",
+              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+  end
+
+  def create_result_row(skill, students_list)
+    out = [Belt::BELT_COLORS[skill.level - 1], skill.name]
+    students_list.map do |student|
+      out <<   "X" unless student.skill_status(skill) == "skill_status_challenge"
+    end
+    out
+  end
 
   # refacto of result and result_by_domain actions
   def results_factory
