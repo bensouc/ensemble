@@ -48,7 +48,8 @@ class ClassroomsController < ApplicationController
       format.html {
         @domain = @domains.first
         @skills = @skills.select { |skill| skill.domain == @domain }.sort
-        results_factory # create all  variables shared with the results_by_domain Action
+        set_up_results(@domain)
+        results_factory(@domain) # create all  variables shared with the results_by_domain Action
       }
       format.xlsx {
         response.headers["Content-Disposition"] = 'attachment; filename="my_new_filename.xlsx"'
@@ -60,13 +61,14 @@ class ClassroomsController < ApplicationController
   def results_by_domain
     # binding.pry
     @domain = set_domain
-    results_factory # create all  variables shared with the results Action
+    set_up_results(@domain)
+    results_factory(@domain) # create all  variables shared with the results Action
     @skills = if @special_domain
-        Skill.for_school(current_user.school).where(grade: @classroom.grade,
-                                                    domain: @domain).sort_by(&:sub_domain)
-      else
-        Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
-      end
+                Skill.for_school(current_user.school).where(grade: @classroom.grade,
+                                                            domain: @domain).sort_by(&:sub_domain)
+              else
+                Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
+              end
     render partial: "classrooms/classroom_domain_results"
   end
 
@@ -90,19 +92,20 @@ class ClassroomsController < ApplicationController
     package = Axlsx::Package.new
     workbook = package.workbook
     header = ["Ceinture", "Compétences"]
-    students_list = @classroom.students
-    students_list.map { |student| header << student.first_name }
+    students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
+    header << students_list.map { |student| student.first_name.capitalize }
     # create a tab for each domain
     @domains.each do |domain|
-      all_completed_belts = Belt.includes([:student]).where(student: students_list, domain: domain, completed: true)
+      set_up_results(domain)
+      results_factory(domain)
+      # all_completed_belts = Belt.includes([:student]).where(student: students_list, domain: domain, completed: true)
       workbook.add_worksheet(name: "#{domain.capitalize}") do |sheet|
-        sheet.add_row header
+        sheet.add_row header.flatten
         @skills.select { |skill| skill.domain == domain }.each do |skill|
-          sheet.add_row create_result_row(skill, students_list)
+          sheet.add_row create_result_row(skill, students_list).flatten
         end
       end
     end
-
     # Enregistrez le fichier XLSX dans un temp file et envoyez-le en tant que pièce jointe
     temp_file = Tempfile.new("temp.xlsx")
     package.serialize(temp_file.path)
@@ -113,22 +116,29 @@ class ClassroomsController < ApplicationController
 
   def create_result_row(skill, students_list)
     out = [Belt::BELT_COLORS[skill.level - 1], skill.name]
-    students_list.map do |student|
-      out <<   "X" unless student.skill_status(skill) == "skill_status_challenge"
+    out << students_list.map do |student|
+
+      if @all_completed_belts.any? { |belt| belt.student == student && belt.domain == skill.domain && belt.level == skill.level } ||
+        @all_completed_work_plan_skills[student.id.to_s].to_a.any? { |wps| wps.skill == skill && wps.kind == "ceinture" && wps.completed }
+        "X"
+      end
     end
-    out
+    out.flatten
   end
 
   # refacto of result and result_by_domain actions
-  def results_factory
-    # @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != "CM2")
-    @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != "CM2")
+  def set_up_results(domain)
+    @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @classroom.grade != "CM2")
     @students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     # get all validated belts for all classroom student
-    @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain: @domain, completed: true)
+    @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain: domain, completed: true)
+  end
+
+  def results_factory(domain)
+    # @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != "CM2")
     @all_completed_work_plan_skills = {}
     @students_list.each do |student|
-      completed_wps = student.all_completed_work_plan_skills(@domain, @classroom.grade)
+      completed_wps = student.all_completed_work_plan_skills(domain, @classroom.grade)
       @all_completed_work_plan_skills[student.id.to_s] = completed_wps unless completed_wps.empty?
     end
   end
