@@ -101,7 +101,8 @@ class ClassroomsController < ApplicationController
       # all_completed_belts = Belt.includes([:student]).where(student: students_list, domain: domain, completed: true)
       workbook.add_worksheet(name: "#{domain.capitalize}") do |sheet|
         sheet.add_row header.flatten
-        @skills.select { |skill| skill.domain == domain }.each do |skill|
+        raise
+        @skills.select { |skill| skill.domain == domain }.sort_by { |skill| [skill.level, skill.id] }.each do |skill|
           sheet.add_row create_result_row(skill, students_list).flatten
         end
       end
