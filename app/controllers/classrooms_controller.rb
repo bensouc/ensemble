@@ -110,7 +110,7 @@ class ClassroomsController < ApplicationController
     temp_file = Tempfile.new("temp.xlsx")
     package.serialize(temp_file.path)
     send_file temp_file,
-              filename: "#{@classroom.name}_resultats_#{Time.zone.today}.xlsx",
+              filename: "#{@classroom.grade.upcase}_#{@classroom.name}_resultats_#{Time.zone.today}.xlsx",
               type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   end
 
