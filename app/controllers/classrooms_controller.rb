@@ -117,7 +117,7 @@ class ClassroomsController < ApplicationController
   def create_result_row(skill, students_list)
     out = [Belt::BELT_COLORS[skill.level - 1], skill.name]
     out << students_list.map do |student|
-      level = skill.specials? ?  1 : skill.level
+      level = skill.specials? ?  0 : skill.level
       if @all_completed_belts.any? { |belt| belt.student == student && belt.domain == skill.domain && belt.level == level } ||
         @all_completed_work_plan_skills[student.id.to_s].to_a.any? { |wps| wps.skill == skill && wps.kind == "ceinture" && wps.completed }
         "X"
