@@ -45,16 +45,16 @@ class ClassroomsController < ApplicationController
     end
     # raise
     respond_to do |format|
-      format.html {
+      format.html do
         @domain = @domains.first
         @skills = @skills.select { |skill| skill.domain == @domain }.sort
         set_up_results(@domain)
         results_factory(@domain) # create all  variables shared with the results_by_domain Action
-      }
-      format.xlsx {
+      end
+      format.xlsx do
         response.headers["Content-Disposition"] = 'attachment; filename="my_new_filename.xlsx"'
         generate_xlsx_file
-      }
+      end
     end
   end
 
@@ -91,7 +91,7 @@ class ClassroomsController < ApplicationController
   def generate_xlsx_file
     package = Axlsx::Package.new
     workbook = package.workbook
-    header = ["Ceinture", "Compétences"]
+    header = %w[Ceinture Compétences]
     students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     header << students_list.map { |student| student.first_name.capitalize }
     # create a tab for each domain
@@ -99,7 +99,7 @@ class ClassroomsController < ApplicationController
       set_up_results(domain)
       results_factory(domain)
       # all_completed_belts = Belt.includes([:student]).where(student: students_list, domain: domain, completed: true)
-      workbook.add_worksheet(name: "#{domain.capitalize}") do |sheet|
+      workbook.add_worksheet(name: domain.capitalize.to_s) do |sheet|
         sheet.add_row header.flatten
         @skills.select { |skill| skill.domain == domain }.sort_by { |skill| [skill.level, skill.id] }.each do |skill|
           sheet.add_row create_result_row(skill, students_list).flatten
@@ -115,13 +115,17 @@ class ClassroomsController < ApplicationController
   end
 
   def create_result_row(skill, students_list)
-    out = [Belt::BELT_COLORS[skill.level - 1], skill.name]
+    out = [skill.specials? ? "" : Belt::BELT_COLORS[skill.level - 1], skill.name]
     out << students_list.map do |student|
-      level = skill.specials? ?  0 : skill.level
-      if @all_completed_belts.any? { |belt| belt.student == student && belt.domain == skill.domain && belt.level == level } ||
-        @all_completed_work_plan_skills[student.id.to_s].to_a.any? { |wps| wps.skill == skill && wps.kind == "ceinture" && wps.completed }
-        "X"
-      end
+      level = skill.specials? ? 0 : skill.level
+      next unless @all_completed_belts.any? do |belt|
+                    belt.student == student && belt.domain == skill.domain && belt.level == level
+                  end ||
+                  @all_completed_work_plan_skills[student.id.to_s].to_a.any? do |wps|
+                    wps.skill == skill && wps.kind == "ceinture" && wps.completed
+                  end
+
+      "X"
     end
     out.flatten
   end
@@ -131,7 +135,7 @@ class ClassroomsController < ApplicationController
     @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @classroom.grade != "CM2")
     @students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     # get all validated belts for all classroom student
-    @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain: domain, completed: true)
+    @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain:, completed: true)
   end
 
   def results_factory(domain)
