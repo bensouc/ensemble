@@ -57,7 +57,7 @@ class Belt < ApplicationRecord
     # raise
   end
 
-  def self.posei(args, level)
+  def self.find_or_create_by_level!(args, level)
     (1..level).each do
       args.merge!(
         {
