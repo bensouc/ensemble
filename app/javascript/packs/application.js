@@ -23,6 +23,7 @@ require("channels")
 
 // External imports
 import "bootstrap";
+import 'rails_admin';
 import "@hotwired/turbo-rails";
 import { initFlatpickr } from "../plugins/flatpickr";
 // import { displayQuote } from "../plugins/quote.js";
