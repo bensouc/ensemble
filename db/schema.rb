@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_31_133257) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_14_134822) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -122,6 +122,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_133257) do
     t.index ["classroom_id"], name: "index_students_on_classroom_id"
   end
 
+  create_table "subscriptions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "external_id", default: "", null: false
+    t.string "status", null: false
+    t.boolean "cancel_at_period_end", default: false, null: false
+    t.date "current_period_start", null: false
+    t.date "current_period_end", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_subscriptions_on_user_id"
+  end
+
   create_table "tables", force: :cascade do |t|
     t.integer "columns", default: 1
     t.integer "rows", default: 1
@@ -142,6 +154,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_133257) do
     t.string "last_name"
     t.boolean "admin"
     t.bigint "school_id"
+    t.text "stripe_customer_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["school_id"], name: "index_users_on_school_id"
@@ -197,6 +210,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_31_133257) do
   add_foreign_key "shared_classrooms", "users"
   add_foreign_key "skills", "schools"
   add_foreign_key "students", "classrooms"
+  add_foreign_key "subscriptions", "users"
   add_foreign_key "users", "schools"
   add_foreign_key "work_plan_domains", "work_plans"
   add_foreign_key "work_plan_skills", "challenges"

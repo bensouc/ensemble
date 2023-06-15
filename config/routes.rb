@@ -1,10 +1,8 @@
 Rails.application.routes.draw do
-  mount RailsAdmin::Engine => '/admin', as: 'rails_admin'
+  mount RailsAdmin::Engine => "/admin", as: "rails_admin"
   devise_for :users
   root to: "pages#home"
   get "/dashboard", to: "dashboard#show"
-
-
 
   namespace "mobile" do
     resources :work_plans, only: [:index]
@@ -59,5 +57,11 @@ Rails.application.routes.draw do
   # route for tab editing
   resources :tables, only: [:show, :create, :update]
 
+  # Routes for subscription
+  resources :users do
+    resources :subscriptions, only: %w[new]
+  end
+
+  resources :subscriptions, only: %w[create]
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
