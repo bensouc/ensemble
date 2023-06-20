@@ -62,6 +62,7 @@ Rails.application.routes.draw do
     resources :subscriptions, only: %w[new]
   end
 
+  # stripe routes
   post "create-customer-portal-session", to: "stripe#create_portal_session"
 
   resources :subscriptions, only: %w[create]

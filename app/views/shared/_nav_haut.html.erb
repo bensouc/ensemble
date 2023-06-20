@@ -23,8 +23,8 @@
 					<div class="dropdown-menu left" aria-labelledby="navbarDropdownMenuLink">
 						<a class="dropdown-item" href="#">Ma classe</a>
 						<%=link_to "Mon compte", edit_user_registration_path, class: "dropdown-item"%>
-						<form method="POST" action="/create-customer-portal-session">
-							<button type="submit">Manage billing</button>
+						<form method="POST" action="/create-customer-portal-session" data-turbo="false">
+							<button type="submit">Gérer votre abonnement</button>
 						</form>
 						<%if current_user.admin%>
 							<%= link_to 'DATA-ADMIN', '/admin', class: "dropdown-item", target: '_blank' %>
