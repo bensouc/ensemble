@@ -4,7 +4,7 @@ class SubscriptionPrice
   MONTHLY_20 = OpenStruct.new({
     id: "price_1HXTMsB5y*****",
     name: "quarter-20",
-    amount: 12,
+    amount: 500,
     currency: "euros",
     interval: "quarter",
   })
@@ -12,8 +12,8 @@ class SubscriptionPrice
   YEARLY_220 = OpenStruct.new({
     id: "price_1HXTMs*****",
     name: "yearly-220",
-    amount: 40,
-    currency: "usd",
+    amount: 5000,
+    currency: "euros",
     interval: "year",
   })
 

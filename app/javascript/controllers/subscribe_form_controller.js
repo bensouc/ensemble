@@ -1,19 +1,23 @@
 import { Controller } from "stimulus"
+import { loadStripe } from '@stripe/stripe-js';
 
 export default class extends Controller {
   static targets = ['stripePublishableKey', 'cardInput', 'cardTokenInput', 'cardError', 'submit']
 
   connect() {
-    console.log("subcribe form controller connected")
+    // console.log("subcribe form controller connected")
     const form = this.element
 
     //
     // Fetch the stripe publishable key from the HTML element
     //
     const publishableKey = this.stripePublishableKeyTarget.dataset.stripePublishableKey
+    // console.log(publishableKey)
+    const stripe = loadStripe("pk_test_51Mt82uD36LSTpclfBod1c7tSPaI3JSosgUrZyqoNrALnGLA12m3tdHrHWQ7DzVBliwl5VweMexoaLgIkBWUU8wJD00VUpvKwq6");
+    // const stripe = Stripe(publishableKey)
+    // var stripe = Stripe('pk_test_51Mt82uD36LSTpclfBod1c7tSPaI3JSosgUrZyqoNrALnGLA12m3tdHrHWQ7DzVBliwl5VweMexoaLgIkBWUU8wJD00VUpvKwq6');
 
-    const stripe = Stripe(publishableKey)
-    const elements = stripe.elements()
+    const elements =  stripe.elements()
 
     const clearCardError = () => this.cardErrorTarget.classList.add('d-none')
 

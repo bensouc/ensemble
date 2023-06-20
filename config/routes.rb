@@ -62,6 +62,8 @@ Rails.application.routes.draw do
     resources :subscriptions, only: %w[new]
   end
 
+  post "create-customer-portal-session", to: "stripe#create_portal_session"
+
   resources :subscriptions, only: %w[create]
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

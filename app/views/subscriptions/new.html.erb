@@ -1,25 +1,14 @@
-<%= simple_form_for @subscription, html: {data: {controller: "subscribe-form"}} do |f| %>
-	<!-- This element inserts the Stripe publishable key so that we can grab it in the JavaScript -->
-	<div data-target="subscribe-form.stripePublishableKey" data-stripe-publishable-key="<%= ENV['STRIPE_PUBLISHABLE_KEY'] %>"></div>
-	<!-- Here are the two different pricing options -->
-	<div class="subscription-options">
-		<label class="subscription-option">
-			<div class="option-name">Monthly</div>
-			<div class="option-price"><%= Money.new(SubscriptionPrice.current_monthly.amount).format %></div>
-			<%= f.radio_button :stripe_price_id, SubscriptionPrice.current_monthly.id, checked: params[:stripe_price_id].blank? || params[:stripe_price_id] == SubscriptionPrice.current_monthly.id %>
-		</label>
-		<label class="subscription-option">
-			<div class="option-name">Yearly</div>
-			<div class="option-price"><%= Money.new(SubscriptionPrice.current_yearly.amount  ).format %></div>
-			<%= f.radio_button :stripe_price_id, SubscriptionPrice.current_yearly.id, checked: params[:stripe_price_id] == SubscriptionPrice.current_yearly.id %>
-		</label>
-	</div>
-	<!-- Here's where we'll render the Stripe Elements credit card field, as well as a div
-       for an error and a hidden input to store the credit card token. -->
-	<div data-target="subscribe-form.cardInput"></div>
-	<div class="text-danger mb-4 d-none" data-target="subscribe-form.cardError"></div>
-	<%= f.hidden_field :card_token, value: params[:card_token], "data-target" => "subscribe-form.cardTokenInput" %>
-	<div class="actions">
-		<%= f.submit "Subscribe", class: 'btn btn-lg btn-block btn-snippets', data: {target: "subscribe-form.submit"} %>
-	</div>
-<% end %>
+<script async
+  src="https://js.stripe.com/v3/buy-button.js"></script>
+<div class="flex">
+	<stripe-buy-button
+  buy-button-id="buy_btn_1NKhsRD36LSTpclfRo3a06ik"
+  publishable-key="pk_test_51Mt82uD36LSTpclfBod1c7tSPaI3JSosgUrZyqoNrALnGLA12m3tdHrHWQ7DzVBliwl5VweMexoaLgIkBWUU8wJD00VUpvKwq6"
+>
+	</stripe-buy-button>
+	<stripe-buy-button
+  buy-button-id="buy_btn_1NKhxrD36LSTpclfpceKs7aW"
+  publishable-key="pk_test_51Mt82uD36LSTpclfBod1c7tSPaI3JSosgUrZyqoNrALnGLA12m3tdHrHWQ7DzVBliwl5VweMexoaLgIkBWUU8wJD00VUpvKwq6"
+>
+	</stripe-buy-button>
+</div>
