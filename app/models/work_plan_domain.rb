@@ -11,7 +11,7 @@ class WorkPlanDomain < ApplicationRecord
     "CM2" => ["Calcul", "Géométrie", "Grandeurs et Mesures", "Numération", "Opérations",
               "Résolution des Problèmes", "Calligraphie", "Conjugaison",
               "Poésie et Expression orale", "Production d’écrit", "Grammaire",
-              "Lecture", "Vocabulaire"]
+              "Lecture", "Vocabulaire"],
   }.freeze
   LEVELS = (1..7)
 
@@ -49,7 +49,7 @@ class WorkPlanDomain < ApplicationRecord
         skill:,
         status: "completed",
         completed: true,
-        kind: "ceinture"
+        kind: "ceinture",
       )
       last_work_plan_skill = work_plan_skill
       # validate BElt?
@@ -60,13 +60,16 @@ class WorkPlanDomain < ApplicationRecord
         # BMO TO be rethinkg to get result from method
       elsif work_plan_domain.all_skills_completed?
         belt = Belt.find_or_create_by(
-          {     student_id: special_work_plan.student.id,
-                domain: work_plan_domain.domain,
-                grade: skill.grade,
-                level: skill.level,
-                completed: true,
-                validated_date: DateTime.now }
+          { student_id: special_work_plan.student.id,
+           domain: work_plan_domain.domain,
+           grade: skill.grade,
+           level: skill.level,
+          #  completed: true, #to remove to find the one belt
+          #  validated_date: DateTime.now #to remove to fin the one belt
+ }
         )
+        belt.completed = true
+        belt.validated_date = DateTime.now
         belt.save
       end
     end
