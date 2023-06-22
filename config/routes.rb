@@ -63,6 +63,7 @@ Rails.application.routes.draw do
   end
 
   # stripe routes
+  resources :stripe_webhooks, only: %[create]
   post "create-customer-portal-session", to: "stripe#create_portal_session"
 
   resources :subscriptions, only: %w[create]

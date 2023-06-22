@@ -64,9 +64,12 @@ class WorkPlanDomain < ApplicationRecord
                 domain: work_plan_domain.domain,
                 grade: skill.grade,
                 level: skill.level,
-                completed: true,
-                validated_date: DateTime.now }
+                completed: true, #to remove to find the one belt
+                validated_date: DateTime.now #to remove to fin the one belt
+              }
         )
+        # belt.completed = true
+        # belt.validated_date: DateTime.now
         belt.save
       end
     end

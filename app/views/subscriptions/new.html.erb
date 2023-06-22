@@ -6,7 +6,8 @@
 <div class="stripe-card-select-subscription">
 	<stripe-pricing-table pricing-table-id="prctbl_1NL08ID36LSTpclfsjbO3RrT"
     publishable-key="pk_test_51Mt82uD36LSTpclfBod1c7tSPaI3JSosgUrZyqoNrALnGLA12m3tdHrHWQ7DzVBliwl5VweMexoaLgIkBWUU8wJD00VUpvKwq6"
-    customer-email="<%= current_user.email%>" >
+    client-reference-id= "<%=@customer.id%>"
+    customer-email="<%= @customer.email%>" >
 	</stripe-pricing-table>
 </div>
 </div>
