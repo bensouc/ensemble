@@ -562,6 +562,11 @@
           1
         ]
       },
+      "/root/code/bensouc/ensemble/config/initializers/money.rb": {
+        "lines": [
+          1
+        ]
+      },
       "/root/code/bensouc/ensemble/config/initializers/permissions_policy.rb": {
         "lines": [
           null,
@@ -1315,8 +1320,6 @@
           1,
           1,
           null,
-          null,
-          null,
           1,
           1,
           1,
@@ -1370,6 +1373,16 @@
           null,
           1,
           null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
           null,
           null
         ]
@@ -1484,6 +1497,31 @@
           null,
           0,
           null,
+          null
+        ]
+      },
+      "/root/code/bensouc/ensemble/app/helpers/stripe_helper.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          0,
+          null,
+          0,
+          null,
+          null
+        ]
+      },
+      "/root/code/bensouc/ensemble/app/helpers/subscriptions_helper.rb": {
+        "lines": [
+          1,
           null
         ]
       },
@@ -1780,6 +1818,8 @@
           1,
           1,
           0,
+          0,
+          0,
           null,
           null
         ]
@@ -1792,6 +1832,7 @@
           1,
           null,
           1,
+          null,
           null,
           null
         ]
@@ -1838,6 +1879,63 @@
           null,
           null,
           1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/root/code/bensouc/ensemble/app/controllers/stripe_controller.rb": {
+        "lines": [
+          null,
+          1,
+          1,
+          0,
+          null,
+          0,
+          null,
+          null,
+          null,
+          0,
+          null,
+          null
+        ]
+      },
+      "/root/code/bensouc/ensemble/app/controllers/stripe_webhooks_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          null,
+          1,
+          0,
+          0,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          null,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
           0,
           null,
           null
@@ -1999,6 +2097,32 @@
           null,
           0,
           0,
+          null,
+          0,
+          null,
+          null
+        ]
+      },
+      "/root/code/bensouc/ensemble/app/controllers/subscriptions_controller.rb": {
+        "lines": [
+          1,
+          1,
+          0,
+          0,
+          null,
+          null,
+          1,
+          0,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
           null,
           0,
           null,
@@ -2533,11 +2657,11 @@
           null,
           8,
           null,
-          0,
-          0,
+          1,
+          1,
           null,
           null,
-          8,
+          7,
           null,
           null,
           null,
@@ -3098,7 +3222,7 @@
           1,
           null,
           1,
-          14,
+          13,
           null,
           null,
           1,
@@ -3132,6 +3256,13 @@
           0,
           null,
           null,
+          null
+        ]
+      },
+      "/root/code/bensouc/ensemble/app/models/stripe_customer.rb": {
+        "lines": [
+          1,
+          1,
           null
         ]
       },
@@ -3192,6 +3323,61 @@
           null,
           1,
           0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/root/code/bensouc/ensemble/app/models/subscription.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          1,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/root/code/bensouc/ensemble/app/models/subscription_price.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
           null,
           null,
           1,
@@ -3319,8 +3505,8 @@
           null,
           null,
           null,
-          null,
-          null,
+          0,
+          0,
           0,
           null,
           null,
@@ -3796,6 +3982,44 @@
           null
         ]
       },
+      "/root/code/bensouc/ensemble/spec/helpers/stripe_helper_spec.rb": {
+        "lines": [
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null
+        ]
+      },
+      "/root/code/bensouc/ensemble/spec/helpers/subscriptions_helper_spec.rb": {
+        "lines": [
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null
+        ]
+      },
       "/root/code/bensouc/ensemble/spec/models/belt_spec.rb": {
         "lines": [
           null,
@@ -3979,6 +4203,15 @@
           null
         ]
       },
+      "/root/code/bensouc/ensemble/spec/models/stripe_customer_spec.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          null
+        ]
+      },
       "/root/code/bensouc/ensemble/spec/models/student_spec.rb": {
         "lines": [
           null,
@@ -3995,6 +4228,15 @@
           1,
           null,
           null,
+          null
+        ]
+      },
+      "/root/code/bensouc/ensemble/spec/models/subscription_spec.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
           null
         ]
       },
@@ -4124,8 +4366,30 @@
           null,
           null
         ]
+      },
+      "/root/code/bensouc/ensemble/spec/requests/stripe_spec.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          null
+        ]
+      },
+      "/root/code/bensouc/ensemble/spec/requests/subscriptions_spec.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          null
+        ]
       }
     },
-    "timestamp": 1686152138
+    "timestamp": 1687693721
   }
 }
