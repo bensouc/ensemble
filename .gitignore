@@ -6,6 +6,7 @@
 
 # Ignore test cov pages
 coverage/*
+vendor/*
 
 # Ignore bundler config.
 /.bundle
@@ -49,3 +50,4 @@ coverage/.resultset.json
 coverage/.last_run.json
 coverage/.resultset.json
 coverage/.resultset.json
+vendor

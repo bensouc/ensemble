@@ -63,10 +63,7 @@ class WorkPlanDomain < ApplicationRecord
           { student_id: special_work_plan.student.id,
            domain: work_plan_domain.domain,
            grade: skill.grade,
-           level: skill.level,
-          #  completed: true, #to remove to find the one belt
-          #  validated_date: DateTime.now #to remove to fin the one belt
- }
+           level: skill.level }
         )
         belt.completed = true
         belt.validated_date = DateTime.now
