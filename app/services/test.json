@@ -1,0 +1,106 @@
+{
+  "id" => "evt_1NNvljD36LSTpclfL9SPMwrt",
+  "object" => "event",
+  "api_version" => "2022-11-15",
+  "created" => 1687948718,
+  "data" => {
+    "object" => {
+      "id" => "cus_OAGINvxvOtnCDC",
+      "object" => "customer",
+      "address" => {
+        "city" => nil,
+        "country" => "FR",
+        "line1" => nil,
+        "line2" => nil,
+        "postal_code" => nil,
+        "state" => nil
+      },
+      "balance" => 0,
+      "created" => 1687948718,
+      "currency" => nil,
+      "default_source" => nil,
+      "delinquent" => false,
+      "description" => nil,
+      "discount" => nil,
+      "email" => "toto@gmail.com",
+      "invoice_prefix" => "C0F4DDC9",
+      "invoice_settings" => {
+        "custom_fields" => nil,
+        "default_payment_method" => nil,
+        "footer" => nil,
+        "rendering_options" => nil
+      },
+      "livemode" => false,
+      "metadata" => {},
+      "name" => "toto",
+      "phone" => nil,
+      "preferred_locales" => [
+        "fr-FR",
+        "fr"
+      ],
+      "shipping" => nil,
+      "tax_exempt" => "none",
+      "test_clock" => nil
+    }
+  },
+  "livemode" => false,
+  "pending_webhooks" => 1,
+  "request" => {
+    "id" => nil,
+    "idempotency_key" => "[FILTERED]"
+  },
+  "type" => "customer.created",
+  "webhook" => {
+    "id" => "evt_1NNvljD36LSTpclfL9SPMwrt",
+    "object" => "event",
+    "api_version" => "2022-11-15",
+    "created" => 1687948718,
+    "data" => {
+      "object" => {
+        "id" => "cus_OAGINvxvOtnCDC",
+        "object" => "customer",
+        "address" => {
+          "city" => nil,
+          "country" => "FR",
+          "line1" => nil,
+          "line2" => nil,
+          "postal_code" => nil,
+          "state" => nil
+        },
+        "balance" => 0,
+        "created" => 1687948718,
+        "currency" => nil,
+        "default_source" => nil,
+        "delinquent" => false,
+        "description" => nil,
+        "discount" => nil,
+        "email" => "toto@gmail.com",
+        "invoice_prefix" => "C0F4DDC9",
+        "invoice_settings" => {
+          "custom_fields" => nil,
+          "default_payment_method" => nil,
+          "footer" => nil,
+          "rendering_options" => nil
+        },
+        "livemode" => false,
+        "metadata" => {},
+        "name" => "toto",
+        "phone" => nil,
+        "preferred_locales" => [
+          "fr-FR",
+          "fr"
+        ],
+        "shipping" => nil,
+        "tax_exempt" => "none",
+        "test_clock" => nil
+      }
+    },
+    "livemode" => false,
+    "pending_webhooks" => 1,
+    "request" => {
+      "id" => nil,
+      "idempotency_key" => "[FILTERED]"
+    },
+    "type" => "customer.created"
+  }
+}
