@@ -1,5 +1,6 @@
-require "#{Rails.root}/app/services/stripe_checkout_session_service.rb"
-require "#{Rails.root}/app/services/stripe_customer_created_service.rb"
+require "#{Rails.root}/app/services/stripe_subscription_created_service.rb"
+require "#{Rails.root}/app/services/stripe_customer_created_service.rb "
+require " #{Rails.root}/app/services/stripe_subscription_deleted_service.rb"
 
 Rails.configuration.stripe = {
   # ...
@@ -10,6 +11,14 @@ Rails.configuration.stripe = {
 StripeEvent.signing_secret = Rails.configuration.stripe[:signing_secret]
 
 StripeEvent.configure do |events|
-  events.subscribe "customer.subscription.created", StripeCheckoutSessionService.new
+  events.subscribe "customer.subscription.created", StripeSubscriptionCreatedService.new
   events.subscribe "customer.created", StripeCustomerCreatedService.new
+  events.subscribe "customer.subscription.deleted", StripeSubscriptionDeletedService.new
+
+# customer.subscription.paused
+# customer.subscription.pending_update_applied
+# customer.subscription.pending_update_expired
+# customer.subscription.resumed
+# customer.subscription.trial_will_end
+# customer.subscription.updated
 end

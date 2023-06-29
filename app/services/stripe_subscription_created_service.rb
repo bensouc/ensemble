@@ -1,4 +1,4 @@
-class StripeCheckoutSessionService
+class StripeSubscriptionCreatedService
   def call(event)
     Stripe.api_key = ENV["STRIPE_API_KEY"]
     Subscription.create!(
