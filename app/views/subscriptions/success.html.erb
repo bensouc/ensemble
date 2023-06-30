@@ -1,4 +1,24 @@
-<H1>Merci pour votre confiance</H1>
+<div class="container-success">
+	<h1>Confirmation d'abonnement</h1>
+	<div class="success-icon">
+		<i class="fa fa-check-circle"></i>
+	</div>
+	<p class="confirmation-message">Félicitations ! Votre abonnement a été validé et payé avec succès.</p>
+	<div class="subscription-details">
+		<h3>Détails de l'abonnement :</h3>
+		<p>Nom : <%= current_user.first_name.capitalize %> <%= current_user.last_name.capitalize %></p>
+		<p>Status : <%= I18n.t @subscription.status%>
+			<% if  @subscription.status ==  'trialing'%>
+				(jusqu'au <%= Time.at(@subscription.trial_end).strftime("%d/%m/%Y") %> )
+			<% end %>
+		</p>
+		<p><i class="fa-solid fa-money-bill-1-wave"></i>  <%= (@subscription.items.data.first.plan.amount.to_f)/100 %>€ / <%= @subscription.items.data.first.plan.interval == "month" ? "Mois" : "Année"%></p>
+		<p><i class="fa-regular fa-calendar-days"></i>   <%= Time.at(@subscription.current_period_start).strftime("%d/%m/%Y") %> </p>
+		<p><i class="fa-solid fa-repeat"></i> <%= Time.at(@subscription.current_period_end).strftime("%d/%m/%Y") %>
+		</p>
+	</div>
+</div>
 <%= link_to  dashboard_path() do%>
-	<H2>Allez à votre Cartable</H2>
+	<i class="fa-solid fa-circle-arrow-left"></i>
+Retour à votre Cartable
 <% end %>

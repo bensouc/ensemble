@@ -31,6 +31,10 @@
 
 ---
 fr:
+  # stripe
+  trialing: "Essai"
+  active: "En cours"
+  
   activerecord:
     errors:
       messages:

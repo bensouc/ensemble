@@ -1,7 +1,7 @@
 require "#{Rails.root}/app/services/stripe_subscription_created_service.rb"
-require "#{Rails.root}/app/services/stripe_customer_created_service.rb "
-require " #{Rails.root}/app/services/stripe_subscription_deleted_service.rb "
-require " #{Rails.root}/app/services/stripe_subscription_updated_service.rb"
+require "#{Rails.root}/app/services/stripe_customer_created_service.rb"
+require "#{Rails.root}/app/services/stripe_subscription_deleted_service.rb"
+require "#{Rails.root}/app/services/stripe_subscription_updated_service.rb"
 
 Rails.configuration.stripe = {
   # ...

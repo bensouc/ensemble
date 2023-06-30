@@ -1,0 +1,44 @@
+.container-success {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  h1 {
+    color: #333;
+  }
+
+  p {
+    color: #777;
+    margin-bottom: 20px;
+  }
+
+  .success-icon {
+    font-size: 80px;
+    color: #28a745;
+  }
+}
+
+.confirmation-message {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.subscription-details {
+  text-align: left;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border: 1px solid #ddd;
+}
+
+.subscription-details h3 {
+  color: #333;
+  margin-top: 0;
+}
+
+.subscription-details p {
+  color: #555;
+  margin-bottom: 10px;
+}
