@@ -44,8 +44,8 @@ class SubscriptionsController < ApplicationController
   end
 
   def success
-        Stripe.api_key = ENV["STRIPE_API_KEY"]
-    @subscription = Stripe::Subscription.retrieve( current_user.subscription.external_id)
+    #     Stripe.api_key = ENV["STRIPE_API_KEY"]
+    # @subscription = Stripe::Subscription.retrieve( current_user.subscription.external_id)
   end
 
 end
