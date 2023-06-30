@@ -58,14 +58,15 @@ Rails.application.routes.draw do
   resources :tables, only: [:show, :create, :update]
 
   # Routes for subscription
-  resources :users do
     resources :subscriptions, only: %w[new]
-  end
+
 
   # stripe routes
-  resources :stripe_webhooks, only: %[create]
+  mount StripeEvent::Engine, at: "/stripe-webhooks"
   post "create-customer-portal-session", to: "stripe#create_portal_session"
-  
+
   resources :subscriptions, only: %w[create]
+  get "subscriptions/success", to: "subscriptions#success"
+  get "subscriptions/cancel", to: "subscriptions#cancel"
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

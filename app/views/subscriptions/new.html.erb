@@ -1,14 +1,23 @@
 <script async
   src="https://js.stripe.com/v3/buy-button.js"></script>
-<div class="container d-flex">
-	<div class="speech w-50">
-		<h3 class='p-2'>Benéficiez de 30 jours d'essais, quelque soit votre choix de durée d'abonnement.</h3>
+<div class="container">
+	<div class="speech">
+		<h3 class='p-2'>Benéficiez de 25 jours d'essais, quel que soit votre choix de durée d'abonnement.</h3>
 	</div>
 	<div class="stripe-card-select-subscription">
-  <%= button_to "demarrer un un abonnement annuel", subscriptions_path, data:{turbo:"false"} %>
-
-  "demarrer un abonneme mensuel"
-
-
+		<stripe-buy-button
+  buy-button-id="buy_btn_1NKhsRD36LSTpclfRo3a06ik"
+  publishable-key="<%= ENV["STRIPE_PUBLISHABLE_KEY"]%>"
+  customer-email="<%= current_user.email %>"
+>
+		</stripe-buy-button>
+		<stripe-buy-button
+  buy-button-id="buy_btn_1NKhxrD36LSTpclfpceKs7aW"
+  publishable-key="<%= ENV["STRIPE_PUBLISHABLE_KEY"]%>"
+  customer-email="<%= current_user.email %>"
+  >
+		</stripe-buy-button>
+		<%# <%= button_to "demarrer un abonnement annuel", subscriptions_path(type: "annualy"), data:{turbo:"false"} %>
+		<%# <%= button_to "demarrer un abonnement mensuel", subscriptions_path(type: "monthly"), data:{turbo:"false"} %>
 	</div>
 </div>

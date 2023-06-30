@@ -15,6 +15,8 @@ module Ensemble
     # Configuration for the application, engines, and railties goes here.
     config.active_support.key_generator_hash_digest_class = OpenSSL::Digest::SHA1
     Rails.application.config.active_storage.variant_processor = :mini_magick
+
+
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.
     #
