@@ -1,0 +1,99 @@
+.backg-image-sub {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
+    url("child_hand-min.jpg");
+  background-size: cover;
+  padding: 15px 10px 30px 10px;
+  border-radius: 15px;
+  height: 642px;
+}
+.speech {
+  color: $blanc;
+  padding-left: 30px;
+}
+.stripe-card-select-subscription {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.left-card-sub_new {
+  display: flex;
+  flex-direction: column;
+  width: 288px;
+}
+.sub_header {
+  width: 288px;
+  margin-bottom: 15px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 31px;
+  .period-sub-btn {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    // flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: $menuOff;
+    color: $blanc;
+    p {
+      margin: 0;
+      padding: 0;
+    }
+  }
+  .period-sub-btn.active {
+    background-color: $rose;
+    color: $blanc;
+    font-weight: 600;
+  }
+  .period-sub-btn.left-sub-btn {
+    padding: 5px 0px 5px 18px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    width: 48%;
+  }
+  .period-sub-btn.right-sub-btn {
+    padding: 5px 0 5px 15px;
+    width: 60%;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+  }
+  .separator {
+    position: absolute;
+    width: 29px;
+    height: 100%;
+    background-color: $menuOff;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+    z-index: 1;
+    transform: translateX(-30%);
+  }
+  .separator.active {
+    background-color: $rose;
+  }
+}
+.stripe-card-select-subscription-cards {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-evenly;
+  .subscription-detail {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 400;
+    height: 378px;
+    color: white;
+  }
+  i {
+    color: $rose;
+    margin-right: 10px;
+  }
+}
