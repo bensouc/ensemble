@@ -32,7 +32,14 @@ class ClassroomsController < ApplicationController
   end
 
   def destroy
-    @classroom.destroy
+    # if sharedclassroom with calssromm id
+    if @classroom.shared?
+      # get first shared calssroom _id
+      # assign the sahred_classroom user to curent classroom
+      # destroy shared_classroom
+    else
+      @classroom.destroy
+    end
     redirect_to classrooms_path
   end
 
@@ -64,11 +71,11 @@ class ClassroomsController < ApplicationController
     set_up_results(@domain)
     results_factory(@domain) # create all  variables shared with the results Action
     @skills = if @special_domain
-                Skill.for_school(current_user.school).where(grade: @classroom.grade,
-                                                            domain: @domain).sort_by(&:sub_domain)
-              else
-                Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
-              end
+        Skill.for_school(current_user.school).where(grade: @classroom.grade,
+                                                    domain: @domain).sort_by(&:sub_domain)
+      else
+        Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
+      end
     render partial: "classrooms/classroom_domain_results"
   end
 
@@ -119,8 +126,8 @@ class ClassroomsController < ApplicationController
     out << students_list.map do |student|
       level = skill.specials? ? 0 : skill.level
       next unless @all_completed_belts.any? do |belt|
-                    belt.student == student && belt.domain == skill.domain && belt.level == level
-                  end ||
+        belt.student == student && belt.domain == skill.domain && belt.level == level
+      end ||
                   @all_completed_work_plan_skills[student.id.to_s].to_a.any? do |wps|
                     wps.skill == skill && wps.kind == "ceinture" && wps.completed
                   end

@@ -9,6 +9,16 @@ class Classroom < ApplicationRecord
 
   validates :grade, presence: true
 
+  def shared?
+    SharedClassroom.exists?(classroom: self)
+  end
+
+  def shared_user
+    return unless shared?
+
+    SharedClassroom.select { |s_classroom| s_classroom.classroom == self }.first.user
+  end
+
   # def students_list
   #   # Student.includes([:work_plans, :work_plan_skills]).where(classroom: self)
   #   Student.where(classroom: self)
