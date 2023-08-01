@@ -34,9 +34,14 @@ class ClassroomsController < ApplicationController
   def destroy
     # if sharedclassroom with calssromm id
     if @classroom.shared?
+      # raise
       # get first shared calssroom _id
+      shared_classroom = @classroom.shared_classrooms.first
       # assign the sahred_classroom user to curent classroom
-      # destroy shared_classroom
+      @classroom.user = shared_classroom.user
+      @classroom.save
+      shared_classroom.destroy
+      # destroy shared_class
     else
       @classroom.destroy
     end

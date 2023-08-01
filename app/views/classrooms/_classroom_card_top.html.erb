@@ -1,7 +1,7 @@
 <div class="classroom-card-top" >
 	<div class="class-grade ps-3 ">
 		<div class="classroom-card-name">
-			<% if classroom.user == current_user && !classroom.shared %>
+			<% if classroom.user == current_user %>
 				<%= link_to classroom_path(classroom), method: :delete, data: {
         confirm: "Voulez vous Supprimer Cette classe? Vous allez supprimer tous les élèves et les plans de travail associés",
         } do %>
@@ -35,6 +35,9 @@
 		<% if classroom.user != current_user%>
 			<h6>Classe Partagée par <%= classroom.user.first_name.capitalize  %>  </h6>
 		<% end %>
+    <% if classroom.user == current_user && classroom.shared?%>
+      <h6>Classe Partagée  </h6>
+    <% end %>
 	</div>
 	<!-- Button trigger modal 4 sharing classroom -->
 	<div class="sharing-btn">

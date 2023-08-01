@@ -13,6 +13,7 @@ class Classroom < ApplicationRecord
     SharedClassroom.exists?(classroom: self)
   end
 
+
   def shared_user
     return unless shared?
 
