@@ -41,7 +41,7 @@
       data-allskilldisplay-target='domainCard'>
 				<%# <% domain = WorkPlanDomain::DOMAINS[@grade].first %>
 				<% for skill_level in (1..7) do %>
-					<% skills = @skills.select {|skill| skill.level == skill_level && skill.domain == domain} %>
+					<% skills = @skills.select {|skill| skill.level == skill_level && skill.domain == domain}.sort %>
 					<div class="skills-display d-none"
           data-allskilldisplay-target='levelSkillCard'
           data-grade='<%=@grade%>'
