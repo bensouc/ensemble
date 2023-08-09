@@ -1,0 +1,77 @@
+.classroom-level-selectors {
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+  h1{
+    margin: 0;
+  }
+}
+
+.class-pill {
+  border: thin solid $rose;
+  border-radius: 10px;
+  margin: 0 10px 0 0;
+  padding: 5px 10px;
+  font-weight: 700;
+  color: $rose;
+  &.active{
+  background-color: $rose;
+  color: $blanc;
+  }
+  &:hover{
+    background-color: $rose;
+    color: $blanc;
+    cursor: pointer;
+  }
+}
+
+
+.all-skills {
+  display: flex;
+}
+.skill_level-selectors {
+  padding-top: 8px;
+}
+
+.skills-classroom-level-card {
+  padding-left: 10px;
+  width: 100%;
+  .skills {
+    width: calc(100vw - 474px);
+    padding-left: 60px;
+    margin-top: 20px;
+  }
+}
+.domain-tab{
+  &.active{
+    background-color: $rose;
+    color: $blanc;
+  }
+  &:hover{
+    background-color: $rose;
+    color: $blanc;
+    cursor: pointer;
+  }
+}
+.skill_level-selector {
+  border: thin solid $rose;
+  border-radius: 10px 0 0 10px;
+  margin: 0 10px 0 0;
+  padding: 5px 10px;
+  font-weight: 700;
+  color: $roseL;
+  text-align: center;
+  margin-bottom: 2px;
+  i {
+    font-size: 34px;
+  }
+  &:hover{
+    background-color: $rose;
+    color: $blanc;
+    cursor: pointer;
+  }
+  &.active {
+    color: $blanc;
+    background-color: $rose;
+  }
+}
