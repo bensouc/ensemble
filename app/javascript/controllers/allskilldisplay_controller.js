@@ -4,11 +4,12 @@ export default class extends Controller {
   static targets = ['levelSkillCard', 'leveltBtn', 'domainBtn', 'skillCard', 'domainCard']
   connect() {
     this.setUpSkillsDisplay()
+    console.log(this.domainBtnTargets);
   }
 
   displaySkills(event) {
     // console.log(event.currentTarget.dataset.level);
-    this.removeSkillsBtnActive()
+    this.removeLevelBtnActive()
     event.currentTarget.classList.add('active');
     this.levelSkillCardTargets.forEach(element => {
       if (element.dataset.level == event.currentTarget.dataset.level) {
@@ -21,14 +22,13 @@ export default class extends Controller {
 
   // event.currentTarget.classList.toggle('active')
   displayDomain(event) {
-    // console.log('remove active on domain btn');
+    console.log('event');
     this.removeDomainBtnActive()
-    event.currentTarget.classList.add('active');
-    // reset level btns
-    this.removeSkillsBtnActive()
+    this.removeLevelBtnActive()
+    this.setDomainActive(event)
     // add active Class to first level Btn
     this.leveltBtnTargets[0].classList.add('active')
-    this.displayDomain(event)
+    this.displaySkillsByDomain(event)
 
   }
 
@@ -40,7 +40,7 @@ export default class extends Controller {
     // remove d-none on all first level
     this.displayLevel1()
   }
-  removeSkillsBtnActive() {
+  removeLevelBtnActive() {
     // this.levelSkillCardTargets.forEach(element => {
     this.leveltBtnTargets.forEach(btn => {
       btn.classList.remove('active');
@@ -61,7 +61,7 @@ export default class extends Controller {
     });
   }
 
-  displayDomain(event) {
+  displaySkillsByDomain(event) {
     this.domainCardTargets.forEach(element => {
       if (element.dataset.domain.trim() === event.currentTarget.dataset.domain.trim()) {
         element.classList.remove('d-none')
@@ -71,4 +71,16 @@ export default class extends Controller {
       };
     })
   }
+  setDomainActive(event) {
+    this.domainBtnTargets.forEach(btn => {
+      if (btn.dataset.domain.trim() === event.currentTarget.dataset.domain.trim()) {
+        btn.classList.add('active')
+        // display first level of domain
+      } else {
+        btn.classList.remove('active')
+      };
+    })
+  }
+
+
 }
