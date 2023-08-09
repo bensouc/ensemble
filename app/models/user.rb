@@ -25,7 +25,13 @@ class User < ApplicationRecord
   has_one_attached :avatar
 
   def self.for_school(school)
+    # return all teacher from specified school
     where(school:)
+  end
+
+  def classroom_grades
+    # return all current user classroom Grades
+    classrooms.map { |classroom| classroom.grade}
   end
 
   private

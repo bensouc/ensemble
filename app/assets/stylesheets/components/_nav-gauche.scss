@@ -17,7 +17,7 @@
 
 .logo{
   border-color: transparent, transparent, $grisC, transparent;
-  padding-bottom: 4em;
+  // padding-bottom: 4em;
   padding-top: 1.5em;
   // margin-right: 40px;
   img{
@@ -72,15 +72,16 @@ color: $grisF;
 }
 
 .menug_icone{
+  position: relative;
   align-items: center;
   color: $rose;
   display:flex;
   flex-direction: row;
   justify-content: space-between;
   margin: 10px 0;
-  padding: 5px 5px 5px 0;
+  padding: 5px 5px 5px 5px;
   transition: opacity 2s ease .05s;
-  width: 100px;
+  width: 158px;
   height: 40px;
 }
 
@@ -91,6 +92,18 @@ color: $grisF;
 
 }
 
+.nav-left-sub-links{
+  // position: absolute;
+  width: 158px;
+      padding-left: 10px;
+}
+.sub-link{
+  color: $grisC;
+  &:hover{
+    color: $gray;
+  }
+}
+
 .menug_icone-dead{
   align-items: center;
   color: $grisC;
@@ -98,9 +111,9 @@ color: $grisF;
   flex-direction: row;
   justify-content: space-between;
   margin: 10px 0;
-  padding: 5px 5px 5px 0;
+  padding: 5px 5px 5px 5px;
   transition: opacity 2s ease .05s;
-  width: 100px;
+  width: 158px;
   height: 40px;
 }
 

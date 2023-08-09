@@ -68,5 +68,9 @@ Rails.application.routes.draw do
   resources :subscriptions, only: %w[create]
   get "subscriptions/success", to: "subscriptions#success"
   get "subscriptions/cancel", to: "subscriptions#cancel"
+
+
+  # routes for SKILLS
+  resources :skills, only: [:index]
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
