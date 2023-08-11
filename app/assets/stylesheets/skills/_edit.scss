@@ -1,0 +1,26 @@
+.skill-edit-form {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.skill_symbol {
+  width: 55px;
+}
+
+.skill-name-input {
+  width: 660px;
+}
+.skill-submit {
+  width: 49px;
+}
+.reset-skill-edit {
+  position: relative;
+  display: flex;
+  flex-direction: row-reverse;
+  padding-right: 20px
+  i{
+  font-size: 20px;
+  }
+}

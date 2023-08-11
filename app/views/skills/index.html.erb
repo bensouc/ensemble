@@ -1,5 +1,4 @@
 <%# temp level management ici CM2 %>
-
 <div class="classroom-level-selectors">
 	<% @grades.each do |classroom_grade| %>
 		<%= link_to skills_path(grade: classroom_grade ) do %>
@@ -8,7 +7,7 @@
 			</div>
 		<% end %>
 	<% end %>
-  <h1 class=''>Mes Compétences</h1>
+	<h1 class=''>Mes Compétences</h1>
 </div>
 <div  class="skills-classroom-level-card"
       data-controller='allskilldisplay'
@@ -19,8 +18,8 @@
         data-allskilldisplay-target="domainBtn"
         data-domain = "<%=domain%>"
         data-action = 'click->allskilldisplay#displayDomain'
-        <%# indicate if domain is special true && not CME && in special domain %>
-        data-special="<%= @are_special_domains && @grade != 'CM2' && domain.in?(WorkPlanDomain::DOMAINS_SPECIALS)%>">
+				<%# indicate if domain is special true && not CME && in special domain %>
+				data-special="<%= @are_special_domains && @grade != 'CM2' && domain.in?(WorkPlanDomain::DOMAINS_SPECIALS)%>">
 				<%= domain %>
 			</div>
 		<% end %>
@@ -37,8 +36,8 @@
 		</div>
 		<% WorkPlanDomain::DOMAINS[@grade].each do |domain| %>
 			<div class="skills_boxe <%= 'd-none 'unless domain == WorkPlanDomain::DOMAINS[@grade].first%>"
-      data-domain='<%=domain%>'
-      data-allskilldisplay-target='domainCard'>
+    data-domain='<%=domain%>'
+    data-allskilldisplay-target='domainCard'>
 				<%# <% domain = WorkPlanDomain::DOMAINS[@grade].first %>
 				<% for skill_level in (1..7) do %>
 					<% skills = @skills.select {|skill| skill.level == skill_level && skill.domain == domain}.sort %>
@@ -46,24 +45,8 @@
           data-allskilldisplay-target='levelSkillCard'
           data-grade='<%=@grade%>'
           data-level='<%=skill_level%>'>
-						<% skills.each do |skill| %>
-							<div class='border-skill justify-content-between mt-2'
-                   data-allskilldisplay-target='skillCard'>
-								<div>
-									<%= skill.symbol%>
-									<%= skill.name%>
-								</div>
-								<%# Button remmove Skill %>
-								<div>
-									<%= link_to skills_path(skill), method: :delete, data: { confirm: "Voulez vous enlever cette compétence?" } do %>
-										<div class='rmv-skill-btn'>
-											<i class="far fa-times-circle"></i>
-										</div>
-									<% end %>
-								</div>
-								<%#  %>
-							</div>
-						<% end %>
+						<%= render 'all_skills_by_domain_level', skills: skills, domain: domain, level: skill_level %>
+						
 					</div>
 				<% end %>
 			</div>
