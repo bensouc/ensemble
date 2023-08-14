@@ -34,7 +34,7 @@ fr:
   # stripe
   trialing: "Essai"
   active: "En cours"
-  
+
   activerecord:
     errors:
       messages:
@@ -44,6 +44,7 @@ fr:
             dépendant(e) existe
           has_many: Vous ne pouvez pas supprimer l'enregistrement parce que les %{record}
             dépendants existent
+        foreign_key_violation: "Impossible de supprimer l'enregistrement en raison de contraintes sur %{record}"
   date:
     abbr_day_names:
     - dim
