@@ -2,19 +2,10 @@
 
 class SkillsController < ApplicationController
   before_action :set_skill, only: [:show, :edit, :update, :destroy]
+  before_action :setup_all_skills_data, only: [:index]
 
   def index
-    @grades = current_user.classroom_grades
-    query = params[:grade]
-    @school = current_user.school
-    @grade = if query.nil?
-        @grades.first  # gérer la query later ici
-      else
-        query
-      end
-    @skills = Skill.includes([:challenges]).for_school(current_user.school)
-    @are_special_domains = current_user.school.id == 1
-    @skills = @skills.select { |skill| skill.grade == @grade }
+    setup_all_skills_data
     respond_to do |format|
       format.html
       format.xlsx do
@@ -67,6 +58,21 @@ class SkillsController < ApplicationController
   end
 
   # private
+  def setup_all_skills_data
+    @grades = current_user.classroom_grades
+    @grades = Classroom::GRADE.select { |grade| @grades.include?(grade) }
+    query = params[:grade]
+    @school = current_user.school
+    @grade = if query.nil?
+              @grades.first  # gérer la query later ici
+            else
+              query
+            end
+    @skills = Skill.includes([:challenges]).for_school(current_user.school)
+    @are_special_domains = current_user.school.id == 1
+    @skills = @skills.select { |skill| skill.grade == @grade }
+  end
+
   def set_skill
     @skill = Skill.find(params[:id])
   end
@@ -77,26 +83,26 @@ class SkillsController < ApplicationController
 
   # XLSX GENERATION
   def generate_xlsx_file
-  package = Axlsx::Package.new
-  workbook = package.workbook
-  header = %w[Ceinture Compétences]
-  # students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
-  # header << students_list.map { |student| student.first_name.capitalize }
-  # create a tab for each domain
-  WorkPlanDomain::DOMAINS[@grade].each do |domain|
-    # all_completed_belts = Belt.includes([:student]).where(student: students_list, domain: domain, completed: true)
-    workbook.add_worksheet(name: domain.capitalize.to_s) do |sheet|
-      sheet.add_row header.flatten
-      @skills.select { |skill| skill.domain == domain }.sort_by { |skill| [skill.level, skill.id] }.each do |skill|
-        sheet.add_row [skill.specials? ? "" : Belt::BELT_COLORS[skill.level - 1], "#{skill.symbol} #{skill.name}"]
+    package = Axlsx::Package.new
+    workbook = package.workbook
+    header = %w[Ceinture Compétences]
+    # students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
+    # header << students_list.map { |student| student.first_name.capitalize }
+    # create a tab for each domain
+    WorkPlanDomain::DOMAINS[@grade].each do |domain|
+      # all_completed_belts = Belt.includes([:student]).where(student: students_list, domain: domain, completed: true)
+      workbook.add_worksheet(name: domain.capitalize.to_s) do |sheet|
+        sheet.add_row header.flatten
+        @skills.select { |skill| skill.domain == domain }.sort_by { |skill| [skill.level, skill.id] }.each do |skill|
+          sheet.add_row [skill.specials? ? "" : Belt::BELT_COLORS[skill.level - 1], "#{skill.symbol} #{skill.name}"]
+        end
       end
     end
-  end
     # Enregistrez le fichier XLSX dans un temp file et envoyez-le en tant que pièce jointe
-  temp_file = Tempfile.new("temp.xlsx")
-  package.serialize(temp_file.path)
-  send_file temp_file,
-            filename: "#{@school.name.upcase}_#{@grade}_compétences_#{Time.zone.today}.xlsx",
-            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    temp_file = Tempfile.new("temp.xlsx")
+    package.serialize(temp_file.path)
+    send_file temp_file,
+              filename: "#{@school.name.upcase}_#{@grade}_compétences_#{Time.zone.today}.xlsx",
+              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   end
 end
