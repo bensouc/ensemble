@@ -34,6 +34,11 @@
 					<i class=" fas fa-bacon belt-<%= skill_level %> font-weight-bold"></i>
 				</div>
 			<% end %>
+			<%= link_to skills_path(grade: @grade, format: :xlsx) do %>
+				<div class="skill_level-selector">
+					<i class="fa-solid fa-file-excel --vert"></i>
+				</div>
+			<% end %>
 		</div>
 		<% WorkPlanDomain::DOMAINS[@grade].each do |domain| %>
 			<div class="skills_boxe <%= 'd-none 'unless domain == WorkPlanDomain::DOMAINS[@grade].first%>"
