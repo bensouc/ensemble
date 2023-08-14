@@ -118,12 +118,8 @@ class ClassroomsController < ApplicationController
         end
       end
     end
+    send_classroom_results_xlsx(package)
     # Enregistrez le fichier XLSX dans un temp file et envoyez-le en tant que pièce jointe
-    temp_file = Tempfile.new("temp.xlsx")
-    package.serialize(temp_file.path)
-    send_file temp_file,
-              filename: "#{@classroom.grade.upcase}_#{@classroom.name}_resultats_#{Time.zone.today}.xlsx",
-              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   end
 
   def create_result_row(skill, students_list)
@@ -140,6 +136,14 @@ class ClassroomsController < ApplicationController
       "X"
     end
     out.flatten
+  end
+
+  def send_classroom_results_xlsx(package)
+    temp_file = Tempfile.new("temp.xlsx")
+    package.serialize(temp_file.path)
+    send_file temp_file,
+              filename: "#{@classroom.grade.upcase}_#{@classroom.name}_resultats_#{Time.zone.today}.xlsx",
+              type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   end
 
   # refacto of result and result_by_domain actions

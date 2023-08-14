@@ -35,19 +35,31 @@
 		<% if classroom.user != current_user%>
 			<h6>Classe Partagée par <%= classroom.user.first_name.capitalize  %>  </h6>
 		<% end %>
-    <% if classroom.user == current_user && classroom.shared?%>
-      <h6>Classe Partagée  </h6>
-    <% end %>
+		<% if classroom.user == current_user && classroom.shared?%>
+			<h6>Classe Partagée  </h6>
+		<% end %>
 	</div>
 	<!-- Button trigger modal 4 sharing classroom -->
 	<div class="sharing-btn">
-		<%= link_to classroom_results_path(classroom) do %>
-			<i class="fa-solid fa-graduation-cap --rose  me-1 --grow-on-hover"></i>
-			<%= link_to classroom_results_path(classroom, format: :xlsx) do %>
-				<i class="fa-solid fa-file-excel --vert --grow-on-hover"></i>
-			<% end %>
+		<%= link_to classroom_results_path(classroom), data:{
+      controller:"tooltip",
+      bs_toggle:"tooltip",
+      bs_placement:"left"},
+      title:"Résultats des élèves" do %>
+			<i class="fa-solid fa-graduation-cap --rose  me-1 "></i>
 		<% end %>
-		<button type="button" class="btn-primary p-0" data-bs-toggle="modal" data-bs-target="#sharingClassroomModal-<%=classroom.id%>">
+		<%= link_to classroom_results_path(classroom, format: :xlsx), data:{
+      controller:"tooltip",
+      bs_toggle:"tooltip",
+      bs_placement:"top"},
+      title:"Générer le fichier Excel" do %>
+			<i class="fa-solid fa-file-excel --vert "></i>
+		<% end %>
+		<button type="button" class="btn-primary p-0"
+    data-bs-toggle="modal" data-bs-target="#sharingClassroomModal-<%=classroom.id%>"
+    data-controller="tooltip"
+    data-bs-toggle="tooltip" data-bs-placement="right"
+    title="Partager cette classe">
 			<%= image_tag "icons/share-red-icon.svg" %>
 		</button>
 	</div>
