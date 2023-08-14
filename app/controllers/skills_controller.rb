@@ -10,7 +10,8 @@ class SkillsController < ApplicationController
       format.html
       format.xlsx do
         response.headers["Content-Disposition"] = 'attachment; filename="my_new_filename.xlsx"'
-        generate_xlsx_file
+        package = Xlsx.skills_generate_xlsx_file(@school, @grade, @skills)
+        send_xlsx_file(package, @school, @grade)
       end
     end
     # for production => "A fournier == "
@@ -57,17 +58,14 @@ class SkillsController < ApplicationController
     # redirect_to skills_path
   end
 
-  # private
+  private
+
   def setup_all_skills_data
     @grades = current_user.classroom_grades
     @grades = Classroom::GRADE.select { |grade| @grades.include?(grade) }
     query = params[:grade]
     @school = current_user.school
-    @grade = if query.nil?
-              @grades.first  # gérer la query later ici
-            else
-              query
-            end
+    @grade = query.nil? ? @grades.first : query
     @skills = Skill.includes([:challenges]).for_school(current_user.school)
     @are_special_domains = current_user.school.id == 1
     @skills = @skills.select { |skill| skill.grade == @grade }
@@ -81,28 +79,12 @@ class SkillsController < ApplicationController
     params.require(:skill).permit(:name, :grade, :symbol, :level, :domain)
   end
 
-  # XLSX GENERATION
-  def generate_xlsx_file
-    package = Axlsx::Package.new
-    workbook = package.workbook
-    header = %w[Ceinture Symbole Compétences]
-    # students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
-    # header << students_list.map { |student| student.first_name.capitalize }
-    # create a tab for each domain
-    WorkPlanDomain::DOMAINS[@grade].each do |domain|
-      # all_completed_belts = Belt.includes([:student]).where(student: students_list, domain: domain, completed: true)
-      workbook.add_worksheet(name: domain.capitalize.to_s) do |sheet|
-        sheet.add_row header.flatten
-        @skills.select { |skill| skill.domain == domain }.sort_by { |skill| [skill.level, skill.id] }.each do |skill|
-          sheet.add_row [skill.specials? ? "" : Belt::BELT_COLORS[skill.level - 1], skill.symbol, skill.name]
-        end
-      end
-    end
-    # Enregistrez le fichier XLSX dans un temp file et envoyez-le en tant que pièce jointe
+  # XLSX GENERATION and send
+  def send_xlsx_file(package, school, grade)
     temp_file = Tempfile.new("temp.xlsx")
     package.serialize(temp_file.path)
     send_file temp_file,
-              filename: "#{@school.name.upcase}_#{@grade}_compétences_#{Time.zone.today}.xlsx",
+              filename: "#{school.name.upcase}_#{grade}_compétences_#{Time.zone.today}.xlsx",
               type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   end
 end
