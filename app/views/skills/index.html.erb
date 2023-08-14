@@ -7,7 +7,8 @@
 			</div>
 		<% end %>
 	<% end %>
-	<h1 class=''>Mes Compétences</h1>
+	<h1 class=''>Mes Compétences </h1>
+	<div class='skill-school-name'>(<%= @skills.first.school.name.capitalize %>)</div>
 </div>
 <div  class="skills-classroom-level-card"
       data-controller='allskilldisplay'
@@ -46,7 +47,6 @@
           data-grade='<%=@grade%>'
           data-level='<%=skill_level%>'>
 						<%= render 'all_skills_by_domain_level', skills: skills, domain: domain, level: skill_level %>
-						
 					</div>
 				<% end %>
 			</div>

@@ -11,7 +11,7 @@ class SkillsController < ApplicationController
       else
         query
       end
-    @skills = Skill.for_school(current_user.school)
+    @skills = Skill.includes([:challenges]).for_school(current_user.school)
     @are_special_domains = current_user.school.id == 1
     @skills = @skills.select { |skill| skill.grade == @grade }
     # for production => "A fournier == "
@@ -36,6 +36,7 @@ class SkillsController < ApplicationController
     @skills = Skill.where(grade: @skill.grade, school: current_user.school, domain: @skill.domain, level: @skill.level)
     render partial: "skills/all_skills_by_domain_level",
            locals: { skills: @skills, domain: @skill.domain, level: @skill.level }
+
     #  skills: skills, domain: domain, level: skill_level
   end
 
@@ -45,10 +46,14 @@ class SkillsController < ApplicationController
   end
 
   def destroy
-    @skill.destroy
-    respond_to do |format|
-      format.html { redirect_to skills_path, notice: "Compétence effacée" }
-      format.turbo_stream
+    begin
+      @skill.destroy
+      respond_to do |format|
+        format.html { redirect_to skills_path, notice: "Compétence effacée" }
+        format.turbo_stream
+      end
+    rescue ActiveRecord::InvalidForeignKey => e
+      render partial: "skills/destroy_error", locals: { skill: @skill }
     end
     # redirect_to skills_path
   end

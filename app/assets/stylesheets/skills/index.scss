@@ -1,11 +1,11 @@
-@import 'edit';
-@import 'show';
+@import "edit";
+@import "show";
 
 .classroom-level-selectors {
   display: flex;
   align-items: center;
   padding-left: 12px;
-  h1{
+  h1 {
     margin: 0;
   }
 }
@@ -17,17 +17,16 @@
   padding: 5px 10px;
   font-weight: 700;
   color: $rose;
-  &.active{
-  background-color: $rose;
-  color: $blanc;
+  &.active {
+    background-color: $rose;
+    color: $blanc;
   }
-  &:hover{
+  &:hover {
     background-color: $rose;
     color: $blanc;
     cursor: pointer;
   }
 }
-
 
 .all-skills {
   display: flex;
@@ -45,12 +44,12 @@
     margin-top: 20px;
   }
 }
-.domain-tab{
-  &.active{
+.domain-tab {
+  &.active {
     background-color: $rose;
     color: $blanc;
   }
-  &:hover{
+  &:hover {
     background-color: $rose;
     color: $blanc;
     cursor: pointer;
@@ -68,7 +67,7 @@
   i {
     font-size: 34px;
   }
-  &:hover{
+  &:hover {
     background-color: $rose;
     color: $blanc;
     cursor: pointer;
@@ -77,4 +76,10 @@
     color: $blanc;
     background-color: $rose;
   }
+}
+.skill-school-name {
+  margin-left: 10px;
+  padding-top: 18px;
+
+  height: 47px;
 }

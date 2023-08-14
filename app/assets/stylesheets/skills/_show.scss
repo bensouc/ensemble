@@ -1,13 +1,23 @@
-.edit-skill-card{
+.edit-skill-card {
   width: 800px !important;
 }
-.skill-mngt-btns{
+.skill-mngt-btns {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  // gap: 10px;
 }
-.add-skill-btn{
+.add-skill-btn {
   margin-left: 521px;
+}
+.nb-challenges {
+  margin-left: 10px;
+  width: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  i {
+    margin-left: 1ch;
+  }
 }
