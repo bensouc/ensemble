@@ -85,7 +85,7 @@ class SkillsController < ApplicationController
   def generate_xlsx_file
     package = Axlsx::Package.new
     workbook = package.workbook
-    header = %w[Ceinture Compétences]
+    header = %w[Ceinture Symbole Compétences]
     # students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     # header << students_list.map { |student| student.first_name.capitalize }
     # create a tab for each domain
@@ -94,7 +94,7 @@ class SkillsController < ApplicationController
       workbook.add_worksheet(name: domain.capitalize.to_s) do |sheet|
         sheet.add_row header.flatten
         @skills.select { |skill| skill.domain == domain }.sort_by { |skill| [skill.level, skill.id] }.each do |skill|
-          sheet.add_row [skill.specials? ? "" : Belt::BELT_COLORS[skill.level - 1], "#{skill.symbol} #{skill.name}"]
+          sheet.add_row [skill.specials? ? "" : Belt::BELT_COLORS[skill.level - 1], skill.symbol, skill.name]
         end
       end
     end
