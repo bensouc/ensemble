@@ -5,6 +5,7 @@ class SkillsController < ApplicationController
   before_action :setup_all_skills_data, only: [:index]
 
   def index
+    redirect_to classrooms_path unless current_user.classroom?
     setup_all_skills_data
     respond_to do |format|
       format.html

@@ -34,6 +34,11 @@ class User < ApplicationRecord
     classrooms.map { |classroom| classroom.grade}
   end
 
+  def classroom?
+    # return true if user has a classroom
+    !classrooms.empty?
+  end
+
   private
 
   def set_defaults
