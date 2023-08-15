@@ -22,7 +22,7 @@
 			<div  class='rmv-skill-btn'
             data-controller="tooltip"
             data-bs-toggle="tooltip" data-bs-placement="right"
-            title="<%= skill.challenges.count %> Exo, <%= skill.challenges.select{|exo| exo.user == current_user}.count %> par vous"
+            title="<%= skill.challenges.length %> Exo, <%= skill.challenges.select{|exo| exo.user == current_user}.length %> par vous"
             >
         <i class="far fa-question-circle"></i>
         </div>
