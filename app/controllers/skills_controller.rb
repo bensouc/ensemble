@@ -6,7 +6,7 @@ class SkillsController < ApplicationController
 
   def index
     redirect_to classrooms_path unless current_user.classroom?
-    setup_all_skills_data
+    # setup_all_skills_data
     respond_to do |format|
       format.html
       format.xlsx do
@@ -62,8 +62,8 @@ class SkillsController < ApplicationController
   private
 
   def setup_all_skills_data
-    @grades = current_user.classroom_grades
-    @grades = Classroom::GRADE.select { |grade| @grades.include?(grade) }
+    # @grades = current_user.classroom_grades
+    @grades = Classroom::GRADE.select { |grade| current_user.classroom_grades.include?(grade) }
     query = params[:grade]
     @school = current_user.school
     @grade = query.nil? ? @grades.first : query
