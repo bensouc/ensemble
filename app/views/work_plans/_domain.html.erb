@@ -54,13 +54,13 @@
 		</div>
 	</div>
 	<%# show 1 exo %>
-	<div >
-		<% work_plan_domain.work_plan_skills.order(:skill_id).each do |work_plan_skill| %>
-			<% if (work_plan_skill.kind == 'exercice') %>
-				<div data-controller='ajax-replace-challenge' data-ajax-replace-challenge-target="challengeDisplay" id="<%=work_plan_skill.id%>">
-					<%= render 'challenge_display', work_plan_skill: work_plan_skill%>
-				</div>
-			<% end %>
+	<%# <div > %>
+	<% work_plan_domain.work_plan_skills.order(:skill_id).each do |work_plan_skill| %>
+		<% if (work_plan_skill.kind == 'exercice') %>
+			<%# <div data-controller='ajax-replace-challenge' data-ajax-replace-challenge-target="challengeDisplay" id="<%=work_plan_skill.id%>
+			<%= render 'work_plan_skills/work_plan_skill_challenge', work_plan_skill: work_plan_skill%>
+			<%# </div> %>
 		<% end %>
-	</div>
+	<% end %>
+	<%# </div> %>
 </div>

@@ -3,7 +3,7 @@
 }
 
 .cont-challenge {
-  width: 1000px;
+  width: 811px !important;
   padding-top: 5px;
   padding-bottom: 20px;
   padding-left: 30px;
@@ -20,13 +20,13 @@
 .carrousel-validation {
   // padding: 34px;
   position: relative;
-    height: 0;
-    width: 0;
-    top: 70px;
-    right: -50%;
-    font-size: 34px;
-    transition: 0.3s;
-    z-index: 8;
+  height: 0;
+  width: 0;
+  top: 70px;
+  right: -50%;
+  font-size: 34px;
+  transition: 0.3s;
+  z-index: 8;
 
   &:hover {
     transition: 0.3s;
@@ -37,13 +37,13 @@
 .carrousel-cancellation {
   // padding: 34px;
   position: relative;
-    height: 0;
-    width: 0;
-    top: 70px;
-    right: -42%;
-    font-size: 34px;
-    transition: 0.3s;
-    z-index: 8;
+  height: 0;
+  width: 0;
+  top: 70px;
+  right: -42%;
+  font-size: 34px;
+  transition: 0.3s;
+  z-index: 8;
 
   &:hover {
     transition: 0.3s;
@@ -52,7 +52,13 @@
 }
 
 .challenge-card {
+  display: flex;
   min-height: 115px;
+  justify-content: space-between;
+  align-items: flex-start;
+  a{
+    color: inherit;
+  }
 }
 .challenge-mngt {
   margin-top: 20px;
