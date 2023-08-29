@@ -59,7 +59,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_134822) do
     t.boolean "completed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "validated_date", default: "2023-05-10"
+    t.date "validated_date", default: "2023-08-22"
     t.integer "level", null: false
     t.index ["student_id"], name: "index_belts_on_student_id"
   end
@@ -106,9 +106,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_134822) do
     t.integer "level"
     t.string "name"
     t.string "symbol"
-    t.string "grade"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "grade"
     t.string "sub_domain"
     t.bigint "school_id"
     t.index ["school_id"], name: "index_skills_on_school_id"

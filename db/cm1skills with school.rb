@@ -1,4 +1,4 @@
-# User.create!(email: "bensouc@gmail.com", password: "secret", first_name:  Skool2-"toto", last_name:  Skool2-"titi")
+User.create!(email: "bensouc@gmail.com", password: "secret", first_name:  Skool2-"toto", last_name:  Skool2-"titi")
 
 # s= Skill.where(grade: "CM1")
 # c = s.count
