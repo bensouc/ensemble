@@ -1,7 +1,7 @@
 {
   "RSpec": {
     "coverage": {
-      "/root/code/bensouc/ensemble/config/environment.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/environment.rb": {
         "lines": [
           null,
           1,
@@ -10,7 +10,7 @@
           1
         ]
       },
-      "/root/code/bensouc/ensemble/config/application.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/application.rb": {
         "lines": [
           1,
           null,
@@ -40,7 +40,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/boot.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/boot.rb": {
         "lines": [
           1,
           null,
@@ -48,7 +48,7 @@
           1
         ]
       },
-      "/root/code/bensouc/ensemble/config/spring.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/spring.rb": {
         "lines": [
           1,
           null,
@@ -58,7 +58,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/environments/test.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/environments/test.rb": {
         "lines": [
           1,
           null,
@@ -122,25 +122,8 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/application_controller_renderer.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/application_controller_renderer.rb": {
         "lines": [
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null
-        ]
-      },
-      "/root/code/bensouc/ensemble/config/initializers/assets.rb": {
-        "lines": [
-          null,
-          null,
-          null,
-          1,
-          1,
           null,
           null,
           null,
@@ -151,36 +134,13 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/backtrace_silencers.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/assets.rb": {
         "lines": [
           null,
           null,
           null,
-          null,
-          null,
-          null,
-          null
-        ]
-      },
-      "/root/code/bensouc/ensemble/config/initializers/content_security_policy.rb": {
-        "lines": [
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
+          1,
+          1,
           null,
           null,
           null,
@@ -191,7 +151,47 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/cookies_serializer.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/backtrace_silencers.rb": {
+        "lines": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/content_security_policy.rb": {
+        "lines": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/cookies_serializer.rb": {
         "lines": [
           null,
           null,
@@ -200,12 +200,12 @@
           1
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/default_meta.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/default_meta.rb": {
         "lines": [
           1
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/devise.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/devise.rb": {
         "lines": [
           null,
           null,
@@ -520,7 +520,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/filter_parameter_logging.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/filter_parameter_logging.rb": {
         "lines": [
           null,
           null,
@@ -532,7 +532,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/inflections.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/inflections.rb": {
         "lines": [
           null,
           null,
@@ -552,7 +552,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/mime_types.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/mime_types.rb": {
         "lines": [
           null,
           null,
@@ -564,12 +564,12 @@
           1
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/money.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/money.rb": {
         "lines": [
           1
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/permissions_policy.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/permissions_policy.rb": {
         "lines": [
           null,
           null,
@@ -584,7 +584,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/rails_admin.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/rails_admin.rb": {
         "lines": [
           1,
           1,
@@ -630,7 +630,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/simple_form.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/simple_form.rb": {
         "lines": [
           null,
           null,
@@ -812,7 +812,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/simple_form_bootstrap.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/simple_form_bootstrap.rb": {
         "lines": [
           null,
           null,
@@ -1232,139 +1232,6 @@
           null,
           null,
           1,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null
-        ]
-      },
-      "/root/code/bensouc/ensemble/config/initializers/stripe.rb": {
-        "lines": [
-          1,
-          1,
-          1,
-          1,
-          null,
-          1,
-          null,
-          null,
-          null,
-          null,
-          null,
-          1,
-          null,
-          1,
-          1,
-          1,
-          1,
-          1,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null
-        ]
-      },
-      "/root/code/bensouc/ensemble/app/services/stripe_subscription_created_service.rb": {
-        "lines": [
-          1,
-          1,
-          0,
-          0,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null
-        ]
-      },
-      "/root/code/bensouc/ensemble/app/services/stripe_customer_created_service.rb": {
-        "lines": [
-          1,
-          1,
-          0,
-          null,
-          null,
-          0,
-          0,
-          0,
-          null,
-          null
-        ]
-      },
-      "/root/code/bensouc/ensemble/app/services/stripe_subscription_deleted_service.rb": {
-        "lines": [
-          1,
-          1,
-          0,
-          0,
-          null,
-          null,
-          0,
-          0,
-          null,
-          null
-        ]
-      },
-      "/root/code/bensouc/ensemble/app/services/stripe_subscription_updated_service.rb": {
-        "lines": [
-          1,
-          1,
-          0,
-          0,
-          null,
-          null,
-          0,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null
-        ]
-      },
-      "/root/code/bensouc/ensemble/config/initializers/wicked_pdf.rb": {
-        "lines": [
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
           null,
           null,
           null,
@@ -1389,7 +1256,140 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/initializers/wrap_parameters.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/stripe.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/app/services/stripe_subscription_created_service.rb": {
+        "lines": [
+          1,
+          1,
+          0,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/app/services/stripe_customer_created_service.rb": {
+        "lines": [
+          1,
+          1,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/app/services/stripe_subscription_deleted_service.rb": {
+        "lines": [
+          1,
+          1,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/app/services/stripe_subscription_updated_service.rb": {
+        "lines": [
+          1,
+          1,
+          0,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/wicked_pdf.rb": {
+        "lines": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/config/initializers/wrap_parameters.rb": {
         "lines": [
           null,
           null,
@@ -1407,7 +1407,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/config/routes.rb": {
+      "/home/bensouc/code/bensouc/ensemble/config/routes.rb": {
         "lines": [
           1,
           1,
@@ -1487,7 +1487,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/user.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/user.rb": {
         "lines": [
           null,
           null,
@@ -1501,28 +1501,35 @@
           1,
           1,
           null,
-          1,
-          null,
-          1,
-          1,
-          1,
-          null,
-          1,
-          1,
-          1,
-          1,
           null,
           1,
           1,
           null,
           1,
+          1,
+          1,
           null,
-          2,
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
           null,
           null,
           1,
           null,
           0,
+          null,
+          null,
+          1,
+          null,
+          0,
+          null,
+          null,
+          1,
+          6,
           null,
           null,
           1,
@@ -1533,7 +1540,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/application_record.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/application_record.rb": {
         "lines": [
           null,
           null,
@@ -1542,7 +1549,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/channels/application_cable/channel.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/channels/application_cable/channel.rb": {
         "lines": [
           1,
           1,
@@ -1550,7 +1557,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/channels/application_cable/connection.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/channels/application_cable/connection.rb": {
         "lines": [
           1,
           1,
@@ -1558,7 +1565,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/application_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/application_controller.rb": {
         "lines": [
           null,
           null,
@@ -1579,7 +1586,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/helpers/application_helper.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/helpers/application_helper.rb": {
         "lines": [
           1,
           1,
@@ -1588,7 +1595,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/helpers/meta_tags_helper.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/helpers/meta_tags_helper.rb": {
         "lines": [
           1,
           1,
@@ -1607,13 +1614,13 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/helpers/skills_helper.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/helpers/skills_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/helpers/stripe_helper.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/helpers/stripe_helper.rb": {
         "lines": [
           1,
           null,
@@ -1632,13 +1639,13 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/helpers/subscriptions_helper.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/helpers/subscriptions_helper.rb": {
         "lines": [
           1,
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/belts_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/belts_controller.rb": {
         "lines": [
           null,
           null,
@@ -1686,7 +1693,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/challenges_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/challenges_controller.rb": {
         "lines": [
           null,
           null,
@@ -1751,7 +1758,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/classrooms_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/classrooms_controller.rb": {
         "lines": [
           null,
           null,
@@ -1873,11 +1880,7 @@
           null,
           null,
           null,
-          null,
           0,
-          0,
-          0,
-          null,
           null,
           null,
           null,
@@ -1895,6 +1898,14 @@
           0,
           null,
           0,
+          null,
+          null,
+          1,
+          0,
+          0,
+          0,
+          null,
+          null,
           null,
           null,
           null,
@@ -1916,7 +1927,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/contact_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/contact_controller.rb": {
         "lines": [
           1,
           1,
@@ -1936,7 +1947,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/dashboard_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/dashboard_controller.rb": {
         "lines": [
           null,
           null,
@@ -1949,7 +1960,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/pages_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/pages_controller.rb": {
         "lines": [
           null,
           null,
@@ -1962,7 +1973,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/shared_classrooms_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/shared_classrooms_controller.rb": {
         "lines": [
           null,
           1,
@@ -2009,21 +2020,20 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/skills_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/skills_controller.rb": {
         "lines": [
           null,
           null,
           1,
           1,
+          1,
           null,
           1,
           0,
-          0,
-          0,
-          0,
           null,
           0,
-          null,
+          0,
+          0,
           0,
           0,
           0,
@@ -2031,11 +2041,6 @@
           null,
           null,
           null,
-          1,
-          null,
-          null,
-          1,
-          0,
           null,
           null,
           1,
@@ -2043,24 +2048,12 @@
           null,
           1,
           0,
-          0,
-          0,
-          null,
-          0,
-          0,
-          null,
-          null,
-          null,
-          null,
-          null,
-          1,
-          0,
-          0,
           null,
           null,
           1,
           null,
-          0,
+          null,
+          1,
           0,
           0,
           0,
@@ -2074,62 +2067,61 @@
           null,
           1,
           0,
+          0,
+          null,
+          null,
+          1,
+          null,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
           null,
           null,
           1,
           0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          null,
+          1,
+          0,
+          0,
+          0,
+          null,
+          null,
           null,
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/stripe_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/stripe_controller.rb": {
         "lines": [
           null,
           1,
           1,
           0,
           null,
-          0,
-          null,
-          null,
-          null,
-          0,
-          null,
-          null
-        ]
-      },
-      "/root/code/bensouc/ensemble/app/controllers/stripe_webhooks_controller.rb": {
-        "lines": [
-          1,
-          1,
-          null,
-          null,
-          1,
-          0,
-          0,
-          0,
-          null,
-          null,
-          0,
-          null,
-          null,
-          null,
-          0,
-          0,
-          null,
-          null,
-          0,
-          0,
-          0,
-          null,
-          null,
-          null,
-          0,
-          null,
-          0,
-          0,
-          0,
-          0,
           0,
           null,
           null,
@@ -2139,7 +2131,48 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/students_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/stripe_webhooks_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          null,
+          1,
+          0,
+          0,
+          0,
+          null,
+          null,
+          0,
+          null,
+          null,
+          null,
+          0,
+          0,
+          null,
+          null,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
+          0,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/students_controller.rb": {
         "lines": [
           null,
           null,
@@ -2301,7 +2334,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/subscriptions_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/subscriptions_controller.rb": {
         "lines": [
           1,
           1,
@@ -2356,7 +2389,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/tables_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/tables_controller.rb": {
         "lines": [
           null,
           null,
@@ -2403,7 +2436,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/work_plan_domains_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/work_plan_domains_controller.rb": {
         "lines": [
           null,
           null,
@@ -2498,7 +2531,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/work_plan_skills_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/work_plan_skills_controller.rb": {
         "lines": [
           null,
           null,
@@ -2662,7 +2695,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/work_plans_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/work_plans_controller.rb": {
         "lines": [
           null,
           null,
@@ -2786,7 +2819,7 @@
           2,
           0,
           null,
-          4,
+          2,
           2,
           2,
           2,
@@ -3007,7 +3040,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/controllers/mobile/work_plans_controller.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/mobile/work_plans_controller.rb": {
         "lines": [
           1,
           1,
@@ -3050,7 +3083,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/jobs/application_job.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/jobs/application_job.rb": {
         "lines": [
           1,
           null,
@@ -3061,7 +3094,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/mailers/application_mailer.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/mailers/application_mailer.rb": {
         "lines": [
           1,
           1,
@@ -3069,7 +3102,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/mailers/contact_mailer.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/mailers/contact_mailer.rb": {
         "lines": [
           1,
           null,
@@ -3085,7 +3118,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/belt.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/belt.rb": {
         "lines": [
           null,
           null,
@@ -3320,7 +3353,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/challenge.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/challenge.rb": {
         "lines": [
           null,
           null,
@@ -3385,7 +3418,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/classroom.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/classroom.rb": {
         "lines": [
           null,
           null,
@@ -3416,8 +3449,9 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/school.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/school.rb": {
         "lines": [
+          1,
           1,
           1,
           1,
@@ -3425,7 +3459,15 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/shared_classroom.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/school_role.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/app/models/shared_classroom.rb": {
         "lines": [
           null,
           null,
@@ -3439,7 +3481,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/skill.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/skill.rb": {
         "lines": [
           null,
           null,
@@ -3497,14 +3539,14 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/stripe_customer.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/stripe_customer.rb": {
         "lines": [
           1,
           1,
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/student.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/student.rb": {
         "lines": [
           null,
           null,
@@ -3561,61 +3603,6 @@
           null,
           1,
           0,
-          null,
-          null,
-          1,
-          0,
-          null,
-          null,
-          1,
-          0,
-          null,
-          null
-        ]
-      },
-      "/root/code/bensouc/ensemble/app/models/subscription.rb": {
-        "lines": [
-          1,
-          1,
-          null,
-          1,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          1,
-          1,
-          null,
-          1,
-          1,
-          null,
-          1,
-          0,
-          null,
-          null
-        ]
-      },
-      "/root/code/bensouc/ensemble/app/models/subscription_price.rb": {
-        "lines": [
-          1,
-          null,
-          1,
-          1,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          1,
-          null,
-          null,
-          null,
-          null,
-          null,
           null,
           null,
           1,
@@ -3628,7 +3615,62 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/table.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/subscription.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          1,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/app/models/subscription_price.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/app/models/table.rb": {
         "lines": [
           null,
           null,
@@ -3650,7 +3692,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/work_plan.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/work_plan.rb": {
         "lines": [
           null,
           null,
@@ -3674,7 +3716,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/work_plan_domain.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/work_plan_domain.rb": {
         "lines": [
           null,
           null,
@@ -3780,7 +3822,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/app/models/work_plan_skill.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/models/work_plan_skill.rb": {
         "lines": [
           null,
           null,
@@ -3850,13 +3892,38 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/factories.rb": {
+      "/home/bensouc/code/bensouc/ensemble/app/modules/xlsx.rb": {
+        "lines": [
+          1,
+          1,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
+          0,
+          null,
+          0,
+          0,
+          0,
+          0,
+          null,
+          null,
+          null,
+          null,
+          0,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/spec/factories.rb": {
         "lines": [
           null,
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/factories/belt.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/factories/belt.rb": {
         "lines": [
           null,
           null,
@@ -3876,7 +3943,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/factories/challenge.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/factories/challenge.rb": {
         "lines": [
           null,
           null,
@@ -3890,7 +3957,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/factories/classroom.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/factories/classroom.rb": {
         "lines": [
           null,
           null,
@@ -3903,7 +3970,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/factories/school.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/factories/school.rb": {
         "lines": [
           null,
           null,
@@ -3915,7 +3982,19 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/factories/skill.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/factories/school_role.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          45,
+          45,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/spec/factories/skill.rb": {
         "lines": [
           null,
           null,
@@ -3937,7 +4016,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/factories/student.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/factories/student.rb": {
         "lines": [
           null,
           null,
@@ -3949,7 +4028,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/factories/user.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/factories/user.rb": {
         "lines": [
           null,
           null,
@@ -3961,11 +4040,12 @@
           45,
           45,
           1,
+          1,
           null,
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/factories/work_plan.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/factories/work_plan.rb": {
         "lines": [
           null,
           null,
@@ -3980,7 +4060,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/factories/work_plan_domain.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/factories/work_plan_domain.rb": {
         "lines": [
           null,
           null,
@@ -3999,7 +4079,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/factories/work_plan_skill.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/factories/work_plan_skill.rb": {
         "lines": [
           null,
           null,
@@ -4012,7 +4092,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/support/factory_bot.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/support/factory_bot.rb": {
         "lines": [
           null,
           1,
@@ -4020,7 +4100,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/controllers/work_plan_skills_controller_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/controllers/work_plan_skills_controller_spec.rb": {
         "lines": [
           null,
           null,
@@ -4110,7 +4190,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/controllers/work_plans_controller_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/controllers/work_plans_controller_spec.rb": {
         "lines": [
           null,
           null,
@@ -4220,7 +4300,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/helpers/skills_helper_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/helpers/skills_helper_spec.rb": {
         "lines": [
           1,
           null,
@@ -4239,7 +4319,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/helpers/stripe_helper_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/helpers/stripe_helper_spec.rb": {
         "lines": [
           1,
           null,
@@ -4258,7 +4338,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/helpers/subscriptions_helper_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/helpers/subscriptions_helper_spec.rb": {
         "lines": [
           1,
           null,
@@ -4277,10 +4357,11 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/models/belt_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/models/belt_spec.rb": {
         "lines": [
           null,
           null,
+          1,
           1,
           1,
           1,
@@ -4378,10 +4459,11 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/models/challenge_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/models/challenge_spec.rb": {
         "lines": [
           null,
           null,
+          1,
           1,
           1,
           1,
@@ -4401,10 +4483,11 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/models/classroom_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/models/classroom_spec.rb": {
         "lines": [
           null,
           null,
+          1,
           1,
           1,
           1,
@@ -4421,7 +4504,16 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/models/skill_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/models/school_role_spec.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/spec/models/skill_spec.rb": {
         "lines": [
           null,
           null,
@@ -4460,7 +4552,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/models/stripe_customer_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/models/stripe_customer_spec.rb": {
         "lines": [
           1,
           null,
@@ -4469,10 +4561,11 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/models/student_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/models/student_spec.rb": {
         "lines": [
           null,
           null,
+          1,
           1,
           1,
           1,
@@ -4488,7 +4581,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/models/subscription_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/models/subscription_spec.rb": {
         "lines": [
           1,
           null,
@@ -4497,10 +4590,11 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/models/user_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/models/user_spec.rb": {
         "lines": [
           null,
           null,
+          1,
           1,
           1,
           1,
@@ -4538,11 +4632,12 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/models/work_plan_domain_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/models/work_plan_domain_spec.rb": {
         "lines": [
           null,
           null,
           null,
+          1,
           1,
           1,
           1,
@@ -4589,10 +4684,11 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/models/work_plan_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/models/work_plan_spec.rb": {
         "lines": [
           null,
           null,
+          1,
           1,
           1,
           1,
@@ -4624,7 +4720,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/requests/skills_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/requests/skills_spec.rb": {
         "lines": [
           1,
           null,
@@ -4635,7 +4731,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/requests/stripe_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/requests/stripe_spec.rb": {
         "lines": [
           1,
           null,
@@ -4646,7 +4742,7 @@
           null
         ]
       },
-      "/root/code/bensouc/ensemble/spec/requests/subscriptions_spec.rb": {
+      "/home/bensouc/code/bensouc/ensemble/spec/requests/subscriptions_spec.rb": {
         "lines": [
           1,
           null,
@@ -4658,6 +4754,6 @@
         ]
       }
     },
-    "timestamp": 1692009456
+    "timestamp": 1693909839
   }
 }
