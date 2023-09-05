@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_14_134822) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_05_095420) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,7 +59,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_134822) do
     t.boolean "completed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "validated_date", default: "2023-05-10"
+    t.date "validated_date", default: "2023-08-22"
     t.integer "level", null: false
     t.index ["student_id"], name: "index_belts_on_student_id"
   end
@@ -85,6 +85,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_134822) do
     t.index ["user_id"], name: "index_classrooms_on_user_id"
   end
 
+  create_table "school_roles", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "school_id"
+    t.boolean "super_teacher", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["school_id"], name: "index_school_roles_on_school_id"
+    t.index ["user_id"], name: "index_school_roles_on_user_id"
+  end
+
   create_table "schools", force: :cascade do |t|
     t.string "name"
     t.string "city"
@@ -106,9 +116,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_134822) do
     t.integer "level"
     t.string "name"
     t.string "symbol"
-    t.string "grade"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "grade"
     t.string "sub_domain"
     t.bigint "school_id"
     t.index ["school_id"], name: "index_skills_on_school_id"
@@ -153,11 +163,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_134822) do
     t.string "first_name"
     t.string "last_name"
     t.boolean "admin"
-    t.bigint "school_id"
     t.text "stripe_customer_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["school_id"], name: "index_users_on_school_id"
   end
 
   create_table "work_plan_domains", force: :cascade do |t|
@@ -206,12 +214,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_134822) do
   add_foreign_key "challenges", "skills"
   add_foreign_key "challenges", "users"
   add_foreign_key "classrooms", "users"
+  add_foreign_key "school_roles", "schools"
+  add_foreign_key "school_roles", "users"
   add_foreign_key "shared_classrooms", "classrooms"
   add_foreign_key "shared_classrooms", "users"
   add_foreign_key "skills", "schools"
   add_foreign_key "students", "classrooms"
   add_foreign_key "subscriptions", "users"
-  add_foreign_key "users", "schools"
   add_foreign_key "work_plan_domains", "work_plans"
   add_foreign_key "work_plan_skills", "challenges"
   add_foreign_key "work_plan_skills", "skills"

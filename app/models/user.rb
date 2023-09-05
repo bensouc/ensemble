@@ -10,7 +10,9 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
 
-  belongs_to :school
+  # belongs_to :school
+  has_one :school_role # Un utilisateur a une seule school_role
+  has_one :school, through: :school_role # Un utilisateur appartient à une seule école à travers schoolRole
 
   has_many :classrooms, dependent: :destroy
   has_many :work_plans, dependent: :destroy
@@ -24,19 +26,19 @@ class User < ApplicationRecord
   has_one :subscription, dependent: :destroy
   has_one_attached :avatar
 
-  def self.for_school(school)
-    # return all teacher from specified school
-    where(school:)
-  end
 
   def classroom_grades
     # return all current user classroom Grades
-    classrooms.map { |classroom| classroom.grade}
+    classrooms.map { |classroom| classroom.grade }
   end
 
   def classroom?
     # return true if user has a classroom
     !classrooms.empty?
+  end
+
+  def collegues
+    school.users.reject { |y| y == self }
   end
 
   private
