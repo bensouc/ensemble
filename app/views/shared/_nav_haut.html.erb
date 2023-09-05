@@ -28,6 +28,7 @@
 								<button type="submit">Gérer votre abonnement</button>
 							</form>
 						<% end %>
+              <%=link_to "Votre école", school_path(current_user.school), class: "dropdown-item"%>
 						<%if current_user.admin%>
 							<%= link_to 'DATA-ADMIN', '/admin', class: "dropdown-item", target: '_blank' %>
 						<% end %>

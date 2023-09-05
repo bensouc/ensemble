@@ -1,0 +1,35 @@
+<div class="school-show">
+  <div class="teachers-list">
+    <h3>Groupe
+      <%= @school.name %>
+    </h3>
+      <div class="add-green-btn">
+        Ajouter un professeur
+      </div>
+    <ul>
+      <% @school.users.each do |teacher| %>
+        <li>
+          <%= teacher.first_name.capitalize %>
+          <italic>
+            (<%= teacher.email %>)</italic>
+        </li>
+      <% end %>
+    </ul>
+    <div class="classrooms-details-card">
+      <p>
+        <%= "#{@classrooms.count} classe#{"s" if @classrooms.count > 1}" %>
+      </p>
+      <p>
+        <%= "#{@students.count} élève#{"s" if @students.count > 1}" %>
+      </p>
+    </div>
+  </div>
+  <div class="subscription-details">
+    <h3>Détails de votre Abonnement</h3>
+    <p><i class="fa-solid fa-repeat"></i>
+      Annuel</p>
+    <p><i class="fa-solid fa-calendar-xmark"></i>
+      Date de fin</p>
+  </div>
+
+</div>
