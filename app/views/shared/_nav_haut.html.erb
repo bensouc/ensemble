@@ -22,13 +22,13 @@
 					</a>
 					<div class="dropdown-menu left" aria-labelledby="navbarDropdownMenuLink">
 						<a class="dropdown-item" href="#">Ma classe</a>
-						<% unless current_user.stripe_customer_id.nil? %>
 							<%=link_to "Mon compte", edit_user_registration_path, class: "dropdown-item"%>
+						<% unless current_user.stripe_customer_id.nil? %>
 							<form method="POST" action="/create-customer-portal-session" data-turbo="false">
 								<button type="submit">Gérer votre abonnement</button>
 							</form>
 						<% end %>
-              <%=link_to "Votre école", school_path(current_user.school), class: "dropdown-item"%>
+              <%=link_to "Mon école", school_path(current_user.school), class: "dropdown-item"%>
 						<%if current_user.admin%>
 							<%= link_to 'DATA-ADMIN', '/admin', class: "dropdown-item", target: '_blank' %>
 						<% end %>
