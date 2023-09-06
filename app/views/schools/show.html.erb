@@ -10,15 +10,17 @@
       <div class="group-number-card">
         <p><i class="fa-solid fa-users"></i>
           <%= "#{@school.users.count} / MAX  Membre#{"s" if @school.users.count > 1}" %></p>
-        <div class="--cursor-pointer">
-          <i
-            class="fa-solid fa-user-plus"
-            data-controller="tooltip"
-            data-bs-toggle="tooltip"
-            data-bs-placement="top"
-            title="Ajouter un/e professeur"
-          ></i>
-        </div>
+        <% if current_user.school_role.super_teacher? %>
+          <%= link_to new_user_registration_path do %>
+            <i
+              class="fa-solid fa-user-plus"
+              data-controller="tooltip"
+              data-bs-toggle="tooltip"
+              data-bs-placement="top"
+              title="Ajouter un/e professeur"
+            ></i>
+          <% end %>
+        <% end %>
       </div>
       <ul>
         <% @school.users.each do |teacher| %>
@@ -35,7 +37,7 @@
                 ></i>
               <% end %>
             </div>
-            <div class="teacher-email" >
+            <div class="teacher-email">
               (<%= teacher.email %>)
             </div>
           </li>

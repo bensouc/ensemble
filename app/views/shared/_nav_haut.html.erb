@@ -3,6 +3,7 @@
 		<div class='info-btn' data-controller='show-com' data-action="click->show-com#displayCom" >
 		</div>
 	</div>
+  <% if user_signed_in? %>
 	<div class="navbar navbar-expand-sm navbar-light d-flex">
 		<div class='avatar'>
 			<h3><%=current_user.first_name.capitalize%> <%=current_user.last_name.capitalize%></h3>
@@ -38,4 +39,5 @@
 			</ul>
 		</div>
 	</div>
+  <% end %>
 </nav>
