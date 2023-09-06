@@ -23,7 +23,7 @@
         <% end %>
       </div>
       <ul>
-        <% @school.users.each do |teacher| %>
+        <% @school.users.order(:first_name).each do |teacher| %>
           <li class='teacher-detail-school-card'>
             <%= teacher.first_name.capitalize %>
             <div class="teacher-admin">
