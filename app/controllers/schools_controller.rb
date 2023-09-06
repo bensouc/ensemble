@@ -8,7 +8,7 @@ class SchoolsController < ApplicationController
   private
 
   def set_school
-    @school = School.includes(:users).find(params[:id])
+    @school = School.includes([:users, :classrooms]).find(params[:id])
     @classrooms = @school.classrooms
     @students = @school.all_students_list
   end

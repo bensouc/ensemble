@@ -1412,24 +1412,6 @@
           1,
           1,
           1,
-          1,
-          1,
-          null,
-          1,
-          1,
-          1,
-          1,
-          null,
-          null,
-          null,
-          1,
-          null,
-          1,
-          1,
-          1,
-          null,
-          1,
-          null,
           null,
           1,
           1,
@@ -1439,6 +1421,25 @@
           1,
           1,
           1,
+          null,
+          null,
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          1,
+          1,
+          1,
+          1,
           1,
           null,
           1,
@@ -1467,10 +1468,6 @@
           null,
           null,
           1,
-          null,
-          null,
-          1,
-          null,
           null,
           null,
           1,
@@ -1481,8 +1478,19 @@
           1,
           null,
           null,
+          1,
+          null,
+          null,
+          null,
           null,
           1,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          null,
           null,
           null
         ]
@@ -1498,13 +1506,11 @@
           null,
           1,
           null,
-          1,
-          1,
           null,
           null,
           1,
           1,
-          null,
+          1,
           1,
           1,
           1,
@@ -1517,6 +1523,8 @@
           1,
           1,
           null,
+          1,
+          1,
           null,
           1,
           null,
@@ -1611,6 +1619,18 @@
           null,
           0,
           null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/app/helpers/registrations_helper.rb": {
+        "lines": [
+          1,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/app/helpers/schools_helper.rb": {
+        "lines": [
+          1,
           null
         ]
       },
@@ -1969,6 +1989,60 @@
           null,
           1,
           null,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/registrations_controller.rb": {
+        "lines": [
+          null,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          0,
+          0,
+          null,
+          0,
+          null,
+          null,
+          null,
+          1,
+          0,
+          0,
+          0,
+          0,
+          null,
+          0,
+          0,
+          null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          0,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/app/controllers/schools_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          0,
+          0,
+          0,
           null,
           null
         ]
@@ -3313,24 +3387,24 @@
           1,
           null,
           null,
-          0,
-          null,
-          0,
-          null,
-          0,
-          null,
-          0,
-          null,
-          0,
-          null,
-          0,
-          null,
-          0,
-          null,
-          0,
-          null,
-          null,
           1,
+          null,
+          0,
+          null,
+          0,
+          null,
+          0,
+          null,
+          0,
+          null,
+          0,
+          null,
+          0,
+          null,
+          0,
+          null,
+          null,
+          0,
           null,
           null,
           0,
@@ -3456,6 +3530,10 @@
           1,
           1,
           1,
+          null,
+          1,
+          0,
+          null,
           null
         ]
       },
@@ -3464,6 +3542,10 @@
           1,
           1,
           1,
+          null,
+          1,
+          0,
+          null,
           null
         ]
       },
@@ -4300,6 +4382,44 @@
           null
         ]
       },
+      "/home/bensouc/code/bensouc/ensemble/spec/helpers/registrations_helper_spec.rb": {
+        "lines": [
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/spec/helpers/schools_helper_spec.rb": {
+        "lines": [
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null
+        ]
+      },
       "/home/bensouc/code/bensouc/ensemble/spec/helpers/skills_helper_spec.rb": {
         "lines": [
           1,
@@ -4720,6 +4840,28 @@
           null
         ]
       },
+      "/home/bensouc/code/bensouc/ensemble/spec/requests/registrations_spec.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          null
+        ]
+      },
+      "/home/bensouc/code/bensouc/ensemble/spec/requests/schools_spec.rb": {
+        "lines": [
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          null
+        ]
+      },
       "/home/bensouc/code/bensouc/ensemble/spec/requests/skills_spec.rb": {
         "lines": [
           1,
@@ -4754,6 +4896,6 @@
         ]
       }
     },
-    "timestamp": 1693909839
+    "timestamp": 1693997092
   }
 }
