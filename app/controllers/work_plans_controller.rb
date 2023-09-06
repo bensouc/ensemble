@@ -118,9 +118,9 @@ class WorkPlansController < ApplicationController
     # end
     @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms
     unless @work_plan.shared_user_id.nil?
-      @shared_user = User.for_school(current_user.school).find(@work_plan.shared_user_id)
+      @shared_user = current_user.collegues.find(@work_plan.shared_user_id)
     end
-    @teachers = User.for_school(current_user.school).all.reject { |y| y == current_user }
+    @teachers = current_user.collegues
     respond_to do |format|
       format.html
       format.pdf do

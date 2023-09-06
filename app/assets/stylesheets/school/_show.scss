@@ -1,0 +1,44 @@
+.school-show {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: flex-start;
+  gap: 20px;
+  h4 {
+    font-size: 1.5rem;
+  }
+  .teachers-list {
+    width: 50%;
+  }
+
+  i {
+    color: $rose;
+    margin-right: 10px;
+  }
+}
+
+.group-number-card {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+
+}
+.teacher-detail-school-card{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  i{
+    margin: 0;
+  }
+}
+.teacher-email{
+  // margin-left: 10px;
+  font-size: smaller;
+  font-style: italic;
+  font-weight: 300;
+
+}

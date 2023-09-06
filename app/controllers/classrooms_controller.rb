@@ -10,7 +10,7 @@ class ClassroomsController < ApplicationController
     shared_classrooms = @shared_classrooms.includes([:classroom]).map(&:classroom)
     @classrooms = (current_user.classrooms + shared_classrooms).sort_by(&:created_at)
     @students_list = []
-    @school_teachers = User.for_school(@school).reject { |y| y == current_user }
+    @school_teachers = current_user.collegues
     @classrooms.each do |classroom|
       @students_list << [classroom, classroom.students]
     end
