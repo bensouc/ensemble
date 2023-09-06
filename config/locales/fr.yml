@@ -31,9 +31,12 @@
 
 ---
 fr:
+  #ENSEMBLE:
+  unauthorized: "Vous n'avez pas les autorisations pour cette action"
   # stripe
   trialing: "Essai"
   active: "En cours"
+
 
   activerecord:
     errors:

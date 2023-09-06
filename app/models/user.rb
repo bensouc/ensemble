@@ -27,6 +27,12 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
 
+
+  # Methods
+  def admin?
+    admin
+  end
+
   def classroom_grades
     # return all current user classroom Grades
     classrooms.map { |classroom| classroom.grade }
