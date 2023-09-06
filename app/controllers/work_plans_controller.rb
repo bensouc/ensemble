@@ -118,7 +118,7 @@ class WorkPlansController < ApplicationController
     # end
     @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms
     unless @work_plan.shared_user_id.nil?
-      @shared_user = current_user.collegues.find(@work_plan.shared_user_id)
+      @shared_user = current_user.collegues.find {|user| user.id == @work_plan.shared_user_id}
     end
     @teachers = current_user.collegues
     respond_to do |format|
