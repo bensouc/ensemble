@@ -4,11 +4,11 @@ class ClassroomsController < ApplicationController
   before_action :set_classroom, only: [:update, :destroy, :results, :results_by_domain]
 
   def index
-    @school = current_user.school
+    @school = policy_scope(School)
     # @shared_classrooms = SharedClassroom.where(user: current_user)
-    @shared_classrooms = current_user.shared_classrooms
+    @shared_classrooms = policy_scope(SharedClassroom)
     shared_classrooms = @shared_classrooms.includes([:classroom]).map(&:classroom)
-    @classrooms = (current_user.classrooms + shared_classrooms).sort_by(&:created_at)
+    @classrooms = (policy_scope(Classroom) + shared_classrooms).sort_by(&:created_at)
     @students_list = []
     @school_teachers = current_user.collegues
     @classrooms.each do |classroom|
@@ -18,6 +18,7 @@ class ClassroomsController < ApplicationController
 
   def create
     @classroom = Classroom.new(set_classroom_params)
+    skip_authorization
     @classroom.user = current_user
     @classroom.name = nil if @classroom.name == ""
     @classroom.save!
@@ -25,6 +26,7 @@ class ClassroomsController < ApplicationController
   end
 
   def update
+    skip_authorization
     @classroom.name = set_classroom_params[:name]
     @classroom.name = nil if @classroom.name == ""
     @classroom.save!
@@ -49,6 +51,7 @@ class ClassroomsController < ApplicationController
   end
 
   def results
+    authorize @classroom
     @domains = WorkPlanDomain::DOMAINS[@classroom.grade]
     @skills = Skill.for_school(current_user.school).where(grade: @classroom.grade)
     @domains.map do |domain|
@@ -71,7 +74,7 @@ class ClassroomsController < ApplicationController
   end
 
   def results_by_domain
-    # binding.pry
+    authorize @classroom
     @domain = set_domain
     set_up_results(@domain)
     results_factory(@domain) # create all  variables shared with the results Action

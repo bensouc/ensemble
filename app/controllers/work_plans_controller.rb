@@ -204,14 +204,15 @@ class WorkPlansController < ApplicationController
     # start_date =  Time.zone.today.monday? ? Time.zone.today : Time.zone.today.next_occurring(:monday)
     start_date = Time.zone.today.next_occurring(:monday)
     end_date = start_date + 4
-    @work_plan = WorkPlan.create(
+    @work_plan = WorkPlan.new(
       name: "AUTO - N°#{@student.work_plans.count + 1}",
       grade: @student.classroom.grade,
       student: @student, user: current_user,
       start_date:,
-      end_date:,
+      end_date:
     )
-
+    authorize @work_plan
+    @work_plan.save
     # ajout date intro prendre date => first monday => first friday
     # based on student classroom level,
     # Iterate through each domain in the list of domains

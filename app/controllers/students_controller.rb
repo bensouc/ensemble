@@ -2,11 +2,13 @@
 
 class StudentsController < ApplicationController
   def new
+    skip_authorization
     @classroom = Classroom.find(classroom_params_id)
     @student = Student.new(classroom_id: @classroom.id)
   end
 
   def show
+    skip_authorization
     @student = Student.find(params[:id])
     @belt = Belt::BELT_COLORS
     @all_skills_and_last_wps = []
@@ -41,6 +43,7 @@ class StudentsController < ApplicationController
   end
 
   def create
+    skip_authorization
     student = {
       first_name: params_student[:first_name],
       classroom_id: params_student[:classroom].to_i,
@@ -50,12 +53,14 @@ class StudentsController < ApplicationController
   end
 
   def destroy
+    skip_authorization
     @student = Student.find(params[:id])
     @student.destroy
     redirect_to classrooms_path
   end
 
   def update
+    skip_authorization
     @student = Student.find(params[:id])
     @student.first_name = params_student_edit_name[:first_name]
     @student.save
@@ -63,6 +68,7 @@ class StudentsController < ApplicationController
   end
 
   def new_validated_wps
+    skip_authorization
     @student = Student.includes(:classroom).find(params_add_validated_wps[:student_id])
     student_grade = @student.classroom.grade
     @special_work_plan = WorkPlan.find_or_create_by(student: @student, grade: student_grade, special_wps: true)
@@ -89,6 +95,7 @@ class StudentsController < ApplicationController
   end
 
   def add_completed_wps
+    skip_authorization
     student = Student.find(params_new_validated_wps[:student_id])
     skill = []
     skill << Skill.for_school(current_user.school).find(params_new_validated_wps[:skill_id])

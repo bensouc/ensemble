@@ -3,6 +3,7 @@ class SharedClassroomsController < ApplicationController
   def create
     @teachers_ids = set_shared_classroom_teacher_params.reject(&:blank?)
     classroom = Classroom.find(set_classroom)
+    authorize classroom
     teachers = @teachers_ids.map { |t| User.find(t) }
     teachers.each do |teacher|
       shared_classroom = SharedClassroom.new(

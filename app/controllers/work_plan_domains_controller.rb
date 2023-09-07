@@ -3,6 +3,7 @@
 class WorkPlanDomainsController < ApplicationController
   def create
     @work_plan = WorkPlan.find(params_wp_id)
+    authorize @work_plan
     @domain = WorkPlanDomain.new(domain: work_plan_domain_params[:domain], level: work_plan_domain_params[:level]) # remove, student: @work_plan.student
     kind = params.require(:kind)
     @domain.work_plan = @work_plan
