@@ -53,7 +53,7 @@ gem "net-pop", require: false
 # add sweet alert
 gem "devise"
 gem "sweetalert2"
-
+gem "pundit"
 gem "autoprefixer-rails", "10.2.5"
 gem "font-awesome-sass"
 gem "simple_form"
