@@ -39,8 +39,8 @@ fr:
           last_name: "Nom"
     hints:
       defaults:
-        username: "User name to sign in."
-        password: "No special characters, please."
+        username: "Nom d'utilisateur"
+        password: "Aucun caractère spécial, s'il vous plaît."
     include_blanks:
       defaults:
         age: "Rather not say"
