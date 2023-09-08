@@ -15,7 +15,7 @@ class Mobile::WorkPlansController < ApplicationController
         end
       end
     end
-    @my_work_plans = WorkPlan.where(user: current_user, special_wps: false).order(created_at: :DESC)
+    @my_work_plans = policy_scope(WorkPlan)
     # .sort_by(&:student)
     @my_work_plans_unassigned = @my_work_plans.where(student: nil)
     @my_work_plans = @my_work_plans.where.not(student: nil).sort_by(&:student)
@@ -25,6 +25,7 @@ class Mobile::WorkPlansController < ApplicationController
   def evaluation
     # @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
+    authorize @work_plan
     @domains = @work_plan.all_domains_from_work_plan
     @previous = []
     @wpds = WorkPlanDomain.where(work_plan: @work_plan)

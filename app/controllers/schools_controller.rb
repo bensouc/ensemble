@@ -2,6 +2,7 @@ class SchoolsController < ApplicationController
   before_action :set_school, only: %w[show]
 
   def show
+    authorize @school
   end
 
 

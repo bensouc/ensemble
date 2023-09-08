@@ -7,9 +7,18 @@ RSpec.describe WorkPlansController, type: :controller do
   let(:classroom) { create(:classroom, user:) }
   let(:valid_params) { { work_plan_id: work_plan.id } }
 
-  before { sign_in user }
+  describe "#index" do
+    context "when user is not signed in" do
+      it "returns a failure response" do
+        get :index
+        expect(response).not_to be_successful
+      end
+    end
+  end
+
 
   describe "#index" do
+    before { sign_in user }
     it "returns a successful response" do
       get :index
       expect(response).to be_successful
@@ -17,6 +26,7 @@ RSpec.describe WorkPlansController, type: :controller do
   end
 
   describe "#show" do
+    before { sign_in user }
     it "returns a successful response" do
       # work_plan = WorkPlan.last
       get :show, params: { id: work_plan.id }
@@ -25,6 +35,7 @@ RSpec.describe WorkPlansController, type: :controller do
   end
 
   describe "#clone" do
+    before { sign_in user }
     context "with no student" do
       it "creates a new one and redirect to It" do
         post :clone, params: valid_params
@@ -33,6 +44,7 @@ RSpec.describe WorkPlansController, type: :controller do
     end
 
     context "with two students" do
+      before { sign_in user }
       let(:student1) { create(:student, classroom:) }
       let(:student2) { create(:student, classroom:) }
 
@@ -40,8 +52,8 @@ RSpec.describe WorkPlansController, type: :controller do
         valid_params = {
           work_plan_id: work_plan.id,
           "/work_plans/#{work_plan.id}" => {
-            students: [student1, student2]
-          }
+            students: [student1, student2],
+          },
         }
         expect do
           post :clone, params: valid_params
@@ -52,6 +64,7 @@ RSpec.describe WorkPlansController, type: :controller do
   end
 
   describe "#evaluation" do
+    before { sign_in user }
     it "redirect to the workplan evaluation page" do
       get :show, params: { id: work_plan.id }
       expect(response).to be_successful
@@ -59,6 +72,7 @@ RSpec.describe WorkPlansController, type: :controller do
   end
 
   describe "#update" do
+    before { sign_in user }
     context "with valid params" do
       let(:new_attributes) do
         { name: "new name",
@@ -82,13 +96,14 @@ RSpec.describe WorkPlansController, type: :controller do
   end
 
   describe "#auto_gen" do
+    before { sign_in user }
     context "with valid params" do
       let(:student) { create(:student, classroom:) }
       let(:params) do
         {
           "/students/#{student.id}" => {
-            domains: ["", "Conjugaison", "Vocabulaire", "Orthographe", "Grandeurs et Mesures"]
-          }
+            domains: ["", "Conjugaison", "Vocabulaire", "Orthographe", "Grandeurs et Mesures"],
+          },
         }
       end
       it "generate a new work_plan, based on the student's actual progression" do

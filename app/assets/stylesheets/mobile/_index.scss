@@ -57,6 +57,11 @@ font-size: 3vh;
   justify-content: space-between;
   width: 100%;
 }
+.mobile-index-wp-name{
+display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+}
 .mobile-namept {
   color: white !important;
   text-align: left;

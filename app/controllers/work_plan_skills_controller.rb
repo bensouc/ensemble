@@ -3,6 +3,7 @@
 class WorkPlanSkillsController < ApplicationController
   def create
     @work_plan_skill = WorkPlanSkill.new(set_params_wpskill)
+    authorize @work_plan_skill
     # @work_plan_skill.student = @work_plan_skill.work_plan_domain.work_plan.student
     challenges = Challenge.where(skill_id: @work_plan_skill.skill)
     if @work_plan_skill.kind.downcase == "exercice"
@@ -31,6 +32,7 @@ class WorkPlanSkillsController < ApplicationController
 
   def destroy
     @work_plan_skill = WorkPlanSkill.find(params[:id])
+    authorize @work_plan_skill
     work_plan_domain = @work_plan_skill.work_plan_domain
     # raise
     @work_plan_skill.destroy
@@ -40,6 +42,7 @@ class WorkPlanSkillsController < ApplicationController
   def eval_update
     # binding.pry
     @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
+    authorize @work_plan_skill
     @work_plan = @work_plan_skill.work_plan_domain.work_plan
     #  binding.pry
 
@@ -80,6 +83,7 @@ class WorkPlanSkillsController < ApplicationController
   def change_challenge
     # binding.pry
     @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
+    authorize @work_plan_skill
     @work_plan = @work_plan_skill.work_plan_domain.work_plan
     @challenge = Challenge.find(params[:challenge])
     @work_plan_skill.challenge = @challenge

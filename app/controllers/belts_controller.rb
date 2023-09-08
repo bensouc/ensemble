@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
 class BeltsController < ApplicationController
+  before_action :set_belt, only: [:edit, :update, :destroy]
   def edit
-    @belt = Belt.find(params[:id])
+
+    authorize @belt
     @skills = @belt.all_skills(current_user)
   end
 
   def create
+    skip_authorization
     args = new_belt_params
     args[:student_id] = params[:student_id]
     @belt = Belt.find_or_create_by(args)
@@ -19,7 +22,7 @@ class BeltsController < ApplicationController
   end
 
   def update
-    @belt = Belt.find(params[:id])
+
     # binding.pry
     @belt.validated_date = new_belt_params[:validated_date]
     if @belt.save
@@ -30,13 +33,18 @@ class BeltsController < ApplicationController
   end
 
   def destroy
-    belt = Belt.find(params[:id])
-    @student = belt.student
-    belt.destroy
+
+    @student = @belt.student
+    @belt.destroy
     redirect_to student_path(@student)
   end
 
   private
+
+  def set_belt
+    @belt = Belt.find(params[:id])
+    authorize @belt
+  end
 
   def new_belt_params
     params.require(:belt).permit(:grade, :domain, :level, :grade, :validated_date)

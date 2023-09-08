@@ -6,6 +6,7 @@ class WorkPlansController < ApplicationController
   # And sharing
   def clone
     wp = WorkPlan.find(wp_id)
+    skip_authorization
     # binding.pry
     # //crer des copie des WorkPlanDomain et de workplan skill
     # binding.pry
@@ -84,8 +85,8 @@ class WorkPlansController < ApplicationController
         end
       end
     end
-    @my_work_plans = WorkPlan.includes([:student]).where(user: current_user,
-                                                         special_wps: false).order(created_at: :DESC)
+    @my_work_plans = policy_scope(WorkPlan)
+
     # .sort_by(&:student)
     @my_work_plans_unassigned = @my_work_plans.select { |my_work_plan| my_work_plan.student.nil? }
     @my_work_plans = @my_work_plans.reject { |my_work_plan| my_work_plan.student.nil? }.sort_by(&:student)
@@ -95,6 +96,7 @@ class WorkPlansController < ApplicationController
   def evaluation
     # @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
+    authorize @work_plan
     @domains = @work_plan.all_domains_from_work_plan
     @previous = []
     @wpds = WorkPlanDomain.includes([:work_plan_skills]).where(work_plan: @work_plan)
@@ -110,6 +112,7 @@ class WorkPlansController < ApplicationController
   def show
     @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.includes([:work_plan_domains]).find(params[:id])
+    authorize @work_plan
     @domains = @work_plan.all_domains_from_work_plan
     shared_classrooms = current_user.user_shared_classrooms
     # shared_classrooms = []
@@ -142,6 +145,7 @@ class WorkPlansController < ApplicationController
 
   def new
     @work_plan = WorkPlan.new
+    authorize @work_plan
     # search all students of current-user
     @students = Student.where(classroom: current_user.classrooms)
     # generate the first work_plan_domain for new work_plan
@@ -152,6 +156,7 @@ class WorkPlansController < ApplicationController
 
   def create
     @work_plan = WorkPlan.new(work_plan_params)
+    authorize @work_plan
     @work_plan.user = current_user
     if @work_plan.save
       redirect_to work_plan_path(@work_plan)
@@ -163,6 +168,7 @@ class WorkPlansController < ApplicationController
   def update
     temp_wp = WorkPlan.new(true_wp_params)
     @work_plan = WorkPlan.find(params[:id])
+    authorize @work_plan
     @work_plan.name = temp_wp.name
     @work_plan.start_date = temp_wp.start_date
     @work_plan.end_date = temp_wp.end_date
@@ -176,6 +182,7 @@ class WorkPlansController < ApplicationController
 
   def destroy
     @work_plan = WorkPlan.find(params[:id])
+        authorize @work_plan
     @work_plan.destroy
     head :ok, content_type: "text/html"
     # if @work_plan.student.nil?
@@ -197,14 +204,15 @@ class WorkPlansController < ApplicationController
     # start_date =  Time.zone.today.monday? ? Time.zone.today : Time.zone.today.next_occurring(:monday)
     start_date = Time.zone.today.next_occurring(:monday)
     end_date = start_date + 4
-    @work_plan = WorkPlan.create(
+    @work_plan = WorkPlan.new(
       name: "AUTO - N°#{@student.work_plans.count + 1}",
       grade: @student.classroom.grade,
       student: @student, user: current_user,
       start_date:,
-      end_date:,
+      end_date:
     )
-
+    authorize @work_plan
+    @work_plan.save
     # ajout date intro prendre date => first monday => first friday
     # based on student classroom level,
     # Iterate through each domain in the list of domains

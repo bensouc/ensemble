@@ -20,6 +20,7 @@ class SkillsController < ApplicationController
   end
 
   def show
+        authorize @skill
   end
 
   def new
@@ -27,9 +28,11 @@ class SkillsController < ApplicationController
   end
 
   def edit
+        authorize @skill
   end
 
   def create
+    skip_authorization
     @skill = Skill.new(skill_params)
     @skill.school = current_user.school
     @skill.save!
@@ -42,11 +45,13 @@ class SkillsController < ApplicationController
   end
 
   def update
+        authorize @skill
     @skill.update!(skill_params)
     redirect_to skill_path(@skill)
   end
 
   def destroy
+        authorize @skill
     begin
       @skill.destroy
       respond_to do |format|
@@ -67,13 +72,14 @@ class SkillsController < ApplicationController
     query = params[:grade]
     @school = current_user.school
     @grade = query.nil? ? @grades.first : query
-    @skills = Skill.includes([:challenges]).for_school(current_user.school)
+    @skills = policy_scope(Skill)
     @are_special_domains = current_user.school.id == 1
     @skills = @skills.select { |skill| skill.grade == @grade }
   end
 
   def set_skill
     @skill = Skill.find(params[:id])
+
   end
 
   def skill_params
