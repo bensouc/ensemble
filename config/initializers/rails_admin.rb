@@ -10,7 +10,7 @@ RailsAdmin.config do |config|
   config.current_user_method(&:current_user)
   config.authorize_with do
     unless current_user.admin?
-      flash[:alert] = t('unauthorized')
+      flash[:alert] = t("unauthorized")
       redirect_to main_app.root_path
     end
   end
@@ -43,5 +43,16 @@ RailsAdmin.config do |config|
     ## With an audit adapter, you can add:
     # history_index
     # history_show
+  end
+
+  config.model "User" do
+    list do
+      field :id
+      field :email
+      field :admin
+      field :first_name
+      field :last_name
+      field :school
+    end
   end
 end
