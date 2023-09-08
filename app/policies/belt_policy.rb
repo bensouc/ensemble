@@ -1,20 +1,20 @@
-class ClassroomPolicy < ApplicationPolicy
+class BeltPolicy < ApplicationPolicy
   class Scope < Scope
     # NOTE: Be explicit about which records you allow access to!
-    def resolve
-      user.classrooms
-    end
+    # def resolve
+    #   scope.all
+    # end
+  end
+
+  def edit?
+    user_is_owner_or_admin?
   end
 
   def create?
     user_is_owner_or_admin?
   end
 
-  def results?
-    user_is_owner_or_admin?
-  end
-
-  def results_by_domain?
+  def update?
     user_is_owner_or_admin?
   end
 
@@ -25,6 +25,8 @@ class ClassroomPolicy < ApplicationPolicy
   private
 
   def user_is_owner_or_admin?
-    user.admin || record.user == user || record.shared_classrooms.any? { |shared_classroom| shared_classroom.user == user }
+    user.admin ||
+      record.student.classroom.user == user ||
+      record.student.shared_classrooms.any? { |shared_classroom| shared_classroom.user == user }
   end
 end

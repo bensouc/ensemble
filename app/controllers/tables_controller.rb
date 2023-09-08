@@ -4,6 +4,7 @@ class TablesController < ApplicationController
   before_action :get_table_from_sgid, only: [:update]
 
   def show
+    skip_authorization
     @table = Table.find params[:id]
     render json: {
       sgid: @table.attachable_sgid,
@@ -12,6 +13,7 @@ class TablesController < ApplicationController
   end
 
   def create
+    skip_authorization
     @table = Table.create
     render json: {
       sgid: @table.attachable_sgid,
@@ -20,6 +22,7 @@ class TablesController < ApplicationController
   end
 
   def update
+    skip_authorization
     case params["method"]
     when "addRow"
       @table.rows += 1

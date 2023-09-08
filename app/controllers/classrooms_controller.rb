@@ -35,6 +35,7 @@ class ClassroomsController < ApplicationController
 
   def destroy
     # if sharedclassroom with calssromm id
+    authorize @classroom
     if @classroom.shared?
       # raise
       # get first shared calssroom _id

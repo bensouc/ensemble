@@ -6,5 +6,9 @@ class SchoolPolicy < ApplicationPolicy
     end
   end
 
+  def show?
+    record.users.any? { |school_user| school_user == user }
+  end
+
 
 end
