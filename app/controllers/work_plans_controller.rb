@@ -72,25 +72,30 @@ class WorkPlansController < ApplicationController
   end
 
   def index
+    skip_policy_scope
     # @shared_classrooms = current_user.shared_classrooms
     # shared_classrooms = @shared_classrooms.map(&:classroom)
     shared_classrooms = current_user.user_shared_classrooms
 
     @my_classrooms = (current_user.classrooms + shared_classrooms).sort_by(&:created_at)
-    shared_work_plans = []
-    shared_classrooms.each do |classroom|
-      classroom.students.each do |shared_student|
-        WorkPlan.where(student: shared_student, special_wps: false).order(created_at: :DESC).each do |work_plan|
-          shared_work_plans << work_plan
-        end
-      end
-    end
-    @my_work_plans = policy_scope(WorkPlan)
-
-    # .sort_by(&:student)
-    @my_work_plans_unassigned = @my_work_plans.select { |my_work_plan| my_work_plan.student.nil? }
-    @my_work_plans = @my_work_plans.reject { |my_work_plan| my_work_plan.student.nil? }.sort_by(&:student)
-    @my_work_plans += shared_work_plans
+  # shared_work_plans = []
+      # shared_classrooms.each do |classroom|
+      #   classroom.students.each do |shared_student|
+      #     WorkPlan.where(student: shared_student, special_wps: false).order(created_at: :DESC).each do |work_plan|
+      #       shared_work_plans << work_plan
+      #     end
+      #   end
+      # end
+      # binding.pry
+    @my_work_plans = current_user.all_classroom_workplans
+    @my_work_plans_from_shared_classrooms = current_user.all_shared_classroom_workplans
+    @my_work_plans += @my_work_plans_from_shared_classrooms unless @my_work_plans_from_shared_classrooms.empty?
+    # # .sort_by(&:student)
+    @my_work_plans_unassigned = WorkPlan.where(user: current_user, special_wps: false, student: nil)
+    # @my_work_plans = @my_work_plans.reject { |my_work_plan| my_work_plan.student.nil? }.sort_by(&:student)
+# raise
+    # @my_work_plans = @my_work_plans.reject { |my_work_plan| my_work_plan.student.nil? }.sort_by(&:student)
+    # @my_work_plans += shared_work_plans
   end
 
   def evaluation

@@ -23,6 +23,6 @@ class ChallengePolicy < ApplicationPolicy
       private
 
     def user_is_owner_or_admin?
-      user.admin || record.user.school == user.school
+      user.admin || record.skill.school == user.school
     end
 end
