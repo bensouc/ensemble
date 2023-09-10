@@ -82,7 +82,6 @@ class WorkPlansController < ApplicationController
   end
 
   def evaluation
-    # @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
     authorize @work_plan
     @domains = @work_plan.all_domains_from_work_plan
