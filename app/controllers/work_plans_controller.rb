@@ -73,29 +73,12 @@ class WorkPlansController < ApplicationController
 
   def index
     skip_policy_scope
-    # @shared_classrooms = current_user.shared_classrooms
-    # shared_classrooms = @shared_classrooms.map(&:classroom)
     shared_classrooms = current_user.user_shared_classrooms
-
     @my_classrooms = (current_user.classrooms + shared_classrooms).sort_by(&:created_at)
-  # shared_work_plans = []
-      # shared_classrooms.each do |classroom|
-      #   classroom.students.each do |shared_student|
-      #     WorkPlan.where(student: shared_student, special_wps: false).order(created_at: :DESC).each do |work_plan|
-      #       shared_work_plans << work_plan
-      #     end
-      #   end
-      # end
-      # binding.pry
     @my_work_plans = current_user.all_classroom_workplans
     @my_work_plans_from_shared_classrooms = current_user.all_shared_classroom_workplans
     @my_work_plans += @my_work_plans_from_shared_classrooms unless @my_work_plans_from_shared_classrooms.empty?
-    # # .sort_by(&:student)
     @my_work_plans_unassigned = WorkPlan.where(user: current_user, special_wps: false, student: nil)
-    # @my_work_plans = @my_work_plans.reject { |my_work_plan| my_work_plan.student.nil? }.sort_by(&:student)
-# raise
-    # @my_work_plans = @my_work_plans.reject { |my_work_plan| my_work_plan.student.nil? }.sort_by(&:student)
-    # @my_work_plans += shared_work_plans
   end
 
   def evaluation
@@ -120,13 +103,10 @@ class WorkPlansController < ApplicationController
     authorize @work_plan
     @domains = @work_plan.all_domains_from_work_plan
     shared_classrooms = current_user.user_shared_classrooms
-    # shared_classrooms = []
-    # current_user.shared_classrooms.each do |sahred_classroom|
-    #   shared_classrooms << sahred_classroom.classroom
-    # end
+    @students = current_user.all_students
     @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms
     unless @work_plan.shared_user_id.nil?
-      @shared_user = current_user.collegues.find {|user| user.id == @work_plan.shared_user_id}
+      @shared_user = current_user.collegues.find { |user| user.id == @work_plan.shared_user_id }
     end
     @teachers = current_user.collegues
     respond_to do |format|
@@ -141,7 +121,7 @@ class WorkPlansController < ApplicationController
                  top: 5,
                  bottom: 3,
                  left: 5,
-                 right: 5
+                 right: 5,
                }
         # dpi: 300
       end
@@ -187,7 +167,7 @@ class WorkPlansController < ApplicationController
 
   def destroy
     @work_plan = WorkPlan.find(params[:id])
-        authorize @work_plan
+    authorize @work_plan
     @work_plan.destroy
     head :ok, content_type: "text/html"
     # if @work_plan.student.nil?
@@ -214,7 +194,7 @@ class WorkPlansController < ApplicationController
       grade: @student.classroom.grade,
       student: @student, user: current_user,
       start_date:,
-      end_date:
+      end_date:,
     )
     authorize @work_plan
     @work_plan.save

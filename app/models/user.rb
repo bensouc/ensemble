@@ -46,6 +46,16 @@ class User < ApplicationRecord
     school.users.reject { |y| y == self }
   end
 
+  def all_students
+    shared_students = []
+    unless shared_classrooms.empty?
+      shared_classrooms.each do |shared_classroom|
+        shared_students += shared_classroom.classroom.students
+      end
+    end
+    (students + shared_students).sort_by(&:classroom)
+  end
+
   def all_classroom_workplans
     work_plans = []
     unless classrooms.empty?

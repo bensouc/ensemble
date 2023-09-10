@@ -29,7 +29,7 @@
 					</div>
 					<%# <p class='m-left'>Elève :</p> %>
 					<%= f.association :student, label: false,
-                            collection: current_user.students.order(:first_name),
+                            collection: @students,
                             input_html: {class: 'area grow m-left'},
                             label_method: :first_name %>
 				</div>
