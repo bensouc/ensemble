@@ -27,7 +27,6 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
 
-
   # Methods
   def admin?
     admin
@@ -47,9 +46,45 @@ class User < ApplicationRecord
     school.users.reject { |y| y == self }
   end
 
+  def all_students
+    shared_students = []
+    unless shared_classrooms.empty?
+      shared_classrooms.each do |shared_classroom|
+        shared_students += shared_classroom.classroom.students
+      end
+    end
+    (students + shared_students).sort_by(&:classroom)
+  end
+
+  def all_classroom_workplans
+    work_plans = []
+    unless classrooms.empty?
+      classrooms.each do |classroom|
+        classroom.students.each do |student|
+          work_plans += WorkPlan.where(student: student, special_wps: false)
+        end
+      end
+    end
+    work_plans
+  end
+
+  def all_shared_classroom_workplans
+    work_plans = []
+
+    # binding.pry
+    unless shared_classrooms.empty? # get all workplans shared with current user
+      shared_classrooms.each do |shared_classroom|
+        shared_classroom.classroom.students.each do |student|
+          work_plans += WorkPlan.where(student: student, special_wps: false)
+        end # get all workplans of shared classrooms
+      end
+    end
+    work_plans
+  end
+
   private
 
   def set_defaults
-      SchoolRole.create!( user: self, school: School.where(name: "Ensemble").first) if self.school_role.nil?
+    SchoolRole.create!(user: self, school: School.where(name: "Ensemble").first) if self.school_role.nil?
   end
 end
