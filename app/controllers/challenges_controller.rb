@@ -6,12 +6,14 @@ class ChallengesController < ApplicationController
 
   def show
     @work_plan = @work_plan_skill.work_plan_domain.work_plan
-    authorize @challenge
+    # authorize @challenge
+    skip_authorization
     render partial: "/challenges/full_challenge_display"
   end
 
   def clone
-    authorize @challenge
+    # authorize @challenge
+    skip_authorization
     new_challenge = @challenge.new_clone
     new_challenge.user = current_user
     new_challenge.save!
@@ -24,7 +26,8 @@ class ChallengesController < ApplicationController
 
   def update
     # @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
-    authorize @challenge
+    # authorize @challenge
+    skip_authorization
     if @challenge.update(challenge_params)
       redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge)),
                   notice: "Excercice Sauvegardé"
@@ -35,7 +38,8 @@ class ChallengesController < ApplicationController
   end
 
   def display_challenges
-    authorize @challenge
+    # authorize @challenge
+    skip_authorization
     @challenges = Challenge.where(skill: @challenge.skill).reject { |chal| chal == @challenge }
     # raise
     if @challenges.empty?
