@@ -34,12 +34,14 @@ class User < ApplicationRecord
 
   def classroom_grades
     # return all current user classroom Grades
-    classrooms.map { |classroom| classroom.grade }
+    grades = classrooms.map { |classroom| classroom.grade }
+    shared_classrooms.each { |shared_classroom| grades << shared_classroom.classroom.grade }
+    grades.uniq.sort
   end
 
   def classroom?
     # return true if user has a classroom
-    !classrooms.empty?
+    !classrooms.empty? && !shared_classrooms.empty?
   end
 
   def collegues
@@ -70,8 +72,6 @@ class User < ApplicationRecord
 
   def all_shared_classroom_workplans
     work_plans = []
-
-    # binding.pry
     unless shared_classrooms.empty? # get all workplans shared with current user
       shared_classrooms.each do |shared_classroom|
         shared_classroom.classroom.students.each do |student|

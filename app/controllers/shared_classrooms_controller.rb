@@ -25,6 +25,7 @@ class SharedClassroomsController < ApplicationController
     shared_classroom = SharedClassroom.find(params[:id])
     # get original classroom
     classroom = shared_classroom.classroom
+    authorize classroom
     shared_classroom.destroy
     # if sharedclassrooms.count == 0 => classroom.shared = false
     classroom.shared = false if classroom.shared_classrooms.count
@@ -35,6 +36,7 @@ class SharedClassroomsController < ApplicationController
 
   def set_shared_classroom_teacher_params
     # params.require(:shared_classroom).require(:teachers)
+    # raise
     params.require(params.require(:classroom_id)).require(:teachers)
   end
 
