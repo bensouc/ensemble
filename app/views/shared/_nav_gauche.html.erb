@@ -61,7 +61,7 @@
               data-left-menu-target="seetext"
               style='decoration-text: none'
             >
-              <% if current_user.classrooms.count < 2 %>
+              <% if current_user.classrooms.count + current_user.user_shared_classrooms.count < 2 %>
                 Ma Classe
               <% else %>
                 Mes Classes
