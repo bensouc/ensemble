@@ -5,8 +5,7 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore test cov pages
-coverage/.resultset.json
-coverage/.last_run.json
+coverage/*
 vendor/*
 
 # Ignore bundler config.
