@@ -1,0 +1,29 @@
+
+[1mFrom:[0m /home/bensouc/code/bensouc/ensemble/app/controllers/work_plans_controller.rb:90 WorkPlansController#index:
+
+    [1;34m74[0m: [32mdef[0m [1;34mindex[0m
+    [1;34m75[0m:   skip_policy_scope
+    [1;34m76[0m:   [1;34m# @shared_classrooms = current_user.shared_classrooms[0m
+    [1;34m77[0m:   [1;34m# shared_classrooms = @shared_classrooms.map(&:classroom)[0m
+    [1;34m78[0m:   shared_classrooms = current_user.user_shared_classrooms
+    [1;34m79[0m: 
+    [1;34m80[0m:   @my_classrooms = (current_user.classrooms + shared_classrooms).sort_by(&[33m:created_at[0m)
+    [1;34m81[0m: [1;34m# shared_work_plans = [][0m
+    [1;34m82[0m:     [1;34m# shared_classrooms.each do |classroom|[0m
+    [1;34m83[0m:     [1;34m#   classroom.students.each do |shared_student|[0m
+    [1;34m84[0m:     [1;34m#     WorkPlan.where(student: shared_student, special_wps: false).order(created_at: :DESC).each do |work_plan|[0m
+    [1;34m85[0m:     [1;34m#       shared_work_plans << work_plan[0m
+    [1;34m86[0m:     [1;34m#     end[0m
+    [1;34m87[0m:     [1;34m#   end[0m
+    [1;34m88[0m:     [1;34m# end[0m
+    [1;34m89[0m:     binding.pry
+ => [1;34m90[0m:   @my_work_plans = [1;34;4mWorkPlan[0m.includes([33m:student[0m).where([35muser[0m: current_user, [35mstudent[0m: current_user.students, [35mspecial_wps[0m: [1;36mfalse[0m).order([35mcreated_at[0m: [33m:DESC[0m)
+    [1;34m91[0m:   @my_work_plans_from_shared_classrooms = current_user.all_shared_workplans
+    [1;34m92[0m:   [1;34m# # .sort_by(&:student)[0m
+    [1;34m93[0m:   @my_work_plans_unassigned = [1;34;4mWorkPlan[0m.where([35muser[0m: current_user, [35mspecial_wps[0m: [1;36mfalse[0m, [35mstudent[0m: [1;36mnil[0m)
+    [1;34m94[0m:   @my_work_plans = @my_work_plans.reject { |my_work_plan| my_work_plan.student.nil? }.sort_by(&[33m:student[0m)
+    [1;34m95[0m: 
+    [1;34m96[0m:   [1;34m# @my_work_plans = @my_work_plans.reject { |my_work_plan| my_work_plan.student.nil? }.sort_by(&:student)[0m
+    [1;34m97[0m:   [1;34m# @my_work_plans += shared_work_plans[0m
+    [1;34m98[0m: [32mend[0m
+

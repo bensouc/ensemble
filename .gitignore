@@ -46,9 +46,5 @@ yarn-debug.log*
 *.swp
 .DS_Store
 .env*
-coverage/.resultset.json
-coverage/.last_run.json
-coverage/.resultset.json
-coverage/.resultset.json
+
 vendor
-OBOBOBOBOBOBOBOBOBOBOBOBOBOBOBOBOBOB(:student).where(user: current_user, student: current_user.students, special_wps: false)

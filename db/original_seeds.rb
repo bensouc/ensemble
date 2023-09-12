@@ -1,20 +1,27 @@
 # require "open-uri"
 
 # puts "destroying current data"
-# WorkPlanSkill.destroy_all
-# puts "destroying current WorkPlanSkill"
-# WorkPlanDomain.destroy_all
-# puts "destroying current WorkPlanDomain "
-# Challenge.destroy_all
-# puts "destroying current Challenge "
-# Skill.destroy_all
-# puts "destroying current Skill "
-# WorkPlan.destroy_all
-# Student.destroy_all
-# Classroom.destroy_all
-# User.destroy_all
+# destroy work_palns
+WorkPlan.all.destroy_all
+puts "Workplans destroyed"
+# destroy challenge
+Challenge.all.destroy_all
+puts "Challenges destroyed"
+# destroy students
+Student.all.destroy_all
+puts "Students destroyed"
+# destroy classroom
+Classroom.all.destroy_all
+puts "Classrooms destroyed"
+# destroy all user and school
+u = User.all
+u.each(&:destroy)
+s = School.all
+s.each(&:destroy)
+puts "all user and school destroyed"
+puts "=========================================="
 
-
+puts "creating school"
 
 # # user1 = User.create!(email:'toto@gmail.com', password:'secret', first_name:'toto', last_name: 'titi')
 # # file = URI.open('https://cdn0.iconfinder.com/data/icons/basic-50/24/essential_basic_ui_user-512.png')
