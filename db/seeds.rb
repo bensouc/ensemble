@@ -1,41 +1,126 @@
-# # puts "ADD school id = 17 to all skills"
-# # skills = Skill.all
-# # school = School.find(1)
-# # skills.each do |skill|
-# #   skill.school = school
-# #   skill.save!
-# # end
-# # puts "END of Adding school id = 17 to all skills"
-# # get all skill where school_id = 1
-# # destroy all skill where school_id = 18
-# # destroy all work_plan where work_plan.user.school_id = 18
-# puts "destroy all work_plan where school_id = 2"
-# WorkPlan.where(user_id: User.where(school_id: 2).ids).destroy_all
+require "open-uri"
+require "faker"
 
-# puts "destroy all skills where school_id = 2"
-# Skill.where(school_id: 2).destroy_all
+# SEEDS FOR ENSEMBLE
+puts "SEEDING STARTS"
+puts "<<<<<Destroying current data>>>>>"
+# destroy work_palns
+WorkPlan.destroy_all
+puts "Workplans destroyed"
+# destroy challenge
+Challenge.destroy_all
+Table.destroy_all
+puts "Challenges and tables destroyed"
+# destroy students
+Student.destroy_all
+puts "Students destroyed"
+# destroy classroom
+SharedClassroom.destroy_all
+Classroom.destroy_all
+puts "SharedClassrrom / Classrooms destroyed"
+# destroy all skills
+Skill.destroy_all
+puts "Skills destroyed"
+# destroy school_roles
+SchoolRole.destroy_all
+puts "SchoolRoles destroyed"
+# destroy all user and school
+User.destroy_all
+puts "Users destroyed"
+School.destroy_all
+puts "Schools destroyed"
 
-# puts "create new skills and exos"
+puts "all user and school destroyed"
+puts "=========================================="
 
-# original_skills = Skill.where(school_id: 1) #1 in prod
-# user_school_ensemble = User.where(school_id: 2).first #2 in prod
-# original_skills.each do |original_skill|
-#   new_skill = original_skill.dup
-#   new_skill.school_id = 2 # 2 in prod
-#   new_skill.save!
-#   puts "new skill created #{new_skill.id}"
-#   # get all exos where skill_id = original_skill.id
-#   exos = Challenge.where(skill_id: original_skill.id)
-#   exo = exos.last unless exos.empty?
-#   unless exo.nil?
-#     new_exo = exo.new_clone
-#     new_exo.user = user_school_ensemble
-#     new_exo.skill_id = new_skill.id
-#     new_exo.name = new_skill.name+"-V1"
-#     new_exo.save!
-#     puts "new exo created #{new_exo.id}"
-#   end
-# end
+puts "creating school"
+puts ""
 
-# # pour chaques skills créer un skill_school where school_id = 2 (ensemble)
-# # pour chaques skills recupere un exo hazard et le dupliquer puis l'asigner à la nouvelle skill
+school_ensemble = School.create!(name: "Ensemble", city: "Nantes")
+school_fournier = School.create!(name: "Alain Fournier", city: "Nantes")
+
+puts ""
+puts ">>> school created"
+puts "=========================================="
+puts "creating users"
+puts ""
+
+
+# create users
+admin = User.create!(email: "admin@mail.com", password: "secret", first_name: "Admin", last_name: "Nimda", admin: true, school: school_ensemble)
+ensemble_user1 = User.create!(email: "ensemble1@mail.com", password: "secret", first_name: "Benoit", last_name: "Nouille", admin: false, school: school_ensemble)
+fournier_user1 = User.create!(email: "fournier1@mail.com", password: "secret", first_name: "Jean", last_name: "Bon", admin: false, school: school_fournier)
+fournier_user2 = User.create!(email: "fournier2@mail.com", password: "secret", first_name: "Jeanne", last_name: "Bon", admin: false, school: school_fournier)
+
+puts ""
+puts ">>> users created"
+puts "=========================================="
+
+puts "creating school_roles"
+puts ""
+
+SchoolRole.create!(user: admin, school: school_ensemble)
+SchoolRole.create!(user: fournier_user1, school: school_fournier)
+
+puts ""
+puts ">>> school_roles created"
+puts "=========================================="
+
+puts "creating classrooms"
+puts ""
+
+classroom_ensemble_admin = Classroom.create!(name: "Gpe1", grade: "CE1", user: admin)
+classroom_ensemble_user1 = Classroom.create!(name: "Gpe2", grade: "CM2", user: ensemble_user1)
+classroom_alain_fournier_user1 = Classroom.create!(name: "Gpe3", grade: "CE2", user: fournier_user1)
+classroom_alain_fournier_user2 = Classroom.create!(name: "Gpe4", grade: "CM2", user: fournier_user2)
+
+puts ""
+puts ">>> classrooms created"
+puts "=========================================="
+
+puts "creating students"
+puts ""
+
+Classroom.all.each do |classroom|
+  puts "creating students for #{classroom.name}"
+  12.times do
+    Student.create!(first_name: Faker::Movies::StarWars.character, classroom: classroom)
+  end
+  puts ">>> students created  for #{classroom.name}"
+end
+
+puts ""
+puts ">>> students created"
+puts "=========================================="
+
+puts "creating shared classrooms"
+puts ""
+
+SharedClassroom.create!(user: ensemble_user1, classroom: classroom_ensemble_admin)
+SharedClassroom.create!(user: fournier_user1, classroom: classroom_alain_fournier_user2)
+
+puts ""
+puts ">>> shared classrooms created"
+puts "=========================================="
+
+puts "creating skills"
+puts ""
+
+# "CE1" => ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"]
+School.all.each do |school|
+  puts "creating skills for #{school.name}"
+  WorkPlanDomain::DOMAINS.each do |grade, domains|
+    domains.each do |domain|
+      for i in (1..7)
+        2.times do
+          Skill.create!(school:, domain:, level: i, symbol: "⬥", name: Faker::Movies::StarWars.quote, grade:)
+        end
+      end
+    end
+  end
+  puts "skills created  for #{school.name}"
+end
+puts ""
+puts ">>> skills created"
+puts "=========================================="
+puts "==============SEED COMPLETED=============="

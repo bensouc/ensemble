@@ -33,6 +33,7 @@
 fr:
   #ENSEMBLE:
   unauthorized: "Vous n'avez pas les autorisations pour cette action"
+  name_already_exists: "Le nom choisit est déjà utilisé"
   # stripe
   trialing: "Essai"
   active: "En cours"
