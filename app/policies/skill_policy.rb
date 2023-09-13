@@ -2,7 +2,7 @@ class SkillPolicy < ApplicationPolicy
   class Scope < Scope
     # NOTE: Be explicit about which records you allow access to!
     def resolve
-      scope.includes([:challenges]).for_school(user.school)
+      scope.includes([:challenges]).where(school: user.school)
     end
   end
 
