@@ -6,6 +6,7 @@ RSpec.describe WorkPlan, type: :model do
     WorkPlan.destroy_all
     WorkPlanDomain.destroy_all
     Challenge.destroy_all
+    SchoolRole.destroy_all
     User.destroy_all
     @work_plan1 = create(:work_plan)
   end

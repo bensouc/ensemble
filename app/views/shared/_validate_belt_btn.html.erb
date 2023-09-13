@@ -1,6 +1,7 @@
 
 <div class='validate-belt-btn d-none
-' data-display-student-belt-management-target='beltBtn'>
+' data-display-student-belt-management-target='beltBtn'
+>
   <%= simple_form_for [@student,Belt.new],data:{action: 'submit->loadingspinnermgnt#displaySpinner'} do |b| %>
     <%= b.input :level,
             input_html: { value: level, class: 'd-none' },

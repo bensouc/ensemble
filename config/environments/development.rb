@@ -41,7 +41,12 @@ Rails.application.configure do
 
     config.cache_store = :null_store
   end
-
+  # GEM BULLET SETTINGS
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.rails_logger = true
+  end
+  # END GEM BULLET SETTINGS
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :cloudinary
 

@@ -1,16 +1,17 @@
 Rails.application.routes.draw do
   mount RailsAdmin::Engine => "/admin", as: "rails_admin"
-  devise_for :users
+  devise_for :users,
+    controllers: { registrations: 'registrations' }
   root to: "pages#home"
   get "/dashboard", to: "dashboard#show"
 
+  # ###############MOBILE ROUTES###############
   namespace "mobile" do
     resources :work_plans, only: [:index]
     resources :students, only: [:index]
     get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
   end
-  # Add shared classrooms
-
+  # ###############MOBILE ROUTES###############
   post "", to: "contact#create", as: :contact_create
 
   resources :work_plans, only: [:index, :show, :update, :new, :create, :destroy] do
@@ -54,14 +55,10 @@ Rails.application.routes.draw do
 
   get "challenges/:id/display_challenges", to: "challenges#display_challenges", as: :display_challenges
 
-  # route for tab editing
+  # ###############route for tab editing###############
   resources :tables, only: [:show, :create, :update]
 
-  # Routes for subscription
-    resources :subscriptions, only: %w[new]
-
-
-  # stripe routes
+  # ###############stripe routes###############
   mount StripeEvent::Engine, at: "/stripe-webhooks"
   post "create-customer-portal-session", to: "stripe#create_portal_session"
 
@@ -69,11 +66,23 @@ Rails.application.routes.draw do
   get "subscriptions/success", to: "subscriptions#success"
   get "subscriptions/cancel", to: "subscriptions#cancel"
 
+  # Routes for subscription
+  resources :subscriptions, only: %w[new]
 
-  # routes for SKILLS
+  # ###############END OF STRIPE ROUTES############
+
+  # ###############routes for SKILLS###############
   resources :skills
 
-  # routes for Challenge
+  # ###############END routes for SKILLS#########
+
+  # ###############routesfor Challenge#########
   resources :challenges, only: [:show, :edit, :update, :destroy]
+  # ###############END routes for Challenge#########
+
+  # ###############routes for SCHOOL/SCHOOL_ROLES###############
+  resources :schools, only: %w[show]
+  # ###############END OF routes for SCHOOL########
+
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

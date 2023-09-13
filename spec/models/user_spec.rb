@@ -6,6 +6,7 @@ RSpec.describe User, type: :model do
     WorkPlan.destroy_all
     WorkPlanDomain.destroy_all
     Challenge.destroy_all
+    SchoolRole.destroy_all
     User.destroy_all
     @user1 = create(:user)
   end

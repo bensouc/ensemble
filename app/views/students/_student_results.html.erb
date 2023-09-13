@@ -1,29 +1,38 @@
 <div class="student-sticky-header">
   <div class='progess-header'>
-    <div class="d-flex align-items-baseline print-date prog-name" data-controller='wps-result'>
-      <h1>Progression de <%= @student.first_name %></h1>
-<%# modal to select domains (@domains)  for autogen %>
-      <%# <%= link_to  student_auto_new_wp_path(@student), method: :post, data:{ action: "mouseover->wps-result#displayName mouseout->wps-result#hideName click->loadingspinnermgnt#displaySpinner"} do%>
-        <%# <i class="fa-solid fa-user-gear printer-logo ms-4"></i> %>
+    <div
+      class="d-flex align-items-baseline print-date prog-name"
+      data-controller='wps-result'
+    >
+      <h1>Progression de
+        <%= @student.first_name %></h1>
+      <%# modal to select domains (@domains)  for autogen %>
+      <%# <%= link_to  student_auto_new_wp_path(@student), method: :post, data:{ action: "mouseover->wps-result#displayName mouseout->wps-result#hideName click->loadingspinnermgnt#displaySpinner"} do %>
+      <%# <i class="fa-solid fa-user-gear printer-logo ms-4"></i> %>
       <%# <% end %>
-
       <!-- Button trigger modal -->
-<button type="button" class="--bgc-blanc" data-bs-toggle="modal" data-bs-target="#staticBackdrop" data-action= "mouseover->wps-result#displayName mouseout->wps-result#hideName">
-  <i class="fa-solid fa-user-gear printer-logo ms-4"></i>
-</button>
-<%# end modal select domain %>
+      <button
+        type="button"
+        class="--bgc-blanc"
+        data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop"
+        data-controller="tooltip"
+        data-bs-toggle="tooltip"
+        data-bs-placement="right"
+        title="Générer le prochain Plan de travail"
+      >
+        <i class="fa-solid fa-user-gear printer-logo ms-4"></i>
+      </button>
+      <%# end modal select domain %>
 
-      <div class="autogene-details d-none" data-wps-result-target='name'>
-        Générer automatiquement le <br>
-        prochain Plan de travail
-      </div>
     </div>
     <div class="print-date">
       <h4>
         <%= link_to '#' ,:onclick => "window.print();return false;" do %>
           <i class="fa-solid fa-print printer-logo"></i>
         <% end %>
-        Le <%=I18n.l(Date.today, format: :long) %>
+        Le
+        <%= I18n.l(Date.today, format: :long) %>
       </h4>
     </div>
   </div>
@@ -52,17 +61,29 @@
     <% @domains.each do |domain| %>
       <div class="domain-main-col">
         <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
-          <%belt = @belts.reverse.find{|belt| belt.domain == domain && belt.level== level}%>
+          <% belt =
+            @belts.reverse.find { |belt| belt.domain == domain && belt.level == level } %>
           <% if !belt.nil? && belt != [] && belt.completed? %>
             <div class="domain-col cells-student mb-2">
-              <%= render "resultat_belt", level: level, domain: domain , belt: belt%>
+              <%= render "resultat_belt", level: level, domain: domain, belt: belt %>
             </div>
           <% else %>
-            <div class="domain-col cells-student mb-2"
-                data-controller='display-student-belt-management'
-                data-action='mouseover->display-student-belt-management#displayBtn mouseout->display-student-belt-management#hideBtn'>
-              <%= render "resultat_cell", level: level, domain: domain, last_belt: @belts.select{|belt| belt.domain == domain && :completed}.max_by(&:updated_at) %>
-              <%# <%= render "shared/validate_belt_btn", level: level, domain: domain%>
+            <div
+              class="domain-col cells-student mb-2"
+              data-controller='display-student-belt-management'
+              data-action='
+                mouseover->display-student-belt-management#displayBtn
+                mouseout->display-student-belt-management#hideBtn
+              '
+            >
+              <%= render "resultat_cell",
+              level: level,
+              domain: domain,
+              last_belt:
+                @belts
+                  .select { |belt| belt.domain == domain && :completed }
+                  .max_by(&:updated_at) %>
+              <%# <%= render "shared/validate_belt_btn", level: level, domain: domain %>
             </div>
           <% end %>
         <% end %>

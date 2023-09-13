@@ -1,31 +1,49 @@
-en:
+fr:
   simple_form:
-    "oui": 'Oui'
-    "non": 'Non'
+    oui: "Oui"
+    non: "Non"
+    first_name: "Prénom"
+    last_name: "Nom"
+
     required:
-      text: 'obligatoire'
-      mark: '*'
+      text: "obligatoire"
+      mark: "*"
       # You can uncomment the line below if you need to overwrite the whole required html.
       # When using html, text and mark won't be used.
       # html: '<abbr title="required">*</abbr>'
     error_notification:
       default_message: "Ouups vous avez rencontré un problème. Voyez le détail au-dessus"
     # Examples
-    # labels:
-    #   defaults:
-    #     password: 'Password'
-    #   user:
-    #     new:
-    #       email: 'E-mail to sign in.'
-    #     edit:
-    #       email: 'E-mail.'
-    # hints:
-    #   defaults:
-    #     username: 'User name to sign in.'
-    #     password: 'No special characters, please.'
-    # include_blanks:
-    #   defaults:
-    #     age: 'Rather not say'
-    # prompts:
-    #   defaults:
-    #     age: 'Select your age'
+    labels:
+      defaults:
+        first_name: "Prénom"
+        last_name: "Nom"
+        email: "E-mail"
+        password: "Mot de passe"
+        password_confirmation: "Confirmation du mot de passe"
+        remember_me: "Se souvenir de moi"
+
+      # You can define your own mappings, for example:
+      # mappings: &mappings # Instead of defining the whole mapping below,
+      # you can just use the name of the mapping:
+      # mappings: *mappings
+
+      user:
+        new:
+          email: "E-mail"
+          first_name: "Prénom"
+          last_name: "Nom"
+        edit:
+          first_name: "Prénom"
+          email: "E-mail."
+          last_name: "Nom"
+    hints:
+      defaults:
+        username: "Nom d'utilisateur"
+        password: "Aucun caractère spécial, s'il vous plaît."
+    include_blanks:
+      defaults:
+        age: "Rather not say"
+    prompts:
+      defaults:
+        age: "Votre age"

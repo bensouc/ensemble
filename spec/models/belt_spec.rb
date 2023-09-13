@@ -6,6 +6,7 @@ RSpec.describe Belt, type: :model do
     WorkPlan.destroy_all
     WorkPlanDomain.destroy_all
     Challenge.destroy_all
+    SchoolRole.destroy_all
     User.destroy_all
     @belt1 = create(:belt)
   end

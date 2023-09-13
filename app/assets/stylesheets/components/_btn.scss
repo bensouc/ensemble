@@ -33,3 +33,18 @@
   color: $green;
   border: solid $green;
 }
+.add-green-btn {
+  color: white;
+  padding: 8px 24px;
+  border-radius: 10px;
+  // background: #1EDD88;
+  transition: background 0.3s ease;
+  background-color: $green;
+  border: solid $green;
+  width: fit-content;
+}
+.add-green-btn:hover {
+  background: white;
+  color: $green;
+  cursor: pointer;
+}
