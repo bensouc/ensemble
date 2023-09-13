@@ -41,7 +41,7 @@ class User < ApplicationRecord
 
   def classroom?
     # return true if user has a classroom
-    !classrooms.empty? && !shared_classrooms.empty?
+    !classrooms.empty? || !shared_classrooms.empty?
   end
 
   def collegues
