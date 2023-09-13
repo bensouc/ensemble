@@ -20,7 +20,7 @@ class SkillsController < ApplicationController
   end
 
   def show
-        authorize @skill
+    authorize @skill
   end
 
   def new
@@ -28,7 +28,7 @@ class SkillsController < ApplicationController
   end
 
   def edit
-        authorize @skill
+    authorize @skill
   end
 
   def create
@@ -45,13 +45,13 @@ class SkillsController < ApplicationController
   end
 
   def update
-        authorize @skill
+    authorize @skill
     @skill.update!(skill_params)
     redirect_to skill_path(@skill)
   end
 
   def destroy
-        authorize @skill
+    authorize @skill
     begin
       @skill.destroy
       respond_to do |format|
@@ -79,7 +79,6 @@ class SkillsController < ApplicationController
 
   def set_skill
     @skill = Skill.find(params[:id])
-
   end
 
   def skill_params
