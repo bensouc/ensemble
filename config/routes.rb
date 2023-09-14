@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
   # post "work_plans/:id", to: "work_plans#share", as: :share
 
-  resources :work_plan_domains, only: [:destroy] do
+  resources :work_plan_domains, only: [:destroy, :show] do
     resources :work_plan_skills, only: [:create]
   end
 

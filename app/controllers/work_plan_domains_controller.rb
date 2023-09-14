@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 class WorkPlanDomainsController < ApplicationController
+
+  def show
+    @work_plan_domain = WorkPlanDomain.includes(:work_plan).find(params[:id])
+    authorize @work_plan_domain
+
+  end
+
   def create
     @work_plan = WorkPlan.find(params_wp_id)
     authorize @work_plan

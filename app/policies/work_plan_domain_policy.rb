@@ -5,6 +5,10 @@ class WorkPlanDomainPolicy < ApplicationPolicy
     #   scope.all
     # end
   end
+
+  def show?
+  user_is_owner_or_admin?
+end
   def destroy?
     user_is_owner_or_admin?
   end
