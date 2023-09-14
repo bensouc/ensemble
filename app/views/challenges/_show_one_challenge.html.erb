@@ -1,16 +1,16 @@
-<%= turbo_frame_tag challenge do %>
-	<%= link_to edit_challenge_path(challenge) do %>
-		<div class="cont-challenge pencil-pointor" id="<%= challenge.id%>">
-			<div class= "" >
-				<div  data-edit-challenge-target="infos" data-action="click->edit-challenge#displayForm">
-					<div class="challenge-infos"   data-ajax-replace-challenge-target='content' id='<%=challenge.id %>'>
-						<div class="challenge-name-in-content">
-							<%= challenge.name%>
-						</div>
-						<%= challenge.content.body %>
-					</div>
-				</div>
-			</div>
-		</div>
-	<% end %>
+<%= turbo_frame_tag dom_id(challenge) do %>
+  <%= link_to edit_challenge_path(challenge) do %>
+    <div class="cont-challenge pencil-pointor" id="<%= challenge.id%>">
+      <div class= "" >
+        <div  data-edit-challenge-target="infos" data-action="click->edit-challenge#displayForm">
+          <div class="challenge-infos"   data-ajax-replace-challenge-target='content' id='<%=challenge.id %>'>
+            <div class="challenge-name-in-content">
+              <%= challenge.name%>
+            </div>
+            <%= challenge.content.body %>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
 <% end %>

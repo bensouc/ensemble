@@ -19,18 +19,28 @@
 }
 .carrousel-validation {
   // padding: 34px;
-  position: relative;
-  height: 0;
-  width: 0;
-  top: 70px;
-  right: -50%;
-  font-size: 34px;
-  transition: 0.3s;
-  z-index: 8;
+ position: relative;
+    top: 70px;
+        left: 1086%;
+    font-size: 34px;
+    transition: 0.3s;
+    z-index: 8;
+  .hidden-validation{
+    font-size: 18px;
+    position: absolute;
+    width: 34px;
+    top: 0px;
+    left: 0px;
+    height: 43px;
+    z-index: 0;
+    background: transparent;
+    border: none;
+    color: transparent;
+  }
 
   &:hover {
     transition: 0.3s;
-    transform: translatex(-7px) translateY(-18px) scale(1.5);
+    transform: translatex(-7px) translateY(-6px)  scale(1.5);
   }
 }
 

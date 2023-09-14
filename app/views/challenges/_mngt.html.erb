@@ -1,17 +1,20 @@
 <div class="challenge-mngt">
-	<%= button_to work_plan_skill_clone_path( work_plan_skill, work_plan_skill.challenge.id),
+  <%= button_to work_plan_skill_clone_path( work_plan_skill, work_plan_skill.challenge.id),
                             remote: true,
                             class: 'replace-challenge-btn',
                             data:{ turbo_frame: "challenge_#{work_plan_skill.challenge.id}"} do %>
-		<i class="far fa-clone me-2"></i>
-		<h6>Cloner</h6>
-	<% end %>
-	<%# REPLACE A CHALLENGE %>
-	<div data-controller="skill-add" data-ajax-replace-challenge-exo-value="<%=work_plan_skill.challenge.id%>">
-		<div data-edit-challenge-target="button" data-skill-add-target="button" data-action="click->ajax-replace-challenge#showCarrousel" class='replace-challenge-btn'>
-			<i class="far fa-folder-open me-2"></i>
-			<h6>Charger</h6>
-		</div>
-	</div>
-	<%# REPLACE A CHALLENGE END %>
+    <i class="far fa-clone me-2"></i>
+    <h6>Cloner</h6>
+  <% end %>
+  <%# REPLACE A CHALLENGE %>
+
+  <%= button_to work_plan_skill_display_challenges_path(work_plan_skill, challenge),
+                            remote: true,
+                            class: 'replace-challenge-btn',
+                            data:{ turbo_frame: "challenge_#{challenge.id}"} do %>
+    <i class="far fa-folder-open me-2"></i>
+    <h6>Charger</h6>
+  <% end %>
+
+  <%# REPLACE A CHALLENGE END %>
 </div>

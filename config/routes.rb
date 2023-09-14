@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   mount RailsAdmin::Engine => "/admin", as: "rails_admin"
   devise_for :users,
-    controllers: { registrations: 'registrations' }
+    controllers: { registrations: "registrations" }
   root to: "pages#home"
   get "/dashboard", to: "dashboard#show"
 
@@ -25,15 +25,18 @@ Rails.application.routes.draw do
     resources :work_plan_skills, only: [:create]
   end
 
-  resources :work_plan_skills, only: [:update, :destroy] do
+  # ###############routes for WORK_PLAN_SKILLS###############
+  resources :work_plan_skills, only: [:update, :destroy, :show] do
     resources :challenges, only: [:create, :update]
     post "/challenges/:id", to: "challenges#clone", as: :clone
     get "remove_special_wps", to: "work_plan_skills#remove_special_wps", as: :remove_special_wps
     patch "eval_update", to: "work_plan_skills#eval_update", as: :eval_update
     # completed / failed / redo
     patch "change_challenge", to: "work_plan_skills#change_challenge", as: :change_challenge
+    post "challenges/:id/display_challenges", to: "challenges#display_challenges", as: :display_challenges
   end
 
+  # ###############routes for CLASSROOMS###############
   resources :classrooms, only: [:index, :show, :update, :new, :create, :destroy] do
     resources :students, only: [:new, :edit] # :create, :destroy
     resources :shared_classrooms, only: [:create, :destroy]
@@ -41,19 +44,17 @@ Rails.application.routes.draw do
   get "classrooms/:id/results_by_domain", to: "classrooms#results_by_domain", as: :results_by_domain
   get "classrooms/:id/results", to: "classrooms#results", as: :classroom_results
 
+  # ###############routes for STUDENTS###############
   resources :students, only: [:create, :update, :show, :destroy] do
-    resources :belts, only: %w[create]
+    resources :belts, only: [:create]
     post "", to: "work_plans#auto_new_wp", as: :auto_new_wp
     get "new_validated_wps", to: "students#new_validated_wps", as: :new_validated_wps
     post "new_validated_wps", to: "work_plan_skills#add_validated_wps", as: :add_validated_wps
     get "add_completed_wps", to: "students#add_completed_wps", as: :add_completed_wps
   end
 
+  # ###############routes for BELTS###############
   resources :belts, only: [:destroy, :edit, :update]
-
-  resources :challenges, only: [:show]
-
-  get "challenges/:id/display_challenges", to: "challenges#display_challenges", as: :display_challenges
 
   # ###############route for tab editing###############
   resources :tables, only: [:show, :create, :update]
@@ -62,27 +63,27 @@ Rails.application.routes.draw do
   mount StripeEvent::Engine, at: "/stripe-webhooks"
   post "create-customer-portal-session", to: "stripe#create_portal_session"
 
-  resources :subscriptions, only: %w[create]
+  # Routes for subscription
+  resources :subscriptions, only: [:create, :new]
   get "subscriptions/success", to: "subscriptions#success"
   get "subscriptions/cancel", to: "subscriptions#cancel"
 
-  # Routes for subscription
-  resources :subscriptions, only: %w[new]
+
 
   # ###############END OF STRIPE ROUTES############
 
   # ###############routes for SKILLS###############
   resources :skills
 
-  # ###############END routes for SKILLS#########
+
 
   # ###############routesfor Challenge#########
   resources :challenges, only: [:show, :edit, :update, :destroy]
-  # ###############END routes for Challenge#########
+
 
   # ###############routes for SCHOOL/SCHOOL_ROLES###############
   resources :schools, only: %w[show]
-  # ###############END OF routes for SCHOOL########
+
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

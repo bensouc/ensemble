@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 class ChallengesController < ApplicationController
-  before_action :get_work_plan_skill, only: [:clone] #, :update, :show]
+  before_action :get_work_plan_skill, only: [:clone, :display_challenges] #, :update, :show]
   before_action :get_challenge, only: [:clone, :update, :display_challenges, :show, :edit]
 
   def show
-    @work_plan = @work_plan_skill.work_plan_domain.work_plan
-    # authorize @challenge
     skip_authorization
+    # @work_plan = @work_plan_skill.work_plan_domain.work_plan
+    # authorize @challenge
     # render partial: "/challenges/full_challenge_display"
     # respond_to do |format|
     #   format.html do
@@ -16,9 +16,9 @@ class ChallengesController < ApplicationController
     #   end
     #   format.turbo_stream
   end
-  
-  def edit
 
+  def edit
+    skip_authorization
   end
 
   def clone
@@ -50,7 +50,8 @@ class ChallengesController < ApplicationController
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(@challenge,
                                                     partial: "challenges/show_one_challenge",
-                                                    locals: { challenge: @challenge })
+                                                    locals: { challenge: @challenge
+                                                       })
         end
       end
     else
@@ -61,31 +62,38 @@ class ChallengesController < ApplicationController
 
   def display_challenges
     # authorize @challenge
+    # binding.pry
     skip_authorization
-    @challenges = Challenge.where(skill: @challenge.skill).reject { |chal| chal == @challenge }
+    @challenges = Challenge.includes([:rich_text_content]).where(skill: @challenge.skill).reject { |chal| chal == @challenge }
     # raise
     if @challenges.empty?
       # @work_plan_skill = WorkPlanSkill.find(@challenge.work_plan_skill_ids.first)
       # @work_plan = @work_plan_skill.work_plan_domain.work_plan
       # render partial: "challenges/challenge_display", notice: "Il n'existe pas d'autre excercice pour cette compétence"
+      render turbo_stream: turbo_stream.replace(@challenge,
+                                          partial: "challenges/show_one_challenge",
+                                          locals: { challenge: @challenge })
       flash.now[:notice] = "Il n'existe pas d'autre excercice pour cette compétence"
     else
-      render partial: "challenges/challenges_carroussel"
+      respond_to do |format|
+        format.html
+        format.turbo_stream
+      end
     end
   end
 
   private
 
-  def html_update
-    get_work_plan_skill
-    if @challenge.update(challenge_params)
-      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge)),
-                  notice: "Excercice Sauvegardé"
-    else
-      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge)),
-                  alert: "Sauvegarde échouée: #{@challenge.errors.messages[:name].first}"
-    end
-  end
+  # def html_update
+  #   get_work_plan_skill
+  #   if @challenge.update(challenge_params)
+  #     redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge)),
+  #                 notice: "Excercice Sauvegardé"
+  #   else
+  #     redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan, anchor: helpers.dom_id(@challenge)),
+  #                 alert: "Sauvegarde échouée: #{@challenge.errors.messages[:name].first}"
+  #   end
+  # end
 
   def get_challenge
     @challenge = Challenge.find(params[:id])
