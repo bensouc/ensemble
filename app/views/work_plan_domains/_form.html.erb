@@ -1,0 +1,76 @@
+<%= turbo_frame_tag :edit_new_domain do %>
+  <div class="add-domain" data-controller='new-domain'>
+    <%# createinstance of domain-form controller and passing workplan-grade to manage domain special in belt level %>
+    <div
+      class="add-domain-form"
+      data-new-domain-target='domainform'
+      data-controller='domain-form'
+      id="<%= work_plan.grade%>"
+    >
+      <div class='m-top'>
+        <%= simple_form_for work_plan, url: work_plan_work_plan_domains_path(work_plan),
+        method: :post,
+        data: {
+          turbo_frame: "new_domain" } do |f| %>
+          <%= f.simple_fields_for  WorkPlanDomain.new do |domain_form| %>
+            <h3>Choisissez un nouveau domaine</h3>
+            <div class='m-top'>
+
+              <%= domain_form.input :domain,
+                                label: "",
+                                as: :radio_buttons,
+                                collection: @domains,
+                                collection_wrapper_tag: "div",
+                                collection_wrapper_class: "wrapper",
+                                item_wrapper_class: "domain-item",
+                                input_html: {
+                                  class: "selector domain-selector",
+                                  data: {
+                                    action: "click->domain-form#displayBelt"
+                                  }
+                                } %>
+            </div>
+            <h3>Choisissez une ceinture</h3>
+            <div class='m-top d-none' data-domain-form-target='beltForm'>
+              <%= domain_form.input :level,
+                                label: "",
+                                as: :radio_buttons,
+                                collection: WorkPlanDomain::LEVELS,
+                                collection_wrapper_tag: "div",
+                                collection_wrapper_class: "wrapper",
+                                item_wrapper_class: "level-item",
+                                input_html: {
+                                  class: "selector level-selector",
+                                  data: {
+                                    domain_form_target: "box"
+                                  }
+                                },
+                                label_method:
+                                  lambda { |level|
+                                    render "work_plan_domains/show_level_btn", level: level
+                                  } %>
+            </div>
+          <% end %>
+          <div class='m-top box-end' id='dmn-validate'>
+            <%#= f.submit "Valider", class: 'validate-domain-btn fs-2' %>
+            <%= f.button :button,
+                     "Exercices",
+                     type: "submit",
+                     name: "kind",
+                     value: "exercice",
+                     class: "validate-domain-btn fs-2 ms-3 font-weight-bold" %>
+            <%= f.button :button,
+                     "Ceinture",
+                     type: "submit",
+                     name: "kind",
+                     value: "ceinture",
+                     class: "validate-domain-btn fs-2 ms-3 font-weight-bold" %>
+            <%= link_to work_plan_path(work_plan, anchor: "bottom"), class: 'cancel-domain-btn' do %>
+              <i class="fas fa-times"></i>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

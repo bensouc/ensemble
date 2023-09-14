@@ -1,37 +1,63 @@
-<div id="carouselChallengesControls" class="carousel slide " data-bs-ride="carousel" > <!-- no cycling on carroussel -->
-	<div class="carousel-inner">
-		<%# first challenge %>
-		<div class="carousel-item active">
-			<div class="challenge-card " id='<%=@challenges.first.id%>'>
-				<%= render 'btn_validation_challenges_carrousel', challenge: @challenges.first %>
-				<div class="challenge-infos carrousel-margin"  %>
-					<div class="challenge-name-in-content"><%= @challenges.first.name%> </div>
-					<%= @challenges.first.content.body %>
-				</div>
-			</div>
+<%= turbo_frame_tag dom_id(challenge) do %>
+  <div
+    id="carouselChallengesControls"
+    class="carousel slide "
+    data-bs-ride="carousel"
+  >
+    <div class="cont-challenge" id="<%= challenge.id%>">
+      <!-- no cycling on carroussel -->
+      <div class="carousel-inner">
+        <%# first challenge %>
+        <div class="carousel-item active">
+          <div class="challenge-card " id='<%=challenges.first.id%>'>
+            <%= render "btn_validation_challenges_carrousel", challenge: challenges.first, work_plan_skill: work_plan_skill %>
+            <div class="challenge-infos carrousel-margin w-100" %>
+              <div class="challenge-name-in-content"><%= challenges.first.name %>
+              </div>
+              <%= challenges.first.content.body %>
+            </div>
+          </div>
 
-		</div>
-		<%# for  each challenge %>
-		<% @challenges[1..-1].each do |challenge|  %>
-			<div class="carousel-item">
-				<div class="challenge-card " id='<%=challenge.id%>' >
-					<%= render 'btn_validation_challenges_carrousel', challenge: challenge %>
-					<div class="challenge-infos carrousel-margin " >
-						<div class="challenge-name-in-content"><%= challenge.name%> </div>
-						<%= challenge.content.body %>
-					</div>
-				</div>
-			</div>
-		<% end %>
-		<%# end of for each challenge %>
-	</div>
-	<% if @challenges.count > 1%>
-		<button class="carousel-control-prev " type="button" data-bs-target="#carouselChallengesControls" data-bs-slide="prev">
-			<span class="carousel-control-prev-icon  --bgc-rose --circle" aria-hidden="true"></span>
-			<span class="visually-hidden">Previous</span>
-		</button>
-		<button class="carousel-control-next " type="button" data-bs-target="#carouselChallengesControls" data-bs-slide="next">
-			<span class="carousel-control-next-icon  --bgc-rose --circle" --circle aria-hidden="true"></span>
-			<span class="visually-hidden">Next</span>
-		</button>
-	<% end %>
+        </div>
+        <%# for  each challenge %>
+        <% challenges[1..-1].each do |other_challenge| %>
+          <div class="carousel-item">
+            <div class="challenge-card " id='<%=other_challenge.id%>'>
+              <%= render "btn_validation_challenges_carrousel", challenge: other_challenge, work_plan_skill: work_plan_skill %>
+              <div class="challenge-infos carrousel-margin w-100 ">
+                <div class="challenge-name-in-content"><%= other_challenge.name %>
+                </div>
+                <%= other_challenge.content.body %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        <%# end of for each challenge %>
+      </div>
+      <% if challenges.count > 1 %>
+        <button
+          class="carousel-control-prev "
+          type="button"
+          data-bs-target="#carouselChallengesControls"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon --bgc-rose --circle" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next "
+          type="button"
+          data-bs-target="#carouselChallengesControls"
+          data-bs-slide="next"
+        >
+          <span
+            class="carousel-control-next-icon  --bgc-rose --circle"
+            --circle
+            aria-hidden="true"
+          ></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      <% end %>
+    </div>
+  </div>
+<% end %>

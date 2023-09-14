@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@challenge) do %>
+  <%= render "challenges_carroussel", challenge: @challenge, challenges: @challenges, work_plan_skill: @work_plan_skill %>
+<% end %>

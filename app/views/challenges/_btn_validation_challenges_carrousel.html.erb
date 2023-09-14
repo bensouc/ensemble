@@ -1,10 +1,13 @@
-<div class="carrousel-cancellation --roseL --bgc-blanc --cursor-pointer"
-  data-action="click->ajax-replace-challenge#closeCarrousel">
-	<i class="fa-solid fa-circle-xmark"></i>
+<%= link_to challenge_path(work_plan_skill.challenge),
+  class:"carrousel-cancellation --roseL --bgc-blanc --cursor-pointer" do %>
+  <i class="fa-solid fa-circle-xmark"></i>
+<% end %>
 
-</div>
-
-<div class="carrousel-validation --vert --bgc-blanc --cursor-pointer"
-  data-action="click->ajax-replace-challenge#replaceChallenge">
-	<i class="fa-solid fa-circle-check"></i>
-</div>
+<%= simple_form_for work_plan_skill do |f| %>
+  <%= f.hidden_field :challenge_id, value: challenge.id %>
+  <%# <input type='submit' value='' class="btn"> %>
+  <div class="carrousel-validation">
+    <i class="fa-solid fa-circle-check --cursor-pointer --vert"></i>
+    <%= f.submit nil, class:'hidden-validation' %>
+  </div>
+<% end %>

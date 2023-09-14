@@ -13,16 +13,22 @@ class ChallengePolicy < ApplicationPolicy
   def update?
     user_is_owner_or_admin?
   end
-    def clone?
+
+  def edit?
+    user_is_owner_or_admin?
+  end
+
+  def clone?
     user_is_owner_or_admin?
   end
 
   def display_challenges?
     user_is_owner_or_admin?
   end
-      private
 
-    def user_is_owner_or_admin?
-      user.admin || record.skill.school == user.school
-    end
+  private
+
+  def user_is_owner_or_admin?
+    user.admin || record.skill.school == user.school
+  end
 end

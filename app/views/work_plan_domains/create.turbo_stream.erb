@@ -1,0 +1,13 @@
+<%= turbo_stream.replace :edit_new_domain do %>
+  <%= turbo_frame_tag :edit_new_domain do %>
+    <%= link_to new_work_plan_work_plan_domain_path(@work_plan, WorkPlanDomain.new),
+    class:"add-skill-btn" do %>
+      <h6>Ajouter un domaine</h6>
+      <i class="fas fa-chevron-down"></i>
+    <% end %>
+  <% end %>
+
+<% end %>
+<%= turbo_stream.append :domain_list do %>
+  <%= render "work_plan_domains/work_plan_domain", work_plan_domain: @domain %>
+<% end %>

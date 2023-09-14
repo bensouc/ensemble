@@ -1,0 +1,23 @@
+<%= turbo_frame_tag challenge do %>
+
+			<div class="cont-challenge w-100">
+				<%# Display editeur, en d-none de base %>
+				<div>
+					<%= form_for challenge, html: { class: '',  } do |form| %>
+						<div class="field pt-2 pb-2" data-controller="rich-text-table">
+							<div>
+								<%= form.text_field :name, class: "challenge-title"%>
+							</div>
+							<%= form.rich_text_area :content %>
+						</div>
+						<div class="form-actions d-flex justify-content-end height-validate-challenge">
+							<%= button_to challenge_path(challenge), class:"cancel-btn" do %>
+									<i class="fas fa-times"></i>
+							<% end%>
+							<%= form.submit 'Enregistrer', class: 'validate-challenge-btn'%>
+						</div>
+					<% end %>
+				</div>
+			</div>
+
+<% end %>

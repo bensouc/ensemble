@@ -53,7 +53,7 @@ RSpec.describe WorkPlanSkillsController, type: :controller do
         post :create, params: valid_params
       end.to change(work_plan.work_plan_domains.first.work_plan_skills, :count).by(1)
     end
-    it "redirects to the work_plan Show after adding a new WorkPlanSkill" do
+    it "redirects to the work_plan_skill work_plan_domain Show after adding a new WorkPlanSkill to it" do
       create(:work_plan_domain, work_plan:)
       skill = create(:skill, level: work_plan.work_plan_domains.first.level,
                              domain: work_plan.work_plan_domains.first.domain)
@@ -64,7 +64,7 @@ RSpec.describe WorkPlanSkillsController, type: :controller do
         work_plan_domain_id: work_plan.work_plan_domains.first.id
       }
       post :create, params: valid_params
-      expect(response).to redirect_to("#{work_plan_path(work_plan)}#challenge_#{work_plan.work_plan_domains.first.work_plan_skills.last.challenge.id}")
+      expect(response).to redirect_to(work_plan_domain_path(WorkPlanSkill.last.work_plan_domain))
     end
   end
 
