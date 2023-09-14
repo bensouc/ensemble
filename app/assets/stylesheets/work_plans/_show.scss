@@ -469,6 +469,8 @@
 
 // domain add
 .cancel-domain-btn {
+  display: flex;
+  align-items: center;
   border-radius: 12px;
   width: fit-content;
   border: 3px solid $grisC;
@@ -479,7 +481,6 @@
   padding: 0;
   transition: 0.3s;
   padding: 0.5rem 1rem;
-  display: inline-block;
 
   &:hover {
     background-color: $white;

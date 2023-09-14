@@ -3,6 +3,7 @@
 class WorkPlanSkillsController < ApplicationController
   def show
     @work_plan_skill = WorkPlanSkill.includes([:challenge, :skill]).find(params[:id])
+    @alone = Challenge.where(skill: @work_plan_skill.skill).count.zero?
     authorize @work_plan_skill
   end
 

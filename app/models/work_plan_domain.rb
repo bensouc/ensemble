@@ -3,6 +3,7 @@
 class WorkPlanDomain < ApplicationRecord
   DOMAINS = {
     # order in the DOMAINS array give the Workplan show domain display ordering
+    "CP" => ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"],
     "CE1" => ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"],
     "CE2" => ["Conjugaison", "Vocabulaire", "Grammaire", "Numération", "Calcul",
               "Géométrie", "Grandeurs et Mesures"],

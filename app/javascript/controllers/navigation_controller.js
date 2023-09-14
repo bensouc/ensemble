@@ -15,4 +15,10 @@ export default class extends Controller {
     document.body.scrollTop = document.scrollHeight; // For Safari
     document.documentElement.scrollTop = document.documentElement.scrollHeight; // For Chrome, Firefox, IE and Opera
   };
+
+  backToBottom(){
+    console.log("back to bottom" );
+    document.getElementById("bottom").scrollIntoView({ behavior: "smooth" })
+    window.scrollBy(0, -143);
+  }
 }

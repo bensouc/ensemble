@@ -11,7 +11,8 @@
         <%= simple_form_for work_plan, url: work_plan_work_plan_domains_path(work_plan),
         method: :post,
         data: {
-          turbo_frame: "new_domain" } do |f| %>
+          turbo_frame: "new_domain",
+          action: "submit->navigation#backToBottom" } do |f| %>
           <%= f.simple_fields_for  WorkPlanDomain.new do |domain_form| %>
             <h3>Choisissez un nouveau domaine</h3>
             <div class='m-top'>
@@ -30,8 +31,8 @@
                                   }
                                 } %>
             </div>
-            <h3>Choisissez une ceinture</h3>
             <div class='m-top d-none' data-domain-form-target='beltForm'>
+            <h3>Choisissez une ceinture</h3>
               <%= domain_form.input :level,
                                 label: "",
                                 as: :radio_buttons,

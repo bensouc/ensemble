@@ -1,17 +1,15 @@
 # frozen_string_literal: true
 
 class WorkPlanDomainsController < ApplicationController
-
   def new
-  @work_plan = WorkPlan.find(params_wp_id)
-  authorize @work_plan
-  @domains = @work_plan.all_domains_from_work_plan
+    @work_plan = WorkPlan.find(params_wp_id)
+    authorize @work_plan
+    @domains = @work_plan.all_domains_from_work_plan
   end
 
   def show
     @work_plan_domain = WorkPlanDomain.includes(:work_plan).find(params[:id])
     authorize @work_plan_domain
-
   end
 
   def create
@@ -80,7 +78,10 @@ class WorkPlanDomainsController < ApplicationController
     # raise
     authorize @work_plan_domain
     @work_plan_domain.destroy
-    redirect_to work_plan_path(@work_plan_domain.work_plan)
+    respond_to do |format|
+      format.html { redirect_to work_plan_path(@work_plan, anchor: "bottom") }
+      format.turbo_stream
+    end
   end
 
   private

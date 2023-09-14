@@ -8,13 +8,16 @@
   <% end %>
   <%# REPLACE A CHALLENGE %>
 
-  <%= button_to work_plan_skill_display_challenges_path(work_plan_skill, challenge),
-                            remote: true,
-                            class: 'replace-challenge-btn',
-                            data:{ turbo_frame: "challenge_#{challenge.id}"} do %>
-    <i class="far fa-folder-open me-2"></i>
-    <h6>Charger</h6>
-  <% end %>
+  <% unless Challenge.where(skill: challenge.skill).count < 2 %>
+    <%= button_to work_plan_skill_display_challenges_path(work_plan_skill, challenge),
+                              remote: true,
+
+                              class: 'replace-challenge-btn',
+                              data:{ turbo_frame: "challenge_#{challenge.id}"} do %>
+      <i class="far fa-folder-open me-2"></i>
+      <h6>Charger</h6>
+    <% end %>
+<% end %>
 
   <%# REPLACE A CHALLENGE END %>
 </div>
