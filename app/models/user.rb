@@ -55,7 +55,7 @@ class User < ApplicationRecord
         shared_students += shared_classroom.classroom.students
       end
     end
-    (students + shared_students).sort_by(&:classroom)
+    (students.includes([:classroom]) + shared_students).sort_by(&:classroom)
   end
 
   def all_classroom_workplans

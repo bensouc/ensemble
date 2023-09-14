@@ -331,6 +331,7 @@
 .add-skill-btn {
   display: flex;
   vertical-align: text-top;
+  align-items: baseline;
   border: solid $rose;
   border-radius: 12px;
   width: fit-content;
@@ -341,8 +342,8 @@
   transition: 0.3s;
   color: white;
   h6 {
-    padding-left: 4px;
-    padding-top: 3px;
+    // padding-left: 4px;
+    // padding-top: 3px;
   }
   i {
     color: $white;
