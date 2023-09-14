@@ -22,17 +22,28 @@ class WorkPlanSkillsController < ApplicationController
         @work_plan_skill.challenge = challenge
       end
     end
-
-    if @work_plan_skill.save! && @work_plan_skill.kind.downcase == "exercice"
-      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan,
-                                 anchor: helpers.dom_id(@work_plan_skill.challenge))
-    elsif @work_plan_skill.save!
-      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan,
-                                 anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
-      # a revoir poour la failedsaveredirection
+    if @work_plan_skill.save!
+      respond_to do |format|
+        format.html {
+          redirect_to work_plan_domain_path(@work_plan_skill.work_plan_domain),
+                      notice: "Modification Sauvegardée"
+        }
+        format.turbo_stream
+      end
     else
-      redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan)
+      redirect_to work_plan_skill_path(@work_plan_skill), notice: "Sauvegarde échouée "
     end
+
+    # if @work_plan_skill.save! && @work_plan_skill.kind.downcase == "exercice"
+    #   redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan,
+    #                              anchor: helpers.dom_id(@work_plan_skill.challenge))
+    # elsif @work_plan_skill.save!
+    #   redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan,
+    #                              anchor: helpers.dom_id(@work_plan_skill.work_plan_domain))
+    #   # a revoir poour la failedsaveredirection
+    # else
+    #   redirect_to work_plan_path(@work_plan_skill.work_plan_domain.work_plan)
+    # end
   end
 
   def update
@@ -52,7 +63,6 @@ class WorkPlanSkillsController < ApplicationController
     else
       redirect_to work_plan_skill_path(@work_plan_skill), notice: "Sauvegarde échouée "
     end
-
   end
 
   def destroy

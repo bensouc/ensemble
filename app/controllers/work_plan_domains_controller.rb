@@ -55,6 +55,10 @@ class WorkPlanDomainsController < ApplicationController
     end
   end
 
+  def update
+    @work_plan_domain = WorkPlanDomain.find(params[:id])
+  end
+
   def destroy
     @work_plan_domain = WorkPlanDomain.find(params[:id])
     # raise
