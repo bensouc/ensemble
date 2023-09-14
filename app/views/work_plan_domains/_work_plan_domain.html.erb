@@ -1,5 +1,5 @@
 <%= turbo_frame_tag work_plan_domain do%>
-<div class='domain  ' id="<%= dom_id(work_plan_domain) %>">
+<div class='domain '>
 	<%# DOMAIN + BELT DISPLAY %>
 	<div class='p-1 d-flex'>
 		<div class='domain-belt-level'>
@@ -25,7 +25,7 @@
 		<%# SKILLS DISPLAY  %>
 		<div class='p-2 skill-display'>
 			<% work_plan_domain.work_plan_skills.order(:skill_id).each do |plan_skill| %>
-				<%= render 'work_plans/show_skill_display', plan_skill: plan_skill%>
+				<%= render 'work_plan_skills/skill_display', plan_skill: plan_skill%>
 			<% end %>
 			<%# add skill on domain %>
 			<div data-controller="skill-add" class='pt-3'>

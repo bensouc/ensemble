@@ -2,6 +2,12 @@
 
 class WorkPlanDomainsController < ApplicationController
 
+  def new
+  @work_plan = WorkPlan.find(params_wp_id)
+  authorize @work_plan
+  @domains = @work_plan.all_domains_from_work_plan
+  end
+
   def show
     @work_plan_domain = WorkPlanDomain.includes(:work_plan).find(params[:id])
     authorize @work_plan_domain
@@ -55,8 +61,11 @@ class WorkPlanDomainsController < ApplicationController
     if @domain.work_plan_skills.count.zero? && !is_domain_special
       @domain.destroy
       redirect_to work_plan_path(@work_plan), notice: "Il n'est plus d'exercice ou de ceinture non validé pour cette couleur"
-    elsif @domain.save
-      redirect_to work_plan_path(@work_plan, anchor: "bottom")
+    elsif @domain.save!
+      respond_to do |format|
+        format.html { redirect_to work_plan_path(@work_plan, anchor: "bottom") }
+        format.turbo_stream
+      end
     else
       redirect_to work_plan_path(@work_plan, anchor: "dmn-validate")
     end

@@ -7,8 +7,11 @@
     </div>
     <%# Button remmove Skill %>
     <div>
-      <%= link_to work_plan_skill_path(plan_skill), method: :delete, data: { confirm: "Voulez vous enlever cette compétence?" } do %>
-        <div class='rmv-skill-btn'>
+      <%= link_to work_plan_skill_path(plan_skill),class:'--bgc-transparent',
+                    data: { confirm: "Voulez vous enlever cette compétence?",
+                          turbo_method: :delete
+                          } do %>
+        <div class='rmv-skill-btn '>
           <i class="far fa-times-circle"></i>
         </div>
       <% end %>

@@ -1,19 +1,30 @@
-<%# work_plan.work_plan_domains.each do |work_plan_domain|%>
-  <%# <%raise%>
-  <%@domains.each do |work_plan_domains|%>
-    <%# <% wpd2 = work_plan.work_plan_domains.where(domain: "#{work_plan_domains}")%>
-    <% wpd2 = work_plan.work_plan_domains.select{ |work_plan_domain| work_plan_domain.domain == work_plan_domains }.sort_by(&:level)%>
-    <% unless wpd2.empty? %>
-      <%wpd2.each do |work_plan_domain|%>
-        <%# boucle sur les work_plan_domains %>
-        <div class='domain-block'>
-        <%= render 'work_plan_domains/work_plan_domain', work_plan_domain: work_plan_domain%>
-        </div>
-      <%end%>
+<%# work_plan.work_plan_domains.each do |work_plan_domain| %>
+<%# <%raise %>
+<%= turbo_frame_tag :domain_list do %>
+<% @domains.each do |work_plan_domains| %>
+  <%# <% wpd2 = work_plan.work_plan_domains.where(domain: "#{work_plan_domains}") %>
+  <% wpd2 =
+    work_plan
+      .work_plan_domains
+      .select { |work_plan_domain| work_plan_domain.domain == work_plan_domains }
+      .sort_by(&:level) %>
+  <% unless wpd2.empty? %>
+    <% wpd2.each do |work_plan_domain| %>
+      <%# boucle sur les work_plan_domains %>
+      <div class='domain-block' >
+        <%= render "work_plan_domains/work_plan_domain", work_plan_domain: work_plan_domain %>
+      </div>
     <% end %>
   <% end %>
-  <%# add domain%>
-  <a id="bottom"></a>
-  <div >
-    <%= render 'show_add_domain', work_plan: work_plan%>
-  </div>
+<% end %>
+<% end %>
+<div style="margin-bottom: 110px;"></div>
+
+
+  <%= turbo_frame_tag :edit_new_domain do %>
+    <%= link_to new_work_plan_work_plan_domain_path(work_plan, WorkPlanDomain.new),
+    class:"add-skill-btn" do %>
+      <h6>Ajouter un domaine</h6>
+      <i class="fas fa-chevron-down"></i>
+    <% end %>
+  <% end %>

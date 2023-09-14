@@ -6,7 +6,10 @@
   <%# createinstance of domain-form controller and passing workplan-grade to manage domain special in belt level %>
   <div class="add-domain-form d-none" data-new-domain-target='domainform' data-controller='domain-form' id="<%= work_plan.grade%>">
     <div class='m-top'>
-      <%= simple_form_for work_plan, url: work_plan_work_plan_domains_path(work_plan), method: :post do |f| %>
+      <%= simple_form_for work_plan, url: work_plan_work_plan_domains_path(work_plan),
+        method: :post,
+        data: {
+          turbo_frame: "new_domain" } do |f| %>
         <%= f.simple_fields_for  WorkPlanDomain.new do |domain_form| %>
           <div class='m-top' >
             <%= domain_form.input :domain, label: 'Choisissez un nouveau domaine :', as: :radio_buttons,
