@@ -76,15 +76,17 @@ class ClassroomsController < ApplicationController
 
   def results_by_domain
     authorize @classroom
+    # binding.pry
     @domain = set_domain
     set_up_results(@domain)
     results_factory(@domain) # create all  variables shared with the results Action
     @skills = if @special_domain
-        Skill.for_school(current_user.school).where(grade: @classroom.grade,
-                                                    domain: @domain).sort_by(&:sub_domain)
-      else
-        Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
-      end
+                Skill.where(school: current_user.school,
+                                    grade: @classroom.grade,
+                                    domain: @domain).order(Arel.sql('COALESCE(sub_domain, \'\') ASC'))
+              else
+                Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
+              end
     render partial: "classrooms/classroom_domain_results"
   end
 

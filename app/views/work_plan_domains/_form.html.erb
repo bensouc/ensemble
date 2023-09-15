@@ -10,6 +10,7 @@
       <div class='m-top'>
         <%= simple_form_for work_plan, url: work_plan_work_plan_domains_path(work_plan),
         method: :post,
+        html: {novalidate: true},
         data: {
           turbo_frame: "new_domain",
           action: "submit->navigation#backToBottom" } do |f| %>
@@ -19,6 +20,7 @@
 
               <%= domain_form.input :domain,
                                 label: "",
+                                required: true,
                                 as: :radio_buttons,
                                 collection: @domains,
                                 collection_wrapper_tag: "div",
@@ -34,6 +36,7 @@
             <div class='m-top d-none' data-domain-form-target='beltForm'>
             <h3>Choisissez une ceinture</h3>
               <%= domain_form.input :level,
+                                required: true,
                                 label: "",
                                 as: :radio_buttons,
                                 collection: WorkPlanDomain::LEVELS,
