@@ -110,9 +110,15 @@ School.all.each do |school|
   puts "creating skills for #{school.name}"
   WorkPlanDomain::DOMAINS.each do |grade, domains|
     domains.each do |domain|
-      for i in (1..7)
-        2.times do
-          Skill.create!(school:, domain:, level: i, symbol: "⬥", name: Faker::Movies::StarWars.quote, grade:)
+      if domain.in?(WorkPlanDomain::DOMAINS_SPECIALS) && school == school_fournier
+        15.times do
+          Skill.create!(school:, domain:, level: 1, symbol: "⬥", name: Faker::Movies::StarWars.quote, grade:)
+        end
+      else
+        for i in (1..7)
+          2.times do
+            Skill.create!(school:, domain:, level: i, symbol: "⬥", name: Faker::Movies::StarWars.quote, grade:)
+          end
         end
       end
     end

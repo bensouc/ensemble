@@ -108,7 +108,7 @@ class WorkPlanSkillsController < ApplicationController
 
         # test for each skill of its domain a 'belt is validated'jbiv
         # if @work_plan_skill.work_plan_domain.specials? && @work_plan.grade != "CM2"
-        if @work_plan_skill.work_plan_domain.specials?
+        if @work_plan_skill.work_plan_domain.specials? #ADD management for ALAIN FOURNIER
           Belt.special_newbelt(@work_plan_skill, @work_plan)
         elsif @work_plan_skill.work_plan_domain.all_skills_completed?
           belt.completed = true
@@ -135,6 +135,7 @@ class WorkPlanSkillsController < ApplicationController
 
   # to add a validated wps on a student on special_wps=true Workplan
   def add_validated_wps
+    skip_authorization
     skills_and_student = get_all_skills_to_add_completed_wps #call private method to get all the needed skills to be completed
     skills = skills_and_student[:skills]
     domain = skills.first.domain # get domain to work on
@@ -151,6 +152,7 @@ class WorkPlanSkillsController < ApplicationController
 
   def remove_special_wps
     @wps = WorkPlanSkill.find(params[:work_plan_skill_id])
+    authorize @wps
     @skill = @wps.skill
     @student = @wps.student
     # test if special domain
