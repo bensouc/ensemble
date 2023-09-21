@@ -1,25 +1,27 @@
+
 // Define variables for your color scheme
 
 // For example:
 $red: #FD1015;
 $blue: #167FFB;
-$yellow: #FFC65A;
+$yellow: yellow;
 $orange: #E67E22;
 $green: #4caf50;
 $gray: #0E0000;
 $light-gray: #F4F4F4;
 
 // COULEUR ENSEMBLE
-$orange: #FFB888;
+$orange: orange;
 $grisF: #3D3D3D;
 $grisC: #DDDDDD;
 $violet: #E7E4FA;
-$jaune: #F9DD8A;
+$jaune: yellow;
 $bleuC: #C8E6FB;
 $menuOff: #FFE3CF;
 $blanc: #FFFFFF;
 $rose: #F24150;
 $roseL: #e72c3ca4;
+$marron: rgb(196, 64, 3);
 
 // class color
 .--orange { color:$orange !important}
@@ -45,6 +47,8 @@ $roseL: #e72c3ca4;
 .--bgc-rose { background-color:$rose !important}
 .--bgc-roseL { background-color:$roseL !important}
 .--bgc-vert { background-color: $green !important}
+.--bgc-marron { background-color: $marron !important}
+.--bgc-noir { background-color: $gray !important}
 .--bgc-transparent { background-color: transparent !important}
 
 .--borderc-orange { border-color:$orange !important}

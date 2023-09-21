@@ -1,0 +1,103 @@
+<h1>Vos exercices </h1>
+<div class="challenges-container">
+  <div data-controller='submitonchange' class='challenge-filter'>
+    <%= simple_form_for challenges_path, method: :get,
+    html: {id: "domainForm"},
+        data:{action: "change->submitonchange#submitForm"} do |f| %>
+      <div class="box-column-challenges-filter">
+        <div class="challenges-skill">
+          <%= f.input :grade,
+                  collection: @grades,
+                  selected: @grade,
+                  label: false,
+                  input_html: {
+                    class: "area grow m-left"
+                  } %>
+          <%= f.input :domain,
+                  collection: @domains,
+                  selected: @domain,
+                  label: false,
+                  input_html: {
+                    class: "area grow m-left"
+                  } %>
+        </div>
+        <div class="challenges-skill-level-selector">
+          <%= f.input :level,
+                  collection: [
+                    ["Blanc", 1, { class: "--bgc-blanc" }],
+                    ["Jaune", 2, { class: "--bgc-jaune " }],
+                    ["Orange", 3, { class: "--bgc-orange" }],
+                    ["Vert", 4, { class: "--bgc-vert --blanc" }],
+                    ["Bleu", 5, { class: "--bgc-bleuC --blanc" }],
+                    ["Marron", 6, { class: "--bgc-marron --blanc" }],
+                    ["Noire", 7, { class: "--bgc-noir --blanc" }]
+                  ],
+                  # [blanche jaune orange verte bleue marron noire]
+                  selected: @level,
+                  label: false,
+                  input_html: {
+                    class:
+                      "area grow m-left --text-center #{["--bgc-blanc", "--bgc-jaune", "--bgc-orange", "--bgc-vert --blanc", "--bgc-bleuC --blanc", "--bgc-marron --blanc", "--bgc-noir --blanc"][@level.to_i - 1]}"
+                  } %>
+                  <h4 class= 'pt-1'> Choisisser une ceinture</h4>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <div class="grey-line"></div>
+  <div class="challenges-display ">
+    <% @skills.each do |skill| %>
+      <div class="challenges-by-skill" data-controller='wp-by-student'>
+        <div class='d-flex wp-student-folder'
+          data-action="click->wp-by-student#displayList"
+        >
+          <div class="index-folder">
+            <i
+              class="fa-solid fa-folder-closed me-4 ms-3"
+              data-wp-by-student-target="folderopen"
+            ></i>
+            <i
+              class="fa-solid fa-folder-open me-4 ms-3 d-none"
+              data-wp-by-student-target="folderclosed"
+            ></i>
+          </div>
+          <div class='index-wp-name d-flex'>
+            <div class="wp-firstname">
+              <%= skill.name %>
+            </div>
+            <div class='invisible'>
+              --
+            </div>
+            <div class="index-wp-count" data-wp-by-student-target='count'>
+            <% count =  @challenges.select { |chall| chall.skill == skill }.count%>
+              <%=  count %> exo<%= count > 1 ? "s" : "" %>
+            </div>
+
+          </div>
+        </div>
+        <div data-wp-by-student-target="wplist" class='list-wp-index d-none p-0'>
+          <div class="new-challenge">
+            <%= link_to new_challenge_path(skill:skill),
+            data: {turbo_frame: "skill_#{skill.id}_new_challenge"} do %>
+                <i class="fa-solid fa-plus --rose"
+                class="fa-solid fa-user-plus"
+                  data-controller="tooltip"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="right"
+                  title="Créer un éxercice"></i>
+              <% end %>
+            </div>
+          <%= turbo_frame_tag "skill_#{skill.id}_new_challenge" %>
+          <%= turbo_frame_tag "#{dom_id(skill)}_challenges_list" do %>
+            <% @challenges.select{|chall| chall.skill == skill}.each do |challenge| %>
+              <%= render "show_one_challenge", challenge: challenge %>
+              <p class="ms-5 --grisC --italic">Par
+                <%= challenge.user.first_name %></p>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+</div>

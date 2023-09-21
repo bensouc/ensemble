@@ -1,0 +1,31 @@
+.challenges-container {
+  width: 1000px;
+  height: 110vh;
+}
+.challenges-skill-selector {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+}
+.challenges-skill {
+  display: flex;
+  gap: 10px;
+}
+
+.box-column-challenges-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.challenges-skill-level-selector {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}

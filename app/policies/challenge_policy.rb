@@ -1,9 +1,13 @@
 class ChallengePolicy < ApplicationPolicy
   class Scope < Scope
     # NOTE: Be explicit about which records you allow access to!
-    # def resolve
-    #   scope.all
-    # end
+    def resolve
+      scope.includes([:skill, :rich_text_content]).where(user: user) # Only show challenges that belong to the current user ?? Maybe the whole schhol/group
+    end
+  end
+
+  def create?
+  user_is_owner_or_admin?
   end
 
   def show?
