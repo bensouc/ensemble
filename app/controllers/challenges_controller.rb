@@ -133,7 +133,7 @@ class ChallengesController < ApplicationController
       @grade = @grades.first
       @domains = WorkPlanDomain::DOMAINS[@grade]
       @level = 1
-      @domain = @domains.first
+      @domain = @domains.first unless @domains.nil?
     else
       # binding.pry
 
