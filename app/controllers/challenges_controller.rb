@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 class ChallengesController < ApplicationController
-  before_action :get_work_plan_skill, only: [:clone, :display_challenges] # , :update, :show]
-  before_action :get_challenge, only: [:clone, :update, :display_challenges, :show, :edit, :destroy]
+  before_action :set_work_plan_skill, only: [:clone, :display_challenges] # , :update, :show]
+  before_action :set_challenge, only: [:clone, :update, :display_challenges, :show, :edit, :destroy]
 
   def index
     # binding.pry
@@ -151,11 +151,11 @@ class ChallengesController < ApplicationController
     params.require(:challenge).permit(:skill_id, :content, :name)
   end
 
-  def get_challenge
+  def set_challenge
     @challenge = Challenge.find(params[:id])
   end
 
-  def get_work_plan_skill
+  def set_work_plan_skill
     @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
   end
 
