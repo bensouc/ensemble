@@ -1,4 +1,4 @@
-<h1>Vos exercices </h1>
+<h1 class='title'>Vos exercices </h1>
 <div class="challenges-container">
   <div data-controller='submitonchange' class='challenge-filter'>
     <%= simple_form_for challenges_path, method: :get,
@@ -40,7 +40,7 @@
                     class:
                       "area grow m-left --text-center #{["--bgc-blanc", "--bgc-jaune", "--bgc-orange", "--bgc-vert --blanc", "--bgc-bleuC --blanc", "--bgc-marron --blanc", "--bgc-noir --blanc"][@level.to_i - 1]}"
                   } %>
-                  <h4 class= 'pt-1'> Choisisser une ceinture</h4>
+                  <h4 class= 'pt-1'> Ceinture</h4>
         </div>
       </div>
     <% end %>

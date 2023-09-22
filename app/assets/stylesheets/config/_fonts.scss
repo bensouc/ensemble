@@ -24,3 +24,7 @@ $titres-font: 'Baloo 2', cursive;
 //        font-url('FontFile.ttf') format('truetype')
 // }
 // $my-font: "Font Name";
+h1.title {
+  font-weight: 900;
+  color: $rose;
+}
