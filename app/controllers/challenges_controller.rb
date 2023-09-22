@@ -6,7 +6,7 @@ class ChallengesController < ApplicationController
 
   def index
     # binding.pry
-    redirect_to classrooms_path unless current_user.classroom?
+    redirect_to classrooms_path if current_user.classrooms.empty? && current_user.shared_classrooms.empty?
     # "/challenges"=>{"grade"=>"CE2", "domain"=>"Conjugaison", "level"=>"1", "skills"=>"11067"}
     set_filters
     # binding.pry
