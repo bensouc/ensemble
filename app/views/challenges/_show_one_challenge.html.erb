@@ -21,12 +21,12 @@
       </div>
     </div>
   <% end %>
-  <% if challenge.user == current_user && params[:controller]  == "challenges"%>
+  <% if params[:controller]  == "challenges"%>
     <div class="challenge-infos-box">
+      <p class="ms-5 --grisC --italic"> <i class='fas fa-pen fa-xs'></i> <%= challenge.user.first_name %></p>
       <%if !challenge.work_plan_skills.empty?  %>
-        <p class=" --grisC --italic">Non supprimable car utilisé sur des plans de travails</p>
+        <p class=" --grisC --italic">Non supprimable car utilisé sur des plans de travail</p>
       <% end %>
-      <p class="ms-5 --grisC --italic">De <%= challenge.user.first_name %></p>
     </div>
   <% end %>
 <% end %>

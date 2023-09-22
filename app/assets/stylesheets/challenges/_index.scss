@@ -60,7 +60,9 @@
 
 .challenge-infos-box {
   display: flex;
-  justify-content: space-around;
+      justify-content: space-between;
+    flex-direction: row-reverse;
+    margin: 0 40px;
 }
 .max-length-skill-name {
   max-width: 713px;
