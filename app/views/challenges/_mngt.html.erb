@@ -1,8 +1,7 @@
 <div class="challenge-mngt">
   <%= button_to work_plan_skill_clone_path( work_plan_skill, work_plan_skill.challenge.id),
                             remote: true,
-                            class: 'replace-challenge-btn',
-                            data:{ turbo_frame: "challenge_#{work_plan_skill.challenge.id}"} do %>
+                            class: 'replace-challenge-btn'                         do %>
     <i class="far fa-clone me-2"></i>
     <h6>Cloner</h6>
   <% end %>

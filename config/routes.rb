@@ -78,7 +78,7 @@ Rails.application.routes.draw do
 
 
   # ###############routesfor Challenge#########
-  resources :challenges, only: [:show, :edit, :update, :destroy]
+  resources :challenges, only: [:show, :edit, :update, :destroy, :index, :new, :create]
 
 
   # ###############routes for SCHOOL/SCHOOL_ROLES###############

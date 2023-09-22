@@ -1,0 +1,67 @@
+.challenges-container {
+  width: 861px;
+  // height: 110vh;
+
+}
+.challenges-skill-selector {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+}
+.challenges-skill {
+  display: flex;
+  gap: 10px;
+
+}
+
+.box-column-challenges-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  .form-control:hover{
+    cursor: pointer;
+  }
+}
+
+.challenges-skill-level-selector {
+  display: flex;
+  gap: 30px;
+  align-items: flex-start;
+}
+.move-left-btn {
+  font-size: 21px;
+  position: relative;
+
+  left: 819px;
+  background-color: transparent;
+  color: $roseL;
+}
+
+.move-left-btn:hover {
+  transform: scale(1.5);
+  transition: 0.5s;
+}
+
+.delete-challenge-btn .button_to {
+  height: 0px !important;
+}
+
+.position-in-form {
+  position: relative;
+  top: -103px;
+  left: 577px;
+}
+
+.challenge-infos-box {
+  display: flex;
+  justify-content: space-around;
+}
+.max-length-skill-name {
+  max-width: 713px;
+}

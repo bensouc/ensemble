@@ -1,0 +1,3 @@
+
+<%= turbo_stream.remove @challenge%>
+<%= turbo_stream.update "skill_#{@challenge.skill.id}_count", "#{@count} exo#{@count > 1 ? 's' : ''}" %>

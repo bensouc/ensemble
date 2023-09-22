@@ -25,8 +25,8 @@ time, mark, audio, video {
 
 
 // Graphical variables
-@import "config/fonts";
 @import "config/colors";
+@import "config/fonts";
 @import "config/global";
 @import "config/bootstrap_variables";
 @import "simple_calendar";
@@ -62,4 +62,5 @@ time, mark, audio, video {
 @import "school/index" ;
 @import "belts/index" ;
 @import "trix/index" ;
+@import "challenges/index" ;
 @import "subscriptions/index" ;

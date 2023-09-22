@@ -21,7 +21,7 @@
               data-left-menu-target="seetext"
               style='decoration-text: none'
             >Voir</div>
-            <% if current_page?(work_plans_path) %>
+            <% if current_page?(work_plans_path) || params[:controller] == "challenges" %>
               <%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/1blanc_yahz0m.svg",
               class: "on" %>
             <% else %>
@@ -31,6 +31,9 @@
           <div class="nav-left-sub-links d-none" data-leftmenulinks-target="links">
             <%= link_to work_plans_path do %>
               <p class='sub-link'>Mes Plans de Travail</p>
+            <% end %>
+            <%= link_to challenges_path do %>
+              <p class='sub-link'>Exercices</p>
             <% end %>
             <%= link_to skills_path() do %>
               <p class='sub-link'>Mes progressions de compétences</p>
