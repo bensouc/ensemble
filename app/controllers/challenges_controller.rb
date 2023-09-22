@@ -1,15 +1,36 @@
 # frozen_string_literal: true
 
 class ChallengesController < ApplicationController
-  before_action :get_work_plan_skill, only: [:clone, :display_challenges] #, :update, :show]
-  before_action :get_challenge, only: [:clone, :update, :display_challenges, :show, :edit]
+  before_action :get_work_plan_skill, only: [:clone, :display_challenges] # , :update, :show]
+  before_action :get_challenge, only: [:clone, :update, :display_challenges, :show, :edit, :destroy]
+
+  def index
+    # binding.pry
+    redirect_to classrooms_path unless current_user.classroom?
+    # "/challenges"=>{"grade"=>"CE2", "domain"=>"Conjugaison", "level"=>"1", "skills"=>"11067"}
+    set_filters
+    # binding.pry
+    @challenges = policy_scope(Challenge).select do |challenge|
+      challenge.skill.domain == @domain &&
+        challenge.skill.level == @level.to_i && challenge.skill.grade == @grade
+    end
+    # binding.pry
+  end
+
+  def show
+    skip_authorization
+  end
 
   def new
     # binding.pry
     @challenge = Challenge.new(user: current_user, skill: Skill.find(params[:skill]))
-    @challenge.name = @challenge.skill.name + " - " + current_user.first_name
-    @challenge.content = 'Écrivez votre énoncé ici'
+    @challenge.name = "#{@challenge.skill.name} - #{current_user.first_name} #{(1..100).to_a.sample}"
+    @challenge.content = "Écrivez votre énoncé ici"
     authorize @challenge
+  end
+
+  def edit
+    skip_authorization
   end
 
   def create
@@ -18,6 +39,7 @@ class ChallengesController < ApplicationController
     # binding.pry
     authorize @challenge
     if @challenge.save
+      @count = Challenge.where(skill: @challenge.skill).count
       respond_to do |format|
         format.html { redirect_to challenge_path(@challenge), notice: "Excercice Sauvegardé" }
         format.turbo_stream
@@ -27,25 +49,39 @@ class ChallengesController < ApplicationController
     end
   end
 
-  def index
-    # binding.pry
-    # "/challenges"=>{"grade"=>"CE2", "domain"=>"Conjugaison", "level"=>"1", "skills"=>"11067"}
-    set_filters
-    # binding.pry
-    @challenges = policy_scope(Challenge).select do |challenge|
-      challenge.skill.domain == @domain &&
-        challenge.skill.level == @level.to_i && challenge.skill.grade == @grade &&
-        challenge.skill.school == current_user.school
+  def update
+    # @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
+    # authorize @challenge
+    skip_authorization
+    if @challenge.update(challenge_params)
+      respond_to do |format|
+        format.html do
+          redirect_to challenge_path(@challenge),
+                      notice: "Excercice Sauvegardé"
+        end
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(@challenge,
+                                                    partial: "challenges/show_one_challenge",
+                                                    locals: { challenge: @challenge })
+        end
+      end
+    else
+      redirect_to edit_challenge_path(@challenge), notice: "Sauvegarde échouée "
     end
-    # binding.pry
+    # html_update
   end
 
-  def show
-    skip_authorization
-  end
-
-  def edit
-    skip_authorization
+  def destroy
+    authorize @challenge
+    if @challenge.destroy
+      @count = Challenge.where(skill: @challenge.skill).count
+      respond_to do |format|
+        format.html { redirect_to challenges_path, notice: "Excercice Supprimé" }
+        format.turbo_stream
+      end
+    else
+      redirect_to challenges_path, notice: "Cet exercice est attaché à au moins un plan de travail"
+    end
   end
 
   def clone
@@ -64,33 +100,13 @@ class ChallengesController < ApplicationController
                                               locals: { work_plan_skill: @work_plan_skill })
   end
 
-  def update
-    # @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
-    # authorize @challenge
-    skip_authorization
-    if @challenge.update(challenge_params)
-      respond_to do |format|
-        format.html {
-          redirect_to challenge_path(@challenge),
-                      notice: "Excercice Sauvegardé"
-        }
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(@challenge,
-                                                    partial: "challenges/show_one_challenge",
-                                                    locals: { challenge: @challenge })
-        end
-      end
-    else
-      redirect_to edit_challenge_path(@challenge), notice: "Sauvegarde échouée "
-    end
-    # html_update
-  end
-
   def display_challenges
     # authorize @challenge
     # binding.pry
     skip_authorization
-    @challenges = Challenge.includes([:rich_text_content]).where(skill: @challenge.skill).reject { |chal| chal == @challenge }
+    @challenges = Challenge.includes([:rich_text_content]).where(skill: @challenge.skill).reject do |chal|
+      chal == @challenge
+    end
     # raise
     if @challenges.empty?
       # @work_plan_skill = WorkPlanSkill.find(@challenge.work_plan_skill_ids.first)
@@ -113,13 +129,11 @@ class ChallengesController < ApplicationController
   def set_filters
     # binding.pry
     @grades = current_user.classroom_grades
-    if params["/challenges"].nil? || params["/challenges"].empty?
+    if params["/challenges"].blank?
       @grade = @grades.first
       @domains = WorkPlanDomain::DOMAINS[@grade]
       @level = 1
       @domain = @domains.first
-      @skills = Skill.where(grade: @grade, domain: @domain, level: @level, school: current_user.school)
-
     else
       # binding.pry
 
@@ -127,10 +141,10 @@ class ChallengesController < ApplicationController
       @domains = WorkPlanDomain::DOMAINS[@grade]
       @level = params.require("/challenges").permit(:grade, :level, :domain)[:level]
       @domain = params.require("/challenges").permit(:grade, :level, :domain)[:domain]
-      @skills = Skill.where(grade: @grade, domain: @domain, level: @level, school: current_user.school)
       # @skill = Skill.find(params.require("/challenges").permit(:skills)[:skills])
       # skill_id = params.require("/challenges").permit(:grade, :level, :domain)[:skills].to_i
     end
+    @skills = Skill.where(grade: @grade, domain: @domain, level: @level, school: current_user.school)
   end
 
   def set_challenge_params

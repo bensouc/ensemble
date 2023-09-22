@@ -5,6 +5,7 @@ class Challenge < ApplicationRecord
   belongs_to :user
   has_rich_text :content
   has_many_attached :photos, dependent: :destroy
+  has_one :school, through: :skill
 
   has_many :work_plan_skills, dependent: nil
 
@@ -26,13 +27,13 @@ class Challenge < ApplicationRecord
       {
         name: "#{name}-Clone#{rand(1..100)}",
         content:,
-        skill_id:
+        skill_id:,
       }
     )
   end
 
   def self.assigned_challenges(skill, student)
-    wpss = WorkPlanSkill.where(skill_id: skill.id, kind: "exercice").select{|wps|wps.student == student}
+    wpss = WorkPlanSkill.where(skill_id: skill.id, kind: "exercice").select { |wps| wps.student == student }
     # challenge = []
     wpss.map(&:challenge)
   end
@@ -41,7 +42,7 @@ class Challenge < ApplicationRecord
     challenge = Challenge.create({
                                    skill: work_plan_skill.skill,
                                    name: "#{name}-NEW",
-                                   user: current_user
+                                   user: current_user,
                                  })
     challenge.content.body = <<~HTML
       Exercice à REDIGER............................

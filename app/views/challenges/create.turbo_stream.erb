@@ -1,4 +1,6 @@
-<%= turbo_stream.prepend "skill_#{@challenge.skill.id}_challenges_list",
-  partial: "show_one_challenge", locals: { challenge: @challenge } %>
+<%= turbo_stream.prepend "skill_#{@challenge.skill.id}_challenges_list" do %>
+  <%= render partial: "show_one_challenge", locals: { challenge: @challenge } %>
+<% end %>
+
 <%= turbo_stream.update "skill_#{@challenge.skill.id}_new_challenge", "" %>
-<%= turbo_stream.update "skill_id_counter", "" %>
+<%= turbo_stream.update "skill_#{@challenge.skill.id}_count", "#{@count} exo#{@count > 1 ? 's' : ''}" %>

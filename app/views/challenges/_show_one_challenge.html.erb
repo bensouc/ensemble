@@ -1,5 +1,13 @@
 <%= turbo_frame_tag dom_id(challenge) do %>
-  <%= link_to edit_challenge_path(challenge) do %>
+  <% if challenge.user == current_user && params[:controller]  == "challenges" && challenge.work_plan_skills.empty? %>
+    <div class="delete-challenge-btn">
+      <%= button_to challenge_path(challenge), method: :delete, class: "move-left-btn",
+        data: {confirm: "Souhaitez vous supprimer cet éxercice?"} do %>
+        <i class="fa-solid fa-circle-xmark"></i>
+      <% end %>
+    </div>
+  <% end %>
+  <%= link_to edit_challenge_path(challenge), class:"--color-inherit" do %>
     <div class="cont-challenge pencil-pointor mb-1" id="<%= challenge.id%>">
       <div class= "" >
         <div  data-edit-challenge-target="infos" data-action="click->edit-challenge#displayForm">
@@ -11,6 +19,14 @@
           </div>
         </div>
       </div>
+    </div>
+  <% end %>
+  <% if challenge.user == current_user && params[:controller]  == "challenges"%>
+    <div class="challenge-infos-box">
+      <%if !challenge.work_plan_skills.empty?  %>
+        <p class=" --grisC --italic">Non supprimable car utilisé sur des plans de travails</p>
+      <% end %>
+      <p class="ms-5 --grisC --italic">De <%= challenge.user.first_name %></p>
     </div>
   <% end %>
 <% end %>

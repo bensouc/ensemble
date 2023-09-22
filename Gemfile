@@ -89,7 +89,7 @@ gem "mobile"
 gem 'simplecov', require: false, group: :test
 
 group :development, :test do
-  gem "erb-formatter"
+  gem 'erb-formatter'
   gem 'htmlbeautifier'
   gem "bullet"
   gem "pry-byebug"

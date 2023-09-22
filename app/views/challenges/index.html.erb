@@ -3,7 +3,8 @@
   <div data-controller='submitonchange' class='challenge-filter'>
     <%= simple_form_for challenges_path, method: :get,
     html: {id: "domainForm"},
-        data:{action: "change->submitonchange#submitForm"} do |f| %>
+        data: { action: "change->submitonchange#submitForm"
+                } do |f| %>
       <div class="box-column-challenges-filter">
         <div class="challenges-skill">
           <%= f.input :grade,
@@ -11,7 +12,7 @@
                   selected: @grade,
                   label: false,
                   input_html: {
-                    class: "area grow m-left"
+                    class: "area grow m-left --text-center"
                   } %>
           <%= f.input :domain,
                   collection: @domains,
@@ -45,9 +46,10 @@
     <% end %>
   </div>
   <div class="grey-line"></div>
+  <%= turbo_frame_tag "skills-challenge-list" do%>
   <div class="challenges-display ">
     <% @skills.each do |skill| %>
-      <div class="challenges-by-skill" data-controller='wp-by-student'>
+      <div class="challenges-by-skill mb-2" data-controller='wp-by-student'>
         <div class='d-flex wp-student-folder'
           data-action="click->wp-by-student#displayList"
         >
@@ -62,42 +64,40 @@
             ></i>
           </div>
           <div class='index-wp-name d-flex'>
-            <div class="wp-firstname">
+            <div class="wp-firstname max-length-skill-name">
               <%= skill.name %>
             </div>
             <div class='invisible'>
               --
             </div>
             <div class="index-wp-count" data-wp-by-student-target='count'>
-            <% count =  @challenges.select { |chall| chall.skill == skill }.count%>
-              <%=  count %> exo<%= count > 1 ? "s" : "" %>
+              <%=  turbo_frame_tag "skill_#{skill.id}_count" do %>
+                <% count =  @challenges.select { |chall| chall.skill == skill }.count%>
+                <%=  count %> exo<%= count > 1 ? "s" : "" %>
+              <% end %>
             </div>
-
           </div>
         </div>
         <div data-wp-by-student-target="wplist" class='list-wp-index d-none p-0'>
           <div class="new-challenge">
             <%= link_to new_challenge_path(skill:skill),
-            data: {turbo_frame: "skill_#{skill.id}_new_challenge"} do %>
-                <i class="fa-solid fa-plus --rose"
-                class="fa-solid fa-user-plus"
-                  data-controller="tooltip"
-                  data-bs-toggle="tooltip"
-                  data-bs-placement="right"
-                  title="Créer un éxercice"></i>
+            data: { turbo_frame: "skill_#{skill.id}_new_challenge"},
+            class: 'replace-challenge-btn mt-2' do %>
+                Ajouter <i class="fa-solid fa-plus --white"
+                class="fa-solid fa-user-plus"></i>
               <% end %>
             </div>
           <%= turbo_frame_tag "skill_#{skill.id}_new_challenge" %>
           <%= turbo_frame_tag "#{dom_id(skill)}_challenges_list" do %>
             <% @challenges.select{|chall| chall.skill == skill}.each do |challenge| %>
+
               <%= render "show_one_challenge", challenge: challenge %>
-              <p class="ms-5 --grisC --italic">Par
-                <%= challenge.user.first_name %></p>
+
             <% end %>
           <% end %>
         </div>
       </div>
     <% end %>
   </div>
-
+<% end %>
 </div>

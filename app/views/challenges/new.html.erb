@@ -1,3 +1,9 @@
 <%= turbo_frame_tag  "skill_#{@challenge.skill.id}_new_challenge" do%>
   <%= render "form", challenge: @challenge %>
+  <div class="cancel-btn position-in-form"
+  data-controller= "manageturboframe"
+  data-manageturboframe-id-value=<%= @challenge.skill.id %>
+  data-action='click->manageturboframe#cleanTurboFrame'>
+    Annuler
+  </div>
 <% end %>
