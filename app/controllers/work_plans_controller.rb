@@ -113,6 +113,7 @@ class WorkPlansController < ApplicationController
       format.pdf do
         render pdf: "#{@work_plan.name} #{@work_plan.student.first_name unless @work_plan.student.nil?}",
                template: "pdf/show_print",
+               dpi: 380,
                formats: [:html],
                disposition: "attachment",
                encoding: "utf8", # a remettre pour lle DL auto des pdf

@@ -134,6 +134,7 @@ div.nobreak { page-break-inside: avoid; }
 .skill-display{
   margin-top: -34px;
   margin-bottom: 15px;
+  font-size: larger;
   float: right;
   width: 84%;
   min-height: 110px;
@@ -243,7 +244,7 @@ symbol{
   border-radius: 14px;
   margin: auto;
   font-family: "Poppins", sans-serif;
-  // font-size: 20.25px;
+  font-size: 23px !important;
   margin-bottom: 20px;
 }
 .cont-challenge h1{
