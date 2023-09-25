@@ -3,7 +3,7 @@ import { Controller } from "stimulus";
 export default class extends Controller {
   static targets = ['button', 'form'];
   connect() {
-    console.log('WP-edit connected');
+    // console.log('WP-edit connected');
   }
 
   displayForm() {

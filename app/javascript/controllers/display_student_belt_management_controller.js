@@ -5,7 +5,7 @@ export default class extends Controller {
 
   connect() {
 
-    console.log('sysplay belt connected')
+    // console.log('sysplay belt connected')
 
   }
   displayBtn() {

@@ -3,7 +3,7 @@ import { Controller } from "stimulus";
 export default class extends Controller {
   static targets = ['wplistus', 'folderopen', 'folderclosed'];
   connect() {
-    console.log('wplistus');
+    // console.log('wplistus');
   }
 
   displayList() {

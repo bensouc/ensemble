@@ -5,7 +5,7 @@ export default class extends Controller {
     id: Number
   }
   connect() {
-    console.log('managetruborgrame OK connected');
+    // console.log('managetruborgrame OK connected');
 
   }
 

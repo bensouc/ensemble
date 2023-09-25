@@ -3,7 +3,7 @@ import { Controller } from "stimulus";
 export default class extends Controller {
   static targets = ['tab1', 'tab2', 'separator', 'monthlysub', 'annualysub'] // connect(){
   connect() {
-    console.log('sibcription new connected');
+    // console.log('sibcription new connected');
   }
 
   displayAnnual(event) {

@@ -27,13 +27,13 @@ import 'rails_admin';
 import "@hotwired/turbo-rails";
 import { initFlatpickr } from "../plugins/flatpickr";
 import '@stripe/stripe-js';
-import  '@stripe/stripe-js';
+// import  '@stripe/stripe-js';
 // import { displayQuote } from "../plugins/quote.js";
 // import {Typed} from 'typed.js';
 // import { scrollFunction } from "./back_to_top";
 // JS 4 back to top BTN
 
-import "./back_to_top";
+// import "./back_to_top";
 import "./get_anchor"
 
 // import { scrollFunction } from "./back_to_top";
