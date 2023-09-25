@@ -1,12 +1,19 @@
 <h1>
-  Non assigné<%= "s" if @my_work_plans_unassigned.count> 1 %>
+  Non assigné<%= "s" if @my_work_plans_unassigned.count > 1 %>
 </h1>
-<div class='d-flex wp-student-folder' data-action="click->wplistunsigned#displayList">
+<div
+  class='d-flex wp-student-folder'
+  data-action="click->wplistunsigned#displayList"
+>
   <div class="index-folder">
-    <i class="fa-solid fa-folder-closed me-4 ms-3" data-wplistunsigned-target="folderopen"
-      ></i>
-    <i class="fa-solid fa-folder-open d-none me-4 ms-3" data-wplistunsigned-target="folderclosed"
-      ></i>
+    <i
+      class="fa-solid fa-folder-closed me-4 ms-3"
+      data-wplistunsigned-target="folderopen"
+    ></i>
+    <i
+      class="fa-solid fa-folder-open d-none me-4 ms-3"
+      data-wplistunsigned-target="folderclosed"
+    ></i>
   </div>
   <div class='index-wp-name d-flex'>
     <%# Plans de travail %>
@@ -14,12 +21,19 @@
       --
     </div>
     <div class="index-wp-count">
-      ( <%= @my_work_plans_unassigned.count %> Plan<%= "s" if @my_work_plans_unassigned.count> 1 %> de travail )
+      <%= turbo_frame_tag "unassigned_work_plan_count" do %>
+        (
+        <%= @my_work_plans_unassigned.count %>
+        Plan<%= "s" if @my_work_plans_unassigned.count > 1 %>
+        de travail )
+      <% end %>
     </div>
   </div>
 </div>
 <div class='d-none list-wp-index' data-wplistunsigned-target="wplistus">
   <% @my_work_plans_unassigned.each do |wp| %>
-    <%= render "index_wp_line" , wp: wp %>
+    <%= turbo_frame_tag wp  do %>
+      <%= render "index_wp_line", wp: wp %>
+    <% end %>
   <% end %>
 </div>

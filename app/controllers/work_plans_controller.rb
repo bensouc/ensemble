@@ -166,14 +166,23 @@ class WorkPlansController < ApplicationController
 
   def destroy
     @work_plan = WorkPlan.find(params[:id])
+    @student = @work_plan.student
     authorize @work_plan
-    @work_plan.destroy
-    head :ok, content_type: "text/html"
-    # if @work_plan.student.nil?
-    #   redirect_to work_plans_path
-    # else
-    #   redirect_to work_plans_path(anchor: @work_plan.student.id)
-    # end
+    # p @student.work_plans.reject(&:special_wps).count
+    if @student.nil?
+      @work_plan.destroy
+      @my_work_plans_unassigned = WorkPlan.where(user: current_user, special_wps: false, student: nil)
+      @count = @my_work_plans_unassigned.count
+
+    else
+      @work_plan.destroy
+      # @count = WorkPlan.where(student: @student).where.not(special_wps: true).count
+      @count = WorkPlan.where.not(special_wps: true).where(student: @student).count
+    end
+    respond_to do |format|
+      # format.html { redirect_to work_plans_path, notice: "Work plan was successfully destroyed." }
+      format.turbo_stream
+    end
   end
 
   def auto_new_wp
