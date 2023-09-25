@@ -1,5 +1,5 @@
 <%= turbo_frame_tag dom_id(challenge) do %>
-  <% if challenge.user == current_user && params[:controller]  == "challenges" && challenge.work_plan_skills.empty? %>
+  <% if (challenge.user == current_user ||current_user.admin) && params[:controller]  == "challenges" && challenge.work_plan_skills.empty? %>
     <div class="delete-challenge-btn">
       <%= button_to challenge_path(challenge), method: :delete, class: "move-left-btn",
         data: {confirm: "Souhaitez vous supprimer cet éxercice?"} do %>
