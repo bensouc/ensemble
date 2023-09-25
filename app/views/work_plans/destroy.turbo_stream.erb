@@ -1,0 +1,8 @@
+<%= turbo_stream.remove @work_plan %>
+<% if  @student.nil? %>
+  <%= turbo_stream.update "unassigned_work_plan_count",
+                      "#{@count} Plan#{"s" if @count > 1} de travail" %>
+<% else %>
+  <%= turbo_stream.update "student_#{@student.id}_work_plan_count",
+                      "#{@count} Plan#{"s" if @count > 1} de travail" %>
+<% end %>

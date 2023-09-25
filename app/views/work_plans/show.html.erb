@@ -1,27 +1,44 @@
 <div class="control-show" data-controller='cloning-wp'>
   <%# cloning control panel %>
-  <%= render 'show_cloning_panel', work_plan: @work_plan%>
-  <%# la putain de div  %>
-  <%# END OF cloning control panel%>
-  <div class=' pt --center-content' data-controller='navigation loadingspinnermgnt' data-cloning-wp-target='wp'>
+  <%= render "show_cloning_panel", work_plan: @work_plan %>
+  <%# la putain de div %>
+  <%# END OF cloning control panel %>
+  <div
+    class=' pt --center-content'
+    data-controller='navigation'
+    data-cloning-wp-target='wp'
+    data-action="scroll@window->navigation#scrollFunction"
+  >
     <div class="show-sticky-header">
-      <div class='edit-wp' data-navigation-target='wp' >
-        <div class="top-floating-btn" id='backToBottomBtn' data-action="click->navigation#backFunction">
+      <div class='edit-wp' data-navigation-target='wp'>
+        <div
+          class="top-floating-btn"
+          id='backToBottomBtn'
+          data-action="click->navigation#backFunction"
+        >
           <i class="fa-solid fa-circle-arrow-down"></i>
         </div>
-        <%# header WP%>
-        <%= render 'shared_header_wp', work_plan: @work_plan%>
+        <%# header WP %>
+        <%= render "shared_header_wp", work_plan: @work_plan %>
         <%# Student details %>
       </div>
-      <%= render 'show_student_details', work_plan: @work_plan%>
+      <%= render "show_student_details", work_plan: @work_plan %>
     </div>
     <%# Start of a domain %>
-    <div  style="margin-top: 85px;">
-      <%= render 'show_work_plan_domains', work_plan: @work_plan%>
+    <div style="margin-top: 85px;">
+      <%= render "show_work_plan_domains", work_plan: @work_plan %>
     </div>
     <%# navigation menu %>
-    <div class="bottom-floating-btn" id='backToTopBtn' data-action="click->navigation#topFunction">
-      <i class="fa-solid fa-circle-arrow-up" id='backToTopBtn' data-action="click->navigation#topFunction"></i>
+    <div
+      class="bottom-floating-btn"
+      id='backToTopBtn'
+      data-action="click->navigation#topFunction"
+    >
+      <i
+        class="fa-solid fa-circle-arrow-up"
+        id='backToTopBtn'
+        data-action="click->navigation#topFunction"
+      ></i>
       <%= link_to work_plan_path(@work_plan, format: :pdf) do %>
         <i class="fa-solid fa-file-pdf"></i>
       <% end %>
@@ -29,7 +46,7 @@
     <%# End of navigation menu %>
   </div>
   <%# WP SHOW MODALS %>
-  <%= render 'show_wp_edit_modal', work_plan: @work_plan%>
-  <%= render 'show_wp_sharing_modal', work_plan: @work_plan, teachers: @teachers %>
+  <%= render "show_wp_edit_modal", work_plan: @work_plan %>
+  <%= render "show_wp_sharing_modal", work_plan: @work_plan, teachers: @teachers %>
   <%# END WP SHOW MODALS %>
 </div>

@@ -1,0 +1,20 @@
+<%= turbo_frame_tag student do %>
+  <div data-controller='wp-by-student'>
+    <%# START of folder + student name + student wp count %>
+    <%= render "index_wp_student_name", student: student %>
+    <%# END of folder + student name + student wp count %>
+    <div
+      data-wp-by-student-target="wplist"
+      class='list-wp-index d-none'
+      id=<%=student.id%>
+    >
+      <%= turbo_frame_tag "student_#{student.id}_work_plans" do %>
+        <% my_work_plans.select { |a| a.student_id == student.id }.each do |wp| %>
+          <%= turbo_frame_tag wp do %>
+            <%= render "index_wp_line", wp: wp %>
+          <% end %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+<% end %>

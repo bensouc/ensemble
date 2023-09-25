@@ -12,12 +12,25 @@ RSpec.describe ChallengesController, type: :controller do
         expect(response).not_to be_successful
       end
     end
-    context "when user is signed in" do
-      before { sign_in user }
+    context "when user is signed in and has a classroom" do
       it "returns a successful response" do
-        # binding.pry
+        2.times do
+          create(:challenge, user:)
+        end
+        sign_in(user)
+        create(:classroom, user:)
         get :index
         expect(response).to be_successful
+      end
+    end
+    context "when user is signed in and has no classroom" do
+      it "redirect to classroom index" do
+        2.times do
+          create(:challenge, user:)
+        end
+        sign_in(user)
+        get :index
+        expect(response).to redirect_to("http://test.host/classrooms")
       end
     end
   end

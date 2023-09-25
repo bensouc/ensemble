@@ -4,7 +4,7 @@ export default class extends Controller {
   static targets = ['levelSkillCard', 'leveltBtn', 'domainBtn', 'skillCard', 'domainCard']
   connect() {
     this.setUpSkillsDisplay()
-    console.log(this.domainBtnTargets);
+    // console.log(this.domainBtnTargets);
   }
 
   displaySkills(event) {
@@ -22,7 +22,7 @@ export default class extends Controller {
 
   // event.currentTarget.classList.toggle('active')
   displayDomain(event) {
-    console.log('event');
+    // console.log('event');
     this.removeDomainBtnActive()
     this.removeLevelBtnActive()
     this.setDomainActive(event)

@@ -3,7 +3,7 @@ import { Controller } from "stimulus";
 export default class extends Controller {
   static targets = ['button', 'domainform', 'beltForm'];
   connect() {
-    console.log('add-domain connected');
+    // console.log('add-domain connected');
     document.getElementById("bottom").scrollIntoView({ behavior: "smooth" })
     // window.scrollBy(0, -143);
   }

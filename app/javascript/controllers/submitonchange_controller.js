@@ -3,7 +3,7 @@ import { Controller } from "stimulus";
 export default class extends Controller {
 
   connect() {
-    console.log('submitonchange OK connected');
+    // console.log('submitonchange OK connected');
   }
   submitForm(event){
     const form = document.getElementById('domainForm')

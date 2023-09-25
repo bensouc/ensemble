@@ -4,7 +4,7 @@ export default class extends Controller {
   static targets = ['formBox','form', "button"];
 
   connect() {
-    console.log('createskillconnected');
+    // console.log('createskillconnected');
   }
 
   displayForm() {
