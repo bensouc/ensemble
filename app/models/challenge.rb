@@ -12,6 +12,9 @@ class Challenge < ApplicationRecord
   validates :name, presence: true, uniqueness: { message: "'Le nom de cet exercice éxiste déja'", scope: :skill }
   validates :shared, presence: true
 
+  scope :for_belt, -> { where(for_belt: true) }
+  scope :classic, -> { where(for_belt: false) }
+
   def new_clone
     #  get sgid clone the attachement if table and attache it content
 

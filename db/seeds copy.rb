@@ -25,7 +25,7 @@
 #   new_skill.save!
 #   puts "new skill created #{new_skill.id}"
 #   # get all exos where skill_id = original_skill.id
-#   exos = Challenge.where(skill_id: original_skill.id)
+#   exos = Challenge.classic.where(skill_id: original_skill.id)
 #   exo = exos.last unless exos.empty?
 #   unless exo.nil?
 #     new_exo = exo.new_clone

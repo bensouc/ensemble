@@ -39,7 +39,7 @@ class ChallengesController < ApplicationController
     # binding.pry
     authorize @challenge
     if @challenge.save
-      @count = Challenge.where(skill: @challenge.skill).count
+      @count = Challenge.classic.where(skill: @challenge.skill).count
       respond_to do |format|
         format.html { redirect_to challenge_path(@challenge), notice: "Excercice Sauvegardé" }
         format.turbo_stream
@@ -74,7 +74,7 @@ class ChallengesController < ApplicationController
   def destroy
     authorize @challenge
     if @challenge.destroy
-      @count = Challenge.where(skill: @challenge.skill).count
+      @count = Challenge.classic.where(skill: @challenge.skill).count
       respond_to do |format|
         format.html { redirect_to challenges_path, notice: "Excercice Supprimé" }
         format.turbo_stream
