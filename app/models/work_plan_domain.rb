@@ -23,11 +23,11 @@ class WorkPlanDomain < ApplicationRecord
 
   has_one :student, through: :work_plan
 
-  def student
-    return work_plan.student if association(:work_plan).loaded?
+  # def student
+  #   return work_plan.student if association(:work_plan).loaded?
 
-    super
-  end
+  #   super
+  # end
 
   def specials?
     domain.in?(DOMAINS_SPECIALS) && work_plan.grade != "CM2"

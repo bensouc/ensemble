@@ -1,4 +1,4 @@
-<%= turbo_frame_tag  "skill_#{@challenge.skill.id}_new_challenge" do%>
+<%= turbo_frame_tag  (@challenge.for_belt? ? "for_belt_skill_#{@challenge.skill.id}_new_challenge" : "skill_#{@challenge.skill.id}_new_challenge") do%>
   <%= render "form", challenge: @challenge %>
   <div class="cancel-btn position-in-form"
   data-controller= "manageturboframe"

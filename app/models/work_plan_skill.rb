@@ -10,12 +10,12 @@ class WorkPlanSkill < ApplicationRecord
   validates :kind, presence: true, inclusion: { in: %w[jeu exercice controle ceinture] }
   validates :status, inclusion: { in: %w[redo failed redo_OK completed new] }
 
-  def student
-    return super unless association(:work_plan_domain).loaded? &&
-                        work_plan_domain.association(:work_plan).loaded?
+  # def student
+  #   return super unless association(:work_plan_domain).loaded? &&
+  #                       work_plan_domain.association(:work_plan).loaded?
 
-    work_plan_domain.work_plan.student
-  end
+  #   work_plan_domain.work_plan.student
+  # end
 
   def special_wps?
     work_plan_domain.work_plan.special_wps

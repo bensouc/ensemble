@@ -5,6 +5,7 @@
 				<div>
 					<%= form_for challenge, html: { class: '',  } do |form| %>
           <%= form.hidden_field :skill_id%>
+          <%= form.hidden_field :for_belt%>
 						<div class="field pt-2 pb-2" data-controller="rich-text-table">
 							<div>
 								<%= form.text_field :name, class: "challenge-title"%>

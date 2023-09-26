@@ -14,7 +14,10 @@ class Challenge < ApplicationRecord
 
   scope :for_belt, -> { where(for_belt: true) }
   scope :classic, -> { where(for_belt: false) }
-
+  def for_belt?
+    for_belt
+  end
+  
   def new_clone
     #  get sgid clone the attachement if table and attache it content
 

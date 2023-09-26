@@ -98,7 +98,8 @@ class WorkPlansController < ApplicationController
 
   def show
     @belt = Belt::BELT_COLORS
-    @work_plan = WorkPlan.includes([:work_plan_domains]).find(params[:id])
+    @work_plan = WorkPlan.with_associations.find(params[:id])
+    @work_plan_domains = @work_plan.work_plan_domains
     authorize @work_plan
     @domains = @work_plan.all_domains_from_work_plan
     shared_classrooms = current_user.user_shared_classrooms

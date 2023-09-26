@@ -1,3 +1,8 @@
-
-<%= turbo_stream.remove @challenge%>
-<%= turbo_stream.update "skill_#{@challenge.skill.id}_count", "#{@count} exo#{@count > 1 ? 's' : ''}" %>
+<%= turbo_stream.remove @challenge %>
+<% if @challenge.for_belt? %>
+  <%= turbo_stream.update "for_belt_skill_#{@challenge.skill.id}_count",
+                      "#{@count} exo#{@count > 1 ? "s" : ""}" %>
+<% else %>
+  <%= turbo_stream.update "skill_#{@challenge.skill.id}_count",
+                      "#{@count} exo#{@count > 1 ? "s" : ""}" %>
+<% end %>
