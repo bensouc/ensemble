@@ -25,6 +25,22 @@ RSpec.describe WorkPlansController, type: :controller do
 
   # describe "#index signed in" do
   # end
+  describe "#new" do
+    context "when user is not signed in" do
+      it "returns a failure response" do
+        get :new
+        expect(response).not_to be_successful
+      end
+    end
+    context "when user is signed in" do
+      it "returns a successful response" do
+        sign_in(user)
+        get :new
+        expect(response).to be_successful
+        expect(response).to render_template(:new)
+      end
+    end
+  end
 
   describe "#show" do
     before { sign_in user }

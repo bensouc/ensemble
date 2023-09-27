@@ -127,7 +127,7 @@ class ChallengesController < ApplicationController
       flash.now[:notice] = "Il n'existe pas d'autre excercice pour cette compétence"
     else
       respond_to do |format|
-        format.html
+        format.html {render partial: "challenges_carroussel"}
         format.turbo_stream
       end
     end
