@@ -7,7 +7,7 @@
   <% end %>
   <%# REPLACE A CHALLENGE %>
 
-  <% unless Challenge.where(skill: challenge.skill).count < 2 %>
+  <% unless Challenge.classic.where(skill: challenge.skill).count < 2 %>
     <%= button_to work_plan_skill_display_challenges_path(work_plan_skill, challenge),
                               remote: true,
 
@@ -16,7 +16,7 @@
       <i class="far fa-folder-open me-2"></i>
       <h6>Charger</h6>
     <% end %>
-<% end %>
+  <% end %>
 
   <%# REPLACE A CHALLENGE END %>
 </div>

@@ -10,9 +10,16 @@ class ChallengesController < ApplicationController
     # "/challenges"=>{"grade"=>"CE2", "domain"=>"Conjugaison", "level"=>"1", "skills"=>"11067"}
     set_filters
     # binding.pry
-    @challenges = policy_scope(Challenge).select do |challenge|
+    challenges = policy_scope(Challenge)
+    @challenges = challenges.select do |challenge|
       challenge.skill.domain == @domain &&
-        challenge.skill.level == @level.to_i && challenge.skill.grade == @grade
+        challenge.skill.level == @level.to_i && challenge.skill.grade == @grade &&
+        !challenge.for_belt?
+    end
+    @belt_challenges = challenges.select do |challenge|
+      challenge.skill.domain == @domain &&
+        challenge.skill.level == @level.to_i && challenge.skill.grade == @grade &&
+        challenge.for_belt?
     end
     # binding.pry
   end
@@ -24,6 +31,7 @@ class ChallengesController < ApplicationController
   def new
     # binding.pry
     @challenge = Challenge.new(user: current_user, skill: Skill.find(params[:skill]))
+    @challenge.for_belt = params[:for_belt] == "true"
     @challenge.name = "#{@challenge.skill.name} - #{current_user.first_name} #{(1..100).to_a.sample}"
     @challenge.content = "Écrivez votre énoncé ici"
     authorize @challenge
@@ -34,12 +42,13 @@ class ChallengesController < ApplicationController
   end
 
   def create
+    # binding.pry
     @challenge = Challenge.new(set_challenge_params)
     @challenge.user = current_user
     # binding.pry
     authorize @challenge
     if @challenge.save
-      @count = Challenge.where(skill: @challenge.skill).count
+      @count = count_challenges
       respond_to do |format|
         format.html { redirect_to challenge_path(@challenge), notice: "Excercice Sauvegardé" }
         format.turbo_stream
@@ -74,7 +83,7 @@ class ChallengesController < ApplicationController
   def destroy
     authorize @challenge
     if @challenge.destroy
-      @count = Challenge.where(skill: @challenge.skill).count
+      @count = count_challenges
       respond_to do |format|
         format.html { redirect_to challenges_path, notice: "Excercice Supprimé" }
         format.turbo_stream
@@ -118,13 +127,21 @@ class ChallengesController < ApplicationController
       flash.now[:notice] = "Il n'existe pas d'autre excercice pour cette compétence"
     else
       respond_to do |format|
-        format.html
+        format.html {render partial: "challenges_carroussel"}
         format.turbo_stream
       end
     end
   end
 
   private
+
+  def count_challenges
+    if @challenge.for_belt?
+      Challenge.for_belt.where(skill: @challenge.skill).count
+    else
+      Challenge.classic.where(skill: @challenge.skill).count
+    end
+  end
 
   def set_filters
     # binding.pry
@@ -148,7 +165,7 @@ class ChallengesController < ApplicationController
   end
 
   def set_challenge_params
-    params.require(:challenge).permit(:skill_id, :content, :name)
+    params.require(:challenge).permit(:skill_id, :content, :name, :for_belt)
   end
 
   def set_challenge

@@ -12,9 +12,15 @@ class Challenge < ApplicationRecord
   validates :name, presence: true, uniqueness: { message: "'Le nom de cet exercice éxiste déja'", scope: :skill }
   validates :shared, presence: true
 
+  scope :for_belt, -> { where(for_belt: true) }
+  scope :classic, -> { where(for_belt: false) }
+
+  def for_belt?
+    for_belt
+  end
+
   def new_clone
     #  get sgid clone the attachement if table and attache it content
-
     content = self.content
     if self.content.body.to_s.include?("application/octet-stream")
       # content.body.to_s.gsub('"', "'").gsub(/sgid=\W(.*?)\W\scontent-type=\W+application/, "sgid='#{clone_table.attachable_sgid}' content-type='application")
@@ -22,7 +28,6 @@ class Challenge < ApplicationRecord
         clone_table_challenge_from_sgid(match)
       end
     end
-
     Challenge.new(
       {
         name: "#{name}-Clone#{rand(1..100)}",

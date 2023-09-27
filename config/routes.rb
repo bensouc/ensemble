@@ -5,15 +5,16 @@ Rails.application.routes.draw do
   root to: "pages#home"
   get "/dashboard", to: "dashboard#show"
 
-  # ###############MOBILE ROUTES###############
+  # ############### MOBILE ROUTES###############
   namespace "mobile" do
     resources :work_plans, only: [:index]
     resources :students, only: [:index]
     get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
   end
-  # ###############MOBILE ROUTES###############
+  # ############### CONTACTROUTES ###############
   post "", to: "contact#create", as: :contact_create
 
+  # ############### WORK_PLAN ROUTES###############
   resources :work_plans, only: [:index, :show, :update, :new, :create, :destroy] do
     resources :work_plan_domains, only: [:new, :create]
     post "", to: "work_plans#clone", as: :clone
@@ -25,7 +26,7 @@ Rails.application.routes.draw do
     resources :work_plan_skills, only: [:create]
   end
 
-  # ###############routes for WORK_PLAN_SKILLS###############
+  # ############### routes for WORK_PLAN_SKILLS###############
   resources :work_plan_skills, only: [:update, :destroy, :show] do
     resources :challenges, only: [:create, :update]
     post "/challenges/:id", to: "challenges#clone", as: :clone
@@ -68,22 +69,16 @@ Rails.application.routes.draw do
   get "subscriptions/success", to: "subscriptions#success"
   get "subscriptions/cancel", to: "subscriptions#cancel"
 
-
-
   # ###############END OF STRIPE ROUTES############
 
   # ###############routes for SKILLS###############
   resources :skills
 
-
-
   # ###############routesfor Challenge#########
   resources :challenges, only: [:show, :edit, :update, :destroy, :index, :new, :create]
 
-
   # ###############routes for SCHOOL/SCHOOL_ROLES###############
   resources :schools, only: %w[show]
-
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

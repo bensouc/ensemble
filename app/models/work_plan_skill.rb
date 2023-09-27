@@ -10,12 +10,12 @@ class WorkPlanSkill < ApplicationRecord
   validates :kind, presence: true, inclusion: { in: %w[jeu exercice controle ceinture] }
   validates :status, inclusion: { in: %w[redo failed redo_OK completed new] }
 
-  def student
-    return super unless association(:work_plan_domain).loaded? &&
-                        work_plan_domain.association(:work_plan).loaded?
+  # def student
+  #   return super unless association(:work_plan_domain).loaded? &&
+  #                       work_plan_domain.association(:work_plan).loaded?
 
-    work_plan_domain.work_plan.student
-  end
+  #   work_plan_domain.work_plan.student
+  # end
 
   def special_wps?
     work_plan_domain.work_plan.special_wps
@@ -46,7 +46,7 @@ class WorkPlanSkill < ApplicationRecord
   end
 
   def add_challenges_2_wps(current_user, _actual_challenge = nil)
-    challenges = Challenge.where(skill_id: skill)
+    challenges = Challenge.classic.where(skill_id: skill)
     name = skill.name + (challenges.count + 1).to_s
     # get all challenges azssigned 4 current_student and that skill
     student_challenges = Challenge.assigned_challenges(skill, student)

@@ -8,6 +8,5 @@ FactoryBot.define do
     last_name { "adminSouc" }
     admin { true }
     school
-    school_role
   end
 end

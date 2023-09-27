@@ -1,6 +1,17 @@
-<%= turbo_stream.prepend "skill_#{@challenge.skill.id}_challenges_list" do %>
-  <%= render partial: "show_one_challenge", locals: { challenge: @challenge } %>
-<% end %>
+<% if @challenge.for_belt? %>
+  <%= turbo_stream.prepend "for_belt_skill_#{@challenge.skill.id}_challenges_list" do %>
+    <%= render partial: "show_one_challenge", locals: { challenge: @challenge } %>
+  <% end %>
 
-<%= turbo_stream.update "skill_#{@challenge.skill.id}_new_challenge", "" %>
-<%= turbo_stream.update "skill_#{@challenge.skill.id}_count", "#{@count} exo#{@count > 1 ? 's' : ''}" %>
+  <%= turbo_stream.update "for_belt_skill_#{@challenge.skill.id}_new_challenge", "" %>
+  <%= turbo_stream.update "for_belt_skill_#{@challenge.skill.id}_count",
+                      "#{@count} exo#{@count > 1 ? "s" : ""}" %>
+<% else %>
+  <%= turbo_stream.prepend "skill_#{@challenge.skill.id}_challenges_list" do %>
+    <%= render partial: "show_one_challenge", locals: { challenge: @challenge } %>
+  <% end %>
+
+  <%= turbo_stream.update "skill_#{@challenge.skill.id}_new_challenge", "" %>
+  <%= turbo_stream.update "skill_#{@challenge.skill.id}_count",
+                      "#{@count} exo#{@count > 1 ? "s" : ""}" %>
+<% end %>

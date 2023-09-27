@@ -99,7 +99,7 @@ class WorkPlanDomainsController < ApplicationController
   end
 
   # def add_challenges_2_wps(work_plan_skill)
-  #   challenges = Challenge.where(skill_id: work_plan_skill.skill)
+  #   challenges = Challenge.classic.where(skill_id: work_plan_skill.skill)
   #   if challenges == []
   #     # if no existing challeng 4 that skill
   #     # create a empty challenge 4 that skill
