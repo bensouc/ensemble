@@ -6,6 +6,7 @@ RSpec.describe ChallengesController, type: :controller do
   let(:challenge) { create(:challenge, user:) }
   let(:classroom) { create(:classroom, user:) }
   let(:work_plan) { create(:work_plan, user:) }
+  let(:skill) { create(:skill, school: user.school) }
   let(:work_plan_domain) { create(:work_plan_domain, work_plan:) }
   let(:work_plan_skill) { create(:work_plan_skill, work_plan_domain:, kind: "exercice", challenge:) }
   describe "#index" do
@@ -73,7 +74,7 @@ RSpec.describe ChallengesController, type: :controller do
     context "when user is signed in" do
       it "returns a successful response with the skill params" do
         sign_in(user)
-        get :new, params: { skill: Skill.last.id }
+        get :new, params: { skill: skill.id }
         expect(response).to be_successful
         expect(response).to render_template(:new)
       end
@@ -109,7 +110,7 @@ RSpec.describe ChallengesController, type: :controller do
         sign_in(user)
         expect {
           post :create, params: { challenge: {
-                          skill_id: Skill.last.id,
+                          skill_id: skill.id,
                           content: Faker::Lorem.paragraph(sentence_count: 2, supplemental: false, random_sentences_to_add: 4),
                           name: Faker::Lorem.sentence(word_count: 3, supplemental: false, random_words_to_add: 4),
                         } }
