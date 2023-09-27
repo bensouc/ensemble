@@ -16,7 +16,7 @@ class Challenge < ApplicationRecord
   scope :classic, -> { where(for_belt: false) }
 
   def for_belt?
-    for_belt
+    for_belt == true
   end
 
   def new_clone
