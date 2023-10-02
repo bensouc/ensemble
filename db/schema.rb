@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_26_094412) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_02_084440) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -134,7 +134,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_26_094412) do
   end
 
   create_table "subscriptions", force: :cascade do |t|
-    t.bigint "user_id", null: false
     t.string "external_id", default: "", null: false
     t.string "status", null: false
     t.boolean "cancel_at_period_end", default: false, null: false
@@ -142,7 +141,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_26_094412) do
     t.date "current_period_end", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_subscriptions_on_user_id"
   end
 
   create_table "tables", force: :cascade do |t|
@@ -221,7 +219,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_26_094412) do
   add_foreign_key "shared_classrooms", "users"
   add_foreign_key "skills", "schools"
   add_foreign_key "students", "classrooms"
-  add_foreign_key "subscriptions", "users"
   add_foreign_key "work_plan_domains", "work_plans"
   add_foreign_key "work_plan_skills", "challenges"
   add_foreign_key "work_plan_skills", "skills"
