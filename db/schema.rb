@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_02_084440) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_12_101809) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -101,6 +101,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_02_084440) do
     t.string "city"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "stripe_customer_id"
+    t.string "email"
   end
 
   create_table "shared_classrooms", force: :cascade do |t|

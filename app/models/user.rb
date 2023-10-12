@@ -21,7 +21,7 @@ class User < ApplicationRecord
   has_many :students, through: :classrooms, dependent: :destroy
   has_many :challenges, dependent: nil
 
-  has_one :subscription, dependent: :destroy
+  # has_one :subscription, dependent: :destroy
   has_one_attached :avatar
   # Validations
   validates :first_name, presence: true

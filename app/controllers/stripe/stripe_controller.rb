@@ -1,7 +1,7 @@
 # frozen string literal comment
-class StripeController < ApplicationController
+class Stripe::StripeController < ApplicationController
   def create_portal_session
-    Stripe.api_key = ENV["STRIPE_API_KEY"]
+    # Stripe.api_key = ENV["STRIPE_API_KEY"]
     # Authenticate your customer.
     session = Stripe::BillingPortal::Session.create({
       customer: current_user.stripe_customer_id,

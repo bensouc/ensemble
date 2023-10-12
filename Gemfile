@@ -13,11 +13,10 @@ gem "rails", "~> 7.0.0"
 gem "turbo-rails"
 # end of 7.0.0 UPGRADE
 
-
 #STRIPE setup
-  gem 'money-rails', '~> 1.12'
-  gem "stripe"
-  gem 'stripe_event'
+gem "money-rails", "~> 1.12"
+gem "stripe"
+gem "stripe_event"
 # Use postgresql as the database for Active Record
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
@@ -34,7 +33,7 @@ gem "redis", "~> 4.0"
 # gem 'bcrypt', '~> 3.1.7'
 
 # Admin
-gem 'rails_admin', '~> 3.0'
+gem "rails_admin", "~> 3.0"
 
 # Use Active Storage variant
 gem "image_processing", "~> 1.2"
@@ -61,18 +60,17 @@ gem "rails-i18n"
 gem "bootstrap", "~> 5.2"
 
 # xlsx spreadsheet generation
-gem 'caxlsx'
-gem 'caxlsx_rails'
+gem "caxlsx"
+gem "caxlsx_rails"
 # reduce log size with lograge
 gem "lograge"
-
 
 # gem de navbar
 gem "simple_calendar", "~> 2.4"
 
 # gem for pdf-output
 gem "wicked_pdf"
-gem 'wkhtmltopdf-binary', '~> 0.12.3', group: :development
+gem "wkhtmltopdf-binary", "~> 0.12.3", group: :development
 # gem "wkhtmltopdf-binary", group: :development
 # gem 'wkhtmltopdf-heroku', '~> 2.12', '>= 2.12.6.0'
 gem "wkhtmltopdf-heroku", group: :production
@@ -86,12 +84,12 @@ gem "mobile"
 # end
 
 # Simple cov test
-gem 'simplecov', require: false, group: :test
+gem "simplecov", require: false, group: :test
 
 group :development, :test do
-  gem 'rails-controller-testing'
-  gem 'erb-formatter'
-  gem 'htmlbeautifier'
+  gem "rails-controller-testing"
+  gem "erb-formatter"
+  gem "htmlbeautifier"
   gem "pry-byebug"
   gem "pry-rails"
   gem "dotenv-rails"

@@ -1,3 +1,4 @@
+# rubocop:disable all
 Rails.application.routes.draw do
   mount RailsAdmin::Engine => "/admin", as: "rails_admin"
   devise_for :users,
@@ -61,9 +62,11 @@ Rails.application.routes.draw do
   resources :tables, only: [:show, :create, :update]
 
   # ###############stripe routes###############
-  mount StripeEvent::Engine, at: "/stripe-webhooks"
-  post "create-customer-portal-session", to: "stripe#create_portal_session"
-
+  # namespace :stripe do
+  #   mount StripeEvent::Engine, at: "/stripe-webhooks"
+  # end
+  post "create-customer-portal-session", to: "stripe/stripe#create_portal_session"
+  post "stripe-webhooks", to: "stripe/stripe_webhooks#create"
   # Routes for subscription
   resources :subscriptions, only: [:create, :new]
   get "subscriptions/success", to: "subscriptions#success"
