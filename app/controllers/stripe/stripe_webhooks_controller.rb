@@ -48,7 +48,7 @@ class Stripe::StripeWebhooksController < ApplicationController
     when "customer.subscription.updated"
       @subscription = Stripesubscription.update_or_create(event)
       # handle subscription created
-    binding.pry# puts data_object
+    # binding.pry# puts data_object
       puts "Subscription updated: #{event.id}"
     end
 
@@ -63,7 +63,7 @@ class Stripe::StripeWebhooksController < ApplicationController
       @subscription = Stripesubscription.update_for_customer(event)
       # handle subscription updated
       # puts data_object
-      binding.pry
+      # binding.pry
       puts "Subscription updated: #{event.id}"
     end
 

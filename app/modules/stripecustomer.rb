@@ -15,9 +15,4 @@ module Stripecustomer
     client&.update(stripe_customer_id: nil)
     customer
   end
-
-  def self.add_subscription_to_customer(event)
-    binding.pry
-    subscription = event.data.object
-  end
 end
