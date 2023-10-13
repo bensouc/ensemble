@@ -47,7 +47,7 @@
       <div class="classrooms-details-card">
         <p>
           <i class="fa-solid fa-people-roof"></i>
-          <%= "#{@classrooms.count} / #{@school.subscription.quantity} classe#{"s" if @classrooms.count > 1}" %>
+          <%= "#{@classrooms.count} / #{@subscription.quantity} classe#{"s" if @classrooms.count > 1}" %>
         </p>
         <p>
           <i class="fa-solid fa-graduation-cap"></i>
@@ -56,17 +56,20 @@
       </div>
     </div>
     <div class="subscription-details --border-10px">
-       <%#=@subscription%>
-
-      <h3>Détails de votre Abonnement</h3>
-      <p><i class="fa-solid fa-heart"></i>
-      <%=t("etats_facturation.#{@subscription.status}")%>
-      <%= "(fin le #{@subscription.trial_end})" if @subscription.status == 'trialing'%>
-      </p>
-      <p><i class="fa-solid fa-repeat"></i>
-        Annuel</p>
-      <p><i class="fa-solid fa-calendar-xmark"></i>
-        <%=@subscription.current_period_end%></p>
+      <% if  @subscription.nil? %>
+        Vous n'avez pas encore d'abonnement
+        <%=link_to "Abonnez-vous", subscriptions_pricing_path, class: "area rect-sm btn-valid"%>
+      <% else %>
+        <h3>Détails de votre Abonnement</h3>
+        <p><i class="fa-solid fa-heart"></i>
+          <%= t("etats_facturation.#{@subscription.status}") %>
+          <%= "(fin le #{@subscription.trial_end})" if @subscription.status == "trialing" %>
+        </p>
+        <p><i class="fa-solid fa-repeat"></i>
+          Annuel</p>
+        <p><i class="fa-solid fa-calendar-xmark"></i>
+          <%= @subscription.current_period_end %></p>
+      <% end %>
     </div>
   </div>
 </div>
