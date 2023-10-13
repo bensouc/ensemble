@@ -11,6 +11,7 @@ class User < ApplicationRecord
   # belongs_to :school
   has_one :school_role, dependent: :destroy # Un utilisateur a une seule school_role
   has_one :school, through: :school_role # Un utilisateur appartient à une seule école à travers schoolRole
+  has_one :subscription, through: :school
   has_many :skills, through: :school
   has_many :classrooms, dependent: :destroy
   has_many :work_plans, dependent: :destroy
@@ -21,7 +22,7 @@ class User < ApplicationRecord
   has_many :students, through: :classrooms, dependent: :destroy
   has_many :challenges, dependent: nil
 
-  has_one :subscription, dependent: :destroy
+  # has_one :subscription, dependent: :destroy
   has_one_attached :avatar
   # Validations
   validates :first_name, presence: true
@@ -30,6 +31,10 @@ class User < ApplicationRecord
   # Methods
   def admin?
     admin
+  end
+
+  def super_teacher?
+    school_role.super_teacher == true
   end
 
   def classroom_grades

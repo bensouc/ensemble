@@ -1,0 +1,38 @@
+<script async src="https://js.stripe.com/v3/pricing-table.js"></script>
+
+
+<div class="container backg-image-sub" data-controller='subscriptionnewtab'>
+	<div class="speech w-50">
+		<h3 class='p-2'>Bénéficiez de 25 jours d'essai, quelle que soit la formule d'abonnement choisie.</h3>
+	</div>
+	<div class="stripe-card-select-subscription w-100" >
+		<div class="stripe-card-select-subscription-cards w-100">
+			<div class="left-card-sub_new">
+				<div class="sub_header">
+					<div class="period-sub-btn active" >
+						<h4>Plan Annuel Ecole/Groupe</h4>
+						<p>A partir de 100€ pour deux classes</p>
+					</div>
+
+				</div>
+				<div class="subscription-detail">
+					<h3><i class="fa-solid fa-check" style="color: #51d237;"></i>Inclus dés la période d'essai</h3>
+					<p><i class="fa-solid fa-infinity"></i>Plans de travail illimités</p>
+					<p><i class="fa-solid fa-infinity"></i>Ajout d'Exercice illimité</p>
+					<p><i class="fa-solid fa-gears"></i>Génération Automatique de Plan de Travail</p>
+          <p><i class="fa-solid fa-graduation-cap"></i>Evaluation Individuelle</p>
+          <p><i class="fa-solid fa-people-roof"></i>Nb de professeurs non limité</p>
+					<p><i class="fa-solid fa-chalkboard-user"></i>Une limite de 35 élèves par Classe</p>
+
+        </div>
+			</div>
+			<stripe-pricing-table pricing-table-id="prctbl_1O0P6ND36LSTpclfX9OMEmmm"
+customer-email= <%=@customer.email%>
+publishable-key= <%=ENV["STRIPE_API_KEY"]%>
+class='stripe-subscription-cards'  >
+</stripe-pricing-table>
+		</div>
+		<%# <%= button_to "demarrer un abonnement annuel", subscriptions_path(type: "annualy"), data:{turbo:"false"} %>
+		<%# <%= button_to "demarrer un abonnement mensuel", subscriptions_path(type: "monthly"), data:{turbo:"false"} %>
+	</div>
+</div>

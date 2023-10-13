@@ -1,0 +1,21 @@
+stripe-pricing-table.stripe-subscription-cards {
+  position: relative;
+  top: -114px;
+  left: 66px;
+  width: 400px;
+  height: 74vh;
+}
+
+  .PricingTable {
+    border-radius: 10px !important;
+    border: thin solid white !important;
+  }
+
+// stripe-pricing-table {
+//   PriceColumn-priceAndButton {
+//     display: flex !important;
+//     /* flex-direction: row; */
+//     flex-wrap: wrap !important;
+//     justify-content: space-between !important;
+//   }
+// }

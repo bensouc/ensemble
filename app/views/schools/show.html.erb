@@ -9,7 +9,7 @@
       <br>
       <div class="group-number-card">
         <p><i class="fa-solid fa-users"></i>
-          <%= "#{@school.users.count} / MAX  Membre#{"s" if @school.users.count > 1}" %></p>
+          <%= "#{@school.users.count} Membre#{"s" if @school.users.count > 1}" %></p>
         <% if current_user.school_role.super_teacher? %>
           <%= link_to new_user_registration_path do %>
             <i
@@ -47,20 +47,26 @@
       <div class="classrooms-details-card">
         <p>
           <i class="fa-solid fa-people-roof"></i>
-          <%= "#{@classrooms.count} / MAX classe#{"s" if @classrooms.count > 1}" %>
+          <%= "#{@classrooms.count} / #{@school.subscription.quantity} classe#{"s" if @classrooms.count > 1}" %>
         </p>
         <p>
           <i class="fa-solid fa-graduation-cap"></i>
-          <%= "#{@students.count} / MAX  élève#{"s" if @students.count > 1}" %>
+          <%= "#{@students.count} élève#{"s" if @students.count > 1}" %>
         </p>
       </div>
     </div>
     <div class="subscription-details --border-10px">
+       <%#=@subscription%>
+
       <h3>Détails de votre Abonnement</h3>
+      <p><i class="fa-solid fa-heart"></i>
+      <%=t("etats_facturation.#{@subscription.status}")%>
+      <%= "(fin le #{@subscription.trial_end})" if @subscription.status == 'trialing'%>
+      </p>
       <p><i class="fa-solid fa-repeat"></i>
         Annuel</p>
       <p><i class="fa-solid fa-calendar-xmark"></i>
-        Date de fin</p>
+        <%=@subscription.current_period_end%></p>
     </div>
   </div>
 </div>

@@ -3,6 +3,7 @@ class SchoolsController < ApplicationController
 
   def show
     authorize @school
+    @subscription = @school.subscription
   end
 
 

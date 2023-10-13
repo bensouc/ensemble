@@ -15,14 +15,15 @@
   justify-content: space-around;
 }
 
-
-
 img.avatar {
   padding: 0;
   border-radius: 50em;
   width: 55px;
   height: 55px;
   margin: 10px 0 10px 10px;
+}
+.dropdown-menu.left {
+  margin-left: -135px !important;
 }
 
 .dropdown-item {
