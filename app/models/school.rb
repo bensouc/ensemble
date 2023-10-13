@@ -6,8 +6,12 @@ class School < ApplicationRecord
   has_many :classrooms, through: :users
   has_many :skills, dependent: :destroy
 
+  validates :name, presence: true
+  validates :email, presence: true, uniqueness: true
+
   after_create do
-    stripe_customer = Stripe::Customer.create({ email: email })
+    Stripe.api_key = ENV["STRIPE_API_KEY"]
+    stripe_customer = Stripe::Customer.create({ email:  })
     # stripe_customer_id = stripe_customer.id
     # update(stripe_customer_id: stripe_customer_id)
   end

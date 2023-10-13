@@ -1,14 +1,15 @@
 module StripeHelper
   # get or cre
-  def self.get_or_create_customer(user)
+  # StripeHelper.get_or_create_customer(current_user)
+  def self.get_or_create_customer(client)
     Stripe.api_key = ENV["STRIPE_API_KEY"]
     customer = nil
-    if user.stripe_customer_id?
-      customer = Stripe::Customer.retrieve(user.stripe_customer_id)
-    # else
-    #   customer = Stripe::Customer.create(email: user.email)
-    #   user.stripe_customer_id = customer.id
-    #   user.save
+    if client.stripe_customer_id?
+      customer = Stripe::Customer.retrieve(client.stripe_customer_id)
+    else
+      customer = Stripe::Customer.create(email: client.email)
+      client.stripe_customer_id = customer.id
+      client.save
     end
     customer
   end

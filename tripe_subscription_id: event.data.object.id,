@@ -1,0 +1,23 @@
+
+[1mFrom:[0m /home/bensouc/code/bensouc/ensemble/app/modules/stripesubscription.rb:4 Stripesubscription.update_for_customer:
+
+     [1;34m2[0m: [32mdef[0m [1;36mself[0m.[1;34mupdate_for_customer[0m(event)
+     [1;34m3[0m:   binding.pry
+ =>  [1;34m4[0m:   subscription = [1;34;4mSubscription[0m.find_by(
+     [1;34m5[0m:     [35mstripe_subscription_id[0m: event.data.object.id,
+     [1;34m6[0m:   )
+     [1;34m7[0m:   subscription&!empty?.new([35mstripe_subscription_id[0m: event.data.object.id)
+     [1;34m8[0m:   binding.pry
+     [1;34m9[0m:   subscription.update(
+    [1;34m10[0m:     [35mstatus[0m: event.data.object.status,
+    [1;34m11[0m:     [35mquantity[0m: event.data.object.quantity,
+    [1;34m12[0m:     [35mcancel_at_period_end[0m: event.data.object.cancel_at_period_end,
+    [1;34m13[0m:     [35mcurrent_period_start[0m: event.data.object.current_period_start,
+    [1;34m14[0m:     [35mcurrent_period_end[0m: event.data.object.current_period_end,
+    [1;34m15[0m:     [35mplan_id[0m: event.data.object.items.data[[1;34m0[0m].plan.id,
+    [1;34m16[0m:     [35mschool[0m: [1;34;4mSchool[0m.find_by([35mstripe_customer_id[0m: event.data.object.customer),
+    [1;34m17[0m:   )
+    [1;34m18[0m:   binding.pry
+    [1;34m19[0m:   subscription
+    [1;34m20[0m: [32mend[0m
+

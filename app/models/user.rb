@@ -32,6 +32,10 @@ class User < ApplicationRecord
     admin
   end
 
+  def super_teacher?
+    school_role.super_teacher == true
+  end
+
   def classroom_grades
     # return all current user classroom Grades
     grades = classrooms.map { |classroom| classroom.grade }

@@ -1,3 +1,5 @@
+# rubocop:disable all
+
 class Stripe::StripeWebhooksController < ApplicationController
   skip_before_action :authenticate_user!
   # skip_before_action :verify_authenticity_token
@@ -23,6 +25,7 @@ class Stripe::StripeWebhooksController < ApplicationController
     end
 
     # Handle the event
+
     case event.type
     when "checkout.session.completed"
       session = event.data.object
@@ -34,6 +37,19 @@ class Stripe::StripeWebhooksController < ApplicationController
     when "customer.created"
       @customer = Stripecustomer.add_stripe_customer(event)
       puts "Customer created: #{@customer.email} // #{@customer.id} // #{event.id}}"
+    when "customer.deleted"
+      @customer = Stripecustomer.remove_stripe_customer(event)
+      puts "Customer id remove for : #{@customer.email} // #{@customer.id}}"
+    when "customer.subscription.created"
+      @subscription = Stripesubscription.update_or_create(event)
+      # handle subscription created
+      # puts data_object
+      puts "Subscription created: #{event.id}"
+    when "customer.subscription.updated"
+      @subscription = Stripesubscription.update_or_create(event)
+      # handle subscription created
+    binding.pry# puts data_object
+      puts "Subscription updated: #{event.id}"
     end
 
     if event.type == "customer.subscription.deleted"
@@ -44,15 +60,14 @@ class Stripe::StripeWebhooksController < ApplicationController
     end
 
     if event.type == "customer.subscription.updated"
+      @subscription = Stripesubscription.update_for_customer(event)
       # handle subscription updated
       # puts data_object
+      binding.pry
       puts "Subscription updated: #{event.id}"
     end
 
-    if event.type == "customer.subscription.created"
-      # handle subscription created
-      # puts data_object
-      puts "Subscription created: #{event.id}"
+    if event.type == ""
     end
 
     if event.type == "customer.subscription.trial_will_end"

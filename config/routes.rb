@@ -71,6 +71,7 @@ Rails.application.routes.draw do
   resources :subscriptions, only: [:create, :new]
   get "subscriptions/success", to: "subscriptions#success"
   get "subscriptions/cancel", to: "subscriptions#cancel"
+  get "subscriptions/pricing", to: "subscriptions#pricing"
 
   # ###############END OF STRIPE ROUTES############
 

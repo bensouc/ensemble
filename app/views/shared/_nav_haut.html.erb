@@ -24,7 +24,7 @@
 					<div class="dropdown-menu left" aria-labelledby="navbarDropdownMenuLink">
 						<a class="dropdown-item" href="#">Ma classe</a>
 							<%=link_to "Mon compte", edit_user_registration_path, class: "dropdown-item"%>
-						<% unless current_user.stripe_customer_id.nil? %>
+						<% if (current_user.super_teacher?) %>
 							<form method="POST" action="/create-customer-portal-session" data-turbo="false">
 								<button type="submit">Gérer votre abonnement</button>
 							</form>
