@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_13_074839) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_13_104949) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -146,6 +146,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_13_074839) do
     t.bigint "school_id"
     t.integer "quantity"
     t.string "plan_id"
+    t.date "start_date"
+    t.date "trial_end"
     t.index ["school_id"], name: "index_subscriptions_on_school_id"
   end
 

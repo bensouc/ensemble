@@ -38,8 +38,16 @@ fr:
   trialing: "Essai"
   active: "En cours"
   not_authorized: "Vous n'êtes pas autorisé à effectuer cette action."
-
-
+  # subscription
+  etats_facturation:
+    trialing: "Essai en cours"
+    active: "Actif"
+    past_due: "En retard"
+    canceled: "Annulé"
+    unpaid: "Non payé"
+    incomplete: "Incomplet"
+    pause: "En pause"
+    ended: "Terminé"
   activerecord:
     errors:
       messages:

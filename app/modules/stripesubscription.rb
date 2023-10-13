@@ -14,6 +14,8 @@ module Stripesubscription
       current_period_end: Time.at(event.data.object.current_period_end),
       plan_id: event.data.object.items.data[0].plan.id,
       school: School.find_by(stripe_customer_id: event.data.object.customer),
+      start_date: Time.at(event.data.object.start_date),
+      trial_end: Time.at(event.data.object.trial_end),
     )
     subscription
   end
