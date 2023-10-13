@@ -4,7 +4,7 @@ module StripeHelper
   def self.get_or_create_customer(client)
     Stripe.api_key = ENV["STRIPE_API_KEY"]
     customer = nil
-    if client.stripe_customer_id?
+    if client.stripe_customer_id? && !customer.deleted
       customer = Stripe::Customer.retrieve(client.stripe_customer_id)
     else
       customer = Stripe::Customer.create(email: client.email)
