@@ -2,7 +2,6 @@ class SubscriptionsController < ApplicationController
 
   def pricing
       @customer = StripeHelper.get_or_create_customer(current_user.school)
-      raise
       authorize Subscription
   end
 
