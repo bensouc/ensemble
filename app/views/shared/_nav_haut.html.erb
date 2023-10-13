@@ -26,7 +26,7 @@
 							<%=link_to "Mon compte", edit_user_registration_path, class: "dropdown-item"%>
 						<% if (current_user.super_teacher?) %>
               <% if current_user.subscription && current_user.subscription.active_or_trialing?%>
-              	<form method="POST" action="/create-customer-portal-session" data-turbo="false">
+              	<form method="GET" action="/create-customer-portal-session" data-turbo="false">
 								<button type="submit" class= "dropdown-item">Gérer votre abonnement</button>
 							</form>
               <% else %>

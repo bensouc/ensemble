@@ -29,6 +29,7 @@
 			<stripe-pricing-table pricing-table-id="prctbl_1O0P6ND36LSTpclfX9OMEmmm"
 customer-email= <%=@customer.email%>
 publishable-key= <%=ENV["STRIPE_API_KEY"]%>
+client-reference-id= <%= @customer.id %>
 class='stripe-subscription-cards'  >
 </stripe-pricing-table>
 		</div>

@@ -65,7 +65,7 @@ Rails.application.routes.draw do
   # namespace :stripe do
   #   mount StripeEvent::Engine, at: "/stripe-webhooks"
   # end
-  post "create-customer-portal-session", to: "stripe/stripe#create_portal_session"
+  get "create-customer-portal-session", to: "stripe/stripe#create_portal_session"
   post "stripe-webhooks", to: "stripe/stripe_webhooks#create"
   # Routes for subscription
   resources :subscriptions, only: [:create, :new]
