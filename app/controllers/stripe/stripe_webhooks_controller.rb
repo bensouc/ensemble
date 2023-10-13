@@ -12,7 +12,7 @@ class Stripe::StripeWebhooksController < ApplicationController
 
     begin
       event = Stripe::Webhook.construct_event(
-        payload, sig_header, ENV["LOCAL_STRIPE_WEBHOOK_SECRET_KEY"]
+        payload, sig_header, ENV["STRIPE_WEBHOOK_SECRET_KEY"]
       )
     rescue JSON::ParserError => e
       status 400
@@ -48,7 +48,7 @@ class Stripe::StripeWebhooksController < ApplicationController
     when "customer.subscription.updated"
       @subscription = Stripesubscription.update_or_create(event)
       # handle subscription created
-    # binding.pry# puts data_object
+      # binding.pry# puts data_object
       puts "Subscription updated: #{event.id}"
     end
 
