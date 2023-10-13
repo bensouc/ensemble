@@ -25,9 +25,13 @@
 						<a class="dropdown-item" href="#">Ma classe</a>
 							<%=link_to "Mon compte", edit_user_registration_path, class: "dropdown-item"%>
 						<% if (current_user.super_teacher?) %>
-							<form method="POST" action="/create-customer-portal-session" data-turbo="false">
-								<button type="submit">Gérer votre abonnement</button>
+              <% if current_user.subscription && current_user.subscription.active_or_trialing?%>
+              	<form method="POST" action="/create-customer-portal-session" data-turbo="false">
+								<button type="submit" class= "dropdown-item">Gérer votre abonnement</button>
 							</form>
+              <% else %>
+                <%=link_to "Abonnez-vous", subscriptions_pricing_path, class: "dropdown-item"%>
+              <% end %>
 						<% end %>
               <%=link_to "Mon école", school_path(current_user.school), class: "dropdown-item"%>
 						<%if current_user.admin%>

@@ -1,6 +1,5 @@
 .backg-image-sub {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-    url("child_hand-min.jpg");
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("child_hand-min.jpg");
   background-size: cover;
   padding: 15px 10px 30px 10px;
   border-radius: 15px;
@@ -21,20 +20,24 @@
   width: 288px;
 }
 .sub_header {
-  width: 288px;
+  width: 389px;
+  // width: 288px;
   margin-bottom: 15px;
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  top: 31px;
   .period-sub-btn {
     position: relative;
+    top: 31px;
+    left: -103px;
+    padding: 10px 19px;
+    text-align: left;
     display: flex;
     flex-direction: column;
     // flex-wrap: wrap;
     justify-content: center;
-    text-align: center;
+    // text-align: center;
     font-size: 16px;
     cursor: pointer;
     background-color: $menuOff;
@@ -45,9 +48,10 @@
     }
   }
   .period-sub-btn.active {
-    background-color: $rose;
-    color: $blanc;
+    background-color: #f241508f;
+    color: #ffffff;
     font-weight: 600;
+    border-radius: 10px;
   }
   .period-sub-btn.left-sub-btn {
     padding: 5px 0px 5px 18px;
@@ -82,7 +86,7 @@
   align-items: flex-start;
   justify-content: space-evenly;
   .subscription-detail {
-    width: 350px;
+    width: 453px;
     display: flex;
     flex-direction: column;
     align-items: flex-start;

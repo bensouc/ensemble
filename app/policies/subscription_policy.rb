@@ -10,6 +10,14 @@ class SubscriptionPolicy < ApplicationPolicy
     true
   end
 
+  def success?
+    true
+  end
+
+  def new?
+  true
+  end
+
   private
 
   def user_is_owner_or_admin?
