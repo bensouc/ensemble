@@ -6,7 +6,7 @@ class SubscriptionPolicy < ApplicationPolicy
   #   end
   # end
 
-  def pricing?
+  def school_pricing?
     true
   end
 

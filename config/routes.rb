@@ -67,13 +67,15 @@ Rails.application.routes.draw do
   # end
   get "create-customer-portal-session", to: "stripe/stripe#create_portal_session"
   post "stripe-webhooks", to: "stripe/stripe_webhooks#create"
-  # Routes for subscription
+  post "create-subscription-checkout", to: "stripe/checkouts#create_subscription_checkout"
+  # ###############END OF STRIPE ROUTES ############
+
+  # ############### Subscriptions ###############
   resources :subscriptions, only: [:create, :new]
   get "subscriptions/success", to: "subscriptions#success"
   get "subscriptions/cancel", to: "subscriptions#cancel"
-  get "subscriptions/pricing", to: "subscriptions#pricing"
-
-  # ###############END OF STRIPE ROUTES############
+  get "subscriptions/school_pricing", to: "subscriptions#school_pricing"
+   # ###############END OF Subscriptions ROUTES############
 
   # ###############routes for SKILLS###############
   resources :skills

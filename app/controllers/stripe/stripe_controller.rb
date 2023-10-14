@@ -5,9 +5,11 @@ class Stripe::StripeController < ApplicationController
     # Authenticate your customer.
     session = Stripe::BillingPortal::Session.create({
       customer: current_user.school.stripe_customer_id,
-      return_url: "https://app-ensemble.fr/dashboard"
+      return_url: "https://app-ensemble.fr/dashboard",
     })
     authorize session
     redirect_to session.url, allow_other_host: true
   end
+
+  
 end

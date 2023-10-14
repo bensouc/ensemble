@@ -19,4 +19,9 @@ module Stripesubscription
     )
     subscription
   end
+
+  def self.delete(stripe_subscription_id)
+    subscription = Subscription.find_by(stripe_subscription_id: stripe_subscription_id)
+    subscription.destroy
+  end
 end

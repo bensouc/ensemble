@@ -5,7 +5,8 @@ class Stripe::BillingPortal::SessionPolicy < ApplicationPolicy
     #   scope.all
     # end
   end
-   def create_portal_session?
+
+  def create_portal_session?
     !record.nil?
   end
 end

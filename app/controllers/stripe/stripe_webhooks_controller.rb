@@ -42,30 +42,24 @@ class Stripe::StripeWebhooksController < ApplicationController
       puts "Customer id remove for : #{@customer.email} // #{@customer.id}}"
     when "customer.subscription.created"
       @subscription = Stripesubscription.update_or_create(event)
-      # handle subscription created
-      # puts data_object
       puts "Subscription created: #{event.id}"
+
     when "customer.subscription.updated"
       @subscription = Stripesubscription.update_or_create(event)
-      # handle subscription created
-      # binding.pry# puts data_object
       puts "Subscription updated: #{event.id}"
+    when "customer.subscription.deleted"
+      stripe_subscription_id = event.data.object.id
+      @subscription = Stripesubscription.delete(tripe_subscription_id)
+      puts "Subscription deleted: #{event.id}"
     end
 
-    if event.type == "customer.subscription.deleted"
-      # handle subscription canceled automatically based
-      # upon your subscription settings. Or if the user cancels it.
-      # puts data_object
-      puts "Subscription canceled: #{event.id}"
-    end
-
-    if event.type == "customer.subscription.updated"
-      @subscription = Stripesubscription.update_for_customer(event)
-      # handle subscription updated
-      # puts data_object
-      # binding.pry
-      puts "Subscription updated: #{event.id}"
-    end
+  # when "customer.subscription.updated"
+  #     @subscription = Stripesubscription.update_for_customer(event)
+  #     # handle subscription updated
+  #     # puts data_object
+  #     # binding.pry
+  #     puts "Subscription updated: #{event.id}"
+  #   end
 
     if event.type == ""
     end
