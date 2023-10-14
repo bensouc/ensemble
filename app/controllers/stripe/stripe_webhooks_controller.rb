@@ -49,7 +49,7 @@ class Stripe::StripeWebhooksController < ApplicationController
       puts "Subscription updated: #{event.id}"
     when "customer.subscription.deleted"
       stripe_subscription_id = event.data.object.id
-      @subscription = Stripesubscription.delete(tripe_subscription_id)
+      @subscription = Stripesubscription.delete(stripe_subscription_id)
       puts "Subscription deleted: #{event.id}"
     end
 
