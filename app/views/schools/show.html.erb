@@ -1,6 +1,6 @@
 <div class="container3">
-  <h1>Groupe
-    <%= @school.name %>
+  <h1 class="mb-4">
+  Groupe <%= @school.name %>
   </h1>
   <div class="school-show">
     <div class="teachers-list subscription-details --border-10px">
@@ -58,7 +58,7 @@
     <div class="subscription-details --border-10px">
       <% if  @subscription.nil? %>
         Vous n'avez pas encore d'abonnement
-        <%=link_to "Abonnez-vous", subscriptions_school_pricing_path, class: "dropdown-item"%>
+        <%=link_to "Abonnez-vous", subscriptions_school_pricing_path, class: "btn-flat text-center"%>
       <% else %>
         <h3>Détails de votre Abonnement</h3>
         <p><i class="fa-solid fa-heart"></i>

@@ -27,11 +27,13 @@
 }
 
 .subscription-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   text-align: left;
   padding: 20px;
   background-color: #f7f7f7;
   border: 1px solid #ddd;
-
 }
 
 .subscription-details h3 {
