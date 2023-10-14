@@ -26,7 +26,7 @@
 
         </div>
 			</div>
-			<stripe-pricing-table pricing-table-id="prctbl_1O0P6ND36LSTpclfX9OMEmmm"
+			<stripe-pricing-table pricing-table-id=<%=ENV["STRIPE_SCHOOL_PRICING_ID"]%>
 customer-email= <%=@customer.email%>
 publishable-key= <%=ENV["STRIPE_API_KEY"]%>
 client-reference-id= <%= @customer.id %>
