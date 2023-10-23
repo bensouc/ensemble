@@ -94,6 +94,10 @@ class WorkPlansController < ApplicationController
         @previous << [wps.skill_id, last_4_wps]
       end
     end
+    respond_to do |format|
+      format.html 
+      format.turbo_stream
+    end
   end
 
   def show
@@ -175,7 +179,6 @@ class WorkPlansController < ApplicationController
       @work_plan.destroy
       @my_work_plans_unassigned = WorkPlan.where(user: current_user, special_wps: false, student: nil)
       @count = @my_work_plans_unassigned.count
-
     else
       @work_plan.destroy
       # @count = WorkPlan.where(student: @student).where.not(special_wps: true).count

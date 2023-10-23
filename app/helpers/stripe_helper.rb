@@ -6,6 +6,7 @@ module StripeHelper
     customer = nil
     if client.stripe_customer_id?
       customer = Stripe::Customer.retrieve(client.stripe_customer_id)
+      # TODO: check if customer is valid / not deleted
     else
       customer = Stripe::Customer.create(email: client.email)
       client.stripe_customer_id = customer.id
