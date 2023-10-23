@@ -1,3 +1,4 @@
+<%= turbo_frame_tag "work_plan_index" do %>
 <div class="control-show" data-controller='cloning-wp'>
   <%# cloning control panel %>
   <%= render "show_cloning_panel", work_plan: @work_plan %>
@@ -50,3 +51,4 @@
   <%= render "show_wp_sharing_modal", work_plan: @work_plan, teachers: @teachers %>
   <%# END WP SHOW MODALS %>
 </div>
+<% end %>

@@ -1,26 +1,38 @@
-<div class=' pt ' data-controller='navigation loadingspinnermgnt'>
-  <div class='eval-sticky-header' data-navigation-target='wp' >
-    <div class="top-floating-btn" id='backToBottomBtn' data-action="click->navigation#backFunction">
-      <i class="fa-solid fa-circle-arrow-down"></i>
-    </div>
-    <% # header WP %>
-    <%= render "shared_header_wp", work_plan: @work_plan %>
-    <% # Student details %>
-    <div class='student-name d-flex justify-content-between'>
-      <% unless @work_plan.student.nil? %>
-        <%= link_to student_path(@work_plan.student),  class: 'student_name_link',data:{action: "click->loadingspinnermgnt#displaySpinner"} do%>
-          <h2><strong><%= @work_plan.student.first_name %></strong></h2>
+<%= turbo_frame_tag "work_plan_index" do %>
+  <div class=' pt ' data-controller='navigation loadingspinnermgnt'>
+    <div class='eval-sticky-header' data-navigation-target='wp'>
+      <div
+        class="top-floating-btn"
+        id='backToBottomBtn'
+        data-action="click->navigation#backFunction"
+      >
+        <i class="fa-solid fa-circle-arrow-down"></i>
+      </div>
+      <%# header WP %>
+      <%= render "shared_header_wp", work_plan: @work_plan %>
+      <%# Student details %>
+      <div class='student-name d-flex justify-content-between'>
+        <% unless @work_plan.student.nil? %>
+          <%= link_to student_path(@work_plan.student),  class: 'student_name_link',data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+            <h2><strong><%= @work_plan.student.first_name %></strong></h2>
+          <% end %>
         <% end %>
-      <% end %>
-      <h1>Correction</h1>
-      <%= link_to 'Retour Plan de travail', work_plan_path(@work_plan), class: 'utility-wp-btn eval-btn'%>
+        <h1>Correction</h1>
+        <%= link_to "Retour Plan de travail",
+        work_plan_path(@work_plan),
+        class: "utility-wp-btn eval-btn" %>
+      </div>
+    </div>
+    <%# Start of a domain %>
+    <div>
+      <%= render "eval_work_plan_domains", work_plan: @work_plan %>
+    </div>
+    <div
+      class="bottom-floating-btn"
+      id='backToTopBtn'
+      data-action="click->navigation#topFunction"
+    >
+      <i class="fa-solid fa-circle-arrow-up"></i>
     </div>
   </div>
-  <% # Start of a domain %>
-  <div>
-    <%= render "eval_work_plan_domains", work_plan: @work_plan %>
-  </div>
-  <div class="bottom-floating-btn" id='backToTopBtn' data-action="click->navigation#topFunction">
-    <i class="fa-solid fa-circle-arrow-up"></i>
-  </div>
-</div>
+<% end %>
