@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_13_104949) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_24_092413) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -84,6 +84,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_13_104949) do
     t.string "name"
     t.boolean "shared"
     t.index ["user_id"], name: "index_classrooms_on_user_id"
+  end
+
+  create_table "grades", force: :cascade do |t|
+    t.string "grade_level"
+    t.string "name"
+    t.bigint "school_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["school_id"], name: "index_grades_on_school_id"
   end
 
   create_table "school_roles", force: :cascade do |t|
@@ -221,6 +230,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_13_104949) do
   add_foreign_key "challenges", "skills"
   add_foreign_key "challenges", "users"
   add_foreign_key "classrooms", "users"
+  add_foreign_key "grades", "schools"
   add_foreign_key "school_roles", "schools"
   add_foreign_key "school_roles", "users"
   add_foreign_key "shared_classrooms", "classrooms"
