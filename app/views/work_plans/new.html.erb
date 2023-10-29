@@ -15,7 +15,7 @@
           <%= f.input :name, label: false, required: :true,
                       # placeholder: 'CE2...',
                       input_html: { class: 'area grow m-left' } %>
-          <%= f.input :grade, label: false,  required: true,
+          <%= f.association :grade, label: false,  required: true,
                             collection: @grades,
                             input_html: { class: 'area grow m-left'}
                             %>
