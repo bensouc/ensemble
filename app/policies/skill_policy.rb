@@ -2,7 +2,7 @@ class SkillPolicy < ApplicationPolicy
   class Scope < Scope
     # NOTE: Be explicit about which records you allow access to!
     def resolve
-      scope.includes([:challenges]).where(school: user.school)
+      scope.includes([:challenges, :grade, :school]).where(school: user.school)
     end
   end
 
@@ -27,5 +27,4 @@ class SkillPolicy < ApplicationPolicy
   def user_is_owner_or_admin?
     user.admin || record.school == user.school
   end
-
 end

@@ -40,7 +40,7 @@ class SkillsController < ApplicationController
     @skill.school = current_user.school
     @skill.save!
     # redirect_to skill_path(@skill)
-    @skills = Skill.where(grade: @skill.grade, school: current_user.school, domain: @skill.domain, level: @skill.level)
+    @skills = Skill.includes([:grade,:school]).where(grade: @skill.grade, school: current_user.school, domain: @skill.domain, level: @skill.level)
     render partial: "skills/all_skills_by_domain_level",
            locals: { skills: @skills, domain: @skill.domain, level: @skill.level }
 
@@ -75,7 +75,7 @@ class SkillsController < ApplicationController
     @grades = current_user.classroom_grades
     query = params[:grade]
     @school = current_user.school
-    @grade = query.nil? ? @grades.first : @grades.select { |grade| grade.name == query }
+    @grade = query.nil? ? @grades.first : Grade.find(query)
     @skills = policy_scope(Skill)
     @are_special_domains = current_user.school.id == 1
     @skills = @skills.select { |skill| skill.grade == @grade }

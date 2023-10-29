@@ -21,8 +21,8 @@
     <%= render "form",
     skill:
       Skill.new(
-        grade: grade.first,
-        school: grade.first.school,
+        grade: skills.first.grade,
+        school: skills.first.school,
         level: skills.first.level,
         domain: domain,
         level: level
