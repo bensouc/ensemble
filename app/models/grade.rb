@@ -11,6 +11,6 @@ class Grade < ApplicationRecord
   private
 
   def set_default
-    self.name = grade_level if name.nil?
+    self.name = grade_level if name.nil? || name == ""
   end
 end

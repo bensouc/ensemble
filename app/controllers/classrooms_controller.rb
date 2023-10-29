@@ -9,6 +9,7 @@ class ClassroomsController < ApplicationController
     @shared_classrooms = policy_scope(SharedClassroom)
     shared_classrooms = @shared_classrooms.includes([:classroom]).map(&:classroom)
     @classrooms = (policy_scope(Classroom) + shared_classrooms).sort_by(&:created_at)
+    @school_grades = @school.grades
     @students_list = []
     @school_teachers = current_user.collegues
     @classrooms.each do |classroom|
@@ -101,7 +102,7 @@ class ClassroomsController < ApplicationController
   end
 
   def set_classroom_params
-    params.require(:classroom).permit(:grade, :name)
+    params.require(:classroom).permit(:grade_id, :name)
   end
 
   # COntroller Method

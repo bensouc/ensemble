@@ -13,7 +13,7 @@ class StudentsController < ApplicationController
     @belt = Belt::BELT_COLORS
     @all_skills_and_last_wps = []
     @belts_specials_count = []
-    @student_grade = @student.classroom.grade.grade_level
+    @student_grade = @student.classroom.grade
     @domains = @student.all_domains_from_student
     @student_skills = Skill.for_school(current_user.school).where(grade: @student_grade)
     @belts = Belt.where(student: @student)
@@ -22,6 +22,7 @@ class StudentsController < ApplicationController
     all_last_wps = WorkPlanSkill.last_wps(@student, @student_skills)
     # WorkPlanSkill.where(student: student).max_by(&:created_at) fdf
     puts "LE MAP"
+    binding.pry
     @all_skills_and_last_wps = @student_skills.map do |skill|
       {
         skill:,

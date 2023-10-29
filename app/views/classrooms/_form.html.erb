@@ -3,9 +3,9 @@
     <div class="left_box">
       <i class="fa-solid fa-graduation-cap class-grade"></i>
       <p>*</p>
-      <%=f.input :grade, label: false, required: true,
+      <%=f.association :grade, label: false, required: true,
                               include_blank:  "Choisissez un niveau",
-                              collection: Classroom::GRADE,
+                              collection: @school_grades,
                               input_html: {class: 'area add-grade'}
                                 %>
     </div>
