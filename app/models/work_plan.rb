@@ -18,7 +18,7 @@ class WorkPlan < ApplicationRecord
 
 
   def all_domains_from_work_plan
-    WorkPlanDomain::DOMAINS[grade]
+    WorkPlanDomain::DOMAINS[grade.grade_level]
   end
 
   def self.with_associations
