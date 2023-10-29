@@ -63,7 +63,7 @@ class WorkPlanDomain < ApplicationRecord
         belt = Belt.find_or_create_by(
           { student_id: special_work_plan.student.id,
             domain: work_plan_domain.domain,
-            grade: skill.grade.grade_level,
+            grade: skill.grade,
             level: skill.level }
         )
         belt.completed = true

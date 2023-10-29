@@ -12,7 +12,7 @@ class Student < ApplicationRecord
   validates :first_name, presence: true
 
   def grade
-    classroom.grade.grade_level
+    classroom.grade
   end
 
   def all_domains_from_student
