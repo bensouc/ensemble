@@ -6,7 +6,7 @@ module Xlsx
     # students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     # header << students_list.map { |student| student.first_name.capitalize }
     # create a tab for each domain
-    WorkPlanDomain::DOMAINS[grade].each do |domain|
+    WorkPlanDomain::DOMAINS[grade.grade_level].each do |domain|
       # all_completed_belts = Belt.includes([:student]).where(student: students_list, domain: domain, completed: true)
       workbook.add_worksheet(name: domain.capitalize.to_s) do |sheet|
         sheet.add_row header.flatten

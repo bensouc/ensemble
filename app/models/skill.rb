@@ -27,7 +27,7 @@ class Skill < ApplicationRecord
   end
 
   def specials?
-    domain.in?(WorkPlanDomain::DOMAINS_SPECIALS) && grade_level != "CM2"
+    domain.in?(WorkPlanDomain::DOMAINS_SPECIALS) && grade.grade_level != "CM2"
   end
 
   def symbol_img_name
