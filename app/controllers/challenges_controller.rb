@@ -13,12 +13,12 @@ class ChallengesController < ApplicationController
     challenges = policy_scope(Challenge)
     @challenges = challenges.select do |challenge|
       challenge.skill.domain == @domain &&
-        challenge.skill.level == @level.to_i && challenge.skill.grade == @grade &&
+        challenge.skill.level == @level.to_i && challenge.skill.grade.grade_level == @grade &&
         !challenge.for_belt?
     end
     @belt_challenges = challenges.select do |challenge|
       challenge.skill.domain == @domain &&
-        challenge.skill.level == @level.to_i && challenge.skill.grade == @grade &&
+        challenge.skill.level == @level.to_i && challenge.skill.grade.grade_level == @grade &&
         challenge.for_belt?
     end
     # binding.pry
@@ -127,7 +127,7 @@ class ChallengesController < ApplicationController
       flash.now[:notice] = "Il n'existe pas d'autre excercice pour cette compétence"
     else
       respond_to do |format|
-        format.html {render partial: "challenges_carroussel"}
+        format.html { render partial: "challenges_carroussel" }
         format.turbo_stream
       end
     end

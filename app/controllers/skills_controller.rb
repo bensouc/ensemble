@@ -24,6 +24,7 @@ class SkillsController < ApplicationController
   end
 
   def new
+    @grades = current_user.classroom_grades
     @skill = Skill.new
   end
 
@@ -33,7 +34,9 @@ class SkillsController < ApplicationController
 
   def create
     skip_authorization
+    # binding.pry
     @skill = Skill.new(skill_params)
+    # @skill.grade = Grade.find(set_grade)
     @skill.school = current_user.school
     @skill.save!
     # redirect_to skill_path(@skill)
@@ -68,10 +71,11 @@ class SkillsController < ApplicationController
 
   def setup_all_skills_data
     # @grades = current_user.classroom_grades
-    @grades = Classroom::GRADE.select { |grade| current_user.classroom_grades.include?(grade) }
+    # @grades = Classroom::GRADE.select { |grade| current_user.classroom_grades.include?(grade.grade_level) }
+    @grades = current_user.classroom_grades
     query = params[:grade]
     @school = current_user.school
-    @grade = query.nil? ? @grades.first : query
+    @grade = query.nil? ? @grades.first : @grades.select { |grade| grade.name == query }
     @skills = policy_scope(Skill)
     @are_special_domains = current_user.school.id == 1
     @skills = @skills.select { |skill| skill.grade == @grade }
@@ -81,8 +85,12 @@ class SkillsController < ApplicationController
     @skill = Skill.find(params[:id])
   end
 
+  def set_grade
+    params.require(:skill).permit(:grade)
+  end
+
   def skill_params
-    params.require(:skill).permit(:name, :grade, :symbol, :level, :domain)
+    params.require(:skill).permit(:name, :grade_id, :symbol, :level, :domain)
   end
 
   # XLSX GENERATION and send

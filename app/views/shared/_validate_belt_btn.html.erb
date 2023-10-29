@@ -10,7 +10,7 @@
             input_html: { value: domain, class: 'd-none' },
                     label: false%>
     <%= b.input :grade,
-            input_html: { value: @student.classroom.grade, class: 'd-none' },
+            input_html: { value: @student.classroom.grade.grade_level, class: 'd-none' },
                     label: false%>
     <%# <%= b.input :completed,
             input_html: { value: true, class: 'd-none' },

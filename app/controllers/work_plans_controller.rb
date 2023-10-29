@@ -95,7 +95,7 @@ class WorkPlansController < ApplicationController
       end
     end
     respond_to do |format|
-      format.html 
+      format.html
       format.turbo_stream
     end
   end
@@ -135,6 +135,7 @@ class WorkPlansController < ApplicationController
 
   def new
     @work_plan = WorkPlan.new
+    @grades = current_user.school.grades
     authorize @work_plan
     # search all students of current-user
     @students = Student.where(classroom: current_user.classrooms)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_24_092413) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_25_094707) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -55,12 +55,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_24_092413) do
   create_table "belts", force: :cascade do |t|
     t.bigint "student_id", null: false
     t.string "domain"
-    t.string "grade"
     t.boolean "completed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "validated_date", default: "2023-08-22"
     t.integer "level", null: false
+    t.bigint "grade_id"
+    t.index ["grade_id"], name: "index_belts_on_grade_id"
     t.index ["student_id"], name: "index_belts_on_student_id"
   end
 
@@ -77,12 +78,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_24_092413) do
   end
 
   create_table "classrooms", force: :cascade do |t|
-    t.string "grade"
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "name"
     t.boolean "shared"
+    t.bigint "grade_id"
+    t.index ["grade_id"], name: "index_classrooms_on_grade_id"
     t.index ["user_id"], name: "index_classrooms_on_user_id"
   end
 
@@ -130,9 +132,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_24_092413) do
     t.string "symbol"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "grade"
     t.string "sub_domain"
     t.bigint "school_id"
+    t.bigint "grade_id"
+    t.index ["grade_id"], name: "index_skills_on_grade_id"
     t.index ["school_id"], name: "index_skills_on_school_id"
   end
 
@@ -216,9 +219,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_24_092413) do
     t.datetime "updated_at", null: false
     t.date "start_date"
     t.date "end_date"
-    t.string "grade"
     t.bigint "shared_user_id"
     t.boolean "special_wps", default: false
+    t.bigint "grade_id"
+    t.index ["grade_id"], name: "index_work_plans_on_grade_id"
     t.index ["shared_user_id"], name: "index_work_plans_on_shared_user_id"
     t.index ["student_id"], name: "index_work_plans_on_student_id"
     t.index ["user_id"], name: "index_work_plans_on_user_id"
@@ -226,15 +230,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_24_092413) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "belts", "grades"
   add_foreign_key "belts", "students"
   add_foreign_key "challenges", "skills"
   add_foreign_key "challenges", "users"
+  add_foreign_key "classrooms", "grades"
   add_foreign_key "classrooms", "users"
   add_foreign_key "grades", "schools"
   add_foreign_key "school_roles", "schools"
   add_foreign_key "school_roles", "users"
   add_foreign_key "shared_classrooms", "classrooms"
   add_foreign_key "shared_classrooms", "users"
+  add_foreign_key "skills", "grades"
   add_foreign_key "skills", "schools"
   add_foreign_key "students", "classrooms"
   add_foreign_key "subscriptions", "schools"
@@ -242,6 +249,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_24_092413) do
   add_foreign_key "work_plan_skills", "challenges"
   add_foreign_key "work_plan_skills", "skills"
   add_foreign_key "work_plan_skills", "work_plan_domains"
+  add_foreign_key "work_plans", "grades"
   add_foreign_key "work_plans", "students"
   add_foreign_key "work_plans", "users"
   add_foreign_key "work_plans", "users", column: "shared_user_id"

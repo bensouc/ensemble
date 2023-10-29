@@ -8,6 +8,7 @@ RSpec.describe SchoolRole, type: :model do
     Belt.destroy_all
     SchoolRole.destroy_all
     User.destroy_all
+    Skill.destroy_all
     School.destroy_all
     @school_role = create(:school_role)
   end

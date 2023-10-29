@@ -16,7 +16,7 @@
                       # placeholder: 'CE2...',
                       input_html: { class: 'area grow m-left' } %>
           <%= f.input :grade, label: false,  required: true,
-                            collection: Classroom::GRADE,
+                            collection: @grades,
                             input_html: { class: 'area grow m-left'}
                             %>
           <%# <i class="far fa-calendar-check font-fa"></i> %>

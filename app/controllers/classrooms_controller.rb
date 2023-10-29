@@ -53,8 +53,8 @@ class ClassroomsController < ApplicationController
 
   def results
     authorize @classroom
-    @domains = WorkPlanDomain::DOMAINS[@classroom.grade]
-    @skills = Skill.for_school(current_user.school).where(grade: @classroom.grade)
+    @domains = WorkPlanDomain::DOMAINS[@classroom.grade.grade_level]
+    @skills = Skill.for_school(current_user.school).where(grade:@classroom.grade)
     @domains.map do |domain|
       # remove domains without skills eg:poesie
       @domains.delete(domain) if @skills.none? { |skill| skill.domain == domain }
@@ -81,12 +81,12 @@ class ClassroomsController < ApplicationController
     set_up_results(@domain)
     results_factory(@domain) # create all  variables shared with the results Action
     @skills = if @special_domain
-                Skill.where(school: current_user.school,
-                                    grade: @classroom.grade,
-                                    domain: @domain).order(Arel.sql('COALESCE(sub_domain, \'\') ASC'))
-              else
-                Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
-              end
+        Skill.where(school: current_user.school,
+                    grade: @classroom.grade,
+                    domain: @domain).order(Arel.sql('COALESCE(sub_domain, \'\') ASC'))
+      else
+        Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
+      end
     render partial: "classrooms/classroom_domain_results"
   end
 
@@ -148,23 +148,23 @@ class ClassroomsController < ApplicationController
     temp_file = Tempfile.new("temp.xlsx")
     package.serialize(temp_file.path)
     send_file temp_file,
-              filename: "#{@classroom.grade.upcase}_#{@classroom.name}_resultats_#{Time.zone.today}.xlsx",
+              filename: "#{@classroom.grade.grade_level.upcase}_#{@classroom.name}_resultats_#{Time.zone.today}.xlsx",
               type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   end
 
   # refacto of result and result_by_domain actions
   def set_up_results(domain)
-    @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @classroom.grade != "CM2")
+    @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @classroom.grade.grade_level != "CM2")
     @students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     # get all validated belts for all classroom student
     @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain:, completed: true)
   end
 
   def results_factory(domain)
-    # @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade != "CM2")
+    # @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade.grade_level != "CM2")
     @all_completed_work_plan_skills = {}
     @students_list.each do |student|
-      completed_wps = student.all_completed_work_plan_skills(domain, @classroom.grade)
+      completed_wps = student.all_completed_work_plan_skills(domain, @classroom.grade.grade_level)
       @all_completed_work_plan_skills[student.id.to_s] = completed_wps unless completed_wps.empty?
     end
   end

@@ -11,7 +11,9 @@ class BeltsController < ApplicationController
   def create
     skip_authorization
     args = new_belt_params
+    # args[:grade] = Grade.find_grade_by_school_and_grade_level
     args[:student_id] = params[:student_id]
+    args[:grade] = Grade.find(args[:grade].to_i)
     @belt = Belt.find_or_create_by(args)
     @belt.completed = true
     # @belt.student = Student.find(params[:student_id])
@@ -47,6 +49,7 @@ class BeltsController < ApplicationController
   end
 
   def new_belt_params
-    params.require(:belt).permit(:grade, :domain, :level, :grade, :validated_date)
+    # binding.pry
+    params.require(:belt).permit(:grade, :domain, :level, :validated_date)
   end
 end
