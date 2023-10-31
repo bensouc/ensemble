@@ -13,7 +13,7 @@ class BeltsController < ApplicationController
     args = new_belt_params
     # args[:grade] = Grade.find_grade_by_school_and_grade_level
     args[:student_id] = params[:student_id]
-    args[:grade] = Grade.find(args[:grade].to_i)
+    args[:grade] = Grade.find(new_belt_params[:grade_id])
     @belt = Belt.find_or_create_by(args)
     @belt.completed = true
     # @belt.student = Student.find(params[:student_id])
@@ -50,6 +50,6 @@ class BeltsController < ApplicationController
 
   def new_belt_params
     # binding.pry
-    params.require(:belt).permit(:grade, :domain, :level, :validated_date)
+    params.require(:belt).permit(:grade_id, :domain, :level, :validated_date)
   end
 end

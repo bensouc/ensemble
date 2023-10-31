@@ -22,7 +22,7 @@ class StudentsController < ApplicationController
     all_last_wps = WorkPlanSkill.last_wps(@student, @student_skills)
     # WorkPlanSkill.where(student: student).max_by(&:created_at) fdf
     puts "LE MAP"
-    binding.pry
+    # binding.pry
     @all_skills_and_last_wps = @student_skills.map do |skill|
       {
         skill:,
