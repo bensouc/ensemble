@@ -30,6 +30,7 @@ class WorkPlanDomain < ApplicationRecord
   # end
 
   def specials?
+    # binding.pry
     domain.in?(DOMAINS_SPECIALS) && work_plan.grade.grade_level != "CM2"
   end
 

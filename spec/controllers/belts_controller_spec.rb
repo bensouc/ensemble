@@ -12,14 +12,14 @@ RSpec.describe BeltsController, type: :controller do
 
   describe "create" do
     # params.require(:belt).permit(:grade, :domain, :level, :grade, :validated_date)
-    let(:valid_params) { { belt: { grade: Grade.first, domain: "Vocabulaire", level: "1", validated_date: Faker::Date }, student_id: student.id } }
+    let(:valid_params) { { belt: { grade_id: Grade.first.id, domain: "Vocabulaire", level: "1", validated_date: Faker::Date }, student_id: student.id } }
     it "creates a new Belt with the right params" do
       # p grade
       expect do
         post :create, params: valid_params
       end.to change(Belt, :count).by(1)
     end
-    let(:unvalid_params) { { belt: { grade:Grade.first, level: "0", validated_date: Faker::Date }, student_id: student.id } }
+    let(:unvalid_params) { { belt: { grade_id:Grade.first.id, level: "0", validated_date: Faker::Date }, student_id: student.id } }
     it "failed to creates a new Belt with the right params" do
       expect do
         post :create, params: unvalid_params
