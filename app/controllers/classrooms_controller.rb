@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable Metrics/ClassLength
 
 class ClassroomsController < ApplicationController
   before_action :set_classroom, only: [:update, :destroy, :results, :results_by_domain]
