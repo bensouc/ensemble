@@ -42,7 +42,8 @@ time, mark, audio, video {
 // @import "flatpickr/dist/themes/light";
 
 @import "font-awesome";
-@import "trix/dist/trix";
+@import "trix";
+// @import "trix/dist/trix";
 
 // Your CSS partials
 @import "components/index";
