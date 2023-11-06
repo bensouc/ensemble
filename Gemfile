@@ -38,7 +38,7 @@ gem "rails_admin", "~> 3.0"
 # Use Active Storage variant
 gem "image_processing", "~> 1.2"
 
-# Reduces boot times through caching; required in config/boot.rb
+# Reduces boot times through caching; required errrein config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false
 # =============== SETUP SINCE ruby 3.1.2 migration===================
 # force psych version for ruby 3.1.2 migration
