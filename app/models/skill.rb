@@ -2,7 +2,7 @@
 
 class Skill < ApplicationRecord
   belongs_to :school
-  belongs_to :grade
+  # belongs_to :grade
   has_many :work_plan_skills, dependent: nil
   has_many :challenges, dependent: :destroy
 

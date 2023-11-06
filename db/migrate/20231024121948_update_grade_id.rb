@@ -6,11 +6,11 @@ class UpdateGradeId < ActiveRecord::Migration[7.0]
       p grade_level = classroom.grade
       p school = classroom.user.school
       p new_grade = Grade.find_by(grade_level:, school:)
-      if !new_grade.nil?
+      # if !new_grade.nil?
         classroom.grade_id = new_grade.id
         classroom.save
         p classroom
-      end
+      # end
     end
   end
 
