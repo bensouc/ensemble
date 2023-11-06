@@ -35,15 +35,15 @@ time, mark, audio, video {
 // @import "bootstrap/scss/bootstrap";
 @import "bootstrap";
 // @import "flatpickr";
-// @import "flatpickr/dist/flatpickr";
+@import "flatpickr/dist/flatpickr";
 // @import "../../javascript/stylesheets/rails_admin";
 
 // @import "font-awesome-sprockets";
-// @import "flatpickr/dist/themes/light";
+@import "flatpickr/dist/themes/light";
 
 @import "font-awesome";
-@import "trix";
-// @import "trix/dist/trix";
+// @import "trix";
+@import "trix/dist/trix";
 
 // Your CSS partials
 @import "components/index";
