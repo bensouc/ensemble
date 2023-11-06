@@ -11,7 +11,7 @@ ruby "3.1.2"
 # 7.0.0 UPGRADE
 gem "rails", "~> 7.0.0"
 gem "turbo-rails"
-# end of 7.0.0 UPGRADE
+# end of 7.0.0 UPGRADE v df
 
 #STRIPE setup
 gem "money-rails", "~> 1.12"
