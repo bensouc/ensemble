@@ -10,7 +10,7 @@
         <%= wp.name %>
       </div>
       <div class="index-wp-count">
-        <%= wp.grade %>
+        <%= wp.grade.name %>
       </div>
       <div class="wp-dates">
         <%= wp.start_date.nil? ? "" : l(wp.start_date, format: "%d/%m/%Y") %>

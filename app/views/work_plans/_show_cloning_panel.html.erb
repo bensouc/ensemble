@@ -6,7 +6,7 @@
 		<h1 >
 			<%=@work_plan.name.capitalize%>
 		</h1>
-		<h4> Niveau: <%=@work_plan.grade.capitalize%></h4>
+		<h4> Niveau: <%=@work_plan.grade.name.capitalize%></h4>
 	</div>
 	<div class="grey-line"></div>
 	<div class="multiple-cloning">
@@ -14,7 +14,7 @@
 		<div class="class-list">
 			<%= simple_form_for work_plan_clone_path(@work_plan) do |form|%>
 				<% @classrooms_whithout_current_student.each do |classroom| %>
-					<h3  class='ps-3'><%=classroom.grade%>-<%=classroom.name%></h3>
+					<h3  class='ps-3'><%=classroom.grade.grade_level%>-<%=classroom.name%></h3>
 					<div class="cloning-classroom-card" >
 						<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
 							<div class="student-checkbox" data-controller='checkboxes'>

@@ -3,7 +3,7 @@
 	<% @grades.each do |classroom_grade| %>
 		<%= link_to skills_path(grade: classroom_grade ) do %>
 			<div class="class-pill <%= 'active' if classroom_grade == @grade %> ">
-				<%= classroom_grade.upcase %>
+				<%= classroom_grade.grade_level.upcase %>
 			</div>
 		<% end %>
 	<% end %>
@@ -14,7 +14,7 @@
       data-controller='allskilldisplay'
       >
 	<div class="skills">
-		<% WorkPlanDomain::DOMAINS[@grade].each do |domain| %>
+		<% WorkPlanDomain::DOMAINS[@grade.grade_level].each do |domain| %>
 			<div class="domain-tab"
         data-allskilldisplay-target="domainBtn"
         data-domain = "<%=domain%>"
@@ -40,8 +40,8 @@
 				</div>
 			<% end %>
 		</div>
-		<% WorkPlanDomain::DOMAINS[@grade].each do |domain| %>
-			<div class="skills_boxe <%= 'd-none 'unless domain == WorkPlanDomain::DOMAINS[@grade].first%>"
+		<% WorkPlanDomain::DOMAINS[@grade.grade_level].each do |domain| %>
+			<div class="skills_boxe <%= 'd-none 'unless domain == WorkPlanDomain::DOMAINS[@grade.grade_level].first%>"
     data-domain='<%=domain%>'
     data-allskilldisplay-target='domainCard'>
 				<%# <% domain = WorkPlanDomain::DOMAINS[@grade].first %>
@@ -49,7 +49,7 @@
 					<% skills = @skills.select {|skill| skill.level == skill_level && skill.domain == domain}.sort %>
 					<div class="skills-display d-none"
           data-allskilldisplay-target='levelSkillCard'
-          data-grade='<%=@grade%>'
+          data-grade='<%=@grade.name%>'
           data-level='<%=skill_level%>'>
 						<%= render 'all_skills_by_domain_level', skills: skills, domain: domain, level: skill_level %>
 					</div>

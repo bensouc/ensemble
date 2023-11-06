@@ -4,7 +4,7 @@
       <%= turbo_frame_tag classroom do %>
         <div class="wp-one-classroom">
           <h1>
-            <%= "#{classroom.grade.upcase} " %>
+            <%= "#{classroom.grade.grade_level.upcase} " %>
             <p class='ms-2'><%= classroom.name.nil? ? "" : "#{" - "} #{classroom.name}" %></p>
             <div class="sharing-details">
               <% if classroom.user != current_user %>
@@ -16,7 +16,7 @@
           </h1>
           <%# WP assigned %>
           <% classroom.students.order(:first_name).each do |student| %>
-            <%= render "index_student_index",my_work_plans: @my_work_plans, student: student %>
+            <%= render "index_student_index", my_work_plans: @my_work_plans, student: student %>
           <% end %>
         </div>
       <% end %>

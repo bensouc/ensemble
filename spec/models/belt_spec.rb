@@ -85,7 +85,8 @@ RSpec.describe Belt, type: :model do
 
   describe "self.special_new_belt(work_plan_skill, work_plan)" do
     let(:student) { create(:student) }
-    let(:work_plan) { create(:work_plan, grade: 'CM1', student: ) }
+    let(:grade) {create(:grade)}
+    let(:work_plan) { create(:work_plan, grade: , student: ) }
     let(:work_plan_domain) { create(:work_plan_domain, work_plan: work_plan, domain: WorkPlanDomain::DOMAINS_SPECIALS.sample, level:1) }
     let(:skill) { create(:skill, domain: work_plan_domain.domain, grade: work_plan_domain.work_plan.grade, level: work_plan_domain.level)}
     let(:work_plan_skill) { create(:work_plan_skill, work_plan_domain: work_plan_domain, kind: 'ceinture', completed: true, status: "completed") }

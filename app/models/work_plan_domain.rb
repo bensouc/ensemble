@@ -30,7 +30,8 @@ class WorkPlanDomain < ApplicationRecord
   # end
 
   def specials?
-    domain.in?(DOMAINS_SPECIALS) && work_plan.grade != "CM2"
+    # binding.pry
+    domain.in?(DOMAINS_SPECIALS) && work_plan.grade.grade_level != "CM2"
   end
 
   has_many :work_plan_skills, dependent: :destroy
@@ -55,16 +56,16 @@ class WorkPlanDomain < ApplicationRecord
       last_work_plan_skill = work_plan_skill
       # validate BElt?
       # raise
-      if WorkPlanDomain::DOMAINS_SPECIALS.include?(work_plan_domain.domain) && skill.grade != "CM2"
+      if WorkPlanDomain::DOMAINS_SPECIALS.include?(work_plan_domain.domain) && skill.grade.grade_level != "CM2"
         Belt.special_newbelt(work_plan_skill, special_work_plan)
         last_work_plan_skill = nil
         # BMO TO be rethinkg to get result from method
       elsif work_plan_domain.all_skills_completed?
         belt = Belt.find_or_create_by(
           { student_id: special_work_plan.student.id,
-           domain: work_plan_domain.domain,
-           grade: skill.grade,
-           level: skill.level }
+            domain: work_plan_domain.domain,
+            grade: skill.grade,
+            level: skill.level }
         )
         belt.completed = true
         belt.validated_date = DateTime.now

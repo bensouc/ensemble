@@ -24,6 +24,7 @@ class SkillsController < ApplicationController
   end
 
   def new
+    @grades = current_user.classroom_grades
     @skill = Skill.new
   end
 
@@ -33,11 +34,13 @@ class SkillsController < ApplicationController
 
   def create
     skip_authorization
+    # binding.pry
     @skill = Skill.new(skill_params)
+    # @skill.grade = Grade.find(set_grade)
     @skill.school = current_user.school
     @skill.save!
     # redirect_to skill_path(@skill)
-    @skills = Skill.where(grade: @skill.grade, school: current_user.school, domain: @skill.domain, level: @skill.level)
+    @skills = Skill.includes([:grade,:school]).where(grade: @skill.grade, school: current_user.school, domain: @skill.domain, level: @skill.level)
     render partial: "skills/all_skills_by_domain_level",
            locals: { skills: @skills, domain: @skill.domain, level: @skill.level }
 
@@ -68,10 +71,11 @@ class SkillsController < ApplicationController
 
   def setup_all_skills_data
     # @grades = current_user.classroom_grades
-    @grades = Classroom::GRADE.select { |grade| current_user.classroom_grades.include?(grade) }
+    # @grades = Classroom::GRADE.select { |grade| current_user.classroom_grades.include?(grade.grade_level) }
+    @grades = current_user.classroom_grades
     query = params[:grade]
     @school = current_user.school
-    @grade = query.nil? ? @grades.first : query
+    @grade = query.nil? ? @grades.first : Grade.find(query)
     @skills = policy_scope(Skill)
     @are_special_domains = current_user.school.id == 1
     @skills = @skills.select { |skill| skill.grade == @grade }
@@ -81,8 +85,12 @@ class SkillsController < ApplicationController
     @skill = Skill.find(params[:id])
   end
 
+  def set_grade
+    params.require(:skill).permit(:grade)
+  end
+
   def skill_params
-    params.require(:skill).permit(:name, :grade, :symbol, :level, :domain)
+    params.require(:skill).permit(:name, :grade_id, :symbol, :level, :domain)
   end
 
   # XLSX GENERATION and send
@@ -90,7 +98,7 @@ class SkillsController < ApplicationController
     temp_file = Tempfile.new("temp.xlsx")
     package.serialize(temp_file.path)
     send_file temp_file,
-              filename: "#{school.name.upcase}_#{grade}_compétences_#{Time.zone.today}.xlsx",
+              filename: "#{school.name.upcase}_#{grade.name}_compétences_#{Time.zone.today}.xlsx",
               type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
   end
 end

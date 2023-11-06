@@ -16,7 +16,7 @@ class Student < ApplicationRecord
   end
 
   def all_domains_from_student
-    WorkPlanDomain::DOMAINS[classroom.grade]
+    WorkPlanDomain::DOMAINS[classroom.grade.grade_level]
   end
 
   def belt_status(domain, level)
@@ -36,22 +36,22 @@ class Student < ApplicationRecord
     # els
     if !target_work_plan_skills.select(&:completed).empty?
       "skill_status_completed"
-    # if one of them has wps.status == "completed" && wps.kind == "exercice"
-    elsif !target_work_plan_skills.select{|work_plan_skill| work_plan_skill.status == "completed" && work_plan_skill.kind == "exercice"}.empty?
-    # out=>"skill_status_belt"
+      # if one of them has wps.status == "completed" && wps.kind == "exercice"
+    elsif !target_work_plan_skills.select { |work_plan_skill| work_plan_skill.status == "completed" && work_plan_skill.kind == "exercice" }.empty?
+      # out=>"skill_status_belt"
       "skill_status_belt"
-    # else => return status:skill_status_challenge
+      # else => return status:skill_status_challenge
     else
       "skill_status_challenge"
     end
   end
 
   def all_completed_work_plan_skills(domain, grade)
-    work_plan_skills.includes([:skill]).select { |wps| wps.completed && wps.skill.grade == grade && wps.skill.domain == domain }
+    work_plan_skills.includes([:skill]).select { |wps| wps.completed && wps.skill.grade.grade_level == grade && wps.skill.domain == domain }
   end
 
   def all_completed_challenge_work_plan_skills(domain, grade)
-    work_plan_skills.includes([:skill]).select { |wps| wps.completed && wps.skill.grade == grade && wps.skill.domain == domain && wps.kind = "exercice" }
+    work_plan_skills.includes([:skill]).select { |wps| wps.completed && wps.skill.grade.grade_level == grade && wps.skill.domain == domain && wps.kind = "exercice" }
   end
 
   def find_special_workplan

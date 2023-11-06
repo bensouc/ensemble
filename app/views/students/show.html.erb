@@ -1,51 +1,76 @@
 <div data-controller="loadingspinnermgnt">
-	<div class="">
-		<%# <%case @student.classroom.grade%>
-		<%# <%when "CE1"%>
-		<%= render 'student_results'%>
-		<%# <% end %>
-	</div>
+  <div class="">
+    <%# <%case @student.classroom.grade.grade_level %>
+    <%# <%when "CE1" %>
+    <%= render "student_results" %>
+    <%# <% end %>
+  </div>
 </div>
 <%# revoir les constantes, à envoyer depuis le controller %>
 <!-- Modal select domains on auto gen-->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-	<%= simple_form_for student_auto_new_wp_path(@student), method: :post, html:{target:"_blank"} do |form|%>
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="staticBackdropLabel">Déselectionner les domaines non souhaités pour
-						<%= @student.first_name.capitalize %> </h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<div class="cloning-classroom-card" >
-						<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-							<div class="domain-checkbox" data-controller='checkboxes'>
-								<%=form.input_field :domains,
-                        # collection: classroom.students.order(first_name: :asc),
-                        collection:@domains,
-                        # label_method: ,
-                        value_method: lambda {|domain| domain},
-                        multiple: true,
-                        as: :check_boxes,
-                        boolean_style: :inline,
-                        data: {checkboxes_target: 'boxes',action:"click->checkboxes#add"},
-                        class: "tag-selector",
-                        item_wrapper_class: 'tag-item',
-                        required: true,
-                        checked: @domains
-                        %>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<p class="--grisC w-100"> <em>La plan de travail s'ouvrira dans un nouvel onglet</em></p>
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">X</button>
-					<%= form.submit 'Valider', class: 'btn btn-secondary --bgc-vert --borderc-vert', data: { action:"click->loadingspinnermgnt#displaySpinner" }%>
-					<%# <button type="button" class="btn btn-secondary --bgc-vert --borderc-vert ">Valider</button> %>
-				</div>
-			</div>
-		</div>
-	<% end %>
+<div
+  class="modal fade"
+  id="staticBackdrop"
+  data-bs-backdrop="static"
+  data-bs-keyboard="false"
+  tabindex="-1"
+  aria-labelledby="staticBackdropLabel"
+  aria-hidden="true"
+>
+  <%= simple_form_for student_auto_new_wp_path(@student), method: :post, html:{target:"_blank"} do |form| %>
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Déselectionner les domaines non souhaités pour
+            <%= @student.first_name.capitalize %>
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <div class="cloning-classroom-card">
+            <div
+              class="btn-group"
+              role="group"
+              aria-label="Basic checkbox toggle button group"
+            >
+              <div class="domain-checkbox" data-controller='checkboxes'>
+                <%= form.input_field :domains,
+                                 # collection: classroom.students.order(first_name: :asc),
+                                 collection: @domains,
+                                 # label_method: ,
+                                 value_method: lambda { |domain| domain },
+                                 multiple: true,
+                                 as: :check_boxes,
+                                 boolean_style: :inline,
+                                 data: {
+                                   checkboxes_target: "boxes",
+                                   action: "click->checkboxes#add"
+                                 },
+                                 class: "tag-selector",
+                                 item_wrapper_class: "tag-item",
+                                 required: true,
+                                 checked: @domains %>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <p class="--grisC w-100">
+            <em>La plan de travail s'ouvrira dans un nouvel onglet</em></p>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">X</button>
+          <%= form.submit "Valider",
+                      class: "btn btn-secondary --bgc-vert --borderc-vert",
+                      data: {
+                        action: "click->loadingspinnermgnt#displaySpinner"
+                      } %>
+          <%# <button type="button" class="btn btn-secondary --bgc-vert --borderc-vert ">Valider</button> %>
+        </div>
+      </div>
+    </div>
+  <% end %>
 </div>

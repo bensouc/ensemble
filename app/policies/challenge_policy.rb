@@ -1,19 +1,17 @@
 class ChallengePolicy < ApplicationPolicy
   class Scope < Scope
-    # NOTE: Be explicit about which records you allow access to!
-    def resolve
+    def resolve()
       # scope.includes([:skill, :rich_text_content]).same_school(user).all
       # school = user.school
       # skills = school.skills
       # binding.pry
       # scope.includes([:skill, :rich_text_content]).where(skills: skills)
-      scope.includes([:skill, :rich_text_content,:work_plan_skills]).joins(:skill).where(skills: { school: user.school })
-
+      scope.includes([:skill, :rich_text_content, :work_plan_skills]).joins(:skill).where(skills: { school: user.school })
     end
   end
 
   def create?
-  user_is_owner_or_admin?
+    user_is_owner_or_admin?
   end
 
   def show?
@@ -31,8 +29,6 @@ class ChallengePolicy < ApplicationPolicy
   def destroy?
     user_is_owner_or_admin?
   end
-
-
 
   def clone?
     user_is_owner_or_admin?

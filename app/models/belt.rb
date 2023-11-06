@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# rubocop:disable all
 
 class Belt < ApplicationRecord
   BELT_COLORS = %w[blanche jaune orange verte bleue marron noire].freeze
@@ -11,7 +12,7 @@ class Belt < ApplicationRecord
     "6" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698313/ensemble/belts/belt_6_mqzhbq.png",
     "7" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698314/ensemble/belts/belt_7_aubna5.png"
   }.freeze
-
+  belongs_to :grade
   belongs_to :student
   scope :completed, -> { where(completed: true) }
 
@@ -23,7 +24,7 @@ class Belt < ApplicationRecord
        "Grandeurs et Mesures", "Opérations", "Résolution des Problèmes",
        "Calligraphie","Poésie", "Poésie et Expression orale",
        "Production d’écrit", "Lecture"] }
-  validates :grade, presence: true, inclusion: { in: %w[CP CE1 CE2 CM1 CM2] }
+  # validates :grade, presence: true, inclusion: { in: %w[CP CE1 CE2 CM1 CM2] }
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
   validates :student, uniqueness: { scope: %i[domain grade level] }
 
@@ -58,6 +59,7 @@ class Belt < ApplicationRecord
   end
 
   def self.find_or_create_by_level!(args, level)
+    binding.pry
     (1..level).each do
       args.merge!(
         {

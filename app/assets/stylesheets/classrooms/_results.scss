@@ -2,6 +2,8 @@
   min-width: 100%;
 }
 .classroom-results-header {
+  position: sticky;
+  top: 7px;
   display: flex;
   // border-bottom: thin solid $grisC;
   width: fit-content;

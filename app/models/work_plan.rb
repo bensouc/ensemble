@@ -2,6 +2,7 @@
 
 class WorkPlan < ApplicationRecord
   belongs_to :user
+  belongs_to :grade
   belongs_to :shared_user, class_name: "User", optional: true
   belongs_to :student, optional: true
 
@@ -14,10 +15,10 @@ class WorkPlan < ApplicationRecord
   has_many :skills, through: :work_plan_skills
 
   validates :name, presence: true
-  validates :grade, presence: true
+
 
   def all_domains_from_work_plan
-    WorkPlanDomain::DOMAINS[grade]
+    WorkPlanDomain::DOMAINS[grade.grade_level]
   end
 
   def self.with_associations

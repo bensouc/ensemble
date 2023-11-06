@@ -1,24 +1,39 @@
 <%= turbo_frame_tag "#{domain}_#{level}" do %>
-	<% skills.each do |skill| %>
-		<%= turbo_frame_tag "skill_#{skill.id}" do %>
-			<%= render 'show_one', skill: skill%>
-		<% end %>
-	<% end %>
+  <% skills.each do |skill| %>
+    <%= turbo_frame_tag "skill_#{skill.id}" do %>
+      <%= render "show_one", skill: skill %>
+    <% end %>
+  <% end %>
 <% end %>
 <div class="grey-line"></div>
 <div class="create-skill-box" data-controller='create-skill-display'>
-	<div  class="add-skill-btn validate-btn me-0"
-                    data-action='click->create-skill-display#displayForm'
-		data-create-skill-display-target='button'>
-		Ajouter une compétence
-	</div>
-	<div class="create-skill-form mt-3 d-none"
-                    data-create-skill-display-target='formBox'>
-		<%= render  'form', skill: Skill.new(grade: @grade, domain: domain, level: level) %>
-		<div class="reset-skill-edit --cursor-pointer" data-action='click->create-skill-display#displayForm'>
-			<div class='rmv-skill-btn'>
-				Annuler
-			</div>
-		</div>
-	</div>
+  <div
+    class="add-skill-btn validate-btn me-0"
+    data-action='click->create-skill-display#displayForm'
+    data-create-skill-display-target='button'
+  >
+    Ajouter une compétence
+  </div>
+  <div
+    class="create-skill-form mt-3 d-none"
+    data-create-skill-display-target='formBox'
+  >
+    <%= render "form",
+    skill:
+      Skill.new(
+        grade: skills.first.grade,
+        school: skills.first.school,
+        level: skills.first.level,
+        domain: domain,
+        level: level
+      ) %>
+    <div
+      class="reset-skill-edit --cursor-pointer"
+      data-action='click->create-skill-display#displayForm'
+    >
+      <div class='rmv-skill-btn'>
+        Annuler
+      </div>
+    </div>
+  </div>
 </div>

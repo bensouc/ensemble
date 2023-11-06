@@ -8,7 +8,7 @@
         </button>
         <!-- END EDIT WP Button trigger modal -->
       </h1>
-      <p>Niveau : <%= work_plan.grade%></p>
+      <p>Niveau : <%= work_plan.grade.name%></p>
       <center>
         <h4 class='date-domain'>Du <%= work_plan.start_date.strftime("%d/%m/%Y")%> Au <%= work_plan.end_date.strftime("%d/%m/%Y")%></h4>
       </center>

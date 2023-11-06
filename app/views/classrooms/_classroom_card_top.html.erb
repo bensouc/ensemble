@@ -20,7 +20,7 @@
 			<% end %>
 			<%# START MODAL EDITING CLASSROOM %>
 			<div class='classroom-name d-flex  align-items-baseline'>
-				<%= "#{classroom.grade.upcase} "%>
+				<%= "#{classroom.grade.grade_level.upcase} "%>
 				<p class='ms-1'><%= classroom.name.nil? ? "" : "#{" - "} #{classroom.name}" %></p>
 				<button type="button" data-bs-toggle="modal" data-bs-target="#editingClassroomModal-<%=classroom.id%>">
 					<i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" ></i>

@@ -5,10 +5,11 @@
       <%# data-action="mouseover->wps-result#displayName mouseout->wps-result#hideName"
   data: {action:"click->new-domain#displayBelt"}  %>
       <%= link_to student_path(work_plan.student), class: 'student_name_link',
+      target: '_top',
      data:{action: "mouseover->wps-result#displayName mouseout->wps-result#hideName click->loadingspinnermgnt#displaySpinner"}  do%>
         <h2><strong><%= work_plan.student.first_name %></strong></h2>
       <% end %>
-      <div class="link_details d-none", data-wps-result-target= 'name'}>
+      <div class="link_details d-none", data-wps-result-target= 'name'>
         Progression de <%=work_plan.student.first_name%>
       </div>
     <% end %>

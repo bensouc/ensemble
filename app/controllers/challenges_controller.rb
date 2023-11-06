@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+# rubocop:disable Metrics/ClassLength
+# rubocop:disable Metrics/CyclomaticComplexity
 
 class ChallengesController < ApplicationController
   before_action :set_work_plan_skill, only: [:clone, :display_challenges] # , :update, :show]
@@ -9,8 +11,8 @@ class ChallengesController < ApplicationController
     redirect_to classrooms_path if current_user.classrooms.empty? && current_user.shared_classrooms.empty?
     # "/challenges"=>{"grade"=>"CE2", "domain"=>"Conjugaison", "level"=>"1", "skills"=>"11067"}
     set_filters
-    # binding.pry
     challenges = policy_scope(Challenge)
+    # binding.pry
     @challenges = challenges.select do |challenge|
       challenge.skill.domain == @domain &&
         challenge.skill.level == @level.to_i && challenge.skill.grade == @grade &&
@@ -127,7 +129,7 @@ class ChallengesController < ApplicationController
       flash.now[:notice] = "Il n'existe pas d'autre excercice pour cette compétence"
     else
       respond_to do |format|
-        format.html {render partial: "challenges_carroussel"}
+        format.html { render partial: "challenges_carroussel" }
         format.turbo_stream
       end
     end
@@ -148,14 +150,12 @@ class ChallengesController < ApplicationController
     @grades = current_user.classroom_grades
     if params["/challenges"].blank?
       @grade = @grades.first
-      @domains = WorkPlanDomain::DOMAINS[@grade]
+      @domains = WorkPlanDomain::DOMAINS[@grade.grade_level]
       @level = 1
       @domain = @domains.first unless @domains.nil?
     else
-      # binding.pry
-
-      @grade = params.require("/challenges").permit(:grade, :level, :domain)[:grade]
-      @domains = WorkPlanDomain::DOMAINS[@grade]
+      @grade = Grade.find(params.require("/challenges").permit(:grade, :level, :domain)[:grade])
+      @domains = WorkPlanDomain::DOMAINS[@grade.grade_level]
       @level = params.require("/challenges").permit(:grade, :level, :domain)[:level]
       @domain = params.require("/challenges").permit(:grade, :level, :domain)[:domain]
       # @skill = Skill.find(params.require("/challenges").permit(:skills)[:skills])

@@ -13,7 +13,9 @@
       <%# Student details %>
       <div class='student-name d-flex justify-content-between'>
         <% unless @work_plan.student.nil? %>
-          <%= link_to student_path(@work_plan.student),  class: 'student_name_link',data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+          <%= link_to student_path(@work_plan.student),  class: 'student_name_link',
+          target: "_top",
+          data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
             <h2><strong><%= @work_plan.student.first_name %></strong></h2>
           <% end %>
         <% end %>

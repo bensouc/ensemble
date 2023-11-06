@@ -95,7 +95,7 @@ class WorkPlansController < ApplicationController
       end
     end
     respond_to do |format|
-      format.html 
+      format.html
       format.turbo_stream
     end
   end
@@ -135,6 +135,7 @@ class WorkPlansController < ApplicationController
 
   def new
     @work_plan = WorkPlan.new
+    @grades = current_user.school.grades
     authorize @work_plan
     # search all students of current-user
     @students = Student.where(classroom: current_user.classrooms)
@@ -293,7 +294,7 @@ class WorkPlansController < ApplicationController
   end
 
   def work_plan_params
-    params.require(:work_plan).permit(:name, :student_id, :grade, :start_date, :end_date)
+    params.require(:work_plan).permit(:name, :student_id, :grade_id, :start_date, :end_date)
     # work_plan_domains_attributes: %i[domain level],
     # work_plan_skills_attributes: :name)
   end
