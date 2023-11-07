@@ -75,6 +75,7 @@ class SkillsController < ApplicationController
     @grades = current_user.classroom_grades
     query = params[:grade]
     @school = current_user.school
+    binding.pry
     @grade = query.nil? ? @grades.first : Grade.find(query)
     @skills = policy_scope(Skill)
     @are_special_domains = current_user.school.id == 1
