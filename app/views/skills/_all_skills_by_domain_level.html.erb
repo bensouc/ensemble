@@ -1,7 +1,9 @@
 <%= turbo_frame_tag "#{domain}_#{level}" do %>
   <% skills.each do |skill| %>
-    <%= turbo_frame_tag "skill_#{skill.id}" do %>
-      <%= render "show_one", skill: skill %>
+    <% unless skill.nil? %>
+      <%= turbo_frame_tag "skill_#{skill.id}" do %>
+        <%= render "show_one", skill: skill %>
+      <% end %>
     <% end %>
   <% end %>
 <% end %>
@@ -20,12 +22,7 @@
   >
     <%= render "form",
     skill:
-      Skill.new(
-        grade: grade,
-        school: grade.school,
-        level: level,
-        domain: domain
-      ) %>
+      Skill.new(grade: grade, school: grade.school, level: level, domain: domain) %>
     <div
       class="reset-skill-edit --cursor-pointer"
       data-action='click->create-skill-display#displayForm'
