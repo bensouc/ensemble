@@ -42,7 +42,7 @@ class SkillsController < ApplicationController
     # redirect_to skill_path(@skill)
     @skills = Skill.includes([:grade,:school]).where(grade: @skill.grade, school: current_user.school, domain: @skill.domain, level: @skill.level)
     render partial: "skills/all_skills_by_domain_level",
-           locals: { skills: @skills, domain: @skill.domain, level: @skill.level }
+           locals: { skills: @skills, domain: @skill.domain, level: @skill.level, grade: @skill.grade }
 
     #  skills: skills, domain: domain, level: skill_level
   end
@@ -74,7 +74,7 @@ class SkillsController < ApplicationController
     # @grades = Classroom::GRADE.select { |grade| current_user.classroom_grades.include?(grade.grade_level) }
     @grades = current_user.classroom_grades
     query = params[:grade]
-    
+
     @school = current_user.school
     @grade = query.nil? ? @grades.first : Grade.find(query)
     @skills = policy_scope(Skill)
