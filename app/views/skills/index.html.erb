@@ -51,7 +51,7 @@
           data-allskilldisplay-target='levelSkillCard'
           data-grade='<%=@grade.name%>'
           data-level='<%=skill_level%>'>
-						<%= render 'all_skills_by_domain_level', skills: skills, domain: domain, level: skill_level %>
+						<%= render 'all_skills_by_domain_level', skills: skills, domain: domain, level: skill_level,grade: @grade %>
 					</div>
 				<% end %>
 			</div>

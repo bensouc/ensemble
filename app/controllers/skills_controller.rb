@@ -74,6 +74,7 @@ class SkillsController < ApplicationController
     # @grades = Classroom::GRADE.select { |grade| current_user.classroom_grades.include?(grade.grade_level) }
     @grades = current_user.classroom_grades
     query = params[:grade]
+    
     @school = current_user.school
     @grade = query.nil? ? @grades.first : Grade.find(query)
     @skills = policy_scope(Skill)

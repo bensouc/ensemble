@@ -21,11 +21,10 @@
     <%= render "form",
     skill:
       Skill.new(
-        grade: skills.first.grade,
-        school: skills.first.school,
-        level: skills.first.level,
-        domain: domain,
-        level: level
+        grade: grade,
+        school: grade.school,
+        level: level,
+        domain: domain
       ) %>
     <div
       class="reset-skill-edit --cursor-pointer"
