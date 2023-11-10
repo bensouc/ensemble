@@ -3,7 +3,7 @@
 class Classroom < ApplicationRecord
   GRADE = %w[CP CE1 CE2 CM1 CM2].freeze
   belongs_to :user
-  belongs_to :grade #to remove for first migration
+  belongs_to :grade #to remove for first migration Of Grade MODEL
 
   has_many :students, dependent: :destroy
   has_many :shared_classrooms, dependent: nil
@@ -15,13 +15,11 @@ class Classroom < ApplicationRecord
     SharedClassroom.exists?(classroom: self)
   end
 
-
   def shared_user
     return unless shared?
 
     SharedClassroom.select { |s_classroom| s_classroom.classroom == self }.first.user
   end
-
 
   private
 

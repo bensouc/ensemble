@@ -2,7 +2,7 @@
 
 class WorkPlan < ApplicationRecord
   belongs_to :user
-  belongs_to :grade #to remove for first migration
+  belongs_to :grade #to remove for first migration Of Grade MODEL
   belongs_to :shared_user, class_name: "User", optional: true
   belongs_to :student, optional: true
 
@@ -16,12 +16,11 @@ class WorkPlan < ApplicationRecord
 
   validates :name, presence: true
 
-
   def all_domains_from_work_plan
     WorkPlanDomain::DOMAINS[grade.grade_level]
   end
 
   def self.with_associations
-    includes(:work_plan_domains, :challenges, :skills )
+    includes(:work_plan_domains, :challenges, :skills)
   end
 end

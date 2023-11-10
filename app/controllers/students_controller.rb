@@ -71,7 +71,7 @@ class StudentsController < ApplicationController
   def new_validated_wps
     skip_authorization
     @student = Student.includes(:classroom).find(params_add_validated_wps[:student_id])
-    student_grade = @student.classroom.grade.grade_level
+    student_grade = @student.classroom.grade
     @special_work_plan = WorkPlan.find_or_create_by(student: @student, grade: student_grade, special_wps: true)
     domain = params_add_validated_wps[:domain]
     level = if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && student_grade != "CM2"
