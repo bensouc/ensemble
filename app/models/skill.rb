@@ -2,7 +2,7 @@
 
 class Skill < ApplicationRecord
   belongs_to :school
-  belongs_to :grade #to remove for first migration
+  # belongs_to :grade #to remove for first migration
   has_many :work_plan_skills, dependent: nil
   has_many :challenges, dependent: :destroy
 

@@ -3,7 +3,7 @@
 class Classroom < ApplicationRecord
   GRADE = %w[CP CE1 CE2 CM1 CM2].freeze
   belongs_to :user
-  belongs_to :grade #to remove for first migration
+  # belongs_to :grade #to remove for first migration
 
   has_many :students, dependent: :destroy
   has_many :shared_classrooms, dependent: nil

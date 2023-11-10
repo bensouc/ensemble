@@ -2,7 +2,7 @@
 
 class WorkPlan < ApplicationRecord
   belongs_to :user
-  belongs_to :grade #to remove for first migration
+  # belongs_to :grade #to remove for first migration
   belongs_to :shared_user, class_name: "User", optional: true
   belongs_to :student, optional: true
 
