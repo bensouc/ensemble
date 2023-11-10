@@ -12,7 +12,7 @@ class Belt < ApplicationRecord
     "6" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698313/ensemble/belts/belt_6_mqzhbq.png",
     "7" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698314/ensemble/belts/belt_7_aubna5.png"
   }.freeze
-  # belongs_to :grade #to remove for first migration
+  belongs_to :grade #to remove for first migration
   belongs_to :student
   scope :completed, -> { where(completed: true) }
 
