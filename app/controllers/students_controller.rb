@@ -32,7 +32,7 @@ class StudentsController < ApplicationController
     @all_skills_and_last_wps.compact!.sort_by { |t| t[:last_wps][:updated_at] }
     # retrive all student belts
     # cleaning the useless lastwps (eg: special domain, remove the amount)
-    unless @student_grade == "CM2"
+    unless @student_grade.grade_level == "CM2"
       WorkPlanDomain::DOMAINS_SPECIALS.each do |domain|
         special_domain_belts = @belts.select { |belt| belt.domain == domain }
         count = special_domain_belts.count
