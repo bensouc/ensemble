@@ -146,7 +146,9 @@ class StudentsController < ApplicationController
     (1..to_remove).to_a.each do
       # get index for wps completed
       index = all_skills_last_wpss.index do |h|
-        h[:skill][:domain] == domain && h[:skill][:grade] == grade && !h[:last_wps].nil? && h[:last_wps].status == "completed"
+        # binding.pry
+        h[:skill][:domain] == domain && !h[:last_wps].nil? && h[:last_wps].status == "completed"
+        # h[:skill][:domain] == domain && h[:skill][:grade] == grade && !h[:last_wps].nil? && h[:last_wps].status == "completed"
       end
       # delete @ index if index exists
       all_skills_last_wpss.delete_at(index) unless index.nil?

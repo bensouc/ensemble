@@ -106,7 +106,7 @@ class WorkPlanSkillsController < ApplicationController
       when "completed"
         @work_plan_skill.completed = true
         @work_plan_skill.save!
-
+        # binding.pry
         # test for each skill of its domain a 'belt is validated'jbiv
         # if @work_plan_skill.work_plan_domain.specials? && @work_plan.grade != "CM2"
         if @work_plan_skill.work_plan_domain.specials? #ADD management for ALAIN FOURNIER

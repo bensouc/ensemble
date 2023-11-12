@@ -58,13 +58,13 @@ class Belt < ApplicationRecord
   end
 
   def self.find_or_create_by_level!(args, level)
-    binding.pry
     (1..level).each do
       args.merge!(
         {
           level:,
         }
-      )
+        )
+        # binding.pry
       belt = Belt.find_or_create_by(args)
       belt.completed = true
       belt.validated_date = DateTime.now
@@ -111,6 +111,7 @@ class Belt < ApplicationRecord
   end
 
   def self.create_new_special_belt(args, count, work_plan_skill)
+    # binding.pry
     case args[:grade].grade_level
     when "CE1"
       case work_plan_skill.work_plan_domain.domain
