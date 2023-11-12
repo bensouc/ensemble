@@ -91,6 +91,7 @@ class WorkPlanSkillsController < ApplicationController
     @work_plan_skill.status = params[:status]
     # @work_plan_skill.completed = true if @work_plan_skill.kind == "ceinture" && params[:status] == "completed"
     # Create a belt or get the corresponding one
+    # binding.pry
     belt = Belt.find_or_create_by(
       {
         student_id: @work_plan_skill.student.id,

@@ -111,7 +111,7 @@ class Belt < ApplicationRecord
   end
 
   def self.create_new_special_belt(args, count, work_plan_skill)
-    case args[:grade]
+    case args[:grade].grade_level
     when "CE1"
       case work_plan_skill.work_plan_domain.domain
       when "Géométrie"
