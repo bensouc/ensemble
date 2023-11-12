@@ -4,15 +4,15 @@
     <h1>
       Créez en une !</h1>
   <% else %>
-    <%= turbo_frame_tag "classroom_list" do %>
-      <% if @classrooms.count == 1 %>
-        <h1>Ma Classe</h1>
-      <% else %>
-        <h1>Mes Classes</h1>
-      <% end %>
-      <%= render "classrooms" %>
+
+    <% if @classrooms.count == 1 %>
+      <h1>Ma Classe</h1>
+    <% else %>
+      <h1>Mes Classes</h1>
     <% end %>
+    <%= render "classrooms" %>
   <% end %>
+
   <%# Classroom Creation %>
   <div class="classroom-creation" data-controller='create-classroom'>
     <button
