@@ -78,6 +78,7 @@ class WorkPlansController < ApplicationController
     @my_work_plans = current_user.all_classroom_workplans
     @my_work_plans_from_shared_classrooms = current_user.all_shared_classroom_workplans
     @my_work_plans += @my_work_plans_from_shared_classrooms unless @my_work_plans_from_shared_classrooms.empty?
+    @my_work_plans = @my_work_plans.sort_by(&:created_at).reverse
     @my_work_plans_unassigned = WorkPlan.where(user: current_user, special_wps: false, student: nil)
   end
 
