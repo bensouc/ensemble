@@ -89,6 +89,7 @@ class WorkPlanSkillsController < ApplicationController
     #  binding.pry
 
     @work_plan_skill.status = params[:status]
+
     # @work_plan_skill.completed = true if @work_plan_skill.kind == "ceinture" && params[:status] == "completed"
     # Create a belt or get the corresponding one
     # binding.pry
@@ -116,6 +117,8 @@ class WorkPlanSkillsController < ApplicationController
           belt.validated_date = DateTime.now
           belt.save!
         end
+      else
+        @work_plan_skill.completed = false
       end
     end
 
