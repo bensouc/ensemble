@@ -1,0 +1,7 @@
+<%= turbo_frame_tag @grades do %>
+  <div class="grades-card">
+    <% @grades.each do |grade| %>
+      <%= render 'grade', grade: grade %>
+    <% end %>
+  </div>
+<% end %>

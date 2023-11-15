@@ -1,0 +1,11 @@
+<%= turbo_frame_tag grade do %>
+<div class="grade-card">
+    <h3 class='text-align-middle'><%= grade.name %><span class='badge --bgc-roseL --blanc '>
+      <%= grade.grade_level %>
+    </span>
+    </h3>
+    <div><i class="fa-solid fa-people-roof --roseL"></i> <%= grade.classrooms.count %> Classes</div>
+    <div><i class="fa-solid fa-graduation-cap --roseL"></i> <%= grade.students.count  %> Elèves</div>
+
+</div>
+<% end %>
