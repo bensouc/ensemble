@@ -150,26 +150,7 @@
   }
 }
 
-.cancel-btn {
-  border-radius: 12px;
-  width: fit-content;
-  border: 3px solid $grisC;
-  background-color: $grisC;
-  font-weight: 700;
-  font-size: 20px;
-  color: white;
-  // margin: 4px;
-  padding: 0;
-  transition: 0.3s;
-  padding: 0.5rem 1rem;
-  display: inline-block;
 
-  &:hover {
-    background-color: $white;
-    color: $grisC;
-    cursor: pointer;
-  }
-}
 
 [type="submit"] {
   -webkit-appearance: none !important;

@@ -45,14 +45,15 @@
       </ul>
       <div class="grey-line-full"></div>
       <div class="classrooms-details-card">
-        <p>
+        <%= render 'grades/grades', grades: @grades %>
+        <!--<p>
           <i class="fa-solid fa-people-roof"></i>
           <%= "#{@classrooms.count} / #{@subscription.quantity unless @subscription.nil?} classe#{'s' if @classrooms.count > 1}" %>
         </p>
         <p>
           <i class="fa-solid fa-graduation-cap"></i>
           <%= "#{@students.count} élève#{"s" if @students.count > 1}" %>
-        </p>
+        </p> -->
       </div>
     </div>
     <div class="subscription-details --border-10px">

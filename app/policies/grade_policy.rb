@@ -5,4 +5,12 @@ class GradePolicy < ApplicationPolicy
       scope.includes([:classrooms, :students]).where(school: user.school)
     end
   end
+
+  def create?
+    record.school == user.school
+  end
+
+  def destroy?
+    record.school == user.school && user.super_teacher?
+  end
 end

@@ -1,0 +1,13 @@
+<%= turbo_frame_tag "grades_index" do %>
+  <div class="grades-card" data-controller="reset-frame"
+    data-reset-frame-name-value="new_grade">
+    <% grades.each_with_index do |grade, index| %>
+      <%= render "grades/grade", grade: grade %>
+    <% end %>
+    <%= turbo_frame_tag "new_grade" %>
+  </div>
+<% end %>
+<div class="grey-line-full"></div>
+<%= link_to  new_grade_path , class: "add-skill-btn validate-btn me-0", data: {turbo_frame: "new_grade"} do %>
+  Ajouter un niveau
+<% end %>
