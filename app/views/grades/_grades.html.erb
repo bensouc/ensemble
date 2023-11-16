@@ -7,7 +7,9 @@
     <%= turbo_frame_tag "new_grade" %>
   </div>
 <% end %>
-<div class="grey-line-full"></div>
-<%= link_to  new_grade_path , class: "add-skill-btn validate-btn me-0", data: {turbo_frame: "new_grade"} do %>
-  Ajouter un niveau
+<% if current_user.super_teacher? || current_user.admin? %>
+  <div class="grey-line-full"></div>
+  <%= link_to  new_grade_path , class: "add-skill-btn validate-btn me-0", data: {turbo_frame: "new_grade"} do %>
+    Ajouter un niveau
+  <% end %>
 <% end %>
