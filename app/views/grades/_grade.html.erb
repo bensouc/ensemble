@@ -1,0 +1,23 @@
+<%= turbo_frame_tag grade do %>
+<div class="grade-card">
+    <h3 class='text-align-middle'>
+      <span class='badge --bgc-roseL --blanc '>
+        <%= grade.name %>
+      </span>
+    <%= button_to grade_path(grade), method: :delete,
+                                    class: '--bgc-blanc remove-grade-btn',
+                                    data: {
+                                      # action: "click->wp-by-student#deleteWorkPlan",
+                                      confirm: "Voulez vous Supprimer Ce Plan de Travail?",
+                                    } do %>
+      <div class='rmv-skill-btn '>
+        <i class="far fa-times-circle"></i>
+      </div>
+    <% end %>
+    </h3>
+    <div><i class="fa-solid fa-graduation-cap --roseL ms-1"></i> <%= grade.grade_level %></div>
+    <div><i class="fa-solid fa-people-roof --roseL ms-1"></i> <%= grade.classrooms.count %> Classes</div>
+    <div><i class="fa-solid fa-user-graduate --roseL ms-1"></i> <%= grade.students.count  %> Elèves</div>
+
+</div>
+<% end %>

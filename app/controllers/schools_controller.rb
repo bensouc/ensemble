@@ -4,6 +4,7 @@ class SchoolsController < ApplicationController
   def show
     authorize @school
     @subscription = @school.subscription
+    @grades = @school.grades
   end
 
 

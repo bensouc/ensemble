@@ -9,7 +9,7 @@ class Challenge < ApplicationRecord
 
   has_many :work_plan_skills, dependent: nil
 
-  validates :name, presence: true, uniqueness: { message: "'Le nom de cet exercice éxiste déja'", scope: :skill }
+  validates :name, presence: true, uniqueness: { message: "Le nom de cet exercice éxiste déja", scope: :skill }
   validates :shared, presence: true
 
   scope :for_belt, -> { where(for_belt: true) }

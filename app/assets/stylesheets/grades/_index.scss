@@ -1,0 +1,38 @@
+.grades-card {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  gap: 2rem;
+}
+.grade-card {
+  width: 176px;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff8c;
+  border-radius: 5px;
+  padding: 3px 0 5px 5px;
+  i {
+    width: 19px !important;
+  }
+  .button_to{
+    height: 0;
+  }
+}
+.remove-grade-btn{
+      position: relative;
+    right: -156px;
+    top: -54px;
+    width: 0;
+    height: 0;
+    /* margin: 0; */
+    padding: 0;
+}
+.form-grade {
+  margin: 0 auto !important;
+  width: 95% !important;
+}
+.labels{
+      width: 75px;
+    padding: 11px 0 0 0;
+}

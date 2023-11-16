@@ -1,0 +1,4 @@
+<%= turbo_stream.replace "new_grade" do %>
+    <%= render partial: "grade", locals: { grade: @grade } %>
+    <%= turbo_frame_tag "new_grade" %>
+  <% end %>

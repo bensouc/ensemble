@@ -85,6 +85,7 @@ Rails.application.routes.draw do
 
   # ###############routes for SCHOOL/SCHOOL_ROLES###############
   resources :schools, only: %w[show]
-
+  # ###############    routes for GRADES         ###############
+  resources :grades, only: [:show, :destroy, :index, :new, :create]
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

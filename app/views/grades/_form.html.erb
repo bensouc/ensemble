@@ -1,0 +1,30 @@
+  <div class="grey-line-full"></div>
+  <%= simple_form_for grade, html: { novalidate: false } do |f| %>
+    <div class='box-start form-grade'>
+      <div class='box-column'>
+        <p class='pad-35 text-end labels'>Niveau : </p>
+        <p class='pad-35 text-end labels'>Alias : </p>
+      </div>
+      <div class='box-column'>
+        <div class="box-start pad-35">
+          <%= f.input :grade_level,
+                  required: true,
+                  label: false,
+                  collection: Classroom::GRADE,
+                  input_html: {
+                    class: "area "
+                  } %>
+        </div>
+        <div class="box-start pad-35">
+          <%= f.input :name, label: false, input_html: { class: "area " } %>
+        </div>
+      </div>
+      <%= f.input :school_id, as: :hidden, input_html: {value: grade.school_id},max: 15 %>
+    </div>
+    <div class=' box-end'>
+      <div class="cancel-btn me-1" data-action='click->reset-frame#resetFrame' >
+				<i class="fas fa-times --blanc m-0"></i>
+			</div>
+      <%= f.submit "Valider", class: "area btn-valid" %>
+    </div>
+  <% end %>
