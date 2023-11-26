@@ -46,7 +46,7 @@ yarn-debug.log*
 *.swp
 .DS_Store
 .env*
+.nvmrc*
 
 vendor
 tripe_subscription_id: event.data.object.id,
-.nvmrc
