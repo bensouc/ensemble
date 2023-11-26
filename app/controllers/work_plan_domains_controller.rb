@@ -58,7 +58,7 @@ class WorkPlanDomainsController < ApplicationController
     end
     if @domain.work_plan_skills.count.zero? && !is_domain_special
       @domain.destroy
-      redirect_to work_plan_path(@work_plan), notice: "Il n'est plus d'exercice ou de ceinture non validé pour cette couleur"
+      redirect_to work_plan_path(@work_plan), notice: "Il n'y a plus d'exercice ou de ceinture non validé pour cette couleur"
     elsif @domain.save!
       respond_to do |format|
         format.html { redirect_to work_plan_path(@work_plan, anchor: "bottom") }
