@@ -5,7 +5,7 @@
       class="add-domain-form"
       data-new-domain-target='domainform'
       data-controller='domain-form'
-      id="<%= work_plan.grade%>"
+      id="<%= work_plan.grade.grade_level%>"
     >
       <div class='m-top'>
         <%= simple_form_for work_plan, url: work_plan_work_plan_domains_path(work_plan),
