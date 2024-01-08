@@ -2,6 +2,8 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # SMTP settings for gmail
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.default_url_options = { host: "http://localhost:3000/" }
   config.action_mailer.smtp_settings = {
     address: "mail.gandi.net",
     port: 587,
