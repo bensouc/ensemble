@@ -36,8 +36,8 @@ puts "=========================================="
 puts "creating school"
 puts ""
 
-school_ensemble = School.create!(name: "Ensemble", city: "Nantes")
-school_fournier = School.create!(name: "Alain Fournier", city: "Nantes")
+school_ensemble = School.create!(name: "Ensemble", city: "Nantes", email: "school1@mail.com")
+school_fournier = School.create!(name: "Alain Fournier", city: "Nantes", email: "school2@mail.com")
 
 puts ""
 puts ">>> school created"
@@ -65,41 +65,62 @@ puts ""
 puts ">>> school_roles created"
 puts "=========================================="
 
-puts "creating classrooms"
-puts ""
 
-classroom_ensemble_admin = Classroom.create!(name: "Gpe1", grade: "CE1", user: admin)
-classroom_ensemble_user1 = Classroom.create!(name: "Gpe2", grade: "CM2", user: ensemble_user1)
-classroom_alain_fournier_user1 = Classroom.create!(name: "Gpe3", grade: "CE2", user: fournier_user1)
-classroom_alain_fournier_user2 = Classroom.create!(name: "Gpe4", grade: "CM2", user: fournier_user2)
-
-puts ""
-puts ">>> classrooms created"
+# "CP" => ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"],
+#     "CE1" => ["Vocabulaire", "Grammaire", "Numération", "Calcul", "Géométrie", "Grandeurs et Mesures"],
+#     "CE2" => ["Conjugaison", "Vocabulaire", "Grammaire", "Numération", "Calcul",
+#               "Géométrie", "Grandeurs et Mesures"],
+#     "CM1" => ["Conjugaison", "Vocabulaire", "Orthographe", "Grammaire", "Poésie", "Géométrie", "Grandeurs et Mesures",
+#               "Numération", "Calcul"],
+#     "CM2"
 puts "=========================================="
-
-puts "creating students"
+puts "creating grades"
 puts ""
-
-Classroom.all.each do |classroom|
-  puts "creating students for #{classroom.name}"
-  12.times do
-    Student.create!(first_name: Faker::Movies::StarWars.character, classroom: classroom)
+School.all.each do |school|
+  ["CP","CE1","CE2","CM1","CM2"].each do |grade_level|
+    Grade.create!(grade_level: grade_level, school: school, name: grade_level)
   end
-  puts ">>> students created  for #{classroom.name}"
 end
-
 puts ""
-puts ">>> students created"
-puts "=========================================="
+puts ">>> grades created"
+# puts "=========================================="
+# puts "creating classrooms"
+# puts ""
 
-puts "creating shared classrooms"
-puts ""
+# classroom_ensemble_admin = Classroom.create!(name: "Gpe1", grade: "CE1", user: admin)
+# classroom_ensemble_user1 = Classroom.create!(name: "Gpe2", grade: "CM2", user: ensemble_user1)
+# classroom_alain_fournier_user1 = Classroom.create!(name: "Gpe3", grade: "CE2", user: fournier_user1)
+# classroom_alain_fournier_user2 = Classroom.create!(name: "Gpe4", grade: "CM2", user: fournier_user2)
 
-SharedClassroom.create!(user: ensemble_user1, classroom: classroom_ensemble_admin)
-SharedClassroom.create!(user: fournier_user1, classroom: classroom_alain_fournier_user2)
+# puts ""
+# puts ">>> classrooms created"
+# puts "=========================================="
 
-puts ""
-puts ">>> shared classrooms created"
+# puts "creating students"
+# puts ""
+
+# Classroom.all.each do |classroom|
+#   puts "creating students for #{classroom.name}"
+#   12.times do
+#     Student.create!(first_name: Faker::Movies::StarWars.character, classroom: classroom)
+#   end
+#   puts ">>> students created  for #{classroom.name}"
+# end
+
+# puts ""
+# puts ">>> students created"
+# puts "=========================================="
+
+# puts "creating shared classrooms"
+# puts ""
+
+# SharedClassroom.create!(user: ensemble_user1, classroom: classroom_ensemble_admin)
+# SharedClassroom.create!(user: fournier_user1, classroom: classroom_alain_fournier_user2)
+
+# puts ""
+# puts ">>> shared classrooms created"
+
+
 puts "=========================================="
 
 puts "creating skills"
@@ -110,14 +131,15 @@ School.all.each do |school|
   puts "creating skills for #{school.name}"
   WorkPlanDomain::DOMAINS.each do |grade, domains|
     domains.each do |domain|
+      p final_grade = Grade.find_by(school: , grade_level: grade)
       if domain.in?(WorkPlanDomain::DOMAINS_SPECIALS) && school == school_fournier
         15.times do
-          Skill.create!(school:, domain:, level: 1, symbol: "⬥", name: Faker::Movies::StarWars.quote, grade:)
+          Skill.create!(school:, domain:, level: 1, symbol: "⬥", name: Faker::Movies::StarWars.quote, grade: final_grade)
         end
       else
         for i in (1..7)
           2.times do
-            Skill.create!(school:, domain:, level: i, symbol: "⬥", name: Faker::Movies::StarWars.quote, grade:)
+            Skill.create!(school:, domain:, level: i, symbol: "⬥", name: Faker::Movies::StarWars.quote, grade: final_grade)
           end
         end
       end
