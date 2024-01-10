@@ -1,9 +1,13 @@
 <div class="main_nav">
   <%= link_to dashboard_path,class:"logo"  do %>
-    <img
-      src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg"
-      alt=""
-    >
+    <% if current_user.demo %>
+      <%= image_tag "logo_demo.png", alt: "logo demo" %>
+    <% else %>
+      <img
+        src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg"
+        alt="Logo"
+      >
+    <% end %>
   <% end %>
   <div class="menu-g">
     <% if user_signed_in? %>

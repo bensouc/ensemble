@@ -7,7 +7,8 @@ class ClassroomPolicy < ApplicationPolicy
   end
 
   def create?
-    user_is_owner_or_admin?
+    # test demo, return true if authorize
+    user_is_owner_or_admin? && create_classroom_demo?
   end
 
   def results?
@@ -23,6 +24,10 @@ class ClassroomPolicy < ApplicationPolicy
   end
 
   private
+
+  def create_classroom_demo?
+    user.demo ? user.classrooms.count < 1 : true
+  end
 
   def user_is_owner_or_admin?
     user.admin || record.user == user || record.shared_classrooms.any? { |shared_classroom| shared_classroom.user == user }
