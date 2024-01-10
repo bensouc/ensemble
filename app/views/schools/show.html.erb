@@ -9,7 +9,7 @@
       <br>
       <div class="group-number-card">
         <p><i class="fa-solid fa-users"></i>
-          <%= "#{@school.users.count} Membre#{"s" if @school.users.count > 1}" %></p>
+          <%= "#{@teachers.count} Membre#{"s" if @teachers.count > 1}" %></p>
         <% if current_user.school_role.super_teacher? %>
           <%= link_to new_user_registration_path do %>
             <i
@@ -23,7 +23,7 @@
         <% end %>
       </div>
       <ul>
-        <% @school.users.order(:first_name).each do |teacher| %>
+        <% @teachers.each do |teacher| %>
           <li class='teacher-detail-school-card'>
             <%= teacher.first_name.capitalize %>
             <div class="teacher-admin">
@@ -59,7 +59,7 @@
     <div class="subscription-details --border-10px">
       <% if  @subscription.nil? %>
         Vous n'avez pas encore d'abonnement
-        <%=link_to "Abonnez-vous", subscriptions_school_pricing_path, class: "btn-flat text-center"%>
+        <%=link_to "Abonnez-vous", subscriptions_school_pricing_path, class: "btn-flat text-center" if !current_user.demo%>
       <% else %>
         <h3>Détails de votre Abonnement</h3>
         <p><i class="fa-solid fa-heart"></i>

@@ -15,6 +15,7 @@
 
   <%# Classroom Creation %>
   <div class="classroom-creation" data-controller='create-classroom'>
+    <%if policy(Classroom.new(user: current_user)).create? %>
     <button
       class="validate-btn"
       data-action='click->create-classroom#displayForm'
@@ -25,5 +26,8 @@
     <div class="classroom-form d-none" data-create-classroom-target='form' data>
       <%= render "form" %>
     </div>
+    <% else %>
+    <div class='teacher-email'>DEMO : Vous ne pouvez plus ajouter de classe</div>
+    <% end %>
   </div>
 </div>
