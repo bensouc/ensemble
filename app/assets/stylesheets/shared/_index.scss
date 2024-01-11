@@ -2,3 +2,16 @@
 //   button {
 //      padding: 10px 10px !important;
 // }
+// top NAV BAR
+.top-link-btn i{
+  color: $roseL;
+    // font-family: "Baloo 2", cursive;
+    font-size: 1.5rem;
+    font-weight: 700;
+    &:hover{
+      color: $blanc !important;
+      background-color: $roseL !important;
+      border-radius: 50%;
+      border: thin solid $roseL;
+    }
+}
