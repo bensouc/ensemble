@@ -5,9 +5,16 @@
 	</div>
   <% if user_signed_in? %>
 	<div class="navbar navbar-expand-sm navbar-light d-flex">
-		<div class='avatar'>
-			<h3><%=current_user.first_name.capitalize%> <%=current_user.last_name.capitalize%></h3>
-		</div>
+		<%= link_to 'https://season-sycamore-125.notion.site/G-rer-votre-compte-7afd7c19535048fdaaf6287eccc07358',
+                class:'top-link-btn',
+                target: 'blank',
+                data:{
+                      controller:"tooltip",
+                      bs_toggle:"tooltip",
+                      bs_placement:"left"},
+                title:"Les Tutos d'Ensemble !!" do %>
+			<i class="fa-regular fa-circle-question"></i>
+		<% end %>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
