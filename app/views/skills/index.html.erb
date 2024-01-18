@@ -35,10 +35,23 @@
 				</div>
 			<% end %>
 			<%= link_to skills_path(grade: @grade, format: :xlsx) do %>
-				<div class="skill_level-selector">
+				<div class="skill_level-selector"
+          data-controller="tooltip"
+          data-bs-toggle="tooltip"
+          data-bs-placement="right"
+          title="Télécharger les compéténces de la classe"
+        >
 					<i class="fa-solid fa-file-excel --vert"></i>
 				</div>
 			<% end %>
+			<div class="skill_level-selector"
+        data-controller="tooltip"
+        data-bs-toggle="tooltip"
+        data-bs-placement="right"
+        title="Charger les compéténces de la classe"
+      >
+				<i class="fa-solid fa-file-arrow-down --vert"></i>
+			</div>
 		</div>
 		<% WorkPlanDomain::DOMAINS[@grade.grade_level].each do |domain| %>
 			<div class="skills_boxe <%= 'd-none 'unless domain == WorkPlanDomain::DOMAINS[@grade.grade_level].first%>"
