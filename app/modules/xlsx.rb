@@ -18,4 +18,11 @@ module Xlsx
     # Enregistrez le fichier XLSX dans un temp file et envoyez-le en tant que pièce jointe
     package
   end
+
+  # Xlsx.parse_xlsx_file
+  def self.parse_xlsx_file
+    xlsx_path = 'test.xlsx'
+    xlsx = Roo::Spreadsheet.open(xlsx_path)
+    puts xlsx.sheet(0)
+  end
 end

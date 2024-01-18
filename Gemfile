@@ -62,6 +62,10 @@ gem "bootstrap", "~> 5.2"
 # xlsx spreadsheet generation
 gem "caxlsx"
 gem "caxlsx_rails"
+# xlsx spreadsheet upload and read
+gem 'roo', '~> 2.10'
+
+
 # reduce log size with lograge
 gem "lograge"
 
