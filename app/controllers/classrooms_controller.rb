@@ -156,7 +156,7 @@ class ClassroomsController < ApplicationController
 
   # refacto of result and result_by_domain actions
   def set_up_results(domain)
-    @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @classroom.grade.grade_level != "CM2")
+    @special_domain = @classroom.user.school.special_domains? && (WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @classroom.grade.grade_level != "CM2")
     @students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     # get all validated belts for all classroom student
     @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain:, completed: true)
