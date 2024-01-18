@@ -21,6 +21,11 @@ class School < ApplicationRecord
   end
 
   # Instance Methods
+
+  def special_domains?
+    special_domains
+  end
+
   def valid_subscription?
   subscription&.valid_subscription?
   end

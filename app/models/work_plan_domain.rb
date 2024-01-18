@@ -31,7 +31,7 @@ class WorkPlanDomain < ApplicationRecord
 
   def specials?
     # binding.pry
-    domain.in?(DOMAINS_SPECIALS) && work_plan.grade.grade_level != "CM2"
+    work_plan.grade.school.special_domains? && domain.in?(DOMAINS_SPECIALS) && work_plan.grade.grade_level != "CM2"
   end
 
   has_many :work_plan_skills, dependent: :destroy

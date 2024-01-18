@@ -33,6 +33,10 @@ class User < ApplicationRecord
     admin
   end
 
+  def demo?
+    demo
+  end
+
   def super_teacher?
     school_role.super_teacher == true
   end

@@ -34,10 +34,25 @@
 					<i class=" fas fa-bacon belt-<%= skill_level %> font-weight-bold"></i>
 				</div>
 			<% end %>
-			<%= link_to skills_path(grade: @grade, format: :xlsx) do %>
-				<div class="skill_level-selector">
+			<%# upload skills list unless user demo %>
+			<% if current_user.demo? %>
+				<div class="skill_level-selector" onclick='alert("Non disponible en Mode Démo")'
+          data-controller="tooltip"
+          data-bs-toggle="tooltip" data-bs-placement="right"
+          title="Télécharger la liste des compétences"
+        >
 					<i class="fa-solid fa-file-excel --vert"></i>
 				</div>
+			<% else %>
+				<%= link_to skills_path(grade: @grade, format: :xlsx), data:{
+          controller:"tooltip",
+          bs_toggle:"tooltip",
+          bs_placement:"right"},
+          title:"Télécharger la liste des compétences" do %>
+					<div class="skill_level-selector">
+						<i class="fa-solid fa-file-excel --vert"></i>
+					</div>
+				<% end %>
 			<% end %>
 		</div>
 		<% WorkPlanDomain::DOMAINS[@grade.grade_level].each do |domain| %>
