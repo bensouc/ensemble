@@ -74,14 +74,14 @@ class StudentsController < ApplicationController
     student_grade = @student.classroom.grade
     @special_work_plan = WorkPlan.find_or_create_by(student: @student, grade: student_grade, special_wps: true)
     domain = params_add_validated_wps[:domain]
-    level = if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && student_grade != "CM2"
+    level = if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && student_grade.grade_level != "CM2"
         1
       else
         params_add_validated_wps[:level]
       end
     validated_work_plan_skills = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(status: "completed").select { |wps| wps.student == @student && wps.skill.domain == domain && wps.skill.level == level.to_i }
     validated_skill_id = validated_work_plan_skills.map { |wps| wps.skill.id }
-    @skills = Skill.for_school(current_user.school).where(level:,
+    @skills = Skill.for_school(School.last).where(level:,
                                                           domain:,
                                                           grade: student_grade)
     @skills = @skills.reject { |skill| validated_skill_id.include?(skill.id) }
