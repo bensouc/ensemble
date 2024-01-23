@@ -34,29 +34,39 @@
 					<i class=" fas fa-bacon belt-<%= skill_level %> font-weight-bold"></i>
 				</div>
 			<% end %>
-			<%= link_to skills_path(grade: @grade, format: :xlsx) do %>
+			<%# upload skills list unless user demo %>
+			<% if current_user.demo? %>
+				<div class="skill_level-selector" onclick='alert("Non disponible en Mode Démo")'
+          data-controller="tooltip"
+          data-bs-toggle="tooltip" data-bs-placement="right"
+          title="Télécharger la liste des compétences"
+        >
+					<i class="fa-solid fa-file-excel --vert"></i>
+				</div>
+			<% else %>
+				<%= link_to skills_path(grade: @grade, format: :xlsx), data:{
+          controller:"tooltip",
+          bs_toggle:"tooltip",
+          bs_placement:"right"},
+          title:"Télécharger la liste des compétences" do %>
+					<div class="skill_level-selector">
+						<i class="fa-solid fa-file-excel --vert"></i>
+					</div>
+				<% end %>
 				<div class="skill_level-selector"
           data-controller="tooltip"
           data-bs-toggle="tooltip"
           data-bs-placement="right"
-          title="Télécharger les compéténces de la classe"
+          title="Charger les compéténces de la classe"
         >
-					<i class="fa-solid fa-file-excel --vert"></i>
+					<i class="fa-solid fa-file-arrow-down --vert"></i>
 				</div>
 			<% end %>
-			<div class="skill_level-selector"
-        data-controller="tooltip"
-        data-bs-toggle="tooltip"
-        data-bs-placement="right"
-        title="Charger les compéténces de la classe"
-      >
-				<i class="fa-solid fa-file-arrow-down --vert"></i>
-			</div>
 		</div>
 		<% WorkPlanDomain::DOMAINS[@grade.grade_level].each do |domain| %>
 			<div class="skills_boxe <%= 'd-none 'unless domain == WorkPlanDomain::DOMAINS[@grade.grade_level].first%>"
-    data-domain='<%=domain%>'
-    data-allskilldisplay-target='domainCard'>
+        data-domain='<%=domain%>'
+        data-allskilldisplay-target='domainCard'>
 				<%# <% domain = WorkPlanDomain::DOMAINS[@grade].first %>
 				<% for skill_level in (1..7) do %>
 					<% skills = @skills.select {|skill| skill.level == skill_level && skill.domain == domain}.sort %>
@@ -68,6 +78,15 @@
 					</div>
 				<% end %>
 			</div>
+		<% end %>
+	</div>
+	<div class="load-skills">
+		<h1>Upload Excel File</h1>
+		<%= simple_form_for :liste, url: upload_skills_path,
+        html: { novalidate: false}, method: :post do |f| %>
+			<%# <%= f.label 'excel_file' %>
+      <%= f.input :excel_file, as: :file, label: false,required: :true, input_html: { accept: '.xlsx' } %>
+			<%= f.submit  %>
 		<% end %>
 	</div>
 </div>

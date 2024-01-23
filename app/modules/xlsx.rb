@@ -18,11 +18,25 @@ module Xlsx
     # Enregistrez le fichier XLSX dans un temp file et envoyez-le en tant que pièce jointe
     package
   end
-
   # Xlsx.parse_xlsx_file
-  def self.parse_xlsx_file
-    xlsx_path = 'test.xlsx'
-    xlsx = Roo::Spreadsheet.open(xlsx_path)
-    puts xlsx.sheet(0)
+  def self.parse_xlsx_file(xlsx_path)
+    # raise
+    case File.extname(xlsx_path)
+    when ".xlsx"
+      SimpleXlsxReader.open(xlsx_path).sheets # renvoit all sheets sous l'objet SimpleXlsxReader::Document
+    else
+      # spreadsheet_obj = Roo::Spreadsheet.open(xlsx_path, extension: File.extname(xlsx_path)[1..-1].intern).sheets
+      # Axlsx::Package.new do |p|
+      #   p.workbook.add_worksheet(name: "Feuille1") do |sheet|
+      #     spreadsheet_obj.each do |row|
+      #       sheet.add_row row
+      #     end
+      #   end
+      #   p.serialize("tmp/conversion.xlsx")
+      # end
+      # SimpleXlsxReader.open("tmp/conversion.xlsx").sheets
+      # TO DO other spreadsheet format
+      
+    end
   end
 end
