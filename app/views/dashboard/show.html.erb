@@ -1,44 +1,85 @@
 <div class='container container-dashboard d-flex flex-column justify-content-space-around' >
-  <div class="com">
-    <div class='info-btn' data-controller='show-com' data-action="click->show-com#" >
-        Bienvenue <%= current_user.first_name.capitalize %> !!
-    </div>
-  </div>
-  <div class=" d-flex flex-row justify-content-center dashboardTop">
-    <div class="cardcreate">
-      <h1 class="p-2"><i class="fas fa-desktop"></i>  MON CARTABLE</h1>
-      <%= link_to new_work_plan_path do %>
-        <div class="bg1">
-          <h2>Plan de Travail</h2>
-          <p><i class="far fa-dot-circle"></i> Créer un plan de travail vierge</p>
-          <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638802482/bg_create_PT_yvxfnx.svg" alt="">
-        </div>
-      <% end %>
-    </div>
-    <div class="lastexercices">
-      <%= link_to classrooms_path do %>
-        <div class="bg2 d-flex flex-direction-column">
-          <% if current_user.classrooms.count < 2  %>
-            <h2>Ma Classe</h2>
-          <% else %>
-            <h2>Mes Classes</h2>
-          <% end %>
-          <p><i class="far fa-dot-circle"></i>  Accédez à vos élèves</p>
-          <img class="img1"src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638789050/bg_exercices_pzyqfx.svg" alt="">
-          <img class="img2" src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638790750/balancoire_exo-DB_yndrnu.svg" alt="">
-        </div>
-      <% end %>
-    </div>
-  </div>
-  <div class="dashboardBot align-self-center">
-    <div class="lastworkplans">
-      <%= link_to work_plans_path do %>
-        <div class="bg3">
-          <h2>Mes Derniers plans de travail</h2>
-          <p><i class="far fa-dot-circle"></i>  Accédez à vos derniers plans de travail</p>
-          <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638796528/bg_PT_vn8aqi.svg" alt="">
-        </div>
-      <% end %>
-    </div>
-  </div>
+	<div class="com">
+		<div class='info-btn' data-controller='show-com' data-action="click->show-com#" >
+			Bienvenue <%= current_user.first_name.capitalize %> !!
+		</div>
+	</div>
+	<div class=" d-flex flex-row justify-content-center dashboardTop">
+		<div class="cardcreate">
+			<h1 class="p-2"><i class="fas fa-desktop"></i>  MON CARTABLE</h1>
+			<%= link_to new_work_plan_path do %>
+				<div class="bg1">
+					<h2>Plan de Travail</h2>
+					<p><i class="far fa-dot-circle"></i> Créer un plan de travail vierge</p>
+					<img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638802482/bg_create_PT_yvxfnx.svg" alt="">
+				</div>
+			<% end %>
+		</div>
+		<div class="lastexercices">
+			<%= link_to classrooms_path do %>
+				<div class="bg2 d-flex flex-direction-column">
+					<% if current_user.classrooms.count < 2  %>
+						<h2>Ma Classe</h2>
+					<% else %>
+						<h2>Mes Classes</h2>
+					<% end %>
+					<p><i class="far fa-dot-circle"></i>  Accédez à vos élèves</p>
+					<img class="img1"src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638789050/bg_exercices_pzyqfx.svg" alt="">
+					<img class="img2" src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638790750/balancoire_exo-DB_yndrnu.svg" alt="">
+				</div>
+			<% end %>
+		</div>
+	</div>
+	<div class="dashboardBot align-self-center">
+		<div class="lastworkplans">
+			<%= link_to work_plans_path do %>
+				<div class="bg3">
+					<h2>Mes Derniers plans de travail</h2>
+					<p><i class="far fa-dot-circle"></i>  Accédez à vos derniers plans de travail</p>
+					<img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638796528/bg_PT_vn8aqi.svg" alt="">
+				</div>
+			<% end %>
+		</div>
+	</div>
 </div>
+<%unless @has_classrooms && @has_empty_classroom && @has_work_plan %>
+	<dialog id="myModal" open>
+		<!-- Modal content -->
+		<div class="modal-content">
+			<form method="dialog" class='mb-3'>
+				<div class="closing-btn  d-flex justify-content-between align-items-center">
+          <%= image_tag 'logo_demo.png' if current_user.demo? %>
+          <%= image_tag 'https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg' unless current_user.demo? %>
+          <h4 class='--roseL'>Bien commencer avec Ensemble </h4>
+					<button class='--bgc-transparent' >
+						<h3 class='--roseL --cursor-pointer'><i class="fa-solid fa-circle-xmark "></i> </h3>
+					</button>
+				</div>
+			</form>
+			<% unless @has_classrooms%>
+				<div class="modal-creation m-2">
+					<p>Vous n'avez pas encore de Classe</p>
+					<%= link_to classrooms_path do%>
+						<div class="add-green-btn">Créer Une classe</div>
+					<% end %>
+				</div>
+			<% end %>
+			<% unless @has_empty_classroom%>
+				<div class="modal-creation m-2">
+					<p>Certaines de vos classes n'ont pas d'élève</p>
+					<%= link_to classrooms_path do%>
+						<div class="add-green-btn"><i class="fa-solid fa-user-plus"></i> Elèves</div>
+					<% end %>
+				</div>
+			<% end %>
+			<% unless @has_work_plan%>
+				<div class="modal-creation m-2">
+					<p>Vous n'avez créé de Plan de Travail</p>
+					<%= link_to new_work_plan_path do%>
+						<div class="add-green-btn">Ajouter</div>
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+	</dialog>
+<% end %>
