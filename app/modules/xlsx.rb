@@ -1,5 +1,5 @@
 module Xlsx
-  def self.skills_generate_xlsx_file(school, grade, skills)
+  def self.skills_generate_xlsx_file(_school, grade, skills)
     package = Axlsx::Package.new
     workbook = package.workbook
     header = %w[Ceinture Symbole Compétences]
@@ -18,6 +18,7 @@ module Xlsx
     # Enregistrez le fichier XLSX dans un temp file et envoyez-le en tant que pièce jointe
     package
   end
+
   # Xlsx.parse_xlsx_file
   def self.parse_xlsx_file(xlsx_path)
     # raise
@@ -36,7 +37,7 @@ module Xlsx
       # end
       # SimpleXlsxReader.open("tmp/conversion.xlsx").sheets
       # TO DO other spreadsheet format
-      
+
     end
   end
 end
