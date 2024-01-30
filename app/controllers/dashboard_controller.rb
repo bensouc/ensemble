@@ -5,6 +5,9 @@ class DashboardController < ApplicationController
     skip_authorization
     stripe_customer = StripeHelper.get_or_create_customer(current_user.school)
     session["stripe_customer"] = stripe_customer
-    render "dashboard/show"
+    @has_classrooms = current_user.classroom?
+    @has_work_plan = !current_user.work_plans.empty?
+    @has_empty_classroom = !current_user.all_students.empty?
+    # render "dashboard/show"
   end
 end
