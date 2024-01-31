@@ -1,0 +1,10 @@
+	<%= link_to get_tuto_links(params[:controller]),
+                class:'top-link-btn',
+                target: 'blank',
+                data:{
+                      controller:"tooltip",
+                      bs_toggle:"tooltip",
+                      bs_placement:"bottom"},
+                title:"Les Tutos d'Ensemble !!" do %>
+	<i class="fa-regular fa-circle-question"></i>
+<% end %>
