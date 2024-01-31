@@ -1,0 +1,39 @@
+<dialog id="myModal" open>
+	<!-- Modal content -->
+	<div class="modal-content w-50">
+		<form method="dialog" class='mb-3'>
+			<div class="closing-btn  d-flex justify-content-between align-items-center">
+				<%= image_tag 'logo_demo.png' if current_user.demo? %>
+				<%= image_tag 'https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg' unless current_user.demo? %>
+				<h4 class='--roseL'>Bien commencer avec Ensemble </h4>
+				<button class='--bgc-transparent' >
+					<h3 class='--roseL --cursor-pointer'><i class="fa-solid fa-circle-xmark "></i> </h3>
+				</button>
+			</div>
+		</form>
+		<% unless has_classrooms%>
+			<div class="modal-creation m-2">
+				<p>Vous n'avez pas encore de Classe</p>
+				<%= link_to classrooms_path do%>
+					<div class="add-green-btn">Créer Une classe</div>
+				<% end %>
+			</div>
+		<% end %>
+		<% unless has_empty_classroom%>
+			<div class="modal-creation m-2">
+				<p>Certaines de vos classes n'ont pas d'élève</p>
+				<%= link_to classrooms_path do%>
+					<div class="add-green-btn"><i class="fa-solid fa-user-plus me-2"></i>Elèves</div>
+				<% end %>
+			</div>
+		<% end %>
+		<% unless has_work_plan%>
+			<div class="modal-creation m-2">
+				<p>Vous n'avez créé de Plan de Travail</p>
+				<%= link_to new_work_plan_path do%>
+					<div class="add-green-btn">Ajouter</div>
+				<% end %>
+			</div>
+		<% end %>
+	</div>
+</dialog>
