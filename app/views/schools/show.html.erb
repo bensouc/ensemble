@@ -59,7 +59,7 @@
     <div class="subscription-details --border-10px">
       <% if  @subscription.nil? %>
         Vous n'avez pas encore d'abonnement
-        <%=link_to "Abonnez-vous", subscriptions_school_pricing_path, class: "btn-flat text-center" if !current_user.demo%>
+         <%=link_to "Abonnez-vous", "#", class: "btn-flat text-center" if !current_user.demo%>
       <% else %>
         <h3>Détails de votre Abonnement</h3>
         <p><i class="fa-solid fa-heart"></i>

@@ -14,9 +14,10 @@ gem "turbo-rails"
 # end of 7.0.0 UPGRADE v df
 
 #STRIPE setup
-gem "money-rails", "~> 1.12"
-gem "stripe"
-gem "stripe_event"
+# STRIPE SWITCH OFF
+# gem "money-rails", "~> 1.12"
+# gem "stripe"
+# gem "stripe_event"
 # Use postgresql as the database for Active Record
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server

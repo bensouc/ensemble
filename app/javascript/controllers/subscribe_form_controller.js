@@ -1,5 +1,6 @@
 import { Controller } from "stimulus"
-import { loadStripe } from '@stripe/stripe-js';
+// STRIPE SWITCH OFF
+// import { loadStripe } from '@stripe/stripe-js';
 
 export default class extends Controller {
   static targets = ['stripePublishableKey', 'cardInput', 'cardTokenInput', 'cardError', 'submit']
