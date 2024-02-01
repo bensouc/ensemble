@@ -1,41 +1,48 @@
 {
-"background_color": "white",
 "description": "La plateforme pour créer et partager vos plans de travail",
 "display": "fullscreen",
-"theme_color": "#000",
+"orientation": "portrait",
+"theme_color": "#ffffff",
+"background_color": "#ffffff",
 "name": "Ensemble !",
 "lang": "fr",
 "start_url": "/",
 "scope": "/",
 "icons": [
-{
-"src": "<%= image_path "maskable_icon.png" %>",
-"sizes": "512x512",
-"type": "image/png",
-"purpose": "maskable"
-},
-<% files = Dir.entries(Rails.root.join("app/assets/images/icons/")).select {|f| !File.directory? f} %>
-<% files.each_with_index do |file, index| %>
-	<% match = file.match(/.+-(?<size>\d{2,3}x\d{2,3}).png/) %>
-	{
-	"src": "<%= image_path "icons/#{file}" %>",
-	"sizes": "<%= match && match[:size] %>",
-	"type": "image/png"
-	}<%= "," unless (files.size - 1) == index %>
-<% end %>
-],
-"screenshots": [
-{
-"src": "<%= image_path "screenshot1.png" %>",
-"type": "image/png",
-"sizes": "540x720",
-"form_factor": "narrow"
-},
-{
-"src": "<%= image_path "screenshot2.png" %>",
-"type": "image/png",
-"sizes": "720x540",
-"form_factor": "wide"
-}
-]
+  {
+    "src": "<%= image_path "maskable_icon_512.png" %>",
+    "sizes": "512x512",
+    "type": "image/png",
+    "purpose": "maskable"
+  },
+  {
+    "src": "<%= image_path "maskable_icon_192.png" %>",
+    "sizes": "192x192",
+    "type": "image/png",
+    "purpose": "maskable"
+  },
+  <% files = Dir.entries(Rails.root.join("app/assets/images/icons/")).select {|f| !File.directory? f} %>
+  <% files.each_with_index do |file, index| %>
+    <% match = file.match(/.+-(?<size>\d{2,3}x\d{2,3}).png/) %>
+    {
+      "src": "<%= image_path "icons/#{file}" %>",
+      "sizes": "<%= match && match[:size] %>",
+      "type": "image/png"
+    }<%= "," unless (files.size - 1) == index %>
+  <% end %>
+  ],
+  "screenshots": [
+    {
+      "src": "<%= image_path "screenshot1.png" %>",
+      "type": "image/png",
+      "sizes": "540x720",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "<%= image_path "screenshot2.png" %>",
+      "type": "image/png",
+      "sizes": "720x540",
+      "form_factor": "wide"
+    }
+  ]
 }

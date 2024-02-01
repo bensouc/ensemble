@@ -36,4 +36,6 @@ class School < ApplicationRecord
   def all_students_list
     classrooms.map { |classroom| classroom.students }.flatten
   end
+
+
 end
