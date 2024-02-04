@@ -3,11 +3,10 @@
 	<head>
 		<%= favicon_link_tag %>
 		<title><%= meta_title %></title>
-			<%# PWA %>
+		<%# PWA %>
 		<link rel="manifest" crossorigin="use-credentials" href="<%= asset_path 'manifest.json' %>">
 		<%= render 'shared/social_meta' %>
 		<%= render 'shared/ios_pwa_links' %>
-
 		<%= csrf_meta_tags %>
 		<%= csp_meta_tag %>
 		<!-- Hide url bar -->
@@ -21,10 +20,13 @@
 	<body>
 		<%= render "shared/flashes"%>
 		<%# <%= render "shared/notices"%>
-		<% if ["pages", "devise/registrations", "devise/sessions", "devise/passwords"].include?(params[:controller]) %>
-			<div class="pastouche">
-				<%= yield %>
-			</div>
+		<% if ["devise/registrations", "devise/sessions", "devise/passwords"].include?(params[:controller]) %>
+			<%= yield %>
+		<% elsif ["pages"].include?(params[:controller])%>
+			<%= yield %>
+			<% unless is_mobile_device? %>
+				<%= render "shared/home_footer" %>
+			<% end %>
 		<% else %>
 			<% unless is_mobile_device? %>
 				<div class="navgauche" >

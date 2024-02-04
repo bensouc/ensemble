@@ -103,6 +103,8 @@ class User < ApplicationRecord
 
   def transmit_all_challenges
     # get new user <= superteacher
+    return if challenges.empty?
+
     new_user = school.super_teachers.first
     # iterate on challenge and update user
     challenges.each { |challenge| challenge.update(user: new_user) }

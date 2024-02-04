@@ -1,15 +1,45 @@
 // Specific CSS for your home-page
-.container2{
+.container2 {
   display: flex;
   flex-direction: row;
 }
-.contenu{
-  display: flex;
-  flex-direction: column;
-  // flex-grow: 1;
-  margin-left: 200px;
+@media only screen and (min-width: 768px) {
+  .contenu {
+    display: flex;
+    flex-direction: column;
+    margin-left: 200px;
+    min-height: calc(100vh - 49px);
+    padding-bottom: 50px;
+  }
+  .enter-card {
+    margin-top: -58px;
+    padding: 20px !important;
+    font-size: 30px !important;
+    font-weight: 700;
+    border: solid $rose;
+  }
 }
-.pledge{
+
+@media only screen and (max-width: 768px) {
+  .contenu {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding-bottom: 50px;
+  }
+}
+
+.banner {
+  h2 {
+    font-size: 2.5rem;
+  }
+}
+.description {
+  position: sticky;
+  top: 330px;
+  z-index: 1;
+}
+.pledge {
   position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -17,29 +47,59 @@
   // justify-items:center;
   // width: 100%;
 
-  row-gap: 140px;
-  h1{
+  h1 {
     font-family: $titres-font;
     font-weight: 700;
-    font-size: 28px;
+    font-size: 2rem;
   }
-  p{
+
+  p {
     font-family: $plan-font;
     font-weight: 200;
-    font-size: 18px;
+    font-size: 1.5rem;
     text-align: center;
   }
 }
-.row1{
+.row1 {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.tournicoti{
+.tournicoti {
   width: 100%;
   position: absolute;
 
-  top: 46rem;
+  top: 55rem;
   display: flex;
   justify-content: space-around;
+  img {
+    height: 16vw;
+  }
+}
+
+// illustartions
+.home-images {
+  width: 380px;
+  height: 288px;
+}
+.home-images-slides {
+  width: 380px;
+  // position: relative;
+  // display: contents;
+  img {
+    margin: 0 auto;
+
+    // width: 380px;
+    // max-height: ;
+  }
+}
+
+.showcase-banner{
+  padding: 0 10%;
+  margin-bottom: 2.5rem;
+  & h2{
+    font-family: $titres-font;
+    font-size: 1.5rem;
+    text-align: center;
+  }
 }
