@@ -13,12 +13,13 @@ class School < ApplicationRecord
   validates :email, presence: true, uniqueness: true
 
   # TO PROCEED POST CREATION
-  after_create do
-    Stripe.api_key = ENV["STRIPE_API_KEY"]
-    stripe_customer = Stripe::Customer.create({ email:  })
-    # stripe_customer_id = stripe_customer.id
-    # update(stripe_customer_id: stripe_customer_id)
-  end
+  # STRIPE SWITCH OFF
+  # after_create do
+  #   Stripe.api_key = ENV["STRIPE_API_KEY"]
+  #   stripe_customer = Stripe::Customer.create({ email:  })
+  #   # stripe_customer_id = stripe_customer.id
+  #   # update(stripe_customer_id: stripe_customer_id)
+  # end
 
   # Instance Methods
 

@@ -11,7 +11,13 @@
   position: fixed;
   bottom: 0;
   width: 100% !important;
+  &.home{
+    margin-left: 0 !important;
+    padding-left: 150px !important;
+    }
 }
+
+
 .footer-links {
   display: flex;
   align-items: center;
