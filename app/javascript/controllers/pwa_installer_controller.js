@@ -12,7 +12,7 @@ export default class extends Controller {
 
     window.addEventListener("beforeinstallprompt", this.handleBeforeInstallPrompt.bind(this));
     window.addEventListener("appinstalled", this.handleAppInstalled.bind(this));
-    // this.managePromptDisplay();
+    this.managePromptDisplay();
   }
 
   getDeviceInfo() {
@@ -29,14 +29,14 @@ export default class extends Controller {
   }
 
   handleBeforeInstallPrompt(e) {
-    console.log("Before install prompt event fired");
+    // console.log("Before install prompt event fired");
     e.preventDefault();
     this.deferredPrompt = e;
     this.managePromptDisplay();
   }
 
   handleAppInstalled(e) {
-    console.log("App installed event fired");
+    // console.log("App installed event fired");
     localStorage.setItem(this.INSTALLATION_STATUS, 'true');
     this.deferredPrompt = null;
     this.managePromptDisplay();
@@ -47,16 +47,19 @@ export default class extends Controller {
     const isInstalled = localStorage.getItem(this.INSTALLATION_STATUS) === 'true';
     const dontShowAgain = localStorage.getItem(this.DONT_SHOW_PROMPT_AGAIN) === 'true';
 
+    console.log(dontShowAgain);
+    console.log(isInstalled);
+    console.log(pwa.isStandalone);
     if (dontShowAgain || pwa.isStandalone || isInstalled) {
       this.hidePrompt();
       return;
     }
 
-    if (device.isMobile) {
-      const showInstallPrompt = !!this.deferredPrompt;
-      this.installPromptTarget.classList.toggle("hidden", !showInstallPrompt);
-      // this.manualPromptTarget.classList.toggle("hidden", showInstallPrompt);
-    }
+    // if (device.isMobile) {
+    //   const showInstallPrompt = !!this.deferredPrompt;
+    //   this.installPromptTarget.classList.toggle("hidden", !showInstallPrompt);
+    //   // this.manualPromptTarget.classList.toggle("hidden", showInstallPrompt);
+    // }
   }
 
   hidePrompt() {

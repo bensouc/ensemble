@@ -78,6 +78,7 @@ gem "wkhtmltopdf-heroku", group: :production
 
 # Mobile device detection
 gem "mobile"
+gem "browser"
 
 # group :development, :test do
 # # gem for pdf-output
