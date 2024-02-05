@@ -54,11 +54,5 @@
 	</div>
 	<%# mobile HOME %>
 <% else %>
-	<div class="mobile-home mobile-banner">
-		<div class= "mobile-logo">
-			<img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg" alt="logo mobil">
-		</div>
-		<h1>Evaluer vos plans de travail n'importe où !</h1>
-		<%= link_to "Commencer",mobile_work_plans_path, class: "btn btn-flat mobile-begin" %>
-	</div>
+	<%= render 'mobile_home' %>
 <% end %>

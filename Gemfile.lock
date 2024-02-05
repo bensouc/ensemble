@@ -84,6 +84,7 @@ GEM
       autoprefixer-rails (>= 9.1.0)
       popper_js (>= 2.11.6, < 3)
       sassc-rails (>= 2.0.0)
+    browser (5.3.1)
     builder (3.2.4)
     bullet (7.0.7)
       activesupport (>= 3.0.0)
@@ -433,6 +434,7 @@ DEPENDENCIES
   autoprefixer-rails (= 10.2.5)
   bootsnap (>= 1.4.2)
   bootstrap (~> 5.2)
+  browser
   bullet
   byebug
   capybara (>= 2.15)
