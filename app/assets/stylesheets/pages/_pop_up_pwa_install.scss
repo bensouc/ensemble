@@ -1,0 +1,15 @@
+.popup-pwa-install {
+  position: absolute;
+  margin: 0.2rem 1rem;
+  background-color: white;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  .btn-flat {
+    border-radius: 0.5rem;
+  }
+}
+.install-pwa {
+  padding: 0.5rem;
+  display: flex;
+  justify-content: space-around;
+}
