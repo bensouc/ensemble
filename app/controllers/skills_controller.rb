@@ -75,9 +75,13 @@ class SkillsController < ApplicationController
     if @uploaded_file_path.present?
       # Ajoutez ici le code pour traiter le fichier Excel
       sheets = Xlsx.parse_xlsx_file(@uploaded_file_path)
+      # add test if file is OK
+      temp_skills = Skill.sheets_to_temp_skills_creation(sheets, @grade, current_user)
+      raise
       # Supprimez le fichier après le traitement
       File.delete(@uploaded_file_path) if File.exist?(@uploaded_file_path)
-      puts "SKILL XLS UPLOAD REUSSI"
+
+      # puts "SKILL XLS UPLOAD REUSSI"
       flash[:success] = "File processed successfully!"
       redirect_to skills_path
     else
@@ -88,15 +92,14 @@ class SkillsController < ApplicationController
 
   def upload_skills_xlsx
     authorize Skill
-    # uploaded_file = params[:liste][:excel_file]
-    # raise
     if @xls_file_path
       file_path = Rails.root.join("tmp", @xls_file_path.original_filename)
       File.open(file_path, "wb") { |file| file.write(@xls_file_path.read) }
       # Stockez le chemin du fichier dans la session
       session[:uploaded_file_path] = file_path.to_s
+      session[:grade_id] = params[:liste][:level]
       # flash[:success] = "File uploaded successfully!"
-      redirect_to add_skills_from_xls_path
+      redirect_to add_skills_from_xls_path, params: {grade: params[:liste][:level] }
     else
       # flash[:error] = "Please choose a file to upload."
       redirect_to skills_path
@@ -133,6 +136,7 @@ class SkillsController < ApplicationController
   # get xlsx url for uplaod_skills
   def set_uploaded_file_path
     @uploaded_file_path = session[:uploaded_file_path]
+    @grade = Grade.find(session[:grade_id])
   end
 
   def set_xls_file_path
