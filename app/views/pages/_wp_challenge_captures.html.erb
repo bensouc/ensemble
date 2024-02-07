@@ -1,17 +1,16 @@
-<div class="home-images">
-	<div id="carouselExampleSlidesOnly" class="carousel slide home-images-slides"
-  data-bs-interval="1200" data-bs-ride="carousel">
-		<div class="carousel-inner">
-			<div class="carousel-item active">
+<div class="splide home-images" role="group" aria-label="Creation Illustrations" data-controller='splide'>
+	<div class="splide__track home-images-slides" >
+		<div class="splide__list">
+			<div class="splide__slide">
 				<%= image_tag 'captures/exo.png', alt: 'challenges list',width: '380px' %>
 			</div>
-			<div class="carousel-item">
+			<div class="splide__slide">
 				<%= image_tag 'captures/list_wp.png', alt: 'workplan list',width: '380px' %>
 			</div>
-			<div class="carousel-item">
+			<div class="splide__slide">
 				<%= image_tag 'captures/list_wp.png', alt: 'workplan list',width: '380px' %>
 			</div>
-      			<div class="carousel-item">
+      			<div class="splide__slide">
 				<%= image_tag 'captures/wp_index_mobile.png', alt: 'workplan list mobile',height: '288px' %>
 			</div>
 		</div>

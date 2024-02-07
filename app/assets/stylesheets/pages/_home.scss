@@ -35,9 +35,9 @@
   }
 }
 .description {
-  position: sticky;
-  top: 100px;
-  z-index: 1;
+  // position: sticky;
+  // top: 100px;
+  // z-index: 1;
 }
 .pledge {
   position: relative;
@@ -94,9 +94,20 @@
   }
 }
 
+// with splide & splide.min.css
+.splide__progress__bar {
+  height: 3px;
+  background: $roseLight;
+}
+.splide__pagination__page.is-active{
+  background: $rose;
+}
+// END with splide & splide.min.css
 .showcase-banner{
-  padding: 0 10%;
-  margin-bottom: 2.5rem;
+  background-color: $roseLight;
+  color: whitesmoke;
+  padding: 4rem 4rem 2.5rem 4rem;
+  margin: 2.5rem 0 0 0;
   & h2{
     font-family: $titres-font;
     font-size: 1.5rem;

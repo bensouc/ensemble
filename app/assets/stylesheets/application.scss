@@ -40,10 +40,12 @@ time, mark, audio, video {
 
 // @import "font-awesome-sprockets";
 @import "flatpickr/dist/themes/light";
-
 @import "font-awesome";
 // @import "trix";
 @import "trix/dist/trix";
+// SPLIDE_Js Default theme
+@import '@splidejs/splide/dist/css/splide.min.css';
+
 
 // Your CSS partials
 @import "components/index";
