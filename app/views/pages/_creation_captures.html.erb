@@ -1,17 +1,16 @@
-<div class="home-images">
-	<div id="carouselExampleSlidesOnly" class="carousel slide home-images-slides"
-  data-bs-ride="carousel" data-bs-interval="950">
-		<div class="carousel-inner">
-			<div class="carousel-item active">
+<div class="splide home-images" role="group" aria-label="Creation Illustrations" data-controller='splide'>
+	<div class="splide__track home-images-slides" >
+		<div class="splide__list">
+			<div class="splide__slide">
 				<%= image_tag 'captures/gestion_classes.jpg', alt: 'créer sa classe',width: '380px' %>
 			</div>
-			<div class="carousel-item">
+			<div class="splide__slide">
 				<%= image_tag 'captures/challenge_edition.png', alt: 'workplan sharing',width: '380px' %>
 			</div>
-			<div class="carousel-item">
+			<div class="splide__slide">
 				<%= image_tag 'captures/carousel_exo.png', alt: 'carousel challenge',width: '380px' %>
 			</div>
-			<div class="carousel-item">
+			<div class="splide__slide">
 				<%= image_tag 'captures/work_plan_edit.png', alt: 'edition workplan',width: '380px' %>
 			</div>
 		</div>

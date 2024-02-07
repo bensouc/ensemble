@@ -20,7 +20,7 @@
 				<h1>CRÉER</h1>
 				<p>Pouvoir créer des plans de travail adaptés
 					les éditer et les corriger. <br>
-          Génération facilité et individualisé à la progression de l'élève</p>
+					Génération facilité et individualisé à la progression de l'élève</p>
 				<%= render 'creation_captures' %>
 			</div>
 			<div class="row1">
@@ -46,9 +46,11 @@
 		<div class="tournicoti">
 			<img  src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1639068448/logo2_rmtwus.svg" alt=" logo central">
 		</div >
-    <div class="grey-line m-5"></div>
 		<div class="showcase-banner">
 			<%= render 'details' %>
+			<div class="text-center">
+				<%= link_to "Commencer",dashboard_path, class: "btn btn-flat mt-4 enter-card" %>
+			</div>
 		</div>
 		<%# <%= image_tag "desc.svg" %>
 	</div>
