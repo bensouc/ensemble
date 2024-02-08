@@ -2,7 +2,7 @@ class ContactMailer < ApplicationMailer
 
   def new_contact(contact)
     @contact = contact
-    mail(to: "contact@app-ensemble.fr", subject: "Nouveau contact")
+    mail(to: "contact@vroadstudio.fr", subject: "Nouveau contact")
   end
 
 private
