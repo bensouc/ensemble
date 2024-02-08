@@ -65,37 +65,40 @@
 				<% end %>
 			<% end %>
 		</div>
-		<% WorkPlanDomain::DOMAINS[@grade.grade_level].each do |domain| %>
-			<div class="skills_boxe <%= 'd-none 'unless domain == WorkPlanDomain::DOMAINS[@grade.grade_level].first%>"
+		<% if @skills.empty? %>
+			<div class="load-skills border-skill">
+				<h3>Créer un progression de compétences</h3>
+				<%= simple_form_for :liste, url: upload_skills_path, html: { novalidate: false}, method: :post, class: 'form' do |f| %>
+					<%= f.input :level, collection: @grades, prompt: "Choisisez un niveau", selected: @grade,label: false  %>
+					<div class="form-group ">
+						<p>Souhaitez-vous remplacer toutes les compétences actuelles ? </p>
+						<p><em>Ceci effacera l'ensemble des données liées à ces compétences (Plans, évaluations, exercices)</em></p>
+						<%= f.collection_radio_buttons :new_skills, [[true, 'Oui'], [false, 'Non']], :first, :last, wrapper_html: { class: 'form-check' } %>
+					</div>
+					<div class="form-group">
+						<%= f.input :excel_file, as: :file, label: false, required: true, input_html: { class: 'form-control-file', accept: '.xlsx' } %>
+					</div>
+					<%= f.button :submit,  class: 'class-pill active', data: {turbo_confirm: "En validant, vous effacer toutes les données actuelles liées au niveau de #{@grade.name} du groupe scolaire #{current_user.school.name} "} do%>
+						Importer
+					<% end %>
+				<% end %>
+			</div>
+		<% else %>
+			<% WorkPlanDomain::DOMAINS[@grade.grade_level].each do |domain| %>
+				<div class="skills_boxe <%= 'd-none 'unless domain == WorkPlanDomain::DOMAINS[@grade.grade_level].first%>"
         data-domain='<%=domain%>'
         data-allskilldisplay-target='domainCard'>
-				<%# <% domain = WorkPlanDomain::DOMAINS[@grade].first %>
-				<% for skill_level in (1..7) do %>
-					<% skills = @skills.select {|skill| skill.level == skill_level && skill.domain == domain}.sort %>
-					<div class="skills-display d-none"
+					<%# <% domain = WorkPlanDomain::DOMAINS[@grade].first %>
+					<% for skill_level in (1..7) do %>
+						<% skills = @skills.select {|skill| skill.level == skill_level && skill.domain == domain}.sort %>
+						<div class="skills-display d-none"
           data-allskilldisplay-target='levelSkillCard'
           data-grade='<%=@grade.name%>'
           data-level='<%=skill_level%>'>
-						<%= render 'all_skills_by_domain_level', skills: skills, domain: domain, level: skill_level,grade: @grade %>
-					</div>
-				<% end %>
-			</div>
-		<% end %>
-	</div>
-	<div class="load-skills border-skill">
-		<h3>Créer un progression de compétences</h3>
-		<%= simple_form_for :liste, url: upload_skills_path, html: { novalidate: false}, method: :post, class: 'form' do |f| %>
-			<%= f.input :level, collection: @grades, prompt: "Choisisez un niveau", selected: @grade,label: false  %>
-			<div class="form-group ">
-				<p>Souhaitez-vous remplacer toutes les compétences actuelles ? </p>
-				<p><em>Ceci effacera l'ensemble des données liées à ces compétences (Plans, évaluations, exercices)</em></p>
-				<%= f.collection_radio_buttons :new_skills, [[true, 'Oui'], [false, 'Non']], :first, :last, wrapper_html: { class: 'form-check' } %>
-			</div>
-			<div class="form-group">
-				<%= f.input :excel_file, as: :file, label: false, required: true, input_html: { class: 'form-control-file', accept: '.xlsx' } %>
-			</div>
-			<%= f.button :submit,  class: 'class-pill active', data: {turbo_confirm: "En validant, vous effacer toutes les données actuelles liées au niveau de #{@grade.name} du groupe scolaire #{current_user.school.name} "} do%>
-				Importer
+							<%= render 'all_skills_by_domain_level', skills: skills, domain: domain, level: skill_level,grade: @grade %>
+						</div>
+					<% end %>
+				</div>
 			<% end %>
 		<% end %>
 	</div>
