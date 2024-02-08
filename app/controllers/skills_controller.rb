@@ -117,7 +117,7 @@ class SkillsController < ApplicationController
     @school = current_user.school
     @grade = query.nil? ? @grades.first : Grade.find(query)
     @skills = policy_scope(Skill)
-    @are_special_domains = current_user.school.id == 1
+    @are_special_domains = current_user.school.special_domains?
     @skills = @skills.select { |skill| skill.grade == @grade }
   end
 

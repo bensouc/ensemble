@@ -40,17 +40,18 @@ time, mark, audio, video {
 
 // @import "font-awesome-sprockets";
 @import "flatpickr/dist/themes/light";
-
 @import "font-awesome";
 // @import "trix";
 @import "trix/dist/trix";
+// SPLIDE_Js Default theme
+@import '@splidejs/splide/dist/css/splide.min.css';
+
 
 // Your CSS partials
 @import "components/index";
 // @import "pages/eval";
 @import "pages/index";
 @import "shared/index";
-@import "home/home";
 @import "work_plans/list_wp";
 @import "work_plans/eval";
 @import "work_plans/new";

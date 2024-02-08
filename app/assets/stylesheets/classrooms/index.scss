@@ -95,9 +95,12 @@
   font-weight: lighter;
   .form-text{
     font-weight: 300;
-    font-size: 15px;
+    font-size: 0.8rem;
+    display: flex;
   }
+
 }
+
 
 .student-fname {
   width: 290px;
@@ -178,6 +181,7 @@
   display: flex !important;
   align-items: flex-start;
   justify-content: space-around;
+  gap: 1rem;
   p {
     margin-right: 15px;
   }
@@ -187,12 +191,7 @@
   margin-left: 12px;
 }
 
-.center_box {
-  display: flex;
-  p {
-    margin-left: 15px;
-  }
-}
+
 
 .classroom-creation {
   margin: 15px 0 15px 0;

@@ -45,7 +45,7 @@
     <% end %>
   </div>
   <div class="grey-line"></div>
-  <h1 class='title'>Vos exercices </h1>
+  <h1 class='title'>Les exercices </h1>
   <%= turbo_frame_tag "skills-challenge-list" do%>
     <div class="challenges-display ">
       <% unless @skills.empty? %>
@@ -102,7 +102,7 @@
       <% end %>
     </div>
     <div class="grey-line"></div>
-    <h1 class='title'>Vos exercices de ceinture </h1>
+    <h1 class='title'>Les exercices de ceinture </h1>
     <%= render "belt_challenges", belt_challenges: @belt_challenges, skills: @skills, for_belt: "for_belt_" %>
 
   <% end %>

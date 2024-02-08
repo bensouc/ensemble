@@ -3,52 +3,47 @@
 		<div class='info-btn' data-controller='show-com' data-action="click->show-com#displayCom" >
 		</div>
 	</div>
-  <% if user_signed_in? %>
-	<div class="navbar navbar-expand-sm navbar-light d-flex">
-		<%= link_to 'https://season-sycamore-125.notion.site/Ensemble-Les-Tutos-1bb72deab51d43898dd2bdcec25ec098',
-                class:'top-link-btn',
-                target: 'blank',
-                data:{
-                      controller:"tooltip",
-                      bs_toggle:"tooltip",
-                      bs_placement:"bottom"},
-                title:"Les Tutos d'Ensemble !!" do %>
-			<i class="fa-regular fa-circle-question"></i>
-		<% end %>
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-		<div class="collapse navbar-collapse" id="navbarDropdown">
-			<ul class="navbar-nav">
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						<%if current_user.avatar.attached?%>
-							<%= cl_image_tag current_user.avatar.key, class: "avatar", alt: "https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png" %>
-						<% else %>
-							<img src="https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png" class= "avatar" alt="">
-						<% end %>
-					</a>
-					<div class="dropdown-menu left" aria-labelledby="navbarDropdownMenuLink">
-						<a class="dropdown-item" href="#">Ma classe</a>
+	<% if user_signed_in? %>
+		<div class="navbar navbar-expand-sm navbar-light d-flex">
+			<%= render 'shared/tuto_links' %>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarDropdown">
+				<ul class="navbar-nav">
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<%if current_user.avatar.attached?%>
+								<%= cl_image_tag current_user.avatar.key, class: "avatar", alt: "https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png" %>
+							<% else %>
+								<img src="https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png" class= "avatar" alt="">
+							<% end %>
+						</a>
+						<div class="dropdown-menu left" aria-labelledby="navbarDropdownMenuLink">
+							<a class="dropdown-item" href="#">Ma classe</a>
 							<%=link_to "Mon compte", edit_user_registration_path, class: "dropdown-item"%>
-						<% if (current_user.super_teacher?) %>
-              <% if current_user.subscription && current_user.subscription.active_or_trialing?%>
-              	<form method="GET" action="/create-customer-portal-session" data-turbo="false">
-								<button type="submit" class= "dropdown-item">Gérer votre abonnement</button>
-							</form>
-              <% else %>
-                <%=link_to "Abonnez-vous", subscriptions_school_pricing_path, class: "dropdown-item"%>
-              <% end %>
-						<% end %>
-              <%=link_to "Mon école", school_path(current_user.school), class: "dropdown-item"%>
-						<%if current_user.admin%>
-							<%= link_to 'DATA-ADMIN', '/admin', class: "dropdown-item", target: '_blank' %>
-						<% end %>
-						<%=link_to "Déconnexion", destroy_user_session_path, method: :delete,class: "dropdown-item"%>
-					</div>
-				</li>
-			</ul>
+							<!--# STRIPE SWITCH OFF -->
+							<% unless true %>
+								<% if (current_user.super_teacher?) %>
+									<% if current_user.subscription && current_user.subscription.active_or_trialing?%>
+										<form method="GET" action="/create-customer-portal-session" data-turbo="false">
+											<button type="submit" class= "dropdown-item">Gérer votre abonnement</button>
+										</form>
+									<% else %>
+										<%=link_to "Abonnez-vous", subscriptions_school_pricing_path, class: "dropdown-item"%>
+									<% end %>
+								<% end %>
+							<% end %>
+              <!--# END STRIPE SWITCH OFF -->
+							<%=link_to "Mon école", school_path(current_user.school), class: "dropdown-item"%>
+							<%if current_user.admin%>
+								<%= link_to 'DATA-ADMIN', '/admin', class: "dropdown-item", target: '_blank' %>
+							<% end %>
+							<%=link_to "Déconnexion", destroy_user_session_path, method: :delete,class: "dropdown-item"%>
+						</div>
+					</li>
+				</ul>
+			</div>
 		</div>
-	</div>
-  <% end %>
+	<% end %>
 </nav>

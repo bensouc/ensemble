@@ -37,6 +37,9 @@ class Challenge < ApplicationRecord
     )
   end
 
+  # CLASS METHOD
+
+
   def self.assigned_challenges(skill, student)
     wpss = WorkPlanSkill.where(skill_id: skill.id, kind: "exercice").select { |wps| wps.student == student }
     # challenge = []

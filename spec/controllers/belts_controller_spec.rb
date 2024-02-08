@@ -6,7 +6,7 @@ RSpec.describe BeltsController, type: :controller do
   let(:classroom) { create(:classroom, user:) }
   let(:student) { create(:student, classroom:) }
   let(:work_plan) { create(:work_plan, user:, student:) }
-  # let(:grade) {create(:grade)}
+  let(:grade) {create(:grade)}
 
   before { sign_in user }
 
