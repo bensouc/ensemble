@@ -20,13 +20,13 @@
 		<%= render "devise/shared/links" %>
 	</div>
 	<div class="" id="contact">
-		<h1>Bienvenue sur Ensemble Beta !</h1>
+		<h1>Bienvenue sur Ensemble  !</h1>
     <h4>Vous n'avez encore de compte?</h4>
-		<p>Nous sommes ravis de vous accueillir sur notre plateforme. Nous travaillons actuellement à améliorer notre site afin de vous offrir une expérience utilisateur exceptionnelle. Nous tenons à vous informer que notre site est toujours en développement et qu'il est en phase de test.</p>
-		<p> Si vous souhaitez obtenir un compte sur notre site, veuillez nous contacter directement en utilisant le formulaire de contact disponible sur notre page d'accueil. Nous serons heureux de vous donner accès à notre plateforme dès que possible.</p>
+		<p>Nous sommes ravis de vous accueillir sur notre plateforme. </p>
+		<p>Pour obtenir un compte de DEMO , veuillez nous contacter directement en utilisant le formulaire de contact ci-dessous. Nous serons heureux de vous donner accès à notre plateforme dès que possible.</p>
 		<p>Encore une fois, merci de votre intérêt pour notre plateforme et n'hésitez pas à nous contacter si vous avez des questions ou des commentaires.</p>
 		<p>L'équipe d'Ensemble</p>
-		<div class="contact-corm">
+		<div class="contact-form">
 			<%= simple_form_for :contact,html: { novalidate: false }, url: contact_create_path(), method: :post do |f| %>
 				<div>
 					<%= f.input :nom, label: 'Nom', required: true %>

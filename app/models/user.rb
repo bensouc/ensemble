@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
+
+  DEMO_CLASSROOM_LIMIT = 1
+  DEMO_STUDENT_LIMIT = 5
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   before_validation :set_defaults
@@ -99,6 +102,7 @@ class User < ApplicationRecord
 
   def set_defaults
     SchoolRole.create!(user: self, school: School.where(name: "Ensemble").first) if school_role.nil?
+    # true
   end
 
   def transmit_all_challenges

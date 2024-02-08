@@ -99,6 +99,17 @@
   height: 3px;
   background: $roseLight;
 }
+.splide__arrow--prev, .splide__arrow--next{
+  background: $rose;
+  &:hover{
+    background: $roseLight;
+  }
+}
+.splide__arrow--prev svg, .splide__arrow--next svg{
+
+  fill: $blanc;
+
+}
 .splide__pagination__page.is-active{
   background: $rose;
 }

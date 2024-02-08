@@ -1,23 +1,31 @@
-<button type="button" class="bg-white ms-3" data-bs-toggle="modal" data-bs-target="#createStudentModal-<%= classroom.id%>" >
-  <div class=" add-student-btn ">
-    Ajouter un élève
-  </div>
-</button>
-<div class="modal fade" id="createStudentModal-<%=classroom.id %>" tabindex="-1" aria-labelledby="createStudentModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content w-100">
-      <div class="modal-header">
-        <h5 class="modal-title" id="createStudentModalLabel">Ajout d'élève</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="student-edit ">
-          <%= simple_form_for [Student.new], html: { novalidate: false } do |form| %>
-            <%= render 'edit_student_form', form: form, classroom: classroom %>
-          <% end %>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<% unless current_user.demo? && classroom.students.count >= User::DEMO_STUDENT_LIMIT %>
+	<button type="button" class="bg-white ms-3" data-bs-toggle="modal" data-bs-target="#createStudentModal-<%= classroom.id%>" >
+		<div class=" add-student-btn ">
+			Ajouter un élève
+		</div>
+	</button>
+	<div class="modal fade" id="createStudentModal-<%=classroom.id %>" tabindex="-1" aria-labelledby="createStudentModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content w-100">
+				<div class="modal-header">
+					<h5 class="modal-title" id="createStudentModalLabel">Ajout d'élève</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="student-edit ">
+						<%= simple_form_for [Student.new], html: { novalidate: false } do |form| %>
+							<%= render 'edit_student_form', form: form, classroom: classroom %>
+						<% end %>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class='teacher-email text-end me-3'>DEMO : Limite de <%= User::DEMO_STUDENT_LIMIT %> élèves par classe
+	</div>
+<% else %>
+	<div class='teacher-email text-end'>DEMO : Vous avez atteint le nombre maximum d'élèves pour votre compte démo.
+	</div>
+</a>.
+<% end %>
 <%# END MODAL for student creation %>
