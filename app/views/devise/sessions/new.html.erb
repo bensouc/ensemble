@@ -29,7 +29,8 @@
 		<div class="contact-form">
 			<%= simple_form_for :contact,html: { novalidate: false }, url: contact_create_path(), method: :post do |f| %>
 				<div>
-					<%= f.input :nom, label: 'Nom', required: true %>
+					<%= f.input :last_name, label: 'Nom', required: true %>
+					<%= f.input :first_name, label: 'Prénom', required: true %>
 					<%= f.input :email, label: 'Email', required: true %>
 					<%= f.input :school, label: 'Ecole',required: false%>
 					<%= f.input :city, label: 'Ville', required: true %>
