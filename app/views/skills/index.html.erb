@@ -53,14 +53,16 @@
 						<i class="fa-solid fa-file-excel --vert"></i>
 					</div>
 				<% end %>
-				<div class="skill_level-selector"
+				<% if @skills.empty? %>
+					<div class="skill_level-selector"
           data-controller="tooltip"
           data-bs-toggle="tooltip"
           data-bs-placement="right"
           title="Charger les compéténces de la classe"
         >
-					<i class="fa-solid fa-file-arrow-down --vert"></i>
-				</div>
+						<i class="fa-solid fa-file-arrow-down --vert"></i>
+					</div>
+				<% end %>
 			<% end %>
 		</div>
 		<% WorkPlanDomain::DOMAINS[@grade.grade_level].each do |domain| %>
@@ -80,8 +82,7 @@
 			</div>
 		<% end %>
 	</div>
-	<div class="load-skills border-skill
-">
+	<div class="load-skills border-skill">
 		<h3>Créer un progression de compétences</h3>
 		<%= simple_form_for :liste, url: upload_skills_path, html: { novalidate: false}, method: :post, class: 'form' do |f| %>
 			<%= f.input :level, collection: @grades, prompt: "Choisisez un niveau", selected: @grade,label: false  %>

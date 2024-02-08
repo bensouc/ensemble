@@ -47,6 +47,7 @@ puts ""
 
 # create users
 admin = User.create!(email: "admin@mail.com", password: "secret", first_name: "Admin", last_name: "Nimda", admin: true, school: school_ensemble)
+demo = User.create!(email: "demo@mail.com", password: "secret", first_name: "Démo", last_name: "Omde", admin: false, demo: true, school: school_ensemble)
 ensemble_user1 = User.create!(email: "ensemble1@mail.com", password: "secret", first_name: "Benoit", last_name: "Nouille", admin: false, school: school_ensemble)
 fournier_user1 = User.create!(email: "fournier1@mail.com", password: "secret", first_name: "Jean", last_name: "Bon", admin: false, school: school_fournier)
 fournier_user2 = User.create!(email: "fournier2@mail.com", password: "secret", first_name: "Jeanne", last_name: "Bon", admin: false, school: school_fournier)
@@ -58,8 +59,8 @@ puts "=========================================="
 puts "creating school_roles"
 puts ""
 
-SchoolRole.create!(user: admin, school: school_ensemble)
-SchoolRole.create!(user: fournier_user1, school: school_fournier)
+SchoolRole.create!(user: admin, school: school_ensemble, super_teacher: true)
+SchoolRole.create!(user: fournier_user1, school: school_fournier, super_teacher: true)
 
 puts ""
 puts ">>> school_roles created"

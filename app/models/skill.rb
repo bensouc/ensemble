@@ -23,18 +23,12 @@ class Skill < ApplicationRecord
   end
 
   def self.sheets_to_temp_skills_creation(xlsx_sheets , grade, user)
-    errors = {
-      domains: [],
-      skills: []
-    }
+    errors = { domains: [], skills: [] }
     skills = []
     xlsx_sheets.each do |domain_sheet|
       if WorkPlanDomain::DOMAINS[grade.grade_level].include?(domain_sheet.name)
-        # pour chauqe rows [1..-1] new skills is made
-        # #<Skill id: nil, domain: nil, level: nil, name: nil, symbol: nil,
-      #  nil, sub_domain: nil, school_id: nil, grade_id: nil>
-        domain_sheet.rows[1..-1].each do |row|
-          # ["Ceinture", "Symbole", "Compétences"]
+        # pour chauqe rows [1..-1] new skills is made # #<Skill id: nil, domain: nil, level: nil, name: nil, symbol: nil,#  nil, sub_domain: nil, school_id: nil, grade_id: nil>
+        domain_sheet.rows[1..-1].each do |row| # row =>["Ceinture", "Symbole", "Compétences"]
           if !(row.first.nil? || row.last.nil? || row.last.empty?)
             skills << Skill.new(domain: domain_sheet.name, level: Belt::BELT_COLORS.index(row.first) + 1,
               name: row.last, symbol: row.second, school: user.school,
@@ -48,10 +42,11 @@ class Skill < ApplicationRecord
       end
     end
     # renvoie des erreur ou un lot de skills
-    {
-      errors:,
-      skills:
-    }
+    { errors:, skills: }
+  end
+
+  def self.create_loaded_skills(temp_skills)
+    temp_skills.each {|skill| skill.save}
   end
 
 # Instances method

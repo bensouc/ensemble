@@ -72,20 +72,21 @@ class SkillsController < ApplicationController
   def add_skills_from_xls
     # Code de la méthode parse_xlsx_file
     authorize Skill
-    if @uploaded_file_path.present?
-      # Ajoutez ici le code pour traiter le fichier Excel
-      sheets = Xlsx.parse_xlsx_file(@uploaded_file_path)
-      # add test if file is OK
-      temp_skills = Skill.sheets_to_temp_skills_creation(sheets, @grade, current_user)
-      raise
-      # Supprimez le fichier après le traitement
-      File.delete(@uploaded_file_path) if File.exist?(@uploaded_file_path)
-
-      # puts "SKILL XLS UPLOAD REUSSI"
-      flash[:success] = "File processed successfully!"
+    # Ajoutez ici le code pour traiter le fichier Excel
+    sheets = Xlsx.parse_xlsx_file(@uploaded_file_path)
+    # add test if file is OK
+    temp_skills = Skill.sheets_to_temp_skills_creation(sheets, @grade, current_user)
+    # create new set of skills
+    new_skills = Skill.create_loaded_skills(temp_skills[:skills])
+    # Supprimez le fichier après le traitement
+    File.delete(@uploaded_file_path) if File.exist?(@uploaded_file_path)
+    # puts "SKILL XLS UPLOAD REUSSI"
+    if temp_skills[:errors].empty?
+    flash[:success] = "#{temp_skills[:skills].count} Compétences ajoutées"
       redirect_to skills_path
     else
-      flash[:error] = "No uploaded file found."
+      @errors = temp_skills[:errors]
+      flash[:error] = "vous avez des euurers"
       redirect_to skills_path
     end
   end
@@ -101,7 +102,7 @@ class SkillsController < ApplicationController
       # flash[:success] = "File uploaded successfully!"
       redirect_to add_skills_from_xls_path, params: {grade: params[:liste][:level] }
     else
-      # flash[:error] = "Please choose a file to upload."
+      flash[:error] = "Please choose a file to upload."
       redirect_to skills_path
     end
   end
@@ -133,10 +134,11 @@ class SkillsController < ApplicationController
     params.require(:skill).permit(:name, :grade_id, :symbol, :level, :domain)
   end
 
-  # get xlsx url for uplaod_skills
+  # get xlsx url for upload_skills
   def set_uploaded_file_path
     @uploaded_file_path = session[:uploaded_file_path]
     @grade = Grade.find(session[:grade_id])
+    @old_skills = Skill.where(grade: @grade)
   end
 
   def set_xls_file_path
