@@ -14,14 +14,13 @@
       data-controller='allskilldisplay'
       >
 	<div class="skills">
-		<% WorkPlanDomain::DOMAINS[@grade.grade_level].each do |domain| %>
+		<% @domains.each do |domain| %>
 			<div class="domain-tab"
         data-allskilldisplay-target="domainBtn"
-        data-domain = "<%=domain%>"
+        data-domain = "<%=domain.name%>"
         data-action = 'click->allskilldisplay#displayDomain'
-				<%# indicate if domain is special true && not CME && in special domain %>
-				data-special="<%= @are_special_domains && @grade != 'CM2' && domain.in?(WorkPlanDomain::DOMAINS_SPECIALS)%>">
-				<%= domain %>
+				data-special="<%= @are_special_domains && @grade != 'CM2' && domain.name.in?(WorkPlanDomain::DOMAINS_SPECIALS)%>">
+				<%= domain.name %>
 			</div>
 		<% end %>
 	</div>
@@ -55,18 +54,18 @@
 				<% end %>
 			<% end %>
 		</div>
-		<% WorkPlanDomain::DOMAINS[@grade.grade_level].each do |domain| %>
-			<div class="skills_boxe <%= 'd-none 'unless domain == WorkPlanDomain::DOMAINS[@grade.grade_level].first%>"
-    data-domain='<%=domain%>'
+		<% @domains.each do |domain| %>
+			<div class="skills_boxe <%= 'd-none 'unless domain.name == WorkPlanDomain::DOMAINS[@grade.grade_level].first%>"
+    data-domain='<%=domain.name%>'
     data-allskilldisplay-target='domainCard'>
 				<%# <% domain = WorkPlanDomain::DOMAINS[@grade].first %>
 				<% for skill_level in (1..7) do %>
-					<% skills = @skills.select {|skill| skill.level == skill_level && skill.domain == domain}.sort %>
+					<% skills = @skills.select {|skill| skill.level == skill_level && skill.domain == domain.name}.sort %>
 					<div class="skills-display d-none"
           data-allskilldisplay-target='levelSkillCard'
           data-grade='<%=@grade.name%>'
           data-level='<%=skill_level%>'>
-						<%= render 'all_skills_by_domain_level', skills: skills, domain: domain, level: skill_level,grade: @grade %>
+						<%= render 'all_skills_by_domain_level', skills: skills, domain: domain.name, level: skill_level,grade: @grade %>
 					</div>
 				<% end %>
 			</div>
