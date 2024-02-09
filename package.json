@@ -22,13 +22,12 @@
     "sweetalert": "^2.1.2",
     "sweetalert2": "^11.7.2",
     "trix": "^1.2.0",
-    "typed.js": "^2.0.12"
+    "typed.js": "^2.0.12",
+    "webpack": "^5.0.0"
   },
   "version": "0.1.0",
   "devDependencies": {
-    "@prettier/plugin-ruby": "^4.0.4",
-    "prettier": "^3.2.4",
-    "prettier-plugin-erb": "^0.4.0",
+    "prettier": "^2.2.0",
     "webpack-dev-server": "^4.15.0"
   },
   "engines": {

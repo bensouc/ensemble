@@ -12,7 +12,7 @@ class WorkPlanDomain < ApplicationRecord
     "CM2" => ["Calcul", "Géométrie", "Grandeurs et Mesures", "Numération", "Opérations",
               "Résolution des Problèmes", "Calligraphie", "Conjugaison",
               "Poésie et Expression orale", "Production d’écrit", "Grammaire",
-              "Lecture", "Vocabulaire"],
+              "Lecture", "Vocabulaire"]
   }.freeze
   LEVELS = (1..7)
 
@@ -51,7 +51,7 @@ class WorkPlanDomain < ApplicationRecord
         skill:,
         status: "completed",
         completed: true,
-        kind: "ceinture",
+        kind: "ceinture"
       )
       last_work_plan_skill = work_plan_skill
       # validate BElt?
