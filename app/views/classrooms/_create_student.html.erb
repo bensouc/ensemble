@@ -21,8 +21,7 @@
 			</div>
 		</div>
 	</div>
-	<div class='teacher-email text-end me-3'>DEMO : Limite de <%= User::DEMO_STUDENT_LIMIT %> élèves par classe
-	</div>
+	<div class='teacher-email text-end me-3'> <%= classroom.students.count %> / <%= current_user.demo? ? User::DEMO_STUDENT_LIMIT : User::STUDENT_LIMIT %> élèves</div>
 <% else %>
 	<div class='teacher-email text-end'>DEMO : Vous avez atteint le nombre maximum d'élèves pour votre compte démo.
 	</div>

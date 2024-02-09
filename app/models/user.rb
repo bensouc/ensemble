@@ -4,6 +4,7 @@ class User < ApplicationRecord
 
   DEMO_CLASSROOM_LIMIT = 1
   DEMO_STUDENT_LIMIT = 5
+  STUDENT_LIMIT = 25
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   before_validation :set_defaults

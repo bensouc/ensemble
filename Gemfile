@@ -22,8 +22,8 @@ gem "turbo-rails"
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
 gem "puma", "~> 4.1"
-# Use SCSS for stylesheets
-gem "sass-rails", ">= 6"
+# Use SCSS for stylesheets and  minifies them
+gem "sassc-rails"
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 gem "webpacker", "~> 4.0"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
