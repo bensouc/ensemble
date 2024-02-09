@@ -16,12 +16,7 @@ export default class extends Controller {
   }
 
   getDeviceInfo() {
-    const ua = navigator.userAgent;
     return {
-      device: {
-        isMobile: /Mobi|Android/i.test(ua),
-        isIOS: /iPhone|iPad|iPod/i.test(ua),
-      },
       pwa: {
         isStandalone: window.matchMedia('(display-mode: standalone)').matches,
       }
@@ -29,21 +24,20 @@ export default class extends Controller {
   }
 
   handleBeforeInstallPrompt(e) {
-    // console.log("Before install prompt event fired");
     e.preventDefault();
     this.deferredPrompt = e;
     this.managePromptDisplay();
   }
 
   handleAppInstalled(e) {
-    // console.log("App installed event fired");
+
     localStorage.setItem(this.INSTALLATION_STATUS, 'true');
     this.deferredPrompt = null;
     this.managePromptDisplay();
   }
 
   managePromptDisplay() {
-    const { device, pwa } = this.getDeviceInfo();
+    const { pwa } = this.getDeviceInfo();
     const isInstalled = localStorage.getItem(this.INSTALLATION_STATUS) === 'true';
     const dontShowAgain = localStorage.getItem(this.DONT_SHOW_PROMPT_AGAIN) === 'true';
 
@@ -54,18 +48,11 @@ export default class extends Controller {
       this.hidePrompt();
       return;
     }
-
-    // if (device.isMobile) {
-    //   const showInstallPrompt = !!this.deferredPrompt;
-    //   this.installPromptTarget.classList.toggle("hidden", !showInstallPrompt);
-    //   // this.manualPromptTarget.classList.toggle("hidden", showInstallPrompt);
-    // }
   }
 
   hidePrompt() {
     localStorage.setItem(this.DONT_SHOW_PROMPT_AGAIN, 'true');
     this.installPromptTarget.classList.add("hidden");
-    // this.manualPromptTarget.classList.add("hidden");
   }
 
   async onInstall() {
