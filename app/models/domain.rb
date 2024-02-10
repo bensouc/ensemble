@@ -5,4 +5,8 @@ class Domain < ApplicationRecord
 
   validates :name, presence: true,
                    uniqueness: { message: "Le nom de cet domain éxiste déja", scope: :grade }
+  # METHODS
+  def special?
+    special == true
+  end
 end
