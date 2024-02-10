@@ -105,8 +105,10 @@ class WorkPlansController < ApplicationController
     @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.with_associations.find(params[:id])
     @work_plan_domains = @work_plan.work_plan_domains
+    @domains = Domain.where(grade: @work_plan.grade)
     authorize @work_plan
-    @domains = @work_plan.all_domains_from_work_plan
+    # raise
+    # @domains = @work_plan_domains.map{|wpd| wpd.domain}
     shared_classrooms = current_user.user_shared_classrooms
     @students = current_user.all_students
     @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms

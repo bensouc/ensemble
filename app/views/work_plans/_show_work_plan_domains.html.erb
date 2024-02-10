@@ -1,16 +1,15 @@
 <%# work_plan.work_plan_domains.each do |work_plan_domain| %>
 <%# <%raise %>
 <%= turbo_frame_tag :domain_list do %>
-  <% unless  @domains.nil? %>
-    <% @domains.each do |work_plan_domains| %>
+
+    <% @domains.each do |domain| %>
       <%# <% wpd2 = work_plan.work_plan_domains.where(domain: "#{work_plan_domains}") %>
-      <% wpd2 =
-        work_plan
-          .work_plan_domains
-          .select { |work_plan_domain| work_plan_domain.domain == work_plan_domains }
+      <% selected_wpds =
+        @work_plan_domains
+          .select { |work_plan_domain| work_plan_domain.domain == domain }
           .sort_by(&:level) %>
-      <% unless wpd2.empty? %>
-        <% wpd2.each do |work_plan_domain| %>
+      <% unless selected_wpds.empty? %>
+        <% selected_wpds.each do |work_plan_domain| %>
           <%# boucle sur les work_plan_domains %>
 
           <%= render "work_plan_domains/work_plan_domain", work_plan_domain: work_plan_domain %>
@@ -18,7 +17,7 @@
         <% end %>
       <% end %>
     <% end %>
-  <% end %>
+
 <% end %>
 <div id='bottom'></div>
 

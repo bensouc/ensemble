@@ -18,31 +18,35 @@ class WorkPlanDomain < ApplicationRecord
 
   DOMAINS_SPECIALS = ["Géométrie", "Grandeurs et Mesures"].freeze
 
+  # ASSOCIATIONS
   belongs_to :work_plan
   # belongs_to :student, optional: true
-
+  belongs_to :domain
   has_one :student, through: :work_plan
+
+  # VALIDATIONS
+  has_many :work_plan_skills, dependent: :destroy
+  accepts_nested_attributes_for :work_plan_skills
+  validates :level, presence: true, inclusion: { in: LEVELS }
 
   # def student
   #   return work_plan.student if association(:work_plan).loaded?
 
   #   super
   # end
-
+  # METHODS
   def specials?
     # binding.pry
     work_plan.grade.school.special_domains? && domain.in?(DOMAINS_SPECIALS) && work_plan.grade.grade_level != "CM2"
   end
 
-  has_many :work_plan_skills, dependent: :destroy
-  accepts_nested_attributes_for :work_plan_skills
-
-  validates :level, presence: true, inclusion: { in: LEVELS }
-
   def all_domain_skills(user)
     Skill.for_school(user.school).where(domain:, level:, grade: work_plan.grade)
   end
 
+  def name
+    domain.name
+  end
   def self.add_wps_completed(skills, work_plan_domain, special_work_plan)
     last_work_plan_skill = nil
     skills.each do |skill|

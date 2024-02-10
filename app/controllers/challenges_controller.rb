@@ -150,7 +150,7 @@ class ChallengesController < ApplicationController
     @grades = current_user.classroom_grades
     if params["/challenges"].blank?
       @grade = @grades.first
-      @domains = @grade.nil? ? nil : WorkPlanDomain::DOMAINS[@grade.grade_level]
+      @domains = @grade.nil? ? nil : @grade.domains
       @level = 1
       @domain = @domains.first unless @domains.nil?
     else
