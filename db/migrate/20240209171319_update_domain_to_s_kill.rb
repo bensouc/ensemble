@@ -6,7 +6,7 @@ class UpdateDomainToSKill < ActiveRecord::Migration[7.0]
     # update all skills
     skills = Skill.all
     # iterate on each skill
-    skills.all.each do |skill|
+    skills.each do |skill|
       # get the right domain
       new_domain = Domain.find_by(grade: skill.grade, name: skill.name_domain)
       # link it to the skill via update
