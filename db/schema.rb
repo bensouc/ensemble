@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_09_152835) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_09_171319) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -135,7 +135,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_09_152835) do
   end
 
   create_table "skills", force: :cascade do |t|
-    t.string "domain"
+    t.string "name_domain"
     t.integer "level"
     t.string "name"
     t.string "symbol"
@@ -144,6 +144,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_09_152835) do
     t.string "sub_domain"
     t.bigint "school_id"
     t.bigint "grade_id"
+    t.bigint "domain_id"
+    t.index ["domain_id"], name: "index_skills_on_domain_id"
     t.index ["grade_id"], name: "index_skills_on_grade_id"
     t.index ["school_id"], name: "index_skills_on_school_id"
   end
@@ -252,6 +254,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_09_152835) do
   add_foreign_key "school_roles", "users"
   add_foreign_key "shared_classrooms", "classrooms"
   add_foreign_key "shared_classrooms", "users"
+  add_foreign_key "skills", "domains"
   add_foreign_key "skills", "grades"
   add_foreign_key "skills", "schools"
   add_foreign_key "students", "classrooms"

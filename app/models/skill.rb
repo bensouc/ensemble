@@ -2,16 +2,17 @@
 
 class Skill < ApplicationRecord
   belongs_to :school
-  belongs_to :grade #to remove for first migration Of Grade MODEL
+  belongs_to :domain
+  belongs_to :grade # to remove for first migration Of Grade MODEL
   has_many :work_plan_skills, dependent: nil
   has_many :challenges, dependent: :destroy
 
-  validates :domain, presence: true,
-                     inclusion: { in: ["Vocabulaire", "Conjugaison", "Orthographe",
-                                      "Grammaire", "Numération", "Calcul", "Poésie", "Géométrie",
-                                      "Grandeurs et Mesures", "Opérations", "Résolution des Problèmes",
-                                      "Calligraphie", "Poésie et Expression orale",
-                                      "Production d’écrit", "Lecture"] }
+  # validates :domain, presence: true,
+  #                    inclusion: { in: ["Vocabulaire", "Conjugaison", "Orthographe",
+  #                                      "Grammaire", "Numération", "Calcul", "Poésie", "Géométrie",
+  #                                      "Grandeurs et Mesures", "Opérations", "Résolution des Problèmes",
+  #                                      "Calligraphie", "Poésie et Expression orale",
+  #                                      "Production d’écrit", "Lecture"] }
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
   validates :name, presence: true
   validates :symbol, inclusion: { in: ["◼", "⬥", "⬟", "♥", "⬤", "♣", "🞮", "▲", ""] }
