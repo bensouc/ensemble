@@ -41,12 +41,13 @@ class WorkPlanDomain < ApplicationRecord
   end
 
   def all_domain_skills(user)
-    Skill.for_school(user.school).where(domain:, level:, grade: work_plan.grade)
+    Skill.where(domain:, level:,school: user.school )
   end
 
   def name
     domain.name
   end
+
   def self.add_wps_completed(skills, work_plan_domain, special_work_plan)
     last_work_plan_skill = nil
     skills.each do |skill|
@@ -58,9 +59,8 @@ class WorkPlanDomain < ApplicationRecord
         kind: "ceinture"
       )
       last_work_plan_skill = work_plan_skill
-      # validate BElt?
-      # raise
-      if WorkPlanDomain::DOMAINS_SPECIALS.include?(work_plan_domain.domain) && skill.grade.grade_level != "CM2"
+
+      if work_plan_domain.domain.special?
         Belt.special_newbelt(work_plan_skill, special_work_plan)
         last_work_plan_skill = nil
         # BMO TO be rethinkg to get result from method
@@ -68,7 +68,6 @@ class WorkPlanDomain < ApplicationRecord
         belt = Belt.find_or_create_by(
           { student_id: special_work_plan.student.id,
             domain: work_plan_domain.domain,
-            grade: skill.grade,
             level: skill.level }
         )
         belt.completed = true
