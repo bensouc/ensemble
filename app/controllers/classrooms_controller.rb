@@ -55,12 +55,12 @@ class ClassroomsController < ApplicationController
 
   def results
     authorize @classroom
-    @domains = WorkPlanDomain::DOMAINS[@classroom.grade.grade_level]
-    @skills = Skill.for_school(current_user.school).where(grade:@classroom.grade)
-    @domains.map do |domain|
-      # remove domains without skills eg:poesie
-      @domains.delete(domain) if @skills.none? { |skill| skill.domain == domain }
-    end
+    @domains = @classroom.grade.domains
+    @skills = @classroom.grade.skills
+    # @domains.map do |domain|
+    #   # remove domains without skills eg:poesie
+    #   # @domains.delete(domain) if @skills.none? { |skill| skill.domain == domain }
+    # end
     # raise
     respond_to do |format|
       format.html do
@@ -79,15 +79,13 @@ class ClassroomsController < ApplicationController
   def results_by_domain
     authorize @classroom
     # binding.pry
-    @domain = set_domain
+    @domain = Domain.find(set_domain)
     set_up_results(@domain)
     results_factory(@domain) # create all  variables shared with the results Action
-    @skills = if @special_domain
-        Skill.where(school: current_user.school,
-                    grade: @classroom.grade,
-                    domain: @domain).order(Arel.sql('COALESCE(sub_domain, \'\') ASC'))
+    @skills = if @domain.special?
+        Skill.where( domain: @domain).order(Arel.sql('COALESCE(sub_domain, \'\') ASC'))
       else
-        Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
+        Skill.where(domain: @domain).sort
       end
     render partial: "classrooms/classroom_domain_results"
   end
@@ -156,7 +154,7 @@ class ClassroomsController < ApplicationController
 
   # refacto of result and result_by_domain actions
   def set_up_results(domain)
-    @special_domain = @classroom.user.school.special_domains? && (WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @classroom.grade.grade_level != "CM2")
+    # @special_domain = @classroom.user.school.special_domains? && (WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @classroom.grade.grade_level != "CM2")
     @students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     # get all validated belts for all classroom student
     @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain:, completed: true)

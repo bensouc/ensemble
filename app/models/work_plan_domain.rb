@@ -37,7 +37,7 @@ class WorkPlanDomain < ApplicationRecord
   # METHODS
   def specials?
     # binding.pry
-    work_plan.grade.school.special_domains? && domain.in?(DOMAINS_SPECIALS) && work_plan.grade.grade_level != "CM2"
+    domain.specials?
   end
 
   def all_domain_skills(user)

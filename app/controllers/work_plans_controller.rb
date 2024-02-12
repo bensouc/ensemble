@@ -201,22 +201,15 @@ class WorkPlansController < ApplicationController
 
       return
     end
-
-    # raise
-    # start_date =  Time.zone.today.monday? ? Time.zone.today : Time.zone.today.next_occurring(:monday)
-    start_date = Time.zone.today.next_occurring(:monday)
-    end_date = start_date + 4
     @work_plan = WorkPlan.new(
       name: "AUTO - N°#{@student.work_plans.count + 1}",
       grade: @student.classroom.grade,
       student: @student, user: current_user,
-      start_date:,
-      end_date:,
+      start_date:Time.zone.today.next_occurring(:monday),
+      end_date: Time.zone.today.next_occurring(:monday) + 4,
     )
     authorize @work_plan
     @work_plan.save
-    # ajout date intro prendre date => first monday => first friday
-    # based on student classroom level,
     # Iterate through each domain in the list of domains
     @domains.each do |domain|
       # Create a new WorkPlanDomain object and set its attributes
@@ -226,14 +219,21 @@ class WorkPlansController < ApplicationController
 
       # Check if the WorkPlanDomain has any specials and if the work plan grade is not "CM2"
       # if wpd.specials? && @work_plan.grade != "CM2"
-      if wpd.specials?
+      if domain.special?
+        puts "CEST ICIICI QUE CA CHIEEEE"
+        puts "CEST ICIICI QUE CA CHIEEEE"
+        puts "CEST ICIICI QUE CA CHIEEEE"
+        puts "CEST ICIICI QUE CA CHIEEEE"
+        p domain
+        puts "CEST ICIICI QUE CA CHIEEEE"
+        puts "CEST ICIICI QUE CA CHIEEEE"
         # Set the WorkPlanDomain's level to 1 and save it
         wpd.level = 1
         wpd.save
       else
         # Find all the skills for the current domain, level, and grade
-        Skill.for_school(current_user.school).where(domain:, level: wpd.level,
-                                                    grade: @student.classroom.grade).each do |skill|
+        Skill.for_school(current_user.school).where(domain:, level: wpd.level).each do |skill|
+
           # Find the most recent WorkPlanSkill object for the current student and skill
           # last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
           temp_last_wps = WorkPlanSkill.last_wps(@student, skill)
@@ -248,7 +248,7 @@ class WorkPlansController < ApplicationController
             work_plan_domain: wpd,
             kind: "exercice",
           )
-
+                  binding.pry
           # If there is no previous WorkPlanSkill, create a new challenge and save the new WorkPlanSkill
           if last_wps.nil?
             new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
@@ -318,9 +318,9 @@ class WorkPlansController < ApplicationController
     @student = Student.find(params.require(:student_id))
     # binding.pry
     if params[:student].nil?
-      @domains = params.require(:"/students/#{@student.id}")[:domains][1..]
+      @domains = params.require(:"/students/#{@student.id}")[:domains][1..].map {|id| Domain.find(id)}
     else
-      @domains = params.require(:student)[:domains][1..]
+      @domains = params.require(:student)[:domains][1..].map {|id| Domain.find(id)}
     end
   end
 

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # rubocop:disable Metrics/ClassLength
 # rubocop:disable Metrics/CyclomaticComplexity
 
@@ -154,14 +155,15 @@ class ChallengesController < ApplicationController
       @level = 1
       @domain = @domains.first unless @domains.nil?
     else
-      @grade = Grade.find(params.require("/challenges").permit(:grade, :level, :domain)[:grade])
+      raise
+      @grade = Grade.find(params.require("/challenges").permit(:grade)[:grade])
       @domains = WorkPlanDomain::DOMAINS[@grade.grade_level]
       @level = params.require("/challenges").permit(:grade, :level, :domain)[:level]
       @domain = params.require("/challenges").permit(:grade, :level, :domain)[:domain]
       # @skill = Skill.find(params.require("/challenges").permit(:skills)[:skills])
       # skill_id = params.require("/challenges").permit(:grade, :level, :domain)[:skills].to_i
     end
-    @skills = Skill.where(grade: @grade, domain: @domain, level: @level, school: current_user.school)
+    @skills = Skill.where(domain: @domain, level: @level)
   end
 
   def set_challenge_params

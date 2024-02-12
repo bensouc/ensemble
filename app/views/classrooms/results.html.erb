@@ -9,7 +9,7 @@
 			<div class="skill" >
 				<h1><%=@classroom.grade.grade_level %> -  <%=@classroom.name %></h1>
 				<div data-display-results-classroom-target='domainnamedisplay'>
-					<%= @domain.capitalize %>
+					<%= @domain.name %>
 				</div>
 			</div>
 			<%@students_list.each do |student|  %>
@@ -53,10 +53,10 @@
                       <div class="tag-item">
                         <input class="check_boxes required tag-selector" item_wrapper_class="tag-item"
                           required="required" aria-required="true" type="checkbox"
-                          value="<%=domain%>" checked="checked" name="student[domains][]" id="<%=student.id%>_<%=domain%>">
+                          value="<%=domain%>" checked="checked" name="student[domains][]" id="<%=student.id%>_<%=domain.name%>">
                         <label class="form-check-label collection_check_boxes"
-                          for="<%=student.id%>_<%=domain%>">
-                          <%=domain%>
+                          for="<%=student.id%>_<%=domain.id%>">
+                          <%=domain.name%>
                         </label>
                       </div>
                     <% end %>
