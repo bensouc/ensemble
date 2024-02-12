@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_10_174752) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_12_091256) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -54,13 +54,15 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_10_174752) do
 
   create_table "belts", force: :cascade do |t|
     t.bigint "student_id", null: false
-    t.string "domain"
+    t.string "name_domain"
     t.boolean "completed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date "validated_date", default: "2023-08-22"
     t.integer "level", null: false
     t.bigint "grade_id"
+    t.bigint "domain_id"
+    t.index ["domain_id"], name: "index_belts_on_domain_id"
     t.index ["grade_id"], name: "index_belts_on_grade_id"
     t.index ["student_id"], name: "index_belts_on_student_id"
   end
@@ -245,6 +247,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_10_174752) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "belts", "domains"
   add_foreign_key "belts", "grades"
   add_foreign_key "belts", "students"
   add_foreign_key "challenges", "skills"
