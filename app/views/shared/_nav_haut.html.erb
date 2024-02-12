@@ -23,7 +23,7 @@
 							<a class="dropdown-item" href="#">Ma classe</a>
 							<%=link_to "Mon compte", edit_user_registration_path, class: "dropdown-item"%>
 							<!--# STRIPE SWITCH OFF -->
-							<% unless true %>
+							<% unless current_user.demo? %>
 								<% if (current_user.super_teacher?) %>
 									<% if current_user.subscription && current_user.subscription.active_or_trialing?%>
 										<form method="GET" action="/create-customer-portal-session" data-turbo="false">
