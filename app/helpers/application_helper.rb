@@ -17,4 +17,28 @@ module ApplicationHelper
         'https://season-sycamore-125.notion.site/Ensemble-Les-Tutos-1bb72deab51d43898dd2bdcec25ec098'
       end
     end
+
+    def cacher_email(email)
+  parts = email.split('@')
+  username = parts[0]
+  domain = parts[1]
+
+  # Cacher le nom d'utilisateur
+  if username.length > 2
+    censored_username = username[0] + '*' * (username.length - 2) + username[-1]
+  else
+    censored_username = username
+  end
+
+  # Cacher le domaine
+  domain_parts = domain.split('.')
+  if domain_parts.length > 2
+    censored_domain = domain_parts[0] + '*' * (domain_parts[-2].length - 2) + domain_parts[-1]
+  else
+    censored_domain = domain
+  end
+
+  "#{censored_username}@#{censored_domain}"
+end
+
 end
