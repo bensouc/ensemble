@@ -195,7 +195,6 @@ class WorkPlansController < ApplicationController
   end
 
   def auto_new_wp
-    # binding.pry
     if @domains.empty?
       redirect_to student_path(@student), notice: "Vous n'avez pas sélectionné de domaine"
 
@@ -248,7 +247,6 @@ class WorkPlansController < ApplicationController
             work_plan_domain: wpd,
             kind: "exercice",
           )
-                  binding.pry
           # If there is no previous WorkPlanSkill, create a new challenge and save the new WorkPlanSkill
           if last_wps.nil?
             new_wps.challenge = new_wps.add_challenges_2_wps(current_user)

@@ -1,6 +1,6 @@
 	<% WorkPlanDomain::LEVELS.each  do |level|%>
 	<%# if domain special et level = 2 break break from each  %>
-	<% if @special_domain && level == 2 %>
+	<% if @domain.special? && level == 2 %>
 		<% break %>
 	<% end %>
 	<% belt_on_level = @all_completed_belts.select{|belt| belt.level == level} %>
