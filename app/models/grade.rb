@@ -3,8 +3,6 @@ class Grade < ApplicationRecord
   has_many :classrooms, dependent: :destroy
   has_many :work_plans, dependent: :destroy
   has_many :domains, dependent: :destroy
-  has_many :belts, dependent: :destroy
-  has_many :skills, dependent: :destroy
   has_many :students, through: :classrooms, source: "students", dependent: :destroy
 
   validates :grade_level, presence: true, inclusion: Classroom::GRADE

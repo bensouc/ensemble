@@ -60,10 +60,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_12_091256) do
     t.datetime "updated_at", null: false
     t.date "validated_date", default: "2023-08-22"
     t.integer "level", null: false
-    t.bigint "grade_id"
     t.bigint "domain_id"
     t.index ["domain_id"], name: "index_belts_on_domain_id"
-    t.index ["grade_id"], name: "index_belts_on_grade_id"
     t.index ["student_id"], name: "index_belts_on_student_id"
   end
 
@@ -146,10 +144,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_12_091256) do
     t.datetime "updated_at", null: false
     t.string "sub_domain"
     t.bigint "school_id"
-    t.bigint "grade_id"
     t.bigint "domain_id"
     t.index ["domain_id"], name: "index_skills_on_domain_id"
-    t.index ["grade_id"], name: "index_skills_on_grade_id"
     t.index ["school_id"], name: "index_skills_on_school_id"
   end
 
@@ -248,7 +244,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_12_091256) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "belts", "domains"
-  add_foreign_key "belts", "grades"
   add_foreign_key "belts", "students"
   add_foreign_key "challenges", "skills"
   add_foreign_key "challenges", "users"
@@ -261,7 +256,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_12_091256) do
   add_foreign_key "shared_classrooms", "classrooms"
   add_foreign_key "shared_classrooms", "users"
   add_foreign_key "skills", "domains"
-  add_foreign_key "skills", "grades"
   add_foreign_key "skills", "schools"
   add_foreign_key "students", "classrooms"
   add_foreign_key "subscriptions", "schools"
