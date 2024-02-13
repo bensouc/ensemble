@@ -13,7 +13,7 @@ class AddDomainToBelt < ActiveRecord::Migration[7.0]
       # get the right domain
       p belt.grade
       p belt.name_domain
-      new_domain = Domain.find_by(grade: belt.grade, name: belt.name_domain)
+      new_domain = Domain.find_by(grade_id: belt.grade_id, name: belt.name_domain)
 
       # link it to the skill via update
        belt.update(domain: new_domain)
