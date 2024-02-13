@@ -75,9 +75,9 @@ class Belt < ApplicationRecord
     Skill.for_school(user.school).where(level:, grade:, domain:)
   end
 
-  def grade
-    domain.grade
-  end
+  # def grade
+  #   domain.grade
+  # end
 
 # =================================================
   # CLASS METHODS
