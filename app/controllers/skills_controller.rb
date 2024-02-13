@@ -2,18 +2,22 @@
 
 class SkillsController < ApplicationController
   before_action :set_skill, only: [:show, :edit, :update, :destroy]
-  before_action :setup_all_skills_data, only: [:index]
+  # before_action :setup_all_skills_data, only: [:index]
   skip_after_action :verify_policy_scoped, only: [:index]
 
   def index
     redirect_to classrooms_path unless current_user.classroom?
     # setup_all_skills_data
     respond_to do |format|
-      format.html
+      format.html { setup_all_skills_data }
       format.xlsx do
+        grade = Grade.includes([:domains,:skills]).find(params[:grade])
+        skills = grade.skills
+        domains = grade.domains
+        school = current_user.school
         response.headers["Content-Disposition"] = 'attachment; filename="my_new_filename.xlsx"'
-        package = Xlsx.skills_generate_xlsx_file(@school, @grade, @skills)
-        send_xlsx_file(package, @school, @grade)
+        package = Xlsx.skills_generate_xlsx_file(school, grade, domains, skills)
+        send_xlsx_file(package, school, grade)
       end
     end
     # for production => "A fournier == "
