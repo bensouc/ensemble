@@ -11,7 +11,7 @@ class AddDomainToBelt < ActiveRecord::Migration[7.0]
     # iterate on each skill
     belts.each do |belt|
       # get the right domain
-      p belt.grade
+      p belt.grade_id
       p belt.name_domain
       new_domain = Domain.find_by(grade_id: belt.grade_id, name: belt.name_domain)
 
