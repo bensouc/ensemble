@@ -5,10 +5,10 @@ class Skill < ApplicationRecord
   belongs_to :domain
   has_many :work_plan_skills, dependent: nil
   has_many :challenges, dependent: :destroy
-  
+
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
   validates :name, presence: true,
-                   uniqueness: { message: "Le nom de cet domain éxiste déja", scope: :grade }
+                   uniqueness: { message: "Le nom de compétence éxiste déja", scope: :domain }
 
   validates :symbol, inclusion: { in: ["◼", "⬥", "⬟", "♥", "⬤", "♣", "🞮", "▲", ""] }
 
@@ -27,7 +27,7 @@ class Skill < ApplicationRecord
   end
 
   def specials?
-    school.special_domains? && domain.in?(WorkPlanDomain::DOMAINS_SPECIALS) && grade.grade_level != "CM2"
+    domain.grade.special?
   end
 
   def symbol_img_name

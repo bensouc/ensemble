@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "#{domain}_#{level}" do %>
+<%= turbo_frame_tag "#{domain.id}_#{level}" do %>
   <% skills.each do |skill| %>
     <% unless skill.nil? %>
       <%= turbo_frame_tag "skill_#{skill.id}" do %>

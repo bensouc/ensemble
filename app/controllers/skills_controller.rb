@@ -41,10 +41,9 @@ class SkillsController < ApplicationController
     @skill.school = current_user.school
     @skill.save!
     # redirect_to skill_path(@skill)
-    @skills = Skill.includes([:grade, :school]).where(grade: @skill.grade, school: current_user.school,
-                                                      domain: @skill.domain, level: @skill.level)
+    @skills = Skill.includes([:school]).where(domain: @skill.domain, level: @skill.level)
     render partial: "skills/all_skills_by_domain_level",
-           locals: { skills: @skills, domain: @skill.domain, level: @skill.level, grade: @skill.grade }
+           locals: { skills: @skills, domain: @skill.domain, level: @skill.level, grade: @skill.domain.grade}
 
     #  skills: skills, domain: domain, level: skill_level
   end
@@ -94,7 +93,7 @@ class SkillsController < ApplicationController
   end
 
   def skill_params
-    params.require(:skill).permit(:name, :grade_id, :symbol, :level, :domain)
+    params.require(:skill).permit(:name, :symbol, :level, :domain_id)
   end
 
   # XLSX GENERATION and send
