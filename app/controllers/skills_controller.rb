@@ -3,6 +3,7 @@
 class SkillsController < ApplicationController
   before_action :set_skill, only: [:show, :edit, :update, :destroy]
   before_action :setup_all_skills_data, only: [:index]
+  skip_after_action :verify_policy_scoped, only: [:index]
 
   def index
     redirect_to classrooms_path unless current_user.classroom?
@@ -40,7 +41,8 @@ class SkillsController < ApplicationController
     @skill.school = current_user.school
     @skill.save!
     # redirect_to skill_path(@skill)
-    @skills = Skill.includes([:grade,:school]).where(grade: @skill.grade, school: current_user.school, domain: @skill.domain, level: @skill.level)
+    @skills = Skill.includes([:grade, :school]).where(grade: @skill.grade, school: current_user.school,
+                                                      domain: @skill.domain, level: @skill.level)
     render partial: "skills/all_skills_by_domain_level",
            locals: { skills: @skills, domain: @skill.domain, level: @skill.level, grade: @skill.grade }
 
@@ -70,17 +72,17 @@ class SkillsController < ApplicationController
   private
 
   def setup_all_skills_data
-    # @grades = current_user.classroom_grades
-    # @grades = Classroom::GRADE.select { |grade| current_user.classroom_grades.include?(grade.grade_level) }
-    @grades = current_user.classroom_grades
-    query = params[:grade]
 
+    @grades = current_user.classroom_grades
+    grade_query = params[:grade]
+    domain_query = params[:domain]
     @school = current_user.school
-    @grade = query.nil? ? @grades.first : Grade.find(query)
+    @grade = grade_query.nil? ? @grades.first : Grade.find(grade_query)
     @domains = @grade.domains
-    @skills = policy_scope(Skill)
-    @are_special_domains = current_user.school.special_domains?
-    @skills = @skills.select { |skill| skill.grade == @grade }
+    @domain = domain_query.nil? ? @domains.first : Domain.find(domain_query)
+    # @skills = policy_scope(Skill)
+    # @are_special_domains = current_user.school.special_domains?
+    @skills = Skill.where(domain: @domain)
   end
 
   def set_skill

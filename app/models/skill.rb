@@ -5,7 +5,7 @@ class Skill < ApplicationRecord
   belongs_to :domain
   has_many :work_plan_skills, dependent: nil
   has_many :challenges, dependent: :destroy
-
+  
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
   validates :name, presence: true,
                    uniqueness: { message: "Le nom de cet domain éxiste déja", scope: :grade }

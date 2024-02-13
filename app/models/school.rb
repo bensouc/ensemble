@@ -28,8 +28,9 @@ class School < ApplicationRecord
   end
 
   def valid_subscription?
-  subscription&.valid_subscription?
+    subscription&.valid_subscription?
   end
+
   def super_teachers
     users.where(school_roles: { super_teacher: true })
   end
@@ -37,6 +38,4 @@ class School < ApplicationRecord
   def all_students_list
     classrooms.map { |classroom| classroom.students }.flatten
   end
-
-
 end
