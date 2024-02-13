@@ -9,16 +9,22 @@
 			<div class="skill" >
 				<h1><%=@classroom.grade.grade_level %> -  <%=@classroom.name %></h1>
 				<div data-display-results-classroom-target='domainnamedisplay'>
-					<%= @domain.capitalize %>
+					<%= @domain.name %>
 				</div>
 			</div>
 			<%@students_list.each do |student|  %>
-				<div class="student-name">
-					<%# link to autogen Workplan for this student %>
-					<button type="button" class="--bgc-transparent student-result-name" data-action="click->addstudenttoautogen#addStudentId" data-student-id="<%=student.id%>" data-student-name="<%=student.first_name.capitalize%>"
-						data-bs-toggle="modal" data-bs-target="#staticBackdrop-<%=student.id%>" data-action= "mouseover->wps-result#displayName mouseout->wps-result#hideName" data-bs-toggle="tooltip" data-bs-placement="top" title="Générer un plan de travail">
-						<i class="fa-solid fa-user-gear printer-logo auto-logo" data-bs-toggle="tooltip" data-bs-placement="top" title="Générer un plan de travail"></i>
-					</button>
+				<div class="student-name" >
+					<button
+        type="button"
+        class="--bgc-transparent student-result-name"
+        data-bs-toggle="modal"
+        data-bs-target="#staticBackdrop-student-<%=student.id%>"
+        data-controller="tooltip"
+        data-bs-toggle="tooltip"
+        data-bs-placement="right"
+        title="Générer le prochain Plan de travail"
+      >
+						<i class="fa-solid fa-user-gear printer-logo auto-logo"></i>
 					<%# model for auto gen %>
 					<%# END of autogen%>
 					<%= link_to student.first_name.capitalize, student_path(student) %>
@@ -30,50 +36,9 @@
 			<%= render 'classroom_domain_results' %>
 		</div>
 	</div>
-	<%# model for auto gen %>
+	<%# modals for auto gen %>
 	<%@students_list.each do |student|  %>
-		<div class="modal fade"  id="staticBackdrop-<%=student.id%>" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-			<%= simple_form_for student, url:student_auto_new_wp_path(student), method: :post, html:{target:"_blank", data:{addstudenttoautogen_target:'form' } } do |form|%>
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="staticBackdropLabel" data-addstudenttoautogen-target="text">
-								Déselectionner les domaines non souhaités pour
-								<%= student.first_name.capitalize %>
-							</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
-						<div class="modal-body">
-							<div class="cloning-classroom-card" >
-								<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-									<div class="domain-checkbox" >
-                  <%# test manual form %>
-                    <input type="hidden" name="student[domains][]" value="">
-                    <%@domains.each do |domain| %>
-                      <div class="tag-item">
-                        <input class="check_boxes required tag-selector" item_wrapper_class="tag-item"
-                          required="required" aria-required="true" type="checkbox"
-                          value="<%=domain%>" checked="checked" name="student[domains][]" id="<%=student.id%>_<%=domain%>">
-                        <label class="form-check-label collection_check_boxes"
-                          for="<%=student.id%>_<%=domain%>">
-                          <%=domain%>
-                        </label>
-                      </div>
-                    <% end %>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<p class="--grisC w-100"> <em>La plan de travail s'ouvrira dans un nouvel onglet</em></p>
-							<button type="button" class="btn btn-secondary --border-10px" data-bs-dismiss="modal">X</button>
-							<%= form.submit 'Valider', class: 'btn btn-secondary --bgc-vert --borderc-vert --border-15px', data: { bs_dismiss:"modal" }%>
-							<%# <button type="button" class="btn btn-secondary --bgc-vert --borderc-vert ">Valider</button> %>
-						</div>
-					</div>
-				</div>
-			<% end %>
-		</div>
+			<%= render 'auto_gen_form', student:student, domains: @domains %>
 	<% end %>
 	<%# <% end %>
 	<%# END of autogen %>

@@ -15,8 +15,9 @@ class Student < ApplicationRecord
     classroom.grade
   end
 
+
   def all_domains_from_student
-    WorkPlanDomain::DOMAINS[classroom.grade.grade_level]
+    grade.domains
   end
 
   def belt_status(domain, level)

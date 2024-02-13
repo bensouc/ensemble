@@ -1,28 +1,19 @@
-<div data-controller="loadingspinnermgnt">
-  <div class="">
-    <%# <%case @student.classroom.grade.grade_level %>
-    <%# <%when "CE1" %>
-    <%= render "student_results" %>
-    <%# <% end %>
-  </div>
-</div>
-<%# revoir les constantes, à envoyer depuis le controller %>
-<!-- Modal select domains on auto gen-->
+		<!-- Modal select domains on auto gen-->
 <div
   class="modal fade"
-  id="staticBackdrop"
+  id="staticBackdrop-student-<%=student.id%>"
   data-bs-backdrop="static"
   data-bs-keyboard="false"
   tabindex="-1"
   aria-labelledby="staticBackdropLabel"
   aria-hidden="true"
 >
-  <%= simple_form_for student_auto_new_wp_path(@student), method: :post, html:{target:"_blank"} do |form| %>
+  <%= simple_form_for  student, url:student_auto_new_wp_path(student), method: :post, html:{target:"_blank"} do |form| %>
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="staticBackdropLabel">Déselectionner les domaines non souhaités pour
-            <%= @student.first_name.capitalize %>
+            <%= student.first_name.capitalize %>
           </h5>
           <button
             type="button"
@@ -41,7 +32,7 @@
               <div class="domain-checkbox" data-controller='checkboxes'>
                 <%= form.input_field :domains,
                                  # collection: classroom.students.order(first_name: :asc),
-                                 collection: @domains,
+                                 collection: domains,
                                  # label_method: ,
                                  value_method: lambda { |domain| domain.id },
                                  multiple: true,
@@ -54,7 +45,7 @@
                                  class: "tag-selector",
                                  item_wrapper_class: "tag-item",
                                  required: true,
-                                 checked: @domains %>
+                                 checked: domains %>
               </div>
             </div>
           </div>

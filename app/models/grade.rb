@@ -2,10 +2,9 @@ class Grade < ApplicationRecord
   belongs_to :school
   has_many :classrooms, dependent: :destroy
   has_many :work_plans, dependent: :destroy
-  # has_many :domains, dependent: :destroy
-  has_many :belts, dependent: :destroy
-  has_many :skills, dependent: :destroy
+  has_many :domains, dependent: :destroy
   has_many :students, through: :classrooms, source: "students", dependent: :destroy
+  has_many :skills, through: :domains
 
   validates :grade_level, presence: true, inclusion: Classroom::GRADE
   validates :name,  presence: true,
@@ -17,6 +16,7 @@ class Grade < ApplicationRecord
   def self.find_grade_by_school_and_grade_level(school, grade_level)
     Grade.find_by(grade_level:, school:)
   end
+
 
   private
 

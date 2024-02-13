@@ -28,15 +28,13 @@
               } %>
     </div>
     <div class="d-none">
-      <%# hideen input %>
-      <%= f.association :grade, label: false, required: :true %>
-      <%= f.input :domain, label: false, required: :true %>
+      <%= f.association :domain, label: false, required: :true %>
       <%= f.input :level, label: false, required: :true %>
     </div>
     <div>
       <%# here comes the submit %>
       <% tb_frame_id =
-        skill.id.nil? ? "#{skill.domain}_#{skill.level}" : "skill_#{skill.id}" %>
+        skill.id.nil? ? "#{skill.domain.id}_#{skill.level}" : "skill_#{skill.id}" %>
       <%= f.submit "Ok",
                class: "area rect-sm btn-valid skill-submit",
                data: {

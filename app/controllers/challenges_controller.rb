@@ -1,17 +1,19 @@
 # frozen_string_literal: true
+
 # rubocop:disable Metrics/ClassLength
 # rubocop:disable Metrics/CyclomaticComplexity
 
 class ChallengesController < ApplicationController
   before_action :set_work_plan_skill, only: [:clone, :display_challenges] # , :update, :show]
   before_action :set_challenge, only: [:clone, :update, :display_challenges, :show, :edit, :destroy]
+  skip_after_action :verify_policy_scoped, only: [:index]
 
   def index
     # binding.pry
     redirect_to classrooms_path if current_user.classrooms.empty? && current_user.shared_classrooms.empty?
-    # "/challenges"=>{"grade"=>"CE2", "domain"=>"Conjugaison", "level"=>"1", "skills"=>"11067"}
+    # "/challenges"=>{"grade"=>"CE2", "domain"=>"26", "level"=>"1", "skills"=>"11067"}
     set_filters
-    challenges = policy_scope(Challenge)
+    challenges = Challenge.joins(:skill).where(skills: { id: @skills.map(&:id) })
     # binding.pry
     @challenges = challenges.select do |challenge|
       challenge.skill.domain == @domain &&
@@ -150,18 +152,18 @@ class ChallengesController < ApplicationController
     @grades = current_user.classroom_grades
     if params["/challenges"].blank?
       @grade = @grades.first
-      @domains = @grade.nil? ? nil : WorkPlanDomain::DOMAINS[@grade.grade_level]
+      @domains = @grade.nil? ? nil : @grade.domains
       @level = 1
       @domain = @domains.first unless @domains.nil?
     else
-      @grade = Grade.find(params.require("/challenges").permit(:grade, :level, :domain)[:grade])
-      @domains = WorkPlanDomain::DOMAINS[@grade.grade_level]
+      @grade = Grade.find(params.require("/challenges").permit(:grade)[:grade])
+      @domains = @grade.domains
       @level = params.require("/challenges").permit(:grade, :level, :domain)[:level]
-      @domain = params.require("/challenges").permit(:grade, :level, :domain)[:domain]
+      @domain = Domain.find(params.require("/challenges").permit(:grade, :level, :domain)[:domain])
       # @skill = Skill.find(params.require("/challenges").permit(:skills)[:skills])
       # skill_id = params.require("/challenges").permit(:grade, :level, :domain)[:skills].to_i
     end
-    @skills = Skill.where(grade: @grade, domain: @domain, level: @level, school: current_user.school)
+    @skills = Skill.where(domain: @domain, level: @level)
   end
 
   def set_challenge_params

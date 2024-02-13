@@ -18,29 +18,34 @@ class WorkPlanDomain < ApplicationRecord
 
   DOMAINS_SPECIALS = ["Géométrie", "Grandeurs et Mesures"].freeze
 
+  # ASSOCIATIONS
   belongs_to :work_plan
   # belongs_to :student, optional: true
-
+  belongs_to :domain
   has_one :student, through: :work_plan
+
+  # VALIDATIONS
+  has_many :work_plan_skills, dependent: :destroy
+  accepts_nested_attributes_for :work_plan_skills
+  validates :level, presence: true, inclusion: { in: LEVELS }
 
   # def student
   #   return work_plan.student if association(:work_plan).loaded?
 
   #   super
   # end
-
+  # METHODS
   def specials?
     # binding.pry
-    work_plan.grade.school.special_domains? && domain.in?(DOMAINS_SPECIALS) && work_plan.grade.grade_level != "CM2"
+    domain.specials?
   end
 
-  has_many :work_plan_skills, dependent: :destroy
-  accepts_nested_attributes_for :work_plan_skills
-
-  validates :level, presence: true, inclusion: { in: LEVELS }
-
   def all_domain_skills(user)
-    Skill.for_school(user.school).where(domain:, level:, grade: work_plan.grade)
+    Skill.where(domain:, level:,school: user.school )
+  end
+
+  def name
+    domain.name
   end
 
   def self.add_wps_completed(skills, work_plan_domain, special_work_plan)
@@ -54,9 +59,8 @@ class WorkPlanDomain < ApplicationRecord
         kind: "ceinture"
       )
       last_work_plan_skill = work_plan_skill
-      # validate BElt?
-      # raise
-      if WorkPlanDomain::DOMAINS_SPECIALS.include?(work_plan_domain.domain) && skill.grade.grade_level != "CM2"
+
+      if work_plan_domain.domain.special?
         Belt.special_newbelt(work_plan_skill, special_work_plan)
         last_work_plan_skill = nil
         # BMO TO be rethinkg to get result from method
@@ -64,7 +68,6 @@ class WorkPlanDomain < ApplicationRecord
         belt = Belt.find_or_create_by(
           { student_id: special_work_plan.student.id,
             domain: work_plan_domain.domain,
-            grade: skill.grade,
             level: skill.level }
         )
         belt.completed = true
