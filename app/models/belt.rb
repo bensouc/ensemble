@@ -74,7 +74,7 @@ class Belt < ApplicationRecord
   def all_skills(user)
     Skill.for_school(user.school).where(level:, grade:, domain:)
   end
-
+# TO BE RESTORE
   # def grade
   #   domain.grade
   # end
@@ -95,8 +95,7 @@ class Belt < ApplicationRecord
     count = work_plan_skill.work_plan_domain.all_skills_completed_count
     args = {
       student_id: work_plan_skill.student.id,
-      domain: work_plan_skill.work_plan_domain.domain,
-      grade: work_plan.grade,
+      domain: work_plan_skill.work_plan_domain.domain
     }
     Belt.create_new_special_belt(args, count, work_plan_skill)
     # raise
