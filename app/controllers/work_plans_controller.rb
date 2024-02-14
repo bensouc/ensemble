@@ -83,15 +83,17 @@ class WorkPlansController < ApplicationController
   end
 
   def evaluation
+    # binding.pry
     @work_plan = WorkPlan.find(params[:id])
     authorize @work_plan
-    @domains = @work_plan.all_domains_from_work_plan
+    @domains = @work_plan.grade.domains
     @previous = []
-    @wpds = WorkPlanDomain.includes([:work_plan_skills]).where(work_plan: @work_plan)
+    @student =@work_plan.student
+    @wpds = @work_plan.work_plan_domains
     @wpds.each do |wpd|
       wpd.work_plan_skills.each do |wps|
         # last_4_wps = WorkPlanSkill.where(student: @work_plan.student, skill: wps.skill_id).sort_by(&:created_at).reverse[1..3]
-        last_4_wps = WorkPlanSkill.last_4_wps(@work_plan, wps, @work_plan.student)
+        last_4_wps = WorkPlanSkill.last_4_wps(@work_plan, wps, @student)
         @previous << [wps.skill_id, last_4_wps]
       end
     end
@@ -219,13 +221,7 @@ class WorkPlansController < ApplicationController
       # Check if the WorkPlanDomain has any specials and if the work plan grade is not "CM2"
       # if wpd.specials? && @work_plan.grade != "CM2"
       if domain.special?
-        puts "CEST ICIICI QUE CA CHIEEEE"
-        puts "CEST ICIICI QUE CA CHIEEEE"
-        puts "CEST ICIICI QUE CA CHIEEEE"
-        puts "CEST ICIICI QUE CA CHIEEEE"
-        p domain
-        puts "CEST ICIICI QUE CA CHIEEEE"
-        puts "CEST ICIICI QUE CA CHIEEEE"
+
         # Set the WorkPlanDomain's level to 1 and save it
         wpd.level = 1
         wpd.save

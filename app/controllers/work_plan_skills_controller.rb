@@ -97,7 +97,6 @@ class WorkPlanSkillsController < ApplicationController
       {
         student_id: @work_plan_skill.student.id,
         domain: @work_plan_skill.work_plan_domain.domain,
-        grade: @work_plan.grade,
         level: @work_plan_skill.work_plan_domain.level,
       }
     )

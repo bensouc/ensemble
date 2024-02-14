@@ -1,9 +1,9 @@
-  <%@domains.each do |work_plan_domains|%>
-  <% wpd2 = work_plan.work_plan_domains.where(domain: "#{work_plan_domains}")%>
-  <% unless wpd2.empty? %>
-    <%wpd2.order(:level).each do |work_plan_domain|%>
-      <%# boucle sur les work_plan_domains %>
-      <%= render 'eval_mobile_domain', work_plan_domain: work_plan_domain%>
-    <%end%>
-  <% end %>
+	<%@domains.each do |domain|%>
+	<% wpd2 = @wpds.select {|wpd|wpd.domain ==domain}%>
+	<% unless wpd2.empty? %>
+		<%wpd2.sort_by{ |wpd|wpd.level }.each do |work_plan_domain|%>
+			<%# boucle sur les work_plan_domains %>
+			<%= render 'eval_mobile_domain', work_plan_domain: work_plan_domain%>
+		<%end%>
+	<% end %>
 <% end %>
