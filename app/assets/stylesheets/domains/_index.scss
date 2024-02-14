@@ -1,15 +1,15 @@
-.domains-list {
+#domains_list {
   display: flex;
   flex-direction: row;
   gap: 10px;
   flex-wrap: wrap;
   padding: 15px;
-  justify-content: space-around;
+  justify-content: flex-start;
 }
 .domain-box {
   display: flex;
   align-items: center;
-  height: 36px;
+  height: 44px;
   padding: 5px 10px;
   border: thin solid $rose;
   border-radius: 1rem;
@@ -19,4 +19,37 @@
   i {
     color: $roseL;
   }
+  &.form-domain-btn{
+    width: 14rem;
+  }
+}
+.domain-form-box{
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 5px 10px;
+  border: thin solid $rose;
+  border-radius: 1rem;
+  color: $roseL;
+  margin-bottom: 5px;
+  a,
+  i {
+    color: $green;
+    font-size: 1.5rem;
+  }
+  &.form-domain-btn{
+    width: 21rem;
+  }
+}
+.domain-form{
+  .input{
+    width: 30ch;
+  }
+  .form-control{
+    border-radius: 15px;
+  }
+      width: 28ch !important;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
