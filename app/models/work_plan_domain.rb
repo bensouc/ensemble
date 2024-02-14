@@ -37,7 +37,7 @@ class WorkPlanDomain < ApplicationRecord
   # METHODS
   def specials?
     # binding.pry
-    domain.specials?
+    domain.special?
   end
 
   def all_domain_skills(user)
