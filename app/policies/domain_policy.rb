@@ -10,6 +10,10 @@ class DomainPolicy < ApplicationPolicy
   def create?
     user.admin? || record.grade.school == user.school
   end
+
+  def destroy?
+    user.admin? || record.grade.school == user.school
+  end
     def update?
     user.admin? || record.grade.school == user.school
   end
