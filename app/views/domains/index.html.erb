@@ -1,0 +1,32 @@
+<div class="container3">
+	<p>Ecole <%= current_user.school.name %></p>
+	<h2>Gérer vos domaines pour le niveau <%= @grade.name %></h2>
+	<%= turbo_frame_tag "domains_index" do%>
+		<div class="domains-list">
+			<% @domains.each do |domain| %>
+				<%=  turbo_frame_tag dom_id(domain) do%>
+					<div class="domain-box" >
+						<%= link_to  edit_domain_path(domain) do%>
+							<i class="fas fa-pen fa-xs me-2" ></i>
+						<% end %>
+						<%= domain.name %>
+						<%= button_to domain_path(domain), method: :delete,
+            class: '--bgc-transparent p-0',
+            data: {confirm: "Voulez vous Supprimer Ce Plan de Travail?"} do%>
+							<i class="fa-solid fa-circle-xmark ms-2
+"></i>
+						<% end %>
+					</div>
+				<% end %>
+			<% end %>
+			<%=  %>
+			<%= turbo_frame_tag "new_domain" do%>
+				<%= link_to  new_grade_domain_path(@grade, @domain) do%>
+					<div class="domain-box --bgc-rose --blanc ">
+						Ajouter une compétence
+					</div>
+				<% end %>
+			<% end %>
+		</div>
+	<% end %>
+</div>

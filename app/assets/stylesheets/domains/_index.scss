@@ -1,0 +1,22 @@
+.domains-list {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 15px;
+  justify-content: space-around;
+}
+.domain-box {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 5px 10px;
+  border: thin solid $rose;
+  border-radius: 1rem;
+  color: $roseL;
+  margin-bottom: 5px;
+  a,
+  i {
+    color: $roseL;
+  }
+}
