@@ -12,64 +12,73 @@
 		<div class='skill-school-name'>(<%= @grade.school.name.capitalize %>)</div>
 	</div>
 	<%= turbo_frame_tag "skills_list" do %>
-		<div  class="skills-classroom-level-card"
+		<% if @domain.nil? %>
+    <%= render 'domains/domains_list', grade: @grade, domain: @domain  %>
+		<% else %>
+			<div  class="skills-classroom-level-card"
       data-controller='allskilldisplay'
       >
-			<div class="skills">
-				<% @domains.each do |domain| %>
-					<%= link_to "skills?grade=#{@grade.id}&domain=#{domain.id}", data:{action:'loading-spinner2#displayLoadingSpinner'} do %>
-						<div class="domain-tab <%='active' if domain == @domain%>">
-							<%= domain.name %>
+				<div class="skills">
+					<% @domains.each do |domain| %>
+						<%= link_to "skills?grade=#{@grade.id}&domain=#{domain.id}", data:{action:'loading-spinner2#displayLoadingSpinner'} do %>
+							<div class="domain-tab <%='active' if domain == @domain%>">
+								<%= domain.name %>
+							</div>
+						<% end %>
+					<% end %>
+					<%= link_to grade_domains_path(@grade), data:{action:'loading-spinner2#displayLoadingSpinner'} do %>
+						<div class="domain-tab active">
+							<i class="fas fa-pen fa-xs me-2" ></i> Editer les domaines
 						</div>
 					<% end %>
-				<% end %>
-			</div>
-			<div class="all-skills">
-				<div class="skill_level-selectors">
-					<% for skill_level in (1..7) do%>
-						<div class="skill_level-selector <%='active' if skill_level == 1%>"  data-level="<%=skill_level%>"
+				</div>
+				<div class="all-skills">
+					<div class="skill_level-selectors">
+						<% for skill_level in (1..7) do%>
+							<div class="skill_level-selector <%='active' if skill_level == 1%>"  data-level="<%=skill_level%>"
         data-action="click->allskilldisplay#displaySkills"
-							data-allskilldisplay-target="leveltBtn">
-							<i class=" fas fa-bacon belt-<%= skill_level %> font-weight-bold"></i>
-						</div>
-					<% end %>
-					<%# upload skills list unless user demo %>
-					<% if current_user.demo? %>
-						<div class="skill_level-selector" onclick='alert("Non disponible en Mode Démo")'
+								data-allskilldisplay-target="leveltBtn">
+								<i class=" fas fa-bacon belt-<%= skill_level %> font-weight-bold"></i>
+							</div>
+						<% end %>
+						<%# upload skills list unless user demo %>
+						<% if current_user.demo? %>
+							<div class="skill_level-selector" onclick='alert("Non disponible en Mode Démo")'
           data-controller="tooltip"
           data-bs-toggle="tooltip" data-bs-placement="right"
           title="Télécharger la liste des compétences"
         >
-							<i class="fa-solid fa-file-excel --vert"></i>
-						</div>
-					<% else %>
-						<%= link_to skills_path(grade: @grade, format: :xlsx), data:{
+								<i class="fa-solid fa-file-excel --vert"></i>
+							</div>
+						<% else %>
+							<%= link_to skills_path(grade: @grade, format: :xlsx), data:{
           controller:"tooltip",
           bs_toggle:"tooltip",
           bs_placement:"right"},
           title:"Télécharger la liste des compétences" do %>
-							<div class="skill_level-selector">
-								<i class="fa-solid fa-file-excel --vert"></i>
-							</div>
+								<div class="skill_level-selector">
+									<i class="fa-solid fa-file-excel --vert"></i>
+								</div>
+							<% end %>
 						<% end %>
-					<% end %>
-				</div>
-				<div class="skills-boxe"
+					</div>
+					<div class="skills-boxe"
 				data-domain='<%=@domain.name%>'
 				data-allskilldisplay-target='domainCard'>
-					<%# <% domain = WorkPlanDomain::DOMAINS[@grade].first %>
-					<% for skill_level in (1..7) do %>
-						<% skills = @skills.select {|skill| skill.level == skill_level}.sort %>
-						<div class="skills-display <%= 'd-none' unless skill_level == 1 %>"
+						<%# <% domain = WorkPlanDomain::DOMAINS[@grade].first %>
+						<% for skill_level in (1..7) do %>
+							<% skills = @skills.select {|skill| skill.level == skill_level}.sort %>
+							<div class="skills-display <%= 'd-none' unless skill_level == 1 %>"
           data-allskilldisplay-target='levelSkillCard'
           data-grade='<%=@grade.name%>'
           data-level='<%=skill_level%>'
           data-loading-spinner2-target='content'>
-							<%= render 'all_skills_by_domain_level', skills: skills, domain: @domain, level: skill_level,grade: @grade %>
-						</div>
-					<% end %>
+								<%= render 'all_skills_by_domain_level', skills: skills, domain: @domain, level: skill_level,grade: @grade %>
+							</div>
+						<% end %>
+					</div>
 				</div>
 			</div>
-		</div>
+		<% end %>
 	<% end %>
 </div>
