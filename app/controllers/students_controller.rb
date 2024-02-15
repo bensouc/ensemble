@@ -8,7 +8,7 @@ class StudentsController < ApplicationController
     @all_skills_and_last_wps = []
     @belts_specials_count = []
     @student_grade = @student.classroom.grade
-    @domains = @student.all_domains_from_student
+    @domains = @student.all_domains_from_student.sort_by(&:position)
     @student_skills = @student_grade.skills
     @belts = Belt.where(student: @student)
     @belts = @belts.select(&:completed)

@@ -13,7 +13,7 @@ class SkillsController < ApplicationController
       format.xlsx do
         grade = Grade.includes([:domains,:skills]).find(params[:grade])
         skills = grade.skills
-        domains = grade.domains
+        domains = grade.domains.sort_by(&:position)
         school = current_user.school
         response.headers["Content-Disposition"] = 'attachment; filename="my_new_filename.xlsx"'
         package = Xlsx.skills_generate_xlsx_file(school, grade, domains, skills)
@@ -81,7 +81,8 @@ class SkillsController < ApplicationController
     domain_query = params[:domain]
     @school = current_user.school
     @grade = grade_query.nil? ? @grades.first : Grade.find(grade_query)
-    @domains = @grade.domains
+    @domains = @grade.domains.sort_by(&:position)
+    # binding.pry
     @domain = domain_query.nil? ? @domains.first : Domain.find(domain_query)
     # @skills = policy_scope(Skill)
     # @are_special_domains = current_user.school.special_domains?

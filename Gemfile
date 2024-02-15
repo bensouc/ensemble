@@ -60,6 +60,9 @@ gem "simple_form"
 gem "rails-i18n"
 gem "bootstrap", "~> 5.2"
 
+# act_as_list help manage list
+gem 'acts_as_list', '~> 0.7.2'
+gem 'requestjs-rails' #help for simple JS http resquest
 # xlsx spreadsheet generation
 gem "caxlsx"
 gem "caxlsx_rails"

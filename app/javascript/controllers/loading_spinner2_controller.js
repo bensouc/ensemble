@@ -5,7 +5,7 @@ export default class extends Controller {
   static targets = ["content"]
 
   connect() {
-    console.log('spinner 2  controller connected');
+    // console.log('spinner 2  controller connected');
   }
   displayLoadingSpinner() {
     this.contentTargets.forEach(element => {

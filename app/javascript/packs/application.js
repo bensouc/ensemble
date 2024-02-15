@@ -26,6 +26,7 @@ import "bootstrap";
 import 'rails_admin';
 import "@hotwired/turbo-rails";
 import { initFlatpickr } from "../plugins/flatpickr";
+import "@rails/request.js"
 // # STRIPE SWITCH OFF
 // import '@stripe/stripe-js';
 // import { displayQuote } from "../plugins/quote.js";

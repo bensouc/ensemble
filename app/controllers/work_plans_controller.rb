@@ -86,7 +86,7 @@ class WorkPlansController < ApplicationController
     # binding.pry
     @work_plan = WorkPlan.find(params[:id])
     authorize @work_plan
-    @domains = @work_plan.grade.domains
+    @domains = @work_plan.grade.domains.sort_by(&:position)
     @previous = []
     @student =@work_plan.student
     @wpds = @work_plan.work_plan_domains
@@ -107,7 +107,7 @@ class WorkPlansController < ApplicationController
     @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.with_associations.find(params[:id])
     @work_plan_domains = @work_plan.work_plan_domains
-    @domains = Domain.where(grade: @work_plan.grade)
+    @domains = Domain.where(grade: @work_plan.grade).sort_by(&:position)
     authorize @work_plan
     # raise
     # @domains = @work_plan_domains.map{|wpd| wpd.domain}
