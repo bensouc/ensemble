@@ -9,6 +9,10 @@ class DomainPolicy < ApplicationPolicy
     user.admin? || record.grade.school == user.school
   end
 
+  def move?
+    user.admin? || record.grade.school == user.school
+  end
+
 
   def create?
     user.admin? || record.grade.school == user.school

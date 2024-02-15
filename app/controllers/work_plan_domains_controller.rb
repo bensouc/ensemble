@@ -9,10 +9,11 @@ class WorkPlanDomainsController < ApplicationController
   def new
     @work_plan = WorkPlan.find(params_wp_id)
     authorize @work_plan
-    @domains = @work_plan.grade.domains
+    @domains = @work_plan.grade.domains.sort_by(&:position)
   end
 
   def create
+    binding.pry
     @work_plan = WorkPlan.find(params_wp_id)
     authorize @work_plan
     @domain = Domain.find(work_plan_domain_params[:domain])

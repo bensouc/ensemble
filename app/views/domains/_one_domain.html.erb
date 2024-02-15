@@ -1,4 +1,4 @@
-<%=  turbo_frame_tag dom_id(domain) do%>
+<%=  turbo_frame_tag dom_id(domain), data:{id: domain.id} do%>
 	<div class="domain-box" >
 		<%= link_to  edit_domain_path(domain) do%>
 			<i class="fas fa-pen fa-xs me-2" ></i>

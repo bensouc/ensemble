@@ -2,7 +2,7 @@
 
 class DomainsController < ApplicationController
   skip_after_action :verify_policy_scoped, only: [:index]
-  before_action :set_domain, only: [:show,:edit, :destroy, :update]
+  before_action :set_domain, only: [:show,:edit, :destroy, :update, :move]
 
   def index
     @grade = Grade.find(params[:grade_id])
@@ -67,6 +67,12 @@ class DomainsController < ApplicationController
     end
   end
 
+  def move
+    authorize @domain
+    # binding.pry
+    @domain.insert_at(params[:position].to_i)
+  end
+
   private
 
   def set_domain
@@ -76,4 +82,8 @@ class DomainsController < ApplicationController
   def set_params
     params.require(:domain).permit(:grade_id, :name)
   end
+
+  # def set_position
+  #   params.require
+  # end
 end

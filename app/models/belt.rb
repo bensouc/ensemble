@@ -74,10 +74,10 @@ class Belt < ApplicationRecord
   def all_skills(user)
     Skill.for_school(user.school).where(level:, grade:, domain:)
   end
-# TO BE RESTORE
-  # def grade
-  #   domain.grade
-  # end
+
+  def grade
+    domain.grade
+  end
 
 # =================================================
   # CLASS METHODS

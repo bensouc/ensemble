@@ -70,6 +70,8 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
+    acts_as_list (0.7.7)
+      activerecord (>= 3.0)
     addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
@@ -301,6 +303,8 @@ GEM
       io-console (~> 0.5)
     request_store (1.5.1)
       rack (>= 1.4)
+    requestjs-rails (0.0.11)
+      railties (>= 6.1.0)
     responders (3.1.0)
       actionpack (>= 5.2)
       railties (>= 5.2)
@@ -429,6 +433,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  acts_as_list (~> 0.7.2)
   autoprefixer-rails (= 10.2.5)
   bootsnap (>= 1.4.2)
   bootstrap (~> 5.2)
@@ -466,6 +471,7 @@ DEPENDENCIES
   rails-i18n
   rails_admin (~> 3.0)
   redis (~> 4.0)
+  requestjs-rails
   rspec-rails
   rubocop-rails
   sassc-rails
