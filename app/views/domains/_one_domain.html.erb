@@ -6,7 +6,8 @@
 		<%= domain.name %>
 		<%= button_to domain_path(domain), method: :delete,
             class: '--bgc-transparent p-0',
-            data: {confirm: "Voulez vous Supprimer Ce Plan de Travail?"} do%>
+            data: {confirm: "Voulez-vous supprimer ce domaine ?
+Vous supprimerez tous les exercices, compétences et évaluations liés à ce domaine."} do%>
 			<i class="fa-solid fa-circle-xmark ms-2"></i>
 		<% end %>
 	</div>

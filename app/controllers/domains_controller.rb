@@ -63,6 +63,7 @@ class DomainsController < ApplicationController
                                   partial: "domains/one_domain",
                                   locals: { domain: @domain })
                             }
+      end
     end
   end
 
