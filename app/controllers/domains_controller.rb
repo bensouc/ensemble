@@ -56,7 +56,13 @@ class DomainsController < ApplicationController
         format.turbo_stream
       end
     else
-      redirect_to grade_domains_path(@grade), notice: "La suppression du domaine a échoué"
+      respond_to do |format|
+        format.html { redirect_to grade_domains_path(@grade), notice: "La suppression du domaine a échoué" }
+        format.turbo_stream { render turbo_stream:
+                                turbo_stream.replace(@domain,
+                                  partial: "domains/one_domain",
+                                  locals: { domain: @domain })
+                            }
     end
   end
 
