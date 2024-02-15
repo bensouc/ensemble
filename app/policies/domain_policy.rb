@@ -5,6 +5,9 @@ class DomainPolicy < ApplicationPolicy
     #   scope.all
     # end
   end
+  def show?
+    user.admin? || record.grade.school == user.school
+  end
 
 
   def create?

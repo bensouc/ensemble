@@ -26,8 +26,8 @@ class DomainsController < ApplicationController
   end
 
   def create
-    @grade = Grade.find(params[:grade_id])
     @domain = Domain.new(set_params)
+    @grade = @domain.grade
     authorize(@domain)
     @domain.save
     respond_to do |format|
