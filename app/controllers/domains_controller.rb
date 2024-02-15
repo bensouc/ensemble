@@ -2,7 +2,7 @@
 
 class DomainsController < ApplicationController
   skip_after_action :verify_policy_scoped, only: [:index]
-  before_action :set_domain, only: [:edit, :destroy, :update]
+  before_action :set_domain, only: [:show,:edit, :destroy, :update]
 
   def index
     @grade = Grade.find(params[:grade_id])
@@ -13,6 +13,10 @@ class DomainsController < ApplicationController
     @grade = Grade.find(params[:grade_id])
     @domain = Domain.new(grade: @grade)
 
+    authorize(@domain)
+  end
+
+  def show
     authorize(@domain)
   end
 

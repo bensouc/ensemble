@@ -1,13 +1,23 @@
 <div class="domain-form-box form-domain-btn" >
-	<%= simple_form_for [domain], html: { novalidate: false } do  |f| %>
+	<%= simple_form_for [grade, domain], html: { novalidate: false } do  |f| %>
 		<div class="domain-form
 ">
-			<%= f.input :name, label: false, required: true,class: '--bgc-transparent' %>
+			<%= f.input :name, label: false, required: true,class: '--bgc-transparent',
+      placeholder: 'Nom du domaine' %>
 			<div class="d-none">
 				<%= f.association :grade, value:grade%>
 			</div>
 			<%= button_tag type: 'submit', class: '--bgc-transparent' do %>
 				<i class="fa-solid fa-circle-check"></i>
+			<% end %>
+			<% if domain.persisted? %>
+				<%= link_to domain_path(domain),  class: '--bgc-transparent ' do %>
+					<i class="fa-solid fa-circle-xmark --grisC"></i>
+				<% end %>
+			<% else%>
+				<%= link_to grade_domains_path(grade),  class: '--bgc-transparent ' do %>
+					<i class="fa-solid fa-circle-xmark --grisC"></i>
+				<% end %>
 			<% end %>
 		</div>
 	<% end %>

@@ -90,7 +90,7 @@ Rails.application.routes.draw do
     resources :domains, only: [:new,:create,:index]
   end
   # ###############    routes for DOMAINS         ###############
-  resources :domains, only: [:edit,:update,:destroy]
+  resources :domains, only: [:show,:edit,:update,:destroy]
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
