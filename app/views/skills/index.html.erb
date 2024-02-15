@@ -23,6 +23,11 @@
 						</div>
 					<% end %>
 				<% end %>
+				<%= link_to grade_domains_path(@grade), data:{action:'loading-spinner2#displayLoadingSpinner'} do %>
+					<div class="domain-tab active">
+						<i class="fas fa-pen fa-xs me-2" ></i> Editer les domaines
+					</div>
+				<% end %>
 			</div>
 			<div class="all-skills">
 				<div class="skill_level-selectors">

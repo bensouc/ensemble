@@ -1,5 +1,6 @@
-<div class="container3">
 	<p>Ecole <%= current_user.school.name %></p>
+<%= turbo_frame_tag "skills_list" do%>
+<div class="container3 mt-3">
 	<h2>Gérer vos domaines pour le niveau <%= @grade.name %></h2>
 	<%= turbo_frame_tag "domains_index" do%>
 
@@ -24,3 +25,4 @@
 		<%= render 'add_domain', grade: @grade %>
 	<% end %>
 </div>
+<% end %>
