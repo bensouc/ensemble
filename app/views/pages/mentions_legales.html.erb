@@ -1,0 +1,50 @@
+<div class="container m-5">
+	<h2>Mentions légales du site www.app-ensemble.fr :</h2>
+	<br>
+	<h3>Identité</h3>
+	<ul class='ms-2'>
+		<li>Nom de l'entreprise : VroadStudio</li>
+		<li>Statut juridique : Autoentreprise</li>
+		<li>Nom du responsable : Benoit Moret</li>
+		<li>Adresse : 47 rue des Frères Amieux</li>
+		<li>Adresse email: <%=mail_to "contact@vroadstudio.fr", "contact@vroadstudio.fr",
+         subject: "Ensemble : Prise de contact", target: '_blank'%></li>
+	</ul>
+	<br>
+	<h3>Hébergeur</h3>
+	<ul>
+		<li>L’hébergement du site internet est assuré par Heroku, Inc.</li>
+		<li>Hébergement :Dublin</li>
+		<li>Adresse : The Landmark @ 1 Market St., Suite 300, San Francisco, CA 94105, États-Unis.</li>
+		<li>Contact : +44 800 808-5158</li>
+	</ul>
+	<h3>Conditions d'utilisation :</h3>
+	Le contenu du site <%= link_to 'www.app-ensemble.fr', "www.app-ensemble.fr" %>
+	est protégé par les lois sur la propriété intellectuelle et les droits d'auteur. Toute reproduction ou utilisation non autorisée du contenu est interdite.
+	Responsabilité :
+	L'éditeur du site ne peut être tenu responsable des dommages directs ou indirects résultant de l'utilisation du site www.app-ensemble.fr.
+	<br>
+	<br>
+	<h3>Collecte de données :</h3>
+	Les données personnelles collectées sur ce site sont utilisées uniquement dans le cadre prévu par la loi et dans le respect de la vie privée des utilisateurs. Ces données ne sont pas transmises à des tiers sans consentement préalable.
+	<br>
+	<br>
+	<h3>Cookies :</h3>
+	Ce site peut utiliser des cookies pour améliorer l'expérience de l'utilisateur. En naviguant sur www.app-ensemble.fr, l'utilisateur accepte l'utilisation de cookies.
+	<br>
+	<br>
+	<h3>Droit applicable :</h3>
+	Le site <%= link_to 'www.app-ensemble.fr', "www.app-ensemble.fr" %> est soumis au droit français.
+	<br>
+	<br>
+	<h3>Modification des mentions légales :</h3>
+	L'éditeur se réserve le droit de modifier les présentes mentions légales à tout moment. Les utilisateurs sont invités à les consulter régulièrement.
+	Si vous constatez des informations manquantes ou des erreurs, veuillez nous contacter à l'adresse <%=mail_to "contact@vroadstudio.fr", "contact@vroadstudio.fr",
+         subject: "Ensemble : Prise de contact", target: '_blank'%>.
+  <br>
+  <br>
+	<%= link_to request.referer || root_path do%>
+		<i class="fa-solid fa-circle-arrow-left"></i>
+		Retour
+	<% end %>
+</div>

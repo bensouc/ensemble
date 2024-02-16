@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     controllers: { registrations: "registrations" }
   root to: "pages#home"
   get "/dashboard", to: "dashboard#show"
-
+  get "mentions_legales", to: "pages#mentions_legales"
   # ############### MOBILE ROUTES###############
   namespace "mobile" do
     resources :work_plans, only: [:index]
