@@ -1,5 +1,5 @@
 <div class="container3 mt-3">
-	<h2>Gérer vos domaines pour le niveau <%= grade.name %></h2>
+	<h2 class='ms-5'>Gérer vos domaines pour le niveau <%= grade.name %></h2>
 	<%= turbo_frame_tag "domains_index" do%>
 		<%= turbo_frame_tag 'domains_list', data:{controller:'drag', drag_url_value:"/domains/:id/move"} do %>
 			<% @domains.sort_by(&:position).each do |domain| %>
