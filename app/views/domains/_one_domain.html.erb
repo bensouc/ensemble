@@ -3,7 +3,7 @@
 		<%= link_to  edit_domain_path(domain) do%>
 			<i class="fas fa-pen fa-xs me-2" ></i>
 		<% end %>
-		<%= domain.name %>
+		<p class='grabbable'><%= domain.name %></p>
 		<%= button_to domain_path(domain), method: :delete,
             class: '--bgc-transparent p-0',
             data: {confirm: "Voulez-vous supprimer ce domaine ?
