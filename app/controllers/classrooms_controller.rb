@@ -129,9 +129,9 @@ class ClassroomsController < ApplicationController
   end
 
   def create_result_row(skill, students_list)
-    out = [skill.specials? ? "" : Belt::BELT_COLORS[skill.level - 1], skill.name]
+    out = [skill.special? ? "" : Belt::BELT_COLORS[skill.level - 1], skill.name]
     out << students_list.map do |student|
-      level = skill.specials? ? 0 : skill.level
+      level = skill.special? ? 0 : skill.level
       next unless @all_completed_belts.any? do |belt|
         belt.student == student && belt.domain == skill.domain && belt.level == level
       end ||

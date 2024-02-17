@@ -26,8 +26,8 @@ class Skill < ApplicationRecord
     # return a skill object
   end
 
-  def specials?
-    domain.grade.special?
+  def special?
+    domain.special?
   end
 
   def symbol_img_name

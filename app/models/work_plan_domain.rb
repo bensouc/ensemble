@@ -35,7 +35,7 @@ class WorkPlanDomain < ApplicationRecord
   #   super
   # end
   # METHODS
-  def specials?
+  def special?
     # binding.pry
     domain.special?
   end
@@ -44,9 +44,9 @@ class WorkPlanDomain < ApplicationRecord
     Skill.where(domain:, level:,school: user.school )
   end
 
-  def name
-    domain.name
-  end
+  # def name
+  #   domain.name
+  # end
 
   def self.add_wps_completed(skills, work_plan_domain, special_work_plan)
     last_work_plan_skill = nil

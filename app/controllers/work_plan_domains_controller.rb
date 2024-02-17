@@ -23,7 +23,7 @@ class WorkPlanDomainsController < ApplicationController
     @work_plan_domain.save!
     student = @work_plan.student
     # test if work_plan.grade == "CM2" no special dmoains AND no domains specials for other grades
-    # is_domain_special = (@work_plan.grade != "CM2" && @work_plan_domain.specials?)
+    # is_domain_special = (@work_plan.grade != "CM2" && @work_plan_domain.special?)
     is_domain_special = @domain.special?
     is_belt_validated = student.nil? ? false : student.belt_status(@work_plan_domain.domain, @work_plan_domain.level)
     if is_domain_special
