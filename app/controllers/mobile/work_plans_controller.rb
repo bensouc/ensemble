@@ -26,7 +26,7 @@ class Mobile::WorkPlansController < ApplicationController
     # @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
     authorize @work_plan
-    @domains = @work_plan.grade.domains
+    @domains = @work_plan.grade.domains.sort_by(&:position)
     @previous = []
     @student =@work_plan.student
     @wpds = @work_plan.work_plan_domains
