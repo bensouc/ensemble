@@ -16,6 +16,9 @@ class WorkPlanSkill < ApplicationRecord
 
   #   work_plan_domain.work_plan.student
   # end
+  def completed?
+    completed == true
+  end
 
   def special_wps?
     work_plan_domain.work_plan.special_wps

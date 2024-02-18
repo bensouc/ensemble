@@ -18,7 +18,7 @@
 						<div class="classroom-right-data-results" >
 							<% @students_list.each do |student| %>
 								<div class="result-cell" data-controller='classroom-add-wps' data-classroom-add-wps-target='wpsBox'>
-                  <%# binding.pry if student.id ==393 %>
+									<%# binding.pry if student.id ==393 %>
 									<% if !(belt_on_level.select{ |belt| belt.student == student}.empty?) && !@special_domain%>
 										<%#If special domain true ou ceinture  %>
 										<i class="fa-solid fa-circle-check --vert"></i>
@@ -39,7 +39,9 @@
 												</div>
 											</div>
 										<% else %>
-											<i class="fa-solid fa-circle-check --vert"></i>
+											<% if wps.completed?%>
+												<i class="fa-solid fa-circle-check --vert"></i>
+											<% end %>
 										<% end %>
 									<% else %>
 										<%= render 'results_add_wps_completed',student: student, skill: skill%>
