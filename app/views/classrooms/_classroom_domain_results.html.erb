@@ -21,7 +21,7 @@
 									<%# binding.pry if student.id ==393 %>
 									<% if (!belt_on_level.select{ |belt| belt.student == student}.empty?) && !@special_domain%>
 										<%#If special domain true ou ceinture  %>
-										<i class="fa-solid fa-circle-check --vert"></i>
+										<i class="fa-solid fa-circle-check "></i>
 									<% elsif !(@all_completed_work_plan_skills.nil? || @all_completed_work_plan_skills[student.id.to_s].nil? || @all_completed_work_plan_skills[student.id.to_s].find{|wps| wps.skill == skill }.nil?) %>
 										<%# <% wps = @all_completed_work_plan_skills[student.id.to_s].select{|wps| wps.skill == skill }.last %>
 										<% wps = @all_completed_work_plan_skills[student.id.to_s].reverse.find { |wps| wps.skill == skill } %>
