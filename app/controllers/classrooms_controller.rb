@@ -157,6 +157,7 @@ class ClassroomsController < ApplicationController
     # @special_domain = @classroom.user.school.special_domains? && (WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @classroom.grade.grade_level != "CM2")
     @students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     # get all validated belts for all classroom student
+    # binding.pry
     @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain:, completed: true)
   end
 
@@ -164,6 +165,7 @@ class ClassroomsController < ApplicationController
     # @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade.grade_level != "CM2")
     @all_completed_work_plan_skills = {}
     @students_list.each do |student|
+      # binding.pry if student.id == 393
       completed_wps = student.all_completed_work_plan_skills(domain, @classroom.grade.grade_level)
       @all_completed_work_plan_skills[student.id.to_s] = completed_wps unless completed_wps.empty?
     end
