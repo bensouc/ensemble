@@ -33,10 +33,10 @@ RSpec.describe Belt, type: :model do
     let(:user) { create(:user, school: school2) }
     let(:skillsolo) { create(:skill, school: school1) }
     let(:skill2) { create(:skill, school: school2) }
-    let(:skill3) { create(:skill, domain: skill2.domain, grade: skill2.grade, level: skill2.level, school: school2) }
-    let(:skill4) { create(:skill, domain: skill2.domain, grade: skill2.grade, level: skill2.level, school: school2) }
-    let(:skill5) { create(:skill, domain: skill2.domain, grade: skill2.grade, level: skill2.level, school: school2) }
-    let(:belt) { create(:belt, domain: skill2.domain, grade: skill2.grade, level: skill2.level) }
+    let(:skill3) { create(:skill, domain: skill2.domain,  level: skill2.level, school: school2) }
+    let(:skill4) { create(:skill, domain: skill2.domain,  level: skill2.level, school: school2) }
+    let(:skill5) { create(:skill, domain: skill2.domain,  level: skill2.level, school: school2) }
+    let(:belt) { create(:belt, domain: skill2.domain,  level: skill2.level) }
     it "returns all the skills for a given user based on its group/school" do
       expect(belt.all_skills(user)).to include(skill2)
       expect(belt.all_skills(user)).to include(skill3)
@@ -48,12 +48,12 @@ RSpec.describe Belt, type: :model do
 
   describe "#student_last_belt_level(student, domain)" do
     let(:belt1) { create(:belt, level: 1, completed: true) }
-    let(:belt2) { create(:belt, student: belt1.student, domain: belt1.domain, grade: belt1.grade, level: 2, completed: true) }
-    let(:belt3) { create(:belt, student: belt1.student, domain: belt1.domain, grade: belt1.grade, level: 3, completed: true) }
-    let(:belt4) { create(:belt, student: belt1.student, domain: belt1.domain, grade: belt1.grade, level: 4, completed: true) }
-    let(:belt5) { create(:belt, student: belt1.student, domain: belt1.domain, grade: belt1.grade, level: 5, completed: true) }
-    let(:belt6) { create(:belt, student: belt1.student, domain: belt1.domain, grade: belt1.grade, level: 6, completed: false) }
-    let(:belt7) { create(:belt, student: belt1.student, domain: belt1.domain, grade: belt1.grade, level: 7, completed: false) }
+    let(:belt2) { create(:belt, student: belt1.student, domain: belt1.domain, level: 2, completed: true) }
+    let(:belt3) { create(:belt, student: belt1.student, domain: belt1.domain, level: 3, completed: true) }
+    let(:belt4) { create(:belt, student: belt1.student, domain: belt1.domain, level: 4, completed: true) }
+    let(:belt5) { create(:belt, student: belt1.student, domain: belt1.domain, level: 5, completed: true) }
+    let(:belt6) { create(:belt, student: belt1.student, domain: belt1.domain, level: 6, completed: false) }
+    let(:belt7) { create(:belt, student: belt1.student, domain: belt1.domain, level: 7, completed: false) }
     it "returns the last belt level uncompleted by a student on domains not special" do
       belt1
       belt2
@@ -86,9 +86,10 @@ RSpec.describe Belt, type: :model do
   describe "self.special_new_belt(work_plan_skill, work_plan)" do
     let(:student) { create(:student) }
     let(:grade) {create(:grade)}
+    let(:domain) {create(:domain, grade:, special: true)}
     let(:work_plan) { create(:work_plan, grade: , student: ) }
-    let(:work_plan_domain) { create(:work_plan_domain, work_plan: work_plan, domain: WorkPlanDomain::DOMAINS_SPECIALS.sample, level:1) }
-    let(:skill) { create(:skill, domain: work_plan_domain.domain, grade: work_plan_domain.work_plan.grade, level: work_plan_domain.level)}
+    let(:work_plan_domain) { create(:work_plan_domain, work_plan: work_plan, domain: , level:1) }
+    let(:skill) { create(:skill, domain: work_plan_domain.domain, level: work_plan_domain.level)}
     let(:work_plan_skill) { create(:work_plan_skill, work_plan_domain: work_plan_domain, kind: 'ceinture', completed: true, status: "completed") }
     it "does not create a first new belt on special domains if its the first" do
       expect {
