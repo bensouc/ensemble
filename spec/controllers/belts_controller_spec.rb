@@ -7,19 +7,20 @@ RSpec.describe BeltsController, type: :controller do
   let(:student) { create(:student, classroom:) }
   let(:work_plan) { create(:work_plan, user:, student:) }
   let(:grade) {create(:grade)}
+  let(:domain) {create(:domain,grade:)}
 
   before { sign_in user }
 
   describe "create" do
     # params.require(:belt).permit(:grade, :domain, :level, :grade, :validated_date)
-    let(:valid_params) { { belt: { grade_id: Grade.first.id, domain: "Vocabulaire", level: "1", validated_date: Faker::Date }, student_id: student.id } }
+    let(:valid_params) { { belt: {  domain_id: domain.id , level: (1..7).to_a.sample, validated_date: Faker::Date }, student_id: student.id } }
     it "creates a new Belt with the right params" do
       # p grade
       expect do
         post :create, params: valid_params
       end.to change(Belt, :count).by(1)
     end
-    let(:unvalid_params) { { belt: { grade_id:Grade.first.id, level: "0", validated_date: Faker::Date }, student_id: student.id } }
+    let(:unvalid_params) { { belt: { grade_id: grade,domain_id: domain.id, level: "0", validated_date: Faker::Date }, student_id: student.id } }
     it "failed to creates a new Belt with the right params" do
       expect do
         post :create, params: unvalid_params
@@ -28,7 +29,7 @@ RSpec.describe BeltsController, type: :controller do
   end
 
   describe "update" do
-    let(:belt) { create(:belt, student:, grade: Grade.first, domain: "Vocabulaire", level: "1") }
+    let(:belt) { create(:belt, student:, domain: domain, level: "1") }
     let(:valid_params) { { belt: { validated_date: (DateTime.now + 2) }, id: belt.id } }
     it "updates a Belt with the right new date" do
       original_date = belt.validated_date
