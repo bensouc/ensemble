@@ -11,7 +11,7 @@ class SkillsController < ApplicationController
     respond_to do |format|
       format.html { setup_all_skills_data }
       format.xlsx do
-        grade = Grade.includes([:domains,:skills]).find(params[:grade])
+        grade = Grade.includes([:domains, :skills]).find(params[:grade])
         skills = grade.skills
         domains = grade.domains.sort_by(&:position)
         school = current_user.school
@@ -39,7 +39,6 @@ class SkillsController < ApplicationController
 
   def create
     skip_authorization
-    # binding.pry
     @skill = Skill.new(skill_params)
     # @skill.grade = Grade.find(set_grade)
     @skill.school = current_user.school
@@ -47,7 +46,7 @@ class SkillsController < ApplicationController
     # redirect_to skill_path(@skill)
     @skills = Skill.includes([:school]).where(domain: @skill.domain, level: @skill.level)
     render partial: "skills/all_skills_by_domain_level",
-           locals: { skills: @skills, domain: @skill.domain, level: @skill.level, grade: @skill.domain.grade}
+           locals: { skills: @skills, domain: @skill.domain, level: @skill.level, grade: @skill.domain.grade }
 
     #  skills: skills, domain: domain, level: skill_level
   end
@@ -75,15 +74,16 @@ class SkillsController < ApplicationController
   private
 
   def setup_all_skills_data
-
     @grades = current_user.classroom_grades
     grade_query = params[:grade]
     domain_query = params[:domain]
     @school = current_user.school
     @grade = grade_query.nil? ? @grades.first : Grade.find(grade_query)
-    @domains = @grade.domains.sort_by(&:position)
-    # binding.pry
-    @domain = domain_query.nil? ? @domains.first : Domain.find(domain_query)
+    unless @grade.nil?
+      @domains = @grade.domains.nil? ? nil : @grade.domains.sort_by(&:position)
+      # binding.pry
+      @domain = domain_query.nil? ? @domains.first : Domain.find(domain_query)
+    end
     # @skills = policy_scope(Skill)
     # @are_special_domains = current_user.school.special_domains?
     @skills = Skill.where(domain: @domain)
