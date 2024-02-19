@@ -23,8 +23,6 @@ RSpec.describe WorkPlansController, type: :controller do
     end
   end
 
-  # describe "#index signed in" do
-  # end
   describe "#new" do
     context "when user is not signed in" do
       it "returns a failure response" do
@@ -107,7 +105,7 @@ RSpec.describe WorkPlansController, type: :controller do
 
       it "redirects to the work_plan" do
         put :update, params: { id: work_plan.id, work_plan: new_attributes }
-        expect(response).to redirect_to(work_plan)
+        expect(response).to redirect_to(work_plan_path(work_plan))
       end
     end
   end
@@ -116,17 +114,20 @@ RSpec.describe WorkPlansController, type: :controller do
     before { sign_in user }
     context "with valid params" do
       let(:student) { create(:student, classroom:) }
+        let(:domain1) {create(:domain, grade_id: work_plan.grade.id)}
+        let(:domain2) {create(:domain, grade_id: work_plan.grade.id)}
       let(:params) do
         {
           "/students/#{student.id}" => {
-            domains: ["", "Conjugaison", "Vocabulaire", "Orthographe", "Grandeurs et Mesures"],
+            domains: ["", domain1.id, domain1.id],
           },
         }
       end
       it "generate a new work_plan, based on the student's actual progression" do
+        count = WorkPlan.count
         expect do
           post :auto_new_wp, params: params.merge(student_id: student.id)
-        end.to change(WorkPlan, :count).by(1)
+        end.to change { WorkPlan.count }.by(2)  # the creation of the work plan initial
         # expect(response).to redirect_to(work_plan_path(WorkPlan.last))
       end
       it "redirects to the Auto Generated WorkPlan " do
