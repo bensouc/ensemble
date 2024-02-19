@@ -40,7 +40,7 @@ RSpec.describe ChallengesController, type: :controller do
     context "when user use filters" do
       it "returns a successful response" do
         sign_in(user)
-        get :index, params: { "/challenges" => { grade: Grade.find_by(grade_level:"CM2"), domain: "Conjugaison", level: "1" } }
+        get :index, params: { "/challenges" => { grade: skill.domain.grade, domain: skill.domain , level: skill.level } }
         # expect(response).to be_successful
         expect(response).to redirect_to("http://test.host/classrooms")
       end
@@ -143,7 +143,7 @@ RSpec.describe ChallengesController, type: :controller do
                        } }
         challenge.reload
         expect(challenge.name).to eq(new_name)
-        expect(response).to redirect_to(challenge)
+        expect(response).to redirect_to(challenge_path(challenge))
       end
     end
   end
