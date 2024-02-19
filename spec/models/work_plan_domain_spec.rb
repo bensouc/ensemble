@@ -21,26 +21,12 @@ RSpec.describe WorkPlanDomain, type: :model do
     let(:student) { create(:student) }
     let(:grade) {create(:grade,grade_level: "CE1",name: "CE1")}
     let(:work_plan) { create(:work_plan, grade: , student:) }
-    let(:work_plan_domain1) { create(:work_plan_domain, work_plan: work_plan, domain: ["Géométrie", "Grandeurs et Mesures"].sample) }
+    let(:domain) {create(:domain, grade:, special: true)}
+    let(:work_plan_domain1) { create(:work_plan_domain, work_plan: work_plan, domain: ) }
     it "returns true if the work plan domain is a special domain" do
-      expect(work_plan_domain1.special?).to be grade.school.special_domains
+      expect(work_plan_domain1.special?).to be true
     end
-    let(:gradeCM2) {create(:grade, grade_level: "CM2",name: "CM2")}
-    let(:work_plan2) { create(:work_plan,grade: gradeCM2, student:) }
-    let(:work_plan_domain2) { create(:work_plan_domain, work_plan: work_plan2, domain: ["Géométrie", "Grandeurs et Mesures"].sample) }
-    it "returns false if grade is CM2" do
-      expect(work_plan_domain2.special?).to be false
-    end
-    let(:work_plan3) { create(:work_plan , student:) }
-    let(:work_plan_domain3) {
-      create(:work_plan_domain, work_plan: work_plan3, domain: ["Calcul", "Numération", "Opérations",
-                                                                "Résolution des Problèmes", "Calligraphie", "Conjugaison",
-                                                                "Poésie et Expression orale", "Production d’écrit", "Grammaire",
-                                                                "Lecture", "Vocabulaire"].sample)
-    }
-    it "returns false if is not 'Géométrie OR Grandeurs et Mesures' AND NOT 'CM2' " do
-      expect(work_plan_domain3.special?).to be false
-    end
+
   end
   describe "#all_domain_skills" do
     it 'TODO' do

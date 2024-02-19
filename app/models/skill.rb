@@ -8,27 +8,24 @@ class Skill < ApplicationRecord
 
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
   validates :name, presence: true
-                  #  uniqueness: { message: "Le nom de compétence éxiste déja", scope: :domain }
-
+  #  uniqueness: { message: "Le nom de compétence éxiste déja", scope: :domain }
+  validates :domain, presence: true
   validates :symbol, inclusion: { in: ["◼", "⬥", "⬟", "♥", "⬤", "♣", "🞮", "▲", ""] }
-
 
   def self.for_school(school)
     where(school:)
   end
-# ###########################################
+
+  # ###########################################
   # METHODS
-  def grade
-    domain.grade
-  end
+  delegate :grade, to: :domain
+
   def resolve_skill_id(domain, level, grade)
     Skill.for_school(current_user.school).where(domain:, level:, grade:)
     # return a skill object
   end
 
-  def special?
-    domain.special?
-  end
+  delegate :special?, to: :domain
 
   def symbol_img_name
     case symbol
