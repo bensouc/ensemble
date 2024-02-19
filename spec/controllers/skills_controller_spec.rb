@@ -3,6 +3,9 @@
 require "rails_helper"
 RSpec.describe SkillsController, type: :controller do
   let(:user) { create(:user) }
+  let(:grade) { create(:grade, school: user.school) }
+  let(:domain1) {create(:domain, grade_id: grade.id)}
+  let(:domain2) {create(:domain, grade_id: grade.id)}
   # let(:student) { create(:student, classroom:) }
 
   describe "#index" do
@@ -17,6 +20,9 @@ RSpec.describe SkillsController, type: :controller do
       # let(:classroom) { create(:classroom, user:) }
       before { sign_in user }
       it "redirect to classroom index" do
+                10.times do
+          create(:skill, domain: domain1, school: user.school)
+        end
         get :index
         expect(response.location).to match("http://test.host/classrooms")
       end
@@ -27,7 +33,7 @@ RSpec.describe SkillsController, type: :controller do
       it "redirect to skills index if user.school has skills" do
         classroom = create(:classroom, user:)
         10.times do
-          create(:skill, grade: classroom.grade, school: user.school)
+          create(:skill, domain: domain1, school: user.school)
         end
         get :index
         expect(response).to be_successful
@@ -46,19 +52,18 @@ RSpec.describe SkillsController, type: :controller do
       before { sign_in user }
       it "creates a valid new skill with right params " do
         classroom = create(:classroom,grade_id: Grade.first.id, user:)
-        # :name, :grade, :symbol, :level, :domain)
-        # p classroom
-        # binding.pry
-        post :create, params: { skill: { name: "test", grade_id: classroom.grade.id, symbol: "⬤", domain: "Conjugaison", level: "1", school: user.school } }
+        grade = create(:grade, school: classroom.user.school)
+        domain2 = create(:domain, grade: grade)
+        post :create, params: { skill: { name: "test", symbol: "⬤", domain_id: domain2.id, level: "1", school: user.school } }
         expect(response).to be_successful
       end
       it "creates  and add new skill  " do
-        classroom = create(:classroom, grade_id: Grade.first.id, user:)
-        user.school = create(:school)
-        # binding.pry
+        classroom = create(:classroom,grade_id: Grade.first.id, user:)
+        grade = create(:grade, school: classroom.user.school)
+        domain2 = create(:domain, grade: grade)
         expect do
           # :name, :grade, :symbol, :level, :domain)
-          post :create, params: { skill: { name: "test", grade_id: classroom.grade.id, symbol: "⬤", domain: "Conjugaison", level: "1", school: user.school } }
+          post :create, params: { skill: { name: "test", symbol: "⬤", domain_id: domain2.id, level: "1", school: user.school } }
         end.to change(Skill.where(school: user.school), :count).by(1)
       end
     end

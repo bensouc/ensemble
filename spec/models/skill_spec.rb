@@ -22,8 +22,9 @@ RSpec.describe Skill, type: :model do
     expect(skill2).to_not be_valid
   end
 
-  it "is not valid without a grade" do
-    skill2 = build(:skill, grade: nil)
+  it "is not valid without a domain" do
+    skill2 = build(:skill, domain: nil)
+
     expect(skill2).to_not be_valid
   end
 
