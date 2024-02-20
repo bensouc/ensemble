@@ -8,7 +8,7 @@ class RegistrationsController < Devise::RegistrationsController
     if user_signed_in?
       super
     else
-      render :add_demo_user
+      redirect_to root_path, notice: "Vous n'avez pas les droits pour cela"
     end
   end
 
