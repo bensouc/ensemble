@@ -32,7 +32,18 @@
 .banner {
   h2 {
     font-size: 2.5rem;
+    font-weight: 400;
   }
+  h3{
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-left: 1.5rem;
+    width:70ch;
+    color: $blanc;
+    font-family: $plan-font;
+    font-weight: 100;
+  }
+
 }
 .description {
   // position: sticky;
@@ -115,7 +126,7 @@
 }
 // END with splide & splide.min.css
 .showcase-banner{
-  background-color: $roseLight;
+  background-color: $roseL;
   color: whitesmoke;
   padding: 4rem 4rem 2.5rem 4rem;
   margin: 2.5rem 0 0 0;

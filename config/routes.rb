@@ -3,6 +3,9 @@ Rails.application.routes.draw do
   mount RailsAdmin::Engine => "/admin", as: "rails_admin"
   devise_for :users,
     controllers: { registrations: "registrations" }
+  devise_scope :user do
+    post "create_demo_user", to: "registrations#add_demo_user"
+  end
   root to: "pages#home"
   get "/dashboard", to: "dashboard#show"
   get "mentions_legales", to: "pages#mentions_legales"
