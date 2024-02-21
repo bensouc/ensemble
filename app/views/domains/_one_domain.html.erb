@@ -1,14 +1,36 @@
 <%=  turbo_frame_tag dom_id(domain), data:{id: domain.id} do%>
 	<div class="domain-box" >
-		<%= link_to  edit_domain_path(domain) do%>
-			<i class="fas fa-pen fa-xs me-2" ></i>
+		<% if current_user.demo? %>
+			<div class="--bgc-transparent p-0"
+      data-controller="tooltip"
+      data-bs-toggle="tooltip"
+      data-bs-placement="top"
+      title="Non disponible en Démo"
+      >
+				<i class="fas fa-pen fa-xs me-2" ></i>
+			</div>
+		<% else %>
+			<%= link_to  edit_domain_path(domain) do%>
+				<i class="fas fa-pen fa-xs me-2" ></i>
+			<% end %>
 		<% end %>
 		<p class='grabbable'><%= domain.name %></p>
-		<%= button_to domain_path(domain), method: :delete,
+		<% if current_user.demo? %>
+			<div class="--bgc-transparent p-0"
+      data-controller="tooltip"
+      data-bs-toggle="tooltip"
+      data-bs-placement="right"
+      title="Non disponible en Démo"
+      >
+				<i class="fa-solid fa-circle-xmark ms-2"></i>
+			</div>
+		<% else %>
+			<%= button_to domain_path(domain), method: :delete,
             class: '--bgc-transparent p-0',
             data: {confirm: "Voulez-vous supprimer ce domaine ?
 Vous supprimerez tous les exercices, compétences et évaluations liés à ce domaine."} do%>
-			<i class="fa-solid fa-circle-xmark ms-2"></i>
+				<i class="fa-solid fa-circle-xmark ms-2"></i>
+			<% end %>
 		<% end %>
 	</div>
 <% end %>
