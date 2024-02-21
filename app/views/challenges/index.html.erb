@@ -22,6 +22,9 @@
                   } %>
 				</div>
 				<div class="challenges-skill-level-selector">
+
+        <p class= 'pt-1 m-left'>Niveau de Ceinture</p>
+
 					<%= f.input :level,
                   collection: [
                     ["Blanche", 1, { class: "--bgc-blanc" }],
@@ -39,7 +42,7 @@
                     class:
                       "area grow m-left --text-center #{["--bgc-blanc", "--bgc-jaune", "--bgc-orange", "--bgc-vert --blanc", "--bgc-bleuC --blanc", "--bgc-marron --blanc", "--bgc-noir --blanc"][@level.to_i - 1]}"
                   } %>
-					<h4 class= 'pt-1'> Ceinture</h4>
+
 				</div>
 			</div>
 		<% end %>

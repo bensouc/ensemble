@@ -7,8 +7,18 @@
 			<div class="d-none">
 				<%= f.association :grade, value:grade%>
 			</div>
-			<%= button_tag type: 'submit', class: '--bgc-transparent' do %>
-				<i class="fa-solid fa-circle-check"></i>
+			<% if current_user.demo? %>
+				<div class="--bgc-transparent m-1"
+        data-controller="tooltip"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Non disponible en Démo">
+					<i class="fa-solid fa-circle-check"></i>
+				</div>
+			<% else %>
+				<%= button_tag type: 'submit', class: '--bgc-transparent' do %>
+					<i class="fa-solid fa-circle-check"></i>
+				<% end %>
 			<% end %>
 			<% if domain.persisted? %>
 				<%= link_to domain_path(domain),  class: '--bgc-transparent ' do %>

@@ -1,5 +1,6 @@
 .challenges-container {
-  width: 861px;
+  width: 1000px;
+  margin-top: 0.25rem
   // height: 110vh;
 
 }
@@ -31,7 +32,7 @@
 
 .challenges-skill-level-selector {
   display: flex;
-  gap: 30px;
+  gap: 12px;
   align-items: flex-start;
 }
 .move-left-btn {
