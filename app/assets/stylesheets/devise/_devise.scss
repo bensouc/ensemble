@@ -33,6 +33,15 @@
     margin: 5px 10px;
   }
 }
+.action-selector {
+  display: flex;
+  gap: 1px;
+}
+.contact-form {
+  border: thin solid $roseL;
+  padding: 1rem;
+  border-radius: 0 1rem 1rem 1rem 
+}
 @media (max-width: 750px) {
   .devise-mainbox {
     display: flex !important;
@@ -45,5 +54,3 @@
     border-top: thin solid $grisC;
   }
 }
-
-

@@ -39,7 +39,7 @@
 				</div>
 				<%= link_to new_work_plan_path do %>
 					<div class="menug_icone" data-action="click->left-menu#seechange">
-						<div class="<%= "active" if (current_page?(new_work_plan_path) || (params[:action] == "show" && controller_name == 'work_plans' )  %>"
+						<div class="<%= "active" if (current_page?(new_work_plan_path) || (params[:action] == "show" && controller_name == 'work_plans' ))  %>"
             data-left-menu-target="seetext"
             style='decoration-text: none'>
 							Créer
