@@ -1,13 +1,23 @@
 @import "eval_mobile";
 .mobile_index {
   width: 100vw !important;
-  height: auto !important;
+  min-height: calc(100vh - 50px);
   padding: 5vw 5vw 5vw 5vw !important;
   text-align: center;
-  .title{
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  .title {
     font-family: $headers-font;
     font-weight: 700;
   }
+}
+.mobile-message {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100% !important;
+  justify-content: space-evenly;
 }
 .mobile_wp_one_classroom {
   // width: 100%;
@@ -23,7 +33,6 @@
 }
 .w100 {
   width: 100%;
-
 }
 .greyline-mobile {
   height: 0px;
@@ -36,13 +45,13 @@
   font-size: 3vh;
 }
 
-.mobile-wp-firstname{
+.mobile-wp-firstname {
   font-size: 3vh;
 }
-.mobile-index-wp-count{
-    font-style: italic;
-    opacity: 0.33;
-font-size: 3vh;
+.mobile-index-wp-count {
+  font-style: italic;
+  opacity: 0.33;
+  font-size: 3vh;
 }
 .mobile-index-wp-card {
   width: 100%;
@@ -57,10 +66,10 @@ font-size: 3vh;
   justify-content: space-between;
   width: 100%;
 }
-.mobile-index-wp-name{
-display: flex;
-    width: 100%;
-    flex-wrap: wrap;
+.mobile-index-wp-name {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
 }
 .mobile-namept {
   color: white !important;

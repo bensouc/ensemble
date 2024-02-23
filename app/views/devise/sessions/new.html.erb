@@ -14,33 +14,76 @@
 				<%= f.input :remember_me, label: 'Se souvenir de moi' , as: :boolean if devise_mapping.rememberable? %>
 			</div>
 			<div class="form-actions">
-				<%= f.button :submit, "Connexion", class: 'add-skill-btn' %>
+				<%= f.button :submit, "Connexion", class: 'btn btn-primary --border-10px --borderc-rose --bgc-rose --blanc' %>
 			</div>
 		<% end %>
 		<%= render "devise/shared/links" %>
 	</div>
 	<div class="" id="contact">
 		<h1>Bienvenue sur Ensemble  !</h1>
-    <h4>Vous n'avez encore de compte?</h4>
+		<h4>Vous n'avez encore de compte?</h4>
 		<p>Nous sommes ravis de vous accueillir sur notre plateforme. </p>
-		<p>Pour obtenir un compte de DEMO , veuillez nous contacter directement en utilisant le formulaire de contact ci-dessous. Nous serons heureux de vous faire parvenir l'accès à notre plateforme.</p>
+		<p>Pour obtenir un compte de DEMO , veuillez remplir le formulaire ci-dessous </p>
+<p>Vous pouvez également prendre contact avec via le formulaire dédié ci-dessous</p>
 		<p>Encore une fois, merci de votre intérêt pour notre plateforme et n'hésitez pas à nous contacter si vous avez des questions ou des commentaires.</p>
 		<p>L'équipe d'Ensemble</p>
-		<div class="contact-form">
-			<%= simple_form_for :contact,html: { novalidate: false }, url: contact_create_path(), method: :post do |f| %>
-				<div>
-					<%= f.input :last_name, label: 'Nom', required: true %>
-					<%= f.input :first_name, label: 'Prénom', required: true %>
-					<%= f.input :email, label: 'Email', required: true %>
-					<%= f.input :school, label: 'Ecole',required: false%>
-					<%= f.input :city, label: 'Ville', required: true %>
+		<div class="new-contact-forms" data-controller="display-tab">
+			<div class="action-selector">
+				<div class="domain-tab active" data-tab-id = "0" data-action="click->display-tab#showTab" data-display-tab-target='tab'>Compte Démo</div>
+				<div class="domain-tab" data-tab-id = "1" data-action="click->display-tab#showTab" data-display-tab-target='tab'>Prendre contact</div>
+			</div>
+			<div class="contact-form" data-display-tab-target='box'>
+				<%= simple_form_for User.new, url:user_registration_path, html: { novalidate: false },
+          method: :post do |f| %>
+					<%= f.error_notification %>
+					<div class="form-inputs">
+						<div class='user-details'>
+							<%= f.input :first_name,
+                        required: true,
+                        input_html: { autocomplete: "First name" } %>
+							<%= f.input :last_name,
+                        required: true,
+                        input_html: { autocomplete: "Last name" } %>
+						</div>
+						<div class='user-details'>
+							<%= f.input :email,
+                        required: true,
+                        autofocus: true,
+                        input_html: { autocomplete: "email" }%>
+						</div>
+						<div class='user-details'>
+							<%= f.input :password,
+                        required: true,
+                        hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
+                        input_html: { autocomplete: "new-password" } %>
+							<%= f.input :password_confirmation,
+                        required: true,
+                        input_html: { autocomplete: "new-password" } %>
+						</div>
+					</div>
+					<div class="form-actions mt-2">
+						<%= f.button :submit,"Créer un compte", class: "btn btn-primary --border-10px --borderc-rose --bgc-rose --blanc" do %>
+						<% end %>
+					<% end %>
 				</div>
-				<%= f.input :message, label: 'Message', as: :text, input_html: { rows: 5 }, required: true %>
-				<div class="mt-2">
-					<%= f.button :submit,"Prendre contact", class: 'btn btn-primary --border-10px
- --borderc-rose --bgc-rose --blanc' %>
-				</div>
-			<% end %>
+			</div>
+			<div class="contact-form d-none" data-display-tab-target='box'>
+				<%= simple_form_for :contact,html: { novalidate: false }, url: contact_create_path(), method: :post do |f| %>
+					<div class='user-details'>
+						<%= f.input :email, label: 'Email', required: true %>
+						<%= f.input :last_name, label: 'Nom', required: true, wrapper_html:{class: 'class-wrapper'} %>
+						<%= f.input :first_name, label: 'Prénom', required: true %>
+					</div>
+					<div class='user-details'>
+						<%= f.input :school, label: 'Ecole',required: false%>
+						<%= f.input :city, label: 'Ville', required: true %>
+					</div>
+					<%= f.input :message, label: 'Message', as: :text, input_html: { rows: 5 }, required: true %>
+					<div class="mt-2">
+						<%= f.button :submit,"Envoyer", class: 'btn btn-primary --border-10px --borderc-rose --bgc-rose --blanc' %>
+					</div>
+				<% end %>
+			</div>
 		</div>
 	</div>
 </div>
