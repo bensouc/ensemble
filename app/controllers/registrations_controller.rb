@@ -5,11 +5,11 @@ class RegistrationsController < Devise::RegistrationsController
   skip_before_action :require_no_authentication, only: [:new, :create]
 
   def new
-    if user_signed_in?
-      super
-    else
-      redirect_to root_path, notice: "Vous n'avez pas les droits pour cela"
-    end
+    # if user_signed_in?
+    #   super
+    # else
+    #   redirect_to root_path, notice: "Vous n'avez pas les droits pour cela"
+    # end
   end
 
   def create
@@ -19,6 +19,7 @@ class RegistrationsController < Devise::RegistrationsController
     @user.demo = true
     if @user.save!
       if @user.demo?
+        ContactMailer.new_demo_user(@user).deliver
         sign_in(@user)
         redirect_to dashboard_path, notice: "Utilisateur créé avec succès."
       else
@@ -26,7 +27,7 @@ class RegistrationsController < Devise::RegistrationsController
       end
     else
       flash.now[:alert] = "Une erreur est survenue lors de la création."
-      render :new
+      render :new, status: :unprocessable_entity
     end
   end
 
