@@ -34,16 +34,15 @@
     font-size: 2.5rem;
     font-weight: 400;
   }
-  h3{
+  h3 {
     font-size: 1.5rem;
     margin-top: 2rem;
     margin-left: 1.5rem;
-    width:70ch;
+    width: 70ch;
     color: $blanc;
     font-family: $plan-font;
     font-weight: 100;
   }
-
 }
 .description {
   // position: sticky;
@@ -52,15 +51,13 @@
 }
 .pledge {
   position: relative;
-    display: flex;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 1rem 6vw;
-    align-content: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem 6vw;
+  align-content: center;
   // justify-items:center;
   // width: 100%;
 
@@ -82,27 +79,20 @@
   flex-direction: column;
   align-items: center;
 }
-@media only screen and (min-width:1200px) {
-.tournicoti {
-  width: 100%;
-  position: absolute;
+.row2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem 0;
+  width: 100vw;
+  height: 6rem;
 
-  top: 55rem;
-  display: flex;
-  justify-content: space-around;
   img {
-    height: 16vw;
+    position: relative;
+    top: -20%;
+    width: 12%;
   }
-}}
-@media only screen and (min-width:1200px) {
-.tournicoti {
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  img {
-    height: 16vw;
-  }
-}}
+}
 
 // illustartions
 .home-images {
@@ -126,27 +116,27 @@
   height: 3px;
   background: $roseLight;
 }
-.splide__arrow--prev, .splide__arrow--next{
+.splide__arrow--prev,
+.splide__arrow--next {
   background: $rose;
-  &:hover{
+  &:hover {
     background: $roseLight;
   }
 }
-.splide__arrow--prev svg, .splide__arrow--next svg{
-
+.splide__arrow--prev svg,
+.splide__arrow--next svg {
   fill: $blanc;
-
 }
-.splide__pagination__page.is-active{
+.splide__pagination__page.is-active {
   background: $rose;
 }
 // END with splide & splide.min.css
-.showcase-banner{
+.showcase-banner {
   background-color: $roseL;
   color: whitesmoke;
   padding: 4rem 4rem 2.5rem 4rem;
   margin: 2.5rem 0 0 0;
-  & h2{
+  & h2 {
     font-family: $titres-font;
     font-size: 1.5rem;
     text-align: center;
