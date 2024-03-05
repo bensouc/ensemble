@@ -47,6 +47,8 @@ Rails.application.configure do
   config.after_initialize do
     Bullet.enable = true
     Bullet.rails_logger = true
+    Bullet.alert = true
+
   end
   # END GEM BULLET SETTINGS
   # Store uploaded files on the local file system (see config/storage.yml for options).

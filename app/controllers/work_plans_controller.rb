@@ -2,6 +2,7 @@
 
 class WorkPlansController < ApplicationController
   before_action :set_params_student, only: ["auto_new_wp"]
+  before_action :setup_show, only: :show
 
   # And sharing
   def clone
@@ -104,16 +105,6 @@ class WorkPlansController < ApplicationController
   end
 
   def show
-    @belt = Belt::BELT_COLORS
-    @work_plan = WorkPlan.with_associations.find(params[:id])
-    @work_plan_domains = @work_plan.work_plan_domains
-    @domains = Domain.where(grade: @work_plan.grade).sort_by(&:position)
-    authorize @work_plan
-    # raise
-    # @domains = @work_plan_domains.map{|wpd| wpd.domain}
-    shared_classrooms = current_user.user_shared_classrooms
-    @students = current_user.all_students
-    @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms
     unless @work_plan.shared_user_id.nil?
       @shared_user = current_user.collegues.find { |user| user.id == @work_plan.shared_user_id }
     end
@@ -326,6 +317,17 @@ class WorkPlansController < ApplicationController
     end
   end
 
+  def setup_show
+    @belt = Belt::BELT_COLORS
+    @work_plan = WorkPlan.find(params[:id])
+    @work_plan_domains = WorkPlanDomain.includes(:domain, :work_plan).where(work_plan:@work_plan)
+    @domains = Domain.where(grade: @work_plan.grade).sort_by(&:position)
+    @work_plan_skills = WorkPlanSkill.includes(:work_plan_domain,:skill, :challenge).where(work_plan_domain: @work_plan_domains)
+    shared_classrooms = current_user.user_shared_classrooms
+    @students = current_user.all_students
+    @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms
+    authorize @work_plan
+  end
   # def test_multiplecloning_params(id)
   #   params["/work_plans/#{id}"]
   # end

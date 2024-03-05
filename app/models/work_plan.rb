@@ -21,6 +21,6 @@ class WorkPlan < ApplicationRecord
   end
 
   def self.with_associations
-    includes(:work_plan_domains, :challenges, :skills)
+    includes( [:skills, :challenges] )
   end
 end
