@@ -55,8 +55,8 @@ class ClassroomsController < ApplicationController
 
   def results
     authorize @classroom
-    @domains = @classroom.grade.domains.sort_by(&:position)
-    @skills = @classroom.grade.skills
+    @domains =  Domain.where(grade: @classroom.grade).sort_by(&:position)
+    @skills = Skill.includes(:domain).where(domain: @domains)
     # @domains.map do |domain|
     #   # remove domains without skills eg:poesie
     #   # @domains.delete(domain) if @skills.none? { |skill| skill.domain == domain }
