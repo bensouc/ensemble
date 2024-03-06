@@ -74,8 +74,9 @@ class WorkPlansController < ApplicationController
 
   def index
     skip_policy_scope
-    shared_classrooms = current_user.user_shared_classrooms
-    @my_classrooms = (current_user.classrooms + shared_classrooms).sort_by(&:created_at)
+
+    shared_classrooms = current_user.user_shared_classrooms.includes(:grade)
+    @my_classrooms = (current_user.classrooms.includes(:grade) + shared_classrooms).sort_by(&:created_at)
     @my_work_plans = current_user.all_classroom_workplans
     @my_work_plans_from_shared_classrooms = current_user.all_shared_classroom_workplans
     @my_work_plans += @my_work_plans_from_shared_classrooms unless @my_work_plans_from_shared_classrooms.empty?

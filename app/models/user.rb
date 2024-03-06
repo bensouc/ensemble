@@ -56,6 +56,7 @@ class User < ApplicationRecord
     grades.uniq.sort
   end
 
+
   def classroom?
     # return true if user has a classroom
     !classrooms.empty? || !shared_classrooms.empty?
@@ -78,9 +79,9 @@ class User < ApplicationRecord
   def all_classroom_workplans
     work_plans = []
     unless classrooms.empty?
-      classrooms.each do |classroom|
+      classrooms.includes(:students).each do |classroom|
         classroom.students.each do |student|
-          work_plans += WorkPlan.where(student:, special_wps: false)
+          work_plans += WorkPlan.includes(:grade).where(student:, special_wps: false)
         end
       end
     end
@@ -92,7 +93,7 @@ class User < ApplicationRecord
     unless shared_classrooms.empty? # get all workplans shared with current user
       shared_classrooms.each do |shared_classroom|
         shared_classroom.classroom.students.each do |student|
-          work_plans += WorkPlan.where(student:, special_wps: false)
+          work_plans += WorkPlan.includes(:grade).where(student:, special_wps: false)
         end # get all workplans of shared classrooms
       end
     end
