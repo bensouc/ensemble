@@ -11,9 +11,7 @@
       <% unless selected_wpds.empty? %>
         <% selected_wpds.each do |work_plan_domain| %>
           <%# boucle sur les work_plan_domains %>
-
-          <%= render "work_plan_domains/work_plan_domain", work_plan_domain: work_plan_domain %>
-
+          <%= render "work_plan_domains/work_plan_domain", work_plan_domain: work_plan_domain, work_plan_skills: @work_plan_skills %>
         <% end %>
       <% end %>
     <% end %>

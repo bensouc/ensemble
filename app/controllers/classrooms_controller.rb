@@ -55,8 +55,8 @@ class ClassroomsController < ApplicationController
 
   def results
     authorize @classroom
-    @domains = @classroom.grade.domains.sort_by(&:position)
-    @skills = @classroom.grade.skills
+    @domains =  Domain.where(grade: @classroom.grade).sort_by(&:position)
+    @skills = Skill.includes(:domain).where(domain: @domains)
     # @domains.map do |domain|
     #   # remove domains without skills eg:poesie
     #   # @domains.delete(domain) if @skills.none? { |skill| skill.domain == domain }
@@ -83,10 +83,10 @@ class ClassroomsController < ApplicationController
     set_up_results(@domain)
     results_factory(@domain) # create all  variables shared with the results Action
     @skills = if @domain.special?
-        Skill.where( domain: @domain).order(Arel.sql('COALESCE(sub_domain, \'\') ASC'))
-      else
-        Skill.where(domain: @domain).sort
-      end
+                Skill.where( domain: @domain).order(Arel.sql('COALESCE(sub_domain, \'\') ASC'))
+              else
+                Skill.where(domain: @domain).sort
+              end
     render partial: "classrooms/classroom_domain_results"
   end
 

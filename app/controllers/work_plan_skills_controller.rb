@@ -24,6 +24,8 @@ class WorkPlanSkillsController < ApplicationController
       end
     end
     if @work_plan_skill.save!
+      @work_plan_domain = @work_plan_skill.work_plan_domain
+      @work_plan_skills = @work_plan_domain.work_plan_skills
       respond_to do |format|
         format.html {
           redirect_to work_plan_domain_path(@work_plan_skill.work_plan_domain),
@@ -72,6 +74,7 @@ class WorkPlanSkillsController < ApplicationController
     @work_plan_domain = @work_plan_skill.work_plan_domain
     # raise
     @work_plan_skill.destroy
+    @work_plan_skills = @work_plan_domain.work_plan_skills
     respond_to do |format|
       format.html {
         redirect_to work_plan_path(work_plan_domain.work_plan),

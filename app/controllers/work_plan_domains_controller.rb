@@ -58,7 +58,8 @@ class WorkPlanDomainsController < ApplicationController
       end
       ######################### SKILLS loop END ######################
     end
-    if @work_plan_domain.work_plan_skills.count.zero? && !is_domain_special
+    @work_plan_skills = @work_plan_domain.work_plan_skills
+    if @work_plan_skills.count.zero? && !is_domain_special
       @work_plan_domain.destroy
       redirect_to work_plan_path(@work_plan),
                   notice: "Il n'y a plus d'exercice ou de ceinture non validé pour cette couleur"

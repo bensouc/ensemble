@@ -8,7 +8,9 @@ export default class extends Controller {
   // }
 
   displayCloningForm() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.cloningpanelTarget.classList.toggle('d-none');
     this.wpTarget.classList.toggle('blurred');
+
   }
 }
