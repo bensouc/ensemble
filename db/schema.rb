@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_02_15_140824) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_11_164847) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -58,7 +58,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_15_140824) do
     t.boolean "completed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "validated_date", default: "2023-08-22"
+    t.date "validated_date", default: "2022-04-27"
     t.integer "level", null: false
     t.bigint "domain_id"
     t.index ["domain_id"], name: "index_belts_on_domain_id"
@@ -125,6 +125,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_02_15_140824) do
     t.string "stripe_customer_id"
     t.string "email"
     t.boolean "special_domains", default: false
+    t.string "code"
   end
 
   create_table "shared_classrooms", force: :cascade do |t|

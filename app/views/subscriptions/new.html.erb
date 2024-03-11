@@ -1,20 +1,8 @@
-<%= turbo_frame_tag "top-sequence" do %>
-	<div class="top-sequence">
-		<div class="sequence-box">
-			<div id=1 class="sequence-counter-box active">1</div>
-			<div class="sequence-line"></div>
-			<div id=2 class="sequence-counter-box">2</div>
-			<div class="sequence-line"></div>
-			<div id=3 class="sequence-counter-box">3</div>
-			<div class="sequence-line"></div>
-			<div id=4 class="sequence-counter-box">4</div>
-		</div>
-	</div>
-<% end %>
+<%= render 'shared/sequence_4', sequence: @sequence %>
 <%= turbo_frame_tag "sequence" do %>
 	<h1 class='sub-title'>Votre Abonnement</h1>
 	<div class="sub-sequence-selection">
-		<%= link_to join_school_path do%>
+		<%= link_to join_school_path, data: { turbo_frame: "_top" } do%>
 			<div class="action-school-box">Rejoindre une école</div>
 		<% end %>
 		<div class="vertical-bar"></div>

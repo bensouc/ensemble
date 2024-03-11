@@ -87,8 +87,9 @@ Rails.application.routes.draw do
   resources :challenges, only: [:show, :edit, :update, :destroy, :index, :new, :create]
 
   # ###############routes for SCHOOL/SCHOOL_ROLES###############
-  resources :schools, only: %w[show new create]
   get 'schools/join', to: "schools#join", as: :join_school
+  post 'schools/create_sub_with_code', to: "school_roles#create"
+  resources :schools, only: %w[show new create]
 
   # ###############    routes for GRADES /DOMAINS        ###############
   resources :grades, only: [:show, :destroy, :index, :new, :create] do

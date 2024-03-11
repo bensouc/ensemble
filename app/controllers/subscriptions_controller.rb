@@ -7,6 +7,7 @@ class SubscriptionsController < ApplicationController
 
   def new
     authorize Subscription
+    @sequence = 1
     # @subscription = Subscription.new
     # @customer = StripeHelper.get_or_create_customer(current_user)
   end
