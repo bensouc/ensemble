@@ -1,6 +1,10 @@
 class SchoolsController < ApplicationController
   before_action :set_school, only: %w[show]
 
+  def new
+    authorize School
+  end
+
   def join
     authorize School
     @sequence = 2

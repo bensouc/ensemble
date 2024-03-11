@@ -6,6 +6,14 @@ class SchoolPolicy < ApplicationPolicy
     end
   end
 
+  def new?
+    true
+  end
+  
+  def create?
+    true
+  end
+
   def join?
     true
   end
