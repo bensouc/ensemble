@@ -1,6 +1,10 @@
 class SchoolsController < ApplicationController
   before_action :set_school, only: %w[show]
 
+  def join
+    raise
+  end
+
   def show
     authorize @school
     @subscription = @school.subscription
