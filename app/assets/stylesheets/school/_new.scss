@@ -1,0 +1,52 @@
+.sub-form {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-direction: row;
+  form{
+    display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-content: flex-end;
+  height: 200px;
+  gap: 30px;
+  }
+}
+.school-input {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-content: flex-end;
+  height: 200px;
+  gap: 30px;
+  p{
+    text-align: end;
+    padding-right: 1rem;
+  }
+  input {
+    width: 30ch;
+  }
+}
+.level-selector{
+  margin: 2rem;
+  text-align: center;
+}
+.create-school-code-btn{
+    width: 96%;
+    margin-bottom: 2rem;
+    margin: 0 1.1rem 2rem 1.1rem;
+    height: 2.4rem !important;
+    border-left: 2px solid transparent;
+    border-top: thin solid transparent;
+    border-right: thin solid transparent;
+    border-bottom: thin solid transparent;
+    font-family: "Roboto", sans-serif !important;
+    color: #FFFFFF;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    background-color: gray;
+    &:hover{
+    transform: scale(1.1);
+    }
+
+}

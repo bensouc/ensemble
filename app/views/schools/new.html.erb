@@ -1,0 +1,37 @@
+<%= render 'shared/sequence_4', sequence: @sequence %>
+<%= turbo_frame_tag 'sequence' do %>
+	<h1 class='sub-title'>Votre école / groupe</h1>
+	<div class='sub-title-code'></div>
+	<div class='sub-form'>
+		<div class="school-input">
+			<p>Nom de l'école :</p>
+			<p>Email :</p>
+			<p style='margin-top: 1rem;'>Ville :</p>
+		</div>
+		<%= simple_form_for School.new, html: { novalidate: false} do |f|%>
+			<div class="school-input">
+				<%= f.input :name, label:false, required: true %>
+				<%= f.input :email, label:false, required: true,   hint: 'Peux être diffèrent de celui de votre compte individuel' %>
+				<%= f.input :city, label:false, required: true %>
+			</div>
+		</div>
+		<div class="grey-line"></div>
+		<div class="level-selector">
+			<p>Quels niveaux souhaitez avoir ?</p>
+			<%= simple_form_for :levels,html: { novalidate: false} do |t|%>
+				<%= t.input_field :grades, collection: %w(CP CE1 CE2 CM1 CM2),
+        as: :check_boxes,
+        boolean_style: :inline,
+        class: "tag-selector",
+        item_wrapper_class: "tag-item",
+        multiple: true %>
+			</div>
+			<%= f.submit "Etape suivante", class: "create-school-code-btn", data: {turbo_frame: "_top"}%>
+		<% end %>
+	<% end %>
+	<div class="bottom">
+		<%= link_to  new_subscription_path, class:'back-link ms-3' do%>
+			<i class="fa-solid fa-circle-left"></i> Retour
+		<% end %>
+	</div>
+<% end %>
