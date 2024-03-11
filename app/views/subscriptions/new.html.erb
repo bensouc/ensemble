@@ -1,24 +1,25 @@
 <%= turbo_frame_tag "top-sequence" do %>
-  <div class="top-sequence">
-    <div class="sequence-box">
-      <div id=1 class="sequence-counter-box active">1</div>
-      <div class="sequence-line"></div>
-      <div id=2 class="sequence-counter-box">2</div>
-      <div class="sequence-line"></div>
-      <div id=3 class="sequence-counter-box">3</div>
-      <div class="sequence-line"></div>
-      <div id=4 class="sequence-counter-box">4</div>
-    </div>
-  </div>
+	<div class="top-sequence">
+		<div class="sequence-box">
+			<div id=1 class="sequence-counter-box active">1</div>
+			<div class="sequence-line"></div>
+			<div id=2 class="sequence-counter-box">2</div>
+			<div class="sequence-line"></div>
+			<div id=3 class="sequence-counter-box">3</div>
+			<div class="sequence-line"></div>
+			<div id=4 class="sequence-counter-box">4</div>
+		</div>
+	</div>
 <% end %>
 <%= turbo_frame_tag "sequence" do %>
-<div class="sub-sequence-selection">
-	<%= link_to join_school_path do%>
-		<div class="action-school-box">Rejoindre une école</div>
-	<% end %>
-	<div class="vertical-bar"></div>
-	<%= link_to  new_school_path do%>
-		<div class="action-school-box">Créer votre groupe / école</div>
-	<% end %>
-</div>
+	<h1 class='sub-title'>Votre Abonnement</h1>
+	<div class="sub-sequence-selection">
+		<%= link_to join_school_path do%>
+			<div class="action-school-box">Rejoindre une école</div>
+		<% end %>
+		<div class="vertical-bar"></div>
+		<%= link_to  new_school_path do%>
+			<div class="action-school-box">Créer votre groupe / école</div>
+		<% end %>
+	</div>
 <% end %>

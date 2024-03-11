@@ -101,9 +101,10 @@
     margin-right: 10px;
   }
 }
-
+// css for sub creation
 .top-sequence {
-  width: 50vw;
+  margin: 0 auto;
+  width: 500px;
 }
 .sequence-box {
   display: flex;
@@ -111,10 +112,10 @@
 }
 .sequence-counter-box {
   display: flex;
-  font-size: 2rem;
-  height: 2rem;
-  width: 2rem;
-  padding: 2rem;
+  font-size: 1rem;
+  height: 1rem;
+  width: 1rem;
+  padding: 1rem;
   border-radius: 50%;
   justify-content: center;
   /* align-content: center; */
@@ -135,7 +136,13 @@
   width: 100%;
   // width: calc((100% - 8rem) / 4);
 }
+.sub-title {
+  margin-top: 3rem;
+  text-align: center;
+  width: 50vw;
+}
 .sub-sequence-selection {
+  width: 50vw;
   margin-top: 4rem;
   display: flex;
   justify-content: space-between;
@@ -148,14 +155,14 @@
     font-weight: 500;
     color: $blanc;
     border: thin solid transparent;
-    &:hover{
+    &:hover {
       cursor: pointer;
       background-color: $blanc;
       color: $roseL;
       border: thin solid $roseL;
     }
   }
-   .vertical-bar {
+  .vertical-bar {
     width: 0px;
     // height: 100%;
     border: 1px solid $roseL;
