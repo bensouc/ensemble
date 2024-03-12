@@ -23,6 +23,13 @@ class School < ApplicationRecord
 
   # Instance Methods
 
+  def add_teacher(teacher, super_teacher = false)
+    # remove previous school_roles
+    teacher.school_role.destroy
+    # create school_role
+    SchoolRole.create(user: teacher, school: self, super_teacher:)
+  end
+
   def special_domains?
     special_domains
   end

@@ -2,13 +2,16 @@
 <%= turbo_frame_tag 'sequence' do %>
 	<h1 class='sub-title'>Votre école / groupe</h1>
 	<div class='sub-title-code'></div>
-	<div class='sub-form'>
-		<div class="school-input">
-			<p>Nom de l'école :</p>
-			<p>Email :</p>
-			<p style='margin-top: 1rem;'>Ville :</p>
-		</div>
-		<%= simple_form_for School.new, html: { novalidate: false} do |f|%>
+	<%= simple_form_for @school, html: { novalidate: false} do |f|%>
+  <%# ERROR MANAGEMENT  %>
+
+
+		<div class='sub-form'>
+			<div class="school-input">
+				<p>Nom de l'école :</p>
+				<p>Email :</p>
+				<p style='margin-top: 1rem;'>Ville :</p>
+			</div>
 			<div class="school-input">
 				<%= f.input :name, label:false, required: true %>
 				<%= f.input :email, label:false, required: true,   hint: 'Peux être diffèrent de celui de votre compte individuel' %>
@@ -30,7 +33,7 @@
 		<% end %>
 	<% end %>
 	<div class="bottom">
-		<%= link_to  new_subscription_path, class:'back-link ms-3' do%>
+		<%= link_to  subscriptions_on_boarding_path, class:'back-link ms-3' do%>
 			<i class="fa-solid fa-circle-left"></i> Retour
 		<% end %>
 	</div>

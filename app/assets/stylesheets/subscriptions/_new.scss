@@ -162,9 +162,67 @@
       border: thin solid $roseL;
     }
   }
-  .vertical-bar {
-    width: 0px;
-    // height: 100%;
-    border: 1px solid $roseL;
+}
+.vertical-bar {
+  width: 0px;
+  // height: 100%;
+  border: 1px solid $roseL;
+}
+
+.subscription-input {
+  display: flex;
+  flex-direction: column;
+justify-content: space-around;
+
+  height: 200px;
+  gap: 30px;
+  p {
+    text-align: end;
+    padding-right: 1rem;
   }
+  .form-control{
+    border-radius: 0.5rem !important;
+    width: fit-content !important;
+  }
+}
+.display-sub{
+  border: thin solid $grisC;
+  padding: 0.5rem;
+  border-radius: 0.5rem !important;
+  width: 11.5ch;
+}
+.sub-global-form{
+  margin: 3rem 0;
+  display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: nowrap;
+    // .subscription-input{
+    //   gap: 2.45rem !important;
+    // }
+}
+.sub-right-form{
+  display: flex;
+  width: 40%;
+  gap: 1rem;
+}
+.sub-input{
+  text-align: end;
+  display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-content: space-around;
+    height: auto;
+    gap: 1rem;
+    justify-content: space-evenly;
+    p{
+      margin: 0;
+    }
+}
+.subscription-input-right {
+    display: flex;
+    flex-direction: column;
+    align-content: space-around;
+    height: 100%;
+    justify-content: space-around;
 }

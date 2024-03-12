@@ -13,6 +13,9 @@ class SubscriptionPolicy < ApplicationPolicy
   def success?
     true
   end
+  def on_boarding?
+    true
+  end
 
   def new?
   true

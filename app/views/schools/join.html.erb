@@ -7,7 +7,7 @@
 		<%= f.input :school_code, required: true, label:false, input_html:{placeholder:"Entrez votre code école"}, hint: 'ex: CODEECOLE' %>
 		<%= f.submit "OK", class: "add-school-code-btn", data: {turbo_frame: "_top"}%>
 	<% end %>
-	<%= link_to  new_subscription_path, class:'back-link ms-3' do%>
+	<%= link_to  subscriptions_on_boarding_path, class:'back-link ms-3' do%>
 		<i class="fa-solid fa-circle-left"></i> Retour
 	<% end %>
 <% end %>

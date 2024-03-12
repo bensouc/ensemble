@@ -1,0 +1,6 @@
+<%= turbo_stream.replace "top-sequence" do%>
+  <%= render 'shared/sequence_4', sequence: @sequence %>
+<%end%>
+<%= turbo_stream.replace "sequence" do%>
+  <%= render 'subscriptions/form', sequence: @sequence %>
+<%end%>

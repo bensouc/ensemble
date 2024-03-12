@@ -1,48 +1,35 @@
-<script async
-  src="https://js.stripe.com/v3/buy-button.js"></script>
-<div class="container backg-image-sub" data-controller='subscriptionnewtab'>
-	<div class="speech w-50">
-		<h3 class='p-2'>Bénéficiez de 25 jours d'essai, quelle que soit la durée de votre abonnement choisie.</h3>
-	</div>
-	<div class="stripe-card-select-subscription w-100" >
-		<div class="stripe-card-select-subscription-cards w-100">
-			<div class="left-card-sub_new">
-				<div class="sub_header">
-					<div class="period-sub-btn active left-sub-btn" data-subscriptionnewtab-target="tab1" data-action="click->subscriptionnewtab#displayAnnual">
-						<h4>Annuel</h4>
-						<p>50€ / an</p>
+<%= turbo_frame_tag "sequence" do%>
+	<h1 class='sub-title'>Abonnement pour <%=school.name.capitalize%></h1>
+	<%= simple_form_for Subscription.new, html: { novalidate: false,
+  data:{controller:'calculate-subscription',
+  calculate_subscription_target:'form',
+  calculate_subscription_tarifs_value:"#{raw Subscription::TARIFS.to_json}" }} do |f|%>
+		<div>
+			<div class="sub-global-form">
+				<div class='sub-form'>
+					<div class="subscription-input">
+						<p>Renouvellement :</p>
+						<p >Nb de classe :</p>
 					</div>
-					<div class="period-sub-btn right-sub-btn" data-subscriptionnewtab-target="tab2" data-action="click->subscriptionnewtab#displayMontlhy">
-						<h4>Mensuel</h4>
-						<p>5€/mois</p>
+					<div class="subscription-input">
+						<%= f.input :rythm, label:false,collection: ["Annuel","Mensuel"],selected:"Annuel", required: true,
+            input_html:{data:{action:'change->calculate-subscription#calculate',calculate_subscription_target:'rythm' }} %>
+						<%= f.input :quantity, label:false, collection: (1..15),selected: 1, required: true,
+            input_html:{data:{action:'change->calculate-subscription#calculate',calculate_subscription_target:'quantity'}} %>
 					</div>
-					<div class="separator active" data-subscriptionnewtab-target="separator"></div>
 				</div>
-				<div class="subscription-detail">
-					<h3><i class="fa-solid fa-check" style="color: #51d237;"></i>Inclus dés la période d'essai</h3>
-					<p><i class="fa-solid fa-infinity"></i>Plans de travail illimités</p>
-					<p><i class="fa-solid fa-infinity"></i>Ajout d'Exercice illimité</p>
-					<p><i class="fa-solid fa-gears"></i>Génération Automatique de Plan de Travail</p>
-					<p><i class="fa-solid fa-graduation-cap"></i>Evaluation Individuelle</p>
-					<p><i class="fa-solid fa-people-roof"></i>Jusque deux classes par Professeur</p>
-					<p><i class="fa-solid fa-chalkboard-user"></i>Un maximun de 40 élèves par Professeur</p>
+				<div class="vertical-bar"></div>
+				<div class="sub-right-form">
+					<div class="sub-input">
+						<p>Fin période d'essai :</p>
+						<p>Coût Total :</p>
+						<p>Coût Mensuel (arrondi) :</p>
+						<p>Date de renouvellement :</p>
+					</div>
+            <%= render 'sub_cost' %>
 				</div>
 			</div>
-			<stripe-buy-button
-        buy-button-id="buy_btn_1NKhsRD36LSTpclfRo3a06ik"
-        publishable-key="<%= ENV["STRIPE_PUBLISHABLE_KEY"]%>"
-        customer-email="<%= current_user.email %>"
-        data-subscriptionnewtab-target="annualysub">
-			</stripe-buy-button>
-			<stripe-buy-button
-        buy-button-id="buy_btn_1NKhxrD36LSTpclfpceKs7aW"
-        publishable-key="<%= ENV["STRIPE_PUBLISHABLE_KEY"]%>"
-        customer-email="<%= current_user.email %>"
-        class='d-none'
-        data-subscriptionnewtab-target="monthlysub">
-			</stripe-buy-button>
+			<%= f.submit "Etape suivante", class: "create-school-code-btn", data: {turbo_frame: "_top"}%>
 		</div>
-		<%# <%= button_to "demarrer un abonnement annuel", subscriptions_path(type: "annualy"), data:{turbo:"false"} %>
-		<%# <%= button_to "demarrer un abonnement mensuel", subscriptions_path(type: "monthly"), data:{turbo:"false"} %>
-	</div>
-</div>
+	<% end %>
+<% end %>

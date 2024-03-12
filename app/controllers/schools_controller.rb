@@ -8,21 +8,24 @@ class SchoolsController < ApplicationController
   end
 
   def new
-    authorize School
+    @school = School.new
+    authorize @school
     @sequence = 2
   end
-  def create
-    raise
-    @school = School.new(school_params)
-    @school.save
-    levels = params[:levels][:grades][1..-1]
-    levels.each do |grade|
-      Grade.create(school: @school, grade_level: grade)
-    end
-    # creation subscription
-    redirect_to
-    # grades creation
 
+  def create
+    @school = School.new(school_params)
+    authorize @school
+    if @school.save
+      prepare_grades_and_school_role
+      @sequence = 3
+      respond_to do |format|
+        format.html { redirect_to new_subscription_path }
+        format.turbo_stream
+      end
+    else
+      render :new, status: :unprocessable_entity
+    end
   end
 
   def join
@@ -31,6 +34,14 @@ class SchoolsController < ApplicationController
   end
 
   private
+
+  def prepare_grades_and_school_role
+    levels = params[:levels][:grades][1..-1]
+    levels.each do |grade|
+      Grade.create(school: @school, grade_level: grade)
+    end
+    @school.add_teacher(current_user, true)
+  end
 
   def set_school
     @school = School.includes([:users, :classrooms]).find(params[:id])

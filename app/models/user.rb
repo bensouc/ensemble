@@ -20,7 +20,7 @@ class User < ApplicationRecord
   # belongs_to :school
   has_one :school_role, dependent: :destroy # Un utilisateur a une seule school_role
   has_one :school, through: :school_role # Un utilisateur appartient à une seule école à travers schoolRole
-  has_one :subscription, through: :school
+   has_one :subscription, through: :school
   has_many :classrooms, dependent: :destroy
   has_many :work_plans, dependent: :destroy
   has_many :shared_work_plans, class_name: "WorkPlan", foreign_key: "shared_user_id",

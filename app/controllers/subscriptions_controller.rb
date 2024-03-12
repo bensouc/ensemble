@@ -5,10 +5,20 @@ class SubscriptionsController < ApplicationController
       authorize Subscription
   end
 
-  def new
+  def on_boarding
     authorize Subscription
     @sequence = 1
-    # @subscription = Subscription.new
+  end
+
+  def calculate
+    binding.pry
+  end
+
+  def new
+    @sequence = 3
+    @school = current_user.school
+    @subscription = Subscription.new
+    authorize @subscription
     # @customer = StripeHelper.get_or_create_customer(current_user)
   end
 

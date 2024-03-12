@@ -74,6 +74,8 @@ Rails.application.routes.draw do
   # ###############END OF STRIPE ROUTES ############
 
   # ############### Subscriptions ###############
+  get "subscriptions/on_boarding", to: "subscriptions#on_boarding"
+  get "subscriptions/calculate_cost", to: "subscriptions#calculate"
   resources :subscriptions, only: [:create, :new]
   get "subscriptions/success", to: "subscriptions#success"
   get "subscriptions/cancel", to: "subscriptions#cancel"

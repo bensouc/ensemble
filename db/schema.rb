@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_11_164847) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_12_103435) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -172,6 +172,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_11_164847) do
     t.string "plan_id"
     t.date "start_date"
     t.date "trial_end"
+    t.string "rythm", default: "annuel"
     t.index ["school_id"], name: "index_subscriptions_on_school_id"
   end
 
