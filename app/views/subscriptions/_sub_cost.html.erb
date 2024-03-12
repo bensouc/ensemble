@@ -8,9 +8,11 @@
 			<%= c.input_field :montly_cost,readonly: true,value: "#{(50.0/12).round(3)} €", class:'display-sub',
               data: {calculate_subscription_target:'monthlyCost'},
                label:false, required: true %>
-			<%= c.input_field :renewal_date,readonly: true, class:'display-sub',
+			<%= c.input_field :current_period_end,readonly: true, class:'display-sub',
               data: {calculate_subscription_target:'renewDate'},
               value: (Date.today + 365 + 25).strftime("%d/%m/%Y"), label:false, required: true %>
+      <%= c.input_field :current_period_start,class: 'd-none',  label:false, required: true, value: Date.today%>
+
 		<% end %>
 	</div>
 <% end %>

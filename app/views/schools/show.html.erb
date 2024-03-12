@@ -59,7 +59,7 @@
 		<div class="subscription-details --border-10px">
 			<% if  @subscription.nil? %>
 				Vous n'avez pas encore d'abonnement
-				<%=link_to "Abonnez-vous", "#", class: "btn-flat text-center" if !current_user.demo%>
+				<%=link_to "Abonnez-vous",  new_subscription_path, class: "btn-flat text-center" if !current_user.demo%>
 			<% else %>
 				<h3>Détails de votre Abonnement</h3>
 				Code pour intégrer des utilisateurs Demo :

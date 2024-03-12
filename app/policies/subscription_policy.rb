@@ -13,12 +13,17 @@ class SubscriptionPolicy < ApplicationPolicy
   def success?
     true
   end
+
   def on_boarding?
     true
   end
 
-  def new?
-  true
+  # def new?
+  #   create?
+  # end
+
+  def create?
+    true
   end
 
   private

@@ -25,12 +25,12 @@
 							<!--# STRIPE SWITCH OFF -->
 							<% unless current_user.demo? %>
 								<% if (current_user.super_teacher?) %>
-									<% if current_user.subscription && current_user.subscription.active_or_trialing?%>
+									<% if current_user.school.subscription || current_user.school.subscription.active_or_trialing?%>
 										<form method="GET" action="/create-customer-portal-session" data-turbo="false">
 											<button type="submit" class= "dropdown-item">Gérer votre abonnement</button>
 										</form>
 									<% else %>
-										<%=link_to "Abonnez-vous", subscriptions_school_pricing_path, class: "dropdown-item"%>
+										<%=link_to "Abonnez-vous", new_subscription_path, class: "dropdown-item"%>
 									<% end %>
 								<% end %>
 							<% end %>
