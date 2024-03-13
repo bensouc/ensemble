@@ -1,7 +1,6 @@
 <div class="domain-form-box form-domain-btn" >
 	<%= simple_form_for [domain], html: { novalidate: false } do  |f| %>
-		<div class="domain-form
-">
+		<div class="domain-form">
 			<%= f.input :name, label: false,input_html:{maxlength:29}, required: true,class: '--bgc-transparent',
       placeholder: 'Nom du domaine' %>
 			<div class="d-none">

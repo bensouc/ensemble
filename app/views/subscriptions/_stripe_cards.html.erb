@@ -1,0 +1,48 @@
+<script async
+  src="https://js.stripe.com/v3/buy-button.js"></script>
+<div class="container backg-image-sub" data-controller='subscriptionnewtab'>
+	<div class="speech w-50">
+		<h3 class='p-2'>Bénéficiez de 25 jours d'essai, quelle que soit la durée de votre abonnement choisie.</h3>
+	</div>
+	<div class="stripe-card-select-subscription w-100" >
+		<div class="stripe-card-select-subscription-cards w-100">
+			<div class="left-card-sub_new">
+				<div class="sub_header">
+					<div class="period-sub-btn active left-sub-btn" data-subscriptionnewtab-target="tab1" data-action="click->subscriptionnewtab#displayAnnual">
+						<h4>Annuel</h4>
+						<p>50€ / an</p>
+					</div>
+					<div class="period-sub-btn right-sub-btn" data-subscriptionnewtab-target="tab2" data-action="click->subscriptionnewtab#displayMontlhy">
+						<h4>Mensuel</h4>
+						<p>5€/mois</p>
+					</div>
+					<div class="separator active" data-subscriptionnewtab-target="separator"></div>
+				</div>
+				<div class="subscription-detail">
+					<h3><i class="fa-solid fa-check" style="color: #51d237;"></i>Inclus dés la période d'essai</h3>
+					<p><i class="fa-solid fa-infinity"></i>Plans de travail illimités</p>
+					<p><i class="fa-solid fa-infinity"></i>Ajout d'Exercice illimité</p>
+					<p><i class="fa-solid fa-gears"></i>Génération Automatique de Plan de Travail</p>
+					<p><i class="fa-solid fa-graduation-cap"></i>Evaluation Individuelle</p>
+					<p><i class="fa-solid fa-people-roof"></i>Jusque deux classes par Professeur</p>
+					<p><i class="fa-solid fa-chalkboard-user"></i>Un maximun de 40 élèves par Professeur</p>
+				</div>
+			</div>
+			<stripe-buy-button
+        buy-button-id="buy_btn_1NKhsRD36LSTpclfRo3a06ik"
+        publishable-key="<%= ENV["STRIPE_PUBLISHABLE_KEY"]%>"
+        customer-email="<%= current_user.email %>"
+        data-subscriptionnewtab-target="annualysub">
+			</stripe-buy-button>
+			<stripe-buy-button
+        buy-button-id="buy_btn_1NKhxrD36LSTpclfpceKs7aW"
+        publishable-key="<%= ENV["STRIPE_PUBLISHABLE_KEY"]%>"
+        customer-email="<%= current_user.email %>"
+        class='d-none'
+        data-subscriptionnewtab-target="monthlysub">
+			</stripe-buy-button>
+		</div>
+		<%# <%= button_to "demarrer un abonnement annuel", subscriptions_path(type: "annualy"), data:{turbo:"false"} %>
+		<%# <%= button_to "demarrer un abonnement mensuel", subscriptions_path(type: "monthly"), data:{turbo:"false"} %>
+	</div>
+</div>

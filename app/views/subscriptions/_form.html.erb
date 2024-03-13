@@ -1,0 +1,47 @@
+<%= turbo_frame_tag "sequence" do%>
+	<h1 class='sub-title'>Abonnement pour <%=school.name.capitalize%></h1>
+	<%= simple_form_for Subscription.new, html: { novalidate: false,
+  data:{
+  turbo: false,
+  controller:'calculate-subscription',
+  calculate_subscription_target:'form',
+  calculate_subscription_tarifs_value:"#{raw Subscription::TARIFS.to_json}" }} do |f|%>
+		<div class="sub-global-form">
+			<div class='sub-form'>
+				<div class="subscription-input">
+					<p>Renouvellement</p>
+					<p >Nb de classe</p>
+				</div>
+				<div class="subscription-input">
+					<%= f.input :rythm, label:false,collection: ["Annuel","Mensuel"],selected:"Annuel", required: true,
+            input_html:{data:{action:'change->calculate-subscription#calculate',calculate_subscription_target:'rythm' }} %>
+					<%= f.input :quantity, label:false, collection: (1..15),selected: 1, required: true,
+            input_html:{data:{action:'change->calculate-subscription#calculate',calculate_subscription_target:'quantity'}} %>
+				</div>
+			</div>
+			<div class="vertical-bar"></div>
+			<div class="sub-right-form">
+				<div class="sub-input">
+					<p>Fin période d'essai</p>
+					<p>Coût Total</p>
+					<p>Coût Mensuel (arrondi)</p>
+					<p>Date de renouvellement</p>
+				</div>
+				<div class="subscription-input-right">
+					<%= f.input_field :trial_end,readonly: true, class:'display-sub',html5: true, value: (Date.today + 25), label:false, required: true %>
+					<%= f.input_field :total_cost,readonly: true, value: "50 €", class:'display-sub',
+              data: {calculate_subscription_target:'totalCost'},
+               label:false, required: true %>
+					<%= f.input_field :montly_cost,readonly: true,value: "#{(50.0/12).round(3)} €", class:'display-sub',
+              data: {calculate_subscription_target:'monthlyCost'},
+               label:false, required: true %>
+					<%= f.input_field :current_period_end,readonly: true, class:'display-sub',
+              data: {calculate_subscription_target:'renewDate'},html5: true,
+              value: (Date.today + 365 + 25), label:false, required: true %>
+					<%= f.input_field :current_period_start,class: 'd-none',html5:true,  label:false, required: true, value: Date.today%>
+				</div>
+			</div>
+		</div>
+		<%= f.submit "Etape suivante", class: "create-school-code-btn"%>
+	<% end %>
+<% end %>

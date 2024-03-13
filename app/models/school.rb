@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class School < ApplicationRecord
-  has_many :school_roles # Une école a plusieurs school_roles
+  has_many :school_roles, dependent: :destroy # Une école a plusieurs school_roles
   has_many :users, through: :school_roles # Une école a plusieurs utilisateurs à travers schoolRole
   has_many :classrooms, through: :users
   has_many :skills, dependent: :destroy
@@ -23,12 +23,19 @@ class School < ApplicationRecord
 
   # Instance Methods
 
+  def add_teacher(teacher, super_teacher = false)
+    # remove previous school_roles
+    teacher.school_role.destroy
+    # create school_role
+    SchoolRole.create(user: teacher, school: self, super_teacher:)
+  end
+
   def special_domains?
     special_domains
   end
 
   def valid_subscription?
-    subscription&.valid_subscription?
+    subscription&.active_or_trialing?
   end
 
   def super_teachers
