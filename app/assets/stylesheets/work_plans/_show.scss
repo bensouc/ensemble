@@ -129,19 +129,25 @@
 .tag-selector {
   position: absolute;
   transform: scale(0);
+
 }
 
 .tag-selector + label {
   cursor: pointer;
   display: inline-block;
   font-size: 1rem;
-  border-radius: 50rem;
+  border-radius: 0.5rem;
   padding: 0.1rem 0.5rem;
   background-color: #ffeaed78;
+  border: thin solid $roseL;
   color: $rose;
   // border: 3px solid $rose;
   margin-right: 1rem;
   margin-bottom: 1rem;
+  &:hover{
+    transform: scale(1.2);
+    transition: 0.5s ease;
+  }
 }
 
 .tag-selector + label {

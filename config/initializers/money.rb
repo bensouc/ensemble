@@ -1,2 +1,2 @@
 # STRIPE SWITCH OFF
-# Money.default_currency = Money::Currency.new("EUR")
+Money.default_currency = Money::Currency.new("EUR")

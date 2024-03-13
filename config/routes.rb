@@ -69,16 +69,18 @@ Rails.application.routes.draw do
   #   mount StripeEvent::Engine, at: "/stripe-webhooks"
   # end
   get "create-customer-portal-session", to: "stripe/stripe#create_portal_session"
+  # get "/session-status", to: "stripe/checkouts#session_status"
   post "stripe-webhooks", to: "stripe/stripe_webhooks#create"
-  post "create-subscription-checkout", to: "stripe/checkouts#create_subscription_checkout"
+  # get "subscription-checkout", to: "stripe/checkouts#subscription_checkout"
   # ###############END OF STRIPE ROUTES ############
 
   # ############### Subscriptions ###############
+  get "subscriptions/on_boarding", to: "subscriptions#on_boarding"
   resources :subscriptions, only: [:create, :new]
   get "subscriptions/success", to: "subscriptions#success"
   get "subscriptions/cancel", to: "subscriptions#cancel"
   get "subscriptions/school_pricing", to: "subscriptions#school_pricing"
-   # ###############END OF Subscriptions ROUTES############
+  # ###############END OF Subscriptions ROUTES############
 
   # ###############routes for SKILLS###############
   resources :skills
@@ -87,8 +89,9 @@ Rails.application.routes.draw do
   resources :challenges, only: [:show, :edit, :update, :destroy, :index, :new, :create]
 
   # ###############routes for SCHOOL/SCHOOL_ROLES###############
-  resources :schools, only: %w[show new create]
   get 'schools/join', to: "schools#join", as: :join_school
+  post 'schools/create_sub_with_code', to: "school_roles#create"
+  resources :schools, only: %w[show new create]
 
   # ###############    routes for GRADES /DOMAINS        ###############
   resources :grades, only: [:show, :destroy, :index, :new, :create] do

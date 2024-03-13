@@ -38,11 +38,11 @@ class User < ApplicationRecord
 
   # Methods
   def admin?
-    admin
+    admin == true
   end
 
   def demo?
-    demo
+    demo == true
   end
 
   def super_teacher?
@@ -55,7 +55,6 @@ class User < ApplicationRecord
     shared_classrooms.each { |shared_classroom| grades << shared_classroom.classroom.grade }
     grades.uniq.sort
   end
-
 
   def classroom?
     # return true if user has a classroom

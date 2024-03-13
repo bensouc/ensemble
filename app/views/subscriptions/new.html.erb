@@ -1,19 +1,2 @@
-<div class="top-sequence">
-	<div class="sequence-box">
-		<div class="sequence-counter-box active">1</div>
-		<div class="sequence-line"></div>
-		<div class="sequence-counter-box">2</div>
-		<div class="sequence-line"></div>
-		<div class="sequence-counter-box">3</div>
-		<div class="sequence-line"></div>
-		<div class="sequence-counter-box">4</div>
-	</div>
-</div>
-<div class="sub-sequence-selection">
-  <%= link_to join_school_path do%>
-    <div class="action-school-box">Rejoindre une école</div>
-  <% end %>
-  <div class="vertical-bar"></div>
-  <div class="action-school-box">Créer votre groupe / école
-</div>
-</div>
+<%= render 'shared/sequence_4', sequence: @sequence %>
+<%= render 'form', school: @school %>

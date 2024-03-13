@@ -24,4 +24,9 @@ module ApplicationHelper
       censored_domain = domain.gsub(/(?<=.{1}).(?=.*\.)/, "*")
       "#{censored_username}@#{censored_domain}"
   end
+
+      def self.default_url_options
+    { host: ENV["DOMAIN"] || "http://localhost:3000" }
+  end
+
 end

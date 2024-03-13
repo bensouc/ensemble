@@ -6,7 +6,7 @@ class Stripe::Checkout::SessionPolicy < ApplicationPolicy
     end
   end
 
-  def create_subscription_checkout?
+  def subscription_checkout?
     true
   end
 end
