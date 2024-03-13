@@ -11,6 +11,4 @@ class Stripe::StripeController < ApplicationController
     authorize session
     redirect_to session.url, allow_other_host: true
   end
-
-
 end

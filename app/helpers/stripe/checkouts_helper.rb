@@ -5,7 +5,8 @@ module Stripe::CheckoutsHelper
       {
         line_items: [{
           # Provide the exact Price ID (e.g. pr_1234) of the product you want to sell
-          price: subscription.rythm == "Annuel" ? "price_1OtX5nD36LSTpclfRBqKPWul" : "price_1OtX5nD36LSTpclfOFDkQVHe",
+          # price: subscription.rythm == "Annuel" ? "price_1OtX5nD36LSTpclfRBqKPWul" : "price_1OtX5nD36LSTpclfOFDkQVHe",
+          price: subscription.rythm == "Annuel" ? "price_1OtuN7D36LSTpclfpGGYP877" : "price_1OtuN7D36LSTpclflZF7tIlC",
           quantity: subscription.quantity
         }],
         mode: "subscription",
