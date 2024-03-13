@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   after_action :verify_policy_scoped, only: :index, unless: :skip_pundit?
 
   def default_url_options
-    { host: ENV["DOMAIN"] || "localhost:3000" }
+    { host: ENV["DOMAIN"] || "http://localhost:3000" }
   end
 
   def configure_permitted_parameters

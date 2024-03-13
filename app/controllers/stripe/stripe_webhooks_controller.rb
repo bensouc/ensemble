@@ -34,9 +34,9 @@ class Stripe::StripeWebhooksController < ApplicationController
         product = Product.find_by(stripe_product_id: line_item.price.product)
         product.increment!(:sales_count)
       end
-    when "customer.created"
-      @customer = Stripecustomer.add_stripe_customer(event)
-      puts "Customer created: #{@customer.email} // #{@customer.id} // #{event.id}}"
+    when "customer.updated"
+      @customer = Stripecustomer.update_stripe_customer(event)
+      puts "Customer updated: #{@customer.email} // #{@customer.id} // #{event.id}}"
     when "customer.deleted"
       @customer = Stripecustomer.remove_stripe_customer(event)
       puts "Customer id remove for : #{@customer.email} // #{@customer.id}}"

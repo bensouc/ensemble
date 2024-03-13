@@ -9,7 +9,6 @@ module StripeHelper
         customer = Stripe::Customer.retrieve(client.stripe_customer_id)
       # TODO: check if customer is valid / not deleted
       rescue Stripe::InvalidRequestError => e
-        raise
         customer = Stripe::Customer.create(email: client.email)
         client.stripe_customer_id = customer.id
         client.save

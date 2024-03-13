@@ -1,5 +1,5 @@
 module Stripe::CheckoutsHelper
-    def self.create_subscription_checkout(customer, subscription)
+  def self.create_subscription_checkout(customer, subscription)
     Stripe.api_key = ENV.fetch("STRIPE_API_KEY", nil)
     Stripe::Checkout::Session.create(
       {
@@ -11,8 +11,8 @@ module Stripe::CheckoutsHelper
         mode: "subscription",
         customer:,
         locale: "fr",
-        success_url: "https://app-ensemble.fr" + "subscriptions/success.html?session_id={CHECKOUT_SESSION_ID}",
-        cancel_url: "https://app-ensemble.fr" + "subscriptions/new",
+        success_url: "#{default_url_options[:host]}/" + "subscriptions/success.html?session_id={CHECKOUT_SESSION_ID}",
+        cancel_url: "#{default_url_options[:host]}/" + "subscriptions/new",
         subscription_data: {
           trial_period_days: 25 # Ajouter la période d'essai de 25 jours ici
         }

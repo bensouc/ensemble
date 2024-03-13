@@ -35,7 +35,7 @@ class School < ApplicationRecord
   end
 
   def valid_subscription?
-    subscription&.valid_subscription?
+    subscription&.active_or_trialing?
   end
 
   def super_teachers

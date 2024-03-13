@@ -5,11 +5,14 @@ class SubscriptionsController < ApplicationController
   end
 
   def on_boarding
+    redirect_to dashboard_path, notice: "Vous avez déjà un abonnement" if current_user.school.valid_subscription?
+
     authorize Subscription
     @sequence = 1
   end
 
   def new
+    redirect_to dashboard_path, notice: "Vous avez déjà un abonnement" if current_user.school.valid_subscription?
     @sequence = 3
     @school = current_user.school
     @subscription = Subscription.new
@@ -33,6 +36,7 @@ class SubscriptionsController < ApplicationController
 
   def success
     authorize Subscription
+    @sequence = 4
     #     Stripe.api_key = ENV["STRIPE_API_KEY"]
     # @subscription = Stripe::Subscription.retrieve( current_user.subscription.external_id)
   end
