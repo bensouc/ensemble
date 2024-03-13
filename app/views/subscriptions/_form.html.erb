@@ -1,7 +1,9 @@
 <%= turbo_frame_tag "sequence" do%>
 	<h1 class='sub-title'>Abonnement pour <%=school.name.capitalize%></h1>
 	<%= simple_form_for Subscription.new, html: { novalidate: false,
-  data:{controller:'calculate-subscription',
+  data:{
+  turbo: false,
+  controller:'calculate-subscription',
   calculate_subscription_target:'form',
   calculate_subscription_tarifs_value:"#{raw Subscription::TARIFS.to_json}" }} do |f|%>
 		<div>

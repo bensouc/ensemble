@@ -24,8 +24,8 @@ class SubscriptionsController < ApplicationController
     # @subcription.save
     @subcription.update(params.require(:costs).permit(:trial_end, :current_period_start, :current_period_end))
     @customer = StripeHelper.get_or_create_customer(current_user.school)
-    session = StripeHelper.create_subscription_checkout(@customer, @subcription)
-    redirect_to session.url, allow_other_host: true
+    @session = Stripe::CheckoutsHelper.create_subscription_checkout(@customer, @subcription)
+    redirect_to @session.url, allow_other_host: true
   end
 
   def cancel

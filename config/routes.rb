@@ -69,17 +69,18 @@ Rails.application.routes.draw do
   #   mount StripeEvent::Engine, at: "/stripe-webhooks"
   # end
   get "create-customer-portal-session", to: "stripe/stripe#create_portal_session"
+  # get "/session-status", to: "stripe/checkouts#session_status"
   post "stripe-webhooks", to: "stripe/stripe_webhooks#create"
-  post "create-subscription-checkout", to: "stripe/checkouts#create_subscription_checkout"
+  # get "subscription-checkout", to: "stripe/checkouts#subscription_checkout"
   # ###############END OF STRIPE ROUTES ############
 
   # ############### Subscriptions ###############
   get "subscriptions/on_boarding", to: "subscriptions#on_boarding"
-   resources :subscriptions, only: [:create, :new]
+  resources :subscriptions, only: [:create, :new]
   get "subscriptions/success", to: "subscriptions#success"
   get "subscriptions/cancel", to: "subscriptions#cancel"
   get "subscriptions/school_pricing", to: "subscriptions#school_pricing"
-   # ###############END OF Subscriptions ROUTES############
+  # ###############END OF Subscriptions ROUTES############
 
   # ###############routes for SKILLS###############
   resources :skills
