@@ -1,18 +1,2 @@
-<%= turbo_frame_tag 'sub_cost' do %>
-	<div class="subscription-input-right">
-		<%=simple_form_for :costs do |c|%>
-			<%= c.input_field :trial_end,readonly: true, class:'display-sub', value: (Date.today + 25).strftime("%d/%m/%Y"),html5:true, label:false, required: true %>
-			<%= c.input_field :total_cost,readonly: true, value: "50 €", class:'display-sub',
-              data: {calculate_subscription_target:'totalCost'},
-               label:false, required: true %>
-			<%= c.input_field :montly_cost,readonly: true,value: "#{(50.0/12).round(3)} €", class:'display-sub',
-              data: {calculate_subscription_target:'monthlyCost'},
-               label:false, required: true %>
-			<%= c.input_field :current_period_end,readonly: true, class:'display-sub',
-              data: {calculate_subscription_target:'renewDate'},
-              value: (Date.today + 365 + 25).strftime("%d/%m/%Y"), label:false, required: true %>
-      <%= c.input_field :current_period_start,class: 'd-none',  label:false, required: true, value: Date.today%>
 
-		<% end %>
-	</div>
-<% end %>
+

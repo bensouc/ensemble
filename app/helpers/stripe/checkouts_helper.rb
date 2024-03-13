@@ -11,8 +11,8 @@ module Stripe::CheckoutsHelper
         mode: "subscription",
         customer:,
         locale: "fr",
-        success_url: "#{default_url_options[:host]}/" + "subscriptions/success.html?session_id={CHECKOUT_SESSION_ID}",
-        cancel_url: "#{default_url_options[:host]}/" + "subscriptions/new",
+        success_url: "#{ApplicationHelper::default_url_options[:host]}/" + "subscriptions/success.html?session_id={CHECKOUT_SESSION_ID}",
+        cancel_url: "#{ApplicationHelper::default_url_options[:host]}/" + "subscriptions/new",
         subscription_data: {
           trial_period_days: 25 # Ajouter la période d'essai de 25 jours ici
         }

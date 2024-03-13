@@ -172,8 +172,7 @@
 .subscription-input {
   display: flex;
   flex-direction: column;
-justify-content: space-around;
-
+  justify-content: space-around;
   height: 200px;
   gap: 30px;
   p {
@@ -189,7 +188,7 @@ justify-content: space-around;
   border: thin solid $grisC;
   padding: 0.5rem;
   border-radius: 0.5rem !important;
-  width: 11.5ch;
+  width: 13.1ch;
 }
 .sub-global-form{
   margin: 3rem 0;
@@ -203,8 +202,8 @@ justify-content: space-around;
 }
 .sub-right-form{
   display: flex;
-  width: 40%;
-  gap: 1rem;
+  // width: 40%;
+  gap: 0.5rem;
 }
 .sub-input{
   text-align: end;

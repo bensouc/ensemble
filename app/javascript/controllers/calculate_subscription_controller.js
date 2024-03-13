@@ -12,8 +12,8 @@ export default class extends Controller {
 
   }
   calculate() {
-    console.log('calculate');
-    console.log(this.tarifsValue)
+    // console.log('calculate');
+    // console.log(this.tarifsValue)
     // const url = '../subscriptions/on_boarding';
     const tarifs = this.tarifsValue
     const rythm = this.rythmTarget.value;
@@ -56,6 +56,6 @@ export default class extends Controller {
   let annee = date.getFullYear();
 
   // Formater la date au format "jour/mois/année"
-  return `${jour}/${mois}/${annee}`;
+  return `${annee}-${mois}-${jour}`;
 }
 }

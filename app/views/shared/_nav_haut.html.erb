@@ -25,7 +25,7 @@
 							<!--# STRIPE SWITCH OFF -->
 							<% unless current_user.demo? %>
 								<% if (current_user.super_teacher?) %>
-									<% if current_user.school.subscription || current_user.school.subscription.active_or_trialing?%>
+									<% if current_user.school.subscription && current_user.school.subscription.active_or_trialing?%>
 										<form method="GET" action="/create-customer-portal-session" data-turbo="false">
 											<button type="submit" class= "dropdown-item">Gérer votre abonnement</button>
 										</form>

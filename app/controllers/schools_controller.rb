@@ -41,6 +41,7 @@ class SchoolsController < ApplicationController
       Grade.create(school: @school, grade_level: grade)
     end
     @school.add_teacher(current_user, true)
+    current_user.update(demo: false)
   end
 
   def set_school

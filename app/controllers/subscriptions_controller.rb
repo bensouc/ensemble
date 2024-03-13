@@ -21,11 +21,11 @@ class SubscriptionsController < ApplicationController
   end
 
   def create
-    @subcription = Subscription.new(params.require(:subscription).permit(:rythm, :quantity))
-    authorize @subcription
+    @subcription = Subscription.new(subscription_params)
     @subcription.school = current_user.school
+    authorize @subcription
     # @subcription.save
-    @subcription.update(params.require(:costs).permit(:trial_end, :current_period_start, :current_period_end))
+    # @subcription.update(params.require(:costs).permit(:trial_end, :current_period_start, :current_period_end))
     @customer = StripeHelper.get_or_create_customer(current_user.school)
     @session = Stripe::CheckoutsHelper.create_subscription_checkout(@customer, @subcription)
     redirect_to @session.url, allow_other_host: true
@@ -39,5 +39,8 @@ class SubscriptionsController < ApplicationController
     @sequence = 4
     #     Stripe.api_key = ENV["STRIPE_API_KEY"]
     # @subscription = Stripe::Subscription.retrieve( current_user.subscription.external_id)
+  end
+  def subscription_params
+    params.require(:subscription).permit(:rythm, :quantity,:trial_end,:current_period_start,:current_period_end)
   end
 end
