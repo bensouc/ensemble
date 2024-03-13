@@ -104,9 +104,11 @@ class StudentsController < ApplicationController
     skip_authorization
     student = Student.find(params_new_validated_wps[:student_id])
     skill = []
-    skill << Skill.for_school(current_user.school).find(params_new_validated_wps[:skill_id])
+    skill << Skill.find(params_new_validated_wps[:skill_id])
+
 
     special_work_plan = student.find_special_workplan
+    # binding.pry
     work_plan_domain = special_work_plan.work_plan_domains.find_or_create_by(
       domain: skill.first.domain,
       work_plan: special_work_plan,

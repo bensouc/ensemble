@@ -49,6 +49,7 @@ class WorkPlanDomain < ApplicationRecord
   # end
 
   def self.add_wps_completed(skills, work_plan_domain, special_work_plan)
+    # binding.pry
     last_work_plan_skill = nil
     skills.each do |skill|
       work_plan_skill = WorkPlanSkill.create!(

@@ -164,8 +164,9 @@ class WorkPlanSkillsController < ApplicationController
 
     # test if special domain
     unless @skill.special?
+      # binding.pry
       # exist il une belt pour lestudent le skill
-      belt = Belt.where(domain: @skill.domain, student: @student, level: @skill.level, grade: @skill.grade.grade_level)
+      belt = Belt.where(domain: @skill.domain, student: @student, level: @skill.level)
       # belt to be destroy?
       belt.first.destroy unless belt.empty?
     end
