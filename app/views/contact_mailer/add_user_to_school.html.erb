@@ -1,0 +1,22 @@
+<html>
+	<head>
+		<meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+	</head>
+	<body>
+
+<div style="text-align: center;">
+	<%= image_tag 'maskable_icon_512.png', width: '100px' %>
+</div>
+
+<p>Cher/Chère <%= @contact[:first_name]%>,</p>
+<p>Nous avons le plaisir de vous informer que vous avez été ajouté(e) au groupe <%= @contact.school.name.capitalize%> sur Ensemble, la plateforme de collaboration de notre école. Votre présence enrichira notre communauté et contribuera à renforcer les liens entre les membres.</p>
+<p>N'hésitez pas à explorer les différentes fonctionnalités de la plateforme Ensemble pour interagir avec les autres membres du groupe, accéder aux éléments partagés et rester informé(e) des dernières actualités.</p>
+<p>Nous vous remercions par avance de votre implication et de votre engagement.</p>
+<p>Bienvenue dans notre communauté !</p>
+<p>Cordialement,</p>
+<p>L'équipe <%= @contact.school.name.capitalize%></p>
+
+<p>Pour vous connecter, allez sur <a href="www.app-ensemble.fr"></a></p>
+<p>Voici votre mot de passe temporaire : <%= @contact.password %>. Vous pourrez le modifier lors de votre première connexion.</p>
+	</body>
+</html>

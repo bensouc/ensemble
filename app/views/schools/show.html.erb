@@ -62,17 +62,21 @@
 				<%=link_to "Abonnez-vous",  new_subscription_path, class: "btn-flat text-center" if !current_user.demo%>
 			<% else %>
 				<h3>Détails de votre Abonnement</h3>
-				Code pour intégrer des utilisateurs Demo :
-				<h4 style='text-align: center;'><%= @school.code %></h4>
-				<div class="grey-line-full"></div>
 				<p><i class="fa-solid fa-heart"></i>
 					<%= t("etats_facturation.#{@subscription.status}") %>
 					<%= "(fin le #{@subscription.trial_end})" if @subscription.status == "trialing" %>
 				</p>
-				<p><i class="fa-solid fa-repeat"></i>
-					Annuel</p>
+        <p><i class="fa-solid fa-people-roof"></i> <%= @subscription.quantity %> classe(s) </p>
+				<div class="grey-line-full"></div>
+        <h5>Renouvellement</h5>
+        <p><i class="fa-solid fa-repeat"></i>
+					<%= @subscription.rythm %>
+          </p>
 				<p><i class="fa-solid fa-calendar-xmark"></i>
 					<%= @subscription.current_period_end %></p>
+				<div class="grey-line-full"></div>
+				Code pour intégrer des utilisateurs Demo :
+				<h4 style='text-align: center;'><%= @school.code %></h4>
 			<% end %>
 		</div>
 	</div>

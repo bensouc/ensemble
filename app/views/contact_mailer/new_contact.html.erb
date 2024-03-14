@@ -1,19 +1,21 @@
 <html>
-  <head>
-    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-  </head>
-  <body>
-    <h1>Hello Ensemble Team</h1>
-    <p>
-      Un nouveau contact:<br>
-    </p>
-    <p><strong>Nom :</strong> <%= @contact[:last_name] %></p>
-    <p><strong>Prénom :</strong> <%= @contact[:first_name] %></p>
-<p><strong>Email :</strong> <%= @contact[:email] %></p>
-<p><strong>Ecole :</strong> <%= @contact[:school] %></p>
-<p><strong>Ville :</strong> <%= @contact[:city] %></p>
-<p><strong>Message :</strong> <%= @contact[:message] %></p>
-
-    <p>Thanks for joining and have a great day!</p>
-  </body>
+	<head>
+		<meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+	</head>
+	<body>
+		<div style="text-align: center;">
+			<%= image_tag 'maskable_icon_512.png', width: '100px' %>
+		</div>
+		<h1>Hello Ensemble Team</h1>
+		<p>
+			Un nouveau contact:<br>
+		</p>
+		<p><strong>Nom :</strong> <%= @contact[:last_name] %></p>
+		<p><strong>Prénom :</strong> <%= @contact[:first_name] %></p>
+		<p><strong>Email :</strong> <%= @contact[:email] %></p>
+		<p><strong>Ecole :</strong> <%= @contact[:school] %></p>
+		<p><strong>Ville :</strong> <%= @contact[:city] %></p>
+		<p><strong>Message :</strong> <%= @contact[:message] %></p>
+		<p>Thanks for joining and have a great day!</p>
+	</body>
 </html>
