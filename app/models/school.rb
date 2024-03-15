@@ -42,6 +42,13 @@ class School < ApplicationRecord
     users.where(school_roles: { super_teacher: true })
   end
 
+  def super_teachers_first_name
+
+    super_teachers.map  do |teacher|
+      teacher.first_name.capitalize
+    end.join(super_teachers.count > 1 ? ", " : "")
+  end
+
   def all_students_list
     classrooms.map { |classroom| classroom.students }.flatten
   end

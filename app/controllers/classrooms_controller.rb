@@ -1,18 +1,13 @@
 # frozen_string_literal: true
+
 # rubocop:disable Metrics/ClassLength
 
 class ClassroomsController < ApplicationController
   before_action :set_classroom, only: [:update, :destroy, :results, :results_by_domain]
+  before_action :set_classrooms, only: [:index]
 
   def index
-    @school = policy_scope(School)
-    # @shared_classrooms = SharedClassroom.where(user: current_user)
-    @shared_classrooms = policy_scope(SharedClassroom)
-    shared_classrooms = @shared_classrooms.includes([:classroom]).map(&:classroom)
-    @classrooms = (policy_scope(Classroom) + shared_classrooms).sort_by(&:created_at)
-    @school_grades = @school.grades
-    @students_list = []
-    @school_teachers = current_user.collegues
+    # binding.pry
     @classrooms.each do |classroom|
       @students_list << [classroom, classroom.students]
     end
@@ -55,7 +50,7 @@ class ClassroomsController < ApplicationController
 
   def results
     authorize @classroom
-    @domains =  Domain.where(grade: @classroom.grade).sort_by(&:position)
+    @domains = Domain.where(grade: @classroom.grade).sort_by(&:position)
     @skills = Skill.includes(:domain).where(domain: @domains)
     # @domains.map do |domain|
     #   # remove domains without skills eg:poesie
@@ -83,7 +78,7 @@ class ClassroomsController < ApplicationController
     set_up_results(@domain)
     results_factory(@domain) # create all  variables shared with the results Action
     @skills = if @domain.special?
-                Skill.where( domain: @domain).order(Arel.sql('COALESCE(sub_domain, \'\') ASC'))
+                Skill.where(domain: @domain).order(Arel.sql("COALESCE(sub_domain, '') ASC"))
               else
                 Skill.where(domain: @domain).sort
               end
@@ -98,6 +93,18 @@ class ClassroomsController < ApplicationController
 
   def set_domain
     params.require(:domain)
+  end
+
+  def set_classrooms
+    @school = policy_scope(School)
+    @subscription = @school.subscription
+    # @shared_classrooms = SharedClassroom.where(user: current_user)
+    @shared_classrooms = policy_scope(SharedClassroom)
+    shared_classrooms = @shared_classrooms.includes([:classroom]).map(&:classroom)
+    @classrooms = (policy_scope(Classroom) + shared_classrooms).sort_by(&:created_at)
+    @school_grades = @school.grades
+    @students_list = []
+    @school_teachers = current_user.collegues
   end
 
   def set_classroom_params

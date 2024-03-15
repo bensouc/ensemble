@@ -8,7 +8,7 @@ class ClassroomPolicy < ApplicationPolicy
 
   def create?
     # test demo, return true if authorize
-    user_is_owner_or_admin? && create_classroom_demo?
+    user_is_owner_or_admin? && create_classroom_demo? && sub_limit?
   end
 
   def results?
@@ -27,6 +27,10 @@ class ClassroomPolicy < ApplicationPolicy
 
   def create_classroom_demo?
     user.demo ? user.classrooms.count < 1 : true
+  end
+
+  def sub_limit?
+    user.demo || (!user.school.subscription.nil? && user.school.subscription.quantity >= user.school.classrooms.count)
   end
 
   def user_is_owner_or_admin?
