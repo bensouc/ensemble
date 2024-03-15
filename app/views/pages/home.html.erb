@@ -6,8 +6,8 @@
 			</div>
 			<div class="container home-container mt-5 ">
 				<h2 >La solution aux préparations et partages des plans de travail</h2>
-        <h3>Simplifiez la création des plan de travail avec Ensemble, l'outil numérique collaboratifs pour les enseignants d'aujourd'hui !
-</h3>
+				<h3>Simplifiez la création des plan de travail avec Ensemble, l'outil numérique collaboratifs pour les enseignants d'aujourd'hui !
+				</h3>
 			</div>
 		</div>
 		<%# BOUTON %>
@@ -23,29 +23,29 @@
 				<p>Pouvoir créer des plans de travail adaptés
 					les éditer et les corriger. <br>
 					Génération facilité et individualisé à la progression de l'élève</p>
-				<%= render 'creation_captures' %>
+				<%= render 'creation_captures',mobile: false %>
 			</div>
 			<div class="row1">
 				<h1>VOIR</h1>
 				<p>Disposer d’un espace pour voir l’ensemble de vos <br>
 					plans de travail ou de vos exercices.</p>
-				<%= render 'wp_challenge_captures' %>
+				<%= render 'wp_challenge_captures',mobile: false %>
 			</div>
-		<div class="row2">
-			<img  src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1639068448/logo2_rmtwus.svg" alt=" logo central">
-		</div >
+			<div class="row2">
+				<img  src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1639068448/logo2_rmtwus.svg" alt=" logo central">
+			</div >
 			<div class="row1">
 				<h1>ÉVALUER</h1>
 				<p>Pouvoir évaluer le travail accompli par chaque élève<br>
 					et créer facilement vos plans de travail à la progression de chaque élèves.</p>
-				<%= render 'evaluation_captures' %>
+				<%= render 'evaluation_captures',mobile: false %>
 			</div>
 			<div class="row1">
 				<h1>PARTAGER</h1>
 				<p>Partager votre travail avec d’autres professeurs et s’inspirer du leur. <br>
 					Pouvoir transmettre un état des lieux de chaque élève<br>
 					au professeur de classe supérieure.</p>
-				<%= render 'sharing_captures' %>
+				<%= render 'sharing_captures',mobile: false %>
 			</div>
 		</div>
 		<div class="showcase-banner">
@@ -58,5 +58,5 @@
 	</div>
 	<%# mobile HOME %>
 <% else %>
-	<%= render 'mobile_home' %>
+	<%= render 'mobile_home',mobile: false %>
 <% end %>

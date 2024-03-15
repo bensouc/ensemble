@@ -95,12 +95,14 @@
 }
 
 // illustartions
-.home-images {
-  width: 380px;
-  height: 288px;
+@media (min-width: 1024px) {
+  .home-images {
+    width: 380px;
+    height: 288px;
+  }
 }
 .home-images-slides {
-  width: 380px;
+  // width: 380px;
   // position: relative;
   // display: contents;
   img {

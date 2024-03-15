@@ -9,10 +9,13 @@ export default class extends Controller {
 
   connect() {
     this.deferredPrompt = null;
-
+    // window.addEventListener("scroll", this.handleScroll.bind(this))
     window.addEventListener("beforeinstallprompt", this.handleBeforeInstallPrompt.bind(this));
     window.addEventListener("appinstalled", this.handleAppInstalled.bind(this));
     this.managePromptDisplay();
+    setTimeout(() => {
+      this.hideDiv();
+    }, 3000);
   }
 
   getDeviceInfo() {
@@ -41,9 +44,7 @@ export default class extends Controller {
     const isInstalled = localStorage.getItem(this.INSTALLATION_STATUS) === 'true';
     const dontShowAgain = localStorage.getItem(this.DONT_SHOW_PROMPT_AGAIN) === 'true';
 
-    console.log(dontShowAgain);
-    console.log(isInstalled);
-    console.log(pwa.isStandalone);
+
     if (dontShowAgain || pwa.isStandalone || isInstalled) {
       this.hidePrompt();
       return;
@@ -52,7 +53,16 @@ export default class extends Controller {
 
   hidePrompt() {
     localStorage.setItem(this.DONT_SHOW_PROMPT_AGAIN, 'true');
-    this.installPromptTarget.classList.add("hidden");
+    this.installPromptTarget.classList.add("hidden-prompt");
+  }
+
+  hideDiv() {
+
+    this.installPromptTarget.classList.add("hidden-prompt");
+  }
+
+  showDiv() {
+    this.installPromptTarget.classList.remove("hidden-prompt");
   }
 
   async onInstall() {
@@ -76,5 +86,6 @@ export default class extends Controller {
   disconnect() {
     window.removeEventListener("beforeinstallprompt", this.handleBeforeInstallPrompt.bind(this));
     window.removeEventListener("appinstalled", this.handleAppInstalled.bind(this));
+    window.removeEventListener("scroll", this.handleScroll.bind(this));
   }
 }
