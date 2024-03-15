@@ -15,7 +15,7 @@ export default class extends Controller {
     this.managePromptDisplay();
     setTimeout(() => {
       this.hideDiv();
-    }, 3000);
+    }, 5000);
   }
 
   getDeviceInfo() {
