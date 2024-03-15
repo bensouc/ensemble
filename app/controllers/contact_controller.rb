@@ -6,7 +6,11 @@ class ContactController < ApplicationController
     skip_authorization
     @contact = contact_params
     ContactMailer.new_contact(@contact).deliver
-    redirect_to root_path, notice: "merci pour votre message, nous vous répondrons dans les plus brefs délais"
+    if user_signed_in?
+      redirect_to dashboard_path, notice: "Merci pour votre message, nous vous répondrons dans les plus brefs délais"
+    else
+      redirect_to root_path, notice: "Merci pour votre message, nous vous répondrons dans les plus brefs délais"
+    end
   end
 
   private
