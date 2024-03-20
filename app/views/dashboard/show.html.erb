@@ -42,8 +42,11 @@
 		</div>
 	</div>
 </div>
-<%unless @has_classrooms && @has_empty_classroom && @has_work_plan %>
+<%unless @has_classrooms && @has_empty_classroom && @has_work_plan || current_user.discovery_method.nil? %>
 	<%= render 'advice_modal',  has_classrooms: @has_classrooms,
                             has_empty_classroom: @has_empty_classroom,
                             has_work_plan: @has_work_plan %>
+<% end %>
+<% if current_user.discovery_method.nil? %>
+  <%= render 'users/add_discovery_method'%>
 <% end %>

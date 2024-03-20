@@ -11,4 +11,15 @@ class DashboardController < ApplicationController
     @has_empty_classroom = !current_user.all_students.empty?
     # render "dashboard/show"
   end
+
+  def add_discovery_method
+    authorize current_user
+    current_user.update(discovery_params)
+    redirect_to dashboard_path
+  end
+
+  private
+  def discovery_params
+    params.require(:discovery_method).permit(:discovery_method)
+  end
 end

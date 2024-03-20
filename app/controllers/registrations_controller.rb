@@ -13,7 +13,6 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def create
-    # raise
     @user = User.new(param_user)
     if user_signed_in?
       @user.school = current_user.school
@@ -44,6 +43,6 @@ class RegistrationsController < Devise::RegistrationsController
   private
 
   def param_user
-    params.required(:user).permit(:first_name, :last_name, :password, :email)
+    params.required(:user).permit(:first_name, :last_name, :password, :email, :discovery_method)
   end
 end
