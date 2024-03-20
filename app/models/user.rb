@@ -5,6 +5,7 @@ class User < ApplicationRecord
   DEMO_CLASSROOM_LIMIT = 1
   DEMO_STUDENT_LIMIT = 5
   STUDENT_LIMIT = 25
+  DISCOVERY_METHOD = ["Bouche-à-oreille", "Recherche sur Internet", "Réseaux sociaux", "Publicité en ligne", "Article de presse ou blog", "Événement ou conférence", "Autre"].freeze
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   before_validation :set_defaults
@@ -35,6 +36,7 @@ class User < ApplicationRecord
   # Validations
   validates :first_name, presence: true
   validates :last_name, presence: true
+
 
   # Methods
   def admin?
