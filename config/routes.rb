@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   end
   root to: "pages#home"
   get "/dashboard", to: "dashboard#show"
+  post "add_discovery", to: "dashboard#add_discovery_method"
   get "mentions_legales", to: "pages#mentions_legales"
   # ############### MOBILE ROUTES###############
   namespace "mobile" do
