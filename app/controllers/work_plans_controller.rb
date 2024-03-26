@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class WorkPlansController < ApplicationController
-  before_action :set_params_student, only: ["auto_new_wp"]
+  before_action :auto_new_wp_params, only: ["auto_new_wp"]
   before_action :setup_show, only: :show
 
   # And sharing
@@ -194,7 +194,7 @@ class WorkPlansController < ApplicationController
 
       return
     end
-    @work_plan = WorkPlan.new(
+    @work_plan = WorkPlan.create(
       name: "AUTO - N°#{@student.work_plans.count + 1}",
       grade: @student.classroom.grade,
       student: @student, user: current_user,
@@ -202,7 +202,7 @@ class WorkPlansController < ApplicationController
       end_date: Time.zone.today.next_occurring(:monday) + 4,
     )
     authorize @work_plan
-    @work_plan.save
+    # @work_plan.save
     # Iterate through each domain in the list of domains
     @domains.each do |domain|
       # Create a new WorkPlanDomain object and set its attributes
@@ -219,7 +219,7 @@ class WorkPlansController < ApplicationController
         wpd.save
       else
         # Find all the skills for the current domain, level, and grade
-        Skill.for_school(current_user.school).where(domain:, level: wpd.level).each do |skill|
+        Skill.where(domain:, level: wpd.level).each do |skill|
 
           # Find the most recent WorkPlanSkill object for the current student and skill
           # last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
@@ -246,11 +246,11 @@ class WorkPlansController < ApplicationController
             when "jeu"
               new_wps[:kind] = "exercice"
               new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
-              new_wps.save
+              # new_wps.save
             when "exercice"
               new_wps[:kind] = "ceinture"
-              new_wps.save
             end
+            new_wps.save
 
             # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
           elsif %w[redo failed redo_OK new].include?(last_wps.status)
@@ -300,7 +300,7 @@ class WorkPlansController < ApplicationController
     params[:work_plan].require(:work_plan_domain).permit(:domain, :level)
   end
 
-  def set_params_student
+  def auto_new_wp_params
     @student = Student.find(params.require(:student_id))
     # binding.pry
     if params[:student].nil?

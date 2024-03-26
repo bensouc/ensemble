@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_20_151335) do
+ActiveRecord::Schema[7.0].define(version: 2024_03_26_090112) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -105,6 +105,17 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_20_151335) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["school_id"], name: "index_grades_on_school_id"
+  end
+
+  create_table "results", force: :cascade do |t|
+    t.bigint "student_id"
+    t.bigint "skill_id"
+    t.string "kind"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["skill_id"], name: "index_results_on_skill_id"
+    t.index ["student_id"], name: "index_results_on_student_id"
   end
 
   create_table "school_roles", force: :cascade do |t|
@@ -255,6 +266,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_20_151335) do
   add_foreign_key "classrooms", "users"
   add_foreign_key "domains", "grades"
   add_foreign_key "grades", "schools"
+  add_foreign_key "results", "skills"
+  add_foreign_key "results", "students"
   add_foreign_key "school_roles", "schools"
   add_foreign_key "school_roles", "users"
   add_foreign_key "shared_classrooms", "classrooms"
