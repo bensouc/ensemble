@@ -125,6 +125,7 @@ class WorkPlanSkillsController < ApplicationController
     end
 
     @work_plan_skill.save!
+    # @work_plan_skill.update_result #Maj du result
     render partial: "work_plans/eval_last_wps_ajax"
   end
 
