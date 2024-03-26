@@ -8,6 +8,7 @@ class Student < ApplicationRecord
   has_many :work_plan_domains, through: :work_plans
   has_many :work_plan_skills, through: :work_plan_domains
   has_many :belts, dependent: :destroy
+  has_many :results, dependent: :destroy
 
   validates :first_name, presence: true
 

@@ -4,12 +4,18 @@ class ContactController < ApplicationController
   def create
     # binding.pry
     skip_authorization
-    @contact = contact_params
-    ContactMailer.new_contact(@contact).deliver
-    if user_signed_in?
-      redirect_to dashboard_path, notice: "Merci pour votre message, nous vous répondrons dans les plus brefs délais"
+    if verify_recaptcha
+      @contact = contact_params
+      ContactMailer.new_contact(@contact).deliver
+      if user_signed_in?
+        redirect_to dashboard_path, notice: "Merci pour votre message, nous vous répondrons dans les plus brefs délais"
+      else
+        redirect_to root_path, notice: "Merci pour votre message, nous vous répondrons dans les plus brefs délais"
+      end
+    elsif user_signed_in?
+      redirect_to dashboard_path, notice: "Le CAPTCHA doit être validé"
     else
-      redirect_to root_path, notice: "Merci pour votre message, nous vous répondrons dans les plus brefs délais"
+      redirect_to new_user_session_path, notice: "Le CAPTCHA doit être validé"
     end
   end
 
