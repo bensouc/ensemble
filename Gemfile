@@ -18,7 +18,8 @@ gem "turbo-rails"
 gem "money-rails", "~> 1.12"
 gem "stripe"
 gem "stripe_event"
-# gem 'rack-cors' # to manage CORS issues
+# gem "recaptcha"
+gem "recaptcha"
 # Use postgresql as the database for Active Record
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server

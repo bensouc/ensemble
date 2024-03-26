@@ -88,6 +88,7 @@
 </div>
 
 					<%= f.input :message, label: 'Message', as: :text, input_html: { rows: 5 }, required: true %>
+              <%= recaptcha_tags %>
 					<div class="mt-2">
 						<%= f.button :submit,"Envoyer", class: 'btn btn-primary --border-10px --borderc-rose --bgc-rose --blanc' %>
 					</div>
