@@ -12,30 +12,75 @@ class Belt < ApplicationRecord
     "6" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698313/ensemble/belts/belt_6_mqzhbq.png",
     "7" => "https://res.cloudinary.com/bensoucdev/image/upload/v1666698314/ensemble/belts/belt_7_aubna5.png",
   }.freeze
-  belongs_to :grade #to remove for first migration Of Grade MODEL
-  belongs_to :student
-  scope :completed, -> { where(completed: true) }
+  # SCORE TO VALIDATE SPECIAL DOMAINS ALAIN FOURNIER
+  SCORES_TO_VALIDATES =
+  {
+    "CE1" => [
+      {
+        domain: "Géométrie",
+        validation: [2, 4, 7, 10, 13, 17, 21],
+      },
+      {
+        domain: "Grandeurs et Mesures",
+        validation: [2, 4, 6, 9, 12, 15, 18],
+      },
+    ],
+    "CE2" => [
+      {
+        domain: "Géométrie",
+        validation: [2, 4, 7, 10, 13, 17, 21],
+      },
+      {
+        domain: "Grandeurs et Mesures",
+        validation: [3, 7, 11, 15, 19, 23, 28],
+      },
+    ],
+    "CM1" => [
+      {
+        domain: "Géométrie",
+        validation: [2, 5, 8, 12, 16, 21, 26],
+      },
+      {
+        domain: "Grandeurs et Mesures",
+        validation: [3, 7, 11, 16, 21, 27, 33],
+      },
+    ],
+  }.freeze
+  # belongs_to :grade #to remove for first migration Of Grade MODEL
 
-  # validations
+  # =================================================
+  # ASSOCIATIONS
+  belongs_to :student
+  belongs_to :domain
+  scope :completed, -> { where(completed: true) }
+# =================================================
+  # VALIDATIONS
   # validates :student, presence: true
   # validates :level, presence: true
-  validates :domain, presence: true, inclusion: { in: ["Vocabulaire", "Conjugaison", "Orthographe",
-                                                      "Grammaire", "Numération", "Calcul", "Poésie", "Géométrie",
-                                                      "Grandeurs et Mesures", "Opérations", "Résolution des Problèmes",
-                                                      "Calligraphie", "Poésie", "Poésie et Expression orale",
-                                                      "Production d’écrit", "Lecture"] }
+  # validates :domain, presence: true, inclusion: { in: ["Vocabulaire", "Conjugaison", "Orthographe",
+  #                                                     "Grammaire", "Numération", "Calcul", "Poésie", "Géométrie",
+  #                                                     "Grandeurs et Mesures", "Opérations", "Résolution des Problèmes",
+  #                                                     "Calligraphie", "Poésie", "Poésie et Expression orale",
+  #                                                     "Production d’écrit", "Lecture"] }
   # validates :grade, presence: true, inclusion: { in: %w[CP CE1 CE2 CM1 CM2] }
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
-  validates :student, uniqueness: { scope: %i[domain grade level] }
-
+  validates :student, uniqueness: { scope: %i[domain level] }
+# =================================================
+  # METHODS
   def completed?
     completed
   end
 
   def all_skills(user)
-    Skill.for_school(user.school).where(level:, grade:, domain:)
+    Skill.for_school(user.school).where(level:, domain:)
   end
 
+  def grade
+    domain.grade
+  end
+
+# =================================================
+  # CLASS METHODS
   def self.student_last_belt_level(student, domain)
     belt = Belt.where(student:, domain:, completed: true).order(level: :desc).first
     if belt.nil?
@@ -50,8 +95,7 @@ class Belt < ApplicationRecord
     count = work_plan_skill.work_plan_domain.all_skills_completed_count
     args = {
       student_id: work_plan_skill.student.id,
-      domain: work_plan_skill.work_plan_domain.domain,
-      grade: work_plan.grade,
+      domain: work_plan_skill.work_plan_domain.domain
     }
     Belt.create_new_special_belt(args, count, work_plan_skill)
     # raise
@@ -72,39 +116,7 @@ class Belt < ApplicationRecord
     end
   end
 
-  SCORES_TO_VALIDATES =
-    {
-      "CE1" => [
-        {
-          domain: "Géométrie",
-          validation: [2, 4, 7, 10, 13, 17, 21],
-        },
-        {
-          domain: "Grandeurs et Mesures",
-          validation: [2, 4, 6, 9, 12, 15, 18],
-        },
-      ],
-      "CE2" => [
-        {
-          domain: "Géométrie",
-          validation: [2, 4, 7, 10, 13, 17, 21],
-        },
-        {
-          domain: "Grandeurs et Mesures",
-          validation: [3, 7, 11, 15, 19, 23, 28],
-        },
-      ],
-      "CM1" => [
-        {
-          domain: "Géométrie",
-          validation: [2, 5, 8, 12, 16, 21, 26],
-        },
-        {
-          domain: "Grandeurs et Mesures",
-          validation: [3, 7, 11, 16, 21, 27, 33],
-        },
-      ],
-    }.freeze
+
 
   def self.score_to_validate(grade)
     Belt::SCORES_TO_VALIDATES[grade.grade_level]
@@ -112,9 +124,9 @@ class Belt < ApplicationRecord
 
   def self.create_new_special_belt(args, count, work_plan_skill)
     # binding.pry
-    case args[:grade].grade_level
+    case args[:domain].grade.grade_level
     when "CE1"
-      case work_plan_skill.work_plan_domain.domain
+      case work_plan_skill.work_plan_domain.domain.name
       when "Géométrie"
         case count
         when 2...4
@@ -151,7 +163,7 @@ class Belt < ApplicationRecord
         end
       end
     when "CE2"
-      case work_plan_skill.work_plan_domain.domain
+      case work_plan_skill.work_plan_domain.domain.name
       when "Géométrie"
         # [2, 4, 7, 10, 13, 17, 21]
         case count
@@ -190,7 +202,7 @@ class Belt < ApplicationRecord
         end
       end
     when "CM1"
-      case work_plan_skill.work_plan_domain.domain
+      case work_plan_skill.work_plan_domain.domain.name
       when "Géométrie"
         # [2, 5, 8, 12, 16, 21, 26]
         case count

@@ -4,6 +4,8 @@ class User < ApplicationRecord
 
   DEMO_CLASSROOM_LIMIT = 1
   DEMO_STUDENT_LIMIT = 5
+  STUDENT_LIMIT = 25
+  DISCOVERY_METHOD = ["Bouche-à-oreille", "Recherche sur Internet", "Réseaux sociaux", "Publicité en ligne", "Article de presse ou blog", "Événement ou conférence", "Autre"].freeze
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   before_validation :set_defaults
@@ -35,13 +37,14 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
 
+
   # Methods
   def admin?
-    admin
+    admin == true
   end
 
   def demo?
-    demo
+    demo == true
   end
 
   def super_teacher?
@@ -77,9 +80,9 @@ class User < ApplicationRecord
   def all_classroom_workplans
     work_plans = []
     unless classrooms.empty?
-      classrooms.each do |classroom|
+      classrooms.includes(:students).each do |classroom|
         classroom.students.each do |student|
-          work_plans += WorkPlan.where(student:, special_wps: false)
+          work_plans += WorkPlan.includes(:grade).where(student:, special_wps: false)
         end
       end
     end
@@ -91,7 +94,7 @@ class User < ApplicationRecord
     unless shared_classrooms.empty? # get all workplans shared with current user
       shared_classrooms.each do |shared_classroom|
         shared_classroom.classroom.students.each do |student|
-          work_plans += WorkPlan.where(student:, special_wps: false)
+          work_plans += WorkPlan.includes(:grade).where(student:, special_wps: false)
         end # get all workplans of shared classrooms
       end
     end

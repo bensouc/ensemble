@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
 class StudentsController < ApplicationController
-  def new
-    skip_authorization
-    @classroom = Classroom.find(classroom_params_id)
-    @student = Student.new(classroom_id: @classroom.id)
-  end
-
   def show
     skip_authorization
     @student = Student.find(params[:id])
@@ -14,8 +8,8 @@ class StudentsController < ApplicationController
     @all_skills_and_last_wps = []
     @belts_specials_count = []
     @student_grade = @student.classroom.grade
-    @domains = @student.all_domains_from_student
-    @student_skills = Skill.for_school(current_user.school).where(grade: @student_grade)
+    @domains = @student.all_domains_from_student.sort_by(&:position)
+    @student_skills = @student_grade.skills
     @belts = Belt.where(student: @student)
     @belts = @belts.select(&:completed)
     puts "Le last_wps :!!!!"
@@ -24,39 +18,40 @@ class StudentsController < ApplicationController
     puts "LE MAP"
     # binding.pry
     @all_skills_and_last_wps = @student_skills.map do |skill|
+      next if all_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at).nil?
+
       {
         skill:,
-        last_wps: get_last_completed_or_created_wps(all_last_wps, skill),
-      } if !all_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at).nil?
+        last_wps: get_last_completed_or_created_wps(all_last_wps, skill)
+      }
     end
     @all_skills_and_last_wps.compact!.sort_by { |t| t[:last_wps][:updated_at] }
     # retrive all student belts
     # cleaning the useless lastwps (eg: special domain, remove the amount)
-    unless @student.classroom.user.school.special_domains? && @student_grade.grade_level == "CM2"
-      WorkPlanDomain::DOMAINS_SPECIALS.each do |domain|
-        special_domain_belts = @belts.select { |belt| belt.domain == domain }
-        count = special_domain_belts.count
-        unless special_domain_belts.empty? || count.zero?
-          @all_skills_and_last_wps = wps_cleaned_belt(@all_skills_and_last_wps, domain, count, @student_grade)
-        end
+    return if @student.classroom.user.school.special_domains? && @student_grade.grade_level == "CM2"
+
+    WorkPlanDomain::DOMAINS_SPECIALS.each do |domain|
+      special_domain_belts = @belts.select { |belt| belt.domain == domain }
+      count = special_domain_belts.count
+      unless special_domain_belts.empty? || count.zero?
+        @all_skills_and_last_wps = wps_cleaned_belt(@all_skills_and_last_wps, domain, count, @student_grade)
       end
     end
+  end
+
+  def new
+    skip_authorization
+    @classroom = Classroom.find(classroom_params_id)
+    @student = Student.new(classroom_id: @classroom.id)
   end
 
   def create
     skip_authorization
     student = {
       first_name: params_student[:first_name],
-      classroom_id: params_student[:classroom].to_i,
+      classroom_id: params_student[:classroom].to_i
     }
     @student = Student.create!(student)
-    redirect_to classrooms_path
-  end
-
-  def destroy
-    skip_authorization
-    @student = Student.find(params[:id])
-    @student.destroy
     redirect_to classrooms_path
   end
 
@@ -68,23 +63,33 @@ class StudentsController < ApplicationController
     redirect_to classrooms_path
   end
 
+  def destroy
+    skip_authorization
+    @student = Student.find(params[:id])
+    @student.destroy
+    redirect_to classrooms_path
+  end
+
   def new_validated_wps
     skip_authorization
     @student = Student.includes(:classroom).find(params_add_validated_wps[:student_id])
-    student_grade = @student.classroom.grade
+    student_grade = @student.grade
     @special_work_plan = WorkPlan.find_or_create_by(student: @student, grade: student_grade, special_wps: true)
-    domain = params_add_validated_wps[:domain]
-    level = if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && student_grade.grade_level != "CM2"
-        1
-      else
-        params_add_validated_wps[:level].to_i
-      end
-    validated_work_plan_skills = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(status: "completed").select { |wps| wps.student == @student && wps.skill.domain == domain && wps.skill.level == level }
-    validated_skill_id = validated_work_plan_skills.map { |wps| wps.skill.id }
-    @skills = Skill.for_school(current_user.school).where(level:,
-                                                          domain:,
-                                                          grade: student_grade)
-    @skills = @skills.reject { |skill| validated_skill_id.include?(skill.id) }
+    domain = Domain.find(params_add_validated_wps[:domain])
+    level = if domain.special?
+              1
+            else
+              params_add_validated_wps[:level].to_i
+            end
+    # look for workplanskill completed du students
+    validated_work_plan_skills = WorkPlanSkill.includes([:skill, :work_plan_domain,
+                                                         :student]).where(status: "completed").select do |wps|
+      wps.student == @student && wps.skill.domain == domain && wps.skill.level == level
+    end
+
+    validated_skill_id = validated_work_plan_skills.empty? ? [] : validated_work_plan_skills.map { |wps| wps.skill.id }
+    @skills = student_grade.skills.select { |skill| skill.level == level && skill.domain == domain }
+    @skills = @skills.reject { |skill| validated_skill_id.include?(skill.id) } unless validated_skill_id.empty?
     @sub_domains = @skills.map { |skill| skill.sub_domain }.compact.uniq
     if @skills.empty?
       redirect_to student_path(@student), flash: { notice: "Il n'y pas de compétence à ajouter pour ce domaine/niveau" }
@@ -99,13 +104,15 @@ class StudentsController < ApplicationController
     skip_authorization
     student = Student.find(params_new_validated_wps[:student_id])
     skill = []
-    skill << Skill.for_school(current_user.school).find(params_new_validated_wps[:skill_id])
+    skill << Skill.find(params_new_validated_wps[:skill_id])
+
 
     special_work_plan = student.find_special_workplan
+    # binding.pry
     work_plan_domain = special_work_plan.work_plan_domains.find_or_create_by(
       domain: skill.first.domain,
       work_plan: special_work_plan,
-      level: skill.first.level,
+      level: skill.first.level
     )
     # work_plan_domai.save
     @wps = WorkPlanDomain.add_wps_completed(skill, work_plan_domain, special_work_plan)
@@ -160,9 +167,7 @@ class StudentsController < ApplicationController
   def get_last_completed_or_created_wps(all_last_wps, skill)
     last_wps = all_last_wps.select { |wps| wps.skill == skill && wps.completed }.max_by(&:created_at)
     # find if one is completed then select it
-    if last_wps.nil?
-      last_wps = all_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at)
-    end
+    last_wps = all_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at) if last_wps.nil?
     last_wps
   end
 end

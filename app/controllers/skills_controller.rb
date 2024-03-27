@@ -5,16 +5,22 @@ class SkillsController < ApplicationController
   before_action :setup_all_skills_data, only: [:index]
   before_action :set_uploaded_file_path, only: [:add_skills_from_xls]
   before_action :set_xls_file_path, only: [:upload_skills_xlsx]
+  # before_action :setup_all_skills_data, only: [:index]
+  skip_after_action :verify_policy_scoped, only: [:index]
 
   def index
     redirect_to classrooms_path unless current_user.classroom?
     # setup_all_skills_data
     respond_to do |format|
-      format.html
+      format.html { setup_all_skills_data }
       format.xlsx do
+        grade = Grade.includes([:domains, :skills]).find(params[:grade])
+        skills = grade.skills
+        domains = grade.domains.sort_by(&:position)
+        school = current_user.school
         response.headers["Content-Disposition"] = 'attachment; filename="my_new_filename.xlsx"'
-        package = Xlsx.skills_generate_xlsx_file(@school, @grade, @skills)
-        send_xlsx_file(package, @school, @grade)
+        package = Xlsx.skills_generate_xlsx_file(school, grade, domains, skills)
+        send_xlsx_file(package, school, grade)
       end
     end
     # for production => "A fournier == "
@@ -36,15 +42,14 @@ class SkillsController < ApplicationController
 
   def create
     skip_authorization
-    # binding.pry
     @skill = Skill.new(skill_params)
     # @skill.grade = Grade.find(set_grade)
     @skill.school = current_user.school
     @skill.save!
     # redirect_to skill_path(@skill)
-    @skills = Skill.includes([:grade, :school]).where(grade: @skill.grade, school: current_user.school, domain: @skill.domain, level: @skill.level)
+    @skills = Skill.includes([:school]).where(domain: @skill.domain, level: @skill.level)
     render partial: "skills/all_skills_by_domain_level",
-           locals: { skills: @skills, domain: @skill.domain, level: @skill.level, grade: @skill.grade }
+           locals: { skills: @skills, domain: @skill.domain, level: @skill.level, grade: @skill.domain.grade }
 
     #  skills: skills, domain: domain, level: skill_level
   end
@@ -110,16 +115,19 @@ class SkillsController < ApplicationController
   private
 
   def setup_all_skills_data
-    # @grades = current_user.classroom_grades
-    # @grades = Classroom::GRADE.select { |grade| current_user.classroom_grades.include?(grade.grade_level) }
     @grades = current_user.classroom_grades
-    query = params[:grade]
-
+    grade_query = params[:grade]
+    domain_query = params[:domain]
     @school = current_user.school
-    @grade = query.nil? ? @grades.first : Grade.find(query)
-    @skills = policy_scope(Skill)
-    @are_special_domains = current_user.school.special_domains?
-    @skills = @skills.select { |skill| skill.grade == @grade }
+    @grade = grade_query.nil? ? @grades.first : Grade.find(grade_query)
+    unless @grade.nil?
+      @domains = @grade.domains.nil? ? nil : @grade.domains.sort_by(&:position)
+      # binding.pry
+      @domain = domain_query.nil? ? @domains.first : Domain.find(domain_query)
+    end
+    # @skills = policy_scope(Skill)
+    # @are_special_domains = current_user.school.special_domains?
+    @skills = Skill.where(domain: @domain)
   end
 
   def set_skill
@@ -131,7 +139,7 @@ class SkillsController < ApplicationController
   end
 
   def skill_params
-    params.require(:skill).permit(:name, :grade_id, :symbol, :level, :domain)
+    params.require(:skill).permit(:name, :symbol, :level, :domain_id)
   end
 
   # get xlsx url for upload_skills

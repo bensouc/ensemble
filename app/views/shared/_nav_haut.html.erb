@@ -5,6 +5,7 @@
 	</div>
 	<% if user_signed_in? %>
 		<div class="navbar navbar-expand-sm navbar-light d-flex">
+			<%=link_to "Abonnez-vous",  subscriptions_on_boarding_path, class: "btn-flat text-center me-4" if current_user.demo%>
 			<%= render 'shared/tuto_links' %>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
@@ -23,18 +24,18 @@
 							<a class="dropdown-item" href="#">Ma classe</a>
 							<%=link_to "Mon compte", edit_user_registration_path, class: "dropdown-item"%>
 							<!--# STRIPE SWITCH OFF -->
-							<% unless true %>
+							<% unless current_user.demo? %>
 								<% if (current_user.super_teacher?) %>
-									<% if current_user.subscription && current_user.subscription.active_or_trialing?%>
+									<% if current_user.school.subscription && current_user.school.subscription.active_or_trialing?%>
 										<form method="GET" action="/create-customer-portal-session" data-turbo="false">
 											<button type="submit" class= "dropdown-item">Gérer votre abonnement</button>
 										</form>
 									<% else %>
-										<%=link_to "Abonnez-vous", subscriptions_school_pricing_path, class: "dropdown-item"%>
+										<%=link_to "Abonnez-vous", new_subscription_path, class: "dropdown-item"%>
 									<% end %>
 								<% end %>
 							<% end %>
-              <!--# END STRIPE SWITCH OFF -->
+							<!--# END STRIPE SWITCH OFF -->
 							<%=link_to "Mon école", school_path(current_user.school), class: "dropdown-item"%>
 							<%if current_user.admin%>
 								<%= link_to 'DATA-ADMIN', '/admin', class: "dropdown-item", target: '_blank' %>

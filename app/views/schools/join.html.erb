@@ -1,0 +1,13 @@
+<%= render 'shared/sequence_4', sequence: @sequence %>
+<%= turbo_frame_tag 'sequence' do %>
+	<h1 class='sub-title'>Rejoindre Votre école</h1>
+	<div class='sub-title-code'>Pour rejoindre une école déjà inscrite à Ensemble vous devez posséder son code Ecole.
+		Le responsable du groupe peut l’obtenir dans le menu Ecole.</div>
+	<%= simple_form_for "new_sub", url:'create_sub_with_code', html: { novalidate: false, class:'add-school-code-form' } do |f|%>
+		<%= f.input :school_code, required: true, label:false, input_html:{placeholder:"Entrez votre code école"}, hint: 'ex: CODEECOLE' %>
+		<%= f.submit "OK", class: "add-school-code-btn", data: {turbo_frame: "_top"}%>
+	<% end %>
+	<%= link_to  subscriptions_on_boarding_path, class:'back-link ms-3' do%>
+		<i class="fa-solid fa-circle-left"></i> Retour
+	<% end %>
+<% end %>

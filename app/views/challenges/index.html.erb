@@ -1,28 +1,31 @@
 <div class="challenges-container">
-  <div data-controller='submitonchange' class='challenge-filter'>
-    <%= simple_form_for challenges_path, method: :get,
+	<div data-controller='submitonchange' class='challenge-filter'>
+		<%= simple_form_for challenges_path, method: :get,
     html: {id: "domainForm"},
         data: { action: "change->submitonchange#submitForm"
                 } do |f| %>
-      <div class="box-column-challenges-filter">
-        <div class="challenges-skill">
-          <%= f.input :grade,
+			<div class="box-column-challenges-filter">
+				<div class="challenges-skill">
+					<%= f.input :grade,
                   collection: @grades,
-                  selected: @grade,
+                  selected: @grade.id,
                   label: false,
                   input_html: {
                     class: "area grow m-left --text-center"
                   } %>
-          <%= f.input :domain,
+					<%= f.input :domain,
                   collection: @domains,
-                  selected: @domain,
+                  selected: @domain.id,
                   label: false,
                   input_html: {
                     class: "area grow m-left"
                   } %>
-        </div>
-        <div class="challenges-skill-level-selector">
-          <%= f.input :level,
+				</div>
+				<div class="challenges-skill-level-selector">
+
+        <p class= 'pt-1 m-left'>Niveau de Ceinture</p>
+
+					<%= f.input :level,
                   collection: [
                     ["Blanche", 1, { class: "--bgc-blanc" }],
                     ["Jaune", 2, { class: "--bgc-jaune " }],
@@ -39,71 +42,70 @@
                     class:
                       "area grow m-left --text-center #{["--bgc-blanc", "--bgc-jaune", "--bgc-orange", "--bgc-vert --blanc", "--bgc-bleuC --blanc", "--bgc-marron --blanc", "--bgc-noir --blanc"][@level.to_i - 1]}"
                   } %>
-                  <h4 class= 'pt-1'> Ceinture</h4>
-        </div>
-      </div>
-    <% end %>
-  </div>
-  <div class="grey-line"></div>
-  <h1 class='title'>Les exercices </h1>
-  <%= turbo_frame_tag "skills-challenge-list" do%>
-    <div class="challenges-display ">
-      <% unless @skills.empty? %>
-        <% @skills.each do |skill| %>
-          <div class="challenges-by-skill mb-2" data-controller='wp-by-student'>
-            <div class='d-flex wp-student-folder'
+
+				</div>
+			</div>
+		<% end %>
+	</div>
+	<div class="grey-line"></div>
+	<h1 class='title'>Les exercices </h1>
+	<div id='skills-challenge-list'>
+		<div class="challenges-display " id='skills-challenge-list'>
+			<% unless @skills.empty? %>
+				<% @skills.each do |skill| %>
+					<div class="challenges-by-skill mb-2" data-controller='wp-by-student'>
+						<div class='d-flex wp-student-folder'
               data-action="click->wp-by-student#displayList"
-            >
-              <div class="index-folder">
-                <i
+							>
+							<div class="index-folder">
+								<i
                   class="fa-solid fa-folder-closed me-4 ms-3"
                   data-wp-by-student-target="folderopen"
                 ></i>
-                <i
+								<i
                   class="fa-solid fa-folder-open me-4 ms-3 d-none"
                   data-wp-by-student-target="folderclosed"
                 ></i>
-              </div>
-              <div class='index-wp-name d-flex'>
-                <div class="wp-firstname max-length-skill-name">
-                  <%= skill.name %>
-                </div>
-                <div class='invisible'>
-                  --
-                </div>
-                <div class="index-wp-count" data-wp-by-student-target='count'>
-                  <%=  turbo_frame_tag "skill_#{skill.id}_count" do %>
-                    <% count =  @challenges.select { |chall| chall.skill == skill }.count%>
-                    <%=  count %> exo<%= count > 1 ? "s" : "" %>
-                  <% end %>
-                </div>
-              </div>
-            </div>
-            <div data-wp-by-student-target="wplist" class='list-wp-index d-none p-0'>
-              <div class="new-challenge">
-                <%= link_to new_challenge_path(skill:skill),
+							</div>
+							<div class='index-wp-name d-flex'>
+								<div class="wp-firstname max-length-skill-name">
+									<%= skill.name %>
+								</div>
+								<div class='invisible'>
+									--
+								</div>
+								<div class="index-wp-count" data-wp-by-student-target='count'>
+									<%=  turbo_frame_tag "skill_#{skill.id}_count" do %>
+										<% count =  @challenges.select { |chall| chall.skill == skill }.count%>
+										<%=  count %> exo<%= count > 1 ? "s" : "" %>
+									<% end %>
+								</div>
+							</div>
+						</div>
+						<div data-wp-by-student-target="wplist" class='list-wp-index d-none p-0'>
+							<div class="new-challenge">
+								<%= link_to new_challenge_path(skill:skill),
                 data: { turbo_frame: "skill_#{skill.id}_new_challenge"},
                 class: 'replace-challenge-btn mt-2' do %>
-                  Ajouter
-                  <i class="fa-solid fa-plus --white" class="fa-solid fa-user-plus"></i>
-                <% end %>
-              </div>
-              <%= turbo_frame_tag "skill_#{skill.id}_new_challenge" %>
-              <%= turbo_frame_tag "#{dom_id(skill)}_challenges_list" do %>
-                <% @challenges.select{|chall| chall.skill == skill}.each do |challenge| %>
-                  <%= render "show_one_challenge", challenge: challenge %>
-                <% end %>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
-      <% else %>
-        <p>Il n'y a pas de compétences pour cette ceinture</p>
-      <% end %>
-    </div>
-    <div class="grey-line"></div>
-    <h1 class='title'>Les exercices de ceinture </h1>
-    <%= render "belt_challenges", belt_challenges: @belt_challenges, skills: @skills, for_belt: "for_belt_" %>
-
-  <% end %>
+									Ajouter
+									<i class="fa-solid fa-plus --white" class="fa-solid fa-user-plus"></i>
+								<% end %>
+							</div>
+							<%= turbo_frame_tag "skill_#{skill.id}_new_challenge" %>
+							<%= turbo_frame_tag "#{dom_id(skill)}_challenges_list" do %>
+								<% @challenges.select{|chall| chall.skill == skill}.each do |challenge| %>
+									<%= render "show_one_challenge", challenge: challenge %>
+								<% end %>
+							<% end %>
+						</div>
+					</div>
+				<% end %>
+			<% else %>
+				<p>Il n'y a pas de compétences pour cette ceinture</p>
+			<% end %>
+		</div>
+		<div class="grey-line"></div>
+		<h1 class='title'>Les exercices de ceinture </h1>
+		<%= render "belt_challenges", belt_challenges: @belt_challenges, skills: @skills, for_belt: "for_belt_" %>
+	</div>
 </div>

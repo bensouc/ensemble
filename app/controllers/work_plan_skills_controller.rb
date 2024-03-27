@@ -24,6 +24,8 @@ class WorkPlanSkillsController < ApplicationController
       end
     end
     if @work_plan_skill.save!
+      @work_plan_domain = @work_plan_skill.work_plan_domain
+      @work_plan_skills = @work_plan_domain.work_plan_skills
       respond_to do |format|
         format.html {
           redirect_to work_plan_domain_path(@work_plan_skill.work_plan_domain),
@@ -72,6 +74,7 @@ class WorkPlanSkillsController < ApplicationController
     @work_plan_domain = @work_plan_skill.work_plan_domain
     # raise
     @work_plan_skill.destroy
+    @work_plan_skills = @work_plan_domain.work_plan_skills
     respond_to do |format|
       format.html {
         redirect_to work_plan_path(work_plan_domain.work_plan),
@@ -97,7 +100,6 @@ class WorkPlanSkillsController < ApplicationController
       {
         student_id: @work_plan_skill.student.id,
         domain: @work_plan_skill.work_plan_domain.domain,
-        grade: @work_plan.grade,
         level: @work_plan_skill.work_plan_domain.level,
       }
     )
@@ -109,8 +111,8 @@ class WorkPlanSkillsController < ApplicationController
         @work_plan_skill.save!
         # binding.pry
         # test for each skill of its domain a 'belt is validated'jbiv
-        # if @work_plan_skill.work_plan_domain.specials? && @work_plan.grade != "CM2"
-        if @work_plan_skill.work_plan_domain.specials? #ADD management for ALAIN FOURNIER
+        # if @work_plan_skill.work_plan_domain.special? && @work_plan.grade != "CM2"
+        if @work_plan_skill.work_plan_domain.special? #ADD management for ALAIN FOURNIER
           Belt.special_newbelt(@work_plan_skill, @work_plan)
         elsif @work_plan_skill.work_plan_domain.all_skills_completed?
           belt.completed = true
@@ -123,6 +125,7 @@ class WorkPlanSkillsController < ApplicationController
     end
 
     @work_plan_skill.save!
+    # @work_plan_skill.update_result #Maj du result
     render partial: "work_plans/eval_last_wps_ajax"
   end
 
@@ -159,10 +162,12 @@ class WorkPlanSkillsController < ApplicationController
     authorize @wps
     @skill = @wps.skill
     @student = @wps.student
+
     # test if special domain
-    unless @skill.specials?
+    unless @skill.special?
+      # binding.pry
       # exist il une belt pour lestudent le skill
-      belt = Belt.where(domain: @skill.domain, student: @student, level: @skill.level, grade: @skill.grade.grade_level)
+      belt = Belt.where(domain: @skill.domain, student: @student, level: @skill.level)
       # belt to be destroy?
       belt.first.destroy unless belt.empty?
     end

@@ -6,12 +6,17 @@ export default class extends Controller {
   static targets = ["boxes"]
 
   connect() {
-    // console.log(this);
+    this.boxesTargets.forEach(
+      element => {
+        console.log(element);
+        element.checked = true
+      }
+    )
   }
 
   add(event) {
     console.log(event)
-    // console.log(event.target.value)
+    console.log(event.target.value)
 
     if (event.target.value <= 0) {
       checkBoxes = this

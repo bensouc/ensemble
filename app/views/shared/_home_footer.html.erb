@@ -1,19 +1,60 @@
 <footer>
-  <div class="footer-homemade footer home">
-    <div class="footer-links container">
-      <a href="https://github.com/bensouc/ensemble"><i class="fab fa-github"></i></a>
-      <%=mail_to "contact@vroadstudio.fr", "Contact",
+	<div class="footer-homemade footer home">
+		<div class="footer-links container">
+			<%= link_to mentions_legales_path, style: '1rem' do%>
+				Mentions Légales
+			<% end %>
+			<a href="https://github.com/bensouc/ensemble"><i class="fab fa-github"></i></a>
+			<!-- Button trigger modal -->
+			<a href="#" class="" data-bs-toggle="modal" data-bs-target="#contact-modal">
+				Contact
+			</a>
+			<!-- Modal -->
+			<%#=mail_to "contact@vroadstudio.fr", "Contact",
          subject: "Ensemble : Demande d'information", target: '_blank'%>
-      <%# <a href="#"><i class="fab fa-instagram"></i></a> %>
-      <%# <a href="#"><i class="fab fa-facebook"></i></a>
+			<%# <a href="#"><i class="fab fa-instagram"></i></a> %>
+			<%# <a href="#"><i class="fab fa-facebook"></i></a>
     <a href="#"><i class="fab fa-twitter"></i></a>
     <a href="#"><i class="fab fa-linkedin"></i></a> %>
-    </div>
-    <div class="footer-copyright">
-      Ensemble is made with <i class="fas fa-heart"></i> at
-      <%=link_to "https://vroadstudio.fr", target: :_blank, rel: 'noopener'  do %>
-        <%=image_tag('vroad_logo.png', :height => 24)%>
-      <% end %>
-    </div>
-  </div>
+		</div>
+		<div class="footer-copyright">
+			Ensemble est cuisinée avec <i class="fas fa-heart"></i> à
+			<%=link_to "https://vroadstudio.fr", target: :_blank  do %>
+				<%=image_tag('vroad_logo.png', :height => 24)%>
+			<% end %>
+		</div>
+	</div>
 </footer>
+<div class="modal fade" id="contact-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="contact-modalLabel" aria-hidden="true">
+	<%= simple_form_for :contact,html: { novalidate: false }, url: contact_create_path(), method: :post do |f| %>
+	<div class="modal-dialog">
+		<div class="modal-content contact">
+			<div class="modal-header">
+				<h5 class="modal-title" id="contact-modalLabel">Prise de contact</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<div class="contact-form" data-display-tab-target='box'>
+						<div class='user-details'>
+							<%= f.input :email, label: 'Email', required: true, style:'width=20ch' %>
+							<%= f.input :last_name, label: 'Nom', required: true, wrapper_html:{class: 'class-wrapper'} %>
+							<%= f.input :first_name, label: 'Prénom', required: true %>
+						</div>
+						<div class='user-details'>
+							<%= f.input :school, label: 'Ecole',required: false%>
+							<%= f.input :city, label: 'Ville', required: true %>
+						</div>
+						<%= f.input :message, label: 'Message', as: :text, input_html: { rows: 5 }, required: true %>
+						<div class="mt-2">
+						</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary --border-10px" data-bs-dismiss="modal">Fermer</button>
+				<%= f.button :submit,"Envoyer", class: 'btn btn-primary --border-10px --borderc-rose --bgc-rose --blanc' %>
+
+			</div>
+					<% end %>
+		</div>
+	</div>
+</div>

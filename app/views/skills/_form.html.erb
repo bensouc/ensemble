@@ -2,23 +2,23 @@
   class='border-skill justify-content-between mt-2 edit-skill-card'
   data-allskilldisplay-target='skillCard'
 >
-  <%= simple_form_for skill,html: { novalidate: false, class: "skill-edit-form"},
+	<%= simple_form_for skill,html: { novalidate: false, class: "skill-edit-form"},
                             data: {create_skill_display_target:'form'} do |f| %>
-    <div>
-      <%# validates :name, presence: true
+		<div>
+			<%# validates :name, presence: true
       validates :symbol,
       inclusion: {
         in: ["◼", "⬥", "⬟", "♥", "⬤", "♣", "🞮", "▲", ""]
       } %>
-      <%= f.input :symbol,
+			<%= f.input :symbol,
               label: false,
               collection: %w[◼ ⬥ ⬟ ♥ ⬤ ♣ 🞮 ▲],
               input_html: {
                 class: "area"
               }%>
-    </div>
-    <div class="skill-name-input">
-      <%= f.input :name,
+		</div>
+		<div class="skill-name-input">
+			<%= f.input :name,
               as: :text,
               label: false,
               placeholder: "Nom de la compétence",
@@ -26,23 +26,21 @@
               input_html: {
                 class: "area"
               } %>
-    </div>
-    <div class="d-none">
-      <%# hideen input %>
-      <%= f.association :grade, label: false, required: :true %>
-      <%= f.input :domain, label: false, required: :true %>
-      <%= f.input :level, label: false, required: :true %>
-    </div>
-    <div>
-      <%# here comes the submit %>
-      <% tb_frame_id =
-        skill.id.nil? ? "#{skill.domain}_#{skill.level}" : "skill_#{skill.id}" %>
-      <%= f.submit "Ok",
+		</div>
+		<div class="d-none">
+			<%= f.association :domain, label: false, required: :true %>
+			<%= f.input :level, label: false, required: :true %>
+		</div>
+		<div>
+			<%# here comes the submit %>
+			<% tb_frame_id =
+        skill.id.nil? ? "#{skill.domain.id}_#{skill.level}" : "skill_#{skill.id}" %>
+			<%= f.submit "Ok",
                class: "area rect-sm btn-valid skill-submit",
                data: {
                  turbo_frame: tb_frame_id,
                  action: "click->create-skill-display#hideForm"
                } %>
-    </div>
-  <% end %>
+		</div>
+	<% end %>
 </div>

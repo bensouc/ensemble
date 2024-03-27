@@ -1,4 +1,12 @@
 Currently under development by the [VRoad Studio](https://www.vroadstudio.fr) team and  Beta test phase with seven teachers in a primary school @Nantes - France <br> <br>
+
+## New Features February 2024
+<details>
+<summary><strong>DEMO userflow </strong></summary>
+Any visitor can create a demo Account and explore core features with limitations
+Upgrade Subscription workflow to allow modification (Annualy <=> Monthly, volume of classrooms included in Subscription)
+</details>
+
 ## New Features July 2023
 
 <details>

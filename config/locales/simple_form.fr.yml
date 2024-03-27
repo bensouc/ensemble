@@ -40,7 +40,7 @@ fr:
     hints:
       defaults:
         username: "Nom d'utilisateur"
-        password: "Aucun caractère spécial, s'il vous plaît."
+        password: ""
     include_blanks:
       defaults:
         age: "Rather not say"

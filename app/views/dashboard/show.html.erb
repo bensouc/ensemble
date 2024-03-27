@@ -1,6 +1,6 @@
 <div class='container container-dashboard d-flex flex-column justify-content-space-around' >
 	<div class="com">
-		<div class='info-btn' data-controller='show-com' data-action="click->show-com#" >
+		<div class='info-btn' data-controller='show-com' data-action="" >
 			Bienvenue <%= current_user.first_name.capitalize %> !!
 		</div>
 	</div>
@@ -42,8 +42,11 @@
 		</div>
 	</div>
 </div>
-<%unless @has_classrooms && @has_empty_classroom && @has_work_plan %>
+<%unless @has_classrooms && @has_empty_classroom && @has_work_plan || current_user.discovery_method.nil? %>
 	<%= render 'advice_modal',  has_classrooms: @has_classrooms,
                             has_empty_classroom: @has_empty_classroom,
                             has_work_plan: @has_work_plan %>
+<% end %>
+<% if current_user.discovery_method.nil? %>
+  <%= render 'users/add_discovery_method'%>
 <% end %>

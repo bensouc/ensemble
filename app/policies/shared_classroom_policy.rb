@@ -6,6 +6,10 @@ class SharedClassroomPolicy < ApplicationPolicy
     end
   end
 
+  def create?
+    user_is_owner_or_admin?
+  end
+
 
   private
 

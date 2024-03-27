@@ -39,7 +39,7 @@ width: fit-content;
 
 // MOBILE css
 .mobile-home {
-  height: 100vh !important;
+  min-height: 100vh !important;
   display: flex;
   flex-direction: column;
   align-items: center;

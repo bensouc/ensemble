@@ -1,17 +1,11 @@
-@media (min-width: 1024px) {
+
   body {
     // background-image: url("https://res.cloudinary.com/dr50qe2fh/image/upload/v1638810072/bg2_tbato3.svg");
     background-color: white;
     font-family: $body-font;
-    padding-bottom: 50px !important;
+    // padding-bottom: 50px !important;
   }
-}
 
-@media (max-width: 1024px) {
-  body {
-    padding-bottom: 50px !important;
-  }
-}
 
 // .pastouche {
 
@@ -43,6 +37,7 @@ a {
   margin: 20px 20px;
   padding-bottom: 10px;
   border-bottom: thin solid $grisC;
+      width: 100%;
 }
 .grey-line-full{
   margin: 10px 0px;
@@ -113,4 +108,25 @@ a {
 }
 .--width-80{
   width: 80% !important;
+}
+
+.grabbable {
+    cursor: move; /* fallback if grab cursor is unsupported */
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
+ /* (Optional) Apply a "closed-hand" cursor during drag operation. */
+.grabbable:active {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+}
+
+.back-link{
+  color: $grisF;
+  &:hover{
+    color: $roseL;
+  }
 }

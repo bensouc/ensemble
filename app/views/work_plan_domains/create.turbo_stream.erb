@@ -9,5 +9,5 @@
 
 <% end %>
 <%= turbo_stream.append :domain_list do %>
-  <%= render "work_plan_domains/work_plan_domain", work_plan_domain: @domain %>
+  <%= render "work_plan_domains/work_plan_domain", work_plan_domain: @work_plan_domain, work_plan_skills: @work_plan_skills %>
 <% end %>

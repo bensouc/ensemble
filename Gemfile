@@ -15,15 +15,17 @@ gem "turbo-rails"
 
 #STRIPE setup
 # STRIPE SWITCH OFF
-# gem "money-rails", "~> 1.12"
-# gem "stripe"
-# gem "stripe_event"
+gem "money-rails", "~> 1.12"
+gem "stripe"
+gem "stripe_event"
+# gem "recaptcha"
+gem "recaptcha"
 # Use postgresql as the database for Active Record
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
 gem "puma", "~> 4.1"
-# Use SCSS for stylesheets
-gem "sass-rails", ">= 6"
+# Use SCSS for stylesheets and  minifies them
+gem "sassc-rails"
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 gem "webpacker", "~> 4.0"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
@@ -60,6 +62,9 @@ gem "simple_form"
 gem "rails-i18n"
 gem "bootstrap", "~> 5.2"
 
+# act_as_list help manage list
+gem 'acts_as_list', '~> 0.7.2'
+gem 'requestjs-rails' #help for simple JS http resquest
 # xlsx spreadsheet generation
 gem "caxlsx"
 gem "caxlsx_rails"

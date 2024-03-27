@@ -1,0 +1,33 @@
+<div class="domain-form-box form-domain-btn" >
+	<%= simple_form_for [domain], html: { novalidate: false } do  |f| %>
+		<div class="domain-form">
+			<%= f.input :name, label: false,input_html:{maxlength:29}, required: true,class: '--bgc-transparent',
+      placeholder: 'Nom du domaine' %>
+			<div class="d-none">
+				<%= f.association :grade, value:grade%>
+			</div>
+			<% if current_user.demo? %>
+				<div class="--bgc-transparent m-1"
+        data-controller="tooltip"
+        data-bs-toggle="tooltip"
+        data-bs-placement="top"
+        title="Non disponible en Démo">
+					<i class="fa-solid fa-circle-check"></i>
+				</div>
+			<% else %>
+				<%= button_tag type: 'submit', class: '--bgc-transparent' do %>
+					<i class="fa-solid fa-circle-check"></i>
+				<% end %>
+			<% end %>
+			<% if domain.persisted? %>
+				<%= link_to domain_path(domain),  class: '--bgc-transparent ' do %>
+					<i class="fa-solid fa-circle-xmark --grisC"></i>
+				<% end %>
+			<% else%>
+				<%= link_to grade_domains_path(grade),  class: '--bgc-transparent ' do %>
+					<i class="fa-solid fa-circle-xmark --grisC"></i>
+				<% end %>
+			<% end %>
+		</div>
+	<% end %>
+</div>

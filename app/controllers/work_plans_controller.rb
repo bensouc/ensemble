@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class WorkPlansController < ApplicationController
-  before_action :set_params_student, only: ["auto_new_wp"]
+  before_action :auto_new_wp_params, only: ["auto_new_wp"]
+  before_action :setup_show, only: :show
 
   # And sharing
   def clone
@@ -73,8 +74,9 @@ class WorkPlansController < ApplicationController
 
   def index
     skip_policy_scope
-    shared_classrooms = current_user.user_shared_classrooms
-    @my_classrooms = (current_user.classrooms + shared_classrooms).sort_by(&:created_at)
+
+    shared_classrooms = current_user.user_shared_classrooms.includes(:grade)
+    @my_classrooms = (current_user.classrooms.includes(:grade) + shared_classrooms).sort_by(&:created_at)
     @my_work_plans = current_user.all_classroom_workplans
     @my_work_plans_from_shared_classrooms = current_user.all_shared_classroom_workplans
     @my_work_plans += @my_work_plans_from_shared_classrooms unless @my_work_plans_from_shared_classrooms.empty?
@@ -83,15 +85,17 @@ class WorkPlansController < ApplicationController
   end
 
   def evaluation
+    # binding.pry
     @work_plan = WorkPlan.find(params[:id])
     authorize @work_plan
-    @domains = @work_plan.all_domains_from_work_plan
+    @domains = @work_plan.grade.domains.sort_by(&:position)
     @previous = []
-    @wpds = WorkPlanDomain.includes([:work_plan_skills]).where(work_plan: @work_plan)
+    @student =@work_plan.student
+    @wpds = @work_plan.work_plan_domains
     @wpds.each do |wpd|
       wpd.work_plan_skills.each do |wps|
         # last_4_wps = WorkPlanSkill.where(student: @work_plan.student, skill: wps.skill_id).sort_by(&:created_at).reverse[1..3]
-        last_4_wps = WorkPlanSkill.last_4_wps(@work_plan, wps, @work_plan.student)
+        last_4_wps = WorkPlanSkill.last_4_wps(@work_plan, wps, @student)
         @previous << [wps.skill_id, last_4_wps]
       end
     end
@@ -102,14 +106,6 @@ class WorkPlansController < ApplicationController
   end
 
   def show
-    @belt = Belt::BELT_COLORS
-    @work_plan = WorkPlan.with_associations.find(params[:id])
-    @work_plan_domains = @work_plan.work_plan_domains
-    authorize @work_plan
-    @domains = @work_plan.all_domains_from_work_plan
-    shared_classrooms = current_user.user_shared_classrooms
-    @students = current_user.all_students
-    @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms
     unless @work_plan.shared_user_id.nil?
       @shared_user = current_user.collegues.find { |user| user.id == @work_plan.shared_user_id }
     end
@@ -193,28 +189,20 @@ class WorkPlansController < ApplicationController
   end
 
   def auto_new_wp
-    # binding.pry
     if @domains.empty?
       redirect_to student_path(@student), notice: "Vous n'avez pas sélectionné de domaine"
 
       return
     end
-
-    # raise
-    # start_date =  Time.zone.today.monday? ? Time.zone.today : Time.zone.today.next_occurring(:monday)
-    start_date = Time.zone.today.next_occurring(:monday)
-    end_date = start_date + 4
-    @work_plan = WorkPlan.new(
+    @work_plan = WorkPlan.create(
       name: "AUTO - N°#{@student.work_plans.count + 1}",
       grade: @student.classroom.grade,
       student: @student, user: current_user,
-      start_date:,
-      end_date:,
+      start_date:Time.zone.today.next_occurring(:monday),
+      end_date: Time.zone.today.next_occurring(:monday) + 4,
     )
     authorize @work_plan
-    @work_plan.save
-    # ajout date intro prendre date => first monday => first friday
-    # based on student classroom level,
+    # @work_plan.save
     # Iterate through each domain in the list of domains
     @domains.each do |domain|
       # Create a new WorkPlanDomain object and set its attributes
@@ -223,15 +211,16 @@ class WorkPlansController < ApplicationController
                                   work_plan: @work_plan)
 
       # Check if the WorkPlanDomain has any specials and if the work plan grade is not "CM2"
-      # if wpd.specials? && @work_plan.grade != "CM2"
-      if wpd.specials?
+      # if wpd.special? && @work_plan.grade != "CM2"
+      if domain.special?
+
         # Set the WorkPlanDomain's level to 1 and save it
         wpd.level = 1
         wpd.save
       else
         # Find all the skills for the current domain, level, and grade
-        Skill.for_school(current_user.school).where(domain:, level: wpd.level,
-                                                    grade: @student.classroom.grade).each do |skill|
+        Skill.where(domain:, level: wpd.level).each do |skill|
+
           # Find the most recent WorkPlanSkill object for the current student and skill
           # last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
           temp_last_wps = WorkPlanSkill.last_wps(@student, skill)
@@ -246,7 +235,6 @@ class WorkPlansController < ApplicationController
             work_plan_domain: wpd,
             kind: "exercice",
           )
-
           # If there is no previous WorkPlanSkill, create a new challenge and save the new WorkPlanSkill
           if last_wps.nil?
             new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
@@ -258,11 +246,11 @@ class WorkPlansController < ApplicationController
             when "jeu"
               new_wps[:kind] = "exercice"
               new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
-              new_wps.save
+              # new_wps.save
             when "exercice"
               new_wps[:kind] = "ceinture"
-              new_wps.save
             end
+            new_wps.save
 
             # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
           elsif %w[redo failed redo_OK new].include?(last_wps.status)
@@ -312,13 +300,13 @@ class WorkPlansController < ApplicationController
     params[:work_plan].require(:work_plan_domain).permit(:domain, :level)
   end
 
-  def set_params_student
+  def auto_new_wp_params
     @student = Student.find(params.require(:student_id))
     # binding.pry
     if params[:student].nil?
-      @domains = params.require(:"/students/#{@student.id}")[:domains][1..]
+      @domains = params.require(:"/students/#{@student.id}")[:domains][1..].map {|id| Domain.find(id)}
     else
-      @domains = params.require(:student)[:domains][1..]
+      @domains = params.require(:student)[:domains][1..].map {|id| Domain.find(id)}
     end
   end
 
@@ -330,6 +318,17 @@ class WorkPlansController < ApplicationController
     end
   end
 
+  def setup_show
+    @belt = Belt::BELT_COLORS
+    @work_plan = WorkPlan.find(params[:id])
+    @work_plan_domains = WorkPlanDomain.includes(:domain, :work_plan).where(work_plan:@work_plan)
+    @domains = Domain.where(grade: @work_plan.grade).sort_by(&:position)
+    @work_plan_skills = WorkPlanSkill.includes(:work_plan_domain,:skill, :challenge).where(work_plan_domain: @work_plan_domains)
+    shared_classrooms = current_user.user_shared_classrooms
+    @students = current_user.all_students
+    @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms
+    authorize @work_plan
+  end
   # def test_multiplecloning_params(id)
   #   params["/work_plans/#{id}"]
   # end

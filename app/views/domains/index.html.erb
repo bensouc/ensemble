@@ -1,0 +1,5 @@
+
+<p>Ecole <%= current_user.school.name %></p>
+<%= turbo_frame_tag "skills_list" do%>
+<%= render 'domains_list', grade: @grade, domain: @domain %>
+<% end %>

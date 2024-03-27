@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class WorkPlanSkill < ApplicationRecord
+  after_validation :update_result, only: %w[create update]
+  after_destroy :reset_result
+
   belongs_to :work_plan_domain
   belongs_to :skill
   belongs_to :challenge, optional: true
@@ -16,6 +19,9 @@ class WorkPlanSkill < ApplicationRecord
 
   #   work_plan_domain.work_plan.student
   # end
+  def completed?
+    completed == true
+  end
 
   def special_wps?
     work_plan_domain.work_plan.special_wps
@@ -28,21 +34,6 @@ class WorkPlanSkill < ApplicationRecord
     new_wps.status = "new"
     new_wps.completed = false
     new_wps.save
-  end
-
-  def self.last_4_wps(_work_plan, wps, current_student)
-    # retrieve the last 4 wps for the student on this skill ids
-    out = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill_id: wps.skill_id)
-    out = out.select { |work_plan_skill| work_plan_skill.student == current_student }.sort_by(&:created_at).reverse
-    out.reject { |t| t == wps }
-    out.last(3)
-  end
-
-  def self.last_wps(student, skills)
-    # WorkPlanSkill.where(skill: skill).select{ |s| s.student == student }.max_by(&:created_at)
-
-    wpss = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill: skills)
-    wpss.select { |wps| wps.student == student }
   end
 
   def add_challenges_2_wps(current_user, _actual_challenge = nil)
@@ -62,5 +53,38 @@ class WorkPlanSkill < ApplicationRecord
       # recuper un des exo existant avec le skill id de @self
       challenges.sample
     end
+  end
+
+  def self.last_4_wps(_work_plan, wps, current_student)
+    # retrieve the last 4 wps for the student on this skill ids
+    out = WorkPlanSkill.includes([:student]).where(skill_id: wps.skill_id)
+    out = out.select { |work_plan_skill| work_plan_skill.student == current_student }.sort_by(&:created_at).reverse
+    out.reject { |t| t == wps }
+    out.last(3)
+  end
+
+  def self.last_wps(student, skills)
+    # WorkPlanSkill.where(skill: skill).select{ |s| s.student == student }.max_by(&:created_at)
+
+    wpss = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill: skills)
+    wpss.select { |wps| wps.student == student }
+  end
+
+  private
+
+  def update_result
+    # find_or_create results
+    result = Result.find_or_create_by(student:, skill:)
+    # update results
+    result.update(status:, kind:)
+  end
+
+  def reset_result
+    return unless special_wps?
+
+    # find_or_create results
+    result = Result.find_or_create_by(student:, skill:)
+    # update results
+    result.update(status: "new", kind:)
   end
 end

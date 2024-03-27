@@ -1,0 +1,13 @@
+<%= render 'shared/sequence_4', sequence: @sequence %>
+<%= turbo_frame_tag "sequence" do %>
+	<h1 class='sub-title'>Votre Abonnement</h1>
+	<div class="sub-sequence-selection">
+		<%= link_to join_school_path, data: { turbo_frame: "_top" } do%>
+			<div class="action-school-box">Rejoindre une école</div>
+		<% end %>
+		<div class="vertical-bar"></div>
+		<%= link_to  new_school_path, data: { turbo_frame: "_top" } do%>
+			<div class="action-school-box">Créer votre groupe / école</div>
+		<% end %>
+	</div>
+<% end %>

@@ -1,18 +1,13 @@
 # frozen_string_literal: true
+
 # rubocop:disable Metrics/ClassLength
 
 class ClassroomsController < ApplicationController
   before_action :set_classroom, only: [:update, :destroy, :results, :results_by_domain]
+  before_action :set_classrooms, only: [:index]
 
   def index
-    @school = policy_scope(School)
-    # @shared_classrooms = SharedClassroom.where(user: current_user)
-    @shared_classrooms = policy_scope(SharedClassroom)
-    shared_classrooms = @shared_classrooms.includes([:classroom]).map(&:classroom)
-    @classrooms = (policy_scope(Classroom) + shared_classrooms).sort_by(&:created_at)
-    @school_grades = @school.grades
-    @students_list = []
-    @school_teachers = current_user.collegues
+    # binding.pry
     @classrooms.each do |classroom|
       @students_list << [classroom, classroom.students]
     end
@@ -55,12 +50,12 @@ class ClassroomsController < ApplicationController
 
   def results
     authorize @classroom
-    @domains = WorkPlanDomain::DOMAINS[@classroom.grade.grade_level]
-    @skills = Skill.for_school(current_user.school).where(grade:@classroom.grade)
-    @domains.map do |domain|
-      # remove domains without skills eg:poesie
-      @domains.delete(domain) if @skills.none? { |skill| skill.domain == domain }
-    end
+    @domains = Domain.where(grade: @classroom.grade).sort_by(&:position)
+    @skills = Skill.includes(:domain).where(domain: @domains)
+    # @domains.map do |domain|
+    #   # remove domains without skills eg:poesie
+    #   # @domains.delete(domain) if @skills.none? { |skill| skill.domain == domain }
+    # end
     # raise
     respond_to do |format|
       format.html do
@@ -79,16 +74,14 @@ class ClassroomsController < ApplicationController
   def results_by_domain
     authorize @classroom
     # binding.pry
-    @domain = set_domain
+    @domain = Domain.find(set_domain)
     set_up_results(@domain)
     results_factory(@domain) # create all  variables shared with the results Action
-    @skills = if @special_domain
-        Skill.where(school: current_user.school,
-                    grade: @classroom.grade,
-                    domain: @domain).order(Arel.sql('COALESCE(sub_domain, \'\') ASC'))
-      else
-        Skill.for_school(current_user.school).where(grade: @classroom.grade, domain: @domain).sort
-      end
+    @skills = if @domain.special?
+                Skill.where(domain: @domain).order(Arel.sql("COALESCE(sub_domain, '') ASC"))
+              else
+                Skill.where(domain: @domain).sort
+              end
     render partial: "classrooms/classroom_domain_results"
   end
 
@@ -100,6 +93,18 @@ class ClassroomsController < ApplicationController
 
   def set_domain
     params.require(:domain)
+  end
+
+  def set_classrooms
+    @school = policy_scope(School)
+    @subscription = @school.subscription
+    # @shared_classrooms = SharedClassroom.where(user: current_user)
+    @shared_classrooms = policy_scope(SharedClassroom)
+    shared_classrooms = @shared_classrooms.includes([:classroom]).map(&:classroom)
+    @classrooms = (policy_scope(Classroom) + shared_classrooms).sort_by(&:created_at)
+    @school_grades = @school.grades
+    @students_list = []
+    @school_teachers = current_user.collegues
   end
 
   def set_classroom_params
@@ -119,7 +124,7 @@ class ClassroomsController < ApplicationController
       set_up_results(domain)
       results_factory(domain)
       # all_completed_belts = Belt.includes([:student]).where(student: students_list, domain: domain, completed: true)
-      workbook.add_worksheet(name: domain.capitalize.to_s) do |sheet|
+      workbook.add_worksheet(name: domain.name.to_s) do |sheet|
         sheet.add_row header.flatten
         @skills.select { |skill| skill.domain == domain }.sort_by { |skill| [skill.level, skill.id] }.each do |skill|
           sheet.add_row create_result_row(skill, students_list).flatten
@@ -131,9 +136,9 @@ class ClassroomsController < ApplicationController
   end
 
   def create_result_row(skill, students_list)
-    out = [skill.specials? ? "" : Belt::BELT_COLORS[skill.level - 1], skill.name]
+    out = [skill.special? ? "" : Belt::BELT_COLORS[skill.level - 1], skill.name]
     out << students_list.map do |student|
-      level = skill.specials? ? 0 : skill.level
+      level = skill.special? ? 0 : skill.level
       next unless @all_completed_belts.any? do |belt|
         belt.student == student && belt.domain == skill.domain && belt.level == level
       end ||
@@ -156,9 +161,10 @@ class ClassroomsController < ApplicationController
 
   # refacto of result and result_by_domain actions
   def set_up_results(domain)
-    @special_domain = @classroom.user.school.special_domains? && (WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @classroom.grade.grade_level != "CM2")
+    # @special_domain = @classroom.user.school.special_domains? && (WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @classroom.grade.grade_level != "CM2")
     @students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     # get all validated belts for all classroom student
+    # binding.pry
     @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain:, completed: true)
   end
 
@@ -166,6 +172,7 @@ class ClassroomsController < ApplicationController
     # @special_domain = (WorkPlanDomain::DOMAINS_SPECIALS.include?(@domain) && @classroom.grade.grade_level != "CM2")
     @all_completed_work_plan_skills = {}
     @students_list.each do |student|
+      # binding.pry if student.id == 393
       completed_wps = student.all_completed_work_plan_skills(domain, @classroom.grade.grade_level)
       @all_completed_work_plan_skills[student.id.to_s] = completed_wps unless completed_wps.empty?
     end

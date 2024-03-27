@@ -43,13 +43,13 @@
                                  # collection: classroom.students.order(first_name: :asc),
                                  collection: @domains,
                                  # label_method: ,
-                                 value_method: lambda { |domain| domain },
+                                 value_method: lambda { |domain| domain.id },
                                  multiple: true,
                                  as: :check_boxes,
                                  boolean_style: :inline,
                                  data: {
                                    checkboxes_target: "boxes",
-                                   action: "click->checkboxes#add"
+                                  #  action: "click->checkboxes#add"
                                  },
                                  class: "tag-selector",
                                  item_wrapper_class: "tag-item",

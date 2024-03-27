@@ -14,8 +14,16 @@ class SubscriptionPolicy < ApplicationPolicy
     true
   end
 
-  def new?
-  true
+  def on_boarding?
+    user.admin? || user.demo? || (true && user.school.valid_subscription?)
+  end
+
+  # def new?
+  #   create?
+  # end
+
+  def create?
+    user.admin? || true
   end
 
   private

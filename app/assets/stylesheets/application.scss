@@ -28,6 +28,7 @@ time, mark, audio, video {
 @import "config/colors";
 @import "config/fonts";
 @import "config/global";
+@import "config/contact_form";
 @import "config/bootstrap_variables";
 @import "simple_calendar";
 
@@ -70,3 +71,4 @@ time, mark, audio, video {
 @import "challenges/index" ;
 @import "subscriptions/index" ;
 @import "grades/index" ;
+@import "domains/index" ;

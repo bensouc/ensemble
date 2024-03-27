@@ -1,7 +1,7 @@
 <% if WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @student.classroom.grade.grade_level != "CM2" %>
   <% skills = @student_skills.select { |skill| skill.domain == domain } %>
   <div class="display-last-wps ">
-    <%= render "shared/validate_belt_btn", level: level, domain: domain %>
+    <%= render "validate_belt_btn", level: level, domain: domain %>
     <%# test if level 1 or if level +1 above the higher belt %>
     <% if (level == 1 || !last_belt.nil? && (level == last_belt.level + 1 ) ) %>
       <%# afficher les wps specials du domain %>
@@ -38,7 +38,7 @@
         </div>
       <% end %>
     <% end %>
-    <%= render "shared/validate_belt_btn", level: level, domain: domain %>
+    <%= render "validate_belt_btn", level: level, domain: domain %>
   </div>
 <% end %>
 <%= render "shared/add_validated_wps_btn", level: level, domain: domain %>

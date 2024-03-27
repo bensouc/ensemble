@@ -6,8 +6,8 @@
     <%= b.input :level,
             input_html: { value: level, class: 'd-none' },
                     label: false%>
-    <%= b.input :domain,
-            input_html: { value: domain, class: 'd-none' },
+    <%= b.input :domain_id,
+            input_html: {value: domain.id,  class: 'd-none' },
                     label: false%>
     <%= b.input :grade_id,
                 input_html: { value: @student.classroom.grade.id,

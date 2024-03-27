@@ -1,56 +1,66 @@
 <%# temp level management ici CM2 %>
-<div class="classroom-level-selectors">
-	<% @grades.each do |classroom_grade| %>
-		<%= link_to skills_path(grade: classroom_grade ) do %>
-			<div class="class-pill <%= 'active' if classroom_grade == @grade %> ">
-				<%= classroom_grade.grade_level.upcase %>
-			</div>
-		<% end %>
-	<% end %>
-	<h1 class=''>Mes Compétences </h1>
-	<div class='skill-school-name'>(<%= @grade.school.name.capitalize %>)</div>
-</div>
-<div  class="skills-classroom-level-card"
-      data-controller='allskilldisplay'
-      >
-	<div class="skills">
-		<% WorkPlanDomain::DOMAINS[@grade.grade_level].each do |domain| %>
-			<div class="domain-tab"
-        data-allskilldisplay-target="domainBtn"
-        data-domain = "<%=domain%>"
-        data-action = 'click->allskilldisplay#displayDomain'
-				<%# indicate if domain is special true && not CME && in special domain %>
-				data-special="<%= @are_special_domains && @grade != 'CM2' && domain.in?(WorkPlanDomain::DOMAINS_SPECIALS)%>">
-				<%= domain %>
-			</div>
-		<% end %>
-	</div>
-	<div class="all-skills">
-		<div class="skill_level-selectors">
-			<% for skill_level in (1..7) do%>
-				<div class="skill_level-selector"  data-level="<%=skill_level%>"
-        data-action="click->allskilldisplay#displaySkills"
-					data-allskilldisplay-target="leveltBtn">
-					<i class=" fas fa-bacon belt-<%= skill_level %> font-weight-bold"></i>
+<div data-controller="loading-spinner2">
+	<div class="classroom-level-selectors">
+		<% @grades.each do |classroom_grade| %>
+			<%= link_to skills_path(grade: classroom_grade ), data:{action:'loading-spinner2#displayLoadingSpinner'} do %>
+				<div class="class-pill <%= 'active' if classroom_grade == @grade %> ">
+					<%= classroom_grade.name.upcase %>
 				</div>
 			<% end %>
-			<%# upload skills list unless user demo %>
-			<% if current_user.demo? %>
-				<div class="skill_level-selector" onclick='alert("Non disponible en Mode Démo")'
+		<% end %>
+		<h1 class=''>Mes Compétences </h1>
+		<div class='skill-school-name'>(<%= @grade.school.name.capitalize %>)</div>
+	</div>
+	<%= turbo_frame_tag "skills_list" do %>
+		<% if @domain.nil? %>
+    <%= render 'domains/domains_list', grade: @grade, domain: @domain  %>
+		<% else %>
+			<div  class="skills-classroom-level-card"
+      data-controller='allskilldisplay'
+      >
+				<div class="skills">
+					<% @domains.each do |domain| %>
+						<%= link_to "skills?grade=#{@grade.id}&domain=#{domain.id}", data:{action:'loading-spinner2#displayLoadingSpinner'} do %>
+							<div class="domain-tab <%='active' if domain == @domain%>">
+								<%= domain.name %>
+							</div>
+						<% end %>
+					<% end %>
+					<%= link_to grade_domains_path(@grade), data:{action:'loading-spinner2#displayLoadingSpinner'} do %>
+						<div class="domain-tab active">
+							<i class="fas fa-pen fa-xs me-2" ></i> Editer les domaines
+						</div>
+					<% end %>
+				</div>
+				<div class="all-skills">
+					<div class="skill_level-selectors">
+						<% for skill_level in (1..7) do%>
+							<div class="skill_level-selector <%='active' if skill_level == 1%>"  data-level="<%=skill_level%>"
+        data-action="click->allskilldisplay#displaySkills"
+								data-allskilldisplay-target="leveltBtn">
+								<i class=" fas fa-bacon belt-<%= skill_level %> font-weight-bold"></i>
+							</div>
+						<% end %>
+						<%# upload skills list unless user demo %>
+						<% if current_user.demo? %>
+							<div class="skill_level-selector" onclick='alert("Non disponible en Mode Démo")'
           data-controller="tooltip"
           data-bs-toggle="tooltip" data-bs-placement="right"
           title="Télécharger la liste des compétences"
         >
-					<i class="fa-solid fa-file-excel --vert"></i>
-				</div>
-			<% else %>
-				<%= link_to skills_path(grade: @grade, format: :xlsx), data:{
+								<i class="fa-solid fa-file-excel --vert"></i>
+							</div>
+						<% else %>
+							<%= link_to skills_path(grade: @grade, format: :xlsx), data:{
           controller:"tooltip",
           bs_toggle:"tooltip",
           bs_placement:"right"},
           title:"Télécharger la liste des compétences" do %>
-					<div class="skill_level-selector">
-						<i class="fa-solid fa-file-excel --vert"></i>
+								<div class="skill_level-selector">
+									<i class="fa-solid fa-file-excel --vert"></i>
+								</div>
+							<% end %>
+						<% end %>
 					</div>
 				<% end %>
 				<% if @skills.empty? %>
@@ -101,5 +111,5 @@
 				</div>
 			<% end %>
 		<% end %>
-	</div>
+	<% end %>
 </div>

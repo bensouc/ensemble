@@ -23,8 +23,8 @@ RSpec.describe WorkPlan, type: :model do
 
   it " can have  2 work_plan_skill attached to on work_plan_domain" do
     work_plan_domain1 = create(:work_plan_domain, work_plan: @work_plan1)
-    skill1 = create(:skill, grade: @work_plan1.grade, domain: work_plan_domain1.domain, level: work_plan_domain1.level)
-    skill2 = create(:skill, grade: @work_plan1.grade, domain: work_plan_domain1.domain, level: work_plan_domain1.level)
+    skill1 = create(:skill, domain: work_plan_domain1.domain, level: work_plan_domain1.level)
+    skill2 = create(:skill, domain: work_plan_domain1.domain, level: work_plan_domain1.level)
     create(:work_plan_skill, work_plan_domain: work_plan_domain1, skill: skill1)
     create(:work_plan_skill, work_plan_domain: work_plan_domain1, skill: skill2)
     expect(@work_plan1.work_plan_domains.last.work_plan_skills.count).to eq(2)

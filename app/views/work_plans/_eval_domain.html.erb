@@ -4,7 +4,7 @@
   <div class='p-1 d-flex'>
     <div class='eval-domain-belt-level'>
       <div class='domain-display d-flex justify-content-start eval-skill-display'>
-        <%= work_plan_domain.domain %>
+        <%= work_plan_domain.domain.name %>
       </div>
       <div >
         <div class='d-flex justify-content-around belt-display'>
@@ -12,7 +12,7 @@
             <i class=" fas fa-bacon belt-<%= work_plan_domain.level %> display-2 font-weight-bold"></i>
           </div>
         </div>
-        <div class='d-flex justify-content-around mt-1 belt-display' <% if ["Géométrie", "Grandeurs et Mesures"].include?(work_plan_domain.domain) %> style = 'visibility: hidden'<% end %> >
+        <div class='d-flex justify-content-around mt-1 belt-display' <% if work_plan_domain.domain.special? %> style = 'visibility: hidden'<% end %> >
           <strong><%= Belt::BELT_COLORS[work_plan_domain.level - 1].capitalize %></strong>
         </div>
       </div>
