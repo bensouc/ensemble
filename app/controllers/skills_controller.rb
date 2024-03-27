@@ -84,7 +84,7 @@ class SkillsController < ApplicationController
     # Ajoutez ici le code pour traiter le fichier Excel
     sheets = Xlsx.parse_xlsx_file(@uploaded_file_path)
     # add test if file is OK
-    temp_skills = Skill.sheets_to_temp_skills_creation(sheets, @grade, current_user)
+    temp_skills = Skill.sheets_to_temp_skills_creation(sheets, @grade, current_user, @grade.domains)
     # create new set of skills
     new_skills = Skill.create_loaded_skills(temp_skills[:skills])
     # Supprimez le fichier après le traitement
@@ -149,8 +149,8 @@ class SkillsController < ApplicationController
   # get xlsx url for upload_skills
   def set_uploaded_file_path
     @uploaded_file_path = session[:uploaded_file_path]
-    @grade = Grade.find(session[:grade_id])
-    @old_skills = Skill.where(grade: @grade)
+    @grade = Grade.includes(:domains).find(session[:grade_id])
+    # @old_skills = Skill.where(grade: @grade)
   end
 
   def set_xls_file_path
