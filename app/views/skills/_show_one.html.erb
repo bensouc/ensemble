@@ -1,32 +1,34 @@
-<div class="d-flex">
-	<div class='border-skill justify-content-between mt-2 edit-skill-card'
-                  data-allskilldisplay-target='skillCard'>
-		<div>
-			<%= skill.symbol%>
-			<%= skill.name%>
-		</div>
-		<%# Button remmove Skill %>
-		<div class='skill-mngt-btns'>
-			<%= link_to edit_skill_path(skill) do %>
-				<div class='rmv-skill-btn'>
-					<i class="fa-solid fa-pen"></i>
-				</div>
-			<% end %>
-			<%= button_to skill_path(skill), method: :delete,
-        class:'--bgc-blanc',
-        data:{ turbo_confirm: "Souhaitez vous effacer cette compétence?"} do %>
-				<div class='rmv-skill-btn'>
-					<i class="far fa-times-circle"></i>
-				</div>
-			<% end %>
-			<div  class='rmv-skill-btn'
-            data-controller="tooltip"
-            data-bs-toggle="tooltip" data-bs-placement="right"
-            title="<%= skill.challenges.length %> Exo, <%= skill.challenges.select{|exo| exo.user == current_user}.length %> par vous"
-            >
-        <i class="far fa-question-circle"></i>
-        </div>
-		</div>
-		<%#  %>
-	</div>
-</div>
+<%= turbo_frame_tag "skill_#{skill.id}" do %>
+  <div class="d-flex">
+    <div class='border-skill justify-content-between mt-2 edit-skill-card'
+                    data-allskilldisplay-target='skillCard'>
+      <div>
+        <%= skill.symbol%>
+        <%= skill.name%>
+      </div>
+      <%# Button remmove Skill %>
+      <div class='skill-mngt-btns'>
+        <%= link_to edit_skill_path(skill) do %>
+          <div class='rmv-skill-btn'>
+            <i class="fa-solid fa-pen"></i>
+          </div>
+        <% end %>
+        <%= button_to skill_path(skill), method: :delete,
+          class:'--bgc-blanc',
+          data:{ turbo_confirm: "Souhaitez vous effacer cette compétence?"} do %>
+          <div class='rmv-skill-btn'>
+            <i class="far fa-times-circle"></i>
+          </div>
+        <% end %>
+        <div  class='rmv-skill-btn'
+              data-controller="tooltip"
+              data-bs-toggle="tooltip" data-bs-placement="right"
+              title="<%= skill.challenges.length %> Exo, <%= skill.challenges.select{|exo| exo.user == current_user}.length %> par vous"
+              >
+          <i class="far fa-question-circle"></i>
+          </div>
+      </div>
+      <%#  %>
+    </div>
+  </div>
+<% end %>

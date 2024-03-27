@@ -1,9 +1,9 @@
 <%= turbo_frame_tag "#{domain.id}_#{level}" do %>
   <% skills.each do |skill| %>
     <% unless skill.nil? %>
-      <%= turbo_frame_tag "skill_#{skill.id}" do %>
+
         <%= render "show_one", skill: skill %>
-      <% end %>
+
     <% end %>
   <% end %>
 <% end %>

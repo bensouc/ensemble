@@ -48,8 +48,12 @@ class SkillsController < ApplicationController
     @skill.save!
     # redirect_to skill_path(@skill)
     @skills = Skill.includes([:school]).where(domain: @skill.domain, level: @skill.level)
-    render partial: "skills/all_skills_by_domain_level",
-           locals: { skills: @skills, domain: @skill.domain, level: @skill.level, grade: @skill.domain.grade }
+
+    respond_to  do |format|
+      format.html { redirect_to skills_path}
+      format.turbo_stream
+    end
+
 
     #  skills: skills, domain: domain, level: skill_level
   end
