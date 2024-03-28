@@ -38,7 +38,7 @@ class WorkPlanSkill < ApplicationRecord
 
   def add_challenges_2_wps(current_user, _actual_challenge = nil)
     challenges = Challenge.classic.where(skill_id: skill)
-    name = skill.name + (challenges.count + 1).to_s
+    name = skill.name + " " + (challenges.count + 1).to_s
     # get all challenges azssigned 4 current_student and that skill
     student_challenges = Challenge.assigned_challenges(skill, student)
     # challenges = challenges.reject { |c| c == actual_challenge }
