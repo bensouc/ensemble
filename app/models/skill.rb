@@ -33,6 +33,7 @@ class Skill < ApplicationRecord
           end
         end
       else
+        puts "Le domaine #{domain_sheet.name} n'existe pas pour #{grade.name}"
         errors[:domains] << "Le domaine #{domain_sheet.name} n'existe pas pour #{grade.name}"
       end
     end
@@ -41,7 +42,6 @@ class Skill < ApplicationRecord
   end
 
   def self.create_loaded_skills(temp_skills)
-    binding.pry
     temp_skills.each {|skill| skill.save}
   end
 

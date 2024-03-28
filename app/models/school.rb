@@ -23,6 +23,10 @@ class School < ApplicationRecord
 
   # Instance Methods
 
+  def classrooms_total
+    classrooms.count{|classroom| !classroom.user.admin?}
+  end
+
   def add_teacher(teacher, super_teacher = false)
     # remove previous school_roles
     teacher.school_role.destroy

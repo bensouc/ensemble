@@ -90,12 +90,13 @@ class SkillsController < ApplicationController
     # Supprimez le fichier après le traitement
     File.delete(@uploaded_file_path) if File.exist?(@uploaded_file_path)
     # puts "SKILL XLS UPLOAD REUSSI"
+    binding.pry
     if temp_skills[:errors].empty?
     flash[:success] = "#{temp_skills[:skills].count} Compétences ajoutées"
       redirect_to skills_path
     else
       @errors = temp_skills[:errors]
-      flash[:error] = "vous avez des euurers"
+      flash[:error] = "vous avez des erreurs"
       redirect_to skills_path
     end
   end

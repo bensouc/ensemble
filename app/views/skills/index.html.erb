@@ -26,7 +26,7 @@
 							</div>
 						<% end %>
 					<% end %>
-					<%= link_to grade_domains_path(@grade), data:{action:'loading-spinner2#displayLoadingSpinner'} do %>
+					<%= link_to grade_domains_path(@grade), data:{action:'loading-spinner2#displayLoadingSpinner', turbo_frame: "skills_list"} do %>
 						<div class="domain-tab active">
 							<i class="fas fa-pen fa-xs me-2" ></i> Editer les domaines
 						</div>
@@ -111,3 +111,6 @@
 		</div>
 	</div>
 </div>
+<% unless @errors.nil?  %>
+  <%= render 'errors_display', errors: @errors %>
+<% end %>
