@@ -1,8 +1,8 @@
 <%= link_to  student_path(@belt.student),
-data:{controller: 'loadingspinnermgnt',
-action: "click->loadingspinnermgnt#displaySpinner"} do%>
-  <i class="fa-solid fa-circle-arrow-left"></i>
-  Retour Progression
+    data:{controller: 'loadingspinnermgnt',
+    action: "click->loadingspinnermgnt#displaySpinner"} do%>
+	<i class="fa-solid fa-circle-arrow-left"></i>
+	Retour Progression
 <% end %>
 <div class="border-round-rose" data-controller="loadingspinnermgnt">
   <%= simple_form_for @belt, html: { novalidate: false } do |f| %>
@@ -18,15 +18,16 @@ action: "click->loadingspinnermgnt#displaySpinner"} do%>
                                             locale: "fr",
                                             value: @belt.validated_date.strftime("%d/%m/%Y")
                                             }%>
-      <%= f.submit "Valider", class: 'area rect-sm btn-valid',data:{action: "click->loadingspinnermgnt#displaySpinner"} %>
-    </div>
-  <% end %>
-  <div class="belt-edit-header-3">
-    <p>Supprimer la Ceinture</p>
-    <%= link_to belt_path(@belt),method: :delete,class: 'delete-belt-btn',
+			<%= f.submit "Valider", class: 'area rect-sm btn-valid',data:{action: "click->loadingspinnermgnt#displaySpinner"} %>
+		</div>
+	<% end %>
+	<div class="belt-edit-header-3">
+		<p>Supprimer la Ceinture</p>
+		<%= link_to belt_path(@belt),method: :delete,class: 'delete-belt-btn',
                               data:{confirm:"Voulez vous Supprimer Cette Ceinture?"} do %>
-      <p><i class="fa-solid fa-trash"></i>
-      </p>
-    <% end %>
-  </div>
+			<p>
+				<i class="fa-solid fa-trash"></i>
+			</p>
+		<% end %>
+	</div>
 </div>

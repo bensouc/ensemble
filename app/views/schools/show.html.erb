@@ -59,14 +59,14 @@
 		<div class="subscription-details --border-10px">
 			<% if  @subscription.nil? %>
 				Vous n'avez pas encore d'abonnement
-				
+
 			<% else %>
 				<h3>Détails de votre Abonnement</h3>
 				<p><i class="fa-solid fa-heart"></i>
 					<%= t("etats_facturation.#{@subscription.status}") %>
 					<%= "(fin le #{@subscription.trial_end})" if @subscription.status == "trialing" %>
 				</p>
-        <p><i class="fa-solid fa-people-roof"></i> <%= @school.classrooms.count%> / <%= @subscription.quantity %> classe(s) </p>
+        <p><i class="fa-solid fa-people-roof"></i> <%= @school.classrooms_total%> / <%= @subscription.quantity %> classe(s) </p>
 				<div class="grey-line-full"></div>
         <h5>Renouvellement</h5>
         <p><i class="fa-solid fa-repeat"></i>

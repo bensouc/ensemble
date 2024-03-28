@@ -84,7 +84,13 @@ Rails.application.routes.draw do
   # ###############END OF Subscriptions ROUTES############
 
   # ###############routes for SKILLS###############
+  get "skills/add_skills_from_xls", to: "skills#add_skills_from_xls", as: :add_skills_from_xls
   resources :skills
+    # EXCEL UPLAD SKILLS
+  # get "excel/upload", to: "excel#upload", as: "upload_excel"
+  post "skills/upload", to: "skills#upload_skills_xlsx", as: :upload_skills
+# ###############END for SKILLS###############
+
 
   # ###############routesfor Challenge#########
   resources :challenges, only: [:show, :edit, :update, :destroy, :index, :new, :create]

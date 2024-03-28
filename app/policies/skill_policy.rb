@@ -22,6 +22,13 @@ class SkillPolicy < ApplicationPolicy
     user_is_owner_or_admin?
   end
 
+  def upload_skills_xlsx?
+    !user.demo?
+  end
+  def add_skills_from_xls?
+    upload_skills_xlsx?
+  end
+
   private
 
   def user_is_owner_or_admin?

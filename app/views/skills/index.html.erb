@@ -13,7 +13,7 @@
 	</div>
 	<%= turbo_frame_tag "skills_list" do %>
 		<% if @domain.nil? %>
-    <%= render 'domains/domains_list', grade: @grade, domain: @domain  %>
+			<%= render 'domains/domains_list', grade: @grade, domain: @domain  %>
 		<% else %>
 			<div  class="skills-classroom-level-card"
       data-controller='allskilldisplay'
@@ -26,7 +26,7 @@
 							</div>
 						<% end %>
 					<% end %>
-					<%= link_to grade_domains_path(@grade), data:{action:'loading-spinner2#displayLoadingSpinner'} do %>
+					<%= link_to grade_domains_path(@grade), data:{action:'loading-spinner2#displayLoadingSpinner', turbo_frame: "skills_list"} do %>
 						<div class="domain-tab active">
 							<i class="fas fa-pen fa-xs me-2" ></i> Editer les domaines
 						</div>
@@ -36,7 +36,7 @@
 					<div class="skill_level-selectors">
 						<% for skill_level in (1..7) do%>
 							<div class="skill_level-selector <%='active' if skill_level == 1%>"  data-level="<%=skill_level%>"
-        data-action="click->allskilldisplay#displaySkills"
+                data-action="click->allskilldisplay#displaySkills"
 								data-allskilldisplay-target="leveltBtn">
 								<i class=" fas fa-bacon belt-<%= skill_level %> font-weight-bold"></i>
 							</div>
@@ -44,41 +44,73 @@
 						<%# upload skills list unless user demo %>
 						<% if current_user.demo? %>
 							<div class="skill_level-selector" onclick='alert("Non disponible en Mode Démo")'
-          data-controller="tooltip"
-          data-bs-toggle="tooltip" data-bs-placement="right"
-          title="Télécharger la liste des compétences"
-        >
+                data-controller="tooltip"
+                data-bs-toggle="tooltip" data-bs-placement="right"
+                title="Télécharger la liste des compétences"
+              >
 								<i class="fa-solid fa-file-excel --vert"></i>
 							</div>
 						<% else %>
 							<%= link_to skills_path(grade: @grade, format: :xlsx), data:{
-          controller:"tooltip",
-          bs_toggle:"tooltip",
-          bs_placement:"right"},
-          title:"Télécharger la liste des compétences" do %>
+                controller:"tooltip",
+                bs_toggle:"tooltip",
+                bs_placement:"right"},
+                title:"Télécharger la liste des compétences" do %>
 								<div class="skill_level-selector">
 									<i class="fa-solid fa-file-excel --vert"></i>
 								</div>
 							<% end %>
 						<% end %>
 					</div>
-					<div class="skills-boxe"
+				<% end %>
+				<% if @skills.empty? %>
+					<div class="skill_level-selector"
+          data-controller="tooltip"
+          data-bs-toggle="tooltip"
+          data-bs-placement="right"
+          title="Charger les compéténces de la classe">
+						<i class="fa-solid fa-file-arrow-down --vert"></i>
+					</div>
+				<% end %>
+			<% end %>
+			<% if @skills.empty? %>
+				<div class="load-skills border-skill">
+					<h3>Créer un progression de compétences</h3>
+					<%= simple_form_for :liste, url: upload_skills_path, html: { novalidate: false}, method: :post, class: 'form' do |f| %>
+						<%= f.input :level, collection: @grades, prompt: "Choisisez un niveau", selected: @grade,label: false  %>
+						<div class="form-group ">
+							<p>Souhaitez-vous remplacer toutes les compétences actuelles ? </p>
+							<p><em>Ceci effacera l'ensemble des données liées à ces compétences (Plans, évaluations, exercices)</em></p>
+							<%= f.collection_radio_buttons :new_skills, [[true, 'Oui'], [false, 'Non']], :first, :last, wrapper_html: { class: 'form-check' } %>
+						</div>
+						<div class="form-group">
+							<%= f.input :excel_file, as: :file, label: false, required: true, input_html: { class: 'form-control-file', accept: '.xlsx' } %>
+						</div>
+						<%= f.button :submit,  class: 'class-pill active', data: {turbo_confirm: "En validant, vous effacer toutes les données actuelles liées au niveau de #{@grade.name} du groupe scolaire #{current_user.school.name} "} do%>
+							Importer
+						<% end %>
+					<% end %>
+				</div>
+			<% else %>
+				<div class="skills-boxe"
 				data-domain='<%=@domain.name%>'
 				data-allskilldisplay-target='domainCard'>
-						<%# <% domain = WorkPlanDomain::DOMAINS[@grade].first %>
-						<% for skill_level in (1..7) do %>
-							<% skills = @skills.select {|skill| skill.level == skill_level}.sort %>
-							<div class="skills-display <%= 'd-none' unless skill_level == 1 %>"
-          data-allskilldisplay-target='levelSkillCard'
-          data-grade='<%=@grade.name%>'
-          data-level='<%=skill_level%>'
-          data-loading-spinner2-target='content'>
-								<%= render 'all_skills_by_domain_level', skills: skills, domain: @domain, level: skill_level,grade: @grade %>
-							</div>
-						<% end %>
-					</div>
+					<%# <% domain = WorkPlanDomain::DOMAINS[@grade].first %>
+					<% for skill_level in (1..7) do %>
+						<% skills = @skills.select {|skill| skill.level == skill_level}.sort %>
+						<div class="skills-display <%= 'd-none' unless skill_level == 1 %>"
+              data-allskilldisplay-target='levelSkillCard'
+              data-grade='<%=@grade.name%>'
+              data-level='<%=skill_level%>'
+              data-loading-spinner2-target='content'>
+							<%= render 'all_skills_by_domain_level', skills: skills, domain: @domain, level: skill_level,grade: @grade %>
+						</div>
+					<% end %>
 				</div>
-			</div>
-		<% end %>
-	<% end %>
+			<% end %>
+		</div>
+	</div>
 </div>
+<% unless @errors.nil?  %>
+  <%= render 'errors_display', errors: @errors %>
+<% end %>

@@ -50,20 +50,13 @@ RSpec.describe SkillsController, type: :controller do
     end
     context "when user is logged" do
       before { sign_in user }
-      it "creates a valid new skill with right params " do
-        grade = create(:grade, school: user.school)
-        classroom = create(:classroom,grade_id: grade.id, user:)
-        domain2 = create(:domain, grade: grade)
-        post :create, params: { skill: { name: "test", symbol: "⬤", domain_id: domain2.id, level: "1", school: user.school } }
-        expect(response).to be_successful
-      end
-      it "creates  and add new skill  " do
+      it "creates  and add new valid skill  " do
         classroom = create(:classroom,grade_id: Grade.first.id, user:)
         grade = create(:grade, school: classroom.user.school)
         domain2 = create(:domain, grade: grade)
         expect do
           # :name, :grade, :symbol, :level, :domain)
-          post :create, params: { skill: { name: "test", symbol: "⬤", domain_id: domain2.id, level: "1", school: user.school } }
+          post :create, params: { skill: { name: "test", symbol: "⬤", domain_id: domain2.id, level: "1" } }
         end.to change(Skill.where(school: user.school), :count).by(1)
       end
     end

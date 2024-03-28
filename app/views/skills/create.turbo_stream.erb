@@ -1,0 +1,3 @@
+<%= turbo_stream.append "#{@skill.domain.id}_#{@skill.level}" do %>
+  <%= render partial: "skills/show_one",  locals: { skill: @skill}%>
+<%end%>

@@ -77,14 +77,18 @@ Rails/SquishedSQLHeredocs:
 #   Enabled: false
 # Metrics/CyclomaticComplexity:
 #   Enabled: false
+Metrics/ClassLength:
+  Max: 120
+Metrics/MethodLength:
+  Max: 15
 # Style/MissingRespondToMissing:
 #   Enabled: false
 # Lint/MissingSuper:
 #   Enabled: false
 # Style/FrozenStringLiteralComment:
 #   Enabled: false
-# Layout/LineLength:
-#   Max: 120
+Layout/LineLength:
+  Max: 120
 # Style/EmptyMethod:
 #   Enabled: false
 # Bundler/OrderedGems:
