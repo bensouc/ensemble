@@ -90,7 +90,7 @@ class WorkPlansController < ApplicationController
     authorize @work_plan
     @domains = @work_plan.grade.domains.sort_by(&:position)
     @previous = []
-    @student =@work_plan.student
+    @student = @work_plan.student
     @wpds = @work_plan.work_plan_domains
     @wpds.each do |wpd|
       wpd.work_plan_skills.each do |wps|
@@ -198,7 +198,7 @@ class WorkPlansController < ApplicationController
       name: "AUTO - N°#{@student.work_plans.count + 1}",
       grade: @student.classroom.grade,
       student: @student, user: current_user,
-      start_date:Time.zone.today.next_occurring(:monday),
+      start_date: Time.zone.today.next_occurring(:monday),
       end_date: Time.zone.today.next_occurring(:monday) + 4,
     )
     authorize @work_plan
@@ -223,44 +223,43 @@ class WorkPlansController < ApplicationController
 
           # Find the most recent WorkPlanSkill object for the current student and skill
           # last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
-          temp_last_wps = WorkPlanSkill.last_wps(@student, skill)
-          last_wps = temp_last_wps.select { |wps| wps.skill == skill && wps.completed }.max_by(&:created_at)
-          # find if one is completed then select it
-          last_wps = temp_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at) if last_wps.nil?
-          # else take the moste recent
-
-          # Create a new WorkPlanSkill object and set its attributes
-          new_wps = WorkPlanSkill.new(
-            skill:,
-            work_plan_domain: wpd,
-            kind: "exercice",
-          )
-          # If there is no previous WorkPlanSkill, create a new challenge and save the new WorkPlanSkill
-          if last_wps.nil?
-            new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
-            new_wps.save
-
-            # If the previous WorkPlanSkill is completed, create a new WorkPlanSkill of the appropriate kind and save it
-          elsif last_wps.status == "completed"
-            case last_wps.kind
-            when "jeu"
-              new_wps[:kind] = "exercice"
+          result = Result.find_by(skill: skill, student: @student)
+          unless !result.nil? && result.kind == "ceinture" && result.status == "completed"
+            temp_last_wps = WorkPlanSkill.last_wps(@student, skill)
+            last_wps = temp_last_wps.select { |wps| wps.skill == skill && wps.completed }.max_by(&:created_at)
+            # find if one is completed then select it
+            last_wps = temp_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at) if last_wps.nil?
+            # else take the moste recent
+            # Create a new WorkPlanSkill object and set its attributes
+            new_wps = WorkPlanSkill.new(
+              skill:,
+              work_plan_domain: wpd,
+              kind: "exercice",
+            )
+            # If there is no previous WorkPlanSkill, create a new challenge and save the new WorkPlanSkill
+            if last_wps.nil?
               new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
-              # new_wps.save
-            when "exercice"
-              new_wps[:kind] = "ceinture"
+              new_wps.save
+              # If the previous WorkPlanSkill is completed, create a new WorkPlanSkill of the appropriate kind and save it
+            elsif last_wps.status == "completed"
+              case last_wps.kind
+              when "jeu"
+                new_wps[:kind] = "exercice"
+                new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
+              when "exercice"
+                new_wps[:kind] = "ceinture"
+              end
+              new_wps.save
+              # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
+            elsif %w[redo failed redo_OK new].include?(last_wps.status)
+              new_wps[:kind] = last_wps.kind
+              new_wps[:kind] = "exercice" if last_wps.kind == "ceinture"
+              if new_wps.kind == "exercice"
+                new_wps.challenge = last_wps.add_challenges_2_wps(current_user,
+                                                                  last_wps.challenge)
+              end
+              new_wps.save
             end
-            new_wps.save
-
-            # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
-          elsif %w[redo failed redo_OK new].include?(last_wps.status)
-            new_wps[:kind] = last_wps.kind
-            new_wps[:kind] = "exercice" if last_wps.kind == "ceinture"
-            if new_wps.kind == "exercice"
-              new_wps.challenge = last_wps.add_challenges_2_wps(current_user,
-                                                                last_wps.challenge)
-            end
-            new_wps.save
           end
         end
       end
@@ -304,9 +303,9 @@ class WorkPlansController < ApplicationController
     @student = Student.find(params.require(:student_id))
     # binding.pry
     if params[:student].nil?
-      @domains = params.require(:"/students/#{@student.id}")[:domains][1..].map {|id| Domain.find(id)}
+      @domains = params.require(:"/students/#{@student.id}")[:domains][1..].map { |id| Domain.find(id) }
     else
-      @domains = params.require(:student)[:domains][1..].map {|id| Domain.find(id)}
+      @domains = params.require(:student)[:domains][1..].map { |id| Domain.find(id) }
     end
   end
 
@@ -321,14 +320,15 @@ class WorkPlansController < ApplicationController
   def setup_show
     @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
-    @work_plan_domains = WorkPlanDomain.includes(:domain, :work_plan).where(work_plan:@work_plan)
+    @work_plan_domains = WorkPlanDomain.includes(:domain, :work_plan).where(work_plan: @work_plan)
     @domains = Domain.where(grade: @work_plan.grade).sort_by(&:position)
-    @work_plan_skills = WorkPlanSkill.includes(:work_plan_domain,:skill, :challenge).where(work_plan_domain: @work_plan_domains)
+    @work_plan_skills = WorkPlanSkill.includes(:work_plan_domain, :skill, :challenge).where(work_plan_domain: @work_plan_domains)
     shared_classrooms = current_user.user_shared_classrooms
     @students = current_user.all_students
     @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms
     authorize @work_plan
   end
+
   # def test_multiplecloning_params(id)
   #   params["/work_plans/#{id}"]
   # end
