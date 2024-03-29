@@ -14,18 +14,14 @@
 			</div>
 			<%@students_list.each do |student|  %>
 				<div class="student-name" >
-					<button
-        type="button"
-        class="--bgc-transparent student-result-name"
-        data-bs-toggle="modal"
-        data-bs-target="#staticBackdrop-student-<%=student.id%>"
-        data-controller="tooltip"
-        data-bs-toggle="tooltip"
-        data-bs-placement="right"
-        title="Générer le prochain Plan de travail"
-      >
-						<i class="fa-solid fa-user-gear printer-logo auto-logo"></i>
-					</button>
+					<%= link_to  student_auto_gen_modal_path(student), data:{turbo_frame: "general_modal"} do %>
+						<i class="fa-solid fa-user-gear printer-logo auto-logo"
+            data-controller="tooltip"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            title="Générer le prochain Plan de travail"></i>
+					<% end %>
+
 					<%# model for auto gen %>
 					<%# END of autogen%>
 					<%= link_to student.first_name.capitalize, student_path(student) %>
@@ -38,9 +34,9 @@
 		</div>
 	</div>
 	<%# modals for auto gen %>
-	<%@students_list.each do |student|  %>
-		<%= render 'auto_gen_form', student:student, domains: @domains %>
-	<% end %>
-	<%# <% end %>
-	<%# END of autogen %>
-</div>
+	<%#@students_list.each do |student|  %>
+		<%#= render 'auto_gen_form', student:student, domains: @domains %>
+		<%# end %>
+		<%# <% end %>
+		<%# END of autogen %>
+	</div>
