@@ -89,7 +89,7 @@ Rails.application.routes.draw do
     # EXCEL UPLAD SKILLS
   # get "excel/upload", to: "excel#upload", as: "upload_excel"
   post "skills/upload", to: "skills#upload_skills_xlsx", as: :upload_skills
-# ###############END for SKILLS###############
+  # ###############END for SKILLS###############
 
 
   # ###############routesfor Challenge#########
@@ -110,6 +110,9 @@ Rails.application.routes.draw do
       patch :move
     end
   end
+  # ###############ROUTES FOR MODALS###############
+  get "students/:id/auto_gen", to: "modals#auto_gen", as: :student_auto_gen_modal
+  # ###############END for SKILLS###############
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
