@@ -63,18 +63,18 @@ export default class extends Controller {
       inheritable: 1
     }
 
-    Trix.config.textAttributes.fontSize = {
-      styleProperty: "font-size",
-      inheritable: 1
-    }
+    // Trix.config.textAttributes.fontSize = {
+    //   styleProperty: "font-size",
+    //   inheritable: 1
+    // }
 
     this.trix = this.element.querySelector("trix-editor")
   }
 
-  changeSelectionFontSize({ detail: font }) {
-    this.trixEditor.activateAttribute("fontSize", font.px)
-    this.trixEditor.deactivateAttribute("frozen")
-  }
+  // changeSelectionFontSize({ detail: font }) {
+  //   this.trixEditor.activateAttribute("fontSize", font.px)
+  //   this.trixEditor.deactivateAttribute("frozen")
+  // }
 
   toggleUnderline() {
     if (this.trixEditor.attributeIsActive("underline")) {
@@ -127,9 +127,9 @@ export default class extends Controller {
     return this.trix.editor.getDocument()
   }
 
-  get fontSizeDropdownLabelContainer() {
-    return this.element.querySelector('[data-custom-dropdown-target="placeholderText"]')
-  }
+  // get fontSizeDropdownLabelContainer() {
+  //   return this.element.querySelector('[data-custom-dropdown-target="placeholderText"]')
+  // }
 
   get currentState() {
     return {
@@ -144,7 +144,10 @@ export default class extends Controller {
 
   #addTool() {
     this.textToolBox.insertAdjacentHTML("beforeend", `
-    <div data-controller="dropdown color-picker"
+      <div data-action="click->trix#toggleUnderline" class="underline-btn">
+        <i class="fa-solid fa-underline"></i>
+      </div>
+      <div data-controller="dropdown color-picker"
            data-trix-target="backgroundColor"
            class="d-flex flex-column justify-content-center align-items-center" style="width: 32px; height: 26px; padding: 2px">
         <div class="add-trix-btn" data-action="click->dropdown#toggle">
@@ -166,7 +169,7 @@ export default class extends Controller {
         </div>
 
       </div>
-    <div data-controller="dropdown color-picker"
+      <div data-controller="dropdown color-picker"
            data-trix-target="textColor"
            class= "d-flex flex-column justify-content-center align-items-center" style="width: 32px; height: 26px; padding: 2px">
         <div class="add-trix-btn" data-action="click->dropdown#toggle">
@@ -192,11 +195,6 @@ export default class extends Controller {
         </div>
 
       </div >`
-      )
+    )
   }
-
-  toogle(){
-
-  }
-
 }

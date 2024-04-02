@@ -70,17 +70,26 @@ trix-editor {
   align-items: center;
   // background-color: $blanc;
   border-left: 1px solid #ccc;
-    cursor: pointer;
+  cursor: pointer;
 }
 .trix-color-pickr {
   position: absolute;
-  left:100px;
+  left: 100px;
   /* padding-bottom: 254px; */
-
 }
-.trix-active{
-
+.underline-btn {
+  width: 2rem;
+  height: 1.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-left: 1px solid #ccc;
+}
+.trix-active {
   background: #cbeefa;
-    color: black;
-
+  color: black;
+}
+.trix-button--icon-link{
+  display: none;
 }
