@@ -114,8 +114,6 @@ class ChallengesController < ApplicationController
   end
 
   def display_challenges
-    # authorize @challenge
-    # binding.pry
     skip_authorization
     @challenges = Challenge.includes([:rich_text_content]).where(skill: @challenge.skill).reject do |chal|
       chal == @challenge
@@ -171,7 +169,7 @@ class ChallengesController < ApplicationController
   end
 
   def set_challenge
-    @challenge = Challenge.find(params[:id])
+    @challenge = Challenge.with_rich_text_content_and_embeds.find(params[:id])
   end
 
   def set_work_plan_skill
@@ -179,6 +177,6 @@ class ChallengesController < ApplicationController
   end
 
   def challenge_params
-    params.require(:challenge).permit(:content, :name)
+    params.require(:challenge).permit(:content, :name, :skill_id, :for_belt)
   end
 end

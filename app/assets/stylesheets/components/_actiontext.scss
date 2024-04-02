@@ -49,6 +49,9 @@ trix-editor {
   background-color: rgba(250, 128, 114, 0.308);
   padding: 0 !important;
 }
+.trix-button-group--text-tools {
+  width: 200px;
+}
 
 #challenge_content {
   button[type="button"] {
@@ -56,4 +59,37 @@ trix-editor {
     padding: 10px;
     border-radius: 15px;
   }
+}
+
+.add-trix-btn {
+  width: 24px;
+  height: 24px;
+  padding: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  // background-color: $blanc;
+  border-left: 1px solid #ccc;
+  cursor: pointer;
+}
+.trix-color-pickr {
+  position: absolute;
+  left: 100px;
+  /* padding-bottom: 254px; */
+}
+.underline-btn {
+  width: 2rem;
+  height: 1.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-left: 1px solid #ccc;
+}
+.trix-active {
+  background: #cbeefa;
+  color: black;
+}
+.trix-button--icon-link{
+  display: none;
 }
