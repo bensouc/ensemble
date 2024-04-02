@@ -95,12 +95,12 @@ export default class extends Controller {
       this.underlineColorPickerTarget.classList.add("text-gray-300")
     }
 
-    if (this.pieceAtCursor.attributes.has("fontSize")) {
-      this.dispatch("font-size:sync", {
-        target: this.fontSizeControlsTarget,
-        detail: this.pieceAtCursor.getAttribute("fontSize")
-      })
-    }
+    // if (this.pieceAtCursor.attributes.has("fontSize")) {
+    //   this.dispatch("font-size:sync", {
+    //     target: this.fontSizeControlsTarget,
+    //     detail: this.pieceAtCursor.getAttribute("fontSize")
+    //   })
+    // }
   }
 
   toggleUnderlineColorPicker() {
