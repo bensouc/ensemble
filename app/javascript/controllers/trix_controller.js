@@ -147,7 +147,7 @@ export default class extends Controller {
     <div data-controller="dropdown color-picker"
            data-trix-target="backgroundColor"
            class="d-flex flex-column justify-content-center align-items-center" style="width: 32px; height: 26px; padding: 2px">
-        <button class="add-trix-btn" data-action="click->dropdown#toggle">
+        <div class="add-trix-btn" data-action="click->dropdown#toggle">
           <svg viewBox="0 0 16 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
               <g id="Icons/Editor/Background" transform="translate(-5.000000, -2.000000)" fill="currentColor" fill-rule="nonzero">
@@ -157,9 +157,9 @@ export default class extends Controller {
               </g>
             </g>
           </svg>
-        </button>
+        </div>
 
-        <div data-dropdown-target="menu"  data-action="click@window->dropdown#hide" class="position-absolute end-0 bg-indigo-700 rounded-md p-2 shadow-xl">
+        <div data-dropdown-target="menu"  class=" hidden trix-color-pickr">
           <div data-color-picker-target="picker">
 
           </div>
@@ -169,7 +169,7 @@ export default class extends Controller {
     <div data-controller="dropdown color-picker"
            data-trix-target="textColor"
            class= "d-flex flex-column justify-content-center align-items-center" style="width: 32px; height: 26px; padding: 2px">
-        <button class="add-trix-btn" data-action="click->dropdown#toggle">
+        <div class="add-trix-btn" data-action="click->dropdown#toggle">
           <svg viewBox="0 0 18 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g id="Dashboard/Capture/New" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
               <g id="/business/capture/popup/design/edit/hero/editor" transform="translate(-801.000000, -436.000000)">
@@ -183,9 +183,9 @@ export default class extends Controller {
               </g>
             </g>
           </svg>
-        </button>
+        </div>
 
-        <div data-dropdown-target="menu" data-action="click@window->dropdown#hide" class="position-absolute end-0 bg-indigo-700 rounded-md p-2 shadow-xl">
+        <div data-dropdown-target="menu" class="hidden trix-color-pickr">
           <div data-color-picker-target="picker">
 
           </div>
@@ -196,7 +196,7 @@ export default class extends Controller {
   }
 
   toogle(){
-    
+
   }
 
 }

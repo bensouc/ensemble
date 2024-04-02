@@ -66,7 +66,6 @@ class ChallengesController < ApplicationController
     # @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
     # authorize @challenge
     skip_authorization
-    binding.pry
     if @challenge.update(challenge_params)
       respond_to do |format|
         format.html do
@@ -115,8 +114,6 @@ class ChallengesController < ApplicationController
   end
 
   def display_challenges
-    # authorize @challenge
-    # binding.pry
     skip_authorization
     @challenges = Challenge.includes([:rich_text_content]).where(skill: @challenge.skill).reject do |chal|
       chal == @challenge

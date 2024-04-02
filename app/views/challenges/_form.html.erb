@@ -10,7 +10,7 @@
 							<div>
 								<%= form.text_field :name, class: "challenge-title"%>
 							</div>
-							<%= form.rich_text_area :content,data: { action: "keydown->trix#sync keyup->trix#sync" } %>
+							<%= form.rich_text_area :content %>
 						</div>
 						<div class="form-actions d-flex justify-content-end height-validate-challenge">
             <% if challenge.persisted? %>
