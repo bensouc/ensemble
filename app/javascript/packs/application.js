@@ -29,6 +29,8 @@ import { initFlatpickr } from "../plugins/flatpickr";
 import "@rails/request.js"
 // # STRIPE SWITCH OFF
 import '@stripe/stripe-js';
+import '@jaames/iro';
+
 // import { displayQuote } from "../plugins/quote.js";
 // import {Typed} from 'typed.js';
 // import { scrollFunction } from "./back_to_top";

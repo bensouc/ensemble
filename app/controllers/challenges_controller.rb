@@ -66,6 +66,7 @@ class ChallengesController < ApplicationController
     # @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
     # authorize @challenge
     skip_authorization
+    binding.pry
     if @challenge.update(challenge_params)
       respond_to do |format|
         format.html do
@@ -171,7 +172,7 @@ class ChallengesController < ApplicationController
   end
 
   def set_challenge
-    @challenge = Challenge.find(params[:id])
+    @challenge = Challenge.with_rich_text_content_and_embeds.find(params[:id])
   end
 
   def set_work_plan_skill
@@ -179,6 +180,6 @@ class ChallengesController < ApplicationController
   end
 
   def challenge_params
-    params.require(:challenge).permit(:content, :name)
+    params.require(:challenge).permit(:content, :name, :skill_id, :for_belt)
   end
 end
