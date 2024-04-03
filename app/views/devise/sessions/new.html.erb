@@ -1,14 +1,14 @@
 <div class="container devise-mainbox">
 	<div class="mt-2" id="login">
 		<h2>Se Connecter</h2>
-		<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+		<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name),html: { novalidate: false }) do |f| %>
 			<div class="form-inputs">
 				<%= f.input :email,
-                  required: false,
+                  required: true,
                   autofocus: true,
                   input_html: { autocomplete: "email" } %>
 				<%= f.input :password,
-                  required: false,
+                  required: true,
                   label: 'Votre mot de passe',
                   input_html: { autocomplete: "current-password" } %>
 				<%= f.input :remember_me, label: 'Se souvenir de moi' , as: :boolean if devise_mapping.rememberable? %>
