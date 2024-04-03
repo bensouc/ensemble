@@ -220,46 +220,38 @@ class WorkPlansController < ApplicationController
       else
         # Find all the skills for the current domain, level, and grade
         Skill.where(domain:, level: wpd.level).each do |skill|
-
           # Find the most recent WorkPlanSkill object for the current student and skill
           # last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
           result = Result.find_by(skill: skill, student: @student)
-          unless !result.nil? && result.kind == "ceinture" && result.status == "completed"
-            temp_last_wps = WorkPlanSkill.last_wps(@student, skill)
-            last_wps = temp_last_wps.select { |wps| wps.skill == skill && wps.completed }.max_by(&:created_at)
-            # find if one is completed then select it
-            last_wps = temp_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at) if last_wps.nil?
-            # else take the moste recent
-            # Create a new WorkPlanSkill object and set its attributes
-            new_wps = WorkPlanSkill.new(
-              skill:,
-              work_plan_domain: wpd,
-              kind: "exercice",
-            )
-            # If there is no previous WorkPlanSkill, create a new challenge and save the new WorkPlanSkill
-            if last_wps.nil?
+          next if !result.nil? && result.kind == "ceinture" && result.status == "completed"
+
+          new_wps = WorkPlanSkill.new(
+            skill:,
+            work_plan_domain: wpd,
+            kind: result.kind,
+            status: "new"
+          )
+          if result.nil?
+            new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
+            new_wps.save
+            # If the previous WorkPlanSkill is completed, create a new WorkPlanSkill of the appropriate kind and save it
+          elsif result.status == "completed"
+            case result.kind
+            when "jeu"
+              new_wps[:kind] = "exercice"
               new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
-              new_wps.save
-              # If the previous WorkPlanSkill is completed, create a new WorkPlanSkill of the appropriate kind and save it
-            elsif last_wps.status == "completed"
-              case last_wps.kind
-              when "jeu"
-                new_wps[:kind] = "exercice"
-                new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
-              when "exercice"
-                new_wps[:kind] = "ceinture"
-              end
-              new_wps.save
-              # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
-            elsif %w[redo failed redo_OK new].include?(last_wps.status)
-              new_wps[:kind] = last_wps.kind
-              new_wps[:kind] = "exercice" if last_wps.kind == "ceinture"
-              if new_wps.kind == "exercice"
-                new_wps.challenge = last_wps.add_challenges_2_wps(current_user,
-                                                                  last_wps.challenge)
-              end
-              new_wps.save
+            when "exercice"
+              new_wps[:kind] = "ceinture"
             end
+            new_wps.save
+            # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
+          elsif %w[redo failed redo_OK new].include?(result.status)
+            new_wps[:kind] = result.kind
+            new_wps[:kind] = "exercice" if result.kind == "ceinture"
+            if new_wps.kind == "exercice"
+              new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
+            end
+            new_wps.save
           end
         end
       end
