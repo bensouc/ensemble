@@ -13,7 +13,7 @@ module ApplicationHelper
       "https://www.notion.so/G-rer-vos-classes-4f58dcf62df44cdca2b48054df551256?pvs=4"
     when "work_plans"
       "https://www.notion.so/Vos-Plans-de-Travail-8eea69c2f9be452e89e528a7e3f56f0d?pvs=4"
-    when "subscription"
+    when "subscriptions"
       "https://season-sycamore-125.notion.site/S-abonner-9d9b895b3e9042648df01943941dcb07?pvs=4"
     else
       "https://season-sycamore-125.notion.site/Ensemble-Les-Tutos-1bb72deab51d43898dd2bdcec25ec098"
