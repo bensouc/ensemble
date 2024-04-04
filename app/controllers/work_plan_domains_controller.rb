@@ -37,7 +37,6 @@ class WorkPlanDomainsController < ApplicationController
       ######################### SKILLS loop START ######################
       skills&.each do |skill|
         # unless kind is 'exercice' and student.skill_status(skill) == 'skill_status_belt'
-        binding.pry if skill.id == 1210
         result = Result.find_or_create_by(skill:, student:) unless student.nil?
         unless result.belt_validated? || (kind == "exercice" && result.challenge_validated?)
           work_plan_skill = WorkPlanSkill.new(

@@ -109,32 +109,32 @@
 #UPDATE RESULTS ON LAST wps
 classrooms = Classroom.all
 classrooms.each do |classroom|
-
-  classroom.grade.domains.each do |domain|
-    skills = Skill.where(domain: domain)
-    skills.each do |skill|
-
-      classroom.students.each do |student|
-        # binding.pry if student.id == 428
-        result = Result.find_by(student:, skill:)
-        unless result.nil?
-
-          case student.skill_status(skill)
-          when "skill_status_completed"
-            #skill completed validated resul
-             result.update!(kind: "ceinture", status: "completed")
+  # binding.pry
+  unless classroom.students.empty?
+    classroom.grade.domains.each do |domain|
+      skills = Skill.where(domain: domain)
+      skills.each do |skill|
+        classroom.students.each do |student|
+          # binding.pry if student.id == 428
+          result = Result.find_by(student:, skill:)
+          unless result.nil?
+            case student.skill_status(skill)
+            when "skill_status_completed"
+              #skill completed validated resul
+              result.update!(kind: "ceinture", status: "completed")
             when "skill_status_belt"
               # skill on belt level => 'new'
-               result.update!(kind: "ceinture", status: "new")
+              result.update!(kind: "ceinture", status: "new")
             when "kill_status_challenge"
               # skill on challenge = status 'new'
-               result.update!(kind: "exercice", status: "new")
+              result.update!(kind: "exercice", status: "new")
+            end
           end
+        end
+        puts "#{skill.name} results updated for #{classroom.name}"
       end
-      end
-      puts "#{skill.name} results updated for #{classroom.name}"
+      puts "#{domain.name} results updated for #{classroom.name}"
     end
-    puts "#{domain.name} results updated for #{classroom.name}"
+    puts "END of UPDATING results for #{classroom.name}"
   end
-  puts "END of UPDATING results for #{classroom.name}"
 end
