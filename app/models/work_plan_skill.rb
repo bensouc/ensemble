@@ -45,7 +45,7 @@ class WorkPlanSkill < ApplicationRecord
     challenges = challenges.reject { |c| student_challenges.include?(c) }
 
     # [1,2,3].reject{|c| c==4}
-    if challenges == []
+    if challenges.empty?
       # if no existing challeng 4 that skill
       # create a empty challenge 4 that skill
       Challenge.create_empty(self, name, current_user)
@@ -76,7 +76,7 @@ class WorkPlanSkill < ApplicationRecord
     # find_or_create results
     result = Result.find_or_create_by(student:, skill:)
     # update results
-    result.update(status:, kind:)
+    result.update!(status:, kind:)
   end
 
   def reset_result
@@ -85,6 +85,6 @@ class WorkPlanSkill < ApplicationRecord
     # find_or_create results
     result = Result.find_or_create_by(student:, skill:)
     # update results
-    result.update(status: "new", kind:)
+    result.update!(status: "new", kind:)
   end
 end

@@ -228,7 +228,7 @@ class WorkPlansController < ApplicationController
           new_wps = WorkPlanSkill.new(
             skill:,
             work_plan_domain: wpd,
-            kind: result.kind,
+            kind: result.nil? ? "exercice" : result.kind,
             status: "new"
           )
           if result.nil?

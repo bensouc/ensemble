@@ -173,7 +173,7 @@ class ClassroomsController < ApplicationController
     @all_completed_work_plan_skills = {}
     @students_list.each do |student|
       # binding.pry if student.id == 393
-      completed_wps = student.all_completed_work_plan_skills(domain, @classroom.grade.grade_level)
+      completed_wps = student.all_completed_work_plan_skills(domain)
       @all_completed_work_plan_skills[student.id.to_s] = completed_wps unless completed_wps.empty?
     end
   end
