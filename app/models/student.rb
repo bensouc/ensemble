@@ -47,7 +47,7 @@ class Student < ApplicationRecord
     end
   end
 
-  def all_completed_work_plan_skills(domain, _grade)
+  def all_completed_work_plan_skills(domain)
     work_plan_skills.includes([:skill]).select { |wps| wps.completed && wps.skill.domain == domain }
   end
 

@@ -31,16 +31,15 @@ class WorkPlanDomainsController < ApplicationController
     elsif !is_belt_validated
       # binding.pry
       # recupere les skills associé domaine/level dnas un tableau
-      skills = Skill.for_school(current_user.school).where(domain: @work_plan_domain.domain,
-                                                           level: @work_plan_domain.level)
+      skills = Skill.where(domain: @work_plan_domain.domain, level: @work_plan_domain.level)
       # binding.pry
       # loop autour du tableau des skills du domain/level
       ######################### SKILLS loop START ######################
       skills&.each do |skill|
         # unless kind is 'exercice' and student.skill_status(skill) == 'skill_status_belt'
-        current_skill_status = student.skill_status(skill, kind) unless student.nil?
-        # binding.pry
-        unless current_skill_status == "skill_status_completed" || (kind == "exercice" && current_skill_status == "skill_status_belt")
+        binding.pry if skill.id == 1210
+        result = Result.find_or_create_by(skill:, student:) unless student.nil?
+        unless result.belt_validated? || (kind == "exercice" && result.challenge_validated?)
           work_plan_skill = WorkPlanSkill.new(
             work_plan_domain_id: @work_plan_domain.id,
             skill_id: skill.id,
