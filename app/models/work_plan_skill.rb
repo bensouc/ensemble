@@ -63,6 +63,12 @@ class WorkPlanSkill < ApplicationRecord
     out.last(3)
   end
 
+  # def self.last_wps_by_skills(student, skills)
+  #   WorkPlanSkill.where(skill: skills, student: student)
+  #                 .order(updated_at: :desc)
+  #                 .first
+  # end
+
   def self.last_wps(student, skills)
     # WorkPlanSkill.where(skill: skill).select{ |s| s.student == student }.max_by(&:created_at)
 

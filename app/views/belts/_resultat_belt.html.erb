@@ -8,10 +8,9 @@
   </div>
 </div>
 <%= link_to belt_path(belt),method: :delete,class: 'delete-btn',
-                              data:{confirm:"Voulez vous Supprimer Cette Ceinture?",
-                              action: "click->loadingspinnermgnt#displaySpinner"} do %>
+                              data:{confirm:"Voulez vous Supprimer Cette Ceinture?"} do %>
   <i class="fa-solid fa-trash"></i>
 <% end %>
-<%= link_to edit_belt_path(belt), class: 'edit-btn' do %>
+<%= link_to edit_belt_path(belt), class: 'edit-btn',data: {turbo_frame: "general_modal"} do %>
   <i class="fa-solid fa-gear"></i>
 <% end %>

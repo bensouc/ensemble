@@ -2,10 +2,22 @@
 
 class BeltsController < ApplicationController
   before_action :set_belt, only: [:edit, :update, :destroy]
-  def edit
 
+  def edit
     authorize @belt
     @skills = @belt.all_skills(current_user)
+  end
+
+  def show
+    skip_authorization
+    @student = Student.find(params[:student_id])
+    @domain = Domain.find(params[:id])
+    @level = params[:level].to_i
+    @skills = @domain.skills.select { |skill| skill.level == @level }
+    @belt = Belt.find_by(domain: @domain, level: @level, student: @student, completed: true)
+    @results = Result.where(skill: @skills, student: @student, kind: 'ceinture', status: 'completed')
+    @last_wps = WorkPlanSkill.last_wps(@student, @skills)
+    # raise
   end
 
   def create
@@ -18,9 +30,12 @@ class BeltsController < ApplicationController
     @belt.completed = true
     # @belt.student = Student.find(params[:student_id])
     @belt.validated_date = DateTime.now
-    @belt.save
-
-    redirect_to student_path(@belt.student)
+    if @belt.save
+      respond_to do |format|
+        format.html { redirect_to student_path(@belt.student) }
+        format.turbo_stream
+      end
+    end
   end
 
   def update
@@ -35,10 +50,18 @@ class BeltsController < ApplicationController
   end
 
   def destroy
-
     @student = @belt.student
+    @domain = @belt.domain
+    @level = @belt.level
+    @skills = @domain.skills.select { |skill| skill.level == @level }
+    @last_wps = WorkPlanSkill.last_wps(@student, @skills)
+    @results = Result.where(skill: @skills, student: @student, kind: "ceinture", status: "completed")
     @belt.destroy
-    redirect_to student_path(@student)
+    # binding.pry
+    respond_to do |format|
+      format.html { redirect_to student_path(@belt.student) }
+      format.turbo_stream
+    end
   end
 
   private
@@ -50,6 +73,6 @@ class BeltsController < ApplicationController
 
   def new_belt_params
     # binding.pry
-    params.require(:belt).permit( :domain_id, :level, :validated_date)
+    params.require(:belt).permit(:domain_id, :level, :validated_date)
   end
 end

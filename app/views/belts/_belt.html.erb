@@ -1,0 +1,27 @@
+<%= turbo_frame_tag "student_#{student.id}domain_#{domain.id}_level#{level}" do%>
+
+	<% if belt %>
+		<div class="domain-col cells-student mb-2">
+			<%= render "belts/resultat_belt", level: level, domain: domain, belt: belt %>
+		</div>
+	<% else %>
+		<div
+              class="domain-col cells-student mb-2"
+              data-controller='display-student-belt-management'
+              data-action='
+                mouseover->display-student-belt-management#displayBtn
+			mouseout->display-student-belt-management#hideBtn
+			'
+			>
+			<%= render "belts/resultat_cell",
+              student: student,
+              level: level,
+              domain: domain,
+              belt: belt,
+              results: results,
+              skills: skills,
+              last_wps: last_wps%>
+<%# <%= render "shared/validate_belt_btn", level: level, domain: domain %>
+		</div>
+	<% end %>
+<% end %>
