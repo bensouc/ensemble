@@ -1,3 +1,7 @@
 <%= turbo_stream.replace "student_#{@student.id}domain_#{@domain.id}_level#{@level}" do %>
-  <%= render "belts/belt", level: @level, domain: @domain, belt: nil, student: @student, skills: @skills,last_wps: @last_wps, results: @results %>
+  <%= render "belts/belt", level: @level, domain: @domain,
+                          belt: nil, student: @student,
+                          last_belt: @last_belt,
+                          skills: @skills, last_wps: @last_wps,
+                          results: @results %>
 <% end %>

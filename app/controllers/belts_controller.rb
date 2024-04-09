@@ -13,15 +13,9 @@ class BeltsController < ApplicationController
     @student = Student.find(params[:student_id])
     @domain = Domain.find(params[:id])
     @level = params[:level].to_i
-    level = @domain.special? ? 1 : @level
     # binding.pry if @domain.name == "Géométrie" && @level == 2
-    @wps_index_to_display = wps_index_to_display(@domain, @level) if @domain.special?
-    @skills = @domain.skills.select { |skill| skill.level == level }
-    @belt = Belt.find_by(domain: @domain, level: @level, student: @student, completed: true)
-    @last_belt = Belt.where(domain: @domain, student: @student, completed: true).order(level: :desc).first
-    @results = Result.where(skill: @skills, student: @student, kind: "ceinture", status: "completed")
-    @last_wps = WorkPlanSkill.last_wps(@student, @skills)
- raise
+    set_data_show
+    #  raise
   end
 
   def create
@@ -35,6 +29,10 @@ class BeltsController < ApplicationController
     # @belt.student = Student.find(params[:student_id])
     @belt.validated_date = DateTime.now
     if @belt.save
+      @domain = @belt.domain
+      @student = @belt.student
+      @level = @belt.level
+      set_data_show
       respond_to do |format|
         format.html { redirect_to student_path(@belt.student) }
         format.turbo_stream
@@ -44,10 +42,16 @@ class BeltsController < ApplicationController
 
   def update
 
-    # binding.pry
     @belt.validated_date = new_belt_params[:validated_date]
+    @domain = @belt.domain
+    @student = @belt.student
+    @level = @belt.level
     if @belt.save
-      redirect_to student_path(@belt.student)
+      set_data_show
+      respond_to do |format|
+        format.html { redirect_to student_path(@belt.student) }
+        format.turbo_stream
+      end
     else
       redirect_to :edit
     end
@@ -70,6 +74,15 @@ class BeltsController < ApplicationController
 
   private
 
+  def set_data_show
+    level = @domain.special? ? 1 : @level
+    @skills = @domain.skills.select { |skill| skill.level == level }
+    @results = Result.where(skill: @skills, student: @student, kind: "ceinture", status: "completed")
+    @belt = Belt.find_by(domain: @domain, level: @level, student: @student, completed: true)
+    @last_belt = Belt.where(domain: @domain, student: @student, completed: true).order(level: :desc).first
+    @last_wps = WorkPlanSkill.last_wps(@student, @skills)
+  end
+
   def wps_index_to_display(domain, level)
     score = Belt.score_to_validate(domain.grade).find { |hash| hash[:domain] == domain.name }&.dig(:validation)
     start_nb = if level == 1
@@ -82,7 +95,7 @@ class BeltsController < ApplicationController
     {
       score:,
       start_nb:,
-      end_nb:
+      end_nb:,
     }
   end
 
