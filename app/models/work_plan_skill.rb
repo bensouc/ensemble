@@ -63,10 +63,25 @@ class WorkPlanSkill < ApplicationRecord
     out.last(3)
   end
 
+  # def self.last_wps_by_skills(student, skills)
+  #   WorkPlanSkill.where(skill: skills, student: student)
+  #                 .order(updated_at: :desc)
+  #                 .first
+  # end
+
   def self.last_wps(student, skills)
     # WorkPlanSkill.where(skill: skill).select{ |s| s.student == student }.max_by(&:created_at)
+    # Supposons que `skills` contienne une liste d'identifiants de compétences que vous voulez filtrer.
 
-    wpss = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill: skills)
+    latest_updates = WorkPlanSkill.select("MAX(updated_at) as updated_at, skill_id")
+                                  .where(skill_id: skills)
+                                  .group(:skill_id, :updated_at)
+
+    wpss = WorkPlanSkill.includes([:skill, :work_plan_domain, :student])
+      .joins(:skill)
+      .where(skill_id: latest_updates.pluck(:skill_id), updated_at: latest_updates.pluck(:updated_at))
+
+    # wpss = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill: skills).max_by(&:updated_at)
     wpss.select { |wps| wps.student == student }
   end
 

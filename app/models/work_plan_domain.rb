@@ -64,7 +64,6 @@ class WorkPlanDomain < ApplicationRecord
       if work_plan_domain.domain.special?
         Belt.special_newbelt(work_plan_skill, special_work_plan)
         last_work_plan_skill = nil
-        # BMO TO be rethinkg to get result from method
       elsif work_plan_domain.all_skills_completed?
         belt = Belt.find_or_create_by(
           { student_id: special_work_plan.student.id,

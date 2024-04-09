@@ -145,16 +145,21 @@ class WorkPlanSkillsController < ApplicationController
     skip_authorization
     skills_and_student = get_all_skills_to_add_completed_wps #call private method to get all the needed skills to be completed
     skills = skills_and_student[:skills]
-    domain = skills.first.domain # get domain to work on
-    @student = skills_and_student[:student] # get the student
-    # student_grade = skills.first.grade # the grade to work on
-    # find or create the student special work_pal vreate student.find_special_workplan
+    @domain = skills.first.domain # get domain to work on
+    @student = skills_and_student[:student]
+    @level = skills.first.level
     @special_work_plan = @student.find_special_workplan
-    @work_plan_domain = @special_work_plan.work_plan_domains.includes(:work_plan_skills).find_or_create_by(work_plan: @special_work_plan, domain: domain, level: skills.first.level)
-
+    @work_plan_domain = @special_work_plan.work_plan_domains.includes(:work_plan_skills).find_or_create_by(work_plan: @special_work_plan, domain: @domain, level: @level)
     WorkPlanDomain.add_wps_completed(skills, @work_plan_domain, @special_work_plan)
-
-    redirect_to student_path(@student)
+    set_data_show
+    # @belt = Belt.find_by(student: @student, domain: @domain, level: @level)
+    # @skills = @domain.skills.select { |skill| skill.level == @level }
+    # @results = Result.where(skill: @skills, student: @student, kind: "ceinture", status: "completed")
+    # @last_wps = WorkPlanSkill.last_wps(@student, @skills)
+    respond_to do |format|
+      format.html { redirect_to student_path(@student) }
+      format.turbo_stream
+    end
   end
 
   def remove_special_wps
@@ -178,6 +183,14 @@ class WorkPlanSkillsController < ApplicationController
   private
 
   # PARAMS METHOD
+  def set_data_show
+    level = @domain.special? ? 1 : @level
+    @skills = @domain.skills.select { |skill| skill.level == level }
+    @results = Result.where(skill: @skills, student: @student, kind: "ceinture", status: "completed")
+    @belt = Belt.find_by(domain: @domain, level: @level, student: @student, completed: true)
+    @last_belt = Belt.where(domain: @domain, student: @student, completed: true).order(level: :desc).first
+    @last_wps = WorkPlanSkill.last_wps(@student, @skills)
+  end
 
   def set_params_wpskill_challenge
     params.require(:work_plan_skill).permit(:challenge_id)[:challenge_id]
@@ -210,6 +223,9 @@ class WorkPlanSkillsController < ApplicationController
     skills = []
     data = get_add_validated_wps_skill_student
     data[:skill_ids].delete("")
+
+    return false if data[:skill_ids].empty?
+
     data[:skill_ids].map { |skill_id|
       skills << Skill.for_school(current_user.school).find(skill_id)
     }

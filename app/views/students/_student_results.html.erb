@@ -1,17 +1,17 @@
 <div class="student-sticky-header">
-  <div class='progess-header'>
-    <div
+	<div class='progess-header'>
+		<div
       class="d-flex align-items-baseline print-date prog-name"
       data-controller='wps-result'
     >
-      <h1>Progression de
-        <%= @student.first_name %></h1>
-      <%# modal to select domains (@domains)  for autogen %>
-      <%# <%= link_to  student_auto_new_wp_path(@student), method: :post, data:{ action: "mouseover->wps-result#displayName mouseout->wps-result#hideName click->loadingspinnermgnt#displaySpinner"} do %>
-      <%# <i class="fa-solid fa-user-gear printer-logo ms-4"></i> %>
-      <%# <% end %>
-      <!-- Button trigger modal -->
-      <button
+			<h1>Progression de
+				<%= @student.first_name %></h1>
+			<%# modal to select domains (@domains)  for autogen %>
+			<%# <%= link_to  student_auto_new_wp_path(@student), method: :post, data:{ action: "mouseover->wps-result#displayName mouseout->wps-result#hideName click->loadingspinnermgnt#displaySpinner"} do %>
+				<%# <i class="fa-solid fa-user-gear printer-logo ms-4"></i> %>
+				<%# <% end %>
+				<!-- Button trigger modal -->
+				<button
         type="button"
         class="--bgc-blanc"
         data-bs-toggle="modal"
@@ -21,73 +21,53 @@
         data-bs-placement="right"
         title="Générer le prochain Plan de travail"
       >
-        <i class="fa-solid fa-user-gear printer-logo ms-4"></i>
-      </button>
-      <%# end modal select domain %>
-
-    </div>
-    <div class="print-date">
-      <h4>
-        <%= link_to '#' ,:onclick => "window.print();return false;" do %>
-          <i class="fa-solid fa-print printer-logo"></i>
-        <% end %>
-        Le
-        <%= I18n.l(Date.today, format: :long) %>
-      </h4>
-    </div>
-  </div>
-  <div class="top">
-    <div class=" results-header domain-level nocolor">
-    </div>
-    <div class="d-flex">
-      <% @domains.each do |domain| %>
-        <div class="domain-header">
-          <%= domain.name %>
-        </div>
-      <% end %>
-    </div>
-  </div>
-</div>
-<div class="results d-flex">
-  <div class="left_levels">
-    <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
-      <div class="domain-level mb-2">
-        <i class=" fas fa-bacon belt-<%= level %> belt-result font-weight-bold"></i>
-        <strong><%= @belt[level - 1].capitalize %></strong>
-      </div>
-    <% end %>
-  </div>
-  <div class="right-levels d-flex">
-    <% @domains.each do |domain| %>
-      <div class="domain-main-col">
-        <% WorkPlanDomain::LEVELS.reverse_each do |level| %>
-          <% belt =
-            @belts.reverse.find { |belt| belt.domain == domain && belt.level == level } %>
-          <% if !belt.nil? && belt != [] && belt.completed? %>
-            <div class="domain-col cells-student mb-2">
-              <%= render "resultat_belt", level: level, domain: domain, belt: belt %>
-            </div>
-          <% else %>
-            <div
-              class="domain-col cells-student mb-2"
-              data-controller='display-student-belt-management'
-              data-action='
-                mouseover->display-student-belt-management#displayBtn
-                mouseout->display-student-belt-management#hideBtn
-              '
-            >
-              <%= render "resultat_cell",
-              level: level,
-              domain: domain,
-              last_belt:
-                @belts
-                  .select { |belt| belt.domain == domain && :completed }
-                  .max_by(&:updated_at) %>
-              <%# <%= render "shared/validate_belt_btn", level: level, domain: domain %>
-            </div>
-          <% end %>
-        <% end %>
-      </div>
-    <% end %>
-  </div>
-</div>
+					<i class="fa-solid fa-user-gear printer-logo ms-4"></i>
+				</button>
+				<%# end modal select domain %>
+			</div>
+			<div class="print-date">
+				<h4>
+					<%= link_to '#' ,:onclick => "window.print();return false;" do %>
+						<i class="fa-solid fa-print printer-logo"></i>
+					<% end %>
+					Le
+					<%= I18n.l(Date.today, format: :long) %>
+				</h4>
+			</div>
+		</div>
+		<div class="top">
+			<div class=" results-header domain-level nocolor">
+			</div>
+			<div class="d-flex">
+				<% @domains.each do |domain| %>
+					<div class="domain-header">
+						<%= domain.name %>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	</div>
+	<div class="results d-flex">
+		<div class="left_levels">
+			<% WorkPlanDomain::LEVELS.reverse_each do |level| %>
+				<div class="domain-level mb-2">
+					<i class=" fas fa-bacon belt-<%= level %> belt-result font-weight-bold"></i>
+					<strong><%= @belt[level - 1].capitalize %></strong>
+				</div>
+			<% end %>
+		</div>
+		<div class="right-levels d-flex">
+			<% @domains.each do |domain| %>
+				<div class="domain-main-col">
+					<% WorkPlanDomain::LEVELS.reverse_each do |level| %>
+						<%= turbo_frame_tag "student_#{@student.id}domain_#{domain.id}_level#{level}",
+          src: student_show_path(@student,domain,level) do%>
+							<div class="domain-col mb-2">
+								<div class="spinner-border --grisC" role="status"></div >
+							</div >
+						<% end %>
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+	</div>

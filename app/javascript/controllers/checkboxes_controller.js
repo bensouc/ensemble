@@ -8,21 +8,21 @@ export default class extends Controller {
   connect() {
     this.boxesTargets.forEach(
       element => {
-        console.log(element);
+        // console.log(element);
         element.checked = true
       }
     )
   }
 
   add(event) {
-    console.log(event)
-    console.log(event.target.value)
+    // console.log(event)
+    // console.log(event.target.value)
 
     if (event.target.value <= 0) {
       checkBoxes = this
       checkBoxes.boxesTargets.forEach(
         element => {
-          console.log(element);
+          // console.log(element);
           element.checked = event.target.checked
         }
       )

@@ -1,15 +1,20 @@
-<div class="container">
-	<%= simple_form_for :new_wps,html:{target: 'blank'}, data: {controller: 'loadingspinnermgnt',
-                                          action: "submit->loadingspinnermgnt#displaySpinner"
-                                        } do |form|%>
-		<div class="new-wps-card" >
-		<h3>Sélectionner les compétences à valider pour <%= @student.first_name.capitalize %></h3>
-			<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-				<div class="student-checkbox" >
-					<% if @sub_domains.nil? || @sub_domains.empty?  %>
+<%= turbo_frame_tag "general_modal"  do%>
+	<div id= "myModal" data-controller='reset-frame' data-reset-frame-name-value='general_modal'>
+		<div class="modal-content --width-90">
+			<%= simple_form_for :new_wps, html: {novalidate: false} do |form|%>
+				<div class="new-wps-card" >
+					<div class="modal-header">
+						<h3>Sélectionner les compétences à valider pour <%= @student.first_name.capitalize %></h3>
+						<div class="cancel-btn me-1" data-action="click->reset-frame#resetFrame">
+							X
+						</div>
+					</div>
+					<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
+						<div class="student-checkbox" >
+							<% if @sub_domains.nil? || @sub_domains.empty?  %>
+								<%=form.input_field :skills,
 
-						<%=form.input_field :skills,
-                collection:@skills.sort_by(&:name),
+                collection:@no_validated_skills.sort_by(&:name),
                 label_method: lambda {|skill| skill.name},
                 value_method: lambda {|skill| skill.id},
                 multiple: true,
@@ -19,13 +24,13 @@
                 class: "tag-selector",
                 item_wrapper_class: 'tag-item'
                 %>
-					<% else %>
-                    <%# <%raise%>
+							<% else %>
+								<%# <%raise%>
+								<%@sub_domains.each do |sub_domain|%>
+									<h6><%= sub_domain.capitalize %></h6>
+									<%=form.input_field :skills,
 
-						<%@sub_domains.each do |sub_domain|%>
-							<h6><%= sub_domain.capitalize %></h6>
-							<%=form.input_field :skills,
-                collection:@skills.select{|skill| skill.sub_domain == sub_domain}.sort_by(&:name),
+                collection:@no_validated_skills.select{|skill| skill.sub_domain == sub_domain}.sort_by(&:name),
                 label_method: lambda {|skill| skill.name},
                 value_method: lambda {|skill| skill.id},
                 multiple: true,
@@ -35,14 +40,19 @@
                 class: "tag-selector",
                 item_wrapper_class: 'tag-item'
                 %>
-						<% end %>
-					<% end %>
+								<% end %>
+							<% end %>
+						</div>
+					</div>
 				</div>
-			</div>
+				<div class="d-flex justify-content-center height-validate-challenge
+">
+					<div class="cancel-btn me-4" data-action="click->reset-frame#resetFrame">
+						X
+					</div>
+					<%= form.submit 'Valider',class: 'validate-challenge-btn'%>
+				</div>
+			<% end %>
 		</div>
-		<%= form.submit 'Valider',class: 'btn-flat-green',
-      data:{confirm: "Etes vous certain de vouloir valider ces compétences?",
-
-      } %>
-	<% end %>
-</div>
+	</div>
+<% end %>
