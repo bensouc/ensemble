@@ -1,5 +1,5 @@
 <%= turbo_stream.replace "general_modal" do%>
-  ""
+  <%= turbo_frame_tag "general_modal"%>
 <%end%>
 <%= turbo_stream.replace "student_#{@belt.student.id}domain_#{@belt.domain.id}_level#{@belt.level}" do%>
 <%= render "belts/belt", level: @level, domain: @domain,

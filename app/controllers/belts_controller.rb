@@ -29,19 +29,19 @@ class BeltsController < ApplicationController
     # @belt.student = Student.find(params[:student_id])
     @belt.validated_date = DateTime.now
     if @belt.save
-      @domain = @belt.domain
-      @student = @belt.student
-      @level = @belt.level
-      set_data_show
-      respond_to do |format|
-        format.html { redirect_to student_path(@belt.student) }
-        format.turbo_stream
-      end
+        @domain = @belt.domain
+        @student = @belt.student
+        @level = @belt.level
+        set_data_show
+        respond_to do |format|
+          format.html { redirect_to student_path(@belt.student) }
+          format.turbo_stream
+        end
+
     end
   end
 
   def update
-
     @belt.validated_date = new_belt_params[:validated_date]
     @domain = @belt.domain
     @student = @belt.student
@@ -66,6 +66,7 @@ class BeltsController < ApplicationController
     @results = Result.where(skill: @skills, student: @student, kind: "ceinture", status: "completed")
     @belt.destroy
     # binding.pry
+    redirect_to student_path(@belt.student) if @domain.special?
     respond_to do |format|
       format.html { redirect_to student_path(@belt.student) }
       format.turbo_stream
