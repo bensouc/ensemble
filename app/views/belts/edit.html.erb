@@ -7,7 +7,7 @@
       </div>
 
 			<div class="border-round-rose" data-controller="loadingspinnermgnt">
-				<%= simple_form_for @belt, html: { novalidate: false } do |f| %>
+				<%= simple_form_for @belt , html: { novalidate: false } do |f| %>
 					<div class="belt-edit-header-1">
 						<h2><i class=" fas fa-bacon belt-<%= @belt.level %>"></i><%= " #{@belt.domain.name.capitalize}  "%></h2>
 						<h4><%= "#{@belt.student.first_name.capitalize}" %></h4>
@@ -15,10 +15,11 @@
 					<div class="date-selection">
 						<p>Obtenue le</p>
 						<%= f.input :validated_date, as: :string, label: false,
-                                          required: :true,
-                                          input_html: {class: 'datepicker area',
+                                          # required: :true,
+                                          input_html: {                                           
+                                            value: @belt.validated_date.strftime("%d/%m/%Y"),
+                                            class: 'datepicker area',
                                             locale: "fr",
-                                            value: @belt.validated_date.strftime("%d/%m/%Y")
                                             }%>
 						<%= f.submit "Valider", class: 'area rect-sm btn-valid',data:{action: "click->loadingspinnermgnt#displaySpinner"} %>
 					</div>

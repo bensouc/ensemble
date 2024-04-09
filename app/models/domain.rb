@@ -11,4 +11,6 @@ class Domain < ApplicationRecord
   def special?
     special == true
   end
+
+
 end
