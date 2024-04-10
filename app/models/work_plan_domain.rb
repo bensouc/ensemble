@@ -12,7 +12,7 @@ class WorkPlanDomain < ApplicationRecord
     "CM2" => ["Calcul", "Géométrie", "Grandeurs et Mesures", "Numération", "Opérations",
               "Résolution des Problèmes", "Calligraphie", "Conjugaison",
               "Poésie et Expression orale", "Production d’écrit", "Grammaire",
-              "Lecture", "Vocabulaire"]
+              "Lecture", "Vocabulaire"],
   }.freeze
   LEVELS = (1..7)
 
@@ -41,12 +41,25 @@ class WorkPlanDomain < ApplicationRecord
   end
 
   def all_domain_skills(user)
-    Skill.where(domain:, level:,school: user.school )
+    Skill.where(domain:, level:, school: user.school)
   end
 
-  # def name
-  #   domain.name
-  # end
+  def attach_next_skills(current_user)
+    Skill.where(domain:, level: level).each do |skill|
+      result = Result.find_by(skill:, student: )
+
+      next if (!result.nil? && result.kind == "ceinture" && result.status == "completed") || (result.nil? && special?) # rubocop:disable Style/IfUnlessModifier
+
+      new_wps = WorkPlanSkill.new(
+        skill:,
+        work_plan_domain: self,
+        kind: result.nil? ? "exercice" : result.kind,
+        status: "new"
+      )
+
+      new_wps.attach_content(result, current_user)
+    end
+  end
 
   def self.add_wps_completed(skills, work_plan_domain, special_work_plan)
     # binding.pry
@@ -57,7 +70,7 @@ class WorkPlanDomain < ApplicationRecord
         skill:,
         status: "completed",
         completed: true,
-        kind: "ceinture"
+        kind: "ceinture",
       )
       last_work_plan_skill = work_plan_skill
 

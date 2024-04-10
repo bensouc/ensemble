@@ -24,7 +24,7 @@ class WorkPlanSkill < ApplicationRecord
   end
 
   def special_wps?
-    work_plan_domain.work_plan.special_wps
+    work_plan_domain.work_plan.special_wps?
   end
 
   def clone(_current_wp, new_wp_domain)
@@ -70,19 +70,31 @@ class WorkPlanSkill < ApplicationRecord
   # end
 
   def self.last_wps(student, skills)
-    # WorkPlanSkill.where(skill: skill).select{ |s| s.student == student }.max_by(&:created_at)
-    # Supposons que `skills` contienne une liste d'identifiants de compétences que vous voulez filtrer.
+    wpss = student.work_plan_skills.where(skill: skills) # get all wps on skills and student
+    wpss.group_by(&:skill_id).transform_values { |wpss| wpss.max_by(&:updated_at) }.values.sort_by(&:updated_at)
+  end
 
-    latest_updates = WorkPlanSkill.select("MAX(updated_at) as updated_at, skill_id")
-                                  .where(skill_id: skills)
-                                  .group(:skill_id, :updated_at)
-
-    wpss = WorkPlanSkill.includes([:skill, :work_plan_domain, :student])
-      .joins(:skill)
-      .where(skill_id: latest_updates.pluck(:skill_id), updated_at: latest_updates.pluck(:updated_at))
-
-    # wpss = WorkPlanSkill.includes([:skill, :work_plan_domain, :student]).where(skill: skills).max_by(&:updated_at)
-    wpss.select { |wps| wps.student == student }
+  def attach_content(result, current_user)
+    if result.nil?
+      self.challenge = add_challenges_2_wps(current_user)
+      save!
+      # If the previous WorkPlanSkill is completed, create a new WorkPlanSkill of the appropriate kind and save it
+    elsif result.status == "completed"
+      case result.kind
+      when "jeu"
+        self.kind = "exercice"
+        self.challenge = add_challenges_2_wps(current_user)
+      when "exercice"
+        self.kind = "ceinture"
+      end
+      save!
+      # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
+    elsif %w[redo failed redo_OK new].include?(result.status)
+      self.kind = result.kind
+      self.kind = "exercice" if result.kind == "ceinture"
+      self.challenge = add_challenges_2_wps(current_user) if kind == "exercice"
+      save!
+    end
   end
 
   private
