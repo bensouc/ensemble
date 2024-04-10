@@ -37,6 +37,8 @@ class BeltsController < ApplicationController
         format.html { redirect_to student_path(@belt.student) }
         format.turbo_stream
       end
+    else
+      redirect_to student_path(@belt.student)
     end
   end
 
@@ -48,7 +50,7 @@ class BeltsController < ApplicationController
     if @belt.save
       set_data_show
       respond_to do |format|
-        format.html { redirect_to student_path(@belt.student) }
+        format.html { redirect_to student_path(@student) }
         format.turbo_stream
       end
     else
