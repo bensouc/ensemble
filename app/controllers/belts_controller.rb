@@ -3,11 +3,6 @@
 class BeltsController < ApplicationController
   before_action :set_belt, only: [:edit, :update, :destroy]
 
-  def edit
-    authorize @belt
-    @skills = @belt.all_skills(current_user)
-  end
-
   def show
     skip_authorization
     @student = Student.find(params[:student_id])
@@ -16,6 +11,11 @@ class BeltsController < ApplicationController
     # binding.pry if @domain.name == "Géométrie" && @level == 2
     set_data_show
     #  raise
+  end
+
+  def edit
+    authorize @belt
+    @skills = @belt.all_skills(current_user)
   end
 
   def create
@@ -29,15 +29,14 @@ class BeltsController < ApplicationController
     # @belt.student = Student.find(params[:student_id])
     @belt.validated_date = DateTime.now
     if @belt.save
-        @domain = @belt.domain
-        @student = @belt.student
-        @level = @belt.level
-        set_data_show
-        respond_to do |format|
-          format.html { redirect_to student_path(@belt.student) }
-          format.turbo_stream
-        end
-
+      @domain = @belt.domain
+      @student = @belt.student
+      @level = @belt.level
+      set_data_show
+      respond_to do |format|
+        format.html { redirect_to student_path(@belt.student) }
+        format.turbo_stream
+      end
     end
   end
 
@@ -68,6 +67,7 @@ class BeltsController < ApplicationController
     # binding.pry
     redirect_to student_path(@belt.student) if @domain.special?
     respond_to do |format|
+      set_data_show
       format.html { redirect_to student_path(@belt.student) }
       format.turbo_stream
     end

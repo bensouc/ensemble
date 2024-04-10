@@ -1,10 +1,5 @@
 <% if domain.special? %>
 	<div class="display-last-wps ">
-		<%# skills = @student_skills.select { |skill| skill.domain == domain } %>
-		<%# test if level 1 or if level +1 above the higher belt %>
-		<%# if (level == 1 || !belt.nil? && (level == belt.level + 1 ) ) %>
-		<%# afficher les wps specials du domain %>
-		<%# selectionne les wps à afficher en fonction du truc special%>
 		<% display_level = last_belt.nil? ? 0 : last_belt.level %>
 		<% if level > display_level  %>
 			<% index = (level - display_level - 1 ) %>

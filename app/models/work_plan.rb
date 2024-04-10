@@ -20,6 +20,10 @@ class WorkPlan < ApplicationRecord
     WorkPlanDomain::DOMAINS[grade.grade_level]
   end
 
+  def special_wps?
+    special_wps == true
+  end
+
   def self.with_associations
     includes( [:skills, :challenges] )
   end

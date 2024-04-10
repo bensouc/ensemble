@@ -209,52 +209,10 @@ class WorkPlansController < ApplicationController
       wpd = WorkPlanDomain.create(domain:,
                                   level: Belt.student_last_belt_level(@student, domain),
                                   work_plan: @work_plan)
-
-      # Check if the WorkPlanDomain has any specials and if the work plan grade is not "CM2"
-      # if wpd.special? && @work_plan.grade != "CM2"
-      if domain.special?
-
-        # Set the WorkPlanDomain's level to 1 and save it
-        wpd.level = 1
-        wpd.save
-      else
-        # Find all the skills for the current domain, level, and grade
-        Skill.where(domain:, level: wpd.level).each do |skill|
-          # Find the most recent WorkPlanSkill object for the current student and skill
-          # last_wps = WorkPlanSkill.last_wps(@student, skill).select { |wps| wps.skill == skill }.max_by(&:created_at)
-          result = Result.find_by(skill: skill, student: @student)
-          next if !result.nil? && result.kind == "ceinture" && result.status == "completed"
-
-          new_wps = WorkPlanSkill.new(
-            skill:,
-            work_plan_domain: wpd,
-            kind: result.nil? ? "exercice" : result.kind,
-            status: "new"
-          )
-          if result.nil?
-            new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
-            new_wps.save
-            # If the previous WorkPlanSkill is completed, create a new WorkPlanSkill of the appropriate kind and save it
-          elsif result.status == "completed"
-            case result.kind
-            when "jeu"
-              new_wps[:kind] = "exercice"
-              new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
-            when "exercice"
-              new_wps[:kind] = "ceinture"
-            end
-            new_wps.save
-            # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
-          elsif %w[redo failed redo_OK new].include?(result.status)
-            new_wps[:kind] = result.kind
-            new_wps[:kind] = "exercice" if result.kind == "ceinture"
-            if new_wps.kind == "exercice"
-              new_wps.challenge = new_wps.add_challenges_2_wps(current_user)
-            end
-            new_wps.save
-          end
-        end
-      end
+      # Set the WorkPlanDomain's level to 1 and save it if Domain is special
+      wpd.update(level: 1) if domain.special?
+      # Find all the skills for the current domain, level, and grade
+      wpd.attach_next_skills(current_user)
     end
 
     # Save the work plan and redirect to the appropriate page
