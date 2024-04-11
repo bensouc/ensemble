@@ -14,15 +14,15 @@
 								<div class="skill-name d-none" data-wps-result-target='name'>
 									<%= wps.skill.name %>
 									-
-									<%= render "wps_status", wps: wps %>
+									<%= render "belts/wps_status", wps: wps %>
 								</div>
 							</div>
 						<% end %>
 					<% end %>
-					<%= render "validate_belt_btn", level: level, domain: domain %>
 				<% end %>
 				<%#= render "belts/validate_belt_btn", level: level, domain: domain %>
 			<% end %>
+			<%= render "validate_belt_btn", level: level, domain: domain %>
 		</div>
 	<% else %>
 		<div class="display-last-wps">
