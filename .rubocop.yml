@@ -27,8 +27,10 @@ Metrics/AbcSize:
   CountRepeatedAttributes: false
 Metrics/ClassLength:
   CountAsOne: ['array', 'hash', 'heredoc']
+  Max: 120
 Metrics/MethodLength:
   CountAsOne: ['array', 'hash', 'heredoc']
+  Max: 15
 Metrics/ModuleLength:
   CountAsOne: ['array', 'hash', 'heredoc']
 
@@ -77,10 +79,7 @@ Rails/SquishedSQLHeredocs:
 #   Enabled: false
 # Metrics/CyclomaticComplexity:
 #   Enabled: false
-Metrics/ClassLength:
-  Max: 120
-Metrics/MethodLength:
-  Max: 15
+
 # Style/MissingRespondToMissing:
 #   Enabled: false
 # Lint/MissingSuper:
