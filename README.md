@@ -1,5 +1,19 @@
 Currently under development by the [VRoad Studio](https://www.vroadstudio.fr) team and  Beta test phase with seven teachers in a primary school @Nantes - France <br> <br>
 
+## New Features March 2024
+### Add Style Options to the action text editor
+In order to improve creativity, new style options have been added to action text editor:
+ * Change text color
+ * Change highlight text color
+ * Underline 
+### Rebuilding of the Student result page going full Turbo
+* rebuild routes & partials 
+* rebuild actions / controller to TurboStream student results
+  
+  ![image](https://github.com/bensouc/ensemble/assets/85955716/804ebd2c-4299-4d46-b7c8-e9fa18777228)
+
+
+
 ## New Features February 2024
 <details>
 <summary><strong>DEMO userflow </strong></summary>
