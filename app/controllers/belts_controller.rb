@@ -89,10 +89,10 @@ class BeltsController < ApplicationController
   def wps_index_to_display(domain, level)
     score = Belt.score_to_validate(domain.grade).find { |hash| hash[:domain] == domain.name }&.dig(:validation)
     start_nb = if level == 1
-        0
-      else
-        score[level - 2] + 1
-      end
+                 0
+               else
+                 score[level - 2] + 1
+               end
     end_nb = score[level - 1]
     end_nb = 30 if end_nb.nil?
     {
