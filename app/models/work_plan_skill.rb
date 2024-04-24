@@ -2,7 +2,7 @@
 
 class WorkPlanSkill < ApplicationRecord
   after_validation :update_result, only: %w[create update]
-  after_destroy :reset_result
+  # after_destroy :reset_result
 
   belongs_to :work_plan_domain
   belongs_to :skill
