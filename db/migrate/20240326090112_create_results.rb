@@ -16,7 +16,7 @@ class CreateResults < ActiveRecord::Migration[7.0]
       student.derniers_work_planskills_etudiant.each do |key,value| # {skill => [last_work_plan_skill]}
       #  create resulst based on its kind and status
       # binding.pry
-        result = Result.create!( student:, skill: key, status: value.status, kind: value.kind)
+        result = Result.find_or_create_by( student:, skill: key, status: value.status, kind: value.kind)
         puts "Creation du résult pour #{student.first_name} et la compétence: #{key.name} (#{value.kind}/#{value.status})"
       end
     end
