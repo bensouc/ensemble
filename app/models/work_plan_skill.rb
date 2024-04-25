@@ -91,7 +91,7 @@ class WorkPlanSkill < ApplicationRecord
       # If the previous WorkPlanSkill is not completed, create a new WorkPlanSkill of the appropriate kind and save it
     elsif %w[redo failed redo_OK new].include?(result.status)
       self.kind = result.kind
-      self.kind = "exercice" if result.kind == "ceinture"
+      self.kind = "exercice" if result.kind == "ceinture" && result.status != "new"
       self.challenge = add_challenges_2_wps(current_user) if kind == "exercice"
       save!
     end

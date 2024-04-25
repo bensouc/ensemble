@@ -33,10 +33,10 @@ class Student < ApplicationRecord
     #   'skill_status_challenge'
     #   # if one of them has a wps.completed = true => out=> 'skill_status_completed'
     # els
-    if !target_work_plan_skills.none?(&:completed)
+    if target_work_plan_skills.any?(&:completed)
       "skill_status_completed"
       # if one of them has wps.status == "completed" && wps.kind == "exercice"
-    elsif !target_work_plan_skills.none? do |work_plan_skill|
+    elsif target_work_plan_skills.any? do |work_plan_skill|
             work_plan_skill.status == "completed" && work_plan_skill.kind == "exercice"
           end
       # out=>"skill_status_belt"

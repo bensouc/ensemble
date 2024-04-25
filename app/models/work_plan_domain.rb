@@ -46,14 +46,19 @@ class WorkPlanDomain < ApplicationRecord
 
   def attach_next_skills(current_user)
     Skill.where(domain:, level: level).each do |skill|
-      result = Result.find_by(skill:, student: )
+      result = Result.find_by(skill:, student:)
 
       next if (!result.nil? && result.kind == "ceinture" && result.status == "completed") || (result.nil? && special?) # rubocop:disable Style/IfUnlessModifier
 
+      kind =  if result.nil?
+                "exercice"
+              else
+                result.kind == "exercice" && result.status == "completed" ? "ceinture" : result.kind
+              end
       new_wps = WorkPlanSkill.new(
         skill:,
         work_plan_domain: self,
-        kind: result.nil? ? "exercice" : result.kind,
+        kind: kind,
         status: "new"
       )
 
