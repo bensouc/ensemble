@@ -23,6 +23,10 @@ class ClassroomPolicy < ApplicationPolicy
     user_is_owner_or_admin?
   end
 
+  def show?
+    user_is_owner_or_admin?
+  end
+
   private
 
   def create_classroom_demo?

@@ -1,4 +1,5 @@
 class Mobile::WorkPlansController < ApplicationController
+  layout 'mobile'
   def index
     # @my_classrooms = Classroom.where(user: current_user)
     # @my_work_plans = WorkPlan.where(user: current_user).order(created_at: :DESC) # .sort_by(&:student)

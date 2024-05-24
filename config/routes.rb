@@ -13,7 +13,10 @@ Rails.application.routes.draw do
   # ############### MOBILE ROUTES###############
   namespace "mobile" do
     resources :work_plans, only: [:index]
-    resources :students, only: [:index]
+    resources :students, only: [:results]
+    resources :classrooms, only: [:index, :show] do
+      resources :students, only: [:show, :index]
+    end
     get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
   end
   # ############### CONTACTROUTES ###############

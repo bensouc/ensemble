@@ -1,0 +1,8 @@
+<%= turbo_frame_tag(classroom) do%>
+	<%= link_to mobile_classrooms_path  do %>
+		<h2 class='--grisF'>
+      <%= classroom.name.empty? ?  classroom.grade.name : classroom.name %> <i class="fas fa-folder-open --roseL"></i>
+		</h2>
+	<% end %>
+	<%= render 'mobile/students/list', classroom: classroom, students: students %>
+<% end %>
