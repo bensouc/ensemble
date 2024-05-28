@@ -5,7 +5,8 @@
   <%= simple_form_for  student, url:student_auto_new_wp_path(student), method: :post, html:{target:"_blank",
     data:{action:"submit->modals#emptyModal",turbo:false,turbo_frame: '_top'  }} do |form| %>
     <div class="modal-ensemble-dialog">
-      <div class="modal-ensemble-content">
+      <div class="modal-ensemble-content --maw-60
+">
         <div class="modal-ensemble-header">
           <h5 class="modal-title" >Déselectionner les domaines non souhaités pour
             <%= student.first_name.capitalize %>

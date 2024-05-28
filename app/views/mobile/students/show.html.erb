@@ -11,7 +11,7 @@
 			<% if belt %>
 				<%= render 'mobile/belts/belt', belt:, domain: %>
 			<% else %>
-				<%= render 'mobile/belts/no_belt',domain: %>
+				<%= render 'mobile/belts/no_belt',domain:, student: @student %>
 			<% end %>
 		<% end %>
 	</div>

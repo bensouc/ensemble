@@ -1,0 +1,27 @@
+<div class="modal-ensemble " data-controller='modals'>
+	<div class="modal-ensemble-dialog">
+		<div class="modal-ensemble-content --width-90">
+			<div class="modal-ensemble-header">
+				<h5 class="modal-title" >Les compétences acquises en <%= domain.name %>
+					par <%= student.first_name.capitalize %>
+				</h5>
+				<button
+            type="button"
+            class="btn-close"
+            aria-label="Close"
+            data-action='click->modals#emptyModal'
+					></button>
+			</div>
+      <div class="greyline-mobile"></div>
+
+			<div class="">
+				<% @results.each do |result| %>
+					<div class="w-100 d-flex justify-content-between align-items-baseline">
+						<p><%= result.skill.name %></p>
+						<i class="fa-solid fa-circle-check --vert ms-2"></i>
+					</div>
+				<%end%>
+			</div>
+		</div>
+	</div>
+</div>

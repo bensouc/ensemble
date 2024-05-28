@@ -55,6 +55,7 @@ Rails.application.routes.draw do
 
   # ###############routes for STUDENTS###############
   resources :students, only: [:create, :update, :show, :destroy] do
+    get "domains/:id/modal", to: "modals#display_skills_modal", as: :display_skills_modal
     resources :belts, only: [:create]
     post "", to: "work_plans#auto_new_wp", as: :auto_new_wp
     get "domains/:id/:level", to: "belts#show", as: :show
@@ -116,6 +117,7 @@ Rails.application.routes.draw do
   end
   # ###############ROUTES FOR MODALS###############
   get "students/:id/auto_gen", to: "modals#auto_gen", as: :student_auto_gen_modal
+
   # ###############END for SKILLS###############
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

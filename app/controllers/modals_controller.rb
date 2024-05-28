@@ -4,4 +4,13 @@ class ModalsController < ApplicationController
     skip_authorization
     @domains = @student.classroom.grade.domains.sort_by(&:position)
   end
+
+  def display_skills_modal
+    @student = Student.find(params[:student_id])
+    @domain = Domain.find(params[:id])
+    @skills = @domain.skills
+    @results = Result.completed.where(skills: @skills,student: @student)
+    # binding.pry
+    skip_authorization
+  end
 end
