@@ -38,7 +38,7 @@ class WorkPlanDomainsController < ApplicationController
       skills&.each do |skill|
         # unless kind is 'exercice' and student.skill_status(skill) == 'skill_status_belt'
         result = Result.find_or_create_by(skill:, student:) unless student.nil?
-        unless result.belt_validated? || (kind == "exercice" && result.challenge_validated?)
+        unless !student.nil? && (result.belt_validated? || (kind == "exercice" && result.challenge_validated?))
           work_plan_skill = WorkPlanSkill.new(
             work_plan_domain_id: @work_plan_domain.id,
             skill_id: skill.id,
