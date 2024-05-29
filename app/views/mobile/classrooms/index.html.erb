@@ -1,0 +1,18 @@
+<div class="mobile_index">
+	<h1 class="title">M<%= (@classrooms.count > 1) ? "es" : "a" %> classe<%=  "s" if (@classrooms.count > 1) %>
+	</h1>
+	<div class="greyline-mobile"></div>
+	<div class="text-start">
+		<%=  turbo_frame_tag("classroom_list") do%>
+			<% @classrooms.each do |classroom| %>
+				<%=  turbo_frame_tag(classroom) do%>
+					<%= link_to  mobile_classroom_path(classroom) do%>
+						<h2 class='--grisF'>
+							<%= classroom.name.empty? ?  classroom.grade.name : classroom.name %> <i class="fas fa-folder --roseL"></i>
+						</h2>
+					<% end %>
+				<% end %>
+			<% end %>
+		<% end %>
+	</div>
+</div>

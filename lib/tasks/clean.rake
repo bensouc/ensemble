@@ -1,5 +1,6 @@
 # lib/tasks/clean.rake
 
+# run with rails clean:empty_challenges
 namespace :clean do
   desc "Sweeping unused empty challenges"
   task empty_challenges: :environment do

@@ -1,0 +1,16 @@
+<%= turbo_frame_tag("classroom_#{classroom.id}_list") do%>
+	<% if students.nil? %>
+		<h4 class='--grisF ms-2'>Pas d'élèves</h4>
+	<% else %>
+		<% students.each do |student| %>
+			<%= turbo_frame_tag(student) do%>
+				<%= link_to mobile_classroom_student_path(classroom,student) do%>
+					<h4 class='--grisF ms-2'>
+						<%= student.first_name.capitalize %>
+						<i class="fa-solid fa-chevron-right --roseL"></i>
+					</h4>
+				<% end %>
+			<% end %>
+		<% end %>
+	<% end %>
+<% end %>

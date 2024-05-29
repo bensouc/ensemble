@@ -112,6 +112,13 @@ a {
 .--width-90{
   width: 90% !important;
 }
+.--width-5_7{
+  width: 5.7rem !important;
+}
+.--maw-60{
+  max-width: 60% !important;
+
+}
 
 .grabbable {
     cursor: move; /* fallback if grab cursor is unsupported */

@@ -1,0 +1,28 @@
+<% if domain.special? %>
+	<%= link_to "/students/#{belt.student.id}/domains/#{belt.domain.id}/modal",
+      class:"--width-5_7 m-2",
+      data:{turbo_frame: "general_modal"} do%>
+		<div class="mobile-belt-bar belt-bg-<%= belt.level %>">
+			<div class="bar-style --grisF">
+				<%= I18n.l(belt.validated_date, format: :short) %>
+				<%= I18n.l(belt.validated_date, format: :year_only) %>
+			</div>
+			<div class='pt-2 belt-name text-center --grisF'>
+				<h6 <%= "class= text-light" if belt.level == 7 || belt.level == 5 %>><%= domain.name %></h6>
+			</div>
+			<%= render 'mobile/belts/star' if domain.special? %>
+		</div>
+	<% end %>
+<% else %>
+	<div class="--width-5_7 m-2">
+		<div class="mobile-belt-bar belt-bg-<%= belt.level %>">
+			<div class="bar-style --grisF">
+				<%= I18n.l(belt.validated_date, format: :short) %>
+				<%= I18n.l(belt.validated_date, format: :year_only) %>
+			</div>
+			<div class='pt-2 belt-name text-center --grisF'>
+				<h6 <%= "class= text-light" if belt.level == 7 || belt.level == 5 %>><%= domain.name %></h6>
+			</div>
+		</div>
+	</div>
+<% end %>
