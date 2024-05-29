@@ -9,7 +9,10 @@ class ModalsController < ApplicationController
     @student = Student.find(params[:student_id])
     @domain = Domain.find(params[:id])
     @skills = @domain.skills
-    @results = Result.completed.where(skills: @skills,student: @student)
+    @results = Result.completed.where(
+      skills: @skills,
+      student: @student
+    ).sort_by { |result| [result.skill.symbol, result.skill.name] }
     # binding.pry
     skip_authorization
   end
