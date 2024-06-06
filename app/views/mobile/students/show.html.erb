@@ -1,9 +1,9 @@
 <%= turbo_frame_tag(@student) do%>
 	<%= link_to mobile_classroom_path(@classroom)  do %>
-	<h4 class="--grisF ms-2">
-    <%= @student.first_name.capitalize %>
-  <i class="fa-solid fa-chevron-up --roseL"></i>
-  </h4>
+    <h4 class="--grisF ms-2">
+      <%= @student.first_name.capitalize %>
+    <i class="fa-solid fa-chevron-up --roseL"></i>
+    </h4>
 	<% end %>
 	<div class="d-flex flex-wrap justify-content-center ">
 		<% @domains.each do  |domain|%>
