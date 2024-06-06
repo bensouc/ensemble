@@ -9,9 +9,9 @@
 		<% @domains.each do  |domain|%>
 			<% belt = @belts.select { |belt| belt.domain == domain }.max_by(&:level) %>
 			<% if belt %>
-				<%= render 'mobile/belts/belt', belt:, domain: %>
+				<%= render Belts::BeltComponent.new(belt: belt, domain: domain) %>
 			<% else %>
-				<%= render 'mobile/belts/no_belt',domain:, student: @student %>
+				<%= render Belts::NoBeltComponent.new(student: @student, domain: domain) %>
 			<% end %>
 		<% end %>
 	</div>
