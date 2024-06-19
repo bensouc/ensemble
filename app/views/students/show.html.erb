@@ -65,7 +65,7 @@
 					<button type="button" class="ensemble-bouton --bgc-grisC --blanc" data-bs-dismiss="modal">X</button>
           <%= render Btns::ValidateComponent.new(btn_text: "Valider",
                               btn_class: "ensemble-bouton --bgc-vert --borderc-vert --blanc",
-                              btn_data: {controller:"modals",action: "click->modals#addSpinner"}) %>
+                              btn_data: {controller:"loadingspinnermgnt",action: "click->loadingspinnermgnt#addSpinner"}) %>
 				</div>
 			</div>
 		</div>
