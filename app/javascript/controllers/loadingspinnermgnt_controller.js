@@ -30,13 +30,17 @@ export default class extends Controller {
     this.element.insertAdjacentHTML('afterbegin', content)
   }
 
+  // insert spinner
   addSpinner(event) {
+    event.preventDefault()
     const target = event.target
     const width = target.offsetWidth
+    const height = target.offsetHeight
+    target.style.height = `${height}px`
     target.style.width = `${width}px`
     target.innerHTML = `
       <div class="rotating" >
-        <i class="fa-solid fa-spinner"></i>
+        <i class="fa-solid fa-gear"></i>
       </div>
       `
   };
