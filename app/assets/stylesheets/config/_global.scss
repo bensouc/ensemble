@@ -1,7 +1,7 @@
 
   body {
     // background-image: url("https://res.cloudinary.com/dr50qe2fh/image/upload/v1638810072/bg2_tbato3.svg");
-    background-color: white;
+    background-color: rgb(255, 255, 255);
     font-family: $body-font;
     // padding-bottom: 50px !important;
   }
@@ -140,3 +140,20 @@ a {
     color: $roseL;
   }
 }
+
+.ensemble-bouton {
+  padding: 10px 15px !important;
+  margin: 4px !important;
+  font-size: inherit !important;
+  border-radius: 4px !important;
+  .spinner-border{
+    --bs-spinner-width: 1rem!important;
+    --bs-spinner-height: 1rem!important;
+    --bs-spinner-vertical-align: -0.125em!important;
+    --bs-spinner-border-width: 0.25em!important;
+    --bs-spinner-animation-speed: 0.75s!important;
+    --bs-spinner-animation-name: spinner-border;
+    border: var(--bs-spinner-border-width) solid currentcolor;
+    border-right-color: transparent;
+    margin: 0 !important;
+  }}
