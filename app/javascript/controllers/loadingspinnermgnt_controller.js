@@ -32,7 +32,7 @@ export default class extends Controller {
 
   // insert spinner
   addSpinner(event) {
-    event.preventDefault()
+    // event.preventDefault()
     const target = event.target
     const width = target.offsetWidth
     const height = target.offsetHeight

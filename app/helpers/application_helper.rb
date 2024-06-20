@@ -14,9 +14,9 @@ module ApplicationHelper
     when "work_plans"
       "https://www.notion.so/Vos-Plans-de-Travail-8eea69c2f9be452e89e528a7e3f56f0d?pvs=4"
     when "subscriptions"
-      "https://season-sycamore-125.notion.site/S-abonner-9d9b895b3e9042648df01943941dcb07?pvs=4"
+      "https://https://vroadstudio.notion.site/Ensemble-Les-Tutos-1bb72deab51d43898dd2bdcec25ec098/S-abonner-9d9b895b3e9042648df01943941dcb07?pvs=4"
     else
-      "https://season-sycamore-125.notion.site/Ensemble-Les-Tutos-1bb72deab51d43898dd2bdcec25ec098"
+      "https://https://vroadstudio.notion.site/Ensemble-Les-Tutos-1bb72deab51d43898dd2bdcec25ec098/Ensemble-Les-Tutos-1bb72deab51d43898dd2bdcec25ec098"
     end
   end
 
