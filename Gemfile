@@ -89,6 +89,9 @@ gem "wkhtmltopdf-heroku", group: :production
 gem "mobile"
 gem "browser"
 
+# view_component
+gem "view_component"
+
 # group :development, :test do
 # # gem for pdf-output
 #   gem 'wkhtmltopdf-binary', '~> 0.12.5'

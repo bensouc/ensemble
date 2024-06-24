@@ -27,7 +27,10 @@
         <% end %>
       <% end %>
       <%# end %>
-      <%= link_to work_plan_path(@work_plan, format: :pdf), class: "utility-wp-btn" do %>
+      <%= link_to work_plan_path(@work_plan, format: :pdf), class: "utility-wp-btn", data:{
+        controller: "loadingspinnermgnt",
+        action: "click->loadingspinnermgnt#addSpinner",
+      } do %>
         <h6>Export PDF</h6>
       <% end %>
       <div class= "utility-wp-btn" data-action="click->cloning-wp#displayCloningForm">

@@ -6,7 +6,7 @@
 // General style
 $font-family-sans-serif: $body-font;
 $headings-font-family: $headers-font;
-$body-bg: white;
+$body-bg: $blanc;
 $font-size-base: 1rem;
 
 // Colors
@@ -25,10 +25,10 @@ $border-radius-sm: 2px;
 // Override other variables below!
 
 // spinner Bootstrap
-.spinner-border {
-  margin-left: 40% !important;
-  margin-top: 27px !important;
-}
+// .spinner-border {
+//   margin-left: 40% !important;
+//   margin-top: 27px !important;
+// }
 
 // CAROUSEL SETUP
  $carousel-transition-duration: 1s;

@@ -7,8 +7,10 @@ export default class extends Controller {
   connect() {
     // console.log('modal open connetec')
   }
-  emptyModal(){
+  emptyModal() {
     const modal = document.querySelector('.modal-ensemble')
     modal.classList.add('d-none')
   }
+
+
 }
