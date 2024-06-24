@@ -22,14 +22,15 @@
       </button>
       <%# <% if current_user.admin %>
       <% unless work_plan.student.nil? %>
-        <%= link_to evaluation_path(@work_plan), class: "utility-wp-btn",data:{action: "click->loadingspinnermgnt#displaySpinner"} do %>
+        <%=  link_to evaluation_path(@work_plan), class: "utility-wp-btn",
+        data:{action: " click->loadingspinnermgnt#displaySpinner "} do %>
           <h6>Correction</h6>
         <% end %>
       <% end %>
       <%# end %>
       <%= link_to work_plan_path(@work_plan, format: :pdf), class: "utility-wp-btn", data:{
-        controller: "loadingspinnermgnt",
-        action: "click->loadingspinnermgnt#addSpinner",
+        controller: "loadingspinnermgnt workplanpdf",
+        action: "click->loadingspinnermgnt#addSpinner click->workplanpdf#genPdf",
       } do %>
         <h6>Export PDF</h6>
       <% end %>
