@@ -201,7 +201,7 @@ RSpec.describe ChallengesController, type: :controller do
     it "render the challenge if it is the only one for its skill" do
       sign_in(user)
       get :display_challenges, params: { id: challenge.id, work_plan_skill_id: work_plan_skill.id }
-      expect(response).to render_template("challenges/_show_one_challenge")
+      expect(response).to render_template("challenges/_challenge")
     end
   end
 end

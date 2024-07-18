@@ -74,7 +74,7 @@ class ChallengesController < ApplicationController
         end
         format.turbo_stream do
           render turbo_stream: turbo_stream.replace(@challenge,
-                                                    partial: "challenges/show_one_challenge",
+                                                    partial: "challenges/challenge",
                                                     locals: { challenge: @challenge })
         end
       end
@@ -124,7 +124,7 @@ class ChallengesController < ApplicationController
       # @work_plan = @work_plan_skill.work_plan_domain.work_plan
       # render partial: "challenges/challenge_display", notice: "Il n'existe pas d'autre excercice pour cette compétence"
       render turbo_stream: turbo_stream.replace(@challenge,
-                                                partial: "challenges/show_one_challenge",
+                                                partial: "challenges/challenge",
                                                 locals: { challenge: @challenge })
       flash.now[:notice] = "Il n'existe pas d'autre excercice pour cette compétence"
     else
