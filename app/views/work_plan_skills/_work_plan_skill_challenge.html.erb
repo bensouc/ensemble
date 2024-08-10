@@ -1,20 +1,18 @@
-
 <%= turbo_frame_tag dom_id(work_plan_skill) do %>
-  <div class='display-challenge-name'>
-    <%# titre de la skill %>
-    <h4><%= work_plan_skill.skill.name %></h4>
-  </div>
-  <div class="challenge-card">
-    <div
+	<div class='display-challenge-name'>
+		<%# titre de la skill %>
+		<h4><%= work_plan_skill.skill.name %></h4>
+	</div>
+	<div class="challenge-card">
+		<div
       class="d-flex "
       data-controller='edit-challenge'
       id="<%=dom_id(work_plan_skill.challenge)%>"
     >
-      <%= render "challenges/show_one_challenge",
+			<%= render "challenges/challenge",
       work_plan_skill: work_plan_skill,
       challenge: work_plan_skill.challenge %>
-    </div>
-    <%= render "challenges/mngt", work_plan_skill: work_plan_skill, challenge: work_plan_skill.challenge%>
-  </div>
-
+		</div>
+		<%= render "challenges/mngt", work_plan_skill: work_plan_skill, challenge: work_plan_skill.challenge%>
+	</div>
 <% end %>

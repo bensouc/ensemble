@@ -1,15 +1,29 @@
 namespace :result do
   desc "Update Result based on last updated wps"
-  puts "############################"
-  puts "###                      ###"
-  puts "###        results       ###"
-  puts "###       UPDATESS       ###"
-  puts "###                      ###"
-  puts "############################"
   task update: :environment do
+    puts "############################"
+    puts "###                      ###"
+    puts "###       results        ###"
+    puts "###       UPDATE         ###"
+    puts "###                      ###"
+    puts "############################"
     puts "What is your classroom ID"
-    classroom = Classroom.find(gets.chomp.to_i)
-    p classroom
+    classroom_id = gets.chomp.to_i
+    update_results_for_a_classroom(classroom_id)
+  end
+
+  desc "Update Result based on last updated wps"
+  task update_all: :environment do
+    puts "############################"
+    puts "###       UPDATE         ###"
+    puts "###      Results         ###"
+    puts "###   4 all Classrooms   ###"
+    puts "############################"
+    Classroom.all.each {|c| update_results_for_all_classroom(c.id)}
+  end
+
+  def update_results_for_all_classroom(classroom_id)
+    classroom = Classroom.find(classroom_id)
     students = classroom.students
     domains = classroom.grade.domains
     domains.each do |domain|
