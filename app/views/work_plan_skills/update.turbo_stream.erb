@@ -1,4 +1,4 @@
 <%= turbo_stream.replace @work_plan_skill do %>
   <%= render "work_plan_skill_challenge", work_plan_skill: @work_plan_skill %>
 <% end %>
-<%= turbo_stream.prepend "flash" , partial: "layouts/flash" %>
+<%= turbo_stream.prepend "flash" , partial: "shared/flashes" %>

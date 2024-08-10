@@ -1,0 +1,4 @@
+<%= turbo_stream.replace @challenge do %>
+  <%= render "challenges/challenge", challenge: @challenge  %>
+<%end%>
+<%= turbo_stream.prepend "flash" , partial: "shared/flashes" %>

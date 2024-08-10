@@ -55,7 +55,7 @@ class ChallengesController < ApplicationController
       @count = count_challenges
       respond_to do |format|
         format.html { redirect_to challenge_path(@challenge), notice: "Excercice Sauvegardé" }
-        format.turbo_stream
+        format.turbo_stream { flash.now[:notice] = "Excercice Sauvegardé" }
       end
     else
       redirect_to new_challenge_path, notice: "Sauvegarde échouée ", status: :unprocessable_entity
@@ -72,11 +72,7 @@ class ChallengesController < ApplicationController
           redirect_to challenge_path(@challenge),
                       notice: "Excercice Sauvegardé"
         end
-        format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(@challenge,
-                                                    partial: "challenges/challenge",
-                                                    locals: { challenge: @challenge })
-        end
+        format.turbo_stream { flash.now[:notice] = "Excercice Sauvegardé" }
       end
     else
       redirect_to edit_challenge_path(@challenge), notice: "Sauvegarde échouée "

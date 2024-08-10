@@ -65,7 +65,7 @@ class WorkPlanDomainsController < ApplicationController
     elsif @work_plan_domain.save!
       respond_to do |format|
         format.html { redirect_to work_plan_path(@work_plan, anchor: "bottom") }
-        format.turbo_stream
+        format.turbo_stream { flash.now[:notice] = "Domaine ajouté" }
       end
     else
       redirect_to work_plan_path(@work_plan, anchor: "dmn-validate")
