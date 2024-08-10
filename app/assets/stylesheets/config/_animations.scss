@@ -11,6 +11,15 @@
   justify-content: center;
   align-items: center;
   animation: rotating 2s linear infinite;
-    width: 100%;
+  width: 100%;
   height: 100%;
+}
+
+@keyframes appear-then-fade {
+  0%, 100% {
+    opacity:0
+  }
+  5%, 60% {
+    opacity:1
+  }
 }
