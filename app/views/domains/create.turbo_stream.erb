@@ -1,5 +1,5 @@
 <%= turbo_stream.append  "domains_list" do %>
-  <%= render partial: "one_domain", locals: { domain: @domain } %>
+  <%= render partial: "domain", locals: { domain: @domain } %>
 <%end%>
 <%= turbo_stream.replace "new_domain" do %>
   <%= render partial: "add_domain", locals: { grade: @grade } %>

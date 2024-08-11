@@ -60,7 +60,7 @@ class DomainsController < ApplicationController
         format.html { redirect_to grade_domains_path(@grade), notice: "La suppression du domaine a échoué" }
         format.turbo_stream { render turbo_stream:
                                 turbo_stream.replace(@domain,
-                                  partial: "domains/one_domain",
+                                  partial: "domains/domain",
                                   locals: { domain: @domain })
                             }
       end
