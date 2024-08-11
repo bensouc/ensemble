@@ -4,7 +4,7 @@
 		<% @grades.each do |classroom_grade| %>
 			<%= link_to skills_path(grade: classroom_grade ), data:{action:'loading-spinner2#displayLoadingSpinner'} do %>
 				<div class="class-pill <%= 'active' if classroom_grade == @grade %> ">
-					<i class="fa-solid fa-angles-right"></i> <%= classroom_grade.name.upcase %>
+					<i class="fa-solid fa-angle-right"></i> <%= classroom_grade.name.upcase %>
 				</div>
 			<% end %>
 		<% end %>
