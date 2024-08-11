@@ -83,7 +83,7 @@ class WorkPlanDomainsController < ApplicationController
     @work_plan_domain.destroy
     respond_to do |format|
       format.html { redirect_to work_plan_path(@work_plan, anchor: "bottom") }
-      format.turbo_stream
+      format.turbo_stream { flash.now[:notice] = "Domaine supprimé" }
     end
   end
 

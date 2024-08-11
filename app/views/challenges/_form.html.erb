@@ -14,7 +14,7 @@
 						</div>
 						<div class="form-actions d-flex justify-content-end height-validate-challenge">
             <% if challenge.persisted? %>
-							<%= button_to challenge_path(challenge), class:"cancel-btn" do %>
+							<%= link_to challenge_path(challenge), class:"cancel-btn" do %>
 									<i class="fas fa-times"></i>
 							<% end%>
               <% else %>

@@ -30,6 +30,7 @@ class ChallengesController < ApplicationController
 
   def show
     skip_authorization
+    puts params
   end
 
   def new
@@ -104,9 +105,10 @@ class ChallengesController < ApplicationController
     @work_plan_skill.save
     # @work_plan = @work_plan_skill.work_plan_domain.work_plan
     # redirect_to @challenge
-    render turbo_stream: turbo_stream.replace(@work_plan_skill,
-                                              partial: "/work_plan_skills/work_plan_skill_challenge",
-                                              locals: { work_plan_skill: @work_plan_skill })
+    respond_to do |format|
+      format.html { redirect_to challenge_path(@challenge) }
+      format.turbo_stream { flash.now[:notice] = "Excercice cloné" }
+    end
   end
 
   def display_challenges

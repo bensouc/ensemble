@@ -95,7 +95,7 @@
 							<%= turbo_frame_tag "#{dom_id(skill)}_challenges_list" do %>
 								<% challenges = @challenges.select{|chall| chall.skill == skill} %>
 									<%= render challenges %>
-
+                  
 							<% end %>
 						</div>
 					</div>
