@@ -58,7 +58,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_26_090112) do
     t.boolean "completed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.date "validated_date", default: "2022-04-27"
+    t.date "validated_date", default: "2024-08-14"
     t.integer "level", null: false
     t.bigint "domain_id"
     t.index ["domain_id"], name: "index_belts_on_domain_id"
