@@ -183,8 +183,8 @@ class WorkPlansController < ApplicationController
       @count = WorkPlan.where.not(special_wps: true).where(student: @student).count
     end
     respond_to do |format|
-      # format.html { redirect_to work_plans_path, notice: "Work plan was successfully destroyed." }
-      format.turbo_stream
+      format.html { redirect_to work_plans_path, notice: "Plan de travail supprimé" }
+      format.turbo_stream { flash.now[:notice] = "Plan de travail supprimé" }
     end
   end
 

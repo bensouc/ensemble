@@ -31,7 +31,7 @@ class WorkPlanSkillsController < ApplicationController
           redirect_to work_plan_domain_path(@work_plan_skill.work_plan_domain),
                       notice: "Modification Sauvegardée"
         }
-        format.turbo_stream
+        format.turbo_stream { flash.now[:notice] = "Modification Sauvegardée" }
       end
     else
       redirect_to work_plan_skill_path(@work_plan_skill), notice: "Sauvegarde échouée "
@@ -61,7 +61,7 @@ class WorkPlanSkillsController < ApplicationController
           redirect_to work_plan_skill_path(@work_plan_skill),
                       notice: "Modification Sauvegardée"
         }
-        format.turbo_stream
+        format.turbo_stream { flash.now[:notice] = "Modification Sauvegardée" }
       end
     else
       redirect_to work_plan_skill_path(@work_plan_skill), notice: "Sauvegarde échouée "
@@ -80,7 +80,7 @@ class WorkPlanSkillsController < ApplicationController
         redirect_to work_plan_path(work_plan_domain.work_plan),
                     notice: "Modification Sauvegardée"
       }
-      format.turbo_stream
+      format.turbo_stream { flash.now[:notice] = "Modification Sauvegardée" }
     end
   end
 

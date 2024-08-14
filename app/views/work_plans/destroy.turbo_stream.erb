@@ -6,3 +6,5 @@
   <%= turbo_stream.update "student_#{@student.id}_work_plan_count",
                       "#{@count} Plan#{"s" if @count > 1} de travail" %>
 <% end %>
+<%= turbo_stream.prepend "flash" , partial: "shared/flashes" %>
+ 

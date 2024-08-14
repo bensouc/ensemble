@@ -3,7 +3,7 @@
 	<%= turbo_frame_tag "domains_index" do%>
 		<%= turbo_frame_tag 'domains_list', data:{controller:'drag', drag_url_value:"/domains/:id/move"} do %>
 			<% @domains.sort_by(&:position).each do |domain| %>
-				<%= render 'one_domain', domain: domain %>
+				<%= render 'domain', domain: domain %>
 			<% end %>
 		<% end %>
 		<%= render 'domains/add_domain', grade: grade %>
