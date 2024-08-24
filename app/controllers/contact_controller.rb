@@ -4,7 +4,10 @@ class ContactController < ApplicationController
   def create
     # binding.pry
     skip_authorization
-    if verify_recaptcha
+    recaptcha_valid = verify_recaptcha
+Rails.logger.info "reCAPTCHA valid: #{recaptcha_valid}"
+Rails.logger.info "reCAPTCHA errors: #{recaptcha_reply["error-codes"]}" unless recaptcha_valid || recaptcha_reply.nil?
+    if user_signed_in? || verify_recaptcha
       @contact = contact_params
       ContactMailer.new_contact(@contact).deliver
       if user_signed_in?
