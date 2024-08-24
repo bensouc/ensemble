@@ -21,7 +21,7 @@
       </div>
     </div>
   <% end %>
-  <% if params[:controller]  == "challenges" && params[:action] == "show"%>
+  <% if params[:controller]  == "challenges" && params[:action] == "index"%>
     <div class="challenge-infos-box">
       <p class="ms-5 --grisC --italic"> <i class='fas fa-pen fa-xs'></i> <%= challenge.user.first_name %></p>
       <%if !challenge.work_plan_skills.empty?  %>

@@ -1,8 +1,7 @@
 .challenges-container {
   width: 1000px;
-  margin-top: 0.25rem
+  margin-top: 0.25rem;
   // height: 110vh;
-
 }
 .challenges-skill-selector {
   display: flex;
@@ -15,7 +14,6 @@
 .challenges-skill {
   display: flex;
   gap: 10px;
-
 }
 
 .box-column-challenges-filter {
@@ -25,7 +23,7 @@
   flex-wrap: nowrap;
   align-items: flex-start;
   margin-bottom: 20px;
-  .form-control:hover{
+  .form-control:hover {
     cursor: pointer;
   }
 }
@@ -61,9 +59,9 @@
 
 .challenge-infos-box {
   display: flex;
-      justify-content: space-between;
-    flex-direction: row-reverse;
-    margin: 0 40px;
+  justify-content: space-between;
+  flex-direction: row-reverse;
+  margin: 0 40px;
 }
 .max-length-skill-name {
   max-width: 713px;
