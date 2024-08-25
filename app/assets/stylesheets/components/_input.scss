@@ -5,3 +5,10 @@
   font-family: $plan-font;
   font-size: 18px;
 }
+.input-fit{
+  background-color: $white;
+  border-radius: 12px;
+  padding: 10px;
+  font-size: 18px;
+  width: fit-content;
+}

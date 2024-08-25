@@ -14,6 +14,11 @@ class ContactMailer < ApplicationMailer
     mail(to: @contact.email, subject: "Ensemble!  Bienvenue sur notre plateforme")
   end
 
+  def new_request(user_request)
+    @user_request = user_request
+    mail(to: "contact@vroadstudio.fr", subject: "Nouvelle demande")
+  end
+
 private
 # def contact_params
 #   params.require(:contact).permit(:nom, :email, :school, :city, :message)

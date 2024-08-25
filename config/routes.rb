@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   end
   # ############### CONTACTROUTES ###############
   post "", to: "contact#create", as: :contact_create
+  post "contacts/user_request", to: "contact#user_request", as: :user_request
 
   # ############### WORK_PLAN ROUTES###############
   resources :work_plans, only: [:index, :show, :update, :new, :create, :destroy] do

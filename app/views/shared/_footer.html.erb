@@ -18,7 +18,7 @@
 	</div>
 </footer>
 <div class="modal fade" id="contact_signed-in-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="contact_signed-in-modalLabel" aria-hidden="true">
-	<%= simple_form_for :contact,html: { novalidate: false }, url: contact_create_path(), method: :post do |f| %>
+	<%= simple_form_for :contact,html: { novalidate: false }, url: user_request_path(), method: :post do |f| %>
 		<div class="modal-dialog">
 			<div class="modal-content contact">
 				<div class="modal-header">
@@ -27,16 +27,18 @@
 				</div>
 				<div class="modal-body">
 					<div class="contact-form" data-display-tab-target='box'>
-						<div class='user-details'>
+						<div class='user-details d-none'>
 							<%= f.input :email, label: 'Email',readonly: true, input_html: {value: current_user.email}, required: true %>
 							<%= f.input :last_name, label: 'Nom',readonly: true,input_html: {value: current_user.last_name}, required: true, wrapper_html:{class: 'class-wrapper'} %>
 							<%= f.input :first_name, label: 'Prénom',readonly: true,input_html: {value: current_user.first_name}, required: true %>
-						</div>
-						<div class='user-details'>
 							<%= f.input :school, label: 'Ecole',readonly: true,input_html: {value: current_user.school.name},required: false%>
 							<%= f.input :city, label: 'Ville',readonly: true,input_html: {value: current_user.school.city}, required: true %>
+              <%= f.input :current_url,label: false, readonly: true, input_html: { value: request.url } %>
 						</div>
-						<%= f.input :message, label: 'Message', as: :text, input_html: { rows: 5, placeholder: "ICI, posez vos questions, remonter un bug ou faire une demande d'évolution" }, required: true %>
+						<div class="d-flex">
+							<%= f.input :type, label: false, collection: %w[Question Bug Evolution], input_html: {class: "input-fit mb-3 --cursor-pointer"}, prompt:"Type de Demande", required: true %>
+						</div>
+						<%= f.input :message, label: false, as: :text, input_html: { rows: 5,class: "input og-font", placeholder: "ICI, poser vos questions, remonter un bug ou faire une demande d'évolution" }, required: true %>
 						<div class="mt-2">
 						</div>
 					</div>
