@@ -1,0 +1,27 @@
+> @user_request
+=> #<ActionController::Parameters {"first_name"=>"Benoît ", "last_name"=>"Moret", "email"=>"bensouc@gmail.com", "school"=>"Ensemble / DEMO", "city"=>"Ensemble", "message"=>"cdscsd", "type"=>"Question", "current_url"=>"http://localhost:3000/dashboard"} permitted: true>
+
+<html>
+	<head>
+		<meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+	</head>
+	<body>
+		<div style="text-align: center;">
+			<%= image_tag 'https://res.cloudinary.com/bensoucdev/image/upload/v1678871863/ensemble/logos/ensemble_icone_umdhbk.png', width: '100px' %>
+		</div>
+		<h1>Hello Ensemble Team</h1>
+		<p>
+			Une demande de la part de <%= @user_request[:first_name] %></p> <br>
+		</p>
+		<p><strong>Nom :</strong> <%= @user_request[:last_name] %></p>
+		<p><strong>Prénom :</strong> <%= @user_request[:first_name] %></p>
+		<p><strong>Email :</strong> <%= @user_request[:email] %></p>
+		<p><strong>Ecole :</strong> <%= @user_request[:school] %></p>
+		<p><strong>Ville :</strong> <%= @user_request[:city] %></p>
+
+    <p>Type de demande: <%= @user_request[:type] %></p>
+
+		<p><strong>Message :</strong> <%= @user_request[:message] %></p>
+		<p>Au boulot!</p>
+	</body>
+</html>
