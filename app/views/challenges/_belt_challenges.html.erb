@@ -1,6 +1,6 @@
 <div class="challenges-display ">
 	<% unless skills.empty? %>
-		<% skills.each do |skill| %>
+		<% skills.sort_by(&:position).each do |skill| %>
 			<div class="challenges-by-skill mb-2" data-controller='wp-by-student'>
 				<div class='d-flex wp-student-folder'
               data-action="click->wp-by-student#displayList"

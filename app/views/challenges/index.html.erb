@@ -14,7 +14,7 @@
                     class: "area grow m-left --text-center"
                   } %>
 					<%= f.input :domain,
-                  collection: @domains,
+                  collection: @domains.sort_by(&:position),
                   selected: @domain.id,
                   label: false,
                   input_html: {
@@ -52,7 +52,7 @@
 	<div id='skills-challenge-list'>
 		<div class="challenges-display " id='skills-challenge-list'>
 			<% unless @skills.empty? %>
-				<% @skills.each do |skill| %>
+				<% @skills.sort_by(&:position).each do |skill| %>
 					<div class="challenges-by-skill mb-2" data-controller='wp-by-student'>
 						<div class='d-flex wp-student-folder'
               data-action="click->wp-by-student#displayList"
@@ -95,7 +95,7 @@
 							<%= turbo_frame_tag "#{dom_id(skill)}_challenges_list" do %>
 								<% challenges = @challenges.select{|chall| chall.skill == skill} %>
 									<%= render challenges %>
-                  
+
 							<% end %>
 						</div>
 					</div>
