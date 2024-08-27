@@ -29,75 +29,16 @@
 		<p>L'équipe d'Ensemble</p>
 		<div class="new-contact-forms" data-controller="display-tab">
 			<div class="action-selector">
-				<div class="domain-tab active" data-tab-id = "0" data-action="click->display-tab#showTab" data-display-tab-target='tab'>Compte Démo</div>
-				<div class="domain-tab" data-tab-id = "1" data-action="click->display-tab#showTab" data-display-tab-target='tab'>Prendre contact</div>
-			</div>
-			<div class="contact-form" data-display-tab-target='box'>
-				<%= simple_form_for User.new, url:user_registration_path, html: { novalidate: false },
-          method: :post do |f| %>
-					<%= f.error_notification %>
-					<div class="form-inputs">
-						<div class='user-details'>
-							<%= f.input :first_name,
-                        required: true,
-                        input_html: { autocomplete: "First name" } %>
-							<%= f.input :last_name,
-                        required: true,
-                        input_html: { autocomplete: "Last name" } %>
-						</div>
-						<div class='user-details'>
-							<%= f.input :email,
-                        required: true,
-                        autofocus: true,
-                        input_html: { autocomplete: "email" }%>
-						</div>
-						<div class='user-details'>
-							<%= f.input :password,
-                        required: true,
-                        hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length),
-                        input_html: { autocomplete: "new-password" } %>
-							<%= f.input :password_confirmation,
-                        required: true,
-                        input_html: { autocomplete: "new-password" } %>
-						</div>
-						<div class="user-details mt-2">
-							<%= f.input :discovery_method, as: :select, collection: User::DISCOVERY_METHOD, required: true,
-               label: "Comment vous avez entendu parler de nous?", include_blank: "Sélectionnez une méthode de découverte",input_html: {class:'--cursor-pointer'} %>
-						</div>
-						<div class="user-details mt-2">
-							<%= recaptcha_tags %>
-						</div>
-					</div>
-					<div class="form-actions mt-2">
-						<%= f.button :submit,"Créer un compte", class: "btn btn-primary --border-10px --borderc-rose --bgc-rose --blanc" do %>
-						<% end %>
-					<% end %>
-				</div>
-			</div>
-			<div class="contact-form d-none" data-display-tab-target='box'>
-				<%= simple_form_for :contact,html: { novalidate: false }, url: contact_create_path(), method: :post do |f| %>
-					<div class='user-details'>
-						<%= f.input :email, label: 'Email', required: true %>
-						<%= f.input :last_name, label: 'Nom', required: true, wrapper_html:{class: 'class-wrapper'} %>
-						<%= f.input :first_name, label: 'Prénom', required: true %>
-					</div>
-					<div class='user-details'>
-						<%= f.input :school, label: 'Ecole',required: false%>
-						<%= f.input :city, label: 'Ville', required: true %>
-					</div>
-					<div class='user-details'>
-						<%= f.input :discovery_method, as: :select, collection: User::DISCOVERY_METHOD, required: true,
-               label: "Comment vous avez entendu parler de nous?", include_blank: "Sélectionnez une méthode de découverte",input_html: {class:'--cursor-pointer'} %>
-					</div>
-					<%= f.input :message, label: 'Message', as: :text, input_html: { rows: 5 }, required: true %>
-					<div class="mt-2">
-						<%= recaptcha_tags %>
-					</div>
-					<div class="mt-2">
-						<%= f.button :submit,"Envoyer", class: 'btn btn-primary --border-10px --borderc-rose --bgc-rose --blanc' %>
-					</div>
-				<% end %>
-			</div>
+        <%= link_to demo_request_path, data: {turbo_frame: "forms"} do%>
+				  <div class="domain-tab active" data-tab-id = "0" data-action="click->display-tab#showTab" data-display-tab-target='tab'>Compte Démo</div>
+        <% end %>
+        <%= link_to new_contact_path, data: {turbo_frame: "forms"} do%>
+  				<div class="domain-tab" data-tab-id = "1" data-action="click->display-tab#showTab" data-display-tab-target='tab'>Prendre contact</div>
+        <% end %>
+      </div>
+      <%= turbo_frame_tag "forms" do %>
+        <%= render "devise/sessions/demo_create" %>
+      <% end %>
 		</div>
 	</div>
 </div>

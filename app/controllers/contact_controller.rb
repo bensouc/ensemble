@@ -1,5 +1,13 @@
 class ContactController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:create]
+  skip_before_action :authenticate_user!, only: [:create, :new, :demo_request]
+
+  def new
+    skip_authorization
+  end
+
+  def demo_request
+    skip_authorization
+  end
 
   def create
     # binding.pry
