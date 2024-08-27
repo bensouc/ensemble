@@ -67,7 +67,7 @@
 								</div>
 								<%# skills zone %>
 								<div class='skill-display'>
-									<% work_plan_domain.work_plan_skills.order(:skill_id).each do |plan_skill| %>
+									<% work_plan_domain.work_plan_skills.sort_by{|wps| wps.skill.position}.each do |plan_skill| %>
 										<%# loop for each skills %>
 										<div class='a-skill'>
 											<div class='border-skill'>
@@ -109,7 +109,7 @@
 						</div>
 						<%# show 1 exo %>
 						<div class='display-challenges'>
-							<% work_plan_domain.work_plan_skills.order(:skill_id).each do |work_plan_skill| %>
+							<% work_plan_domain.work_plan_skills.sort_by{|wps| wps.skill.position}.each do |work_plan_skill| %>
 								<div class="nobreak">
 									<% if work_plan_skill.kind == 'exercice' %>
 										<%# challengeS render%>

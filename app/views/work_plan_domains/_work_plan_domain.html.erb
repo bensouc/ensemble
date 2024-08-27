@@ -25,7 +25,7 @@
 		</div>
 		<%# SKILLS DISPLAY  %>
 		<div class='p-2 skill-display'>
-      <% work_plan_skills.select{|wps| wps.work_plan_domain == work_plan_domain}.sort_by{|wps|wps.skill.id}.each do |plan_skill| %>
+      <% work_plan_skills.select{|wps| wps.work_plan_domain == work_plan_domain}.sort_by{|wps|wps.skill.position}.each do |plan_skill| %>
 				<%= render 'work_plan_skills/skill_display', plan_skill: plan_skill%>
 			<% end %>
 			<%# add skill on domain %>
@@ -57,7 +57,7 @@
 	</div>
 	<%# show 1 exo %>
 	<%# <div > %>
-	<% work_plan_domain.work_plan_skills.order(:skill_id).each do |work_plan_skill| %>
+	<% work_plan_domain.work_plan_skills.sort_by{|wps| wps.skill.position}.each do |work_plan_skill| %>
 		<% if (work_plan_skill.kind == 'exercice') %>
 			<%# <div data-controller='ajax-replace-challenge' data-ajax-replace-challenge-target="challengeDisplay" id="<%=work_plan_skill.id%>
 			<%= render 'work_plan_skills/work_plan_skill_challenge', work_plan_skill: work_plan_skill%>

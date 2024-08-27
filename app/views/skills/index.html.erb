@@ -103,7 +103,7 @@
               data-grade='<%=@grade.name%>'
               data-level='<%=skill_level%>'
               data-loading-spinner2-target='content'>
-							<%= render 'all_skills_by_domain_level', skills: skills, domain: @domain, level: skill_level,grade: @grade %>
+							<%= render 'all_skills_by_domain_level', skills: skills.sort_by(&:position), domain: @domain, level: skill_level,grade: @grade %>
 						</div>
 					<% end %>
 				</div>
