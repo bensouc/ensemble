@@ -20,7 +20,7 @@ export default class extends Controller {
   end(event) {
     const id = event.item.dataset.id
     const data = new FormData()
-    // console.log(id)
+    console.log(this.urlValue.replace(":id", id))
     data.append("position", event.newIndex + 1)
     patch(this.urlValue.replace(":id", id),
       {
