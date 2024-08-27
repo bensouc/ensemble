@@ -1,5 +1,6 @@
 	<div class="contact-form" data-display-tab-target='box'>
-		<%= simple_form_for User.new, url:user_registration_path, html: { novalidate: false },
+		<%= simple_form_for User.new, url:user_registration_path, html: { novalidate: false,
+        data:{turbo_frame: "_top"} },
           method: :post do |f| %>
 			<%= f.error_notification %>
 			<div class="form-inputs">
@@ -31,7 +32,7 @@
                label: "Comment vous avez entendu parler de nous?", include_blank: "Sélectionnez une méthode de découverte",input_html: {class:'--cursor-pointer'} %>
 				</div>
 				<div class="user-details mt-2">
-					<%= recaptcha_tags %>
+          <div class='mt-4' id='recaptchaV2' data-controller='load-recaptcha-v2' data-load-recaptcha-v2-site-key-value=<%= ENV['RECAPTCHA_SITE_KEY'] %>></div>
 				</div>
 			</div>
 			<div class="form-actions mt-2">
