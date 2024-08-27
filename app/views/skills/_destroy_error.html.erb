@@ -1,6 +1,6 @@
 <%# app/views/skills/destroy.turbo_stream.erb %>
 <%= turbo_frame_tag "skill_#{@skill.id}" do%>
-	<%=  render "show_one", skill: @skill
+	<%=  render "skill", skill: @skill
 %>
 	<div class='--roseL fw-light fst-italic pl-4 text-end pe-2'>
 		Cette compétence ne peut être effacée, car des plans de travail lui sont associés

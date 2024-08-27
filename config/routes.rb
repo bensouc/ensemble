@@ -93,7 +93,11 @@ Rails.application.routes.draw do
 
   # ###############routes for SKILLS###############
   get "skills/add_skills_from_xls", to: "skills#add_skills_from_xls", as: :add_skills_from_xls
-  resources :skills
+  resources :skills do
+    member do
+      patch :move
+    end
+  end
     # EXCEL UPLAD SKILLS
   # get "excel/upload", to: "excel#upload", as: "upload_excel"
   post "skills/upload", to: "skills#upload_skills_xlsx", as: :upload_skills

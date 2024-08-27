@@ -1,8 +1,8 @@
-<%= turbo_frame_tag "#{domain.id}_#{level}" do %>
+<%= turbo_frame_tag "#{domain.id}_#{level}", data:{controller:'drag', drag_url_value:"/skills/:id/move"} do %>
   <% skills.each do |skill| %>
     <% unless skill.nil? %>
 
-        <%= render "show_one", skill: skill %>
+        <%= render "skill", skill: skill %>
 
     <% end %>
   <% end %>

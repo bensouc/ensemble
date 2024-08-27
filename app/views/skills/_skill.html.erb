@@ -1,8 +1,8 @@
-<%= turbo_frame_tag "skill_#{skill.id}" do %>
+<%= turbo_frame_tag "skill_#{skill.id}",data:{id: skill.id} do %>
   <div class="d-flex">
-    <div class='border-skill justify-content-between mt-2 edit-skill-card'
+    <div class='border-skill justify-content-between mt-2 edit-skill-card '
                     data-allskilldisplay-target='skillCard'>
-      <div>
+      <div class="grabbable w-100 h-100 d-flex align-items-center">
         <%= skill.symbol%>
         <%= skill.name%>
       </div>

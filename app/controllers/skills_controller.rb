@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class SkillsController < ApplicationController
-  before_action :set_skill, only: [:show, :edit, :update, :destroy]
+  before_action :set_skill, only: [:show, :edit, :update, :destroy, :move]
   before_action :setup_all_skills_data, only: [:index]
   before_action :set_uploaded_file_path, only: [:add_skills_from_xls]
   before_action :set_xls_file_path, only: [:upload_skills_xlsx]
@@ -115,6 +115,12 @@ class SkillsController < ApplicationController
       flash[:error] = "Please choose a file to upload."
       redirect_to skills_path
     end
+  end
+
+  def move
+    authorize @skill
+    @skill.insert_at(params[:position].to_i)
+    head :ok
   end
 
   private

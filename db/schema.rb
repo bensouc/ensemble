@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_03_26_090112) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_27_135426) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -158,6 +158,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_03_26_090112) do
     t.string "sub_domain"
     t.bigint "school_id"
     t.bigint "domain_id"
+    t.integer "position"
     t.index ["domain_id"], name: "index_skills_on_domain_id"
     t.index ["school_id"], name: "index_skills_on_school_id"
   end

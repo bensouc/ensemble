@@ -5,6 +5,7 @@ class Skill < ApplicationRecord
   belongs_to :domain
   has_many :work_plan_skills, dependent: nil
   has_many :challenges, dependent: :destroy
+  acts_as_list scope: [:domain_id, :level]
 
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
   validates :name, presence: true
