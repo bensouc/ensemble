@@ -27,14 +27,14 @@
 </footer>
 <div class="modal fade" id="contact-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="contact-modalLabel" aria-hidden="true">
 	<%= simple_form_for :contact,html: { novalidate: false }, url: contact_create_path(), method: :post do |f| %>
-	<div class="modal-dialog">
-		<div class="modal-content contact">
-			<div class="modal-header">
-				<h5 class="modal-title" id="contact-modalLabel">Prise de contact</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<div class="contact-form" data-display-tab-target='box'>
+		<div class="modal-dialog">
+			<div class="modal-content contact">
+				<div class="modal-header">
+					<h5 class="modal-title" id="contact-modalLabel">Prise de contact</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="contact-form" data-display-tab-target='box'>
 						<div class='user-details'>
 							<%= f.input :email, label: 'Email', required: true, style:'width=20ch' %>
 							<%= f.input :last_name, label: 'Nom', required: true, wrapper_html:{class: 'class-wrapper'} %>
@@ -45,16 +45,14 @@
 							<%= f.input :city, label: 'Ville', required: true %>
 						</div>
 						<%= f.input :message, label: 'Message', as: :text, input_html: { rows: 5 }, required: true %>
-						<div class="mt-2">
-						</div>
+						<div class='mt-4' id='recaptchaV2' data-controller='load-recaptcha-v2' data-load-recaptcha-v2-site-key-value=<%= ENV['RECAPTCHA_SITE_KEY'] %>></div>
+					</div>
 				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary --border-10px" data-bs-dismiss="modal">Fermer</button>
-				<%= f.button :submit,"Envoyer", class: 'btn btn-primary --border-10px --borderc-rose --bgc-rose --blanc' %>
-
-			</div>
-					<% end %>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary --border-10px" data-bs-dismiss="modal">Fermer</button>
+					<%= f.button :submit,"Envoyer", class: 'btn btn-primary --border-10px --borderc-rose --bgc-rose --blanc' %>
+				</div>
+			<% end %>
 		</div>
 	</div>
 </div>
