@@ -1,4 +1,4 @@
-<% if @challenge.for_belt? %>
+<%= turbo_stream.prepend "flash" , partial: "shared/flashes" %><% if @challenge.for_belt? %>
   <%= turbo_stream.prepend "for_belt_skill_#{@challenge.skill.id}_challenges_list" do %>
     <%= render partial: "challenge", locals: { challenge: @challenge } %>
   <% end %>
@@ -15,3 +15,4 @@
   <%= turbo_stream.update "skill_#{@challenge.skill.id}_count",
                       "#{@count} exo#{@count > 1 ? "s" : ""}" %>
 <% end %>
+<%= turbo_stream.prepend "flash" , partial: "shared/flashes" %>
