@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_27_135426) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_10_153715) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -235,6 +235,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_27_135426) do
     t.datetime "updated_at", null: false
     t.boolean "completed", default: false
     t.string "status", default: "new"
+    t.integer "position"
     t.index ["challenge_id"], name: "index_work_plan_skills_on_challenge_id"
     t.index ["skill_id"], name: "index_work_plan_skills_on_skill_id"
     t.index ["work_plan_domain_id"], name: "index_work_plan_skills_on_work_plan_domain_id"

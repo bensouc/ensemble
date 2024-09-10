@@ -5,6 +5,7 @@ class WorkPlanSkill < ApplicationRecord
   # after_destroy :reset_result
 
   belongs_to :work_plan_domain
+  acts_as_list scope: :work_plan_domain
   belongs_to :skill
   belongs_to :challenge, optional: true
   # belongs_to :student, optional: true
