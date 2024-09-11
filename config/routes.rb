@@ -39,6 +39,9 @@ Rails.application.routes.draw do
 
   # ############### routes for WORK_PLAN_SKILLS###############
   resources :work_plan_skills, only: [:update, :destroy, :show] do
+    member do
+      patch :move
+    end
     resources :challenges, only: [:create, :update]
     post "/challenges/:id", to: "challenges#clone", as: :clone
     get "remove_special_wps", to: "work_plan_skills#remove_special_wps", as: :remove_special_wps

@@ -10,6 +10,7 @@ class WorkPlanSkill < ApplicationRecord
   belongs_to :challenge, optional: true
   # belongs_to :student, optional: true
   has_one :student, through: :work_plan_domain
+  has_one :work_plan, through: :work_plan_domain
 
   validates :kind, presence: true, inclusion: { in: %w[jeu exercice controle ceinture] }
   validates :status, inclusion: { in: %w[redo failed redo_OK completed new] }

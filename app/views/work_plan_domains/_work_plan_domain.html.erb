@@ -24,8 +24,8 @@
 			</div>
 		</div>
 		<%# SKILLS DISPLAY  %>
-		<div class='p-2 skill-display'>
-      <% work_plan_skills.select{|wps| wps.work_plan_domain == work_plan_domain}.sort_by{|wps|wps.position}.each do |plan_skill| %>
+		<div class='p-2 skill-display' data-controller='drag' data-drag-url-value="<%=move_work_plan_skill_path(':id')%>">
+      <% work_plan_domain.work_plan_skills.sort_by{|wps| wps.position}.each do |plan_skill| %>
 				<%= render 'work_plan_skills/skill_display', plan_skill: plan_skill%>
 			<% end %>
 			<%# add skill on domain %>

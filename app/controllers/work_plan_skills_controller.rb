@@ -180,6 +180,15 @@ class WorkPlanSkillsController < ApplicationController
     render partial: "remove_special_wps"
   end
 
+  def move
+    @work_plan_skill = WorkPlanSkill.find(params[:id])
+    authorize @work_plan_skill
+    @work_plan_skill.insert_at(params[:position].to_i)
+    @work_plan_domain = @work_plan_skill.work_plan_domain
+    render turbo_stream: turbo_stream.replace(@work_plan_domain, partial: "work_plan_domains/work_plan_domain",
+                                              locals: { work_plan_domain: @work_plan_domain })
+  end
+
   private
 
   # PARAMS METHOD

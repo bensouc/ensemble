@@ -1,0 +1,4 @@
+<%= turbo_stream.replace @work_plan_domain do %>
+  <%= render "work_plan_domains/work_plan_domain" , work_plan_domains: @work_plan_domains, work_plan_skills: @work_plan_domains.work_plan_skills %>
+    <% end %>
+      <%= turbo_stream.prepend "flash" , partial: "shared/flashes" %>
