@@ -81,9 +81,13 @@ gem "simple_calendar", "~> 2.4"
 # gem for pdf-output
 gem "wicked_pdf"
 gem "wkhtmltopdf-binary", "~> 0.12.3", group: :development
+
+
+
 # gem "wkhtmltopdf-binary", group: :development
 # gem 'wkhtmltopdf-heroku', '~> 2.12', '>= 2.12.6.0'
-gem "wkhtmltopdf-heroku", group: :production
+# gem "wkhtmltopdf-heroku", group: :production
+gem "wkhtmltopdf-heroku", "3.0.0", group: :production #test for heroku stack 24
 
 # Mobile device detection
 gem "mobile"

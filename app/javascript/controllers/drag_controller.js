@@ -18,6 +18,7 @@ export default class extends Controller {
   }
 
   end(event) {
+    console.log(event.item.id)
     const id = event.item.dataset.id
     const data = new FormData()
     console.log(this.urlValue.replace(":id", id))

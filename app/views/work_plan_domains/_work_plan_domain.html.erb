@@ -1,69 +1,48 @@
 <%= turbo_frame_tag work_plan_domain do%>
-<div class='domain '>
-	<%# DOMAIN + BELT DISPLAY %>
-	<div class='p-1 d-flex'>
-		<div class='domain-belt-level'>
-			<div class='domain-display d-flex justify-content-start'>
-				<%# Button remove Domain %>
-				<%= link_to work_plan_domain_path(work_plan_domain), data: { confirm: "Voulez vous enlever ce domaine?",
+	<div class='domain '>
+		<%# DOMAIN + BELT DISPLAY %>
+		<div class='p-1 d-flex'>
+			<div class='domain-belt-level'>
+				<div class='domain-display d-flex justify-content-start'>
+					<%# Button remove Domain %>
+					<%= link_to work_plan_domain_path(work_plan_domain), data: { confirm: "Voulez vous enlever ce domaine?",
         turbo_method: :delete } do %>
-					<div class='rmv-skill-btn mt-3 me-2'>
-						<i class="far fa-times-circle"></i>
-					</div>
-				<% end %>
-				<%= work_plan_domain.domain.name%></div>
-			<div >
-				<div class='d-flex justify-content-around belt-display '>
-					<div class='bd-maison' >
-						<i class=" fas fa-bacon belt-<%= work_plan_domain.level %> display-2 font-weight-bold"></i>
-					</div>
-				</div>
-				<div class='d-flex justify-content-around mt-1 belt-display' <%  if (work_plan_domain.work_plan.grade != "CM2" && ['Géométrie', 'Grandeurs et Mesures'].include?(work_plan_domain.domain)) then%> style = 'visibility: hidden'<%end%> >
-					<strong><%= Belt::BELT_COLORS[work_plan_domain.level-1].capitalize%></strong>
-				</div>
-			</div>
-		</div>
-		<%# SKILLS DISPLAY  %>
-		<div class='p-2 skill-display'>
-      <% work_plan_skills.select{|wps| wps.work_plan_domain == work_plan_domain}.sort_by{|wps|wps.skill.position}.each do |plan_skill| %>
-				<%= render 'work_plan_skills/skill_display', plan_skill: plan_skill%>
-			<% end %>
-			<%# add skill on domain %>
-			<div data-controller="skill-add" class='pt-3'>
-				<div data-skill-add-target="button" data-action="click->skill-add#displayForm" class='add-skill-btn'>
-					<h6>Ajouter une compétence  </h6>
-					<i class="fas fa-chevron-right"></i>
-				</div>
-				<div class="d-none" data-skill-add-target="form">
-					<%= simple_form_for [WorkPlanSkill.new ], html: { novalidate: false }, url:  work_plan_domain_work_plan_skills_path(work_plan_domain), method: :post, class:'d-flex'  do |f| %>
-						<div class=" d-flex justify-content-between pb-1 ">
-							<div class='d-flex '>
-								<%= select_tag :skill, options_from_collection_for_select(Skill.where(domain: work_plan_domain.domain ,level: work_plan_domain.level).order(:symbol,:id), :id,:name), :prompt => "Sélectionnez Une compétences",class: 'skill-selector', :required => true %>
-							</div>
-							<div>
-								<%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>ceinture</option>"), :prompt => "Sélectionnez Un type" ,class: 'skill-selector', :required => true %>
-							</div>
-						</div>
-						<div class='d-flex'>
-							<%= f.submit 'Valider' ,class: 'add-skill-btn' %>
-							<div class="cancel-btn ms-3" data-action="click->skill-add#displayForm" style='margin-top: 10px'>
-								<i class="fas fa-times"></i>
-							</div>
+						<div class='rmv-skill-btn mt-3 me-2'>
+							<i class="far fa-times-circle"></i>
 						</div>
 					<% end %>
+					<%= work_plan_domain.domain.name%></div>
+				<div >
+					<div class='d-flex justify-content-around belt-display '>
+						<div class='bd-maison' >
+							<i class=" fas fa-bacon belt-<%= work_plan_domain.level %> display-2 font-weight-bold"></i>
+						</div>
+					</div>
+					<div class='d-flex justify-content-around mt-1 belt-display' <%  if (work_plan_domain.work_plan.grade != "CM2" && ['Géométrie', 'Grandeurs et Mesures'].include?(work_plan_domain.domain)) then%> style = 'visibility: hidden'<%end%> >
+						<strong><%= Belt::BELT_COLORS[work_plan_domain.level-1].capitalize%></strong>
+					</div>
 				</div>
 			</div>
+			<%# SKILLS DISPLAY  %>
+			<div class='p-2 skill-display' >
+				<div id="workPlanSkillHeader" data-controller='drag' data-drag-url-value="<%=move_work_plan_skill_path(':id')%>">
+					<% work_plan_domain.work_plan_skills.sort_by{|wps| wps.position}.each do |plan_skill| %>
+						<%= render 'work_plan_skills/skill_display', plan_skill: plan_skill%>
+					<% end %>
+				</div>
+				<%# add skill on domain %>
+				<%= render "work_plan_domains/add_work_plan_skill", work_plan_domain: work_plan_domain %>
+			</div>
 		</div>
-	</div>
-	<%# show 1 exo %>
-	<%# <div > %>
-	<% work_plan_domain.work_plan_skills.sort_by{|wps| wps.skill.position}.each do |work_plan_skill| %>
-		<% if (work_plan_skill.kind == 'exercice') %>
-			<%# <div data-controller='ajax-replace-challenge' data-ajax-replace-challenge-target="challengeDisplay" id="<%=work_plan_skill.id%>
-			<%= render 'work_plan_skills/work_plan_skill_challenge', work_plan_skill: work_plan_skill%>
-			<%# </div> %>
+		<%# show 1 exo %>
+		<%# <div > %>
+		<% work_plan_domain.work_plan_skills.sort_by{|wps| wps.position}.each do |work_plan_skill| %>
+			<% if (work_plan_skill.kind == 'exercice') %>
+				<%# <div data-controller='ajax-replace-challenge' data-ajax-replace-challenge-target="challengeDisplay" id="<%=work_plan_skill.id%>
+				<%= render 'work_plan_skills/work_plan_skill_challenge', work_plan_skill: work_plan_skill%>
+				<%# </div> %>
+			<% end %>
 		<% end %>
-	<% end %>
-	<%# </div> %>
-</div>
+		<%# </div> %>
+	</div>
 <% end %>
