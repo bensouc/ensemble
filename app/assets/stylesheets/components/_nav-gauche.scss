@@ -84,6 +84,9 @@ color: $grisF;
   transition: opacity 2s ease .05s;
   width: 158px;
   height: 40px;
+  img{
+    max-width: 22px;
+  }
 }
 
 .menug_icone:hover{
