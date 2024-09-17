@@ -30,6 +30,10 @@ class User < ApplicationRecord
   has_many :user_shared_classrooms, through: :shared_classrooms, source: "classroom"
   has_many :students, through: :classrooms, dependent: :destroy
   has_many :challenges, dependent: nil
+  # associations for conversations and messages
+  has_many :user_conversations, dependent: :destroy
+  has_many :conversations, through: :user_conversations
+  has_many :messages, dependent: :destroy
 
   # has_one :subscription, dependent: :destroy
   has_one_attached :avatar

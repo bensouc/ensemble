@@ -2,6 +2,11 @@
 
 require "rails_helper"
 RSpec.describe User, type: :model do
+
+  it { is_expected.to have_many(:user_conversations).dependent(:destroy) }
+  it { is_expected.to have_many(:conversations).through(:user_conversations) }
+  it { is_expected.to have_many(:messages).dependent(:destroy) }
+
   before(:all) do
     WorkPlan.destroy_all
     WorkPlanDomain.destroy_all
