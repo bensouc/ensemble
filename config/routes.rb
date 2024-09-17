@@ -101,26 +101,25 @@ Rails.application.routes.draw do
       patch :move
     end
   end
-    # EXCEL UPLAD SKILLS
+  # EXCEL UPLAD SKILLS
   # get "excel/upload", to: "excel#upload", as: "upload_excel"
   post "skills/upload", to: "skills#upload_skills_xlsx", as: :upload_skills
   # ###############END for SKILLS###############
-
 
   # ###############routesfor Challenge#########
   resources :challenges, only: [:show, :edit, :update, :destroy, :index, :new, :create]
 
   # ###############routes for SCHOOL/SCHOOL_ROLES###############
-  get 'schools/join', to: "schools#join", as: :join_school
-  post 'schools/create_sub_with_code', to: "school_roles#create"
+  get "schools/join", to: "schools#join", as: :join_school
+  post "schools/create_sub_with_code", to: "school_roles#create"
   resources :schools, only: %w[show new create]
 
   # ###############    routes for GRADES /DOMAINS        ###############
   resources :grades, only: [:show, :destroy, :index, :new, :create] do
-    resources :domains, only: [:new,:index]
+    resources :domains, only: [:new, :index]
   end
   # ###############    routes for DOMAINS         ###############
-  resources :domains, only: [:show,:edit,:update,:create,:destroy] do
+  resources :domains, only: [:show, :edit, :update, :create, :destroy] do
     member do
       patch :move
     end
@@ -130,5 +129,9 @@ Rails.application.routes.draw do
 
   # ###############END for SKILLS###############
 
+  # ###############ROUTES FOR CONVERSATIONS###############
+  resources :conversations, only: [:index, :create]
+
+  # ###############END for CONVERSATIONS###############
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

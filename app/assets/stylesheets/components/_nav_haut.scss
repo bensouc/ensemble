@@ -15,6 +15,24 @@
   justify-content: space-around;
 }
 
+.navbar-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.bullet-chat{
+    position: relative;
+    width: 0.5rem;
+    height: 0.5rem;
+    background-color: $belt-4;
+    border-radius: 50%;
+    font-size: 0px;
+    font-size: 0px;
+    top: -25px;
+    left: 17px;
+}
+
 img.avatar {
   padding: 0;
   border-radius: 50em;
