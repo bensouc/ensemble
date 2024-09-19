@@ -15,4 +15,18 @@ class Conversation < ApplicationRecord
     end
     conversation
   end
+  # get conversion for the school user
+  def self.find_or_create_school_conversation(user)
+    # Trouver ou créer la conversation de type "school" pour l'école de l'utilisateur
+    school = user.school
+    conversation = Conversation
+      .where(conversation_type: "school")
+      .joins(users: :school_role)
+      .find_by(school_roles: { school_id: school.id })
+    unless conversation
+      conversation = Conversation.create(conversation_type: "school", name: school.name)
+      UserConversation.create(user: user, conversation: conversation)
+    end
+    conversation
+  end
 end

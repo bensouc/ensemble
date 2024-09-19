@@ -130,7 +130,9 @@ Rails.application.routes.draw do
   # ###############END for SKILLS###############
 
   # ###############ROUTES FOR CONVERSATIONS###############
-  resources :conversations, only: [:index, :create]
+  resources :conversations, only: [:index, :create] do
+    resources :messages, only: [:create]
+  end
 
   # ###############END for CONVERSATIONS###############
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
