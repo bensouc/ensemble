@@ -5,7 +5,7 @@ namespace :conversations do
     puts "###                      ###"
     puts "###       results        ###"
     puts "###    UPDATE SCHOOL     ###"
-    puts "###                      ###"
+    puts "###    Conversations     ###"
     puts "############################"
     School.all.each do |school|
       teachers = school.users
