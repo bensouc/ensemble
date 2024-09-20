@@ -1,0 +1,12 @@
+<div class="message <%=' writer text-white' if message.user == current_user%>"data-controller="message">
+	<div class="content">
+		<%= cl_image_tag message.user.avatar.key, class:'avatar-small' unless message.user == current_user %> <%= message.content %>
+	</div>
+	<div class="message-date">
+		<% if message.created_at.to_date == Date.today %>
+			<%= message.created_at.strftime("%H:%M") %>
+		<% else %>
+			<%= message.created_at.strftime("%-d %b %H:%M") %>
+		<% end %>
+	</div>
+</div>

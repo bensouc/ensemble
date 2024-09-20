@@ -6,6 +6,7 @@ class ConversationPolicy < ApplicationPolicy
     # end
   end
   def show?
+
     user.admin? || user_is_participant?
   end
 

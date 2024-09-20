@@ -1,29 +1,59 @@
+@import "show";
 .conversations-container {
   width: calc(100vw - 200px);
   height: calc(100vh - 214px);
   padding: 0 5%;
   display: flex;
+  justify-content: space-between;
 }
 
-.conversations-list{
-width: 50%;
+.conversations-list {
+  width: 40%;
+  border: thin solid $grisF;
+  border-radius: 10px;
 }
-.conversation{
+.conversation {
   width: 50%;
   padding: 0 20px 20px 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  .messages{
+  border: thin solid $grisF;
+  border-radius: 10px;
+  .messages {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    background-color: $roseLight;
+    // background-color: $roseLight;
+    height: 100%;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+  }
+  .messages::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
+  .message {
+    background-color: $grisC; /* Rouge */
+    color: #fff; /* Couleur du texte en blanc */
+    padding: 10px; /* Espacement interne */
+    border-radius: 15px 15px 15px 0;  /* Coins arrondis */
+    max-width: 100%; /* Prend jusqu'à 100% de la largeur disponible */
+    box-sizing: border-box; /* Inclut le padding et la bordure dans la largeur totale */
+    margin-bottom: 10px; /* Espacement en bas pour séparer les messages */
+    display: inline-block; /* S'adapte à la taille du contenu */
+    align-self: flex-start; /* Aligne les messages au début de la ligne */
+  }
+  .message.writer {
+    background-color: $rose; /* Change la couleur de fond en rose */
+    align-self: flex-end; /* Aligne les messages à droite *//* Nécessaire pour la pointe de la bulle */
+    border-radius: 15px 15px 0 15px
   }
 }
-.new-message-form{
+.new-message-form {
   display: flex;
   justify-content: flex-end;
-  .form-group.text{
+  .form-group.text {
     width: 100%;
   }
 }

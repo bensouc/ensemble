@@ -1,13 +1,34 @@
-<%= turbo_frame_tag "conversation", class:"conversation" do%>
-	<div class="messages">
+<%= turbo_frame_tag "conversation", class:"conversation", data:{controller: "conversation"} do%>
+	<div class="conversation-header">
+		<div class="conversation-title">
+			<%= conversation.name %>
+		</div>
+		<div class="conversation-users">
+			<% conversation.users.each do |user| %>
+				<%  if (user.admin? && conversation.conversation_type != "Ensemble") %>
+					<div class="conversation-user"
+          data-controller="tooltip"
+          data-bs-toggle="tooltip"
+          data-bs-placement="top"
+          title="<%=user.first_name%>">
+						<%= cl_image_tag user.avatar.key, class:"avatar-basic" if user.avatar.attached?%>
+						<%= image_tag "https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png", class:"avatar-basic" unless user.avatar.attached?%>
+					</div>
+				<% end %>
+			<% end %>
+		</div>
+	</div>
+	<%= turbo_frame_tag "messages", class:"messages", data:{conversation_target: "messages"} do %>
 		<% if conversation.messages.empty? %>
 			<div class="">Aucun Message</div>
 		<% end %>
 		<% conversation.messages.each do |message| %>
-			<%= message.content %>
+			<%= render 'messages/message', message: message %>
 		<% end %>
-	</div>
-	<%= simple_form_for [conversation,Message.new] do |f| %>
+	<% end %>
+	<%= simple_form_for [conversation,Message.new],
+  html: {class: "",
+data: { controller: "reset-form", action: "turbo:submit-end->reset-form#reset" }} do |f| %>
 		<div class="new-message-form">
 			<%= f.input :content, label: false %>
 			<%= button_tag :submit do%>
