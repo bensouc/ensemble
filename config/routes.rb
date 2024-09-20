@@ -130,7 +130,10 @@ Rails.application.routes.draw do
   # ###############END for SKILLS###############
 
   # ###############ROUTES FOR CONVERSATIONS###############
-  resources :conversations, only: [:index, :create] do
+  resources :conversations, only: [:index, :create, :show] do
+    member do
+      post "add_user"
+    end
     resources :messages, only: [:create]
   end
 

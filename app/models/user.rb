@@ -105,6 +105,10 @@ class User < ApplicationRecord
     work_plans
   end
 
+  def classic_conversations
+    Conversation.joins(:user_conversations).where(user_conversations: { user: self }, conversation_type: "classic")
+  end
+
   private
 
   def set_defaults

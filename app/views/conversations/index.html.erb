@@ -1,0 +1,18 @@
+<h1 class='ms-5'>Conversations</h1>
+<div class="conversations-container">
+	<div class="conversations-list">
+		<ul>
+			<li><%= link_to current_user.school.name, conversation_path(@school_conversation),data:{turbo_frame: "conversation"} %></li>
+			<li><%= link_to "Ensemble", conversation_path(@ensemble_conversation),data:{turbo_frame: "conversation"} %></li>
+			<h4><%=  %></h4>
+			<% if @user_conversations%>
+				<% @user_conversations.each do |conversation| %>
+					<li><%= link_to conversation.name, conversation_path(conversation) %></li>
+				<% end %>
+			<% end %>
+		</ul>
+		<%= button_tag "Contacter +", class: "btn-flat" %>
+	</div>
+	<% conversation = @school_conversation # Only for front dev%>
+	<%= render 'conversations/conversation', conversation: conversation %>
+</div>
