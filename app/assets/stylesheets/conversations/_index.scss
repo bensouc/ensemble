@@ -8,9 +8,11 @@
 }
 
 .conversations-list {
-  width: 40%;
-  border: thin solid $grisF;
-  border-radius: 10px;
+    width: 40%;
+    border: thin solid $grisC;
+    border-radius: 10px;
+    height: fit-content;
+    padding: 10px;
 }
 .conversation {
   width: 50%;
@@ -18,7 +20,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: thin solid $grisF;
+  border: thin solid $grisC;
   border-radius: 10px;
   .messages {
     flex: 1;
@@ -55,5 +57,12 @@
   justify-content: flex-end;
   .form-group.text {
     width: 100%;
+  }
+  button{
+    border-bottom: 1px solid $grisC;
+    border-top: 1px solid $grisC;
+    border-right: 1px solid $grisC;
+    border-radius: 0 5px 5px 0;
+    color: $rose;
   }
 }

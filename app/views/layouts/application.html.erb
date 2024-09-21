@@ -18,7 +18,7 @@
 		<script src="https://kit.fontawesome.com/aa9dc78317.js" crossorigin="anonymous"></script>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   </head>
-	<body>
+	<body data-current-user-id="<%= current_user ? current_user.id : "" %>">
 		<div id="flash" class="flash">
 			<%= render "shared/flashes" %>
 		</div>

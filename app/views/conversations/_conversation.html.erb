@@ -1,4 +1,4 @@
-<%= turbo_frame_tag "conversation", class:"conversation", data:{controller: "conversation"} do%>
+<div class="conversation" id="conversation" data-controller="conversation">
 	<div class="conversation-header">
 		<div class="conversation-title">
 			<%= conversation.name %>
@@ -18,17 +18,18 @@
 			<% end %>
 		</div>
 	</div>
+	<%= turbo_stream_from "conversation_#{conversation.id}_messages" %>
 	<%= turbo_frame_tag "messages", class:"messages", data:{conversation_target: "messages"} do %>
 		<% if conversation.messages.empty? %>
 			<div class="">Aucun Message</div>
 		<% end %>
 		<% conversation.messages.each do |message| %>
-			<%= render 'messages/message', message: message %>
+			<%= render 'messages/message', message: message, user: current_user %>
 		<% end %>
 	<% end %>
 	<%= simple_form_for [conversation,Message.new],
-  html: {class: "",
-data: { controller: "reset-form", action: "turbo:submit-end->reset-form#reset" }} do |f| %>
+      html: {class: "",
+      data: { controller: "reset-form", action: "turbo:submit-end->reset-form#reset" }} do |f| %>
 		<div class="new-message-form">
 			<%= f.input :content, label: false %>
 			<%= button_tag :submit do%>
@@ -36,4 +37,4 @@ data: { controller: "reset-form", action: "turbo:submit-end->reset-form#reset" }
 			<% end %>
 		</div>
 	<% end %>
-<% end %>
+</div>
