@@ -1,11 +1,11 @@
-<div class="conversation" id="conversation" data-controller="conversation">
+  <%= turbo_frame_tag "conversation", class:"conversation", data:{conversation_target: "conversation"} do %>
 	<div class="conversation-header">
 		<div class="conversation-title">
 			<%= conversation.name %>
 		</div>
 		<div class="conversation-users">
-			<% conversation.users.each do |user| %>
-				<%  if (user.admin? && conversation.conversation_type != "Ensemble") %>
+			<% conversation.users.shuffle.each do |user| %>
+				<%  if (!user.admin? && conversation.conversation_type != "Ensemble") %>
 					<div class="conversation-user"
           data-controller="tooltip"
           data-bs-toggle="tooltip"
@@ -37,4 +37,4 @@
 			<% end %>
 		</div>
 	<% end %>
-</div>
+<% end %>

@@ -22,7 +22,7 @@ class MessagesController < ApplicationController
         format.html { redirect_to conversations_path(params(conversation_id: conversation.id)) }
       end
     else
-      render "bookings/show", status: :unprocessable_entity
+      render "conversations/show", status: :unprocessable_entity
     end
   end
 
