@@ -15,6 +15,18 @@
   color: $rose;
   border: solid $rose;
 }
+.btn-flat-no-hover {
+  color: white;
+  padding: 2px 10px;
+  border-radius: 0.5rem;
+  border: solid $rose;
+  // background: #1EDD88;
+  transition: background 0.3s ease;
+  background-color: $rose;
+  input, h6{
+    margin: 0;
+  }
+}
 
 .delete_acompte_btn {
   color: $rose;
@@ -48,6 +60,3 @@
   color: $green;
   cursor: pointer;
 }
-
-
-

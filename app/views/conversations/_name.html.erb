@@ -1,0 +1,10 @@
+<%= turbo_frame_tag "conversation_#{@conversation.id}_name" do %>
+	<div class="conversation-title">
+		<%= conversation.name %>
+		<% if conversation.conversation_type == "group" || conversation.conversation_type == "classic" %>
+			<%= link_to edit_conversation_path(conversation) do%>
+				<i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" ></i>
+			<% end %>
+		<% end %>
+	</div>
+<% end %>

@@ -5,7 +5,13 @@ class Conversation < ApplicationRecord
   has_many :user_conversations, dependent: :destroy
   has_many :users, through: :user_conversations
 
-  validates :conversation_type, presence: true, inclusion: { in: %w[ensemble grade school classic] }
+  validates :conversation_type, presence: true, inclusion: { in: %w[ensemble group school classic] }
+
+  scope :classic, -> { where(conversation_type: "classic") }
+  scope :school, -> { where(conversation_type: "school") }
+  scope :ensemble, -> { where(conversation_type: "ensemble") }
+
+  # get conversation for the ensemble user
 
   def self.find_or_create_ensemble(user)
     conversation = where(conversation_type: "ensemble").joins(:users).find_by(users: { id: user.id })
@@ -19,13 +25,23 @@ class Conversation < ApplicationRecord
   def self.find_or_create_school_conversation(user)
     # Trouver ou créer la conversation de type "school" pour l'école de l'utilisateur
     school = user.school
-    conversation = Conversation
+    conversation = Conversation.includes(messages: :user)
       .where(conversation_type: "school")
       .joins(users: :school_role)
       .find_by(school_roles: { school_id: school.id })
     unless conversation
       conversation = Conversation.create(conversation_type: "school", name: school.name)
       UserConversation.create(user: user, conversation: conversation)
+    end
+    conversation
+  end
+
+  def self.find_or_create_classic_conversation(user, contact)
+    conversation = user.conversations.classic.joins(:users).find_by(users: { id: contact.id })
+      unless conversation
+      conversation = Conversation.create!(conversation_type: "classic", name: "#{contact.first_name} & #{user.first_name}")
+      UserConversation.create(user: user, conversation: conversation)
+      UserConversation.create(user: contact, conversation: conversation)
     end
     conversation
   end

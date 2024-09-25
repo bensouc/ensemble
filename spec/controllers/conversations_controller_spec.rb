@@ -2,105 +2,93 @@ require "rails_helper"
 
 RSpec.describe ConversationsController, type: :controller do
   let(:user) { create(:user) }
-  let(:other_user) { create(:user) }
-  let(:conversation) { create(:conversation) }
+  let(:user2) { create(:user, school: user.school) }
+  let(:school_conversation) { create(:conversation, conversation_type: "school") }
+  let(:ensemble_conversation) { create(:conversation, conversation_type: "ensemble") }
+  let(:classic_conversation) { create(:conversation, conversation_type: "classic") }
+  let(:message) { create(:message, conversation: classic_conversation) }
 
   before do
     sign_in user
+    allow(Conversation).to receive(:find_or_create_school_conversation).and_return(school_conversation)
+    allow(Conversation).to receive(:find_or_create_ensemble).and_return(ensemble_conversation)
   end
 
   describe "GET #index" do
+    context "when conversation_id is present" do
+      context "and classic_conversation is not nil" do
+        before do
+          allow(user).to receive(:classic_conversations).and_return([classic_conversation])
+        end
+
+        it "assigns the requested conversation to @conversation" do
+          get :index, params: { conversation_id: classic_conversation.id }
+          expect(assigns(:conversation)).to eq(classic_conversation)
+        end
+      end
+
+      context "and classic_conversation is nil" do
+        before do
+          allow(user).to receive(:classic_conversations).and_return([])
+        end
+
+        it "does not assign a conversation to @conversation" do
+          get :index
+          expect(assigns(:conversation)).to eq(school_conversation)
+        end
+      end
+    end
+
+    context "when conversation_id is not present" do
+      before do
+        allow(user).to receive(:classic_conversations).and_return([classic_conversation])
+      end
+
+      it "assigns the school conversation to @conversation" do
+        get :index
+        expect(assigns(:conversation)).to eq(school_conversation)
+      end
+    end
+
+    it "assigns the school conversation to @school_conversation" do
+      get :index
+      expect(assigns(:school_conversation)).to eq(school_conversation)
+    end
+
+    it "assigns the ensemble conversation to @ensemble_conversation" do
+      get :index
+      expect(assigns(:ensemble_conversation)).to eq(ensemble_conversation)
+    end
     it "returns a success response" do
       get :index
       expect(response).to be_successful
     end
   end
 
-  describe "GET #show" do
-    it "returns a success response" do
-      get :show, params: { id: conversation.id }
-      expect(response).to be_successful
-    end
-  end
-
-  describe "GET #new" do
-    it "returns a success response" do
-      get :new
-      expect(response).to be_successful
-    end
-  end
-
-  describe "POST #create" do
-    context "with valid params" do
-      it "creates a new Conversation" do
-        expect {
-          post :create, params: { conversation: { conversation_type: "school", user_id: user.id } }
-        }.to change(Conversation, :count).by(1)
-      end
-
-      it "redirects to the created conversation" do
-        post :create, params: { conversation: { conversation_type: "school", user_id: user.id } }
-        expect(response).to redirect_to(Conversation.last)
-      end
+  describe "POST #contact_user" do
+    it "finds the contact user" do
+      post :contact_user, params: { contact_id: user2.id }
+      expect(assigns(:contact)).to eq(user2)
     end
 
-    context "with invalid params" do
-      it "returns a success response (i.e., to display the 'new' template)" do
-        post :create, params: { conversation: { conversation_type: nil } }
-        expect(response).to be_successful
-      end
-    end
-  end
-
-  describe "PUT #update" do
-    context "with valid params" do
-      let(:new_attributes) {
-        { conversation_type: "ensemble", user_id: user.id }
-      }
-
-      it "updates the requested conversation" do
-        put :update, params: { id: conversation.id, conversation: new_attributes }
-        conversation.reload
-        expect(conversation.conversation_type).to eq("ensemble")
-      end
-
-      it "redirects to the conversation" do
-        put :update, params: { id: conversation.id, conversation: new_attributes }
-        expect(response).to redirect_to(conversation)
-      end
+    it "creates or finds  conversation" do
+      post :contact_user, params: { contact_id: user2.id }
+      expect(assigns(:conversation).class).to eq(Conversation)
     end
 
-    context "with invalid params" do
-      it "returns a success response (i.e., to display the 'edit' template)" do
-        put :update, params: { id: conversation.id, conversation: { conversation_type: nil } }
-        expect(response).to be_successful
-      end
-    end
-  end
-
-  describe "DELETE #destroy" do
-    it "destroys the requested conversation" do
-      conversation = create(:conversation)
-      expect {
-        delete :destroy, params: { id: conversation.id }
-      }.to change(Conversation, :count).by(-1)
+    it "ensures the conversation is of type classic" do
+      post :contact_user, params: { contact_id: user2.id }
+      expect(assigns(:conversation).conversation_type).to eq("classic")
     end
 
-    it "redirects to the conversations list" do
-      delete :destroy, params: { id: conversation.id }
-      expect(response).to redirect_to(conversations_url)
-    end
-  end
-
-  describe "POST #add_user" do
-    it "adds a user to the conversation" do
-      post :add_user, params: { id: conversation.id, user_id: other_user.id }
-      expect(conversation.users).to include(other_user)
+    it "ensures the conversation includes both current_user and contact" do
+      post :contact_user, params: { contact_id: user2.id }
+      expect(assigns(:conversation).users).to include(user, user2)
     end
 
-    it "redirects to the conversation" do
-      post :add_user, params: { id: conversation.id, user_id: other_user.id }
-      expect(response).to redirect_to(conversation)
+    it "redirects to the conversations path with the conversation_id" do
+      post :contact_user, params: { contact_id: user2.id }
+      expect(response).to redirect_to(conversations_path(conversation_id: assigns(:conversation).id))
     end
   end
 end

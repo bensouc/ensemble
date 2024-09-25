@@ -1,28 +1,8 @@
 <h1 class='ms-5'>Conversations</h1>
 <div class="conversations-container">
-	<div class="conversations-list">
-
-			<%= link_to conversation_path(@school_conversation),data:{turbo_frame: "conversation"} do%>
-      <div class="conversation-link">
-        <i class="fa-solid fa-school"></i>
-        <%= current_user.school.name %>
-      </div>
-      <% end %>
-
-			<div>
-        <%= link_to  conversation_path(@ensemble_conversation),data:{turbo_frame: "conversation"} do%>
-        <%= image_tag 'icons/apple-icon.png', width: "40px" %>
-      <% end %>
-      </div>
-
-			<% if @user_conversations%>
-				<% @user_conversations.each do |conversation| %>
-					<li><%= link_to conversation.name, conversation_path(conversation) %></li>
-				<% end %>
-			<% end %>
-
-		<%= button_tag "Contacter +", class: "btn-flat" %>
-	</div>
-	<% conversation = @school_conversation # Only for front dev%>
-	<%= render 'conversations/conversation', conversation: conversation %>
+	<%= render 'conversations/conversations', school_conversation: @school_conversation,
+              active_conversation: @conversation, ensemble_conversation: @ensemble_conversation,
+              user_conversations: @user_conversations %>
+	<%# conversation = @school_conversation # Only for front dev%>
+	<%= render 'conversations/conversation', conversation: @conversation %>
 </div>

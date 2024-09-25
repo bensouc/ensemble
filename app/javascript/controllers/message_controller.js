@@ -7,7 +7,7 @@ export default class extends Controller {
   }
 
   connect() {
-    console.log(this.element);
+    // console.log(this.element);
     // triggered when a new message is added to the page
     const currentUserId = parseInt(document.body.dataset.currentUserId, 10);
     if (this.userIdValue === currentUserId) {

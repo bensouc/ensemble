@@ -1,0 +1,14 @@
+  <div class="user-avatars">
+    <% collegues_with_avatars.each do |user| %>
+      <%= link_to contact_user_conversations_path(contact_id: user.id), class: 'avatar-link',
+      data: {turbo_frame_tag: "_top",
+          user_id: user.id,
+          controller:"tooltip",
+          bs_toggle:"tooltip",
+          bs_placement:"top",
+          method: :post},
+          title: user.first_name do %>
+        <%= image_tag user.avatar_url, alt: user.first_name, class: 'avatar-basic' %>
+      <% end %>
+    <% end %>
+  </div>

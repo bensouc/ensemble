@@ -1,0 +1,12 @@
+<%= turbo_frame_tag "conversation_#{@conversation.id}_name" do %>
+	<div class="conversation-title">
+		<%= simple_form_for @conversation,html: { novalidate: false } do |f|%>
+			<div class="d-flex">
+				<%= f.input :name, label: false, input_html:{class:"--border-10px"}, required: true %>
+				<%= button_tag type: 'submit', class: '--bgc-transparent', style:"padding: 5px;" do %>
+					<i class="fa-solid fa-circle-check text-success" style="font-size: 26px;"></i>
+				<% end %>
+			</div>
+		<% end %>
+	</div>
+<% end %>

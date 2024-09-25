@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-
   DEMO_CLASSROOM_LIMIT = 1
   DEMO_STUDENT_LIMIT = 5
   STUDENT_LIMIT = 25
@@ -41,8 +40,16 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
 
-
   # Methods
+  #
+  def avatar_url
+    if avatar.attached?
+      Cloudinary::Utils.cloudinary_url(avatar.key)
+    else
+      "https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png"
+    end
+  end
+
   def admin?
     admin == true
   end
@@ -57,7 +64,7 @@ class User < ApplicationRecord
 
   def classroom_grades
     # return all current user classroom Grades
-    grades = classrooms.map { |classroom| classroom.grade }
+    grades = classrooms.map(&:grade) # version propre de map { |classroom| classroom.grade }
     shared_classrooms.each { |shared_classroom| grades << shared_classroom.classroom.grade }
     grades.uniq.sort
   end
@@ -68,7 +75,12 @@ class User < ApplicationRecord
   end
 
   def collegues
-    school.users.reject { |y| y == self }
+    school.users.reject { |user| user == self || user.admin? }
+  end
+
+  def collegues_with_avatars
+    User.includes([avatar_attachment: :blob]).joins(:school_role)
+      .where(school_roles: { school: self.school }).reject { |user| user == self || user.admin? }
   end
 
   def all_students
@@ -99,7 +111,7 @@ class User < ApplicationRecord
       shared_classrooms.each do |shared_classroom|
         shared_classroom.classroom.students.each do |student|
           work_plans += WorkPlan.includes(:grade).where(student:, special_wps: false)
-        end # get all workplans of shared classrooms
+        end
       end
     end
     work_plans
@@ -107,6 +119,11 @@ class User < ApplicationRecord
 
   def classic_conversations
     Conversation.joins(:user_conversations).where(user_conversations: { user: self }, conversation_type: "classic")
+  end
+
+  def classic_and_group_conversations
+    Conversation.joins(:user_conversations).where(user_conversations: { user: self },
+                                                  conversation_type: %w[classic group])
   end
 
   private

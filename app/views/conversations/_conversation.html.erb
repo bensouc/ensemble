@@ -1,8 +1,7 @@
   <%= turbo_frame_tag "conversation", class:"conversation", data:{conversation_target: "conversation"} do %>
 	<div class="conversation-header">
-		<div class="conversation-title">
-			<%= conversation.name %>
-		</div>
+    <%= render "conversations/name", conversation: conversation %>
+
 		<div class="conversation-users">
 			<% conversation.users.shuffle.each do |user| %>
 				<%  if (!user.admin? && conversation.conversation_type != "Ensemble") %>
@@ -20,9 +19,6 @@
 	</div>
 	<%= turbo_stream_from "conversation_#{conversation.id}_messages" %>
 	<%= turbo_frame_tag "messages", class:"messages", data:{conversation_target: "messages"} do %>
-		<% if conversation.messages.empty? %>
-			<div class="">Aucun Message</div>
-		<% end %>
 		<% conversation.messages.each do |message| %>
 			<%= render 'messages/message', message: message, user: current_user %>
 		<% end %>

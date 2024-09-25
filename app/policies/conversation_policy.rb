@@ -5,14 +5,26 @@ class ConversationPolicy < ApplicationPolicy
     #   scope.all
     # end
   end
-  def show?
 
-    user.admin? || user_is_participant?
+  def show?
+    user_is_participant?
+  end
+
+  def contact_user?
+    true
+  end
+
+  def update?
+    user_is_participant?
+  end
+
+  def edit?
+    update?
   end
 
   private
 
   def user_is_participant?
-    record.users.include?(user)
+    user.admin? || record.users.include?(user)
   end
 end
