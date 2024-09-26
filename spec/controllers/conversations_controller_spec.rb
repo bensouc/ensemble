@@ -7,6 +7,7 @@ RSpec.describe ConversationsController, type: :controller do
   let(:ensemble_conversation) { create(:conversation, conversation_type: "ensemble") }
   let(:classic_conversation) { create(:conversation, conversation_type: "classic") }
   let(:message) { create(:message, conversation: classic_conversation) }
+  let(:conversation) { create(:conversation) }
 
   before do
     sign_in user
@@ -89,6 +90,62 @@ RSpec.describe ConversationsController, type: :controller do
     it "redirects to the conversations path with the conversation_id" do
       post :contact_user, params: { contact_id: user2.id }
       expect(response).to redirect_to(conversations_path(conversation_id: assigns(:conversation).id))
+    end
+  end
+
+  describe "GET #show" do
+    let!(:conversation) { create(:conversation, conversation_type: "classic") }
+    it "assigns the requested conversation to @conversation" do
+      get :show, params: { id: conversation.id }
+      expect(assigns(:conversation)).to eq(conversation)
+    end
+
+    it "renders the show template" do
+      get :show, params: { id: conversation.id }
+      expect(response).to render_template(:show)
+    end
+  end
+
+  describe "GET #edit" do
+    let!(:conversation_show) { create(:conversation, conversation_type: "classic") }
+    it "assigns the requested conversation to @conversation" do
+      get :edit, params: { id: conversation_show.id }
+      expect(assigns(:conversation)).to eq(conversation_show)
+    end
+
+    it "renders the edit template" do
+      get :edit, params: { id: conversation_show.id }
+      expect(response).to render_template(:edit)
+    end
+  end
+
+  describe "PATCH #update" do
+    let!(:new_conversation) { create(:conversation, conversation_type: "group") }
+    context "with valid attributes" do
+      it "updates the conversation" do
+        patch :update, params: { id: new_conversation.id, conversation: { name: "New Name" } }
+        new_conversation.reload
+        expect(new_conversation.name).to eq("New Name")
+      end
+
+      it "redirects to the conversation" do
+        patch :update, params: { id: new_conversation.id, conversation: { name: "New Name" } }
+        new_conversation.reload
+        expect(response).to redirect_to("http://test.host/conversations?conversation=#{new_conversation.id}")
+      end
+    end
+
+    context "with invalid attributes" do
+      it "does not update the conversation" do
+        patch :update, params: { id: new_conversation.id, conversation: { name: nil } }
+        new_conversation.reload
+        expect(new_conversation.name).not_to eq(nil)
+      end
+
+      it "re-renders the edit template" do
+        patch :update, params: { id: new_conversation.id, conversation: { name: nil } }
+        expect(response).to redirect_to("http://test.host/conversations?conversation=#{new_conversation.id}")
+      end
     end
   end
 end

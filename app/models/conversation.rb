@@ -50,6 +50,7 @@ class Conversation < ApplicationRecord
     end
     conversation
   end
+  
   # get conversion for the school user
   def self.find_or_create_school_conversation(user)
     # Trouver ou créer la conversation de type "school" pour l'école de l'utilisateur
