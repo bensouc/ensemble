@@ -3,6 +3,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: flex-start;
+    align-items: flex-end;
     gap: 3px;
 
   border: 1px solid rgba(255, 255, 255, 0.3); /* Bordure blanche semi-transparente */
@@ -12,7 +13,7 @@
   .collegue-list{
     width: 0;
     position: relative;
-    left: -19px;
+    left: 4px;
     height: 0;
     top: 0px;
   }

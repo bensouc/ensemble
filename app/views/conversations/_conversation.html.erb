@@ -13,9 +13,9 @@
 					</div>
 				<% end %>
 			<% end %>
-			<div class="avatar-basic" data-controller='toggle-panel'>
-				<% if (conversation.is_group?) || (conversation.is_classic?)%>
-					<h2  data-toggle-panel-target="btn" data-action="click->toggle-panel#displayPanel">
+			<div class="" data-controller='toggle-panel'>
+				<% if !collegue_not_in_conversation.nil? && ((conversation.is_group?) || (conversation.is_classic?))%>
+					<h2 class='m-0'  data-toggle-panel-target="btn" data-action="click->toggle-panel#displayPanel">
 						<i class="fa-solid fa-user-plus --roseL --cursor-pointer"></i>
 					</h2>
 					<div class="collegue-list d-none" data-toggle-panel-target="panel" data-action="click->toggle-panel#displayPanel">
@@ -45,10 +45,11 @@
 		<% end %>
 	<% end %>
 	<%= simple_form_for [conversation,Message.new],
-      html: {class: "",
+      html: {novalidate: false,
       data: { controller: "reset-form", action: "turbo:submit-end->reset-form#reset" }} do |f| %>
 		<div class="new-message-form">
-			<%= f.input :content, label: false %>
+			<%= f.input :content,as: :text,input_html: {style:"min-height: 100% !important;"},
+          required: true, label: false %>
 			<%= button_tag :submit do%>
 				<i class="fas fa-paper-plane"></i>
 			<% end %>

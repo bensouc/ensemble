@@ -22,7 +22,9 @@ class MessagesController < ApplicationController
         format.html { redirect_to conversations_path(params(conversation_id: conversation.id)) }
       end
     else
-      render "conversations/show", status: :unprocessable_entity
+      render "conversations/show", status: :unprocessable_entity,
+        locals: { collegue_not_in_conversation: current_user.collegues_with_avatars.reject { |collegue| @conversation.users.include?(collegue) },
+                  conversation: @conversation }
     end
   end
 

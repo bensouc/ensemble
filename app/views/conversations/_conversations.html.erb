@@ -37,7 +37,7 @@
                   title="<%=conversation.name%>">
 						<% if conversation.is_group? %>
 							<div class="avatar-basic">
-								<i class="fa-solid fa-comments"></i>
+								<i class="fa-solid fa-comments" style="font-size: x-large;"></i>
 							</div>
 						<% else %>
 							<%= image_tag conversation.users.where.not(id: current_user.id).first.avatar_url, class: "avatar-basic",width: "40px" %>
