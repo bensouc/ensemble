@@ -35,7 +35,13 @@
                   data-bs-toggle="tooltip"
                   data-bs-placement="left"
                   title="<%=conversation.name%>">
-						<%= image_tag conversation.users.where.not(id: current_user.id).first.avatar_url, class: "avatar-basic",width: "40px" %>
+						<% if conversation.is_group? %>
+							<div class="avatar-basic">
+								<i class="fa-solid fa-comments"></i>
+							</div>
+						<% else %>
+							<%= image_tag conversation.users.where.not(id: current_user.id).first.avatar_url, class: "avatar-basic",width: "40px" %>
+						<% end %>
 					</div>
 					<%= render 'messages/last_message', message: conversation.messages.last %>
 				</div>
@@ -43,7 +49,7 @@
 		<% end %>
 	<% end %>
 	<%= button_tag  class: "btn-flat-no-hover" do %>
-    Contacter <i class="fa-solid fa-comment"></i>
-  <% end %>
+		Contacter <i class="fa-solid fa-comment"></i>
+	<% end %>
 	<%= render 'conversations/create_conversation', collegues_with_avatars: @collegues_with_avatars, collegue_not_in_conversation: @collegue_not_in_conversation %>
 </div>

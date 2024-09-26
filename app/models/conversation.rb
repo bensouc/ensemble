@@ -12,6 +12,21 @@ class Conversation < ApplicationRecord
   scope :ensemble, -> { where(conversation_type: "ensemble") }
 
   # get conversation for the ensemble user
+  def is_group?
+    conversation_type == "group"
+  end
+
+  def is_school?
+    conversation_type == "school"
+  end
+
+  def is_classic?
+    conversation_type == "classic"
+  end
+
+  def is_ensemble?
+    conversation_type == "ensemble"
+  end
 
   def add_user!(user)
     users << user

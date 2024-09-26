@@ -4,5 +4,6 @@
               active_conversation: @conversation, ensemble_conversation: @ensemble_conversation,
               user_conversations: @user_conversations %>
 	<%# conversation = @school_conversation # Only for front dev%>
-	<%= render 'conversations/conversation', conversation: @conversation %>
+	<%= render 'conversations/conversation', conversation: @conversation,
+  collegue_not_in_conversation: @collegue_not_in_conversation %>
 </div>

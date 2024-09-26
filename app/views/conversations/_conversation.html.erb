@@ -3,7 +3,7 @@
 		<%= render "conversations/name", conversation: conversation %>
 		<div class="conversation-users">
 			<% conversation.users.shuffle.each do |user| %>
-				<%  if (!user.admin? && conversation.conversation_type != "Ensemble") %>
+				<%  if (!user.admin? && !conversation.is_ensemble?) %>
 					<div class="conversation-user"
           data-controller="tooltip"
           data-bs-toggle="tooltip"
@@ -13,22 +13,29 @@
 					</div>
 				<% end %>
 			<% end %>
-			<% if (conversation.conversation_type == "group") || (conversation.conversation_type == "classic")%>
-				<div class="avatar-basic">
-					<h2>
-						<i class="fa-solid fa-user-plus --roseL "></i>
+			<div class="avatar-basic" data-controller='toggle-panel'>
+				<% if (conversation.is_group?) || (conversation.is_classic?)%>
+					<h2  data-toggle-panel-target="btn" data-action="click->toggle-panel#displayPanel">
+						<i class="fa-solid fa-user-plus --roseL --cursor-pointer"></i>
 					</h2>
-					<div class="collegue-list">
+					<div class="collegue-list d-none" data-toggle-panel-target="panel" data-action="click->toggle-panel#displayPanel">
 						<% collegue_not_in_conversation.each do |user| %>
 							<%= link_to add_user_conversation_path(conversation, new_user_id: user.id), method: :post, data:{turbo_frame: "conversation"} do%>
-								<div class="collegue">
+								<div class="collegue"
+                  data-controller="tooltip"
+                  data-bs-toggle="tooltip"
+                  data-bs-placement="left"
+                  title="<%=user.first_name%>">
 									<%= image_tag user.avatar_url, class:"avatar-basic" %>
 								</div>
 							<% end %>
 						<% end %>
+						<div class="toogle-up avatar-basic mt-2">
+							<i class="fa-solid fa-chevron-up fa-lg --roseL --cursor-pointer"></i>
+						</div>
 					</div>
-				</div>
-			<% end %>
+				<% end %>
+			</div>
 		</div>
 	</div>
 	<%= turbo_stream_from "conversation_#{conversation.id}_messages" %>

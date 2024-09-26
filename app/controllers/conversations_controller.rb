@@ -25,13 +25,14 @@ class ConversationsController < ApplicationController
     # la creation d'un conversation doit se faire avec comme paramas le conversation_type ()
     skip_authorization
     @conversation = Conversation.find_or_create_classic_conversation(current_user, @contact)
-    redirect_to conversations_path(conversation_id: @conversation.id)
-    # respond_to do |format|
-    # format.html {redirect_to conversations_path(conversation_id: @conversation.id)}
-    # format.turbo_stream {
-
-    # }
-    # end
+    @collegue_not_in_conversation = current_user.collegues_with_avatars.reject { |collegue| @conversation.users.include?(collegue) }
+    respond_to do |format|
+      format.html { redirect_to conversations_path(conversation_id: @conversation.id) }
+      format.turbo_stream {
+        render turbo_stream: turbo_stream.replace("conversation", partial: "conversations/conversation",
+                                                                  locals: { conversation: @conversation, collegue_not_in_conversation: @collegue_not_in_conversation })
+      }
+    end
   end
 
   def show
