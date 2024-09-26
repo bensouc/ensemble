@@ -9,4 +9,11 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
   border-radius: 10px 10px 0 0; /* Coins arrondis */
   padding: 10px; /* Espacement interne */
+  .collegue-list{
+    width: 0;
+    position: relative;
+    left: -40px;
+    height: 0;
+    top: -28px;
+  }
 }

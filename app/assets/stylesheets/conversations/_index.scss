@@ -16,6 +16,10 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  .user-avatars{
+    display: flex;
+    gap: 5px;
+  }
 }
 .conversation-link {
   display: flex;
@@ -45,6 +49,9 @@
     border-radius: 0 10px 10px 0;
     display: flex;
     padding: 5px;
+  }
+  .content{
+    display: flex;
   }
 }
 

@@ -1,7 +1,6 @@
   <%= turbo_frame_tag "conversation", class:"conversation", data:{conversation_target: "conversation"} do %>
 	<div class="conversation-header">
-    <%= render "conversations/name", conversation: conversation %>
-
+		<%= render "conversations/name", conversation: conversation %>
 		<div class="conversation-users">
 			<% conversation.users.shuffle.each do |user| %>
 				<%  if (!user.admin? && conversation.conversation_type != "Ensemble") %>
@@ -10,10 +9,25 @@
           data-bs-toggle="tooltip"
           data-bs-placement="top"
           title="<%=user.first_name%>">
-						<%= cl_image_tag user.avatar.key, class:"avatar-basic" if user.avatar.attached?%>
-						<%= image_tag "https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png", class:"avatar-basic" unless user.avatar.attached?%>
+						<%= image_tag user.avatar_url, class:"avatar-basic"%>
 					</div>
 				<% end %>
+			<% end %>
+			<% if (conversation.conversation_type == "group") || (conversation.conversation_type == "classic")%>
+				<div class="avatar-basic">
+					<h2>
+						<i class="fa-solid fa-user-plus --roseL "></i>
+					</h2>
+					<div class="collegue-list">
+						<% collegue_not_in_conversation.each do |user| %>
+							<%= link_to add_user_conversation_path(conversation, new_user_id: user.id), method: :post, data:{turbo_frame: "conversation"} do%>
+								<div class="collegue">
+									<%= image_tag user.avatar_url, class:"avatar-basic" %>
+								</div>
+							<% end %>
+						<% end %>
+					</div>
+				</div>
 			<% end %>
 		</div>
 	</div>

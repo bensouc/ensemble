@@ -13,6 +13,12 @@ class Conversation < ApplicationRecord
 
   # get conversation for the ensemble user
 
+  def add_user!(user)
+    users << user
+    self.conversation_type = "group"
+    save
+  end
+
   def self.find_or_create_ensemble(user)
     conversation = where(conversation_type: "ensemble").joins(:users).find_by(users: { id: user.id })
     unless conversation

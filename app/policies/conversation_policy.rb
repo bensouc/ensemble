@@ -14,6 +14,10 @@ class ConversationPolicy < ApplicationPolicy
     true
   end
 
+  def add_user?
+    user_is_participant?
+  end
+
   def update?
     user_is_participant?
   end

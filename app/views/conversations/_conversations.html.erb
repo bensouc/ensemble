@@ -42,6 +42,8 @@
 			<% end %>
 		<% end %>
 	<% end %>
-	<%= button_tag "Contacter +", class: "btn-flat-no-hover" %>
-	<%= render 'conversations/create_conversation', collegues_with_avatars: @collegues_with_avatars %>
+	<%= button_tag  class: "btn-flat-no-hover" do %>
+    Contacter <i class="fa-solid fa-comment"></i>
+  <% end %>
+	<%= render 'conversations/create_conversation', collegues_with_avatars: @collegues_with_avatars, collegue_not_in_conversation: @collegue_not_in_conversation %>
 </div>

@@ -6,7 +6,8 @@
       </div>
   <% else %>
 		<div class="content --grisC w-100">
-			<%= image_tag message.user.avatar_url, class:'avatar-small me-1' %> <%= message.content %>
+			<%= image_tag message.user.avatar_url, class:'avatar-small me-1' %>
+       <div class="last-message-content"><%= truncate(message.content, length: 40)%></div>
 		</div>
 		<div class="message-date">
 			<% if message.created_at.to_date == Date.today %>
