@@ -19,7 +19,7 @@ class MessagesController < ApplicationController
           render turbo_stream: turbo_stream.append(:messages, partial: "messages/message",
                                                         locals: { message: @message, user: current_user })
         end
-        format.html { redirect_to conversations_path(params(conversation_id: conversation.id)) }
+        format.html { redirect_to conversations_path(conversation_id: @conversation.id) }
       end
     else
       render "conversations/show", status: :unprocessable_entity,

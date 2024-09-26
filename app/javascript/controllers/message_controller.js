@@ -6,7 +6,7 @@ export default class extends Controller {
     userId: Number
   }
 
-  connect() {
+  initialize() {
     // console.log(this.element);
     // triggered when a new message is added to the page
     const currentUserId = parseInt(document.body.dataset.currentUserId, 10);

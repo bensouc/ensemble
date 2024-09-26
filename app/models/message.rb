@@ -5,19 +5,11 @@ class Message < ApplicationRecord
 
   acts_as_readable on: :created_at
   # The `on:` option sets the relevant attribute for comparing timestamps.
-  
+
   # validations
   validates :content, presence: true
 
   after_create_commit :broadcast_message
-
-  def read?
-    read
-  end
-
-  def read!
-    update(read: true)
-  end
 
   private
 

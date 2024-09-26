@@ -46,9 +46,11 @@ class User < ApplicationRecord
 
 
   # Methods
-  #
+
   def avatar_url
-    if avatar.attached?
+    if admin?
+      ActionController::Base.helpers.asset_path("icons/vroad_b_w.png")
+    elsif avatar.attached?
       Cloudinary::Utils.cloudinary_url(avatar.key, width: 100, height: 100, crop: :fill)
     else
       "https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png"
