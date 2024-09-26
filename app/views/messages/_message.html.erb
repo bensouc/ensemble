@@ -1,3 +1,4 @@
+<% message.mark_as_read! for: user %>
 <div id="message-<%= message.id %>" class="message <%=' writer text-white' if message.user == user%>"
       data-controller="message"
       data-message-user-id-value="<%= message.user.id %>">

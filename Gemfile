@@ -65,6 +65,9 @@ gem "simple_form"
 gem "rails-i18n"
 gem "bootstrap", "~> 5.2"
 
+#  add red or unred object gem
+ gem "unread"
+
 # act_as_list help manage list
 gem 'acts_as_list', '~> 0.7.2'
 gem 'requestjs-rails' #help for simple JS http resquest
@@ -86,7 +89,6 @@ gem "wicked_pdf"
 gem "wkhtmltopdf-binary", "~> 0.12.3", group: :development
 
 
-
 # gem "wkhtmltopdf-binary", group: :development
 # gem 'wkhtmltopdf-heroku', '~> 2.12', '>= 2.12.6.0'
 # gem "wkhtmltopdf-heroku", group: :production
@@ -98,11 +100,6 @@ gem "browser"
 
 # view_component
 gem "view_component"
-
-# group :development, :test do
-# # gem for pdf-output
-#   gem 'wkhtmltopdf-binary', '~> 0.12.5'
-# end
 
 # Simple cov test
 gem "simplecov", require: false, group: :test

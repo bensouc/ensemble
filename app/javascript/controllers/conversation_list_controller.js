@@ -1,7 +1,7 @@
 import { Controller } from "stimulus";
 
 export default class extends Controller {
-  static targets = ['conversation'];
+  static targets = ['conversation', 'bullet'];
 
   connect() {
 
@@ -10,8 +10,13 @@ export default class extends Controller {
     this.conversationTargets.forEach((conversation) => {
       conversation.classList.remove("active")
       if (conversation.contains(event.target)) {
-        conversation.classList.add("active")
-      }
-    });
+        conversation.classList.add("active");
+        this.bulletTargets.forEach((bullet) => {
+          if (conversation.contains(bullet)) {
+            bullet.remove();
+          }
+        })
+      };}
+    )
   }
 }

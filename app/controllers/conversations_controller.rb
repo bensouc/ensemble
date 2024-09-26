@@ -15,6 +15,7 @@ class ConversationsController < ApplicationController
     if params[:conversation_id].present?
       @conversation = Conversation.includes([:messages]).find(params[:conversation_id])
       @collegue_not_in_conversation = @collegues_with_avatars.reject { |collegue| @conversation.users.include?(collegue) }
+      @conversation.mark_as_read!(current_user)
     else
       @conversation = @school_conversation
     end

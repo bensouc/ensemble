@@ -34,6 +34,14 @@ class Conversation < ApplicationRecord
     save
   end
 
+  def unread_messages_for_user?(user)
+    messages.any? { |message| !user.have_read?(message) }
+  end
+
+  def mark_as_read!(user)
+    messages.each { |message| message.mark_as_read! for: user }
+  end
+
   def self.find_or_create_ensemble(user)
     conversation = where(conversation_type: "ensemble").joins(:users).find_by(users: { id: user.id })
     unless conversation
@@ -59,7 +67,7 @@ class Conversation < ApplicationRecord
 
   def self.find_or_create_classic_conversation(user, contact)
     conversation = user.conversations.classic.joins(:users).find_by(users: { id: contact.id })
-      unless conversation
+    unless conversation
       conversation = Conversation.create!(conversation_type: "classic", name: "#{contact.first_name} & #{user.first_name}")
       UserConversation.create(user: user, conversation: conversation)
       UserConversation.create(user: contact, conversation: conversation)

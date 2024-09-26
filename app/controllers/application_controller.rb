@@ -3,6 +3,7 @@
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_unread_messages, if: :user_signed_in?
   include Pundit::Authorization
   # Pundit: allow-list approach
   after_action :verify_authorized, except: :index, unless: :skip_pundit?
@@ -25,6 +26,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def set_unread_messages
+    @unread_messages = Message.unread_by(current_user)
+  end
 
   def skip_pundit?
     devise_controller? || params[:controller] =~ /(^(rails_)?admin)|(^pages$)/

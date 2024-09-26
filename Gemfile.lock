@@ -429,6 +429,8 @@ GEM
     unf_ext (0.0.8.2)
     unicode-display_width (2.4.2)
     uniform_notifier (1.16.0)
+    unread (0.13.1)
+      activerecord (>= 6.1)
     view_component (3.12.1)
       activesupport (>= 5.2.0, < 8.0)
       concurrent-ruby (~> 1.0)
@@ -523,6 +525,7 @@ DEPENDENCIES
   sweetalert2
   turbo-rails
   tzinfo-data
+  unread
   view_component
   web-console (>= 3.3.0)
   webdrivers

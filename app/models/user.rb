@@ -36,9 +36,14 @@ class User < ApplicationRecord
 
   # has_one :subscription, dependent: :destroy
   has_one_attached :avatar
+
+  # to be identified as reader
+  acts_as_reader
+
   # Validations
   validates :first_name, presence: true
   validates :last_name, presence: true
+
 
   # Methods
   #
