@@ -18,3 +18,11 @@
     top: 0px;
   }
 }
+.new-message-form{
+  .message_content{
+    width: 100%;
+  }
+  #trix-toolbar-1{
+    display: none;
+  }
+}

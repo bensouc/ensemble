@@ -30,7 +30,6 @@ class ChallengesController < ApplicationController
 
   def show
     skip_authorization
-    puts params
   end
 
   def new

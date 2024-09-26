@@ -48,7 +48,7 @@
       html: {novalidate: false,
       data: { controller: "reset-form", action: "turbo:submit-end->reset-form#reset" }} do |f| %>
 		<div class="new-message-form">
-			<%= f.input :content,as: :text,input_html: {style:"min-height: 100% !important;"},
+			<%= f.input :content,as: :rich_text_area,input_html: {style:"min-height: 100% !important;"},
           required: true, label: false %>
 			<%= button_tag :submit do%>
 				<i class="fas fa-paper-plane"></i>
