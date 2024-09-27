@@ -38,7 +38,6 @@
   "engines": {
     "node": "v14.15.5",
     "yarn": "v1.22.19",
-    "npm": "v6.14.11"
   },
   "resolutions": {
     "rails_admin/@fortawesome/fontawesome-free": "^5.15.0"
