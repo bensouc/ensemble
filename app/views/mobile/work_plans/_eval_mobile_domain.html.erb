@@ -14,7 +14,7 @@
   </div>
   <% # SKILLS DISPLAY %>
   <div class='mobile-skill-display d-none' id="<%= dom_id(work_plan_domain) %>" data-toggle-panel-target="panel">
-    <% work_plan_domain.work_plan_skills.order(:skill_id).each do |plan_skill| %>
+    <% work_plan_domain.work_plan_skills.sort_by{|wps| wps.position}.each do |plan_skill| %>
       <%= render "eval_mobile_skill_display", plan_skill: plan_skill %>
     <% end %>
   </div>
