@@ -11,6 +11,7 @@ class ConversationsController < ApplicationController
     @ensemble_conversation = Conversation.find_or_create_ensemble(current_user)
     @user_conversations = current_user.classic_and_group_conversations
     @collegues_with_avatars = current_user.collegues_with_avatars
+    @ensemble_conversations = Conversation.ensemble if current_user.admin?
     # @user = User.includes([:avatar_attachment]).find(current_user.id)
     if params[:conversation_id].present?
       @conversation = Conversation.includes([:messages]).find(params[:conversation_id])
