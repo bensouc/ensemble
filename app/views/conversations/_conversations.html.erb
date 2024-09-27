@@ -58,6 +58,7 @@
 			<% end %>
 		<% end %>
 	<% end %>
+  <%= render "conversations/ensemble_conversations",active_conversation: active_conversation , ensemble_conversations: @ensemble_conversations if @ensemble_conversations%>
 	<%= button_tag  class: "btn-flat-no-hover" do %>
 		Contacter <i class="fa-solid fa-comment"></i>
 	<% end %>
