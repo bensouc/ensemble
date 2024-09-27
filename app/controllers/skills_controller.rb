@@ -138,7 +138,7 @@ class SkillsController < ApplicationController
     end
     # @skills = policy_scope(Skill)
     # @are_special_domains = current_user.school.special_domains?
-    @skills = Skill.where(domain: @domain)
+    @skills = Skill.includes([challenges: :user]).where(domain: @domain)
   end
 
   def set_skill
