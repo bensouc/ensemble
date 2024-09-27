@@ -58,6 +58,7 @@ color: $grisF;
   margin-right: -5px;
   border-radius: 10px;
   margin-left: 10px;
+  max-width: none !important;
 }
 
 .dead-icon{
@@ -84,6 +85,9 @@ color: $grisF;
   transition: opacity 2s ease .05s;
   width: 158px;
   height: 40px;
+  img{
+    max-width: 22px;
+  }
 }
 
 .menug_icone:hover{

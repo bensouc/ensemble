@@ -1,0 +1,17 @@
+.message-date{
+  font-size: 0.6rem;
+  color: $blanc;
+  font-style: italic;
+  font-weight: bold;
+}
+.message{
+  .content{
+    display: flex;
+  }
+}
+.writer .message-date{
+  font-size: 0.6rem;
+  color: $grisC;
+  font-style: italic;
+  font-weight: bold;
+}

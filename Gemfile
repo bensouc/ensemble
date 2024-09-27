@@ -35,6 +35,9 @@ gem "redis", "~> 4.0"
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
+# action cable with postgresql
+gem "actioncable-enhanced-postgresql-adapter"
+
 # Admin
 gem "rails_admin", "~> 3.0"
 
@@ -62,6 +65,9 @@ gem "simple_form"
 gem "rails-i18n"
 gem "bootstrap", "~> 5.2"
 
+#  add red or unred object gem
+ gem "unread"
+
 # act_as_list help manage list
 gem 'acts_as_list', '~> 0.7.2'
 gem 'requestjs-rails' #help for simple JS http resquest
@@ -83,7 +89,6 @@ gem "wicked_pdf"
 gem "wkhtmltopdf-binary", "~> 0.12.3", group: :development
 
 
-
 # gem "wkhtmltopdf-binary", group: :development
 # gem 'wkhtmltopdf-heroku', '~> 2.12', '>= 2.12.6.0'
 # gem "wkhtmltopdf-heroku", group: :production
@@ -95,11 +100,6 @@ gem "browser"
 
 # view_component
 gem "view_component"
-
-# group :development, :test do
-# # gem for pdf-output
-#   gem 'wkhtmltopdf-binary', '~> 0.12.5'
-# end
 
 # Simple cov test
 gem "simplecov", require: false, group: :test
@@ -116,6 +116,7 @@ group :development, :test do
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
   gem "rspec-rails"
   gem "factory_bot_rails"
+  gem "shoulda-matchers", "~> 4.0"
   gem "faker"
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem "byebug", platforms: [:mri, :mingw, :x64_mingw]

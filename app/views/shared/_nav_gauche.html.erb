@@ -6,26 +6,26 @@
 			<img
         src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg"
         alt="Logo">
+			<% end %>
 		<% end %>
-	<% end %>
-	<div class="menu-g">
-		<% if user_signed_in? %>
-			<div class="menug-container">
-				<div class="link-container" data-controller='leftmenulinks'>
-					<div class="menug_icone" data-action="click->left-menu#seechange click->leftmenulinks#toggleDisplayLinks">
-						<div class="<%= "active" if (current_page?(work_plans_path) || controller_name == 'skills') %> "
+		<div class="menu-g">
+			<% if user_signed_in? %>
+				<div class="menug-container">
+					<div class="link-container" data-controller='leftmenulinks'>
+						<div class="menug_icone" data-action="click->left-menu#seechange click->leftmenulinks#toggleDisplayLinks">
+							<div class="<%= "active" if (current_page?(work_plans_path) || controller_name == 'skills') %> "
             data-left-menu-target="seetext"
             style='decoration-text: none'>
-							Voir
-						</div>
-						<% if current_page?(work_plans_path) || params[:controller] == "challenges" || controller_name == 'skills' %>
-							<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/1blanc_yahz0m.svg",
+								Voir
+							</div>
+							<% if current_page?(work_plans_path) || params[:controller] == "challenges" || controller_name == 'skills' %>
+								<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/1blanc_yahz0m.svg",
            class: "on" %>
-						<% else %>
+							<% else %>
 								<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638459822/ico_menu_1_wvddvx.svg" %>
-						<% end %>
-					</div>
-					<div class="nav-left-sub-links d-none" data-leftmenulinks-target="links">
+							<% end %>
+						</div>
+						<div class="nav-left-sub-links d-none" data-leftmenulinks-target="links">
 							<%= link_to work_plans_path do %>
 								<p class='sub-link'>Mes Plans de Travail</p>
 							<% end %>
@@ -35,66 +35,74 @@
 							<%= link_to skills_path do %>
 								<p class='sub-link'>Mes progressions de compétences</p>
 							<% end %>
+						</div>
 					</div>
-				</div>
-				<%= link_to new_work_plan_path do %>
-					<div class="menug_icone" data-action="click->left-menu#seechange">
-						<div class="<%= "active" if (current_page?(new_work_plan_path) || (params[:action] == "show" && controller_name == 'work_plans' ))  %>"
+					<%= link_to new_work_plan_path do %>
+						<div class="menug_icone" data-action="click->left-menu#seechange">
+							<div class="<%= "active" if (current_page?(new_work_plan_path) || (params[:action] == "show" && controller_name == 'work_plans' ))  %>"
             data-left-menu-target="seetext"
             style='decoration-text: none'>
-							Créer
-						</div>
-						<%# || (params[:action] == "show" && current_page?(work_plan_path(params[:id]))) %>
-						<% if (current_page?(new_work_plan_path)|| (params[:action] == "show" && controller_name == 'work_plans' )) %>
-							<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/2blanc_tixkrs.svg",alt: "logo Workplan", class: "on" %>
-						<% else %>
-							<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/2_ekrwe3.svg",alt: "logo Workplan", class: "" %>
-						<% end %>
-					</div>
-				<% end %>
-				<%= link_to classrooms_path do %>
-					<div class="menug_icone" data-action="click->left-menu#seechange">
-						<div class="<%= "active" if current_page?(classrooms_path) || controller_name()== 'students' %> "
-            data-left-menu-target="seetext"
-            style="decoration-text: none">
-							<% if current_user.classrooms.count + current_user.user_shared_classrooms.count < 2 %>
-								Ma Classe
+								Créer
+							</div>
+							<%# || (params[:action] == "show" && current_page?(work_plan_path(params[:id]))) %>
+							<% if (current_page?(new_work_plan_path)|| (params[:action] == "show" && controller_name == 'work_plans' )) %>
+								<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/2blanc_tixkrs.svg",alt: "logo Workplan", class: "on" %>
 							<% else %>
-								Mes Classes
+								<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/2_ekrwe3.svg",alt: "logo Workplan", class: "" %>
 							<% end %>
 						</div>
-						<% if current_page?(classrooms_path) || controller_name() == 'students' %>
-							<%= image_tag "icons/eval-icon.svg", class: "on" %>
-						<% else %>
-							<%= image_tag "icons/eval-red-icon.svg" %>
+					<% end %>
+					<%= link_to classrooms_path do %>
+						<div class="menug_icone" data-action="click->left-menu#seechange">
+							<div class="<%= "active" if current_page?(classrooms_path) || controller_name()== 'students' %> "
+            data-left-menu-target="seetext"
+            style="decoration-text: none">
+								<% if current_user.classrooms.count + current_user.user_shared_classrooms.count < 2 %>
+									Ma Classe
+								<% else %>
+									Mes Classes
+								<% end %>
+							</div>
+							<% if current_page?(classrooms_path) || controller_name() == 'students' %>
+								<%= image_tag "icons/eval-icon.svg", class: "on" %>
+							<% else %>
+								<%= image_tag "icons/eval-red-icon.svg" %>
+							<% end %>
+						</div>
+					<% end %>
+					<%= link_to conversations_path do%>
+						<div class="menug_icone" data-action="click->left-menu#seechange">
+							<div class="<%= "active" if (current_page?(new_work_plan_path) || (params[:action] == "show" && controller_name == 'work_plans' ))  %>"
+              data-left-menu-target="seetext"
+              style='decoration-text: none'>
+								Partager
+							</div>
+							<%# || (params[:action] == "show" && current_page?(work_plan_path(params[:id]))) %>
+							<% if (current_page?(conversations_path)) %>
+								<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/2blanc_tixkrs.svg",alt: "logo Workplan", class: "on" %>
+							<% else %>
+								<%= image_tag "btns/share_rose_white.png",alt: "logo Workplan", class: "" %>
+							<% end %>
+						</div>
 						<% end %>
 					</div>
 				<% end %>
-				<div class="menug_icone-dead">
-					<div class="">Partager</div>
-          <img
-            class="dead-icon"
-            src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1639043187/3-b_lfvn8p.svg"
-            alt="">
-				</div>
 			</div>
-		<% end %>
-	</div>
-	<div class="calendrier">
-		<h3><%= I18n.l(Date.today, format: :long) %>
-		</h3>
-		<h4>Semaine
-			<%= Date.today.strftime("%W").to_i %></h4>
-		<br>
-		<p>du :
-			<%= Date.today.at_beginning_of_week.strftime("%d/%m/%Y") %><br>
-			au :
-			<%= ((Date.today.at_end_of_week) - 2).strftime("%d/%m/%Y") %></p>
-	</div>
-	<div class="deco ">
-		<%= link_to destroy_user_session_path, method: :delete, class: "dropdown-item d-flex" do %>
-			<i class="fas fa-sign-out-alt"></i>
-			<h6>Se déconnecter</h6>
-		<% end %>
-	</div>
-</div>
+			<div class="calendrier">
+				<h3><%= I18n.l(Date.today, format: :long) %>
+				</h3>
+				<h4>Semaine
+					<%= Date.today.strftime("%W").to_i %></h4>
+				<br>
+				<p>du :
+					<%= Date.today.at_beginning_of_week.strftime("%d/%m/%Y") %><br>
+					au :
+					<%= ((Date.today.at_end_of_week) - 2).strftime("%d/%m/%Y") %></p>
+			</div>
+			<div class="deco ">
+				<%= link_to destroy_user_session_path, method: :delete, class: "dropdown-item d-flex" do %>
+					<i class="fas fa-sign-out-alt"></i>
+					<h6>Se déconnecter</h6>
+				<% end %>
+			</div>
+		</div>

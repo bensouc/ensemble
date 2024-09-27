@@ -1,0 +1,117 @@
+@import "show";
+.conversations-container {
+  width: calc(100vw - 200px);
+  height: calc(100vh - 214px);
+  padding: 0 5%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.conversations-list {
+  width: 40%;
+  height: 100%;
+  overflow-y: scroll;
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  .user-avatars{
+    display: flex;
+    gap: 5px;
+  }
+}
+.conversation-link {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  border: thin solid $bleuC;
+  border-radius: 10px;
+  &.active {
+    background-color: $bleuC;
+    border: solid #c8e6fb;
+  }
+  .header {
+    display: flex;
+    color: #f24150;
+    align-items: center;
+    gap: 10px;
+    width: 45px;
+    padding: 0 5px;
+    justify-content: center;
+    align-content: center;
+    flex-wrap: nowrap;
+  }
+  .last-message-box {
+    border-left: thin solid $bleuC;
+    background-color: $blanc;
+    border-radius: 0 10px 10px 0;
+    display: flex;
+    padding: 5px;
+  }
+  .content{
+    display: flex;
+  }
+}
+
+// for one conversation
+.conversation {
+  width: 50%;
+  padding: 0 20px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: thin solid $grisC;
+  border-radius: 10px;
+  .conversation-title {
+    font-family: $titres-font-2;
+    text-align: center;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+  }
+  .messages {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    // background-color: $roseLight;
+    height: 100%;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+  }
+  .messages::-webkit-scrollbar {
+    display: none; /* Safari and Chrome */
+  }
+  .message {
+    background-color: $grisC; /* Rouge */
+    color: #fff; /* Couleur du texte en blanc */
+    padding: 10px; /* Espacement interne */
+    border-radius: 15px 15px 15px 0; /* Coins arrondis */
+    max-width: 100%; /* Prend jusqu'à 100% de la largeur disponible */
+    box-sizing: border-box; /* Inclut le padding et la bordure dans la largeur totale */
+    margin-bottom: 10px; /* Espacement en bas pour séparer les messages */
+    display: inline-block; /* S'adapte à la taille du contenu */
+    align-self: flex-start; /* Aligne les messages au début de la ligne */
+  }
+  .message.writer {
+    background-color: $rose; /* Change la couleur de fond en rose */
+    align-self: flex-end; /* Aligne les messages à droite */ /* Nécessaire pour la pointe de la bulle */
+    border-radius: 15px 15px 0 15px;
+  }
+}
+.new-message-form {
+  display: flex;
+  justify-content: flex-end;
+  .form-group.text {
+    width: 100%;
+  }
+  button {
+    border-bottom: 1px solid $grisC;
+    border-top: 1px solid $grisC;
+    border-right: 1px solid $grisC;
+    border-radius: 0 5px 5px 0;
+    color: $rose;
+  }
+}

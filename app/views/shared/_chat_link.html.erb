@@ -1,0 +1,13 @@
+<%= link_to conversations_path,
+                class:'top-link-no-bcg-btn',
+                data:{
+                      controller:"tooltip",
+                      bs_toggle:"tooltip",
+                      bs_placement:"bottom"},
+                title:"Conversations" do %>
+	<i class="fa-regular fa-comment">
+    <% unless @unread_messages.empty? %>
+	    <div class="bullet-chat"></div>
+    <% end %>
+  </i>
+<% end %>

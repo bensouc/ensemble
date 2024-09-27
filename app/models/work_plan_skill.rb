@@ -59,7 +59,7 @@ class WorkPlanSkill < ApplicationRecord
 
   def self.last_4_wps(_work_plan, wps, current_student)
     # retrieve the last 4 wps for the student on this skill ids
-    out = WorkPlanSkill.includes([:student]).where(skill_id: wps.skill_id)
+    out = WorkPlanSkill.includes([:skill, { work_plan_domain: :student }]).where(skill_id: wps.skill_id)
     out = out.select { |work_plan_skill| work_plan_skill.student == current_student }.sort_by(&:created_at).reverse
     out.reject { |t| t == wps }
     out.last(3)

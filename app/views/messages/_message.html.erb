@@ -1,0 +1,15 @@
+<% message.mark_as_read! for: user %>
+<div id="message-<%= message.id %>" class="message <%=' writer text-white' if message.user == user%>"
+      data-controller="message"
+      data-message-user-id-value="<%= message.user.id %>">
+	<div class="content">
+		<%= image_tag message.user.avatar_url, class:'avatar-small me-1', data:{message_target: "avatar"} %> <%= message.content %>
+	</div>
+	<div class="message-date">
+		<% if message.created_at.to_date == Date.today %>
+			<%= message.created_at.strftime("%H:%M") %>
+		<% else %>
+			<%= message.created_at.strftime("%-d %b %H:%M") %>
+		<% end %>
+	</div>
+</div>

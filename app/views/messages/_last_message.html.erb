@@ -1,0 +1,21 @@
+<div class="last-message-box w-100">
+	<div  class="message writer w-100">
+    <% if message.nil? %>
+      <div class="content --grisC w-100">
+        <p>Commencez une conversation</p>
+      </div>
+  <% else %>
+		<div class="content --grisC w-100">
+			<%= image_tag message.user.avatar_url, class:'avatar-small me-1' %>
+       <div class="last-message-content"><%= truncate(message.content.to_plain_text, length: 40)%></div>
+		</div>
+		<div class="message-date">
+			<% if message.created_at.to_date == Date.today %>
+				<%= message.created_at.strftime("%H:%M") %>
+			<% else %>
+				<%= message.created_at.strftime("%-d %b %H:%M") %>
+			<% end %>
+		</div>
+    <% end %>
+	</div>
+</div>

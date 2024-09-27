@@ -10,10 +10,19 @@
     // font-family: "Baloo 2", cursive;
     font-size: 1.5rem;
     font-weight: 700;
-    &:hover{
-      color: $blanc !important;
-      background-color: $roseL !important;
-      border-radius: 50%;
-      border: 3px solid $roseL;
-    }
+    border: 3px solid $blanc;
+    // &:hover{
+    //   color: $blanc !important;
+    //   background-color: $roseL !important;
+    //   border-radius: 50%;
+    //   border: 3px solid $roseL;
+    // }
+}
+.top-link-no-bcg-btn i{
+  color: $roseL;
+  background-color: $blanc !important;
+    // font-family: "Baloo 2", cursive;
+    font-size: 1.5rem;
+    font-weight: 700;
+
 }

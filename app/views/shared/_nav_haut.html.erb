@@ -4,9 +4,12 @@
 		</div>
 	</div>
 	<% if user_signed_in? %>
-		<div class="navbar navbar-expand-sm navbar-light d-flex">
-			<%=link_to "Abonnez-vous",  subscriptions_on_boarding_path, class: "btn-flat text-center me-4" if current_user.demo%>
-			<%= render 'shared/tuto_links' %>
+		<div class="navbar navbar-expand-sm navbar-light ">
+			<div class="navbar-links">
+				<%=link_to "Abonnez-vous",  subscriptions_on_boarding_path, class: "btn-flat text-center me-4" if current_user.demo%>
+				<%= render 'shared/chat_link' %>
+				<%= render 'shared/tuto_links' %>
+			</div>
 			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>

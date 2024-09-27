@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_09_10_153715) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_26_113456) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -88,6 +88,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_10_153715) do
     t.index ["user_id"], name: "index_classrooms_on_user_id"
   end
 
+  create_table "conversations", force: :cascade do |t|
+    t.string "name"
+    t.string "conversation_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "domains", force: :cascade do |t|
     t.string "name"
     t.bigint "grade_id"
@@ -105,6 +112,27 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_10_153715) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["school_id"], name: "index_grades_on_school_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "conversation_id"
+    t.boolean "read"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id"], name: "index_messages_on_conversation_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
+  end
+
+  create_table "read_marks", force: :cascade do |t|
+    t.string "readable_type", null: false
+    t.bigint "readable_id"
+    t.string "reader_type", null: false
+    t.bigint "reader_id"
+    t.datetime "timestamp", precision: nil, null: false
+    t.index ["readable_type", "readable_id"], name: "index_read_marks_on_readable_type_and_readable_id"
+    t.index ["reader_id", "reader_type", "readable_type", "readable_id"], name: "read_marks_reader_readable_index", unique: true
+    t.index ["reader_type", "reader_id"], name: "index_read_marks_on_reader_type_and_reader_id"
   end
 
   create_table "results", force: :cascade do |t|
@@ -196,6 +224,16 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_10_153715) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "user_conversations", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "conversation_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id"], name: "index_user_conversations_on_conversation_id"
+    t.index ["user_id", "conversation_id"], name: "index_user_conversations_on_user_id_and_conversation_id", unique: true
+    t.index ["user_id"], name: "index_user_conversations_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -268,6 +306,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_10_153715) do
   add_foreign_key "classrooms", "users"
   add_foreign_key "domains", "grades"
   add_foreign_key "grades", "schools"
+  add_foreign_key "messages", "conversations"
+  add_foreign_key "messages", "users"
   add_foreign_key "results", "skills"
   add_foreign_key "results", "students"
   add_foreign_key "school_roles", "schools"
@@ -278,6 +318,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_09_10_153715) do
   add_foreign_key "skills", "schools"
   add_foreign_key "students", "classrooms"
   add_foreign_key "subscriptions", "schools"
+  add_foreign_key "user_conversations", "conversations"
+  add_foreign_key "user_conversations", "users"
   add_foreign_key "work_plan_domains", "domains"
   add_foreign_key "work_plan_domains", "work_plans"
   add_foreign_key "work_plan_skills", "challenges"
