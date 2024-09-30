@@ -15,10 +15,10 @@
 			<% end %>
 			<div class="" data-controller='toggle-panel'>
 				<% if !collegue_not_in_conversation.nil? && ((conversation.is_group?) || (conversation.is_classic?))%>
-					<h2 class='m-0'  data-toggle-panel-target="btn" data-action="click->toggle-panel#displayPanel">
+					<h2 class='m-0 ms-1'  data-toggle-panel-target="btn" data-action="click->toggle-panel#displayPanel">
 						<i class="fa-solid fa-user-plus --roseL --cursor-pointer"></i>
 					</h2>
-					<div class="collegue-list d-none" data-toggle-panel-target="panel" data-action="click->toggle-panel#displayPanel">
+					<div class="collegue-list d-none ms-1" data-toggle-panel-target="panel" data-action="click->toggle-panel#displayPanel">
 						<% collegue_not_in_conversation.each do |user| %>
 							<%= link_to add_user_conversation_path(conversation, new_user_id: user.id), method: :post, data:{turbo_frame: "conversation"} do%>
 								<div class="collegue"

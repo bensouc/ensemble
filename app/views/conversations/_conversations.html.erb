@@ -1,36 +1,8 @@
 <div class="conversations-list" data-controller="conversation-list">
-	<%= link_to conversation_path(school_conversation),data:{turbo_frame: "conversation"} do%>
-		<div class="conversation-link <%='active' if school_conversation == active_conversation%> "
-      data-conversation-list-target="conversation"
-      data-action="click->conversation-list#addActive">
-			<%if school_conversation.unread_messages_for_user?(current_user)%>
-				<i class="fa-solid fa-circle bullet-chat-2" data-conversation-list-target="bullet"></i>
-			<% end %>
-			<div class="header" data-controller="tooltip"
-            data-bs-toggle="tooltip"
-            data-bs-placement="left"
-            title="<%= current_user.school.name %>"            >
-				<i class="fa-solid fa-school --rose" style="font-size: x-large;">
-				</i>
-			</div>
-			<%= render 'messages/last_message', message: school_conversation.messages.last %>
-		</div>
-	<% end %>
-	<%= link_to  conversation_path(ensemble_conversation),data:{turbo_frame: "conversation"} do%>
-		<div class="conversation-link <%='active' if ensemble_conversation == active_conversation%>"
-      data-conversation-list-target="conversation"
-      data-action="click->conversation-list#addActive">
-			<%if ensemble_conversation.unread_messages_for_user?(current_user)%>
-				<i class="fa-solid fa-circle bullet-chat-2" data-conversation-list-target="bullet"></i>
-			<% end %>
-			<div class="header" data-controller="tooltip"
-          data-bs-toggle="tooltip"
-          data-bs-placement="left"
-          title="Ensemble">
-				<%= image_tag 'icons/apple-icon.png', width: "40px" %>
-			</div>
-			<%= render 'messages/last_message', message: ensemble_conversation.messages.last %>
-		</div>
+	<%= render 'conversations/school_conversations', active_conversation:,
+  school_conversation: , school_conversations: %>
+	<% unless current_user.admin? %>
+		<%= render 'conversations/ensemble_conversation',ensemble_conversation:,active_conversation: %>
 	<% end %>
 	<% if user_conversations%>
 		<% user_conversations.each do |conversation| %>
@@ -58,7 +30,7 @@
 			<% end %>
 		<% end %>
 	<% end %>
-  <%= render "conversations/ensemble_conversations",active_conversation: active_conversation , ensemble_conversations: @ensemble_conversations if @ensemble_conversations%>
+	<%= render "conversations/ensemble_conversations",active_conversation: active_conversation , ensemble_conversations: @ensemble_conversations if @ensemble_conversations%>
 	<%= button_tag  class: "btn-flat-no-hover" do %>
 		Contacter <i class="fa-solid fa-comment"></i>
 	<% end %>

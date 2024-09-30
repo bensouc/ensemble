@@ -6,7 +6,7 @@ class Conversation < ApplicationRecord
   has_many :users, through: :user_conversations
 
   validates :conversation_type, presence: true, inclusion: { in: %w[ensemble group school classic] }
-
+  validate  :unique_ensemble_conversation_per_user, if: -> { conversation_type == "ensemble" }
   scope :classic, -> { where(conversation_type: "classic") }
   scope :school, -> { where(conversation_type: "school") }
   scope :ensemble, -> { where(conversation_type: "ensemble") }
@@ -45,12 +45,12 @@ class Conversation < ApplicationRecord
   def self.find_or_create_ensemble(user)
     conversation = where(conversation_type: "ensemble").joins(:users).find_by(users: { id: user.id })
     unless conversation
-      conversation = create(conversation_type: "ensemble", name: "Ensemble")
+      conversation = create(conversation_type: "ensemble", name: "Ensemble & #{user.first_name}")
       conversation.users << user
     end
     conversation
   end
-  
+
   # get conversion for the school user
   def self.find_or_create_school_conversation(user)
     # Trouver ou créer la conversation de type "school" pour l'école de l'utilisateur
@@ -74,5 +74,16 @@ class Conversation < ApplicationRecord
       UserConversation.create(user: contact, conversation: conversation)
     end
     conversation
+  end
+
+  private
+
+  def unique_ensemble_conversation_per_user
+    users.each do |user|
+      if user.conversations.ensemble.exists?
+        errors.add(:base, "A user can only have one 'ensemble' conversation.")
+        break
+      end
+    end
   end
 end

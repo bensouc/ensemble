@@ -132,6 +132,8 @@ GEM
       railties (>= 4.1.0)
       responders
       warden (~> 1.2.3)
+    devise_last_seen (0.2.2)
+      devise
     diff-lcs (1.5.0)
     docile (1.4.0)
     domain_name (0.5.20190701)
@@ -480,6 +482,7 @@ DEPENDENCIES
   cloudinary (~> 1.16.0)
   debug
   devise
+  devise_last_seen
   dotenv-rails
   erb-formatter
   factory_bot_rails

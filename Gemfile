@@ -57,6 +57,8 @@ gem "net-pop", require: false
 
 # add sweet alert
 gem "devise"
+# devise plug_in to manage last seen
+gem "devise_last_seen"
 gem "sweetalert2"
 gem "pundit"
 gem "autoprefixer-rails", "10.2.5"

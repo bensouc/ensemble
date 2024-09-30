@@ -41,6 +41,13 @@ Devise.setup do |config|
   # Configure the parent class responsible to send e-mails.
   # config.parent_mailer = 'ActionMailer::Base'
 
+  # Interval (in seconds) to update the :last_seen_at_attribute attr
+  config.last_seen_at_interval = 15.minutes
+
+  # Attribute who will be updated every time a user is set by the Warden's after_save callback
+  # Remember to check if this column name is present on the devise model table.
+  # config.last_seen_at_attribute = :last_seen
+
   # ==> ORM configuration
   # Load and configure the ORM. Supports :active_record (default) and
   # :mongoid (bson_ext recommended) by default. Other ORMs may be

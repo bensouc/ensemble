@@ -96,7 +96,7 @@
     align-self: flex-start; /* Aligne les messages au début de la ligne */
   }
   .message.writer {
-    background-color: $rose; /* Change la couleur de fond en rose */
+    background-color: $roseLight; /* Change la couleur de fond en rose */
     align-self: flex-end; /* Aligne les messages à droite */ /* Nécessaire pour la pointe de la bulle */
     border-radius: 15px 15px 0 15px;
   }

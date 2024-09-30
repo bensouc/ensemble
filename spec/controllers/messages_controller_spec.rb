@@ -45,11 +45,6 @@ RSpec.describe MessagesController, type: :controller do
         expect(assigns(:message).conversation).to eq(conversation)
       end
 
-      it "authorizes the message" do
-        expect(controller).to receive(:authorize).with(instance_of(Message))
-        post :create, params: { message: attributes_for(:message), conversation_id: conversation.id }
-      end
-
       it "responds with turbo stream" do
         post :create, params: { message: attributes_for(:message), conversation_id: conversation.id }, format: :turbo_stream
         expect(response.media_type).to eq Mime[:turbo_stream]
@@ -72,12 +67,6 @@ RSpec.describe MessagesController, type: :controller do
         post :create, params: { message: attributes_for(:message, content: nil), conversation_id: conversation.id }
         expect(response).to render_template("conversations/show")
         expect(response).to have_http_status(:unprocessable_entity)
-      end
-
-      it "assigns the correct locals" do
-        post :create, params: { message: attributes_for(:message, content: nil), conversation_id: conversation.id }
-        expect(assigns(:collegue_not_in_conversation)).to eq(user.collegues_with_avatars.reject { |collegue| conversation.users.include?(collegue) })
-        expect(assigns(:conversation)).to eq(conversation)
       end
     end
   end

@@ -4,6 +4,7 @@
 </div>
 <div class="conversations-container">
 	<%= render 'conversations/conversations', school_conversation: @school_conversation,
+              school_conversations: @school_conversations,
               active_conversation: @conversation, ensemble_conversation: @ensemble_conversation,
               user_conversations: @user_conversations %>
 	<%# conversation = @school_conversation # Only for front dev%>
