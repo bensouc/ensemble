@@ -53,6 +53,7 @@ RailsAdmin.config do |config|
       field :first_name
       field :last_name
       field :school
+      field :last_seen
     end
   end
 end
