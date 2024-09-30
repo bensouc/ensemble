@@ -15,7 +15,7 @@ class User < ApplicationRecord
 
   # associations
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable, :lastseenable
 
   # belongs_to :school
   has_one :school_role, dependent: :destroy # Un utilisateur a une seule school_role

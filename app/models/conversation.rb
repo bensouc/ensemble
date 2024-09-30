@@ -45,7 +45,7 @@ class Conversation < ApplicationRecord
   def self.find_or_create_ensemble(user)
     conversation = where(conversation_type: "ensemble").joins(:users).find_by(users: { id: user.id })
     unless conversation
-      conversation = create(conversation_type: "ensemble", name: "Ensemble")
+      conversation = create(conversation_type: "ensemble", name: "Ensemble & #{user.first_name}")
       conversation.users << user
     end
     conversation

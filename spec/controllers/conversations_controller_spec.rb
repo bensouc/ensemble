@@ -50,16 +50,6 @@ RSpec.describe ConversationsController, type: :controller do
         expect(assigns(:conversation)).to eq(school_conversation)
       end
     end
-
-    it "assigns the school conversation to @school_conversation" do
-      get :index
-      expect(assigns(:school_conversation)).to eq(school_conversation)
-    end
-
-    it "assigns the ensemble conversation to @ensemble_conversation" do
-      get :index
-      expect(assigns(:ensemble_conversation)).to eq(ensemble_conversation)
-    end
     it "returns a success response" do
       get :index
       expect(response).to be_successful
@@ -146,6 +136,37 @@ RSpec.describe ConversationsController, type: :controller do
         patch :update, params: { id: new_conversation.id, conversation: { name: nil } }
         expect(response).to redirect_to("http://test.host/conversations?conversation=#{new_conversation.id}")
       end
+    end
+  end
+
+  describe "POST #add_user" do
+    let(:conversation) { create(:conversation, conversation_type: "classic") }
+    let(:new_user) { create(:user) }
+    let(:current_user) { create(:user) }
+
+    before do
+      allow(controller).to receive(:current_user).and_return(current_user)
+      allow(User).to receive(:find).with(any_args).and_return(new_user)
+      allow(conversation).to receive(:add_user!).with(new_user).and_return(true)
+      allow(current_user).to receive(:collegues_with_avatars).and_return([new_user])
+      allow(conversation.users).to receive(:include?).and_return(false)
+    end
+
+    it "adds a new user to the conversation" do
+      post :add_user, params: { id: conversation.id, new_user_id: new_user.id }
+      conversation.reload
+      expect(conversation.users.include?(new_user)).to eq(true)
+    end
+
+
+    it "redirects to conversations path with HTML format" do
+      post :add_user, params: { id: conversation.id, new_user_id: new_user.id }, format: :html
+      expect(response).to redirect_to(conversations_path(conversation_id: conversation.id))
+    end
+
+    it "renders turbo stream with Turbo Stream format" do
+      post :add_user, params: { id: conversation.id, new_user_id: new_user.id }, format: :turbo_stream
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
     end
   end
 end

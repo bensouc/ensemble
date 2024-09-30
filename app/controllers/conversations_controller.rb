@@ -3,22 +3,19 @@
 class ConversationsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_conversation, only: [:show, :edit, :update, :destroy, :add_user]
+  before_action :set_index_conversations, only: [:index]
   # after_action :verify_authorized, except: :index
 
   def index
     skip_policy_scope
-    @school_conversation = Conversation.find_or_create_school_conversation(current_user)
-    @ensemble_conversation = Conversation.find_or_create_ensemble(current_user)
-    @user_conversations = current_user.classic_and_group_conversations
-    @collegues_with_avatars = current_user.collegues_with_avatars
-    @ensemble_conversations = Conversation.ensemble if current_user.admin?
     # @user = User.includes([:avatar_attachment]).find(current_user.id)
     if params[:conversation_id].present?
       @conversation = Conversation.includes([:messages]).find(params[:conversation_id])
       @collegue_not_in_conversation = @collegues_with_avatars.reject { |collegue| @conversation.users.include?(collegue) }
       @conversation.mark_as_read!(current_user)
     else
-      @conversation = @school_conversation
+      @conversation = @school_conversation || @school_conversations.sort_by(&:id).first
+      @conversation.mark_as_read!(current_user)
     end
   end
 
@@ -78,6 +75,18 @@ class ConversationsController < ApplicationController
 
   def update_params
     params.require(:conversation).permit(:name)
+  end
+
+  def set_index_conversations
+    if current_user.admin?
+      @school_conversations = Conversation.where(conversation_type: "school")
+    else
+      @school_conversation = Conversation.find_or_create_school_conversation(current_user)
+    end
+    @ensemble_conversation = Conversation.find_or_create_ensemble(current_user) unless current_user.admin?
+    @user_conversations = current_user.classic_and_group_conversations
+    @collegues_with_avatars = current_user.collegues_with_avatars
+    @ensemble_conversations = Conversation.ensemble if current_user.admin?
   end
 
   def conversation_params
