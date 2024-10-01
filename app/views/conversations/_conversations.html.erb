@@ -25,14 +25,16 @@
 							<%= image_tag conversation.users.where.not(id: current_user.id).first.avatar_url, class: "avatar-basic",width: "40px" %>
 						<% end %>
 					</div>
-					<%= render 'messages/last_message', message: conversation.messages.last %>
+					<%= render 'messages/last_message', message: conversation.messages.last, conversation: %>
 				</div>
 			<% end %>
 		<% end %>
 	<% end %>
 	<%= render "conversations/ensemble_conversations",active_conversation: active_conversation , ensemble_conversations: @ensemble_conversations if @ensemble_conversations%>
-	<%= button_tag  class: "btn-flat-no-hover" do %>
-		Contacter <i class="fa-solid fa-comment"></i>
-	<% end %>
-	<%= render 'conversations/create_conversation', collegues_with_avatars: @collegues_with_avatars, collegue_not_in_conversation: @collegue_not_in_conversation %>
+	<div class="contact-collegue">
+		<%= button_tag  class: "btn-flat-no-hover" do %>
+			Contacter <i class="fa-solid fa-comment"></i>
+		<% end %>
+		<%= render 'conversations/create_conversation', collegues_with_avatars: @collegues_with_avatars, collegue_not_in_conversation: @collegue_not_in_conversation %>
+	</div>
 </div>

@@ -1,15 +1,24 @@
-.message-date{
+.message-date {
   font-size: 0.6rem;
   color: $blanc;
   font-style: italic;
   font-weight: bold;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  .conversation-name{
+    font-size: 0.8rem;
+    color: $bleuC;
+    font-weight: bold;
+  }
 }
-.message{
-  .content{
+.message {
+  .content {
     display: flex;
   }
 }
-.writer .message-date{
+.writer .message-date {
   font-size: 0.6rem;
   color: $grisC;
   font-style: italic;
