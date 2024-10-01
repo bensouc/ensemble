@@ -1,24 +1,105 @@
 @import "show";
-.conversations-container {
-  width: calc(100vw - 200px);
-  height: calc(100vh - 214px);
-  padding: 0 5%;
-  display: flex;
-  justify-content: space-between;
-}
-
-.conversations-list {
-  width: 40%;
-  height: 100%;
-  overflow-y: scroll;
-  -ms-overflow-style: none; /* Internet Explorer 10+ */
-  scrollbar-width: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  .user-avatars{
+// MOBILE
+@media (max-width: 750px) {
+  .conversations-container {
+    width: 100vw;
+    height: calc(100vh - 120px);
+    padding: 0 5%;
     display: flex;
-    gap: 5px;
+    justify-content: center;
+  }
+  .conversations-list {
+    height: 100%;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .user-avatars {
+      display: flex;
+      gap: 5px;
+    }
+  }
+  .conversation {
+    margin: 5px 0 0 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: thin solid #dddddd;
+    border-radius: 10px;
+    height: calc(100vh - 85px);
+    width: 90vw;
+
+    .conversation-title {
+      font-family: $titres-font-2;
+      text-align: center;
+      padding: 5px;
+      display: flex;
+      justify-content: center;
+    }
+  }
+  .contact-collegue {
+    position: sticky;
+    bottom: 0px;
+    background: white;
+    padding: 5px 0 0 0;
+    .btn-flat-no-hover{
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  }
+  .bullet-chat{
+        position: relative;
+    width: 0.75rem;
+    height: 0.75rem;
+    background-color: #0dc416;
+    border-radius: 50%;
+    font-size: 0px;
+    font-size: 0px;
+    top: -49px;
+    left: 35px;
+  }
+}
+// DESKTOP
+@media (min-width: 750px) {
+  .conversations-container {
+    width: calc(100vw - 200px);
+    height: calc(100vh - 214px);
+    padding: 0 5%;
+    display: flex;
+    justify-content: space-between;
+  }
+  .conversations-list {
+    width: 40%;
+    height: 100%;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    .user-avatars {
+      display: flex;
+      gap: 5px;
+    }
+  }
+  .conversation {
+    width: 50%;
+    padding: 0 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: thin solid $grisC;
+    border-radius: 10px;
+    .conversation-title {
+      font-family: $titres-font-2;
+      text-align: center;
+      padding: 5px;
+      display: flex;
+      justify-content: center;
+    }
   }
 }
 .conversation-link {
@@ -50,27 +131,27 @@
     display: flex;
     padding: 5px;
   }
-  .content{
+  .content {
     display: flex;
   }
 }
 
 // for one conversation
 .conversation {
-  width: 50%;
-  padding: 0 20px 20px 20px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border: thin solid $grisC;
-  border-radius: 10px;
-  .conversation-title {
-    font-family: $titres-font-2;
-    text-align: center;
-    padding: 5px;
-    display: flex;
-    justify-content: center;
-  }
+  //   width: 50%;
+  //   padding: 0 20px 20px 20px;
+  //   display: flex;
+  //   flex-direction: column;
+  //   justify-content: space-between;
+  //   border: thin solid $grisC;
+  //   border-radius: 10px;
+  //   .conversation-title {
+  //     font-family: $titres-font-2;
+  //     text-align: center;
+  //     padding: 5px;
+  //     display: flex;
+  //     justify-content: center;
+  //   }
   .messages {
     flex: 1;
     display: flex;

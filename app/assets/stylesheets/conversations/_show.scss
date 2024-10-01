@@ -1,27 +1,44 @@
-.conversation-users {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-end;
-  gap: 3px;
-
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Bordure blanche semi-transparente */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
-  border-radius: 10px 10px 0 0; /* Coins arrondis */
-  padding: 10px; /* Espacement interne */
-  .collegue-list {
-    border-radius: 20px;
-
-    /* width: 0; */
-    position: absolute;
-    /* left: 4px; */
-    /* height: 0; */
-    top: 193px;
-    z-index: 1;
-    background-color: white;
+@media (max-width: 750px) {
+  .conversation-users {
+    .collegue-list { 
+      border-radius: 20px !important;
+      /* width: 0; */
+      position: absolute !important;
+      /* left: 4px; */
+      /* height: 0; */
+      top: 73px !important;
+      z-index: 1 !important;
+      background-color: white !important;;
+    }
   }
 }
+
+
+  .conversation-users {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 3px;
+
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Bordure blanche semi-transparente */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Ombre légère */
+    border-radius: 10px 10px 0 0; /* Coins arrondis */
+    padding: 10px; /* Espacement interne */
+    .collegue-list {
+      border-radius: 20px;
+
+      /* width: 0; */
+      position: absolute;
+      /* left: 4px; */
+      /* height: 0; */
+      top: 193px;
+      z-index: 1;
+      background-color: white;
+    }
+  }
+
 .new-message-form {
   .message_content {
     width: 100%;

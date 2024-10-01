@@ -14,7 +14,7 @@
 				<i class="fa-solid fa-school --rose" style="font-size: x-large;">
 				</i>
 			</div>
-			<%= render 'messages/last_message', message: school_conversation.messages.last %>
+			<%= render 'messages/last_message', message: school_conversation.messages.last, conversation: school_conversation %>
 		</div>
 	<% end %>
 <% end %>
@@ -35,7 +35,7 @@
 					<i class="fa-solid fa-school --rose" style="font-size: x-large;">
 					</i>
 				</div>
-				<%= render 'messages/last_message', message: school_conversation.messages.last %>
+				<%= render 'messages/last_message', message: school_conversation.messages.last, conversation: school_conversation %>
 			</div>
 		<% end %>
 	<% end %>

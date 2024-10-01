@@ -17,6 +17,16 @@
 			<% end %>
 		</div>
 		<div class="mobile-user-menu">
+			<%= link_to conversations_path do %>
+				<i class="fa-regular fa-comment">
+					<% if @unread_messages %>
+						<div class="bullet-chat"></div>
+					<% end %>
+				</i>
+			<% end %>
+			<%# <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg"> %>
+		</div>
+		<div class="mobile-user-menu">
 			<%= link_to destroy_user_session_path, method: :delete do %>
 				<i class="fas fa-sign-out-alt"></i>
 			<% end %>
