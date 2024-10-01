@@ -40,7 +40,7 @@
 	</div>
 	<%= turbo_stream_from "conversation_#{conversation.id}_messages" %>
 	<%= turbo_frame_tag "messages", class:"messages", data:{conversation_target: "messages"} do %>
-		<% conversation.messages.each do |message| %>
+		<% conversation.messages.sort_by(&:created_at).each do |message| %>
 			<%= render 'messages/message', message: message, user: current_user %>
 		<% end %>
 	<% end %>

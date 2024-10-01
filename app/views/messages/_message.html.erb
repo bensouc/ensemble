@@ -3,7 +3,8 @@
       data-controller="message"
       data-message-user-id-value="<%= message.user.id %>">
 	<div class="content">
-		<%= image_tag message.user.avatar_url, class:'avatar-small me-1', data:{message_target: "avatar"} %> <%= message.content %>
+		<%= image_tag message.user.avatar_url, class:'avatar-small me-1', data:{message_target: "avatar"} %>
+    <%= message.content %>
 	</div>
 	<div class="message-date">
 		<% if message.created_at.to_date == Date.today %>
