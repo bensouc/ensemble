@@ -28,7 +28,7 @@ class ApplicationController < ActionController::Base
   private
 
   def set_unread_messages
-    @unread_messages = Message.unread_by(current_user)
+    @unread_messages = current_user.unread_message?
   end
 
   def skip_pundit?

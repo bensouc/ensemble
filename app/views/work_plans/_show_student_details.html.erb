@@ -40,7 +40,7 @@
     </div>
     <%unless work_plan.shared_user_id.nil?%>
       <div class='d-flex  justify-content-end'>
-        <h6 class='shared-by'>Partagé par <%= @shared_user.first_name.capitalize %> </h6>
+        <h6 class='shared-by'>Partagé par <%= work_plan.shared_user.first_name.capitalize %> </h6>
       </div>
     <% end %>
   </div>

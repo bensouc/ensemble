@@ -39,6 +39,8 @@ class WorkPlansController < ApplicationController
         if sharing_params.nil?
           redirect_to work_plan_path(new_wp), notice: "Clonage réussi"
         else
+          message = current_user.first_name + " vous a partagé le  plan de travail " + new_wp.name.to_s
+          SharingMessages.send_ensemble_message_to_user(new_wp.user, message)
           redirect_to work_plan_path(wp), notice: "Partage réussi"
         end
       else

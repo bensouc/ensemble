@@ -44,7 +44,6 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
 
-
   # Methods
 
   def avatar_url
@@ -55,6 +54,13 @@ class User < ApplicationRecord
     else
       "https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png"
     end
+  end
+
+  def unread_message? # check if user has unread messages true=> has unread messages / false=> no unread messages
+    !Message.joins(conversation: :user_conversations)
+      .where(user_conversations: { user_id: id })
+      .unread_by(self)
+      .empty?
   end
 
   def admin?

@@ -8,7 +8,7 @@ class SharedClassroomsController < ApplicationController
     teachers.each do |teacher|
       shared_classroom = SharedClassroom.new(
         user_id: teacher.id,
-        classroom: classroom
+        classroom: classroom,
       )
       next if shared_classroom.save
 
@@ -18,6 +18,10 @@ class SharedClassroomsController < ApplicationController
     end
     classroom.shared = true
     classroom.save
+    message = current_user.first_name + " a partagé avec vous la classe " + classroom.name.to_s
+    teachers.each do |teacher|
+      SharingMessages.send_ensemble_message_to_user(teacher, message)
+    end
     redirect_to classrooms_path, notice: "Partage réussi"
   end
 
