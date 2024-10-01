@@ -6,7 +6,7 @@
                       bs_placement:"bottom"},
                 title:"Conversations" do %>
 	<i class="fa-regular fa-comment">
-    <% unless @unread_messages.empty? %>
+    <% if @unread_messages %>
 	    <div class="bullet-chat"></div>
     <% end %>
   </i>
