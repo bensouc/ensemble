@@ -135,7 +135,7 @@ class User < ApplicationRecord
   end
 
   def classic_and_group_conversations
-    Conversation.joins(:user_conversations).where(user_conversations: { user: self },
+    Conversation.includes(messages: [:user, :rich_text_content]).joins(:user_conversations).where(user_conversations: { user: self },
                                                   conversation_type: %w[classic group])
   end
 

@@ -1,4 +1,4 @@
-  <%= turbo_frame_tag "conversation", class:"conversation", data:{conversation_target: "conversation"} do %>
+<%= turbo_frame_tag "conversation", class:"conversation", data:{conversation_target: "conversation"} do %>
 	<div class="conversation-header">
 		<%= render "conversations/name", conversation: conversation %>
 		<div class="conversation-users">
