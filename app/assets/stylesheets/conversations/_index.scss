@@ -127,8 +127,11 @@
   .last-message-box {
     border-left: thin solid $bleuC;
     background-color: $blanc;
-    border-radius: 0 10px 10px 0;
+    border-radius: 0 0.5rem 0.5rem 0;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 5px;
     padding: 5px;
   }
   .content {

@@ -35,4 +35,12 @@
 			</div>
 		<% end %>
 	</div>
+  <% if conversation.is_classic? || conversation.is_group? %>
+  <div class="leave-group-btn">
+    <%= link_to remove_user_conversation_path(conversation), method: :delete, class: "btn-flat-no-hover",
+        data: { confirm: "Souhaitez vous quitter cette conversation?" } do %>
+      <i class="fa-solid fa-sign-out"></i>
+    <% end %>
+  </div>
+  <% end %>
 </div>

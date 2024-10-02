@@ -15,7 +15,7 @@
           title="<%= teacher.school.name + " " + teacher.first_name%>">
 					<%= image_tag teacher.avatar_url, class: "avatar-basic",width: "40px" %>
 				</div>
-				<%= render 'messages/last_message', message: ensemble_conversation.messages.last %>
+				<%= render 'messages/last_message', message: ensemble_conversation.messages.last, conversation: ensemble_conversation %>
 			</div>
 		<% end %>
 	<% end %>
