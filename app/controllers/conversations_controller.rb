@@ -2,7 +2,7 @@
 
 class ConversationsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_conversation, only: [:show, :edit, :update, :destroy, :add_user]
+  before_action :set_conversation, only: [:show, :edit, :update, :destroy, :add_user, :remove_user]
   before_action :set_index_conversations, only: [:index]
   # after_action :verify_authorized, except: :index
 
@@ -10,7 +10,7 @@ class ConversationsController < ApplicationController
     skip_policy_scope
     # @user = User.includes([:avatar_attachment]).find(current_user.id)
     if params[:conversation_id].present?
-      @conversation = Conversation.includes([:messages]).find(params[:conversation_id])
+      @conversation = Conversation.includes(messages: [:user, :rich_text_content]).find(params[:conversation_id])
       @collegue_not_in_conversation = @collegues_with_avatars.reject { |collegue| @conversation.users.include?(collegue) }
       @conversation.mark_as_read!(current_user)
     else
@@ -51,6 +51,13 @@ class ConversationsController < ApplicationController
     end
   end
 
+  def remove_user
+    Rails.logger.info("###################### \n Remove user #{current_user.id} from
+    conversation #{@conversation.id}\n######################")
+    @conversation.users.delete(current_user)
+    redirect_to conversations_path
+  end
+
   def edit
   end
 
@@ -79,7 +86,7 @@ class ConversationsController < ApplicationController
 
   def set_index_conversations
     if current_user.admin?
-      @school_conversations = Conversation.where(conversation_type: "school")
+      @school_conversations = Conversation.includes(messages: [:user, :rich_text_content]).where(conversation_type: "school")
     else
       @school_conversation = Conversation.find_or_create_school_conversation(current_user)
     end

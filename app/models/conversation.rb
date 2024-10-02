@@ -6,10 +6,10 @@ class Conversation < ApplicationRecord
   has_many :users, through: :user_conversations
 
   validates :conversation_type, presence: true, inclusion: { in: %w[ensemble group school classic] }
-  validate  :unique_ensemble_conversation_per_user, if: -> { conversation_type == "ensemble" }
+  validate :unique_ensemble_conversation_per_user, if: -> { conversation_type == "ensemble" }
   scope :classic, -> { where(conversation_type: "classic") }
   scope :school, -> { where(conversation_type: "school") }
-  scope :ensemble, -> { where(conversation_type: "ensemble") }
+  scope :ensemble, -> { includes(:users).where(conversation_type: "ensemble") }
 
   # get conversation for the ensemble user
   def is_group?
@@ -43,7 +43,9 @@ class Conversation < ApplicationRecord
   end
 
   def self.find_or_create_ensemble(user)
-    conversation = where(conversation_type: "ensemble").joins(:users).find_by(users: { id: user.id })
+    conversation = includes(messages: [:user, :rich_text_content])
+      .where(conversation_type: "ensemble")
+      .joins(:users).find_by(users: { id: user.id })
     unless conversation
       conversation = create(conversation_type: "ensemble", name: "Ensemble & #{user.first_name}")
       conversation.users << user
@@ -55,7 +57,7 @@ class Conversation < ApplicationRecord
   def self.find_or_create_school_conversation(user)
     # Trouver ou créer la conversation de type "school" pour l'école de l'utilisateur
     school = user.school
-    conversation = Conversation.includes(messages: :user)
+    conversation = Conversation.includes([:users, { messages: [:user, :rich_text_content] }])
       .where(conversation_type: "school")
       .joins(users: :school_role)
       .find_by(school_roles: { school_id: school.id })

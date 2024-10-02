@@ -139,6 +139,16 @@ RSpec.describe ConversationsController, type: :controller do
     end
   end
 
+  describe "DELETE #remove_user" do
+    it "removes the current user from the conversation" do
+      conversation.users << user
+      expect(conversation.users.include?(user)).to eq(true)
+      delete :remove_user, params: { id: conversation.id }
+      conversation.reload
+      expect(conversation.users.include?(user)).to eq(false)
+    end
+  end
+
   describe "POST #add_user" do
     let(:conversation) { create(:conversation, conversation_type: "classic") }
     let(:new_user) { create(:user) }
@@ -157,7 +167,6 @@ RSpec.describe ConversationsController, type: :controller do
       conversation.reload
       expect(conversation.users.include?(new_user)).to eq(true)
     end
-
 
     it "redirects to conversations path with HTML format" do
       post :add_user, params: { id: conversation.id, new_user_id: new_user.id }, format: :html

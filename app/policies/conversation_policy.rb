@@ -26,6 +26,10 @@ class ConversationPolicy < ApplicationPolicy
     update?
   end
 
+  def remove_user?
+    record.users.include?(user)
+  end
+
   private
 
   def user_is_participant?

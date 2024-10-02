@@ -1,42 +1,46 @@
 <%# for non-admin users  %>
-<% unless school_conversation.nil? %>
-	<%= link_to conversation_path(school_conversation),data:{turbo_frame: "conversation"} do%>
-		<div class="conversation-link <%='active' if school_conversation == active_conversation%> "
-      data-conversation-list-target="conversation"
-      data-action="click->conversation-list#addActive">
-			<%if school_conversation.unread_messages_for_user?(current_user)%>
-				<i class="fa-solid fa-circle bullet-chat-2" data-conversation-list-target="bullet"></i>
-			<% end %>
-			<div class="header" data-controller="tooltip"
-            data-bs-toggle="tooltip"
-            data-bs-placement="left"
-            title="<%= current_user.school.name %>"            >
-				<i class="fa-solid fa-school --rose" style="font-size: x-large;">
-				</i>
-			</div>
-			<%= render 'messages/last_message', message: school_conversation.messages.last, conversation: school_conversation %>
-		</div>
-	<% end %>
+<% if current_user.admin? %>
+  <% unless school_conversations.nil? %>
+    <% school_conversations.sort_by(&:id).each do |school_conversation| %>
+      <%= link_to conversation_path(school_conversation),data:{turbo_frame: "conversation"} do%>
+        <div class="conversation-link <%='active' if school_conversation == active_conversation%> "
+        data-conversation-list-target="conversation"
+        data-action="click->conversation-list#addActive">
+          <%if school_conversation.unread_messages_for_user?(current_user)%>
+            <i class="fa-solid fa-circle bullet-chat-2" data-conversation-list-target="bullet"></i>
+          <% end %>
+          <div class="header" data-controller="tooltip"
+              data-bs-toggle="tooltip"
+              data-bs-placement="left"
+              title="<%= school_conversation.users.first.school.name %>"            >
+            <i class="fa-solid fa-school --rose" style="font-size: x-large;">
+            </i>
+          </div>
+          <%= render 'messages/last_message', message: school_conversation.messages.last, conversation: school_conversation %>
+        </div>
+      <% end %>
+    <% end %>
+  <% end %>
+<% else %>
+  <% unless school_conversation.nil? %>
+    <%= link_to conversation_path(school_conversation),data:{turbo_frame: "conversation"} do%>
+      <div class="conversation-link <%='active' if school_conversation == active_conversation%> "
+        data-conversation-list-target="conversation"
+        data-action="click->conversation-list#addActive">
+        <%if school_conversation.unread_messages_for_user?(current_user)%>
+          <i class="fa-solid fa-circle bullet-chat-2" data-conversation-list-target="bullet"></i>
+        <% end %>
+        <div class="header" data-controller="tooltip"
+              data-bs-toggle="tooltip"
+              data-bs-placement="left"
+              title="<%= current_user.school.name %>"            >
+          <i class="fa-solid fa-school --rose" style="font-size: x-large;">
+          </i>
+        </div>
+        <%= render 'messages/last_message', message: school_conversation.messages.last, conversation: school_conversation %>
+      </div>
+    <% end %>
+  <% end %>
 <% end %>
+
 <%# for admin users  %>
-<% unless school_conversations.nil? %>
-	<% school_conversations.sort_by(&:id).each do |school_conversation| %>
-		<%= link_to conversation_path(school_conversation),data:{turbo_frame: "conversation"} do%>
-			<div class="conversation-link <%='active' if school_conversation == active_conversation%> "
-      data-conversation-list-target="conversation"
-      data-action="click->conversation-list#addActive">
-				<%if school_conversation.unread_messages_for_user?(current_user)%>
-					<i class="fa-solid fa-circle bullet-chat-2" data-conversation-list-target="bullet"></i>
-				<% end %>
-				<div class="header" data-controller="tooltip"
-            data-bs-toggle="tooltip"
-            data-bs-placement="left"
-            title="<%= school_conversation.users.first.school.name %>"            >
-					<i class="fa-solid fa-school --rose" style="font-size: x-large;">
-					</i>
-				</div>
-				<%= render 'messages/last_message', message: school_conversation.messages.last, conversation: school_conversation %>
-			</div>
-		<% end %>
-	<% end %>
-<% end %>

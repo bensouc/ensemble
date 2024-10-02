@@ -4,16 +4,13 @@
 			<div class="content --grisC w-100">
 				<p class="m-0">Commencez une conversation</p>
 			</div>
-			<div class="message-date">
-				<div class="">
-
-				</div>
-				<% if is_mobile_device? %>
-					<div class="conversation-name">
+			<% if is_mobile_device? %>
+				<div class="message-date w-100">
+					<div class="conversation-name w-100 text-end">
 						<%= conversation.name %>
 					</div>
-				<% end %>
-			</div>
+				</div>
+			<% end %>
 		<% else %>
 			<div class="content --grisC w-100">
 				<%= image_tag message.user.avatar_url, class:'avatar-small me-1' %>
@@ -35,4 +32,12 @@
 			</div>
 		<% end %>
 	</div>
+	<% if conversation.is_classic? || conversation.is_group? %>
+		<div class="leave-group-btn">
+			<%= link_to remove_user_conversation_path(conversation), method: :delete, class: "btn-flat-no-hover",
+        data: { confirm: "Souhaitez vous quitter cette conversation?" } do %>
+				<i class="fa-solid fa-sign-out"></i>
+			<% end %>
+		</div>
+	<% end %>
 </div>

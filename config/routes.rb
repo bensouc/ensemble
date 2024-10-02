@@ -133,6 +133,7 @@ Rails.application.routes.draw do
   resources :conversations, only: [:index, :create, :show, :edit, :update] do
     member do
       post "add_user"
+      delete "remove_user"
     end
     collection do
       post "contact_user"

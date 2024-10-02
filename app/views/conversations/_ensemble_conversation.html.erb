@@ -1,7 +1,8 @@
 <%= link_to  conversation_path(ensemble_conversation),data:{turbo_frame: "conversation"} do%>
-		<div class="conversation-link <%='active' if ensemble_conversation == active_conversation%>"
+	<div class="conversation-link <%='active' if ensemble_conversation == active_conversation%>"
       data-conversation-list-target="conversation"
       data-action="click->conversation-list#addActive">
+		<div class="d-flex">
 			<%if ensemble_conversation.unread_messages_for_user?(current_user)%>
 				<i class="fa-solid fa-circle bullet-chat-2" data-conversation-list-target="bullet"></i>
 			<% end %>
@@ -11,6 +12,7 @@
           title="Ensemble">
 				<%= image_tag 'icons/apple-icon.png', width: "40px" %>
 			</div>
-			<%= render 'messages/last_message', message: ensemble_conversation.messages.last %>
+		</div>
+		<%= render 'messages/last_message', message: ensemble_conversation.messages.last, conversation: ensemble_conversation %>
 	</div>
 <%end%>

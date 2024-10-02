@@ -5,17 +5,19 @@
 			<div class="conversation-link <%='active' if ensemble_conversation == active_conversation%>"
       data-conversation-list-target="conversation"
       data-action="click->conversation-list#addActive">
-				<%if ensemble_conversation.unread_messages_for_user?(current_user)%>
-					<i class="fa-solid fa-circle bullet-chat-2" data-conversation-list-target="bullet"></i>
-				<% end %>
-				<% teacher = ensemble_conversation.users.where.not(id: current_user.id).first  %>
-				<div class="header" data-controller="tooltip"
+				<div class="d-flex">
+					<%if ensemble_conversation.unread_messages_for_user?(current_user)%>
+						<i class="fa-solid fa-circle bullet-chat-2" data-conversation-list-target="bullet"></i>
+					<% end %>
+					<% teacher = ensemble_conversation.users.where.not(id: current_user.id).first  %>
+					<div class="header" data-controller="tooltip"
           data-bs-toggle="tooltip"
           data-bs-placement="left"
           title="<%= teacher.school.name + " " + teacher.first_name%>">
-					<%= image_tag teacher.avatar_url, class: "avatar-basic",width: "40px" %>
+						<%= image_tag teacher.avatar_url, class: "avatar-basic",width: "40px" %>
+					</div>
 				</div>
-				<%= render 'messages/last_message', message: ensemble_conversation.messages.last %>
+				<%= render 'messages/last_message', message: ensemble_conversation.messages.last, conversation: ensemble_conversation %>
 			</div>
 		<% end %>
 	<% end %>
