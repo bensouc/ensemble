@@ -10,27 +10,31 @@
 				<div class="conversation-link <%='active' if conversation == active_conversation%>"
               data-conversation-list-target="conversation"
               data-action="click->conversation-list#addActive">
-					<%if conversation.unread_messages_for_user?(current_user)%>
-						<i class="fa-solid fa-circle bullet-chat-2" data-conversation-list-target="bullet"></i>
-					<% end %>
-					<div class="header" data-controller="tooltip"
+					<div class="d-flex">
+						<%if conversation.unread_messages_for_user?(current_user)%>
+							<i class="fa-solid fa-circle bullet-chat-2" data-conversation-list-target="bullet"></i>
+						<% end %>
+						<div class="header" data-controller="tooltip"
                   data-bs-toggle="tooltip"
                   data-bs-placement="left"
                   title="<%=conversation.name%>">
-						<% if conversation.is_group? %>
-							<div class="avatar-basic">
-								<i class="fa-solid fa-comments" style="font-size: x-large;"></i>
-							</div>
-						<% else %>
-							<%= image_tag conversation.users.where.not(id: current_user.id).first.avatar_url, class: "avatar-basic",width: "40px" %>
-						<% end %>
+							<% if conversation.is_group? %>
+								<div class="avatar-basic">
+									<i class="fa-solid fa-comments" style="font-size: x-large;"></i>
+								</div>
+							<% else %>
+								<%= image_tag conversation.users.where.not(id: current_user.id).first.avatar_url, class: "avatar-basic",width: "40px" %>
+							<% end %>
+						</div>
 					</div>
 					<%= render 'messages/last_message', message: conversation.messages.last, conversation: %>
 				</div>
 			<% end %>
 		<% end %>
 	<% end %>
-	<%= render "conversations/ensemble_conversations",active_conversation: active_conversation , ensemble_conversations: @ensemble_conversations if @ensemble_conversations%>
+	<% if current_user.admin? %>
+		<%= render "conversations/ensemble_conversations",active_conversation: active_conversation , ensemble_conversations: @ensemble_conversations if @ensemble_conversations%>
+	<% end %>
 	<div class="contact-collegue">
 		<%= button_tag  class: "btn-flat-no-hover" do %>
 			Contacter <i class="fa-solid fa-comment"></i>

@@ -2,7 +2,7 @@
 
 class ConversationsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_conversation, only: [:show, :edit, :update, :destroy, :add_user]
+  before_action :set_conversation, only: [:show, :edit, :update, :destroy, :add_user, :remove_user]
   before_action :set_index_conversations, only: [:index]
   # after_action :verify_authorized, except: :index
 
@@ -49,6 +49,13 @@ class ConversationsController < ApplicationController
                                                                   locals: { conversation: @conversation, collegue_not_in_conversation: @collegue_not_in_conversation })
       }
     end
+  end
+
+  def remove_user
+    Rails.logger.info("###################### \n Remove user #{current_user.id} from
+    conversation #{@conversation.id}\n######################")
+    @conversation.users.delete(current_user)
+    redirect_to conversations_path
   end
 
   def edit
