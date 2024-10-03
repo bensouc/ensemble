@@ -1,6 +1,6 @@
 @import "show";
 // MOBILE
-@media (max-width: 750px) {
+@media (max-width: 1024px) {
   .conversations-container {
     width: 100vw;
     height: calc(100vh - 120px);
@@ -18,6 +18,7 @@
     gap: 10px;
     .user-avatars {
       display: flex;
+      flex-wrap: wrap;
       gap: 5px;
     }
   }
@@ -45,13 +46,13 @@
     bottom: 0px;
     background: white;
     padding: 5px 0 0 0;
-    .btn-flat-no-hover{
+    .btn-flat-no-hover {
       width: 100%;
       margin-bottom: 0.5rem;
     }
   }
-  .bullet-chat{
-        position: relative;
+  .bullet-chat {
+    position: relative;
     width: 0.75rem;
     height: 0.75rem;
     background-color: #0dc416;
@@ -63,7 +64,7 @@
   }
 }
 // DESKTOP
-@media (min-width: 750px) {
+@media (min-width: 1024px) {
   .conversations-container {
     width: calc(100vw - 200px);
     height: calc(100vh - 214px);
@@ -82,6 +83,7 @@
     gap: 10px;
     .user-avatars {
       display: flex;
+      flex-wrap: wrap;
       gap: 5px;
     }
   }
