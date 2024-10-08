@@ -4,7 +4,12 @@
       data-message-user-id-value="<%= message.user.id %>">
 	<div class="content">
 		<%= image_tag message.user.avatar_url, class:'avatar-small me-1', data:{message_target: "avatar"} %>
-    <%= message.content %>
+		<div class="message-content">
+			<% unless message.user == user || message.user.avatar.attached? %>
+				<div class='message-content-user-name'> <%= message.user.first_name %> </div>
+			<% end %>
+			<%= message.content %>
+		</div>
 	</div>
 	<div class="message-date">
 		<% if message.created_at.to_date == Date.today %>

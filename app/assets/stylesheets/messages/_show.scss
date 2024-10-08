@@ -22,6 +22,11 @@
   .content {
     display: flex;
   }
+  .message-content-user-name{
+    font-size: xx-small;
+    color: $blanc;
+    font-style: italic;
+  }
 }
 .writer .message-date {
   font-size: 0.6rem;
