@@ -18,7 +18,11 @@ export default class extends Controller {
       this.element.classList.remove('writer');
     }
     // this.element.scrollIntoView({ behavior: 'smooth' }); // scroll to the bottom of the page
-    this.scrollToBottom();
+    // wait 0.5s et execute la fonction
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 200);
+    // this.scrollToBottom();
   }
   // initialize() {
   //   this.element.addEventListener("turbo:before-stream-render", this.#scrollToBottom.bind(this));
