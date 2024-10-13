@@ -4,14 +4,14 @@
       data-message-user-id-value="<%= message.user.id %>">
 	<div class="content">
 		<%= image_tag message.user.avatar_url, class:'avatar-small me-1',
-        title: user.admin? "Ensemble" : message.user.first_name,
+        title: message.user.admin? ? "Ensemble" : message.user.first_name,
         data:{message_target: "avatar",
                 controller:"tooltip",
                 bs_toggle:"tooltip",
                 bs_placement:"left"} %>
 		<div class="message-content">
 			<% unless !is_mobile_device? && (message.user == user || message.user.avatar.attached?) %>
-				<div class='message-content-user-name'> <%= user.admin? "Ensemble" : message.user.first_name %> </div>
+				<div class='message-content-user-name'> <%= message.user.admin? ? "Ensemble" : message.user.first_name %> </div>
 			<% end %>
 			<%= message.content %>
 		</div>
