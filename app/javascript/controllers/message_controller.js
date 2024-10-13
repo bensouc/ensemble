@@ -21,7 +21,7 @@ export default class extends Controller {
     // wait 0.5s et execute la fonction
     setTimeout(() => {
       this.scrollToBottom();
-    }, 200);
+    }, 500);
     // this.scrollToBottom();
   }
   // initialize() {
