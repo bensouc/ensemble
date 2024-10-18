@@ -10,21 +10,10 @@ class SkillsController < ApplicationController
 
   def index
     redirect_to classrooms_path unless current_user.classroom?
-    # setup_all_skills_data
     respond_to do |format|
       format.html { setup_all_skills_data }
-      format.xlsx do
-        grade = Grade.includes([:domains, :skills]).find(params[:grade])
-        skills = grade.skills
-        domains = grade.domains.sort_by(&:position)
-        school = current_user.school
-        response.headers["Content-Disposition"] = 'attachment; filename="my_new_filename.xlsx"'
-        package = Xlsx.skills_generate_xlsx_file(school, grade, domains, skills)
-        send_xlsx_file(package, school, grade)
-      end
+      format.xlsx { generate_and_send_xlsx }
     end
-    # for production => "A fournier == "
-    # @are_special_domains = current_user.school.id == 1
   end
 
   def show
@@ -49,11 +38,10 @@ class SkillsController < ApplicationController
     # redirect_to skill_path(@skill)
     @skills = Skill.includes([:school]).where(domain: @skill.domain, level: @skill.level)
 
-    respond_to  do |format|
-      format.html { redirect_to skills_path}
+    respond_to do |format|
+      format.html { redirect_to skills_path }
       format.turbo_stream
     end
-
 
     #  skills: skills, domain: domain, level: skill_level
   end
@@ -92,7 +80,7 @@ class SkillsController < ApplicationController
     # puts "SKILL XLS UPLOAD REUSSI"
     binding.pry
     if temp_skills[:errors].empty?
-    flash[:success] = "#{temp_skills[:skills].count} Compétences ajoutées"
+      flash[:success] = "#{temp_skills[:skills].count} Compétences ajoutées"
       redirect_to skills_path
     else
       @errors = temp_skills[:errors]
@@ -110,7 +98,7 @@ class SkillsController < ApplicationController
       session[:uploaded_file_path] = file_path.to_s
       session[:grade_id] = params[:liste][:level]
       # flash[:success] = "File uploaded successfully!"
-      redirect_to add_skills_from_xls_path, params: {grade: params[:liste][:level] }
+      redirect_to add_skills_from_xls_path, params: { grade: params[:liste][:level] }
     else
       flash[:error] = "Please choose a file to upload."
       redirect_to skills_path
@@ -165,6 +153,15 @@ class SkillsController < ApplicationController
   end
 
   # XLSX GENERATION and send
+  def generate_and_send_xlsx
+    grade = Grade.includes([:domains, :skills]).find(params[:grade])
+    skills = grade.skills
+    domains = grade.domains.sort_by(&:position)
+    school = current_user.school
+    package = Xlsx.skills_generate_xlsx_file(school, grade, domains, skills)
+    send_xlsx_file(package, school, grade)
+  end
+
   def send_xlsx_file(package, school, grade)
     temp_file = Tempfile.new("temp.xlsx")
     package.serialize(temp_file.path)
