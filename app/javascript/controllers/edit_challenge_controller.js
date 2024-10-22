@@ -5,6 +5,7 @@ export default class extends Controller {
 
   connect(){
     // console.log('pencil connectéééé')
+    this.resolveImageURL()
   }
 
   displayForm() {
@@ -14,6 +15,11 @@ export default class extends Controller {
     this.infosTarget.classList.add('d-none');
     this.formTarget.classList.remove('d-none');
     // this.pencilTarget.classList.add('d-none')
+  }
+
+  resolveImageURL(){
+    console.log(this.element.innerHTML)
+    // this.document.innerHTML = this.document.innerHTML.replace('www.ensemble.lt', 'www.app-ensemble.fr')
   }
 
   hideForm(){

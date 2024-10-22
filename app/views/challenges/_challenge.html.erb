@@ -9,7 +9,7 @@
   <% end %>
   <%= link_to edit_challenge_path(challenge), class:"--color-inherit" do %>
     <div class="cont-challenge pencil-pointor mb-1" id="<%= challenge.id%>">
-      <div class= "" >
+      <div class= "" data-controller="edit-challenge">
         <div  data-edit-challenge-target="infos">
           <div class="challenge-infos"   data-ajax-replace-challenge-target='content' id='<%=challenge.id %>'>
             <div class="challenge-name-in-content">
