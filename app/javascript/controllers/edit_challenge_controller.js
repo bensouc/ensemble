@@ -5,7 +5,7 @@ export default class extends Controller {
 
   connect(){
     // console.log('pencil connectéééé')
-    this.resolveImageURL()
+    // this.resolveImageURL()
   }
 
   displayForm() {
