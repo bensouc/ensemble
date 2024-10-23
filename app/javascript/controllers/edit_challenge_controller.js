@@ -5,7 +5,7 @@ export default class extends Controller {
 
   connect(){
     // console.log('pencil connectéééé')
-    // this.resolveImageURL()
+    this.resolveImageURL()
   }
 
   displayForm() {
@@ -19,7 +19,7 @@ export default class extends Controller {
 
   resolveImageURL(){
     console.log(this.element.innerHTML)
-    this.document.innerHTML = this.document.innerHTML.replace('www.app-ensemble.fr', 'ensemble-v1.herokuapp.com')
+    this.element.innerHTML = this.element.innerHTML.replace('www.app-ensemble.fr', 'ensemble-v1.herokuapp.com')
   }
 
   hideForm(){
