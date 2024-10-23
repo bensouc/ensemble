@@ -93,7 +93,7 @@
 							</div>
 							<%= turbo_frame_tag "skill_#{skill.id}_new_challenge" %>
 							<%= turbo_frame_tag "#{dom_id(skill)}_challenges_list" do %>
-								<% challenges = @challenges.select{|chall| chall.skill == skill} %>
+								<% challenges = @challenges.select{|chall| chall.skill == skill}.sort_by{|challenge| challenge.skill.position} %>
 									<%= render challenges %>
 
 							<% end %>
