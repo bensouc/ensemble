@@ -21,8 +21,13 @@ class ApplicationController < ActionController::Base
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   def user_not_authorized
-    flash[:alert] = t("not_authorized")
-    redirect_to(dashboard_path)
+    flash.now[:alert] = t("not_authorized")
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.prepend("flash", partial: "shared/flashes")
+      end
+      format.html { redirect_to(request.referrer || dashboard_path) }
+    end
   end
 
   private
