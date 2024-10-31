@@ -44,10 +44,10 @@ class WorkPlanDomain < ApplicationRecord
     Skill.where(domain:, level:, school: user.school)
   end
 
-  def attach_next_skills(current_user)
-    Skill.where(domain:, level: level).each do |skill|
-      result = Result.find_by(skill:, student:)
-
+  def attach_next_skills(current_user, results)
+    Skill.where(domain:, level: level).sort_by(&:position).each do |skill|
+      # result = Result.find_by(skill:, student:)
+      result = results.to_a.find { |result| result.skill == skill }
       next if (!result.nil? && result.kind == "ceinture" && result.status == "completed") || (result.nil? && special?) # rubocop:disable Style/IfUnlessModifier
 
       kind =  if result.nil?

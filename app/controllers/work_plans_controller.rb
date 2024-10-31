@@ -196,15 +196,8 @@ class WorkPlansController < ApplicationController
 
       return
     end
-    @work_plan = WorkPlan.create(
-      name: "AUTO - N°#{@student.work_plans.count + 1}",
-      grade: @student.classroom.grade,
-      student: @student, user: current_user,
-      start_date: Time.zone.today.next_occurring(:monday),
-      end_date: Time.zone.today.next_occurring(:monday) + 4,
-    )
+
     authorize @work_plan
-    # @work_plan.save
     # Iterate through each domain in the list of domains
     @domains.each do |domain|
       # Create a new WorkPlanDomain object and set its attributes
@@ -214,9 +207,8 @@ class WorkPlansController < ApplicationController
       # Set the WorkPlanDomain's level to 1 and save it if Domain is special
       wpd.update(level: 1) if domain.special?
       # Find all the skills for the current domain, level, and grade
-      wpd.attach_next_skills(current_user)
+      wpd.attach_next_skills(current_user, @results)
     end
-
     # Save the work plan and redirect to the appropriate page
     if @work_plan.save
       redirect_to work_plan_path(@work_plan)
@@ -253,12 +245,20 @@ class WorkPlansController < ApplicationController
 
   def auto_new_wp_params
     @student = Student.find(params.require(:student_id))
+    @work_plan = WorkPlan.create(
+      name: "AUTO - N°#{@student.work_plans.count + 1}",
+      grade: @student.classroom.grade,
+      student: @student, user: current_user,
+      start_date: Time.zone.today.next_occurring(:monday),
+      end_date: Time.zone.today.next_occurring(:monday) + 4,
+    )
+    @results = Result.includes(:skill).where(student: @student)
     # binding.pry
-    if params[:student].nil?
-      @domains = params.require(:"/students/#{@student.id}")[:domains][1..].map { |id| Domain.find(id) }
-    else
-      @domains = params.require(:student)[:domains][1..].map { |id| Domain.find(id) }
-    end
+    @domains = if params[:student].nil?
+                 params.require(:"/students/#{@student.id}")[:domains][1..].map { |id| Domain.find(id) }
+               else
+                 params.require(:student)[:domains][1..].map { |id| Domain.find(id) }
+               end
   end
 
   def multiplecloning_params(id)

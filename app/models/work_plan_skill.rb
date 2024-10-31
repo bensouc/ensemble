@@ -42,18 +42,23 @@ class WorkPlanSkill < ApplicationRecord
     challenges = Challenge.classic.where(skill_id: skill)
     name = skill.name + " " + (challenges.count + 1).to_s
     # get all challenges azssigned 4 current_student and that skill
-    student_challenges = Challenge.assigned_challenges(skill, student)
-    # challenges = challenges.reject { |c| c == actual_challenge }
-    challenges = challenges.reject { |c| student_challenges.include?(c) }
-
-    # [1,2,3].reject{|c| c==4}
-    if challenges.empty?
-      # if no existing challeng 4 that skill
-      # create a empty challenge 4 that skill
-      Challenge.create_empty(self, name, current_user)
+    # if new WorkPlanSkill.where(skill:, kind: "exercice").select { |wps| wps.student == student }.sort_by(&:created_at).last.challenge_id
+    last_wps = WorkPlanSkill.where(skill:, kind: "exercice").select { |wps| wps.student == student }.sort_by(&:created_at).last
+    raise
+    if !last_wps.nil? && last_wps.status == "new"
+      Challenge.find(last_wps.challenge_id)
     else
-      # recuper un des exo existant avec le skill id de @self
-      challenges.sample
+      student_challenges = Challenge.assigned_challenges(skill, student)
+      challenges = challenges.reject { |c| student_challenges.include?(c) }
+      # [1,2,3].reject{|c| c==4}
+      if challenges.empty?
+        # if no existing challeng 4 that skill
+        # create a empty challenge 4 that skill
+        Challenge.create_empty(self, name, current_user)
+      else
+        # recuper un des exo existant avec le skill id de @self
+        challenges.sample
+      end
     end
   end
 
