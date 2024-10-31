@@ -30,7 +30,7 @@ class Conversation < ApplicationRecord
 
   def add_user!(user)
     users << user
-    self.conversation_type = "group"
+    self.conversation_type = "group" if users.count > 1
     save
   end
 
