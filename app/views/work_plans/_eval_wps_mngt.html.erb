@@ -34,6 +34,9 @@
 	<% # #si plan_skill kind ceinture %>
 	<div class=''>
 		<% if (plan_skill.kind.downcase == "controle") || (plan_skill.kind.downcase == "ceinture") %>
+			<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :not_done), data:{action: "click->ajax-work-plan#toggle"} do %>
+				<i class="fa-regular fa-circle-xmark --grisF eval-icon"></i>
+			<% end %>
 			<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo), data:{action: "click->ajax-work-plan#toggle"} do %>
 				<i class="fa-solid fa-arrow-rotate-left orange eval-icon"></i>
 			<% end %>
