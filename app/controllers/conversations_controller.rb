@@ -55,6 +55,7 @@ class ConversationsController < ApplicationController
     Rails.logger.info("###################### \n Remove user #{current_user.id} from
     conversation #{@conversation.id}\n######################")
     @conversation.users.delete(current_user)
+    @conversation.update(conversation_type: "classic") if @conversation.users.count == 1
     redirect_to conversations_path
   end
 
