@@ -90,40 +90,42 @@ class WorkPlanSkillsController < ApplicationController
     authorize @work_plan_skill
     @work_plan = @work_plan_skill.work_plan_domain.work_plan
     #  binding.pry
+    if params[:status] == "not_done"
+      @work_plan_skill.status = "new"
+    else
+      @work_plan_skill.status = params[:status]
 
-    @work_plan_skill.status = params[:status]
-
-    # @work_plan_skill.completed = true if @work_plan_skill.kind == "ceinture" && params[:status] == "completed"
-    # Create a belt or get the corresponding one
-    # binding.pry
-    belt = Belt.find_or_create_by(
-      {
-        student_id: @work_plan_skill.student.id,
-        domain: @work_plan_skill.work_plan_domain.domain,
-        level: @work_plan_skill.work_plan_domain.level,
-      }
-    )
-    # add test if (@work_plan_skill.kind == 'ceinture' && @work_plan_skill.status)
-    if @work_plan_skill.kind == "ceinture" || @work_plan_skill.kind == "controle"
-      case @work_plan_skill.status
-      when "completed"
-        @work_plan_skill.completed = true
-        @work_plan_skill.save!
-        # binding.pry
-        # test for each skill of its domain a 'belt is validated'jbiv
-        # if @work_plan_skill.work_plan_domain.special? && @work_plan.grade != "CM2"
-        if @work_plan_skill.work_plan_domain.special? #ADD management for ALAIN FOURNIER
-          Belt.special_newbelt(@work_plan_skill, @work_plan)
-        elsif @work_plan_skill.work_plan_domain.all_skills_completed?
-          belt.completed = true
-          belt.validated_date = DateTime.now
-          belt.save!
+      # @work_plan_skill.completed = true if @work_plan_skill.kind == "ceinture" && params[:status] == "completed"
+      # Create a belt or get the corresponding one
+      # binding.pry
+      belt = Belt.find_or_create_by(
+        {
+          student_id: @work_plan_skill.student.id,
+          domain: @work_plan_skill.work_plan_domain.domain,
+          level: @work_plan_skill.work_plan_domain.level,
+        }
+      )
+      # add test if (@work_plan_skill.kind == 'ceinture' && @work_plan_skill.status)
+      if @work_plan_skill.kind == "ceinture" || @work_plan_skill.kind == "controle"
+        case @work_plan_skill.status
+        when "completed"
+          @work_plan_skill.completed = true
+          @work_plan_skill.save!
+          # binding.pry
+          # test for each skill of its domain a 'belt is validated'jbiv
+          # if @work_plan_skill.work_plan_domain.special? && @work_plan.grade != "CM2"
+          if @work_plan_skill.work_plan_domain.special? #ADD management for ALAIN FOURNIER
+            Belt.special_newbelt(@work_plan_skill, @work_plan)
+          elsif @work_plan_skill.work_plan_domain.all_skills_completed?
+            belt.completed = true
+            belt.validated_date = DateTime.now
+            belt.save!
+          end
+        else
+          @work_plan_skill.completed = false
         end
-      else
-        @work_plan_skill.completed = false
       end
     end
-
     @work_plan_skill.save!
     # @work_plan_skill.update_result #Maj du result
     render partial: "work_plans/eval_last_wps_ajax"
