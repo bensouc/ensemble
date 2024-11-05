@@ -8,7 +8,7 @@ class StudentsController < ApplicationController
     # @all_skills_and_last_wps = []
     # @belts_specials_count = []
     # @student_grade = @student.classroom.grade
-    @domains = @student.all_domains_from_student.sort_by(&:position)
+    @domains = @student.domains.sort_by(&:position)
     # @student_skills = @student_grade.skills
     # @belts = Belt.where(student: @student)
     # @belts = @belts.select(&:completed)
@@ -105,7 +105,7 @@ class StudentsController < ApplicationController
     work_plan_domain = special_work_plan.work_plan_domains.find_or_create_by(
       domain: skill.first.domain,
       work_plan: special_work_plan,
-      level: skill.first.level
+      level: skill.first.level,
     )
     # work_plan_domai.save
     @wps = WorkPlanDomain.add_wps_completed(skill, work_plan_domain, special_work_plan)

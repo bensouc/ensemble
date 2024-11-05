@@ -25,9 +25,8 @@ class BeltsController < ApplicationController
     # args[:grade] = Grade.find(new_belt_params[:grade_id])
     args[:domain] = Domain.find(new_belt_params[:domain_id])
     @belt = Belt.find_or_create_by(args)
-    @belt.completed = true
+    @belt.completed!
     # @belt.student = Student.find(params[:student_id])
-    @belt.validated_date = DateTime.now
     if @belt.save
       @domain = @belt.domain
       @student = @belt.student

@@ -1,4 +1,4 @@
- # frozen_string_literal: true
+# frozen_string_literal: true
 
 class Student < ApplicationRecord
   belongs_to :classroom
@@ -14,8 +14,8 @@ class Student < ApplicationRecord
 
   delegate :grade, to: :classroom
 
-  def all_domains_from_student
-    grade.domains
+  def domains
+    grade&.domains || []
   end
 
   def belt_status(domain, level)
@@ -23,25 +23,14 @@ class Student < ApplicationRecord
   end
 
   def skill_status(skill, _kind = nil)
-    # get all wps for this student and this skill
-    # binding.pry
-    # target_work_plan_skills = kind.nil? ? work_plan_skills.where(skill:) : work_plan_skills.where(skill:, kind:)
     target_work_plan_skills = work_plan_skills.where(skill:)
-
-    # if nil? => return 'skill_status_challenge'
-    # if target_work_plan_skills.nil?
-    #   'skill_status_challenge'
-    #   # if one of them has a wps.completed = true => out=> 'skill_status_completed'
-    # els
     if target_work_plan_skills.any?(&:completed)
       "skill_status_completed"
       # if one of them has wps.status == "completed" && wps.kind == "exercice"
     elsif target_work_plan_skills.any? do |work_plan_skill|
-            work_plan_skill.status == "completed" && work_plan_skill.kind == "exercice"
-          end
-      # out=>"skill_status_belt"
+      work_plan_skill.status == "completed" && work_plan_skill.kind == "exercice"
+    end
       "skill_status_belt"
-      # else => return status:skill_status_challenge
     else
       "skill_status_challenge"
     end
@@ -59,7 +48,7 @@ class Student < ApplicationRecord
 
   def find_special_workplan
     WorkPlan.includes(:work_plan_domains).where(student: self, grade:, name: "special_work_plan", special_wps: true).find_or_create_by!(
-      student: self, grade:, user: classroom.user, name: "special_work_plan", special_wps: true
+      student: self, grade:, user: classroom.user, name: "special_work_plan", special_wps: true,
     )
   end
 

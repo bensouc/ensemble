@@ -9,7 +9,7 @@ class Mobile::StudentsController < ApplicationController
   def show
     authorize @student
     @belts = Belt.completed.where(student: @student)
-    @domains = @student.all_domains_from_student.sort_by(&:position)
+    @domains = @student.domains.sort_by(&:position)
     # binding.pry
 
   end
