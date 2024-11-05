@@ -23,7 +23,12 @@
 									<i class="fa-solid fa-comments" style="font-size: x-large;"></i>
 								</div>
 							<% else %>
-								<%= image_tag conversation.users.where.not(id: current_user.id).first.avatar_url, class: "avatar-basic",width: "40px" %>
+								<% user = conversation.users.where.not(id: current_user.id) %>
+								<% if user %>
+									<%= image_tag user.first.avatar_url, class: "avatar-basic",width: "40px" %>
+								<% else %>
+									<%= image_tag current_user.avatar_url, class: "avatar-basic",width: "40px" %>
+								<% end %>
 							<% end %>
 						</div>
 					</div>

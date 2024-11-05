@@ -56,12 +56,12 @@
 				</div>
 			<% end %>
 		</div>
-		<div class="right-levels d-flex">
+		<div class="right-levels d-flex" data-controller="lazy-load">
 			<% @domains.each do |domain| %>
 				<div class="domain-main-col">
 					<% WorkPlanDomain::LEVELS.reverse_each do |level| %>
 						<%= turbo_frame_tag "student_#{@student.id}domain_#{domain.id}_level#{level}",
-          src: student_show_path(@student,domain,level) do%>
+            data: { lazy_load_target: "frame", src: student_show_path(@student, domain, level) } do%>
 							<div class="domain-col mb-2">
 								<div class="spinner-border --grisC" role="status"></div >
 							</div >
