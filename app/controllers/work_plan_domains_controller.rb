@@ -10,7 +10,7 @@ class WorkPlanDomainsController < ApplicationController
     @work_plan = WorkPlan.find(params_wp_id)
     authorize @work_plan
     @domains = @work_plan.grade.domains.sort_by(&:position)
-    @special = @domains.any?{|domain| domain.special?}
+    @special = @domains.any? { |domain| domain.special? }
   end
 
   def create
@@ -42,13 +42,12 @@ class WorkPlanDomainsController < ApplicationController
           work_plan_skill = WorkPlanSkill.new(
             work_plan_domain_id: @work_plan_domain.id,
             skill_id: skill.id,
-            kind:
+            kind:,
             # REMOVE student: @work_plan.student
           )
           if kind == "exercice"
-            ############### refacto START add_challenges_2_wps############
-            # challenge = add_challenges_2_wps(work_plan_skill)
-            challenge = work_plan_skill.add_challenges_2_wps(current_user)
+            ############### refacto START get_challenge_4_wps############
+            challenge = work_plan_skill.get_challenge_4_wps(current_user)
             ############ refacto END ############
             work_plan_skill.challenge = challenge
           end
@@ -100,6 +99,4 @@ class WorkPlanDomainsController < ApplicationController
   def work_plan_domain_kind_params
     params.require(:kind)
   end
-
-
 end
