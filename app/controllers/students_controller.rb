@@ -4,39 +4,24 @@ class StudentsController < ApplicationController
   def show
     skip_authorization
     @student = Student.find(params[:id])
-    @belt = Belt::BELT_COLORS
-    # @all_skills_and_last_wps = []
-    # @belts_specials_count = []
-    # @student_grade = @student.classroom.grade
-    @domains = @student.domains.sort_by(&:position)
-    # @student_skills = @student_grade.skills
-    # @belts = Belt.where(student: @student)
-    # @belts = @belts.select(&:completed)
-    # puts "Le last_wps :!!!!"
-    # all_last_wps = WorkPlanSkill.last_wps(@student, @student_skills)
-    # # WorkPlanSkill.where(student: student).max_by(&:created_at) fdf
-    # puts "LE MAP"
-    # # binding.pry
-    # @all_skills_and_last_wps = @student_skills.map do |skill|
-    #   next if all_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at).nil?
+    respond_to do |format|
+      format.html {
+        @belt = Belt::BELT_COLORS
+        @domains = @student.domains.sort_by(&:position)
+      }
+      format.pdf {
+        @domains = @student.domains.sort_by(&:position)
+        @skills = @student.grade.skills
+        @results = Result.completed_for_student(@student)
+        # geenere le pdf depuis le module pdf::student_results
+        pdf = Pdf::student_results(@student, @domains, @skills, @results)
+        # sending the pdf to the browser as a file
+        send_data pdf.render, filename: "results.pdf", type: "application/pdf", disposition: "inline"
 
-    #   {
-    #     skill:,
-    #     last_wps: get_last_completed_or_created_wps(all_last_wps, skill)
-    #   }
-    # end
-    # @all_skills_and_last_wps.compact!.sort_by { |t| t[:last_wps][:updated_at] }
-    # # retrive all student belts
-    # # cleaning the useless lastwps (eg: special domain, remove the amount)
-    # return if @student.classroom.user.school.special_domains? && @student_grade.grade_level == "CM2"
+      }
+    end
 
-    # WorkPlanDomain::DOMAINS_SPECIALS.each do |domain|
-    #   special_domain_belts = @belts.select { |belt| belt.domain == domain }
-    #   count = special_domain_belts.count
-    #   unless special_domain_belts.empty? || count.zero?
-    #     @all_skills_and_last_wps = wps_cleaned_belt(@all_skills_and_last_wps, domain, count, @student_grade)
-    #   end
-    # end
+
   end
 
   def new

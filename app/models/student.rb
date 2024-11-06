@@ -18,7 +18,7 @@ class Student < ApplicationRecord
     grade&.domains || []
   end
 
-  def belt_status(domain, level)
+  def belt_status(domain, level) # return true if belt is completed
     Belt.completed.where(student: self, domain:, level:).count.positive?
   end
 
@@ -52,7 +52,7 @@ class Student < ApplicationRecord
     )
   end
 
-  def derniers_work_planskills_etudiant
+  def derniers_work_planskills_etudiant #retourne le hash contenant les derniers work_plan_skills pour chaque compétence
     # On récupère tous les work_plan_skills de l'étudiant
     work_planskills_etudiant = work_plan_skills.includes(:skill).order(updated_at: :desc)
     # On crée un hash pour stocker les derniers work_plan_skills pour chaque compétence
