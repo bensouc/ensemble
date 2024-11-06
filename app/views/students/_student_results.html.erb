@@ -5,7 +5,7 @@
       data-controller='wps-result'
     >
 			<h1>Progression de
-				<%= @student.first_name %></h1>
+				<%= student.first_name %></h1>
 			<%# modal to select domains (@domains)  for autogen %>
 			<%# <%= link_to  student_auto_new_wp_path(@student), method: :post, data:{ action: "mouseover->wps-result#displayName mouseout->wps-result#hideName click->loadingspinnermgnt#displaySpinner"} do %>
 				<%# <i class="fa-solid fa-user-gear printer-logo ms-4"></i> %>
@@ -27,7 +27,7 @@
 			</div>
 			<div class="print-date">
 				<h4>
-					<%= link_to '#' ,:onclick => "window.print();return false;" do %>
+					<%= link_to student_path(student, format: :pdf) do %>
 						<i class="fa-solid fa-print printer-logo"></i>
 					<% end %>
 					Le

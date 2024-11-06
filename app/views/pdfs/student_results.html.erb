@@ -1,1 +1,45 @@
-<h1>HELLO WORLD</h1>
+<h1>Progression de <%= student.first_name.capitalize %></h1>
+<h3><%= I18n.l(Date.today, format: :long) %></h3>
+<% domains.sort_by(&:position).each do |domain| %>
+	<!-- DOMAIN LOOP-->
+	<div class="avoid-page-break">
+		<h2><%= domain.name.capitalize %></h2>
+		<br>
+		<table style="width: 100%; border-collapse: collapse;">
+			<tr>
+				<th style='padding: 5px;text-align: center;'>Ceinture</th>
+				<th style='padding: 5px;text-align: center;'>Compétence</th>
+				<th style='padding: 5px;text-align: center;'>Obtenue</th>
+				<th style='padding: 5px;text-align: center;'>Date</th>
+			</tr>
+			<% skills_by_domain = skills.select { |skill| skill.domain == domain } %>
+			<% for level in (1..7) %>
+        <% belt = Belt.completed.where(student: , domain:, level:).first %>
+				<% skills_level = skills_by_domain.select { |skill| skill.level == level }.sort_by(&:position) %>
+				<% if skills_level.any? %>
+					<tr>
+						<td style='padding: 5px;' rowspan="<%= skills_level.count %>">
+							<%= cl_image_tag(Belt::BELT_PNG[level.to_s], size: "100x50") %>
+						</td>
+						<td style='padding: 5px;'><%= skills_level.first.name %></td>
+						<% result = results.find { |result| result.skill == skills_level.first } %>
+            <% result = belt unless result%>
+						<td style='padding: 5px;'><%= result.nil? ? "" : "Validée" %></td>
+						<td style='padding: 5px;'><%= result.nil? ? "" : result.updated_at.strftime("%d/%m/%Y") %></td>
+					</tr>
+					<% skills_level[1..-1].each do |skill| %>
+						<tr>
+							<td style='padding: 5px;'><%= skill.name %></td>
+							<% result = results.find { |result| result.skill == skill } %>
+              <% result = belt unless result%>
+							<td style='padding: 5px;'><%= result.nil? ? "" : "Validée" %></td>
+							<td style='padding: 5px;'><%= result.nil? ? "" : result.updated_at.strftime("%d/%m/%Y") %></td>
+						</tr>
+					<% end %>
+				<% end %>
+			<% end %>
+		</table>
+	</div>
+	
+	<!-- END DOMAIN LOOP-->
+<% end %>

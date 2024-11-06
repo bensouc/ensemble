@@ -102,9 +102,9 @@ class StudentsController < ApplicationController
 
   def set_results_pdf
     @student = Student.find(params[:id])
-    @domains = @student.domains.sort_by(&:position)
-    @skills = @student.grade.skills
-    @results = Result.completed_for_student(@student)
+    # @domains = @student.domains.sort_by(&:position)
+    # @skills = @student.grade.skills
+    # @results = Result.completed_for_student(@student)
   end
 
   def params_new_validated_wps
