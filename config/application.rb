@@ -16,6 +16,7 @@ module Ensemble
     config.active_support.key_generator_hash_digest_class = OpenSSL::Digest::SHA1
     Rails.application.config.active_storage.variant_processor = :mini_magick
     config.active_storage.replace_on_assign_to_many = true
+    config.active_job.queue_adapter = :sidekiq
 
     # These settings can be overridden in specific environments using the files
     # in config/environments, which are processed later.

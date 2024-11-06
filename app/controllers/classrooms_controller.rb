@@ -3,7 +3,7 @@
 # rubocop:disable Metrics/ClassLength
 
 class ClassroomsController < ApplicationController
-  before_action :set_classroom, only: [:update, :destroy, :results, :results_by_domain]
+  before_action :set_classroom, only: [:generate_pdfs, :update, :destroy, :results, :results_by_domain]
   before_action :set_classrooms, only: [:index]
 
   def index
@@ -78,11 +78,31 @@ class ClassroomsController < ApplicationController
     set_up_results(@domain)
     results_factory(@domain) # create all  variables shared with the results Action
     @skills = if @domain.special?
-                Skill.where(domain: @domain).order(Arel.sql("COALESCE(sub_domain, '') ASC"))
-              else
-                Skill.where(domain: @domain).sort
-              end
+        Skill.where(domain: @domain).order(Arel.sql("COALESCE(sub_domain, '') ASC"))
+      else
+        Skill.where(domain: @domain).sort
+      end
     render partial: "classrooms/classroom_domain_results"
+  end
+
+  def generate_pdfs
+    authorize @classroom
+    GenerateResultsClassroomPdfsJob.perform_later(@classroom)
+    flash[:notice] = "La génération des PDF a été lancée. Vous recevrez une notification lorsque le fichier ZIP sera prêt."
+    redirect_to classrooms_path(@classroom)
+  end
+
+  def download_pdfs
+    authorize @classroom
+    zipfile_name = "classroom_#{@classroom.id}_students_pdfs.zip"
+    zipfile_path = Rails.root.join("public", "downloads", zipfile_name)
+
+    if File.exist?(zipfile_path)
+      send_file zipfile_path, type: "application/zip", disposition: "attachment", filename: zipfile_name
+    else
+      flash[:alert] = "Le fichier ZIP n'est pas encore prêt. Veuillez réessayer plus tard."
+      redirect_to classroom_path(@classroom)
+    end
   end
 
   private

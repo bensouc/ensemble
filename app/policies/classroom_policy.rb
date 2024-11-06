@@ -26,6 +26,9 @@ class ClassroomPolicy < ApplicationPolicy
   def show?
     user_is_owner_or_admin?
   end
+  def generate_pdfs?
+    user_is_owner_or_admin?
+  end
 
   private
 

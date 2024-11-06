@@ -41,14 +41,21 @@
 	</div>
 	<!-- Button trigger modal 4 sharing classroom -->
 	<div class="sharing-btn">
-		<%= link_to classroom_results_path(classroom), data:{
+		<%= link_to results_classroom_path(classroom), data:{
       controller:"tooltip",
       bs_toggle:"tooltip",
       bs_placement:"left"},
       title:"Résultats des élèves" do %>
 			<i class="fa-solid fa-graduation-cap --rose  me-1 "></i>
 		<% end %>
-		<%= link_to classroom_results_path(classroom, format: :xlsx), data:{
+		<%= link_to generate_pdfs_classroom_path(classroom), data:{
+      controller:"tooltip",
+      bs_toggle:"tooltip",
+      bs_placement:"top"},
+      title:"Générer les résultats des élèves en  pdf ZIppés" do %>
+			<i class="fa-solid fa-file-zipper"></i>
+		<% end %>
+		<%= link_to results_classroom_path(classroom, format: :xlsx), data:{
       controller:"tooltip",
       bs_toggle:"tooltip",
       bs_placement:"top"},

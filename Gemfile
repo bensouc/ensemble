@@ -36,6 +36,7 @@ gem "redis", "~> 4.0"
 # gem 'bcrypt', '~> 3.1.7'
 
 # action cable with postgresql
+gem "sidekiq"
 gem "actioncable-enhanced-postgresql-adapter"
 
 # Admin
