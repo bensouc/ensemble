@@ -14,10 +14,9 @@ class StudentsController < ApplicationController
         @skills = @student.grade.skills
         @results = Result.completed_for_student(@student)
         # geenere le pdf depuis le module pdf::student_results
-        pdf = Pdf::student_results(@student, @domains, @skills, @results)
+        pdf = PdfGenerator::StudentResultPdf.new(@student).generate
         # sending the pdf to the browser as a file
-        send_data pdf.render, filename: "results.pdf", type: "application/pdf", disposition: "inline"
-
+        send_data pdf, filename: "Progression de #{@student.first_name} - #{Time.current.strftime("%d/%m/%Y")}.pdf", type: "application/pdf", disposition: "attachment"
       }
     end
 
