@@ -15,7 +15,7 @@ class Student < ApplicationRecord
   delegate :grade, to: :classroom
 
   def domains
-    grade&.domains || []
+    Domain.includes(:skills).where(grade: )
   end
 
   def belt_status(domain, level) # return true if belt is completed

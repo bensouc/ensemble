@@ -14,7 +14,7 @@
 			</tr>
 			<% skills_by_domain = skills.select { |skill| skill.domain == domain } %>
 			<% for level in (1..7) %>
-        <% belt = Belt.completed.where(student: , domain:, level:).first %>
+        <% belt = belts.find {|belt| belt.domain == domain && belt.level == level}  %>
 				<% skills_level = skills_by_domain.select { |skill| skill.level == level }.sort_by(&:position) %>
 				<% if skills_level.any? %>
 					<tr>
@@ -40,6 +40,6 @@
 			<% end %>
 		</table>
 	</div>
-	
+
 	<!-- END DOMAIN LOOP-->
 <% end %>
