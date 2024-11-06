@@ -1,26 +1,24 @@
 # frozen_string_literal: true
 
 class StudentsController < ApplicationController
+  before_action :set_results_pdf, only: %i[show]
+
   def show
     skip_authorization
-    @student = Student.find(params[:id])
     respond_to do |format|
-      format.html {
+      format.html do
+        @student = Student.find(params[:id])
         @belt = Belt::BELT_COLORS
         @domains = @student.domains.sort_by(&:position)
-      }
-      format.pdf {
-        @domains = @student.domains.sort_by(&:position)
-        @skills = @student.grade.skills
-        @results = Result.completed_for_student(@student)
-        # geenere le pdf depuis le module pdf::student_results
-        pdf = PdfGenerator::StudentResultPdf.new(@student).generate
-        # sending the pdf to the browser as a file
-        send_data pdf, filename: "Progression de #{@student.first_name} - #{Time.current.strftime("%d/%m/%Y")}.pdf", type: "application/pdf", disposition: "attachment"
-      }
+      end
+      format.pdf do
+        data_pdf = PdfGenerator::StudentResultPdf.new(@student)
+        send_data data_pdf.generate,
+                  filename: "#{data_pdf.title}.pdf",
+                  type: "application/pdf",
+                  disposition: "attachment" # sending the pdf to the browser as a file
+      end
     end
-
-
   end
 
   def new
@@ -101,6 +99,13 @@ class StudentsController < ApplicationController
   end
 
   private
+
+  def set_results_pdf
+    @student = Student.find(params[:id])
+    @domains = @student.domains.sort_by(&:position)
+    @skills = @student.grade.skills
+    @results = Result.completed_for_student(@student)
+  end
 
   def params_new_validated_wps
     params.permit(:student_id, :skill_id)

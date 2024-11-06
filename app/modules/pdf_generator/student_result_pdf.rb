@@ -1,5 +1,6 @@
 module PdfGenerator
   class StudentResultPdf < PdfGenerator::Base
+    attr_reader :title
 
     def initialize(student, layout = "pdf")
       super(layout)
@@ -7,7 +8,7 @@ module PdfGenerator
       @domains = @student.domains.sort_by(&:position)
       @skills = @student.grade.skills
       @results = Result.completed_for_student(@student)
-
+      @title = "Progression de #{@student.first_name}- #{Time.now.strftime("%d/%m/%Y")}"
     end
 
     def generate
