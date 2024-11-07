@@ -37,7 +37,7 @@ gem "redis", "~> 4.0"
 
 # action cable with postgresql
 gem "sidekiq"
-gem "actioncable-enhanced-postgresql-adapter"
+# gem "actioncable-enhanced-postgresql-adapter" back to Redis for Action Cable
 
 # Admin
 gem "rails_admin", "~> 3.0"

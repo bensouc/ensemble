@@ -57,3 +57,4 @@ yarn-debug.log*
 
 vendor
 tripe_subscription_id: event.data.object.id,
+dump.rdb
