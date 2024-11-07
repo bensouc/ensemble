@@ -56,5 +56,4 @@ yarn-debug.log*
 .nvmrc*
 
 vendor
-tripe_subscription_id: event.data.object.id,
-dump.rdb
+
