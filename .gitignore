@@ -22,6 +22,14 @@ vendor/*
 !/tmp/pids/
 !/tmp/pids/.keep
 
+# Ignore Redis dump file
+dump.rdb
+
+# Ignore public/download files in development but keep the directory.
+/public/downloads/*
+!/public/downloads/
+!/public/downloads/.keep
+
 # Ignore uploaded files in development.
 /storage/*
 !/storage/.keep
