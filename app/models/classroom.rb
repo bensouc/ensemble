@@ -15,6 +15,12 @@ class Classroom < ApplicationRecord
     SharedClassroom.exists?(classroom: self)
   end
 
+  def results_pdf_exists?
+    zipfile_name = "classroom_#{id}_students_pdfs.zip"
+    zipfile_path = Rails.root.join("public", "downloads", zipfile_name)
+    File.exist?(zipfile_path)
+  end
+
   def shared_user
     return unless shared?
 

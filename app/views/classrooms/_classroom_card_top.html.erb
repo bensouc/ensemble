@@ -41,6 +41,7 @@
 	</div>
 	<!-- Button trigger modal 4 sharing classroom -->
 	<div class="sharing-btn">
+    <%= link_to 'DL PDF', download_pdfs_classroom_path(classroom)  if classroom.results_pdf_exists?%>
 		<%= link_to results_classroom_path(classroom), data:{
       controller:"tooltip",
       bs_toggle:"tooltip",
@@ -63,10 +64,10 @@
 			<i class="fa-solid fa-file-excel --vert "></i>
 		<% end %>
 		<button type="button" class="btn-primary p-0"
-    data-bs-toggle="modal" data-bs-target="#sharingClassroomModal-<%=classroom.id%>"
-    data-controller="tooltip"
-    data-bs-toggle="tooltip" data-bs-placement="right"
-    title="Partager cette classe">
+      data-bs-toggle="modal" data-bs-target="#sharingClassroomModal-<%=classroom.id%>"
+      data-controller="tooltip"
+      data-bs-toggle="tooltip" data-bs-placement="right"
+      title="Partager cette classe">
 			<%= image_tag "icons/share-red-icon.svg" %>
 		</button>
 	</div>

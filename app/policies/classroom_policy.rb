@@ -30,6 +30,10 @@ class ClassroomPolicy < ApplicationPolicy
     user_is_owner_or_admin?
   end
 
+  def download_pdfs?
+    user_is_owner_or_admin? && record.results_pdf_exists?
+  end
+
   private
 
   def create_classroom_demo?
