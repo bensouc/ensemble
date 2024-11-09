@@ -1,0 +1,23 @@
+<%= turbo_frame_tag "pdf_classroom_#{classroom.id}" do%>
+  <div class="d-flex align-items-center">
+    <%= button_to generate_pdfs_classroom_path(classroom),style:"padding: 0 0.4rem 0 0",
+    data:{
+        controller:"tooltip",
+        bs_toggle:"tooltip",
+        bs_placement:"top"},
+        title:"Générer les résultats des élèves en  pdf ZIppés" do %>
+      <i class="fa-solid fa-arrow-rotate-right fa-rotate-180 --rose ms-2"></i>
+    <% end %>
+    <% exists, creation_time = classroom.results_pdf_exists? %>
+      <% if exists %>
+        <%= link_to download_pdfs_classroom_path(classroom),data:{
+          turbo_frame: '_top' ,
+          controller:"tooltip",
+          bs_toggle:"tooltip",
+          bs_placement:"top"},
+          title:"Télécharger les résultats de tous les élèves Date: #{creation_time.strftime("%d/%m/%y")}"  do  %>
+          <i class="fa-solid fa-file-zipper --rose me-2"></i>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

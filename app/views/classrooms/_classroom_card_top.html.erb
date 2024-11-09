@@ -41,7 +41,6 @@
 	</div>
 	<!-- Button trigger modal 4 sharing classroom -->
 	<div class="sharing-btn">
-    <%= link_to 'DL PDF', download_pdfs_classroom_path(classroom)  if classroom.results_pdf_exists?%>
 		<%= link_to results_classroom_path(classroom), data:{
       controller:"tooltip",
       bs_toggle:"tooltip",
@@ -49,13 +48,7 @@
       title:"Résultats des élèves" do %>
 			<i class="fa-solid fa-graduation-cap --rose  me-1 "></i>
 		<% end %>
-		<%= link_to generate_pdfs_classroom_path(classroom), data:{
-      controller:"tooltip",
-      bs_toggle:"tooltip",
-      bs_placement:"top"},
-      title:"Générer les résultats des élèves en  pdf ZIppés" do %>
-			<i class="fa-solid fa-file-zipper"></i>
-		<% end %>
+    <%= render 'classrooms/results_pdf_btns', classroom: %>
 		<%= link_to results_classroom_path(classroom, format: :xlsx), data:{
       controller:"tooltip",
       bs_toggle:"tooltip",

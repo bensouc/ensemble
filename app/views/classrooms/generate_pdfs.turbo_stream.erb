@@ -1,0 +1,4 @@
+<%= turbo_stream.replace "pdf_classroom_#{@classroom.id}" do %>
+  <%= render "classrooms/results_pdf_btns" , classroom: @classroom%>
+<% end %>
+<%= turbo_stream.prepend "flash" , partial: "shared/flashes" %>
