@@ -4,6 +4,12 @@ import { Tooltip } from "bootstrap";
 export default class extends Controller {
   connect() {
     // console.log('connected')
-    new Tooltip(this.element)
+    this.tooltip = new Tooltip(this.element)
+  }
+  disconnect() {
+    // console.log('disconnected')
+    if (this.tooltip) {
+      this.tooltip.dispose();
+    }
   }
 }
