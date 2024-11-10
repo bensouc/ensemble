@@ -1,42 +1,24 @@
 # frozen_string_literal: true
 
 class StudentsController < ApplicationController
+  before_action :set_results_pdf, only: %i[show]
+
   def show
     skip_authorization
-    @student = Student.find(params[:id])
-    @belt = Belt::BELT_COLORS
-    # @all_skills_and_last_wps = []
-    # @belts_specials_count = []
-    # @student_grade = @student.classroom.grade
-    @domains = @student.all_domains_from_student.sort_by(&:position)
-    # @student_skills = @student_grade.skills
-    # @belts = Belt.where(student: @student)
-    # @belts = @belts.select(&:completed)
-    # puts "Le last_wps :!!!!"
-    # all_last_wps = WorkPlanSkill.last_wps(@student, @student_skills)
-    # # WorkPlanSkill.where(student: student).max_by(&:created_at) fdf
-    # puts "LE MAP"
-    # # binding.pry
-    # @all_skills_and_last_wps = @student_skills.map do |skill|
-    #   next if all_last_wps.select { |wps| wps.skill == skill }.max_by(&:created_at).nil?
-
-    #   {
-    #     skill:,
-    #     last_wps: get_last_completed_or_created_wps(all_last_wps, skill)
-    #   }
-    # end
-    # @all_skills_and_last_wps.compact!.sort_by { |t| t[:last_wps][:updated_at] }
-    # # retrive all student belts
-    # # cleaning the useless lastwps (eg: special domain, remove the amount)
-    # return if @student.classroom.user.school.special_domains? && @student_grade.grade_level == "CM2"
-
-    # WorkPlanDomain::DOMAINS_SPECIALS.each do |domain|
-    #   special_domain_belts = @belts.select { |belt| belt.domain == domain }
-    #   count = special_domain_belts.count
-    #   unless special_domain_belts.empty? || count.zero?
-    #     @all_skills_and_last_wps = wps_cleaned_belt(@all_skills_and_last_wps, domain, count, @student_grade)
-    #   end
-    # end
+    respond_to do |format|
+      format.html do
+        @student = Student.find(params[:id])
+        @belt = Belt::BELT_COLORS
+        @domains = @student.domains.sort_by(&:position)
+      end
+      format.pdf do
+        data_pdf = PdfGenerator::StudentResultPdf.new(@student)
+        send_data data_pdf.generate,
+                  filename: "#{data_pdf.title}.pdf",
+                  type: "application/pdf",
+                  disposition: "attachment" # sending the pdf to the browser as a file
+      end
+    end
   end
 
   def new
@@ -105,7 +87,7 @@ class StudentsController < ApplicationController
     work_plan_domain = special_work_plan.work_plan_domains.find_or_create_by(
       domain: skill.first.domain,
       work_plan: special_work_plan,
-      level: skill.first.level
+      level: skill.first.level,
     )
     # work_plan_domai.save
     @wps = WorkPlanDomain.add_wps_completed(skill, work_plan_domain, special_work_plan)
@@ -117,6 +99,13 @@ class StudentsController < ApplicationController
   end
 
   private
+
+  def set_results_pdf
+    @student = Student.find(params[:id])
+    # @domains = @student.domains.sort_by(&:position)
+    # @skills = @student.grade.skills
+    # @results = Result.completed_for_student(@student)
+  end
 
   def params_new_validated_wps
     params.permit(:student_id, :skill_id)

@@ -71,6 +71,12 @@ class Belt < ApplicationRecord
     completed
   end
 
+  def completed!
+    self.completed = true
+    self.validated_date = DateTime.now
+    Result.update_with_new_belt(self) unless domain.special?
+  end
+
   def all_skills(user)
     Skill.for_school(user.school).where(level:, domain:)
   end

@@ -53,11 +53,18 @@ Rails.application.routes.draw do
 
   # ###############routes for CLASSROOMS###############
   resources :classrooms, only: [:index, :show, :update, :new, :create, :destroy] do
+    member do
+      get :results_by_domain
+      get :results
+      post :generate_pdfs
+      get :download_pdfs
+    end
     resources :students, only: [:new, :edit] # :create, :destroy
     resources :shared_classrooms, only: [:create, :destroy]
   end
-  get "classrooms/:id/results_by_domain", to: "classrooms#results_by_domain", as: :results_by_domain
-  get "classrooms/:id/results", to: "classrooms#results", as: :classroom_results
+  # get "classrooms/:id/results_by_domain", to: "classrooms#results_by_domain", as: :results_by_domain
+  # get "classrooms/:id/results", to: "classrooms#results", as: :classroom_results
+  # get "classrooms/:id/generate_pdfs", to: "classrooms#generate_pdfs", as: :generate_pdfs
 
   # ###############routes for STUDENTS###############
   resources :students, only: [:create, :update, :show, :destroy] do
@@ -140,7 +147,6 @@ Rails.application.routes.draw do
     end
     resources :messages, only: [:create]
   end
-
 
   # ###############END for CONVERSATIONS###############
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html

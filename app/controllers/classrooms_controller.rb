@@ -3,8 +3,9 @@
 # rubocop:disable Metrics/ClassLength
 
 class ClassroomsController < ApplicationController
-  before_action :set_classroom, only: [:update, :destroy, :results, :results_by_domain]
+  before_action :set_classroom, only: [:download_pdfs, :generate_pdfs, :update, :destroy, :results, :results_by_domain]
   before_action :set_classrooms, only: [:index]
+  # after_action :delete_file, only: [:download_pdfs]
 
   def index
     # binding.pry
@@ -78,11 +79,34 @@ class ClassroomsController < ApplicationController
     set_up_results(@domain)
     results_factory(@domain) # create all  variables shared with the results Action
     @skills = if @domain.special?
-                Skill.where(domain: @domain).order(Arel.sql("COALESCE(sub_domain, '') ASC"))
-              else
-                Skill.where(domain: @domain).sort
-              end
+        Skill.where(domain: @domain).order(Arel.sql("COALESCE(sub_domain, '') ASC"))
+      else
+        Skill.where(domain: @domain).sort
+      end
     render partial: "classrooms/classroom_domain_results"
+  end
+
+  def generate_pdfs
+    authorize @classroom
+    GenerateResultsClassroomPdfsJob.perform_later(@classroom)
+    flash[:notice] = "La génération des PDF a été lancée. Vous recevrez une notification lorsque le fichier ZIP sera prêt."
+    respond_to do |format|
+      format.html { redirect_to classrooms_path }
+      format.turbo_stream 
+    end
+  end
+
+  def download_pdfs
+    authorize @classroom
+    zipfile_name = "classroom_#{@classroom.id}_students_pdfs.zip"
+    zipfile_path = Rails.root.join("public", "downloads", zipfile_name)
+
+    if File.exist?(zipfile_path)
+      send_file zipfile_path, type: "application/zip", disposition: "attachment", filename: zipfile_name
+    else
+      flash[:alert] = "Le fichier ZIP n'est pas encore prêt. Veuillez réessayer plus tard."
+      redirect_to classrooms_path
+    end
   end
 
   private
@@ -177,4 +201,19 @@ class ClassroomsController < ApplicationController
       @all_completed_work_plan_skills[student.id.to_s] = completed_wps unless completed_wps.empty?
     end
   end
+
+  # def delete_file
+  #   zipfile_name = "classroom_#{@classroom.id}_students_pdfs.zip"
+  #   zipfile_path = Rails.root.join("public", "downloads", zipfile_name)
+  #   if File.exist?(zipfile_path)
+  #     begin
+  #       File.delete(zipfile_path)
+  #       Rails.logger.info("Deleted file: #{zipfile_path}")
+  #     rescue => e
+  #       Rails.logger.error("Failed to delete file: #{zipfile_path} - Error: #{e.message}")
+  #     end
+  #   else
+  #     Rails.logger.warn("File not found: #{zipfile_path}")
+  #   end
+  # end
 end

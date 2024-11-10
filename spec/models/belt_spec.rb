@@ -26,6 +26,38 @@ RSpec.describe Belt, type: :model do
     end
   end
 
+  describe "#completed!" do
+    # let(:domain) { create(:domain, special: false) }
+    # let(:belt) { create(:belt, completed: false, validated_date: nil, domain: domain) }
+
+    it "marks the belt as completed" do
+      @belt1.completed!
+      expect(@belt1.completed).to be true
+    end
+
+    it "sets the validated_date to the current date and time" do
+      @belt1.completed!
+      expect(@belt1.validated_date).to be_within(1.second).of(DateTime.now)
+    end
+
+    it "sets a completed Result for all the skills of the domain and level" do
+      belt2 = create(:belt)
+      belt2.completed!
+      belt2.domain.skills.select{|skill| skill.level == belt2.level}.each do |skill|
+        result = Result.find_by(skill: skill, student: belt2.student)
+        expect(result).to be_present
+        expect(result.kind).to eq("ceinture")
+        expect(result.status).to eq("completed")
+      end
+    end
+
+    it "persists the changes to the database" do
+      @belt1.completed!
+      expect(@belt1.completed).to be true
+      expect(@belt1.validated_date).to be_within(1.second).of(DateTime.now)
+    end
+  end
+
   describe "#all_skills(user)" do
     let(:school1) { create(:school) }
     let(:school2) { create(:school) }
@@ -33,10 +65,10 @@ RSpec.describe Belt, type: :model do
     let(:user) { create(:user, school: school2) }
     let(:skillsolo) { create(:skill, school: school1) }
     let(:skill2) { create(:skill, school: school2) }
-    let(:skill3) { create(:skill, domain: skill2.domain,  level: skill2.level, school: school2) }
-    let(:skill4) { create(:skill, domain: skill2.domain,  level: skill2.level, school: school2) }
-    let(:skill5) { create(:skill, domain: skill2.domain,  level: skill2.level, school: school2) }
-    let(:belt) { create(:belt, domain: skill2.domain,  level: skill2.level) }
+    let(:skill3) { create(:skill, domain: skill2.domain, level: skill2.level, school: school2) }
+    let(:skill4) { create(:skill, domain: skill2.domain, level: skill2.level, school: school2) }
+    let(:skill5) { create(:skill, domain: skill2.domain, level: skill2.level, school: school2) }
+    let(:belt) { create(:belt, domain: skill2.domain, level: skill2.level) }
     it "returns all the skills for a given user based on its group/school" do
       expect(belt.all_skills(user)).to include(skill2)
       expect(belt.all_skills(user)).to include(skill3)
@@ -85,12 +117,12 @@ RSpec.describe Belt, type: :model do
 
   describe "self.special_new_belt(work_plan_skill, work_plan)" do
     let(:student) { create(:student) }
-    let(:grade) {create(:grade)}
-    let(:domain) {create(:domain, grade:, special: true)}
-    let(:work_plan) { create(:work_plan, grade: , student: ) }
-    let(:work_plan_domain) { create(:work_plan_domain, work_plan: work_plan, domain: , level:1) }
-    let(:skill) { create(:skill, domain: work_plan_domain.domain, level: work_plan_domain.level)}
-    let(:work_plan_skill) { create(:work_plan_skill, work_plan_domain: work_plan_domain, kind: 'ceinture', completed: true, status: "completed") }
+    let(:grade) { create(:grade) }
+    let(:domain) { create(:domain, grade:, special: true) }
+    let(:work_plan) { create(:work_plan, grade:, student:) }
+    let(:work_plan_domain) { create(:work_plan_domain, work_plan: work_plan, domain:, level: 1) }
+    let(:skill) { create(:skill, domain: work_plan_domain.domain, level: work_plan_domain.level) }
+    let(:work_plan_skill) { create(:work_plan_skill, work_plan_domain: work_plan_domain, kind: "ceinture", completed: true, status: "completed") }
     it "does not create a first new belt on special domains if its the first" do
       expect {
         Belt.special_newbelt(work_plan_skill, work_plan)
