@@ -48,7 +48,9 @@
       title:"Résultats des élèves" do %>
 			<i class="fa-solid fa-graduation-cap --rose  me-1 "></i>
 		<% end %>
-    <%= render 'classrooms/results_pdf_btns', classroom: %>
+		<div class="vertical_white_bar"></div>
+		<%= render 'classrooms/results_pdf_btns', classroom: %>
+		<div class="vertical_white_bar"></div>
 		<%= link_to results_classroom_path(classroom, format: :xlsx), data:{
       controller:"tooltip",
       bs_toggle:"tooltip",
@@ -56,6 +58,7 @@
       title:"Télécharger les résultats des élèves en  Excel" do %>
 			<i class="fa-solid fa-file-excel --vert "></i>
 		<% end %>
+		<div class="vertical_white_bar"></div>
 		<button type="button" class="btn-primary p-0"
       data-bs-toggle="modal" data-bs-target="#sharingClassroomModal-<%=classroom.id%>"
       data-controller="tooltip"

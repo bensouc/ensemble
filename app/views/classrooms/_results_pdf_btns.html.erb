@@ -5,7 +5,7 @@
         controller:"tooltip",
         bs_toggle:"tooltip",
         bs_placement:"top"},
-        title:"Générer les résultats des élèves en  pdf ZIppés" do %>
+        title:"Générer les résultats des élèves en pdf" do %>
       <i class="fa-solid fa-arrow-rotate-right fa-rotate-180 --rose ms-2"></i>
     <% end %>
     <% exists, creation_time = classroom.results_pdf_exists? %>
@@ -15,7 +15,7 @@
           controller:"tooltip",
           bs_toggle:"tooltip",
           bs_placement:"top"},
-          title:"Télécharger les résultats de tous les élèves Date: #{creation_time.strftime("%d/%m/%y")}"  do  %>
+          title:"Télécharger tous les résultats (ZIP) Date: #{creation_time.strftime("%d/%m/%y")}"  do  %>
           <i class="fa-solid fa-file-zipper --rose me-2"></i>
       <% end %>
     <% end %>
