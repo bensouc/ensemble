@@ -37,7 +37,6 @@ gem "redis", "~> 4.0"
 
 # action cable with sidekiq
 gem "sidekiq"
-gem "redis-namespace"
 # gem "actioncable-enhanced-postgresql-adapter" back to Redis for Action Cable
 
 # Admin
