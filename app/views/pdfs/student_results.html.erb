@@ -1,9 +1,13 @@
-<h1>Progression de <%= student.first_name.capitalize %></h1>
-<h3><%= I18n.l(Date.today, format: :long) %></h3>
+
+  <h1 class='in-line'>Progression de <%= student.first_name.capitalize %>
+   <h3 class='in-line'><%= I18n.l(Date.today, format: :long) %></h3></h1>
+
+
+<br>
 <% domains.sort_by(&:position).each do |domain| %>
 	<!-- DOMAIN LOOP-->
 	<div class="avoid-page-break">
-		<h2><%= domain.name.capitalize %></h2>
+		<h1 style= "width: 100%; text-align: center;"><%= domain.name.capitalize %></h1>
 		<br>
 		<table style="width: 100%; border-collapse: collapse;">
 			<tr>

@@ -23,13 +23,13 @@ module PdfGenerator
       # Conversion du HTML en PDF
       WickedPdf.new.pdf_from_string(pdf_html,
         # Options de configuration de WickedPdf
-      header: {
-          right: "Progression de #{@student.first_name}",
-          show_on_first_page: false # Titre du document
-      },
+      # header: {
+      #     right: "Progression de #{@student.first_name}",
+      #     show_on_first_page: false # Titre du document
+      # },
       footer: {
           # center: , # Affiche le numéro de page courant et le nombre total de pages
-          right: "Progression de #{@student.first_name} [page] / [topage]",
+          right: "Progression de #{@student.first_name} en date du #{Time.now.strftime("%d/%m/%Y")}     Page: [page] / [topage]",
           font_size: 8,
           spacing: 5
         })

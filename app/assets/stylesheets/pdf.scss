@@ -27,6 +27,9 @@ div.nobreak {
 .avoid-page-break {
   page-break-inside: avoid; /* page-break-after works as well */
 }
+.in-line {
+  display: inline;
+}
 
 .pt-header-box {
   width: 100%;
