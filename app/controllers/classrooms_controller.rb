@@ -99,7 +99,7 @@ class ClassroomsController < ApplicationController
   def download_pdfs
     authorize @classroom
     zipfile_name = "classroom_#{@classroom.id}_students_pdfs.zip"
-    zipfile_path = Rails.root.join("app", "tmp", zipfile_name)
+    zipfile_path = Rails.root.join("tmp", zipfile_name)
 
     if File.exist?(zipfile_path)
       send_file zipfile_path, type: "application/zip", disposition: "attachment", filename: zipfile_name

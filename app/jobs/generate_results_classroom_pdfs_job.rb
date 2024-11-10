@@ -2,7 +2,7 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
   queue_as :default
   # This method performs the job of generating PDFs for each student in a classroom
   def perform(classroom)
-    Rails.logger.info("Generating PDFs for classroom #{classroom}")
+    Rails.logger.info("Generating PDFs for classroom #{classroom.id}")
     students = classroom.students
     # Define the name of the zip file
     zipfile_name = "classroom_#{classroom.id}_students_pdfs.zip"
@@ -14,12 +14,12 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
       Zip::File.open(temp_file.path, Zip::File::CREATE) do |zipfile|
         students.each do |student|
           pdf = PdfGenerator::StudentResultPdf.new(student).generate
-          zipfile.get_output_stream("Progression de #{student.first_name}_#{Time.now.strftime("_%Y_%m_%d")}.pdf") { |f| f.write(pdf) }
+          zipfile.get_output_stream("Progression de #{student.first_name}_#{Time.current.strftime("_%Y_%m_%d")}.pdf") { |f| f.write(pdf) }
         end
       end
 
       # Enregistrer le fichier ZIP dans public/downloads
-      FileUtils.mv(temp_file.path, Rails.root.join("app", "tmp", zipfile_name))
+      FileUtils.mv(temp_file.path, Rails.root.join("tmp", zipfile_name))
     ensure
       # Ensure the temporary file is closed and unlinked
       # même si une exception est levée est levée dans le bloc begin

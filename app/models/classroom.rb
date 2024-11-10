@@ -17,7 +17,7 @@ class Classroom < ApplicationRecord
 
   def results_pdf_exists?
     zipfile_name = "classroom_#{id}_students_pdfs.zip"
-    zipfile_path = Rails.root.join("app", "tmp", zipfile_name)
+    zipfile_path = Rails.root.join("tmp", zipfile_name)
     if File.exist?(zipfile_path)
       creation_time = File.ctime(zipfile_path)
       return true, creation_time
