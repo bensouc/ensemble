@@ -35,8 +35,9 @@ gem "redis", "~> 4.0"
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
-# action cable with postgresql
+# action cable with sidekiq
 gem "sidekiq"
+gem "redis-namespace"
 # gem "actioncable-enhanced-postgresql-adapter" back to Redis for Action Cable
 
 # Admin

@@ -313,6 +313,8 @@ GEM
     redis (4.8.1)
     redis-client (0.22.2)
       connection_pool
+    redis-namespace (1.11.0)
+      redis (>= 4)
     regexp_parser (2.8.0)
     reline (0.3.5)
       io-console (~> 0.5)
@@ -512,6 +514,7 @@ DEPENDENCIES
   rails_admin (~> 3.0)
   recaptcha
   redis (~> 4.0)
+  redis-namespace
   requestjs-rails
   roo (~> 2.10.0)
   rspec-rails
