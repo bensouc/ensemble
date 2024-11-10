@@ -92,14 +92,14 @@ class ClassroomsController < ApplicationController
     flash[:notice] = "La génération des PDF a été lancée. Vous recevrez une notification lorsque le fichier ZIP sera prêt."
     respond_to do |format|
       format.html { redirect_to classrooms_path }
-      format.turbo_stream 
+      format.turbo_stream
     end
   end
 
   def download_pdfs
     authorize @classroom
     zipfile_name = "classroom_#{@classroom.id}_students_pdfs.zip"
-    zipfile_path = Rails.root.join("public", "downloads", zipfile_name)
+    zipfile_path = Rails.root.join("app", "tmp", zipfile_name)
 
     if File.exist?(zipfile_path)
       send_file zipfile_path, type: "application/zip", disposition: "attachment", filename: zipfile_name

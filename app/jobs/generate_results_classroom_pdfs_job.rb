@@ -19,7 +19,7 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
       end
 
       # Enregistrer le fichier ZIP dans public/downloads
-      FileUtils.mv(temp_file.path, Rails.root.join("public", "downloads", zipfile_name))
+      FileUtils.mv(temp_file.path, Rails.root.join("app", "tmp", zipfile_name))
     ensure
       # Ensure the temporary file is closed and unlinked
       # même si une exception est levée est levée dans le bloc begin
