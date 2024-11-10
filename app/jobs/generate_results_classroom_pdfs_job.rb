@@ -22,6 +22,30 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
 
       # Enregistrer le fichier ZIP dans public/downloads
       destination_path = Rails.root.join("tmp", zipfile_name)
+
+      # tester ecriture
+
+      # Vérifier les permissions du répertoire
+if File.writable?(Rails.root.join("tmp"))
+  Rails.logger.info("The tmp directory is writable")
+else
+  Rails.logger.error("The tmp directory is not writable")
+  return
+end
+
+# Essayer d'écrire un fichier de test
+begin
+  test_file_path = Rails.root.join("tmp", "test_write_permissions.txt")
+  File.open(test_file_path, "w") { |f| f.write("Test") }
+  Rails.logger.info("Successfully wrote test file to tmp directory")
+  File.delete(test_file_path)
+rescue => e
+  Rails.logger.error("Failed to write test file to tmp directory: #{e.message}")
+  return
+end
+
+      # fine test
+
       FileUtils.mv(temp_file.path, destination_path)
       Rails.logger.info("Moved zip file to #{destination_path}")
 
