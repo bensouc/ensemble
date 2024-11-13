@@ -1,6 +1,6 @@
 class GenerateResultsClassroomPdfsJob < ApplicationJob
   include ApplicationHelper
-  
+
   queue_as :default
   # This method performs the job of generating PDFs for each student in a classroom
   #
@@ -19,6 +19,7 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
     Zip::File.open(temp_file.path, Zip::File::CREATE) do |zipfile|
       students.each do |student|
         pdf = PdfGenerator::StudentResultPdf.new(student).generate
+        Rails.logger.info("Generated PDF for student #{student.first_name}")
         zipfile.get_output_stream("Progression de #{sanitize_filename(student.first_name)}_#{Time.current.strftime("_%Y_%m_%d")}.pdf") { |f| f.write(pdf) }
       end
     end
@@ -26,5 +27,7 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
     # send an email to the user with the zip file attached
     TeacherMailer.send_classroom_results_email(current_user, classroom, temp_file).deliver_now
     Rails.logger.info("Sent email to user #{current_user.email} with zip file attached")
+    # Delete the zip file
+    temp_file.close
   end
 end
