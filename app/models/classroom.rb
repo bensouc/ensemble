@@ -32,6 +32,10 @@ class Classroom < ApplicationRecord
     SharedClassroom.select { |s_classroom| s_classroom.classroom == self }.first.user
   end
 
+  def safe_name
+    name == "" ? grade.grade_level : name
+  end
+
   private
 
   def set_default

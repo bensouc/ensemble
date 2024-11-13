@@ -3,12 +3,9 @@
 	<%= image_tag 'https://res.cloudinary.com/bensoucdev/image/upload/v1678871863/ensemble/logos/ensemble_icone_umdhbk.png', width: '100px' %>
 </div>
 
-<h1>Bonjour <%= @teacher.first_name.capitalize %>,</h1>
+<h2>Bonjour <%= @teacher.first_name.capitalize %>,</h2>
 <p>
-	Vos résultats de classe sont prêts et sont joints à cet email sous forme de fichier zip.
-</p>
-<p>
-	Merci de vérifier les résultats et de nous faire savoir si vous avez des questions.
+	Les résultats en date <%=Time.current.strftime("du %A %d %B")%> de votre classe sont prêts et joints à cet email sous forme de fichier zip.
 </p>
 <p>
 	Cordialement,<br>
