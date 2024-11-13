@@ -88,26 +88,27 @@ class ClassroomsController < ApplicationController
 
   def generate_pdfs
     authorize @classroom
-    GenerateResultsClassroomPdfsJob.perform_later(@classroom)
-    flash[:notice] = "La génération des PDF a été lancée. Vous recevrez une notification lorsque le fichier ZIP sera prêt."
+    GenerateResultsClassroomPdfsJob.perform_later(@classroom, current_user.id)
+    flash.now[:notice] = "La génération des PDF a été lancée. Vous recevrez un email avec le fichier ZIP, lorsque celui
+    ci sera prêt."
     respond_to do |format|
       format.html { redirect_to classrooms_path }
       format.turbo_stream
     end
   end
 
-  def download_pdfs
-    authorize @classroom
-    zipfile_name = "classroom_#{@classroom.id}_students_pdfs.zip"
-    zipfile_path = Rails.root.join("tmp", zipfile_name)
+  # def download_pdfs
+  #   authorize @classroom
+  #   zipfile_name = "classroom_#{@classroom.id}_students_pdfs.zip"
+  #   zipfile_path = Rails.root.join("tmp", zipfile_name)
 
-    if File.exist?(zipfile_path)
-      send_file zipfile_path, type: "application/zip", disposition: "attachment", filename: zipfile_name
-    else
-      flash[:alert] = "Le fichier ZIP n'est pas encore prêt. Veuillez réessayer plus tard."
-      redirect_to classrooms_path
-    end
-  end
+  #   if File.exist?(zipfile_path)
+  #     send_file zipfile_path, type: "application/zip", disposition: "attachment", filename: zipfile_name
+  #   else
+  #     flash[:alert] = "Le fichier ZIP n'est pas encore prêt. Veuillez réessayer plus tard."
+  #     redirect_to classrooms_path
+  #   end
+  # end
 
   private
 
