@@ -10,9 +10,7 @@
                 bs_toggle:"tooltip",
                 bs_placement:"left"} %>
 		<div class="message-content">
-			<% unless !is_mobile_device? && (message.user == user || message.user.avatar.attached?) %>
-				<div class='message-content-user-name'> <%= message.user.admin? ? "Ensemble" : message.user.first_name %> </div>
-			<% end %>
+			<div class='message-content-user-name'> <%= message.user.admin? ? "Ensemble" : message.user.first_name %> </div>
 			<%= message.content %>
 		</div>
 	</div>
