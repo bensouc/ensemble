@@ -32,4 +32,8 @@ module ApplicationHelper
     { host: ENV["DOMAIN"] || "http://localhost:3000" }
   end
 
+  def sanitize_filename(filename)
+    I18n.transliterate(filename).gsub!(/[^0-9A-Za-z]/, "_")
+  end
+
 end

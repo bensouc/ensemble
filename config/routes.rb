@@ -62,7 +62,6 @@ Rails.application.routes.draw do
       get :results_by_domain
       get :results
       post :generate_pdfs
-      get :download_pdfs
     end
     resources :students, only: [:new, :edit] # :create, :destroy
     resources :shared_classrooms, only: [:create, :destroy]
