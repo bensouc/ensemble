@@ -97,8 +97,7 @@ config.action_mailer.default_url_options = { host: "https://www.app-ensemble.fr"
     logger.formatter = config.log_formatter
     config.logger = ActiveSupport::TaggedLogging.new(logger)
   end
-# Enable lograge or the relevant environment config:
-config.lograge.enabled = true
+
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 end

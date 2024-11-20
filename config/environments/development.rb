@@ -48,7 +48,6 @@ Rails.application.configure do
     Bullet.enable = true
     Bullet.rails_logger = true
     Bullet.alert = true
-
   end
   # END GEM BULLET SETTINGS
   # Store uploaded files on the local file system (see config/storage.yml for options).
@@ -76,6 +75,7 @@ Rails.application.configure do
 
   # Suppress logger output for asset requests.
   config.assets.quiet = true
+
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
