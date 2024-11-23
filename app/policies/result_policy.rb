@@ -13,6 +13,10 @@ class ResultPolicy < ApplicationPolicy
     user_is_teacher_or_admin?
   end
 
+  def destroy?
+    user_is_teacher_or_admin?
+  end
+  
   private
 
   def user_is_teacher_or_admin?

@@ -19,17 +19,17 @@
 							<% @students_list.each do |student| %>
                 <%= turbo_frame_tag "student_#{student.id}_skill_#{skill.id}" do%>
                     <% if belt_on_level.any?{ |belt| belt.student == student && belt.completed?} && !(@domain.special? && level == 1)%>
-                  <div class="result-cell" data-controller='classroom-add-wps' data-classroom-add-wps-target='wpsBox'>
-                      <%#If special domain true ou ceinture  %>
-                      <i class="fa-solid fa-circle-check --vert"></i>
-                  </div>
+                      <div class="result-cell" data-controller='classroom-add-wps' data-classroom-add-wps-target='wpsBox'>
+                          <%#If special domain true ou ceinture  %>
+                          <i class="fa-solid fa-circle-check --vert"></i>
+                      </div>
                     <% else %>
-                      <%#serch fior result for this student and this skill%>
-                      <% result = @results[student].find{|r| r.skill == skill && r.status == 'completed' && r.kind} %>
+                      <%#serch for result for this student and this skill%>
+                      <% result = @results[student].find{|r| r.skill == skill && r.belt_validated?} %>
                       <% if result %>
                         <%= render "results/result", result: result %>
                       <% else %>
-                        <%= render "results/form", result: Result.new, student:, skill: %>
+                        <%= render "results/form", result: Result.new(student:, skill:)%>
                       <% end %>
                     <% end %>
                 <% end %>

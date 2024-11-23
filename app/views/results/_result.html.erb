@@ -1,19 +1,12 @@
 <div class="result-cell" data-controller='classroom-add-wps' data-classroom-add-wps-target='wpsBox'>
-	<% if result.belt_validated? %>
 		<div class='--cursor-pointer' data-controller='display-special-wps-mngt' data-action='mouseover->display-special-wps-mngt#displayWps mouseout->display-special-wps-mngt#hideWps'>
-			<div data-display-special-wps-mngt-target='show'>
+			<div class ='d-flex' data-display-special-wps-mngt-target='show'>
 				<i class="fa-solid fa-circle-check --vert"></i>
 			</div>
 			<div class="--cursor-pointer d-none" data-display-special-wps-mngt-target='delete'>
-				-
-				<%#= link_to '-', work_plan_skill_remove_special_wps_path(wps),
-                                            class: '--roseL',
-                                            method: 'delete',
-                                            data:{ action:'click->classroom-add-wps#validateWps'}%>
+				<%= link_to '-', result_path(result),
+                                            data: { turbo_method: :delete },
+                                            class: '--roseL'%>
 			</div>
 		</div>
-	<% else%>
-		<%= render "results/validate_btn", result: result, skill: result.skill, student: result.student%>
-	</div>
-<% end %>
 </div>

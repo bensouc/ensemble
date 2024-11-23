@@ -31,14 +31,17 @@ class Result < ApplicationRecord
   def belt_update_by_domain_and_level
     domain = skill.domain
     level = skill.level
-    belt = Belt.find_or_create_by(student:, domain:, level:)
+    belt = Belt.find_by(student:, domain:, level:)
+    belt = Belt.create!(student:, domain:, level:) if belt.nil?
     skills = Skill.for_school(student.school).where(domain:, level:)
     results = Result.where(student:, skill: skills)
+
+    # binding.pry
     if domain.special?
       puts "TO BE DONE"
     else
       if results.all? { |r| r.belt_validated? } && results.count == skills.count
-        belt.completed!
+      belt.completed!
       else
         belt.uncomplete!
       end

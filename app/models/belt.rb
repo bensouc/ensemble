@@ -81,7 +81,7 @@ class Belt < ApplicationRecord
   def uncomplete!
     self.completed = false
     self.validated_date = DateTime.now
-    save
+    save!
   end
 
   def all_skills(user)

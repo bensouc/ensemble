@@ -1,5 +1,5 @@
 <div class='--cursor-pointer h-100 w-100' data-controller='display-special-wps-mngt' data-action='mouseover->display-special-wps-mngt#displayWps mouseout->display-special-wps-mngt#hideWps'>
-	<div data-display-special-wps-mngt-target='delete' class='d-none'>
+	<div class='d-flex' data-display-special-wps-mngt-target='delete' class='d-none'>
 		<%= button_to '+', validate_result_path(result),
     method: :patch,
     params: { result:
