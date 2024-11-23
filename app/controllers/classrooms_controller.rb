@@ -63,7 +63,9 @@ class ClassroomsController < ApplicationController
         @domain = @domains.first
         @skills = @skills.select { |skill| skill.domain == @domain }.sort
         set_up_results(@domain)
-        results_factory(@domain) # create all  variables shared with the results_by_domain Action
+        @results = @classroom.completed_results_by_domain(@domain)
+        @students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
+        # results_factory(@domain) # create all  variables shared with the results_by_domain Action
       end
       format.xlsx do
         response.headers["Content-Disposition"] = 'attachment; filename="my_new_filename.xlsx"'
@@ -187,6 +189,7 @@ class ClassroomsController < ApplicationController
       # binding.pry if student.id == 393
       completed_wps = student.all_completed_work_plan_skills(domain)
       @all_completed_work_plan_skills[student.id.to_s] = completed_wps unless completed_wps.empty?
+
     end
   end
 

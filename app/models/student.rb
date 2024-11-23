@@ -13,6 +13,7 @@ class Student < ApplicationRecord
   validates :first_name, presence: true
 
   delegate :grade, to: :classroom
+  delegate :school, to: :grade
 
   def domains
     Domain.includes(:skills).where(grade: )
@@ -21,6 +22,7 @@ class Student < ApplicationRecord
   def belt_status(domain, level) # return true if belt is completed
     Belt.completed.where(student: self, domain:, level:).count.positive?
   end
+
 
   def skill_status(skill, _kind = nil)
     target_work_plan_skills = work_plan_skills.where(skill:)

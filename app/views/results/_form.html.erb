@@ -1,0 +1,15 @@
+<div class="result-cell" data-controller='classroom-add-wps' data-classroom-add-wps-target='wpsBox'>
+	<div class='--cursor-pointer h-100 w-100' data-controller='display-special-wps-mngt' data-action='mouseover->display-special-wps-mngt#displayWps mouseout->display-special-wps-mngt#hideWps'>
+		<div data-display-special-wps-mngt-target='delete' class='d-none'>
+			<%=simple_form_for result do |f|%>
+				<%= f.hidden_field :student_id, value: student.id %>
+				<%= f.hidden_field :skill_id, value: skill.id %>
+				<%= f.hidden_field :status, value: 'completed' %>
+				<%= f.hidden_field :kind, value: 'ceinture' %>
+				<%= button_tag :submit, class: 'w-100 bg-transparent p-0 --vert' do%>
+					+
+				<% end %>
+			<% end %>
+		</div>
+	</div>
+</div>

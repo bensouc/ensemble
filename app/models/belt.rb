@@ -74,7 +74,14 @@ class Belt < ApplicationRecord
   def completed!
     self.completed = true
     self.validated_date = DateTime.now
-    Result.update_with_new_belt(self) unless domain.special?
+    # Result.update_with_new_belt(self) unless domain.special?
+    save
+  end
+
+  def uncomplete!
+    self.completed = false
+    self.validated_date = DateTime.now
+    save
   end
 
   def all_skills(user)

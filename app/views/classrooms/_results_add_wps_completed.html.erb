@@ -1,8 +1,20 @@
 <div class='w-100 h-100 text-center' data-controller='wps-result' data-action='mouseover->wps-result#displayName mouseout->wps-result#hideName'>
-	<%= link_to "+", student_add_completed_wps_path(student, params:{skill_id: skill.id}),
+	<%#= link_to "+", student_add_completed_wps_path(student, params:{skill_id: skill.id}),
                                                 class: "d-inline bg-transparent p-0 --green d-none",
                                                 form_class: "d-inline ",
                                                 data:{ wps_result_target:'name',
                                                 action:'click->classroom-add-wps#validateWps'
                                                 }%>
+	<%#= link_to '+', results_path(student_id: student.id, skill_id: skill.id, status: "completed", kind: "ceinture"),
+  method: :post, class: 'd-inline bg-transparent p-0 --green d-none',
+  data:{ wps_result_target:'name'} %>
+	<%= simple_form_for Result.new do |f| %>
+    <%= f.hidden_field :student_id, value: student.id %>
+    <%= f.hidden_field :skill_id, value: skill.id %>
+    <%= f.hidden_field :status, value: "completed" %>
+    <%= f.hidden_field :kind, value: "ceinture" %>
+		<%= button_tag :submit, class: 'd-inline bg-transparent p-0 --green d-none', data: { wps_result_target: 'name' } do %>
+			+
+		<% end %>
+	<% end %>
 </div>
