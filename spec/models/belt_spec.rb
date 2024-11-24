@@ -17,11 +17,11 @@ RSpec.describe Belt, type: :model do
 
   describe "#completed?" do
     it "returns true if Belt is completed" do
-      belt1 = build(:belt, completed: true)
+      belt1 = build(:belt,kind:"ceinture", completed: true)
       expect(belt1.completed?).to eq(true)
     end
-    it "returns false if Belt is not completed" do
-      belt2 = build(:belt, completed: false)
+    it "returns false if Belt is not completed (exo + true)" do
+      belt2 = build(:belt, kind:"exercice", completed: true)
       expect(belt2.completed?).to eq(false)
     end
   end
@@ -117,8 +117,8 @@ RSpec.describe Belt, type: :model do
 
   describe "self.special_new_belt(work_plan_skill, work_plan)" do
     let(:student) { create(:student) }
-    let(:grade) { create(:grade) }
-    let(:domain) { create(:domain, grade:, special: true) }
+    let(:grade) { create(:grade, grade_level: "CE1") }
+    let(:domain) { create(:domain,name:"Grandeurs et Mesures", grade:, special: true) }
     let(:work_plan) { create(:work_plan, grade:, student:) }
     let(:work_plan_domain) { create(:work_plan_domain, work_plan: work_plan, domain:, level: 1) }
     let(:skill) { create(:skill, domain: work_plan_domain.domain, level: work_plan_domain.level) }

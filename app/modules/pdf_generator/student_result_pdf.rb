@@ -7,8 +7,8 @@ module PdfGenerator
       @student = student
       @domains = Domain.where(grade: @student.grade).sort_by(&:position)
       @skills = @student.grade.skills.includes(:domain)
-      @belts = @student.belts.completed
-      @results = Result.includes([:skill]).completed_for_student(@student)
+      @belts = @student.belts.includes([:domain]).completed
+      @results = Result.completed_for_student(@student)
       @title = "Progression de #{@student.first_name}- #{Time.now.strftime("%d/%m/%Y")}"
     end
 

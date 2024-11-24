@@ -1,46 +1,50 @@
 <% if domain.special? %>
 	<div class="display-last-wps ">
 		<% display_level = last_belt.nil? ? 0 : last_belt.level %>
-		<% if level > display_level  %>
+		<% if level == display_level  + 1%>
 			<% index = (level - display_level - 1 ) %>
-			<%# skills.sort_by(&:id).slice(8)[index].each do |skill| %>
-				<% select_wps = last_wps.sort_by{|f| f.updated_at }.each_slice(8).to_a %>
-				<%# select_wps = slice[index] unless slice.nil?%>
-				<% unless select_wps[index].nil? %>
-					<% select_wps[index].each do |wps|  %>
-						<div class="a-wps" data-controller='wps-result'>
-							<% unless wps.nil? %>
-								<%= render "belts/wps_result_status", wps: wps %>
-								<div class="skill-name d-none" data-wps-result-target='name'>
-									<%= wps.skill.name %>
-									-
-									<%= render "belts/wps_status", wps: wps %>
-								</div>
-							</div>
-						<% end %>
-					<% end %>
-				<% end %>
-				<%#= render "belts/validate_belt_btn", level: level, domain: domain %>
-			<% end %>
-			<%= render "belts/validate_belt_btn", level: level, domain: domain %>
-		</div>
-	<% else %>
-		<div class="display-last-wps">
-			<% skills.sort_by(&:id).each do |skill| %>
-				<% wps = results.select { |result| result.skill == skill }.first %>
+      <%= results.select { |f|  f.belt_validated?}.count %>
+      <% skill_to_hide_nb =  Belt::SCORES_TO_VALIDATES[domain.grade.grade_level.to_sym][domain.name.to_sym][level - 1] %>
+			<% skills.sort_by(&:position).each do |skill| %>
+				<% wps = results.find { |f| f.skill == skill && f.belt_validated?} %>
 				<% wps = last_wps.select { |f| f.skill == skill }.sort_by{|f| f.updated_at }.last if wps.nil? %>
-				<% unless wps.nil? %>
-					<div class="a-wps" data-controller='wps-result'>
+        <% if skill_to_hide_nb < 1 || wps.class == WorkPlanSkill %>
+				<!-- START WPS result-->
+				<div class="a-wps" data-controller='wps-result'>
+					<% unless wps.nil? %>
 						<%= render "belts/wps_result_status", wps: wps %>
 						<div class="skill-name d-none" data-wps-result-target='name'>
-							<%= skill.name %>
+							<%= wps.skill.name %>
 							-
 							<%= render "belts/wps_status", wps: wps %>
 						</div>
-					</div>
-				<% end %>
+					<% end %>
+				</div>
+        <% end %>
+        <% skill_to_hide_nb -= 1  if wps.class == Result%>
+				<!-- START WPS result-->
+				<%#= render "belts/validate_belt_btn", level: level, domain: domain %>
 			<% end %>
-			<%= render "belts/validate_belt_btn", level: level, domain: domain %>
-		</div>
-	<% end %>
-	<%= render "shared/add_validated_wps_btn", level: level, domain: domain, student: student %>
+		<% end %>
+		<%= render "belts/validate_belt_btn", level: level, domain: domain %>
+	</div>
+<% else %>
+	<div class="display-last-wps">
+		<% skills.sort_by(&:id).each do |skill| %>
+			<% wps = results.select { |result| result.skill == skill }.first %>
+			<% wps = last_wps.select { |f| f.skill == skill }.sort_by{|f| f.updated_at }.last if wps.nil? %>
+			<% unless wps.nil? %>
+				<div class="a-wps" data-controller='wps-result'>
+					<%= render "belts/wps_result_status", wps: wps %>
+					<div class="skill-name d-none" data-wps-result-target='name'>
+						<%= skill.name %>
+						-
+						<%= render "belts/wps_status", wps: wps %>
+					</div>
+				</div>
+			<% end %>
+		<% end %>
+		<%= render "belts/validate_belt_btn", level: level, domain: domain %>
+	</div>
+<% end %>
+<%= render "shared/add_validated_wps_btn", level: level, domain: domain, student: student %>

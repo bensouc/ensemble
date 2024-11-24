@@ -3,7 +3,7 @@ class Result < ApplicationRecord
   belongs_to :skill
   validates :student, uniqueness: { scope: :skill, message: "Il y déjà un résultat pour cette compétnce et pour cet élève" }
   scope :completed, -> { where(status: "completed", kind: "ceinture") }
-  scope :completed_for_student, ->(student) { where(student:, status: "completed") }
+  scope :completed_for_student, ->(student) { includes([:skill]).where(student:, status: "completed") }
 
   after_commit :belt_update_by_domain_and_level
 
@@ -36,9 +36,9 @@ class Result < ApplicationRecord
     skills = Skill.for_school(student.school).where(domain:, level:)
     results = Result.where(student:, skill: skills)
 
-    # binding.pry
     if domain.special?
-      puts "TO BE DONE"
+      # binding.pry
+      Belt.update_special_belts_on_domain(domain, student)
     else
       if results.all? { |r| r.belt_validated? } && results.count == skills.count
       belt.completed!

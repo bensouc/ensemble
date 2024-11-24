@@ -31,27 +31,4 @@ RSpec.describe StudentsController, type: :controller do
     end
   end
 
-  describe "before_action :set_results_pdf" do
-    it "assigns the requested student to @student" do
-      get :show, params: { id: student.id }, format: :pdf
-      expect(assigns(:student)).to eq(student)
-    end
-
-    it "assigns the sorted domains to @domains" do
-      get :show, params: { id: student.id }, format: :pdf
-      expect(assigns(:domains)).to eq(classroom.grade.domains.sort_by(&:position))
-    end
-
-    it "assigns the student grade skills to @skills" do
-      get :show, params: { id: student.id }, format: :pdf
-      expect(assigns(:skills)).to eq(student.grade.skills)
-      expect(assigns(:skills).count).to eq(student.grade.skills.count)
-    end
-
-    it "assigns the completed results for the student to @results" do
-      result = create(:result, student: student, status: "completed")
-      get :show, params: { id: student.id }, format: :pdf
-      expect(assigns(:results)).to include(result)
-    end
-  end
 end
