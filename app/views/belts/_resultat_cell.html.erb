@@ -3,7 +3,6 @@
 		<% display_level = last_belt.nil? ? 0 : last_belt.level %>
 		<% if level == display_level  + 1%>
 			<% index = (level - display_level - 1 ) %>
-      <%= results.select { |f|  f.belt_validated?}.count %>
       <% skill_to_hide_nb =  Belt::SCORES_TO_VALIDATES[domain.grade.grade_level.to_sym][domain.name.to_sym][level - 1] %>
 			<% skills.sort_by(&:position).each do |skill| %>
 				<% wps = results.find { |f| f.skill == skill && f.belt_validated?} %>

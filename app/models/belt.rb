@@ -94,7 +94,6 @@ class Belt < ApplicationRecord
     scores.each_with_index do |score, index|
       level = index + 1 # define level
       belt = belts.find { |b| b.level == level } # find belt or nil
-      binding.pry
       if validated_skills_count >= score # test if this level score is reached
         # create belt ON LEVEL if not exist
         if belt.nil?
