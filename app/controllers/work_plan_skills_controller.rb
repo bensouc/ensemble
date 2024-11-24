@@ -149,10 +149,15 @@ class WorkPlanSkillsController < ApplicationController
     skills = skills_and_student[:skills]
     @domain = skills.first.domain # get domain to work on
     @student = skills_and_student[:student]
-    @level = skills.first.level
-    @special_work_plan = @student.find_special_workplan
-    @work_plan_domain = @special_work_plan.work_plan_domains.includes(:work_plan_skills).find_or_create_by(work_plan: @special_work_plan, domain: @domain, level: @level)
-    WorkPlanDomain.add_wps_completed(skills, @work_plan_domain, @special_work_plan)
+    @level = @domain.special? ? 1 : skills.first.level
+    skills.each do |skill|
+      result = Result.find_or_create_by(skill: skill, student: @student)
+      result.validate!
+    end
+
+    # @special_work_plan = @student.find_special_workplan
+    # @work_plan_domain = @special_work_plan.work_plan_domains.includes(:work_plan_skills).find_or_create_by(work_plan: @special_work_plan, domain: @domain, level: @level)
+    # WorkPlanDomain.add_wps_completed(skills, @work_plan_domain, @special_work_plan)
     set_data_show
     # @belt = Belt.find_by(student: @student, domain: @domain, level: @level)
     # @skills = @domain.skills.select { |skill| skill.level == @level }
@@ -195,11 +200,12 @@ class WorkPlanSkillsController < ApplicationController
 
   # PARAMS METHOD
   def set_data_show
-    level = @domain.special? ? 1 : @level
-    @skills = @domain.skills.select { |skill| skill.level == level }
-    @results = Result.where(skill: @skills, student: @student, kind: "ceinture", status: "completed")
-    @belt = Belt.find_by(domain: @domain, level: @level, student: @student, completed: true)
-    @last_belt = Belt.where(domain: @domain, student: @student, completed: true).order(level: :desc).first
+
+    @skills = @domain.skills.select { |skill| skill.level == @level }
+    @results = Result.completed.where(skill: @skills, student: @student)
+    all_students_belts = Belt.completed.where(domain: @domain, student: @student)
+    @belt = all_students_belts.detect {|belt|belt.level == @level}   #Belt.completed.find_by(domain: @domain, level: @level, student: @student)
+    @last_belt = all_students_belts.order(level: :desc).first
     @last_wps = WorkPlanSkill.last_wps(@student, @skills)
   end
 
