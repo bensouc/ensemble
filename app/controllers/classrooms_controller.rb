@@ -78,13 +78,15 @@ class ClassroomsController < ApplicationController
     authorize @classroom
     # binding.pry
     @domain = Domain.find(set_domain)
-    set_up_results(@domain)
-    results_factory(@domain) # create all  variables shared with the results Action
+    # create all  variables shared with the results Action
     @skills = if @domain.special?
         Skill.where(domain: @domain).order(Arel.sql("COALESCE(sub_domain, '') ASC"))
       else
         Skill.where(domain: @domain).sort
       end
+    set_up_results(@domain)
+    @results = @classroom.completed_results_by_domain(@domain)
+    @students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     render partial: "classrooms/classroom_domain_results"
   end
 
@@ -175,10 +177,8 @@ class ClassroomsController < ApplicationController
 
   # refacto of result and result_by_domain actions
   def set_up_results(domain)
-    # @special_domain = @classroom.user.school.special_domains? && (WorkPlanDomain::DOMAINS_SPECIALS.include?(domain) && @classroom.grade.grade_level != "CM2")
     @students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
     # get all validated belts for all classroom student
-    # binding.pry
     @all_completed_belts = Belt.includes([:student]).where(student: @students_list, domain:, completed: true)
   end
 
@@ -189,7 +189,6 @@ class ClassroomsController < ApplicationController
       # binding.pry if student.id == 393
       completed_wps = student.all_completed_work_plan_skills(domain)
       @all_completed_work_plan_skills[student.id.to_s] = completed_wps unless completed_wps.empty?
-
     end
   end
 
