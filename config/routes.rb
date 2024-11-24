@@ -41,6 +41,15 @@ Rails.application.routes.draw do
   resources :work_plan_domains, only: [:destroy, :show] do
     resources :work_plan_skills, only: [:create]
   end
+  # ############### routes for RESULTS###############
+  resources :results, only: [:destroy,:create] do
+    member do
+      patch :validate
+    end
+
+  end
+  #
+  # ############### END routes for RESULTS###############
 
   # ############### routes for WORK_PLAN_SKILLS###############
   resources :work_plan_skills, only: [:update, :destroy, :show] do

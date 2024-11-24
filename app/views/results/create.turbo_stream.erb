@@ -1,0 +1,5 @@
+<%= turbo_stream.replace "student_#{@result.student.id}_skill_#{@result.skill.id}" do%>
+  <%= turbo_frame_tag "student_#{@result.student.id}_skill_#{@result.skill.id}" do%>
+    <%= render partial: 'results/result', locals: { result: @result } %>
+  <%end%>
+<%end%>

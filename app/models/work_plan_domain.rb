@@ -48,12 +48,12 @@ class WorkPlanDomain < ApplicationRecord
     Skill.where(domain:, level: level).sort_by(&:position).each do |skill|
       # result = Result.find_by(skill:, student:)
       result = results.to_a.find { |result| result.skill == skill }
-      next if (!result.nil? && result.kind == "ceinture" && result.status == "completed") || (result.nil? && special?) # rubocop:disable Style/IfUnlessModifier
-
-      kind =  if result.nil?
+      # raise if skill.id == 105
+      next if (!result.nil? && result.belt_validated?) || (result.nil? && special?) # rubocop:disable Style/IfUnlessModifier
+      kind =  if result.nil? || result.kind.nil?
                 "exercice"
               else
-                result.kind == "exercice" && result.status == "completed" ? "ceinture" : result.kind
+                result.challenge_validated? ? "ceinture" : result.kind
               end
       new_wps = WorkPlanSkill.new(
         skill:,
@@ -66,60 +66,4 @@ class WorkPlanDomain < ApplicationRecord
     end
   end
 
-  def self.add_wps_completed(skills, work_plan_domain, special_work_plan)
-    # binding.pry
-    last_work_plan_skill = nil
-    skills.each do |skill|
-      work_plan_skill = WorkPlanSkill.create!(
-        work_plan_domain:,
-        skill:,
-        status: "completed",
-        completed: true,
-        kind: "ceinture",
-      )
-      last_work_plan_skill = work_plan_skill
-
-      if work_plan_domain.domain.special?
-        Belt.special_newbelt(work_plan_skill, special_work_plan)
-        last_work_plan_skill = nil
-      elsif work_plan_domain.all_skills_completed?
-        belt = Belt.find_or_create_by(
-          { student_id: special_work_plan.student.id,
-            domain: work_plan_domain.domain,
-            level: skill.level }
-        )
-        belt.completed = true
-        belt.validated_date = DateTime.now
-        belt.save
-      end
-    end
-    last_work_plan_skill
-  end
-
-  # test if a all skills are validated on a domain and
-  # update completed status
-  def all_skills_completed?
-    # get all skills for a domain
-    # temp_all_domain_skill = all_domain_skills
-    student = work_plan.student
-    self.completed = all_domain_skills(work_plan.user).all? do |skill|
-      # test if wps is completed
-      temp_wps = WorkPlanSkill.last_wps(student, skill).select do |wps|
-        wps.skill == skill && wps.kind == "ceinture"
-      end.max_by(&:created_at)
-      temp_wps.completed unless temp_wps.nil?
-    end
-    save
-    completed
-  end
-
-  # return the number of validated skill for a domain
-  def all_skills_completed_count
-    student = work_plan.student
-    out = all_domain_skills(work_plan.user).select do |skill|
-      temp_last_wpss = WorkPlanSkill.last_wps(student, skill)[-1]
-      !temp_last_wpss.nil? && temp_last_wpss.completed
-    end
-    out.count
-  end
 end

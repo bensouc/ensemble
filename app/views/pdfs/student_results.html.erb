@@ -17,7 +17,7 @@
 			</tr>
 			<% skills_by_domain = skills.select { |skill| skill.domain == domain } %>
 			<% for level in (1..7) %>
-        <% belt = belts.find {|belt| belt.domain == domain && belt.level == level}  %>
+        <% belt = belts.detect {|belt| belt.domain == domain && belt.level == level}  %>
 				<% skills_level = skills_by_domain.select { |skill| skill.level == level }.sort_by(&:position) %>
 				<% if skills_level.any? %>
 					<tr>
@@ -26,15 +26,15 @@
 						</td>
 						<td style='padding: 5px;'><%= skills_level.first.name %></td>
 						<% result = results.find { |result| result.skill == skills_level.first } %>
-            <% result = belt unless result%>
-						<td style='padding: 5px;text-align: center;'><%= result.nil? ? "" : result.updated_at.strftime("%d/%m/%Y") %></td>
+            <%# result = belt unless result%>
+						<td style='padding: 5px;text-align: center;'><%= result.nil? || !result.belt_validated? ? "" : result.updated_at.strftime("%d/%m/%Y") %></td>
 					</tr>
 					<% skills_level[1..-1].each do |skill| %>
 						<tr>
 							<td style='padding: 5px;'><%= skill.name %></td>
 							<% result = results.find { |result| result.skill == skill } %>
-              <% result = belt unless result%>
-								<td style='padding: 5px;text-align: center;'><%= result.nil? ? "" : result.updated_at.strftime("%d/%m/%Y") %></td>
+              <%# result = belt unless result%>
+								<td style='padding: 5px;text-align: center;'><%= result.nil? || !result.belt_validated? ? "" : result.updated_at.strftime("%d/%m/%Y") %></td>
 						</tr>
 					<% end %>
 				<% end %>

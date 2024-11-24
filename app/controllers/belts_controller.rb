@@ -25,7 +25,7 @@ class BeltsController < ApplicationController
     # args[:grade] = Grade.find(new_belt_params[:grade_id])
     args[:domain] = Domain.find(new_belt_params[:domain_id])
     @belt = Belt.find_or_create_by(args)
-    @belt.completed!
+    @belt.complete!
     # @belt.student = Student.find(params[:student_id])
     if @belt.save
       @domain = @belt.domain
@@ -83,22 +83,6 @@ class BeltsController < ApplicationController
     @belt = Belt.find_by(domain: @domain, level: @level, student: @student, completed: true)
     @last_belt = Belt.where(domain: @domain, student: @student, completed: true).order(level: :desc).first
     @last_wps = WorkPlanSkill.last_wps(@student, @skills)
-  end
-
-  def wps_index_to_display(domain, level)
-    score = Belt.score_to_validate(domain.grade).find { |hash| hash[:domain] == domain.name }&.dig(:validation)
-    start_nb = if level == 1
-                 0
-               else
-                 score[level - 2] + 1
-               end
-    end_nb = score[level - 1]
-    end_nb = 30 if end_nb.nil?
-    {
-      score:,
-      start_nb:,
-      end_nb:,
-    }
   end
 
   def set_belt

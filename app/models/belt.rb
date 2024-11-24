@@ -14,38 +14,20 @@ class Belt < ApplicationRecord
   }.freeze
   # SCORE TO VALIDATE SPECIAL DOMAINS ALAIN FOURNIER
   SCORES_TO_VALIDATES =
-  {
-    "CE1" => [
-      {
-        domain: "Géométrie",
-        validation: [2, 4, 7, 10, 13, 17, 21],
+    {
+      "CE1": {
+        "Géométrie": [2, 4, 7, 10, 13, 17, 21],
+        "Grandeurs et Mesures": [2, 4, 6, 9, 12, 15, 18],
       },
-      {
-        domain: "Grandeurs et Mesures",
-        validation: [2, 4, 6, 9, 12, 15, 18],
+      "CE2": {
+        "Géométrie": [2, 4, 7, 10, 13, 17, 21],
+        "Grandeurs et Mesures": [3, 7, 11, 15, 19, 23, 28],
       },
-    ],
-    "CE2" => [
-      {
-        domain: "Géométrie",
-        validation: [2, 4, 7, 10, 13, 17, 21],
+      "CM1": {
+        "Géométrie": [2, 5, 8, 12, 16, 21, 26],
+        "Grandeurs et Mesures": [3, 7, 11, 16, 21, 27, 33],
       },
-      {
-        domain: "Grandeurs et Mesures",
-        validation: [3, 7, 11, 15, 19, 23, 28],
-      },
-    ],
-    "CM1" => [
-      {
-        domain: "Géométrie",
-        validation: [2, 5, 8, 12, 16, 21, 26],
-      },
-      {
-        domain: "Grandeurs et Mesures",
-        validation: [3, 7, 11, 16, 21, 27, 33],
-      },
-    ],
-  }.freeze
+    }.freeze
   # belongs_to :grade #to remove for first migration Of Grade MODEL
 
   # =================================================
@@ -53,7 +35,7 @@ class Belt < ApplicationRecord
   belongs_to :student
   belongs_to :domain
   scope :completed, -> { where(completed: true) }
-# =================================================
+  # =================================================
   # VALIDATIONS
   # validates :student, presence: true
   # validates :level, presence: true
@@ -65,16 +47,23 @@ class Belt < ApplicationRecord
   # validates :grade, presence: true, inclusion: { in: %w[CP CE1 CE2 CM1 CM2] }
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
   validates :student, uniqueness: { scope: %i[domain level] }
-# =================================================
+  # =================================================
   # METHODS
   def completed?
     completed
   end
 
-  def completed!
+  def complete!
     self.completed = true
     self.validated_date = DateTime.now
-    Result.update_with_new_belt(self) unless domain.special?
+    # Result.update_with_new_belt(self) unless domain.special?
+    save
+  end
+
+  def uncomplete!
+    self.completed = false
+    self.validated_date = DateTime.now
+    save!
   end
 
   def all_skills(user)
@@ -85,7 +74,7 @@ class Belt < ApplicationRecord
     domain.grade
   end
 
-# =================================================
+  # =================================================
   # CLASS METHODS
   def self.student_last_belt_level(student, domain)
     belt = Belt.where(student:, domain:, completed: true).order(level: :desc).first
@@ -97,14 +86,23 @@ class Belt < ApplicationRecord
   end
 
   # Belt.special_newbelt(work_plan_skill, special_work_plan)
-  def self.special_newbelt(work_plan_skill, work_plan)
-    count = work_plan_skill.work_plan_domain.all_skills_completed_count
-    args = {
-      student_id: work_plan_skill.student.id,
-      domain: work_plan_skill.work_plan_domain.domain
-    }
-    Belt.create_new_special_belt(args, count, work_plan_skill)
-    # raise
+  def self.update_special_belts_on_domain(domain, student)
+    grade = domain.grade
+    validated_skills_count = domain.all_skills_completed(student, 1).count
+    scores = Belt::SCORES_TO_VALIDATES[grade.grade_level.to_sym][domain.name.to_sym]
+    belts = Belt.where(student: student, domain: domain)
+    scores.each_with_index do |score, index|
+      level = index + 1 # define level
+      belt = belts.find { |b| b.level == level } # find belt or nil
+      if validated_skills_count >= score # test if this level score is reached
+        # create belt ON LEVEL if not exist
+        if belt.nil?
+          Belt.create!(student: student, domain: domain, level: level).complete!
+        else
+          belt.complete! unless belt.completed?
+        end
+      end
+    end
   end
 
   def self.find_or_create_by_level!(args, level)
@@ -113,8 +111,8 @@ class Belt < ApplicationRecord
         {
           level:,
         }
-        )
-        # binding.pry
+      )
+      # binding.pry
       belt = Belt.find_or_create_by(args)
       belt.completed = true
       belt.validated_date = DateTime.now
@@ -122,10 +120,8 @@ class Belt < ApplicationRecord
     end
   end
 
-
-
   def self.score_to_validate(grade)
-    Belt::SCORES_TO_VALIDATES[grade.grade_level]
+    Belt::SCORES_TO_VALIDATES[grade.grade_level.to_sym][grane.name.to_sym]
   end
 
   def self.create_new_special_belt(args, count, work_plan_skill)

@@ -20,8 +20,8 @@ RSpec.describe Belt, type: :model do
       belt1 = build(:belt, completed: true)
       expect(belt1.completed?).to eq(true)
     end
-    it "returns false if Belt is not completed" do
-      belt2 = build(:belt, completed: false)
+    it "returns false if Belt is not completed (exo + true)" do
+      belt2 = build(:belt,  completed: false)
       expect(belt2.completed?).to eq(false)
     end
   end
@@ -31,18 +31,18 @@ RSpec.describe Belt, type: :model do
     # let(:belt) { create(:belt, completed: false, validated_date: nil, domain: domain) }
 
     it "marks the belt as completed" do
-      @belt1.completed!
+      @belt1.complete!
       expect(@belt1.completed).to be true
     end
 
     it "sets the validated_date to the current date and time" do
-      @belt1.completed!
+      @belt1.complete!
       expect(@belt1.validated_date).to be_within(1.second).of(DateTime.now)
     end
 
     it "sets a completed Result for all the skills of the domain and level" do
       belt2 = create(:belt)
-      belt2.completed!
+      belt2.complete!
       belt2.domain.skills.select{|skill| skill.level == belt2.level}.each do |skill|
         result = Result.find_by(skill: skill, student: belt2.student)
         expect(result).to be_present
@@ -52,7 +52,7 @@ RSpec.describe Belt, type: :model do
     end
 
     it "persists the changes to the database" do
-      @belt1.completed!
+      @belt1.complete!
       expect(@belt1.completed).to be true
       expect(@belt1.validated_date).to be_within(1.second).of(DateTime.now)
     end
@@ -112,21 +112,6 @@ RSpec.describe Belt, type: :model do
       belt7.completed = false
       belt7.save
       expect(Belt.student_last_belt_level(belt1.student, belt1.domain)).to eq(1)
-    end
-  end
-
-  describe "self.special_new_belt(work_plan_skill, work_plan)" do
-    let(:student) { create(:student) }
-    let(:grade) { create(:grade) }
-    let(:domain) { create(:domain, grade:, special: true) }
-    let(:work_plan) { create(:work_plan, grade:, student:) }
-    let(:work_plan_domain) { create(:work_plan_domain, work_plan: work_plan, domain:, level: 1) }
-    let(:skill) { create(:skill, domain: work_plan_domain.domain, level: work_plan_domain.level) }
-    let(:work_plan_skill) { create(:work_plan_skill, work_plan_domain: work_plan_domain, kind: "ceinture", completed: true, status: "completed") }
-    it "does not create a first new belt on special domains if its the first" do
-      expect {
-        Belt.special_newbelt(work_plan_skill, work_plan)
-      }.to change(Belt, :count).by(0)
     end
   end
 end

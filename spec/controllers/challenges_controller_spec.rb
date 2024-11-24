@@ -5,7 +5,8 @@ RSpec.describe ChallengesController, type: :controller do
   let(:user) { create(:user) }
   let(:challenge) { create(:challenge, user:) }
   let(:classroom) { create(:classroom, user:) }
-  let(:work_plan) { create(:work_plan, user:) }
+  let(:student) { create(:student, classroom:) }
+  let(:work_plan) { create(:work_plan, user:, student:) }
   let(:skill) { create(:skill, school: user.school) }
   let(:work_plan_domain) { create(:work_plan_domain, work_plan:) }
   let(:work_plan_skill) { create(:work_plan_skill, work_plan_domain:, kind: "exercice", challenge:) }

@@ -4,8 +4,7 @@ development:
   channel_prefix: your_app_development
 
 test:
-  adapter: redis
-  url: redis://localhost:6379/1
+  adapter: async
   channel_prefix: your_app_test
 
 production:

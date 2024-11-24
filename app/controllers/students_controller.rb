@@ -1,13 +1,12 @@
 # frozen_string_literal: true
 
 class StudentsController < ApplicationController
-  before_action :set_results_pdf, only: %i[show]
+  before_action :set_student, only: %i[show]
 
   def show
     skip_authorization
     respond_to do |format|
       format.html do
-        @student = Student.find(params[:id])
         @belt = Belt::BELT_COLORS
         @domains = @student.domains.sort_by(&:position)
       end
@@ -100,11 +99,9 @@ class StudentsController < ApplicationController
 
   private
 
-  def set_results_pdf
+  def set_student
     @student = Student.find(params[:id])
-    # @domains = @student.domains.sort_by(&:position)
-    # @skills = @student.grade.skills
-    # @results = Result.completed_for_student(@student)
+
   end
 
   def params_new_validated_wps
@@ -128,23 +125,23 @@ class StudentsController < ApplicationController
   end
 
   # controller method to clean OOPed
-  def wps_cleaned_belt(all_skills_last_wpss, domain, count, grade)
-    # "Géométrie", "Grandeurs et Mesures"
-    belt_validation = Belt.score_to_validate(grade)
-    to_remove = belt_validation.find { |d| d[:domain] == domain }[:validation][count - 1]
-    (1..to_remove).to_a.each do
-      # get index for wps completed
-      index = all_skills_last_wpss.index do |h|
-        # binding.pry
-        h[:skill][:domain] == domain && !h[:last_wps].nil? && h[:last_wps].status == "completed"
-        # h[:skill][:domain] == domain && h[:skill][:grade] == grade && !h[:last_wps].nil? && h[:last_wps].status == "completed"
-      end
-      # delete @ index if index exists
-      all_skills_last_wpss.delete_at(index) unless index.nil?
-      # all_skills_last_wpss.select { |h| h[:skill][:domain] == domain && !h[:last_wps].nil? }.count
-    end
-    all_skills_last_wpss
-  end
+  # def wps_cleaned_belt(all_skills_last_wpss, domain, count, grade)
+  #   # "Géométrie", "Grandeurs et Mesures"
+  #   belt_validation = Belt.score_to_validate(grade)
+  #   to_remove = belt_validation.find { |d| d[:domain] == domain }[:validation][count - 1]
+  #   (1..to_remove).to_a.each do
+  #     # get index for wps completed
+  #     index = all_skills_last_wpss.index do |h|
+  #       # binding.pry
+  #       h[:skill][:domain] == domain && !h[:last_wps].nil? && h[:last_wps].status == "completed"
+  #       # h[:skill][:domain] == domain && h[:skill][:grade] == grade && !h[:last_wps].nil? && h[:last_wps].status == "completed"
+  #     end
+  #     # delete @ index if index exists
+  #     all_skills_last_wpss.delete_at(index) unless index.nil?
+  #     # all_skills_last_wpss.select { |h| h[:skill][:domain] == domain && !h[:last_wps].nil? }.count
+  #   end
+  #   all_skills_last_wpss
+  # end
 
   def get_last_completed_or_created_wps(all_last_wps, skill)
     last_wps = all_last_wps.select { |wps| wps.skill == skill && wps.completed }.max_by(&:created_at)

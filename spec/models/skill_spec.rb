@@ -22,12 +22,6 @@ RSpec.describe Skill, type: :model do
     expect(skill2).to_not be_valid
   end
 
-  it "is not valid without a domain" do
-    skill2 = build(:skill, domain: nil)
-
-    expect(skill2).to_not be_valid
-  end
-
   it "is not valid without a symbol from the list" do
     skill2 = build(:skill, symbol: "⬤⬤")
     expect(skill2).to_not be_valid

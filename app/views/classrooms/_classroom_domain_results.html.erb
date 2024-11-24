@@ -17,36 +17,22 @@
 						</div>
 						<div class="classroom-right-data-results" >
 							<% @students_list.each do |student| %>
-								<div class="result-cell" data-controller='classroom-add-wps' data-classroom-add-wps-target='wpsBox'>
-									<%# binding.pry if student.id ==393 %>
-									<% if belt_on_level.any?{ |belt| belt.student == student && belt.completed?} && !(@domain.special? && level == 1)%>
-										<%#If special domain true ou ceinture  %>
-										<i class="fa-solid fa-circle-check --vert"></i>
-									<% elsif !(@all_completed_work_plan_skills.nil? || @all_completed_work_plan_skills[student.id.to_s].nil? || @all_completed_work_plan_skills[student.id.to_s].find{|wps| wps.skill == skill }.nil?) %>
-										<%# <% wps = @all_completed_work_plan_skills[student.id.to_s].select{|wps| wps.skill == skill }.last %>
-										<% wps = @all_completed_work_plan_skills[student.id.to_s].reverse.find { |wps| wps.skill == skill } %>
-										<% if wps.completed?%>
-											<% wp_s = wps.work_plan_domain.work_plan %>
-											<% if wp_s.special_wps? %>
-												<div class='--cursor-pointer' data-controller='display-special-wps-mngt' data-action='mouseover->display-special-wps-mngt#displayWps mouseout->display-special-wps-mngt#hideWps'>
-													<div data-display-special-wps-mngt-target='show'>
-														<i class="fa-solid fa-circle-check --vert"></i>
-													</div>
-													<div class="--cursor-pointer d-none" data-display-special-wps-mngt-target='delete'>
-														<%= link_to '-', work_plan_skill_remove_special_wps_path(wps),
-                                    class: '--roseL',
-                                    method: 'delete',
-                                    data:{ action:'click->classroom-add-wps#validateWps'}%>
-													</div>
-												</div>
-											<% else %>
-												<i class="fa-solid fa-circle-check --vert"></i>
-											<% end %>
-										<% end %>
-									<% else %>
-										<%= render 'results_add_wps_completed',student: student, skill: skill%>
-									<% end %>
-								</div>
+                <%= turbo_frame_tag "student_#{student.id}_skill_#{skill.id}" do%>
+                    <% if belt_on_level.any?{ |belt| belt.student == student && belt.completed?} && !(@domain.special? && level == 1)%>
+                      <div class="result-cell" data-controller='classroom-add-wps' data-classroom-add-wps-target='wpsBox'>
+                          <%#If special domain true ou ceinture  %>
+                          <i class="fa-solid fa-circle-check --vert"></i>
+                      </div>
+                    <% else %>
+                      <%#serch for result for this student and this skill%>
+                      <% result = @results[student].find{|r| r.skill == skill && r.belt_validated?} %>
+                      <% if result %>
+                        <%= render "results/result", result: result %>
+                      <% else %>
+                        <%= render "results/form", result: Result.new(student:, skill:)%>
+                      <% end %>
+                    <% end %>
+                <% end %>
 							<% end %>
 						</div>
 					</div>

@@ -71,12 +71,17 @@ class WorkPlanSkill < ApplicationRecord
   end
 
   def self.last_wps(student, skills)
-    wpss = student.work_plan_skills.where(skill: skills) # get all wps on skills and student
-    wpss.group_by(&:skill_id).transform_values { |wps_s| wps_s.max_by(&:updated_at) }.values.sort_by(&:updated_at)
+    # wpss = student.work_plan_skills.where(skill: skills) # get all wps on skills and student
+    # wpss.group_by(&:skill_id).transform_values { |wps_s| wps_s.max_by(&:updated_at) }.values.sort_by(&:updated_at)
+    student.work_plan_skills
+      .where(skill: skills)
+      .select("DISTINCT ON (work_plan_skills.skill_id) work_plan_skills.*")
+      .order("work_plan_skills.skill_id, work_plan_skills.updated_at DESC")
+      .order("work_plan_skills.updated_at")
   end
 
   def attach_content(result, current_user)
-    if result.nil?
+    if result.nil? || result.kind.nil?
       self.challenge = get_challenge_4_wps(current_user)
       save!
       # If the previous WorkPlanSkill is completed, create a new WorkPlanSkill of the appropriate kind and save it

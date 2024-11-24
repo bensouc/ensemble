@@ -36,6 +36,15 @@ class Classroom < ApplicationRecord
     name == "" ? grade.grade_level : name
   end
 
+  def completed_results_by_domain(domain)
+      # {student_id: Result.where(skills: domain.skills, student: student)}
+    results = {}
+    temp_results = Result.includes([:student, :skill]).where(skill: domain.skills, students: students)
+    students.each do |student|
+      results[student] = temp_results.select { |result| result.student == student && result.status == "completed" && result.kind == "ceinture" }
+    end
+    results
+  end
   private
 
   def set_default
