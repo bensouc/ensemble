@@ -147,15 +147,7 @@ class WorkPlanSkillsController < ApplicationController
       result = Result.find_or_create_by(skill: skill, student: @student)
       result.validate!
     end
-    # Belt.special_newbelt(@domain, @work_plan)
-    # @special_work_plan = @student.find_special_workplan
-    # @work_plan_domain = @special_work_plan.work_plan_domains.includes(:work_plan_skills).find_or_create_by(work_plan: @special_work_plan, domain: @domain, level: @level)
-    # WorkPlanDomain.add_wps_completed(skills, @work_plan_domain, @special_work_plan)
     set_data_show
-    # @belt = Belt.find_by(student: @student, domain: @domain, level: @level)
-    # @skills = @domain.skills.select { |skill| skill.level == @level }
-    # @results = Result.where(skill: @skills, student: @student, kind: "ceinture", status: "completed")
-    # @last_wps = WorkPlanSkill.last_wps(@student, @skills)
     respond_to do |format|
       format.html { redirect_to student_path(@student) }
       format.turbo_stream
