@@ -48,12 +48,12 @@ class WorkPlanDomain < ApplicationRecord
     Skill.where(domain:, level: level).sort_by(&:position).each do |skill|
       # result = Result.find_by(skill:, student:)
       result = results.to_a.find { |result| result.skill == skill }
-      next if (!result.nil? && result.kind == "ceinture" && result.status == "completed") || (result.nil? && special?) # rubocop:disable Style/IfUnlessModifier
-
-      kind =  if result.nil?
+      # raise if skill.id == 105
+      next if (!result.nil? && result.belt_validated?) || (result.nil? && special?) # rubocop:disable Style/IfUnlessModifier
+      kind =  if result.nil? || result.kind.nil?
                 "exercice"
               else
-                result.kind == "exercice" && result.status == "completed" ? "ceinture" : result.kind
+                result.challenge_validated? ? "ceinture" : result.kind
               end
       new_wps = WorkPlanSkill.new(
         skill:,

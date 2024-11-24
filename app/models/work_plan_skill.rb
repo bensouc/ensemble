@@ -76,7 +76,7 @@ class WorkPlanSkill < ApplicationRecord
   end
 
   def attach_content(result, current_user)
-    if result.nil?
+    if result.nil? || result.kind.nil?
       self.challenge = get_challenge_4_wps(current_user)
       save!
       # If the previous WorkPlanSkill is completed, create a new WorkPlanSkill of the appropriate kind and save it
