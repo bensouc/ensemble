@@ -85,7 +85,7 @@ class Belt < ApplicationRecord
     end
   end
 
-  # Belt.special_newbelt(work_plan_skill, special_work_plan)
+  # Belt. (work_plan_skill, special_work_plan)
   def self.update_special_belts_on_domain(domain, student)
     grade = domain.grade
     validated_skills_count = domain.all_skills_completed(student, 1).count
