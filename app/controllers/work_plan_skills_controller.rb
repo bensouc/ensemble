@@ -102,7 +102,7 @@ class WorkPlanSkillsController < ApplicationController
           @work_plan_skill.save!
           if @work_plan_skill.work_plan_domain.special? #ADD management for ALAIN FOURNIER
             Belt.update_special_belts_on_domain(@work_plan_skill.domain, @work_plan.student)
-          elsif @work_plan_skill.domain.all_skills_completed?
+          elsif @work_plan_skill.work_plan_domain.domain.all_skills_completed?
             belt = Belt.find_or_create_by(
               {
                 student_id: @work_plan_skill.student.id,
