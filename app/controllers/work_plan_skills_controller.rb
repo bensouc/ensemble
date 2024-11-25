@@ -99,21 +99,21 @@ class WorkPlanSkillsController < ApplicationController
         case @work_plan_skill.status
         when "completed"
           @work_plan_skill.completed = true
-          @work_plan_skill.save!
-          if @work_plan_skill.work_plan_domain.special? #ADD management for ALAIN FOURNIER
-            Belt.update_special_belts_on_domain(@work_plan_skill.domain, @work_plan.student)
-          elsif @work_plan_skill.work_plan_domain.domain.all_skills_completed?
-            belt = Belt.find_or_create_by(
-              {
-                student_id: @work_plan_skill.student.id,
-                domain: @work_plan_skill.work_plan_domain.domain,
-                level: @work_plan_skill.work_plan_domain.level,
-              }
-            )
-            belt.completed = true
-            belt.validated_date = DateTime.now
-            belt.save!
-          end
+          # @work_plan_skill.save!
+          # if @work_plan_skill.work_plan_domain.special? #ADD management for ALAIN FOURNIER
+          #   Belt.update_special_belts_on_domain(@work_plan_skill.domain, @work_plan.student)
+          # elsif @work_plan_skill.work_plan_domain.domain.all_skills_completed?(student)
+          #   belt = Belt.find_or_create_by(
+          #     {
+          #       student_id: @work_plan_skill.student.id,
+          #       domain: @work_plan_skill.work_plan_domain.domain,
+          #       level: @work_plan_skill.work_plan_domain.level,
+          #     }
+          #   )
+          #   belt.completed = true
+          #   belt.validated_date = DateTime.now
+          #   belt.save!
+          # end
         else
           @work_plan_skill.completed = false
         end
