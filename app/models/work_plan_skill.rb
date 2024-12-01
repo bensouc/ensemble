@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class WorkPlanSkill < ApplicationRecord
-  after_validation :update_result, only: %w[create update]
+  after_validation :update_result, only: %w[update]
   # after_destroy :reset_result
 
   belongs_to :work_plan_domain
