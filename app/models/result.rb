@@ -41,7 +41,7 @@ class Result < ApplicationRecord
       Belt.update_special_belts_on_domain(domain, student)
     else
       if results.all? { |r| r.belt_validated? } && results.count == skills.count
-      belt.complete!
+        belt.complete!
       else
         belt.uncomplete!
       end
