@@ -63,35 +63,8 @@
 						<% end %>
 					</div>
 				<% end %>
-				<% if @skills.empty? %>
-					<div class="skill_level-selector"
-          data-controller="tooltip"
-          data-bs-toggle="tooltip"
-          data-bs-placement="right"
-          title="Charger les compéténces de la classe">
-						<i class="fa-solid fa-file-arrow-down --vert"></i>
-					</div>
-				<% end %>
-			<% end %>
-			<% if @skills.empty? %>
-				<div class="load-skills border-skill">
-					<h3>Créer un progression de compétences</h3>
-					<%= simple_form_for :liste, url: upload_skills_path, html: { novalidate: false}, method: :post, class: 'form' do |f| %>
-						<%= f.input :level, collection: @grades, prompt: "Choisisez un niveau", selected: @grade,label: false  %>
-						<div class="form-group ">
-							<p>Souhaitez-vous remplacer toutes les compétences actuelles ? </p>
-							<p><em>Ceci effacera l'ensemble des données liées à ces compétences (Plans, évaluations, exercices)</em></p>
-							<%= f.collection_radio_buttons :new_skills, [[true, 'Oui'], [false, 'Non']], :first, :last, wrapper_html: { class: 'form-check' } %>
-						</div>
-						<div class="form-group">
-							<%= f.input :excel_file, as: :file, label: false, required: true, input_html: { class: 'form-control-file', accept: '.xlsx' } %>
-						</div>
-						<%= f.button :submit,  class: 'class-pill active', data: {turbo_confirm: "En validant, vous effacer toutes les données actuelles liées au niveau de #{@grade.name} du groupe scolaire #{current_user.school.name} "} do%>
-							Importer
-						<% end %>
-					<% end %>
-				</div>
-			<% else %>
+
+
 				<div class="skills-boxe"
 				data-domain='<%=@domain.name%>'
 				data-allskilldisplay-target='domainCard'>
