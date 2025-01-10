@@ -43,7 +43,9 @@ class WorkPlanSkill < ApplicationRecord
     name = skill.name + " " + (challenges.count + 1).to_s
     # get all challenges azssigned 4 current_student and that skill
     # if new WorkPlanSkill.where(skill:, kind: "exercice").select { |wps| wps.student == student }.sort_by(&:created_at).last.challenge_id
-    last_wps = WorkPlanSkill.where(skill:, kind: "exercice").select { |wps| wps.student == student }.sort_by(&:created_at).last
+    last_wps = WorkPlanSkill.where(skill:, kind: "exercice").select do |wps|
+      wps.student == student
+    end.sort_by(&:created_at).last
     if !last_wps.nil? && last_wps.status == "new" # a wps exists AND its status is new AKA challenge not done
       #  => get the same challenge
       Challenge.find(last_wps.challenge_id)
@@ -73,11 +75,11 @@ class WorkPlanSkill < ApplicationRecord
   def self.last_wps(student, skills)
     # wpss = student.work_plan_skills.where(skill: skills) # get all wps on skills and student
     # wpss.group_by(&:skill_id).transform_values { |wps_s| wps_s.max_by(&:updated_at) }.values.sort_by(&:updated_at)
-    student.work_plan_skills
-      .where(skill: skills)
-      .select("DISTINCT ON (work_plan_skills.skill_id) work_plan_skills.*")
-      .order("work_plan_skills.skill_id, work_plan_skills.updated_at DESC")
-      .order("work_plan_skills.updated_at")
+    student.work_plan_skills.
+      where(skill: skills).
+      select("DISTINCT ON (work_plan_skills.skill_id) work_plan_skills.*").
+      order("work_plan_skills.skill_id, work_plan_skills.updated_at DESC").
+      order("work_plan_skills.updated_at")
   end
 
   def attach_content(result, current_user)
@@ -106,6 +108,8 @@ class WorkPlanSkill < ApplicationRecord
   private
 
   def update_result
+    return if work_plan_domain.student.nil?
+
     # find_or_create results
     result = Result.find_or_create_by(student:, skill:)
     # update results
