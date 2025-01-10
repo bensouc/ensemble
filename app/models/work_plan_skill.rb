@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class WorkPlanSkill < ApplicationRecord
-  after_validation :update_result, only: %w[create update]
+  after_validation :update_result, only: %w[update] #
   # after_destroy :reset_result
 
   belongs_to :work_plan_domain
@@ -112,8 +112,8 @@ class WorkPlanSkill < ApplicationRecord
 
     # find_or_create results
     result = Result.find_or_create_by(student:, skill:)
-    # update results
-    result.update!(status:, kind:)
+    # update results UNLESS the result is already completed and of kind ceinture
+    result.update!(status:, kind:) unless (result.status == "completed" && result.kind == "ceinture")
   end
 
   def reset_result
