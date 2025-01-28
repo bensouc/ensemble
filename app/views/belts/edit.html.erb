@@ -14,10 +14,11 @@
 					</div>
 					<div class="date-selection">
 						<p>Obtenue le</p>
-						<%= f.input :validated_date, as: :string, label: false,
+						<%= f.input :validated_date, as: :date, label: false,
                                           # required: :true,
+                                          html5: true,
                                           input_html: {
-                                            value: @belt.validated_date.strftime("%d/%m/%Y"),
+                                            # value: @belt.validated_date.strftime("%d/%m/%Y"),
                                             class: 'datepicker area',
                                             locale: "fr",
                                             }%>
@@ -25,7 +26,7 @@
 					</div>
 				<% end %>
 				<div class="belt-edit-header-3">
-					
+
 				</div>
 			</div>
 		</div>
