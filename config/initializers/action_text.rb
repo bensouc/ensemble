@@ -4,7 +4,7 @@ Rails.application.config.after_initialize do
     'div', 'strong', 'br', 'span', 'h1', 'h2', 'h3', 'p', 'ul', 'ol', 'li',
     'blockquote', 'pre', 'code', 'i', 'b', 'em'
   ]
-
+  ActionText::ContentHelper.allowed_tags += %w[table tr td]
   # Autoriser les attributs HTML spécifiques
   ActionText::ContentHelper.allowed_attributes = [
     'class', 'style', 'href', 'title', 'target', 'rel', 'data-*'
