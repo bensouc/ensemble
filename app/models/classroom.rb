@@ -39,9 +39,13 @@ class Classroom < ApplicationRecord
   def completed_results_by_domain(domain)
       # {student_id: Result.where(skills: domain.skills, student: student)}
     results = {}
-    temp_results = Result.includes([:student, :skill]).where(skill: domain.skills, students: students)
+    temp_results = Result.includes([:student, :skill])
+                      .where(skill: domain.skills)
+                      .where(student_id: students.pluck(:id))
+                      .where(status: "completed")
+                      .where(kind: "ceinture")
     students.each do |student|
-      results[student] = temp_results.select { |result| result.student == student && result.status == "completed" && result.kind == "ceinture" }
+      results[student] = temp_results.select { |result| result.student_id == student.id }
     end
     results
   end
