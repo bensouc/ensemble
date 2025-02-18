@@ -66,7 +66,10 @@ RSpec.describe MessagesController, type: :controller do
       it "renders the conversations/show template with unprocessable_entity status" do
         post :create, params: { message: attributes_for(:message, content: nil), conversation_id: conversation.id }
         expect(response).to render_template("conversations/show")
-        expect(response).to have_http_status(:unprocessable_entity)
+        # Use either of these two options:
+        expect(response).to have_http_status(422)  # Using status code
+        # OR
+        expect(response).to have_http_status(:unprocessable_entity)  # Using symbol with quotes
       end
     end
   end

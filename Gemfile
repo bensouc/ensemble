@@ -2,14 +2,14 @@ source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # ruby '2.7.4'
-ruby "3.1.2"
+ruby "3.2.2"
 
 # gem  'nokogiri', '1.12.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 
 # 7.0.0 UPGRADE
-gem "rails", "~> 7.0.0"
+gem "rails", "7.2"
 gem "turbo-rails"
 # end of 7.0.0 UPGRADE v df
 
@@ -23,7 +23,7 @@ gem "recaptcha"
 # Use postgresql as the database for Active Record
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
-gem "puma", "~> 4.1"
+gem "puma", "~> 6.0"
 # Use SCSS for stylesheets and  minifies them
 gem "sassc-rails"
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
@@ -37,6 +37,7 @@ gem "jbuilder", "~> 2.7"
 # action cable with solid_cable
 gem "solid_cable"
 # gem "solid_queue"
+gem "actiontext"
 # Admin
 gem "rails_admin", "~> 3.0"
 
@@ -65,7 +66,7 @@ gem "font-awesome-sass"
 gem "simple_form"
 gem "rails-i18n"
 gem "bootstrap", "~> 5.2"
-
+gem 'flatpickr'
 #  add red or unred object gem
  gem "unread"
 
@@ -126,7 +127,7 @@ end
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
 
-  gem "bullet"
+  # gem "bullet"
   gem "web-console", ">= 3.3.0"
   gem "listen", "~> 3.2"
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
