@@ -116,7 +116,6 @@ GEM
       rest-client
     coderay (1.1.3)
     concurrent-ruby (1.2.2)
-    connection_pool (2.4.1)
     crass (1.0.6)
     date (3.3.3)
     debug (1.8.0)
@@ -310,9 +309,6 @@ GEM
     rb-inotify (0.10.1)
       ffi (~> 1.0)
     recaptcha (5.16.0)
-    redis (4.8.1)
-    redis-client (0.22.2)
-      connection_pool
     regexp_parser (2.8.0)
     reline (0.3.5)
       io-console (~> 0.5)
@@ -382,11 +378,6 @@ GEM
       rubyzip (>= 1.2.2)
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
-    sidekiq (7.2.4)
-      concurrent-ruby (< 2)
-      connection_pool (>= 2.3.0)
-      rack (>= 2.2.4)
-      redis-client (>= 0.19.0)
     simple_calendar (2.4.3)
       rails (>= 3.0)
     simple_form (5.2.0)
@@ -401,6 +392,8 @@ GEM
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
     simplecov_json_formatter (0.1.4)
+    solid_cable (1.0.3)
+      rails (< 9)
     spring (2.1.1)
     spring-watcher-listen (2.0.1)
       listen (>= 2.7, < 4.0)
@@ -511,7 +504,6 @@ DEPENDENCIES
   rails-i18n
   rails_admin (~> 3.0)
   recaptcha
-  redis (~> 4.0)
   requestjs-rails
   roo (~> 2.10.0)
   rspec-rails
@@ -519,11 +511,11 @@ DEPENDENCIES
   sassc-rails
   selenium-webdriver
   shoulda-matchers (~> 4.0)
-  sidekiq
   simple_calendar (~> 2.4)
   simple_form
   simple_xlsx_reader (~> 1.0, >= 1.0.4)
   simplecov
+  solid_cable
   spring
   spring-watcher-listen (~> 2.0.0)
   stripe
