@@ -75,7 +75,6 @@ Rails.application.configure do
   config.active_job.queue_name_prefix = "ensemble_production"
   # Activer le logging des jobs
   config.solid_queue.logger = Rails.logger
-  config.solid_queue.polling_interval = 1
   # Disable caching for Action Mailer templates even if Action Controller
   # caching is enabled.
   config.action_mailer.perform_caching = false
