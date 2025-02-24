@@ -11,14 +11,14 @@
 
   h2 {
     color: black;
-    i{
+    i {
       font-size: 2rem;
     }
   }
   h4 {
     // text-align: right;
     margin-left: 45px;
-    color:$grisC;
+    color: $grisC;
     font-style: italic;
   }
 }
@@ -39,13 +39,13 @@
 .date-selection {
   padding: 15px 30px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: baseline;
-  gap:20px;
+  gap: 20px;
   border-left: thin solid $grisC;
   border-right: thin solid $grisC;
   .area {
-    width: 14ch;
+    width: 16ch;
     font-size: 18px;
   }
   .btn-valid {

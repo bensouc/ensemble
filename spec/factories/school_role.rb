@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :school_role do
-    user { User.first}
-    school { School.first }
+    association :user
+    association :school
   end
 end

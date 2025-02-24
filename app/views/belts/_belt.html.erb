@@ -1,6 +1,6 @@
 <%= turbo_frame_tag "student_#{student.id}domain_#{domain.id}_level#{level}" do%>
 
-	<% if belt %>
+	<% if belt&.completed? %>
 		<div class="domain-col cells-student mb-2">
 			<%= render "belts/resultat_belt", level: level, domain: domain, belt: belt %>
 		</div>

@@ -3,12 +3,11 @@
 class Classroom < ApplicationRecord
   GRADE = %w[CP CE1 CE2 CM1 CM2].freeze
   belongs_to :user
-  belongs_to :grade #to remove for first migration Of Grade MODEL
+  belongs_to :grade # to remove for first migration Of Grade MODEL
 
   has_many :students, dependent: :destroy
   has_many :shared_classrooms, dependent: nil
 
-  validates :grade, presence: true
   before_validation :set_default
 
   def shared?
@@ -39,9 +38,13 @@ class Classroom < ApplicationRecord
   def completed_results_by_domain(domain)
       # {student_id: Result.where(skills: domain.skills, student: student)}
     results = {}
-    temp_results = Result.includes([:student, :skill]).where(skill: domain.skills, students: students)
+    temp_results = Result.includes([:student, :skill])
+                      .where(skill: domain.skills)
+                      .where(student_id: students.pluck(:id))
+                      .where(status: "completed")
+                      .where(kind: "ceinture")
     students.each do |student|
-      results[student] = temp_results.select { |result| result.student == student && result.status == "completed" && result.kind == "ceinture" }
+      results[student] = temp_results.select { |result| result.student_id == student.id }
     end
     results
   end

@@ -1,11 +1,6 @@
 # rubocop:disable all
-require "sidekiq/web"
 Rails.application.routes.draw do
   mount RailsAdmin::Engine => "/admin", as: "rails_admin"
-  # routes for sidekiq dashboard
-  authenticate :user, lambda { |u| u.admin? } do
-    mount Sidekiq::Web => "/sidekiq"
-  end
   devise_for :users,
     controllers: { registrations: "registrations" }
   devise_scope :user do
