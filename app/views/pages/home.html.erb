@@ -1,8 +1,8 @@
 <% unless is_mobile_device? %>
 	<div id="home">
-		<div class="banner w-100" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(<%=image_url('back_to_school.jpg') %>);">
+		<div class="banner w-100" style="background-image: linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(<%=image_url('back_to_school.webp') %>);">
 			<div class= "logo bg-white mb-5 ">
-				<img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg", alt='logo ensemble'>
+        <%= image_tag 'ensemble_logo.svg', alt:'ensemble_logo' %>
 			</div>
 			<div class="container home-container mt-5 ">
 				<h2 >La solution aux préparations et partages des plans de travail</h2>
@@ -31,8 +31,8 @@
 					plans de travail et de vos exercices.</p>
 				<%= render 'wp_challenge_captures',mobile: false %>
 			</div>
-			<div class="row2">
-				<img  src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1639068448/logo2_rmtwus.svg" alt=" logo central">
+			<div class="row2" >
+        <%= image_tag 'logo.svg', alt:" logo central" %>
 			</div >
 			<div class="row1">
 				<h1>ÉVALUER</h1>
