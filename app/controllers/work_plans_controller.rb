@@ -115,19 +115,11 @@ class WorkPlansController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        render pdf: "#{@work_plan.name} #{@work_plan.student.first_name unless @work_plan.student.nil?}",
-               template: "pdfs/show_print",
-               dpi: 380,
-               formats: [:html],
-               disposition: "attachment",
-               encoding: "utf8", # a remettre pour lle DL auto des pdf
-               margin: {
-                 top: 5,
-                 bottom: 3,
-                 left: 5,
-                 right: 5,
-               }
-        # dpi: 300
+        data_pdf = PdfGenerator::WorkPlanPdf.new(@work_plan, @belt, @work_plan_domains, @domains)
+        send_data data_pdf.generate,
+                  filename: "#{data_pdf.title}.pdf",
+                  type: "application/pdf",
+                  disposition: "attachment" # sending the pdf to the browser as a file
       end
     end
   end

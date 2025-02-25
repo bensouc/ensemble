@@ -29,7 +29,7 @@ module PdfGenerator
       # },
       footer: {
           # center: , # Affiche le numéro de page courant et le nombre total de pages
-          right: "Progression de #{@student.first_name} en date du #{Time.now.strftime("%d/%m/%Y")}     Page: [page] / [topage]",
+          right: "Progression de #{@student.first_name.capitalize} en date du #{Time.now.strftime("%d/%m/%Y")}     Page: [page] / [topage]",
           font_size: 8,
           spacing: 5
         })
