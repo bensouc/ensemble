@@ -55,7 +55,9 @@ gem "net-smtp", require: false
 gem "net-imap", require: false
 gem "net-pop", require: false
 # =============== END SETUP SINCE ruby 3.1.2 migration===================
+# Notification erroer email + slack
 gem 'exception_notification'
+gem 'slack-notifier'
 # add sweet alert
 gem "devise"
 # devise plug_in to manage last seen

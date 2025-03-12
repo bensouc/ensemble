@@ -20,11 +20,18 @@ ExceptionNotification.configure do |config|
 
   # Email notifier sends notifications by email.
   config.add_notifier :email, {
-    email_prefix: '[ERROR ON ENSEMBLE PRODUCTION] ',
+    email_prefix: '[ERROR ON ENSEMBLE PRODUCTION]',
     sender_address: %{"Notifier" <no-reply@app-ensemble.com>},
     exception_recipients: %w{contact@vroadstudio.fr}
   }
-
+   config.add_notifier :slack,{
+    webhook_url: ENV["SLACK_NOTIF_WEBHOOK_URL"],
+                                          channel: '#ensemble',
+                                          additional_parameters: {
+                                            icon_url: 'http://image.jpg',
+                                            mrkdwn: true
+                                          }
+   }
   # Campfire notifier sends notifications to your Campfire room. Requires 'tinder' gem.
   # config.add_notifier :campfire, {
   #   subdomain: 'my_subdomain',
