@@ -8,7 +8,7 @@ module PdfGenerator
       @belt = belt
       @work_plan_domains = work_plan_domains
       @domains = domains
-      @title = "#{work_plan.name}  #{work_plan.student.first_name}"
+      @title = "#{work_plan.name}  #{work_plan.student&.first_name}"
     end
 
     def generate
