@@ -141,6 +141,9 @@ GEM
     erb-formatter (0.4.3)
       syntax_tree (~> 6.0)
     erubi (1.12.0)
+    exception_notification (4.5.0)
+      actionmailer (>= 5.2, < 8)
+      activesupport (>= 5.2, < 8)
     execjs (2.7.0)
     factory_bot (6.2.1)
       activesupport (>= 5.0.0)
@@ -487,6 +490,7 @@ DEPENDENCIES
   devise_last_seen
   dotenv-rails
   erb-formatter
+  exception_notification
   factory_bot_rails
   faker
   font-awesome-sass
