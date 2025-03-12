@@ -22,7 +22,7 @@
 				<% if skills_level.any? %>
 					<tr>
 						<td style='padding: 5px;' rowspan="<%= skills_level.count %>">
-							<%= cl_image_tag(Belt::BELT_PNG[level.to_s], size: "100x50") %>
+							<%= image_tag(Belt::BELT_PNG[level.to_s], size: "100x50") %>
 						</td>
 						<td style='padding: 5px;'><%= skills_level.first.name %></td>
 						<% result = results.find { |result| result.skill == skills_level.first } %>

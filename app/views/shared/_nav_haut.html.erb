@@ -18,9 +18,9 @@
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<%if current_user.avatar.attached?%>
-								<%= cl_image_tag current_user.avatar.key, class: "avatar", alt: "https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png" %>
+                <img src="<%= Cloudinary::Utils.cloudinary_url(current_user.avatar.key) %>" class= "avatar" alt="user-avatar">
 							<% else %>
-								<img src="https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png" class= "avatar" alt="">
+								<img src="https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png" class= "avatar" alt="user-avatar">
 							<% end %>
 						</a>
 						<div class="dropdown-menu left" aria-labelledby="navbarDropdownMenuLink">
