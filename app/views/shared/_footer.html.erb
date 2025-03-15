@@ -28,12 +28,14 @@
 				<div class="modal-body">
 					<div class="contact-form" data-display-tab-target='box'>
 						<div class='user-details d-none'>
+            <%if user_signed_in?%>
 							<%= f.input :email, label: 'Email',readonly: true, input_html: {value: current_user.email}, required: true %>
 							<%= f.input :last_name, label: 'Nom',readonly: true,input_html: {value: current_user.last_name}, required: true, wrapper_html:{class: 'class-wrapper'} %>
 							<%= f.input :first_name, label: 'Prénom',readonly: true,input_html: {value: current_user.first_name}, required: true %>
 							<%= f.input :school, label: 'Ecole',readonly: true,input_html: {value: current_user.school.name},required: false%>
 							<%= f.input :city, label: 'Ville',readonly: true,input_html: {value: current_user.school.city}, required: true %>
               <%= f.input :current_url,label: false, readonly: true, input_html: { value: request.url } %>
+              <% end %>
 						</div>
 						<div class="d-flex">
 							<%= f.input :type, label: false, collection: %w[Question Bug Evolution], input_html: {class: "input-fit mb-3 --cursor-pointer"}, prompt:"Type de Demande", required: true %>

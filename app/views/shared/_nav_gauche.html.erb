@@ -1,6 +1,6 @@
 <div class="main_nav">
 	<%= link_to dashboard_path,class:"logo"  do %>
-		<% if current_user.demo %>
+		<% if user_signed_in? && current_user.demo %>
 			<%= image_tag "logo_demo.png", alt: "logo demo" %>
 		<% else %>
 			<img
