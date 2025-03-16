@@ -28,7 +28,7 @@ ExceptionNotification.configure do |config|
     webhook_url: ENV["SLACK_NOTIF_WEBHOOK_URL"],
                                           channel: '#ensemble',
                                           additional_parameters: {
-                                            icon_url: 'http://image.jpg',
+                                            icon_url: 'https://res.cloudinary.com/bensoucdev/image/upload/v1678871863/ensemble/logos/ensemble_icone_umdhbk.png',
                                             mrkdwn: true
                                           }
    }
