@@ -35,24 +35,24 @@
 						<div class='m-top d-none' data-domain-form-target='beltForm'>
 							<h3>Choisissez une ceinture</h3>
 							<%= domain_form.input :level,
-                                required: true,
-                                label: "",
-                                as: :radio_buttons,
-                                collection: WorkPlanDomain::LEVELS,
-                                collection_wrapper_tag: "div",
-                                collection_wrapper_class: "wrapper",
-                                item_wrapper_class: "level-item",
-                                input_html: {
-                                  class: "selector level-selector",
-                                  data: {
-                                    domain_form_target: "box",
-                                    action: "click->domain-form#displayBtn"
-                                  }
-                                },
-                                label_method:
-                                  lambda { |level|
-                                    render "work_plan_domains/show_level_btn", level: level
-                                  } %>
+                required: true,
+                label: "",
+                as: :radio_buttons,
+                collection: WorkPlanDomain::LEVELS,
+                collection_wrapper_tag: "div",
+                collection_wrapper_class: "wrapper",
+                item_wrapper_class: "level-item",
+                input_html: {
+                  class: "selector level-selector",
+                  data: {
+                    domain_form_target: "box",
+                    action: "click->domain-form#displayBtn"
+                  }
+                },
+                label_method:
+                  lambda { |level|
+                    render "work_plan_domains/show_level_btn", level: level
+                  } %>
 						</div>
 					<% end %>
 					<div class='m-top box-end' id='dmn-validate'>
