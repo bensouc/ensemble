@@ -16,12 +16,12 @@ class ResultPolicy < ApplicationPolicy
   def destroy?
     user_is_teacher_or_admin?
   end
-  
+
   private
 
   def user_is_teacher_or_admin?
     user.admin ||
       record.student.classroom.user == user ||
-      record.student.shared_classrooms.any? { |shared_classroom| shared_classroom.user == user }
+      record.student.classroom.shared_classrooms.any? { |shared_classroom| shared_classroom.user == user }
   end
 end
