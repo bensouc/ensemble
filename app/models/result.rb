@@ -19,6 +19,10 @@ class Result < ApplicationRecord
     update!(kind: "ceinture", status: "completed")
   end
 
+  def completed?
+    status == "completed"
+  end
+
   def self.update_with_new_belt(belt)
     # get all skills from belt domain
     skills = belt.domain.skills.select { |skill| skill.level == belt.level }

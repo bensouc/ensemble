@@ -33,8 +33,8 @@
 						<tr>
 							<td style='padding: 5px;'><%= skill.name %></td>
 							<% result = results.find { |result| result.skill == skill } %>
-              <%# result = belt unless result%>
-								<td style='padding: 5px;text-align: center;'><%= result.nil? || !result.belt_validated? ? "" : result.updated_at.strftime("%d/%m/%Y") %></td>
+              <%result = belt unless result%>
+								<td style='padding: 5px;text-align: center;'><%= result.nil? || !result.validated? ? "" : result.updated_at.strftime("%d/%m/%Y") %></td>
 						</tr>
 					<% end %>
 				<% end %>
