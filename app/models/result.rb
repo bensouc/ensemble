@@ -5,7 +5,7 @@ class Result < ApplicationRecord
   scope :completed, -> { where(status: "completed", kind: "ceinture") }
   scope :completed_for_student, ->(student) { includes([:skill]).where(student:, status: "completed") }
 
-  after_commit :belt_update_by_domain_and_level
+  after_commit :belt_update_by_domain_and_level, on: [:create, :update]
 
   def belt_validated?
     kind == "ceinture" && status == "completed"

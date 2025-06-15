@@ -16,13 +16,45 @@ class Student < ApplicationRecord
   delegate :school, to: :grade
 
   def domains
-    Domain.includes(:skills).where(grade: )
+    Domain.includes(:skills).where(grade:)
   end
 
   def belt_status(domain, level) # return true if belt is completed
     Belt.completed.where(student: self, domain:, level:).count.positive?
   end
 
+  def skill_completed(skill)
+    if skill.domain.special?
+      results.find_by(skill:, status: "completed", kind: "ceinture")
+    else
+      results.find_by(skill:, status: "completed",
+                      kind: "ceinture") || Belt.find_by(student: self, domain: skill.domain,
+                                                        level: skill.level, completed: true)
+      # belts.any?{ |belt| belt.domain == skill.domain && belt.level == skill.level && belt.completed? }
+    end
+  end
+
+  def all_completed_skills
+    validated_results = results.completed_for_student(self)
+    validated_belts = belts.where(completed: true)
+    # retuns all skills skills results Or belt completed by the student in the current grade
+
+    skills = grade.skills.includes(:domain)
+    results = Hash.new(nil) # initialize a hash to store results
+    skills.each do |skill|
+      results[skill.id] =
+        if skill.domain.special?
+          validated_results.find_by(skill:, status: "completed", kind: "ceinture")
+        else
+          validated_results.find_by(skill:, status: "completed",
+                                    kind: "ceinture") || validated_belts.find_by(
+                                      domain: skill.domain, level: skill.level, completed: true
+                                    )
+          # belts.any?{ |belt| belt.domain == skill.domain && belt.level == skill.level && belt.completed? }
+        end
+    end.compact
+    results
+  end
 
   def skill_status(skill, _kind = nil)
     target_work_plan_skills = work_plan_skills.where(skill:)
@@ -50,11 +82,11 @@ class Student < ApplicationRecord
 
   def find_special_workplan
     WorkPlan.includes(:work_plan_domains).where(student: self, grade:, name: "special_work_plan", special_wps: true).find_or_create_by!(
-      student: self, grade:, user: classroom.user, name: "special_work_plan", special_wps: true,
+      student: self, grade:, user: classroom.user, name: "special_work_plan", special_wps: true
     )
   end
 
-  def derniers_work_planskills_etudiant #retourne le hash contenant les derniers work_plan_skills pour chaque compétence
+  def derniers_work_planskills_etudiant # retourne le hash contenant les derniers work_plan_skills pour chaque compétence
     # On récupère tous les work_plan_skills de l'étudiant
     work_planskills_etudiant = work_plan_skills.includes(:skill).order(updated_at: :desc)
     # On crée un hash pour stocker les derniers work_plan_skills pour chaque compétence

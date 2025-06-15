@@ -7,8 +7,9 @@ module PdfGenerator
       @student = student
       @domains = Domain.where(grade: @student.grade).sort_by(&:position)
       @skills = @student.grade.skills.includes(:domain)
-      @belts = @student.belts.includes([:domain]).completed
-      @results = Result.completed_for_student(@student)
+      @validated_skills = @student.all_completed_skills
+      # @belts = @student.belts.includes([:domain]).completed
+      # @results = Result.completed_for_student(@student)
       @title = "Progression de #{@student.first_name}- #{Time.now.strftime("%d/%m/%Y")}"
     end
 
@@ -16,7 +17,7 @@ module PdfGenerator
       # Utilisation de WickedPdf pour générer le PDF à partir d'une vue HTML
       pdf_html = ActionController::Base.new.render_to_string("pdfs/student_results",
         layout: @layout,
-        locals: { student: @student, skills: @skills, results: @results,
+        locals: { student: @student, skills: @skills, results: @validated_skills,
                   domains: @domains, title: @title, belts: @belts }
         )
 
