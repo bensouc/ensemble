@@ -27,7 +27,7 @@
 						</td>
 						<td style='padding: 5px;'><%= skills_level.first.name %></td>
 						<% result = results.find { |result| result.skill == skills_level.first } %>
-            <% result = belt unless result%>
+            <% result = belt unless result || domain.special?%>
 						<td style='padding: 5px;text-align: center;'><%= result.nil? || !result.completed? ? "" : result.updated_at.strftime("%d/%m/%Y") %></td>
 					</tr>
 					<% skills_level[1..-1].each do |skill| %>
