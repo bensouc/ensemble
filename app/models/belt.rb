@@ -53,6 +53,7 @@ class Belt < ApplicationRecord
     completed
   end
 
+
   def complete!
     self.completed = true
     self.validated_date = DateTime.now
