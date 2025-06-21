@@ -17,7 +17,7 @@ class Belt < ApplicationRecord
     {
       "CE1": {
         "Géométrie": [2, 4, 7, 10, 13, 17, 21],
-        "Grandeurs et Mesures": [2, 4, 6, 9, 12, 15, 18],
+        "Grandeurs et Mesures": [2, 4, 6, 8, 11, 14, 17],
       },
       "CE2": {
         "Géométrie": [2, 4, 7, 10, 13, 17, 21],
