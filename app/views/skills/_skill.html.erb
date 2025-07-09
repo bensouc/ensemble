@@ -15,7 +15,7 @@
         <% end %>
         <%= button_to skill_path(skill), method: :delete,
           class:'--bgc-blanc',
-          data:{ turbo_confirm: "Souhaitez vous effacer cette compétence?"} do %>
+          data:{ turbo_confirm: "Souhaitez vous effacer cette compétence? \nATTENTION en supprimant cette compétence, vous allez EFFACER:\n-TOUS les éléments des plans de travail existants liés à cette compétence.\n-TOUTES les EVALUATIONS pour tous les élèves du niveau sur cette compétence.\n-TOUS les EXCERCICES liés."} do %>
           <div class='rmv-skill-btn'>
             <i class="far fa-times-circle"></i>
           </div>

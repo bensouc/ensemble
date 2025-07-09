@@ -3,7 +3,8 @@
 class Skill < ApplicationRecord
   belongs_to :school
   belongs_to :domain
-  has_many :work_plan_skills, dependent: nil
+  has_many :work_plan_skills, dependent: :destroy
+  has_many :results, dependent: :destroy
   has_many :challenges, dependent: :destroy
   acts_as_list scope: [:domain_id, :level]
 
