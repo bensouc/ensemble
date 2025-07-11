@@ -16,8 +16,8 @@ class Belt < ApplicationRecord
   SCORES_TO_VALIDATES =
     {
       "CE1": {
-        "Géométrie": [2, 4, 7, 10, 13, 17, 21],
-        "Grandeurs et Mesures": [2, 4, 6, 8, 11, 14, 17],
+        "Géométrie": [2, 4, 6, 8, 11, 14, 17],
+        "Grandeurs et Mesures": [2, 4, 6, 8, 10, 12, 15],
       },
       "CE2": {
         "Géométrie": [2, 4, 7, 10, 13, 17, 21],
