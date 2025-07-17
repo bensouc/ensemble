@@ -39,7 +39,7 @@ class ChallengePolicy < ApplicationPolicy
   def destroy?
     user_can_destroy? && challenge_not_used?
   end
-  
+
   def can_show_delete_button?
     user_can_destroy? && challenge_not_used?
   end
@@ -51,7 +51,7 @@ class ChallengePolicy < ApplicationPolicy
   end
 
   def user_can_destroy?
-    record.user == user || user.admin? || record.user.admin?
+    record.skill.school == user.school || user.admin? || record.user.admin?
   end
 
   def challenge_not_used?
