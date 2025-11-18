@@ -6,7 +6,7 @@ config.action_mailer.delivery_method = :smtp
 config.action_mailer.default_url_options = { host: "https://www.app-ensemble.fr" }
   # SMTP settings for gmail
   config.action_mailer.smtp_settings = {
-    address: "mail.gandi.net",
+    address: "smtp.gmail.com",
     port: 587,
     user_name: ENV["GANDI_MAIL_NAME"],
     password: ENV["GANDI_MAIL_PSWORD"],
