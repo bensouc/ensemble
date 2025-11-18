@@ -2,11 +2,11 @@ class ContactMailer < ApplicationMailer
 
   def new_contact(contact)
     @contact = contact
-    mail(to: "contact@vroadstudio.fr", subject: "Nouveau contact")
+    mail(to: "bensoucdev@gmail.com", subject: "Nouveau contact")
   end
     def new_demo_user(contact)
     @contact = contact
-    mail(to: "contact@vroadstudio.fr", subject: "Nouveau Compte Démo")
+    mail(to: "bensoucdev@gmail.com", subject: "Nouveau Compte Démo")
   end
 
   def add_user_to_school(user)
@@ -16,7 +16,7 @@ class ContactMailer < ApplicationMailer
 
   def new_request(user_request)
     @user_request = user_request
-    mail(to: "contact@vroadstudio.fr", subject: "Nouvelle demande")
+    mail(to: "bensoucdev@gmail.com", subject: "Nouvelle demande")
   end
 
 private
