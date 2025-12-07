@@ -1,4 +1,4 @@
-import { Controller } from "stimulus";
+import { Controller } from "@hotwired/stimulus";
 import Splide from '@splidejs/splide';
 export default class extends Controller {
 

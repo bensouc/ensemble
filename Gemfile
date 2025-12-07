@@ -26,8 +26,8 @@ gem "pg", ">= 0.18", "< 2.0"
 gem "puma", "~> 4.1"
 # Use SCSS for stylesheets and  minifies them
 gem "sassc-rails"
-# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-gem "webpacker", "~> 4.0"
+# Transpile app-like JavaScript with esbuild
+gem "jsbundling-rails"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jbuilder", "~> 2.7"
 # Use Redis adapter to run Action Cable in production
