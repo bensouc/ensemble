@@ -51,7 +51,7 @@ div.nobreak {
   // display: block;
 
   width: 1000px;
-  margin-top: 50px;
+  margin-top: 1rem;
   margin-bottom: 15px;
   word-break: break-word;
 }
@@ -82,7 +82,7 @@ div.nobreak {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 83%;
+  width: 100%;
 }
 .date-pt {
   display: inline-block;
@@ -151,6 +151,7 @@ div.nobreak {
 
 .domain-block {
   border-top: #a3a2a2;
+  page-break-inside: avoid;
 }
 
 .skill-display {
