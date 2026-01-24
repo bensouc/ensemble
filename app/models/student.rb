@@ -56,6 +56,15 @@ class Student < ApplicationRecord
     results
   end
 
+  def all_belt_results
+    belts_results = results.belts
+    skills = grade.skills.includes(:domain)
+    formated_results = Hash.new(nil) # initialize a hash to store results
+    skills.each {  | skill |  formated_results[skill.id] = belts_results.find_by(skill:) }.compact
+    formated_results
+    # un hash skill_id => result
+  end
+
   def skill_status(skill, _kind = nil)
     target_work_plan_skills = work_plan_skills.where(skill:)
     if target_work_plan_skills.any?(&:completed)
