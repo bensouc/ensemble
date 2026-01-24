@@ -68,3 +68,4 @@ dump.rdb
 
 /app/assets/builds/*
 !/app/assets/builds/.keep
+/public/work_plan_preview.html

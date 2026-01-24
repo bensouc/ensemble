@@ -18,6 +18,12 @@ module PdfGenerator
                                                              locals: { work_plan: @work_plan, belt: @belt, work_plan_domains: @work_plan_domains,
                                                                        domains: @domains, title: @title })
 
+      # Écrire le HTML dans un fichier pour debug
+      if Rails.env.development?
+        File.write(Rails.root.join("public", "work_plan_preview.html"), pdf_html)
+        Rails.logger.info "PDF HTML écrit dans public/work_plan_preview.html"
+      end
+
       # Conversion du HTML en PDF avec Ferrum
       html_to_pdf(pdf_html)
     end
