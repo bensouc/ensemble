@@ -2,29 +2,33 @@
 	<body onload='number_pages'>
 		<div class='pt-header-box'>
 			<%# header WP%>
-			<h1 class='name-pt'>
-				<% if !work_plan.student.nil? %>
-					<%= work_plan.student.first_name.capitalize%> -
-				<% end %>
-				<%= work_plan.name%>
-			</h1>
-			<h4 class='date-pt'>Du <%= work_plan.start_date.strftime("%d/%m/%Y")%> Au <%= work_plan.end_date.strftime("%d/%m/%Y")%></h4>
+			<div class='header-boxes-wrapper header-title'>
+				<h1 class='name-pt'>
+					<% if !work_plan.student.nil? %>
+						<%= work_plan.student.first_name.capitalize%> -
+					<% end %>
+					<%= work_plan.name%>
+				</h1>
+				<h4 class='date-pt'>Du <%= work_plan.start_date.strftime("%d/%m/%Y")%> Au <%= work_plan.end_date.strftime("%d/%m/%Y")%></h4>
+			</div>
 			<%# Student details %>
-			<div class='bilan-box'>
-				<p style="margin: 0; padding-left : 10px">Bilan :</p>
-				<div class='pt-header bilan'>
-					<p style="padding-top: 4px;margin: 0; font-size: 16px">◻ Programme tenu <br>
-						◻ Programme non tenu <br>
-						◻ Programme dépassé</p>
+			<div class='header-boxes-wrapper'>
+				<div class='bilan-box'>
+					<p style="margin: 0; padding-left : 10px">Bilan :</p>
+					<div class='pt-header bilan'>
+						<p style="padding-top: 4px;margin: 0; font-size: 16px">◻ Programme tenu <br>
+							◻ Programme non tenu <br>
+							◻ Programme dépassé</p>
+					</div>
 				</div>
-			</div>
-			<div class='box-com'>
-				<p style="margin: 0; padding-left : 10px">Commentaires :</p>
-				<div class='pt-header comments'></div>
-			</div>
-			<div class='box-sign'>
-				<p style="margin: 0; padding-left : 10px">Signatures des Parents :</p>
-				<div class='pt-header signatures '></div>
+				<div class='box-com'>
+					<p style="margin: 0; padding-left : 10px">Commentaires :</p>
+					<div class='pt-header comments'></div>
+				</div>
+				<div class='box-sign'>
+					<p style="margin: 0; padding-left : 10px">Signatures des Parents :</p>
+					<div class='pt-header signatures '></div>
+				</div>
 			</div>
 		</div>
 		<%# Start of a domain %>

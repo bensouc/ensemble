@@ -1,10 +1,10 @@
-import { Controller } from "stimulus"
+import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static targets = ['spinner']
   connect() {
     // console.log("spinner OK")
-    if (this.spinnerTarget) {
+    if (this.hasSpinnerTarget) {
       this.spinnerTarget.classList.remove('d-none')
       this.spinnerTarget.classList.add('d-none')
     }

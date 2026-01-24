@@ -5,12 +5,20 @@ class BeltsController < ApplicationController
 
   def show
     skip_authorization
-    @student = Student.find(params[:student_id])
-    @domain = Domain.find(params[:id])
-    @level = params[:level].to_i
-    # binding.pry if @domain.name == "Géométrie" && @level == 2
+    # Handle both nested route (student_id, domain_id, level) and direct belt route (id)
+    if params[:student_id]
+      # Nested route: /students/:student_id/domains/:id/:level
+      @student = Student.find(params[:student_id])
+      @domain = Domain.find(params[:id])
+      @level = params[:level].to_i
+    else
+      # Direct belt route: /belts/:id
+      belt = Belt.find(params[:id])
+      @student = belt.student
+      @domain = belt.domain
+      @level = belt.level
+    end
     set_data_show
-    #  raise
   end
 
   def edit
@@ -65,11 +73,9 @@ class BeltsController < ApplicationController
     @last_wps = WorkPlanSkill.last_wps(@student, @skills)
     @results = Result.where(skill: @skills, student: @student, kind: "ceinture", status: "completed")
     @belt.destroy
-    # binding.pry
-    redirect_to student_path(@belt.student) if @domain.special?
     respond_to do |format|
       set_data_show
-      format.html { redirect_to student_path(@belt.student) }
+      format.html { redirect_to student_path(@student) }
       format.turbo_stream
     end
   end

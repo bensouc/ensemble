@@ -26,8 +26,8 @@ gem "pg", ">= 0.18", "< 2.0"
 gem "puma", "~> 4.1"
 # Use SCSS for stylesheets and  minifies them
 gem "sassc-rails"
-# Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
-gem "webpacker", "~> 4.0"
+# Transpile app-like JavaScript with esbuild
+gem "jsbundling-rails"
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem "jbuilder", "~> 2.7"
 # Use Redis adapter to run Action Cable in production
@@ -90,14 +90,7 @@ gem "lograge"
 gem "simple_calendar", "~> 2.4"
 
 # gem for pdf-output
-gem "wicked_pdf"
-gem "wkhtmltopdf-binary", "~> 0.12.3", group: :development
-
-
-# gem "wkhtmltopdf-binary", group: :development
-# gem 'wkhtmltopdf-heroku', '~> 2.12', '>= 2.12.6.0'
-# gem "wkhtmltopdf-heroku", group: :production
-gem "wkhtmltopdf-heroku", "3.0.0", group: :production #test for heroku stack 24
+gem "ferrum"
 
 # Mobile device detection
 gem "mobile"

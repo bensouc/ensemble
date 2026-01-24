@@ -12,25 +12,14 @@ module PdfGenerator
     end
 
     def generate
-      # Utilisation de WickedPdf pour générer le PDF à partir d'une vue HTML
+      # Génération du HTML à partir de la vue
       pdf_html = ActionController::Base.new.render_to_string("pdfs/work_plan",
                                                              layout: @layout,
                                                              locals: { work_plan: @work_plan, belt: @belt, work_plan_domains: @work_plan_domains,
                                                                        domains: @domains, title: @title })
 
-      # Conversion du HTML en PDF
-      WickedPdf.new.pdf_from_string(pdf_html,
-      # Options de configuration de WickedPdf
-      # header: {
-      #     right: "Progression de #{@student.first_name}",
-      #     show_on_first_page: false # Titre du document
-      # },
-      footer: {
-      # center: , # Affiche le numéro de page courant et le nombre total de pages
-        right: "#{@title}- Du #{@work_plan.start_date.strftime("%d/%m/%Y")} Au #{@work_plan.end_date.strftime("%d/%m/%Y")}     Page: [page] / [topage]",
-        font_size: 8,
-        spacing: 5
-      })
+      # Conversion du HTML en PDF avec Ferrum
+      html_to_pdf(pdf_html)
     end
   end
 end

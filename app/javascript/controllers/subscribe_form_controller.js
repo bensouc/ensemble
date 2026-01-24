@@ -1,4 +1,4 @@
-import { Controller } from "stimulus"
+import { Controller } from "@hotwired/stimulus"
 // STRIPE SWITCH OFF
 // import { loadStripe } from '@stripe/stripe-js';
 
