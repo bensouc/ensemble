@@ -90,6 +90,7 @@ gem "lograge"
 gem "simple_calendar", "~> 2.4"
 
 # gem for pdf-output
+gem "grover"
 gem "ferrum"
 
 # Mobile device detection

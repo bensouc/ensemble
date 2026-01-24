@@ -164,6 +164,8 @@ GEM
       sassc (~> 2.0)
     globalid (1.1.0)
       activesupport (>= 5.0)
+    grover (1.2.4)
+      nokogiri (~> 1)
     htmlbeautifier (1.4.2)
     htmlentities (4.3.4)
     http-accept (1.7.0)
@@ -497,6 +499,7 @@ DEPENDENCIES
   faker
   ferrum
   font-awesome-sass
+  grover
   htmlbeautifier
   image_processing (~> 1.2)
   jbuilder (~> 2.7)
