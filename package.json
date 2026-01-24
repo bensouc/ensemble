@@ -20,6 +20,7 @@
     "jquery": "^3.6.0",
     "jquery-ui": "^1.14.1",
     "popper.js": "^1.16.1",
+    "puppeteer": "^21.0.0",
     "rails_admin": "3.1.2",
     "sass": "^1.62.1",
     "sortablejs": "^1.15.2",

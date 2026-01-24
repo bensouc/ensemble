@@ -76,6 +76,10 @@ Rails.application.configure do
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
+  # Log to STDOUT in development (for bin/dev to show logs)
+  config.logger = ActiveSupport::Logger.new(STDOUT)
+  config.log_level = :debug
+
 
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
