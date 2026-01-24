@@ -7,7 +7,7 @@
     <h6 <%= "class= text-light" if level == 7 || level == 5 %>><%= domain.name %></h6>
   </div>
 </div>
-<%= button_to belt_path(belt), method: :delete, class: 'delete-btn',
+<%= button_to belt_path(belt), method: :delete, class: 'delete-btn bg-transparent',
                               data: { turbo_confirm: "Voulez vous Supprimer Cette Ceinture?" } do %>
   <i class="fa-solid fa-trash"></i>
 <% end %>
