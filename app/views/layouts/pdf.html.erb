@@ -11,8 +11,8 @@
 				# Development: use Sprockets
 				Rails.application.assets["pdf.css"]&.to_s
 			else
-				# Production: read precompiled asset
-				File.read(Rails.root.join("public", Rails.application.assets_manifest.assets["pdf.css"]))
+				# Production: read precompiled asset from public/assets/
+				File.read(Rails.root.join("public", "assets", Rails.application.assets_manifest.assets["pdf.css"]))
 			end
 		) %>
 		</style>
