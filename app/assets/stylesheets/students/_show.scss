@@ -83,16 +83,22 @@
   width: 100px;
   border-bottom: thin solid $grisC;
   margin: 0 5px;
-  .delete-btn {
-    position: relative;
-    top: -20px;
-    left: 56px;
-    font-size: larger;
-    color: rgba(255, 0, 0, 0.728);
-    &:hover {
-      transform: scale(1.1);
-      transition: 0.1s;
-      color: red;
+  form.button_to {
+    display: inline;
+    .delete-btn {
+      position: relative; //bubub
+      top: -23px;
+      left: 56px;
+      font-size: larger;
+      color: rgba(255, 0, 0, 0.728);
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      &:hover {
+        transform: scale(1.1);
+        transition: 0.1s;
+        color: red;
+      }
     }
   }
   .edit-btn {

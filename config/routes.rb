@@ -91,7 +91,7 @@ Rails.application.routes.draw do
   end
 
   # ###############routes for BELTS###############
-  resources :belts, only: [:destroy, :edit, :update]
+  resources :belts, only: [:show, :destroy, :edit, :update]
 
   # ###############route for tab editing###############
   resources :tables, only: [:show, :create, :update]

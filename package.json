@@ -11,12 +11,14 @@
     "@rails/activestorage": "^7.0.5",
     "@rails/request.js": "^0.0.9",
     "@rails/ujs": "^7.0.5",
-    "@rails/webpacker": "4.3.0",
     "@splidejs/splide": "^4.1.4",
     "@stripe/stripe-js": "^3.0.8",
     "bootstrap": "^5.3.0",
+    "esbuild": "^0.19.0",
+    "esbuild-rails": "^1.0.7",
     "flatpickr": "^4.6.13",
     "jquery": "^3.6.0",
+    "jquery-ui": "^1.14.1",
     "popper.js": "^1.16.1",
     "rails_admin": "3.1.2",
     "sass": "^1.62.1",
@@ -29,17 +31,15 @@
     "typed.js": "^2.0.12"
   },
   "version": "0.1.0",
-  "devDependencies": {
-    "@prettier/plugin-ruby": "^4.0.4",
-    "prettier": "^3.2.4",
-    "prettier-plugin-erb": "^0.4.0",
-    "webpack-dev-server": "^4.15.0"
-  },
   "engines": {
-    "node": "v14.15.5",
-    "yarn": "v1.22.19"
+    "node": "v20.17.0",
+    "yarn": ">=1.22.19"
   },
   "resolutions": {
     "rails_admin/@fortawesome/fontawesome-free": "^5.15.0"
+  },
+  "scripts": {
+    "build": "node esbuild.config.js",
+    "build:watch": "node esbuild.config.js --watch"
   }
 }

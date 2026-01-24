@@ -1,0 +1,14 @@
+*.psd
+*.pdf
+/spec
+/test
+/coverage
+/.git
+/doc
+/README.md
+/CHANGELOG.md
+*.log
+/log
+.rspec
+.rubocop*
+/node_modules/.cache

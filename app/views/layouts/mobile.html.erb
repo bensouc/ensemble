@@ -14,8 +14,8 @@
 		<!--Script & Style -->
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
-		<%= javascript_pack_tag 'application', 'data-turbo-track': 'reload' %>
 		<script src="https://kit.fontawesome.com/aa9dc78317.js" crossorigin="anonymous"></script>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
 	</head>
 	<body>
 		<%= render "shared/flashes"%>

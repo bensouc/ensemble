@@ -40,8 +40,6 @@ dump.rdb
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
-/public/packs
-/public/packs-test
 /node_modules
 /yarn-error.log
 yarn-debug.log*
@@ -60,3 +58,13 @@ vendor
 dump.rdb
 
 /.idea/.gitignore
+/.idea/copilot.data.migration.agent.xml
+/.idea/copilot.data.migration.ask.xml
+/.idea/copilot.data.migration.ask2agent.xml
+/.idea/copilot.data.migration.edit.xml
+/.idea/ensemble.iml
+/.idea/misc.xml
+/.idea/vcs.xml
+
+/app/assets/builds/*
+!/app/assets/builds/.keep

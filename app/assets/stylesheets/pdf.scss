@@ -7,9 +7,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 body {
-  width: 1200px;
+  width: 1000px;
   height: 1400px;
   font-family: "roboto", sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 div.alwaysbreak {
@@ -37,6 +40,11 @@ div.nobreak {
   margin: 0;
   font-family: "Roboto", sans-serif;
   // border: 1px dashed rgb(0, 255, 42);
+}
+
+.header-boxes-wrapper {
+  width: 1000px;
+  margin: 0 auto 1rem auto;
 }
 .domains-block {
   // styles for domain loop
@@ -70,12 +78,17 @@ div.nobreak {
   width: 100%;
   clear: both;
 }
+.header-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 83%;
+}
 .date-pt {
   display: inline-block;
 }
 .name-pt {
   display: inline-block;
-  width: 70%;
 }
 
 .student-box {
@@ -141,6 +154,8 @@ div.nobreak {
 }
 
 .skill-display {
+  display: flex;
+  flex-direction: column;
   margin-top: -34px;
   margin-bottom: 15px;
   font-size: larger;
@@ -180,6 +195,11 @@ symbol {
 
 //  top row
 .kind-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-direction: row;
   margin: 0;
 }
 .cells {
@@ -191,13 +211,15 @@ symbol {
 }
 // bottom row
 .kind-display {
+  display: flex;
+  flex-wrap: nowrap;
   margin: 0;
 }
 
 .start {
-  display: inline-block;
-  vertical-align: top;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-top: thin solid rgb(0, 0, 0);
   border-bottom: thin solid rgb(0, 0, 0);
   border-left: thin solid rgb(0, 0, 0);
@@ -209,23 +231,24 @@ symbol {
   padding-bottom: 2px;
 }
 .middle {
-  display: inline-block;
-  vertical-align: top;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: thin solid rgb(0, 0, 0);
   height: 25px;
   width: 28px;
 }
 .end {
-  display: inline-block;
-  vertical-align: top;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border-top: thin solid rgb(0, 0, 0);
   border-bottom: thin solid rgb(0, 0, 0);
   border-right: thin solid rgb(0, 0, 0);
   border-top-right-radius: 14px;
   border-bottom-right-radius: 14px;
   margin-left: -4px;
+  margin-right: 1px;
   height: 25px;
   width: 28px;
 }
@@ -306,6 +329,50 @@ th:not([align]) {
 .table.is-bordered tr:last-child td,
 .table.is-bordered tr:last-child th {
   border-bottom-width: 1px;
+}
+
+// Styles pour le PDF des résultats étudiant
+.student-results-container {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.student-results-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #000;
+
+  th, td {
+    border: 1px solid #000;
+    padding: 8px;
+  }
+
+  th {
+    text-align: center;
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+
+  // Colonne ceinture - largeur fixe
+  .col-belt {
+    width: 120px;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  // Colonne compétence - flexible
+  .col-skill {
+    text-align: left;
+  }
+
+  // Colonne date - largeur fixe
+  .col-date {
+    width: 130px;
+    text-align: center;
+  }
 }
 
 .table-input {

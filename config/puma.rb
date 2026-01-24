@@ -17,7 +17,8 @@ port        ENV.fetch("PORT") { 3000 }
 environment ENV.fetch("RAILS_ENV") { "development" }
 
 # Specifies the `pidfile` that Puma will use.
-pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" }
+# Only use pidfile in development (Scalingo manages processes in production)
+pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" } unless ENV["RAILS_ENV"] == "production"
 
 # Specifies the number of `workers` to boot in clustered mode.
 # Workers are forked web server processes. If using threads and workers together
