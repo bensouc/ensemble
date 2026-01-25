@@ -26,6 +26,7 @@ class ClassroomPolicy < ApplicationPolicy
   def show?
     user_is_owner_or_admin?
   end
+
   def generate_pdfs?
     user_is_owner_or_admin?
   end
@@ -45,6 +46,8 @@ class ClassroomPolicy < ApplicationPolicy
   end
 
   def user_is_owner_or_admin?
-    user.admin? || record.user == user || record.shared_classrooms.any? { |shared_classroom| shared_classroom.user == user }
+    user.admin? || record.user == user || record.shared_classrooms.any? do |shared_classroom|
+      shared_classroom.user == user
+    end
   end
 end

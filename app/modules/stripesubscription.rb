@@ -2,7 +2,7 @@ module Stripesubscription
   def self.update_or_create(event)
     # binding.pry
     subscription = Subscription.find_by(
-      stripe_subscription_id: event.data.object.id,
+      stripe_subscription_id: event.data.object.id
     )
     school = School.find_by(stripe_customer_id: event.data.object.customer)
     subscription = school.subscription if subscription.nil?

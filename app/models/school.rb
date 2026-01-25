@@ -24,7 +24,7 @@ class School < ApplicationRecord
   # Instance Methods
 
   def classrooms_total
-    classrooms.count{|classroom| !classroom.user.admin?}
+    classrooms.count { |classroom| !classroom.user.admin? }
   end
 
   def add_teacher(teacher, super_teacher = false)
@@ -47,8 +47,7 @@ class School < ApplicationRecord
   end
 
   def super_teachers_first_name
-
-    super_teachers.map  do |teacher|
+    super_teachers.map do |teacher|
       teacher.first_name.capitalize
     end.join(super_teachers.count > 1 ? ", " : "")
   end

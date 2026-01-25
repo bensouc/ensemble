@@ -1,5 +1,5 @@
 class Mobile::WorkPlansController < ApplicationController
-  layout 'mobile'
+  layout "mobile"
   def index
     # @my_classrooms = Classroom.where(user: current_user)
     # @my_work_plans = WorkPlan.where(user: current_user).order(created_at: :DESC) # .sort_by(&:student)
@@ -29,7 +29,7 @@ class Mobile::WorkPlansController < ApplicationController
     authorize @work_plan
     @domains = @work_plan.grade.domains.sort_by(&:position)
     @previous = []
-    @student =@work_plan.student
+    @student = @work_plan.student
     @wpds = @work_plan.work_plan_domains
     @wpds.each do |wpd|
       wpd.work_plan_skills.each do |wps|

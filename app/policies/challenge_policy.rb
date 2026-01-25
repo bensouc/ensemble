@@ -27,7 +27,6 @@ class ChallengePolicy < ApplicationPolicy
     user_is_owner_or_admin?
   end
 
-
   def clone?
     user_is_owner_or_admin?
   end

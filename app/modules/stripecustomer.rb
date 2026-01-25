@@ -8,7 +8,7 @@ module Stripecustomer
 
   def self.update_stripe_customer(event)
     customer = event.data.object
-    client = School.find_by(email: customer.id)
+    School.find_by(email: customer.id)
     # RAF TO BE DONE LATER
     customer
   end

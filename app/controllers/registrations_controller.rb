@@ -18,7 +18,7 @@ class RegistrationsController < Devise::RegistrationsController
       @user.school = current_user.school
       @user.demo = false
     else
-      @user.school = School.find_by(name:"Ensemble / DEMO")
+      @user.school = School.find_by(name: "Ensemble / DEMO")
       @user.demo = true
     end
     if verify_recaptcha && @user.save!
@@ -32,7 +32,7 @@ class RegistrationsController < Devise::RegistrationsController
       end
     else
       flash.now[:alert] = "Une erreur est survenue lors de la création."
-      redirect_to new_user_session_path, status: :unprocessable_entity
+      redirect_to new_user_session_path, status: :unprocessable_content
     end
   end
 

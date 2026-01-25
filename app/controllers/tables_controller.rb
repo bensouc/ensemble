@@ -8,7 +8,7 @@ class TablesController < ApplicationController
     @table = Table.find params[:id]
     render json: {
       sgid: @table.attachable_sgid,
-      content: render_to_string(partial: "tables/editor", locals: { table: @table }, formats: [:html]),
+      content: render_to_string(partial: "tables/editor", locals: { table: @table }, formats: [:html])
     }
   end
 
@@ -17,7 +17,7 @@ class TablesController < ApplicationController
     @table = Table.create
     render json: {
       sgid: @table.attachable_sgid,
-      content: render_to_string(partial: "tables/editor", locals: { table: @table }, formats: [:html]),
+      content: render_to_string(partial: "tables/editor", locals: { table: @table }, formats: [:html])
     }
   end
 
@@ -34,7 +34,7 @@ class TablesController < ApplicationController
     @table.save
     render json: {
       sgid: @table.attachable_sgid,
-      content: render_to_string(partial: "tables/editor", locals: { table: @table }, formats: [:html]),
+      content: render_to_string(partial: "tables/editor", locals: { table: @table }, formats: [:html])
     }
   end
 

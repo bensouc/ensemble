@@ -24,7 +24,7 @@ class SchoolsController < ApplicationController
         format.turbo_stream
       end
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_content
     end
   end
 
@@ -52,6 +52,6 @@ class SchoolsController < ApplicationController
   end
 
   def school_params
-    params.required(:school).permit(:name,:email,:city)
+    params.required(:school).permit(:name, :email, :city)
   end
 end

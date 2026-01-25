@@ -32,13 +32,12 @@ class Challenge < ApplicationRecord
       {
         name: "#{name}-Clone#{rand(1..100)}",
         content:,
-        skill_id:,
+        skill_id:
       }
     )
   end
 
   # CLASS METHOD
-
 
   def self.assigned_challenges(skill, student)
     wpss = WorkPlanSkill.where(skill_id: skill.id, kind: "exercice").select { |wps| wps.student == student }
@@ -50,7 +49,7 @@ class Challenge < ApplicationRecord
     challenge = Challenge.create({
                                    skill: work_plan_skill.skill,
                                    name: "#{name}-NEW",
-                                   user: current_user,
+                                   user: current_user
                                  })
     challenge.content.body = <<~HTML
       Exercice à REDIGER............................

@@ -17,14 +17,16 @@ class MessagesController < ApplicationController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: turbo_stream.append(:messages, partial: "messages/message",
-                                                        locals: { message: @message, user: current_user })
+                                                              locals: { message: @message, user: current_user })
         end
         format.html { redirect_to conversations_path(conversation_id: @conversation.id) }
       end
     else
-      render "conversations/show", status: :unprocessable_entity,
-        locals: { collegue_not_in_conversation: current_user.collegues_with_avatars.reject { |collegue| @conversation.users.include?(collegue) },
-                  conversation: @conversation }
+      render "conversations/show", status: :unprocessable_content,
+                                   locals: { collegue_not_in_conversation: current_user.collegues_with_avatars.reject do |collegue|
+                                     @conversation.users.include?(collegue)
+                                   end,
+                                             conversation: @conversation }
     end
   end
 

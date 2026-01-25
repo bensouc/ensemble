@@ -5,6 +5,7 @@ class DomainPolicy < ApplicationPolicy
     #   scope.all
     # end
   end
+
   def show?
     user.admin? || record.grade.school == user.school
   end
@@ -13,7 +14,6 @@ class DomainPolicy < ApplicationPolicy
     user.admin? || record.grade.school == user.school
   end
 
-
   def create?
     user.admin? || record.grade.school == user.school
   end
@@ -21,7 +21,8 @@ class DomainPolicy < ApplicationPolicy
   def destroy?
     user.admin? || record.grade.school == user.school
   end
-    def update?
+
+  def update?
     user.admin? || record.grade.school == user.school
   end
 end

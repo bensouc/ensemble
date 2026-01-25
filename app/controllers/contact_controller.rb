@@ -14,16 +14,17 @@ class ContactController < ApplicationController
     skip_authorization
     recaptcha_valid = verify_recaptcha
     Rails.logger.info "reCAPTCHA valid: #{recaptcha_valid}"
-    Rails.logger.info "reCAPTCHA errors: #{recaptcha_reply["error-codes"]}" unless recaptcha_valid || recaptcha_reply.nil?
-    if recaptcha_valid
-      @contact = contact_params
-      ContactMailer.new_contact(@contact).deliver
-      if user_signed_in?
-        redirect_to dashboard_path, notice: "Merci pour votre message, nous vous répondrons dans les plus brefs délais"
-      else
-        redirect_to root_path, notice: "Merci pour votre message, nous vous répondrons dans les plus brefs délais"
-      end
+    unless recaptcha_valid || recaptcha_reply.nil?
+      Rails.logger.info "reCAPTCHA errors: #{recaptcha_reply['error-codes']}"
+    end
+    return unless recaptcha_valid
 
+    @contact = contact_params
+    ContactMailer.new_contact(@contact).deliver
+    if user_signed_in?
+      redirect_to dashboard_path, notice: "Merci pour votre message, nous vous répondrons dans les plus brefs délais"
+    else
+      redirect_to root_path, notice: "Merci pour votre message, nous vous répondrons dans les plus brefs délais"
     end
   end
 

@@ -22,18 +22,17 @@ module ApplicationHelper
   end
 
   def cacher_email(email)
-      username, domain = email.split("@")
-      censored_username = username[0]+"****"+username[0]
-      censored_domain = domain.gsub(/(?<=.{1}).(?=.*\.)/, "*")
-      "#{censored_username}@#{censored_domain}"
+    username, domain = email.split("@")
+    censored_username = username[0] + "****" + username[0]
+    censored_domain = domain.gsub(/(?<=.{1}).(?=.*\.)/, "*")
+    "#{censored_username}@#{censored_domain}"
   end
 
-      def self.default_url_options
+  def self.default_url_options
     { host: ENV["DOMAIN"] || "http://localhost:3000" }
   end
 
   def sanitize_filename(filename)
     I18n.transliterate(filename).gsub!(/[^0-9A-Za-z]/, "_")
   end
-
 end

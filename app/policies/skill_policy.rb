@@ -25,9 +25,11 @@ class SkillPolicy < ApplicationPolicy
   def upload_skills_xlsx?
     !user.demo?
   end
+
   def add_skills_from_xls?
     upload_skills_xlsx?
   end
+
   def move?
     user_is_owner_or_admin?
   end

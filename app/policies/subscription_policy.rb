@@ -15,7 +15,7 @@ class SubscriptionPolicy < ApplicationPolicy
   end
 
   def on_boarding?
-    user.admin? || user.demo? || (true && user.school.valid_subscription?)
+    user.admin? || user.demo? || user.school.valid_subscription?
   end
 
   # def new?

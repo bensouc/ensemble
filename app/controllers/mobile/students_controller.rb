@@ -11,7 +11,6 @@ class Mobile::StudentsController < ApplicationController
     @belts = Belt.completed.where(student: @student)
     @domains = @student.domains.sort_by(&:position)
     # binding.pry
-
   end
 
   private

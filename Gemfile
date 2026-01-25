@@ -13,7 +13,7 @@ gem "rails", "~> 7.1.0"
 gem "turbo-rails"
 # end of 7.1.0 UPGRADE
 
-#STRIPE setup
+# STRIPE setup
 # STRIPE SWITCH OFF
 gem "money-rails", "~> 1.12"
 gem "stripe"
@@ -48,8 +48,8 @@ gem "image_processing", "~> 1.2"
 # Reduces boot times through caching; required errrein config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false
 # Notification erroer email + slack
-gem 'exception_notification'
-gem 'slack-notifier'
+gem "exception_notification"
+gem "slack-notifier"
 # add sweet alert
 gem "devise"
 # devise plug_in to manage last seen
@@ -63,16 +63,16 @@ gem "rails-i18n"
 gem "bootstrap", "~> 5.2"
 
 #  add red or unred object gem
- gem "unread"
+gem "unread"
 
 # act_as_list help manage list
-gem 'acts_as_list', '~> 0.7.2'
-gem 'requestjs-rails' #help for simple JS http resquest
+gem "acts_as_list", "~> 0.7.2"
+gem "requestjs-rails" # help for simple JS http resquest
 # xlsx spreadsheet generation
 gem "caxlsx"
 gem "caxlsx_rails"
 # xlsx spreadsheet upload and read
-gem 'simple_xlsx_reader', '~> 1.0', '>= 1.0.4'
+gem "simple_xlsx_reader", "~> 1.0", ">= 1.0.4"
 gem "roo", "~> 2.10.0"
 
 # reduce log size with lograge
@@ -104,7 +104,7 @@ group :development, :test do
   gem "dotenv-rails"
   # autoindent erb file
 
-  gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  gem "debug", platforms: %i[mri mingw x64_mingw]
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem "shoulda-matchers", "~> 4.0"

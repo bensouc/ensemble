@@ -38,21 +38,21 @@ class WorkPlanDomainsController < ApplicationController
       skills&.each do |skill|
         # unless kind is 'exercice' and student.skill_status(skill) == 'skill_status_belt'
         result = Result.find_or_create_by(skill:, student:) unless student.nil?
-        unless !student.nil? && (result.belt_validated? || (kind == "exercice" && result.challenge_validated?))
-          work_plan_skill = WorkPlanSkill.new(
-            work_plan_domain_id: @work_plan_domain.id,
-            skill_id: skill.id,
-            kind:,
-            # REMOVE student: @work_plan.student
-          )
-          if kind == "exercice"
-            ############### refacto START get_challenge_4_wps############
-            challenge = work_plan_skill.get_challenge_4_wps(current_user)
-            ############ refacto END ############
-            work_plan_skill.challenge = challenge
-          end
-          work_plan_skill.save!
+        next if !student.nil? && (result.belt_validated? || (kind == "exercice" && result.challenge_validated?))
+
+        work_plan_skill = WorkPlanSkill.new(
+          work_plan_domain_id: @work_plan_domain.id,
+          skill_id: skill.id,
+          kind:
+          # REMOVE student: @work_plan.student
+        )
+        if kind == "exercice"
+          ############### refacto START get_challenge_4_wps############
+          challenge = work_plan_skill.get_challenge_4_wps(current_user)
+          ############ refacto END ############
+          work_plan_skill.challenge = challenge
         end
+        work_plan_skill.save!
       end
       ######################### SKILLS loop END ######################
     end

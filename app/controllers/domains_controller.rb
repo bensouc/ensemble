@@ -2,21 +2,21 @@
 
 class DomainsController < ApplicationController
   skip_after_action :verify_policy_scoped, only: [:index]
-  before_action :set_domain, only: [:show,:edit, :destroy, :update, :move]
+  before_action :set_domain, only: [:show, :edit, :destroy, :update, :move]
 
   def index
     @grade = Grade.find(params[:grade_id])
     @domains = @grade.domains
   end
 
+  def show
+    authorize(@domain)
+  end
+
   def new
     @grade = Grade.find(params[:grade_id])
     @domain = Domain.new(grade: @grade)
 
-    authorize(@domain)
-  end
-
-  def show
     authorize(@domain)
   end
 
@@ -58,11 +58,12 @@ class DomainsController < ApplicationController
     else
       respond_to do |format|
         format.html { redirect_to grade_domains_path(@grade), notice: "La suppression du domaine a échoué" }
-        format.turbo_stream { render turbo_stream:
+        format.turbo_stream do
+          render turbo_stream:
                                 turbo_stream.replace(@domain,
-                                  partial: "domains/domain",
-                                  locals: { domain: @domain })
-                            }
+                                                     partial: "domains/domain",
+                                                     locals: { domain: @domain })
+        end
       end
     end
   end

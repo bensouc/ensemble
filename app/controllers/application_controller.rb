@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_unread_messages, if: :user_signed_in?
   include Pundit::Authorization
+
   # Pundit: allow-list approach
   after_action :verify_authorized, except: :index, unless: :skip_pundit?
   after_action :verify_policy_scoped, only: :index, unless: :skip_pundit?
@@ -26,7 +27,7 @@ class ApplicationController < ActionController::Base
       format.turbo_stream do
         render turbo_stream: turbo_stream.prepend("flash", partial: "shared/flashes")
       end
-      format.html { redirect_to(request.referrer || dashboard_path) }
+      format.html { redirect_to(request.referer || dashboard_path) }
     end
   end
 

@@ -1,6 +1,6 @@
 class StripeSubscriptionCreatedService
   def call(event)
-    Stripe.api_key = ENV["STRIPE_API_KEY"]
+    Stripe.api_key = ENV.fetch("STRIPE_API_KEY", nil)
     Subscription.create!(
       school: School.find_by(stripe_customer_id: event.data.object.customer),
       external_id: event.data.object.id,

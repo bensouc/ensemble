@@ -1,7 +1,7 @@
 class Subscription < ApplicationRecord
   belongs_to :school
 
-  enum status: {
+  enum :status, {
     trialing: "trialing",
     active: "active",
     past_due: "past_due",

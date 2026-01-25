@@ -13,7 +13,8 @@ class ChallengesController < ApplicationController
     redirect_to classrooms_path if current_user.classrooms.empty? && current_user.shared_classrooms.empty?
     # "/challenges"=>{"grade"=>"CE2", "domain"=>"26", "level"=>"1", "skills"=>"11067"}
     set_filters
-    challenges = Challenge.includes([:rich_text_content, :work_plan_skills, :skill, :user]).joins(:skill).where(skills: { id: @skills.map(&:id) })
+    challenges = Challenge.includes([:rich_text_content, :work_plan_skills, :skill,
+                                     :user]).joins(:skill).where(skills: { id: @skills.map(&:id) })
     # binding.pry
     @challenges = challenges.select do |challenge|
       challenge.skill.domain == @domain &&
@@ -58,7 +59,7 @@ class ChallengesController < ApplicationController
         format.turbo_stream { flash.now[:notice] = "Excercice Sauvegardé" }
       end
     else
-      redirect_to new_challenge_path, notice: "Sauvegarde échouée ", status: :unprocessable_entity
+      redirect_to new_challenge_path, notice: "Sauvegarde échouée ", status: :unprocessable_content
     end
   end
 

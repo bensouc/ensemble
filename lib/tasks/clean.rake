@@ -16,7 +16,9 @@ namespace :clean do
     empty_chall.content.body = <<~HTML
       Exercice à REDIGER............................
     HTML
-    empty_challenges = Challenge.all.select { |c| c.content.body == empty_chall.content.body && c.work_plan_skills.empty? }
+    empty_challenges = Challenge.all.select do |c|
+      c.content.body == empty_chall.content.body && c.work_plan_skills.empty?
+    end
     empty_challenges.each do |c|
       c.destroy
       puts "Challenge ID #{c.id} has been destroyed"

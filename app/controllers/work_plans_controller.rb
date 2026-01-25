@@ -22,8 +22,8 @@ class WorkPlansController < ApplicationController
           grade: wp.grade,
           user_id: current_user.id,
           start_date: wp.start_date,
-          end_date: wp.end_date,
-        # student_id: wp.student_id
+          end_date: wp.end_date
+          # student_id: wp.student_id
         }
       )
       unless sharing_params.nil?
@@ -59,7 +59,7 @@ class WorkPlansController < ApplicationController
             user_id: current_user.id,
             start_date: wp.start_date,
             end_date: wp.end_date,
-            student_id: Student.find(clone_student_id).id,
+            student_id: Student.find(clone_student_id).id
           }
         )
 
@@ -242,7 +242,7 @@ class WorkPlansController < ApplicationController
       grade: @student.classroom.grade,
       student: @student, user: current_user,
       start_date: Time.zone.today.next_occurring(:monday),
-      end_date: Time.zone.today.next_occurring(:monday) + 4,
+      end_date: Time.zone.today.next_occurring(:monday) + 4
     )
     @results = Result.includes(:skill).where(student: @student)
     # binding.pry
@@ -266,7 +266,8 @@ class WorkPlansController < ApplicationController
     @work_plan = WorkPlan.find(params[:id])
     @work_plan_domains = WorkPlanDomain.includes(:domain, :work_plan).where(work_plan: @work_plan)
     @domains = Domain.where(grade: @work_plan.grade).sort_by(&:position)
-    @work_plan_skills = WorkPlanSkill.includes(:work_plan_domain, :skill, :challenge).where(work_plan_domain: @work_plan_domains)
+    @work_plan_skills = WorkPlanSkill.includes(:work_plan_domain, :skill,
+                                               :challenge).where(work_plan_domain: @work_plan_domains)
     shared_classrooms = current_user.user_shared_classrooms
     @students = current_user.all_students
     @classrooms_whithout_current_student = current_user.classrooms + shared_classrooms

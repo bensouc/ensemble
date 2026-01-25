@@ -9,7 +9,7 @@ class SchoolPolicy < ApplicationPolicy
   def new?
     true
   end
-  
+
   def create?
     true
   end
@@ -21,6 +21,4 @@ class SchoolPolicy < ApplicationPolicy
   def show?
     record.users.any? { |school_user| school_user == user }
   end
-
-
 end

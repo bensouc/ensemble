@@ -40,7 +40,8 @@ class SubscriptionsController < ApplicationController
     #     Stripe.api_key = ENV["STRIPE_API_KEY"]
     # @subscription = Stripe::Subscription.retrieve( current_user.subscription.external_id)
   end
+
   def subscription_params
-    params.require(:subscription).permit(:rythm, :quantity,:trial_end,:current_period_start,:current_period_end)
+    params.require(:subscription).permit(:rythm, :quantity, :trial_end, :current_period_start, :current_period_end)
   end
 end

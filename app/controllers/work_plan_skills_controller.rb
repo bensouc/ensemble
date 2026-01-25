@@ -27,10 +27,10 @@ class WorkPlanSkillsController < ApplicationController
       @work_plan_domain = @work_plan_skill.work_plan_domain
       @work_plan_skills = @work_plan_domain.work_plan_skills
       respond_to do |format|
-        format.html {
+        format.html do
           redirect_to work_plan_domain_path(@work_plan_skill.work_plan_domain),
                       notice: "Modification Sauvegardée"
-        }
+        end
         format.turbo_stream { flash.now[:notice] = "Modification Sauvegardée" }
       end
     else
@@ -57,10 +57,10 @@ class WorkPlanSkillsController < ApplicationController
 
     if @work_plan_skill.save!
       respond_to do |format|
-        format.html {
+        format.html do
           redirect_to work_plan_skill_path(@work_plan_skill),
                       notice: "Modification Sauvegardée"
-        }
+        end
         format.turbo_stream { flash.now[:notice] = "Modification Sauvegardée" }
       end
     else
@@ -76,10 +76,10 @@ class WorkPlanSkillsController < ApplicationController
     @work_plan_skill.destroy
     @work_plan_skills = @work_plan_domain.work_plan_skills
     respond_to do |format|
-      format.html {
+      format.html do
         redirect_to work_plan_path(work_plan_domain.work_plan),
                     notice: "Modification Sauvegardée"
-      }
+      end
       format.turbo_stream { flash.now[:notice] = "Modification Sauvegardée" }
     end
   end
@@ -95,7 +95,7 @@ class WorkPlanSkillsController < ApplicationController
     else
       @work_plan_skill.status = params[:status]
       # add test if (@work_plan_skill.kind == 'ceinture' && @work_plan_skill.status)
-      if @work_plan_skill.kind == "ceinture" || @work_plan_skill.kind == "controle"
+      if %w[ceinture controle].include?(@work_plan_skill.kind)
         case @work_plan_skill.status
         when "completed"
           @work_plan_skill.completed = true
@@ -138,7 +138,7 @@ class WorkPlanSkillsController < ApplicationController
   # to add a validated wps on a student on special_wps=true Workplan
   def add_validated_wps
     skip_authorization
-    skills_and_student = get_all_skills_to_add_completed_wps #call private method to get all the needed skills to be completed
+    skills_and_student = get_all_skills_to_add_completed_wps # call private method to get all the needed skills to be completed
     skills = skills_and_student[:skills]
     @domain = skills.first.domain # get domain to work on
     @student = skills_and_student[:student]
@@ -188,7 +188,10 @@ class WorkPlanSkillsController < ApplicationController
     @skills = @domain.skills.select { |skill| skill.level == @level }
     @results = Result.completed.where(skill: @skills, student: @student)
     all_students_belts = Belt.completed.where(domain: @domain, student: @student)
-    @belt = all_students_belts.detect { |belt| belt.level == @level }   #Belt.completed.find_by(domain: @domain, level: @level, student: @student)
+    @belt = # Belt.completed.find_by(domain: @domain, level: @level, student: @student)
+      all_students_belts.detect do |belt|
+        belt.level == @level
+      end
     @last_belt = all_students_belts.order(level: :desc).first
     @last_wps = WorkPlanSkill.last_wps(@student, @skills)
   end
@@ -200,7 +203,7 @@ class WorkPlanSkillsController < ApplicationController
   def get_add_validated_wps_skill_student
     {
       student_id: params.permit(:student_id)[:student_id],
-      skill_ids: params.require(:new_wps).permit(skills: [])[:skills][1..-1],
+      skill_ids: params.require(:new_wps).permit(skills: [])[:skills][1..-1]
     }
   end
 
@@ -209,7 +212,7 @@ class WorkPlanSkillsController < ApplicationController
       work_plan_domain_id: params.require(:work_plan_domain_id),
       skill_id: params.require(:skill).to_i,
       kind: params.require(:kind),
-      status: "new",
+      status: "new"
     }
   end
 
@@ -227,12 +230,12 @@ class WorkPlanSkillsController < ApplicationController
 
     return false if data[:skill_ids].empty?
 
-    data[:skill_ids].map { |skill_id|
+    data[:skill_ids].map do |skill_id|
       skills << Skill.for_school(current_user.school).find(skill_id)
-    }
+    end
     {
       skills: skills,
-      student: Student.includes(:classroom).find(data[:student_id]),
+      student: Student.includes(:classroom).find(data[:student_id])
     }
   end
 end

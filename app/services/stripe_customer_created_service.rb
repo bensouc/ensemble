@@ -1,6 +1,6 @@
 class StripeCustomerCreatedService
   def call(event)
-    Stripe.api_key = ENV["STRIPE_API_KEY"]
+    Stripe.api_key = ENV.fetch("STRIPE_API_KEY", nil)
     # get user and add stripe id
     # customer = event.data.object.
     user = User.find_by(email: event.data.object.email)

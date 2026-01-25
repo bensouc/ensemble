@@ -19,7 +19,7 @@ namespace :result do
     puts "###      Results         ###"
     puts "###   4 all Classrooms   ###"
     puts "############################"
-    Classroom.all.each {|c| update_results_for_all_classroom(c.id)}
+    Classroom.all.each { |c| update_results_for_all_classroom(c.id) }
   end
 
   def update_results_for_all_classroom(classroom_id)
@@ -31,24 +31,26 @@ namespace :result do
       students.each do |student|
         skills.each do |skill|
           next if student.work_plan_skills.where(skill:).empty?
+
           # get result for skills and students
           result = Result.find_by(student:, skill:)
           # update result
           # binding.pry
           next if result.nil?
+
           status = student.skill_status(skill)
           case status
           when "skill_status_completed"
             # kind: "ceinture", status: "completed"
-             result.update(kind: "ceinture", status: "completed")
-             p result
+            result.update(kind: "ceinture", status: "completed")
+            p result
           when "skill_status_belt"
             # kind: "exercice", status: completed
-             result.update(kind: "exercice", status: "completed")
-             p result
+            result.update(kind: "exercice", status: "completed")
+            p result
           when "skill_status_challenge"
-             result.update(kind: "exercice", status: "new")
-             p result
+            result.update(kind: "exercice", status: "new")
+            p result
             # kind: "exercice",status: "new"
           end
         end

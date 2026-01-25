@@ -43,9 +43,9 @@ class Conversation < ApplicationRecord
   end
 
   def self.find_or_create_ensemble(user)
-    conversation = includes(messages: [:user, :rich_text_content])
-      .where(conversation_type: "ensemble")
-      .joins(:users).find_by(users: { id: user.id })
+    conversation = includes(messages: [:user, :rich_text_content]).
+      where(conversation_type: "ensemble").
+      joins(:users).find_by(users: { id: user.id })
     unless conversation
       conversation = create(conversation_type: "ensemble", name: "Ensemble & #{user.first_name}")
       conversation.users << user
@@ -57,10 +57,10 @@ class Conversation < ApplicationRecord
   def self.find_or_create_school_conversation(user)
     # Trouver ou créer la conversation de type "school" pour l'école de l'utilisateur
     school = user.school
-    conversation = Conversation.includes([:users, { messages: [:user, :rich_text_content] }])
-      .where(conversation_type: "school")
-      .joins(users: :school_role)
-      .find_by(school_roles: { school_id: school.id })
+    conversation = Conversation.includes([:users, { messages: [:user, :rich_text_content] }]).
+      where(conversation_type: "school").
+      joins(users: :school_role).
+      find_by(school_roles: { school_id: school.id })
     unless conversation
       conversation = Conversation.create(conversation_type: "school", name: school.name)
       UserConversation.create(user: user, conversation: conversation)
@@ -71,7 +71,8 @@ class Conversation < ApplicationRecord
   def self.find_or_create_classic_conversation(user, contact)
     conversation = user.conversations.classic.joins(:users).find_by(users: { id: contact.id })
     unless conversation
-      conversation = Conversation.create!(conversation_type: "classic", name: "#{contact.first_name} & #{user.first_name}")
+      conversation = Conversation.create!(conversation_type: "classic",
+                                          name: "#{contact.first_name} & #{user.first_name}")
       UserConversation.create(user: user, conversation: conversation)
       UserConversation.create(user: contact, conversation: conversation)
     end

@@ -10,11 +10,11 @@ namespace :belts do
     count = 0
     Student.all.each do |student|
       student.belts.sort_by(&:updated_at).each do |belt|
-        if student.belts.where(domain: belt.domain, level: belt.level).count > 1
-          belt.destroy
-          puts "Belt ID #{belt.id} has been destroyed"
-          count += 1
-        end
+        next unless student.belts.where(domain: belt.domain, level: belt.level).count > 1
+
+        belt.destroy
+        puts "Belt ID #{belt.id} has been destroyed"
+        count += 1
       end
     end
     puts "#{count} belts have been destroyed"

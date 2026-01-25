@@ -13,10 +13,9 @@ class GradesController < ApplicationController
   def create
     @grade = Grade.new(grade_params)
     authorize @grade
-    if @grade.save
-    else
-      render :new, status: :unprocessable_entity
-    end
+    return if @grade.save
+
+    render :new, status: :unprocessable_content
   end
 
   def destroy

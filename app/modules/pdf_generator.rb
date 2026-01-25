@@ -29,7 +29,7 @@ module PdfGenerator
         page.content = html
 
         # Attendre que le contenu soit chargé
-        sleep 0.9
+        page.network.wait_for_idle
 
         # Marges en pouces (1 inch = 25.4mm)
         pdf_options = {

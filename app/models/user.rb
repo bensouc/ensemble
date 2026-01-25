@@ -4,7 +4,8 @@ class User < ApplicationRecord
   DEMO_CLASSROOM_LIMIT = 1
   DEMO_STUDENT_LIMIT = 5
   STUDENT_LIMIT = 25
-  DISCOVERY_METHOD = ["Bouche-à-oreille", "Recherche sur Internet", "Réseaux sociaux", "Publicité en ligne", "Article de presse ou blog", "Événement ou conférence", "Autre"].freeze
+  DISCOVERY_METHOD = ["Bouche-à-oreille", "Recherche sur Internet", "Réseaux sociaux", "Publicité en ligne",
+                      "Article de presse ou blog", "Événement ou conférence", "Autre"].freeze
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   before_validation :set_defaults
@@ -57,10 +58,10 @@ class User < ApplicationRecord
   end
 
   def unread_message? # check if user has unread messages true=> has unread messages / false=> no unread messages
-    !Message.joins(conversation: :user_conversations)
-      .where(user_conversations: { user_id: id })
-      .unread_by(self)
-      .empty?
+    !Message.joins(conversation: :user_conversations).
+      where(user_conversations: { user_id: id }).
+      unread_by(self).
+      empty?
   end
 
   def admin?
@@ -92,8 +93,8 @@ class User < ApplicationRecord
   end
 
   def collegues_with_avatars
-    User.includes([avatar_attachment: :blob]).joins(:school_role)
-      .where(school_roles: { school: self.school }).reject { |user| user == self || user.admin? }
+    User.includes([avatar_attachment: :blob]).joins(:school_role).
+      where(school_roles: { school: school }).reject { |user| user == self || user.admin? }
   end
 
   def all_students
@@ -136,7 +137,9 @@ class User < ApplicationRecord
 
   def classic_and_group_conversations
     Conversation.includes(messages: [:user, :rich_text_content]).joins(:user_conversations).where(user_conversations: { user: self },
-                                                  conversation_type: %w[classic group])
+                                                                                                  conversation_type: %w[
+                                                                                                    classic group
+                                                                                                  ])
   end
 
   private

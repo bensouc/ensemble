@@ -7,9 +7,9 @@ module Stripe::CheckoutsHelper
           # Provide the exact Price ID (e.g. pr_1234) of the product you want to sell
           # price: subscription.rythm == "Annuel" ? "price_1OtX5nD36LSTpclfRBqKPWul" : "price_1OtX5nD36LSTpclfOFDkQVHe",
           price: if subscription.rythm == "Annuel"
-                    ENV.fetch("STRIPE_PRICE_ANNUALY", nil)
+                   ENV.fetch("STRIPE_PRICE_ANNUALY", nil)
                  else
-                    ENV.fetch("STRIPE_PRICE_MONTHLY", nil)
+                   ENV.fetch("STRIPE_PRICE_MONTHLY", nil)
                  end,
           adjustable_quantity: {
             enabled: true,

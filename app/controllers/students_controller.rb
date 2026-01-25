@@ -30,7 +30,7 @@ class StudentsController < ApplicationController
     skip_authorization
     student = {
       first_name: params_student[:first_name],
-      classroom_id: params_student[:classroom].to_i,
+      classroom_id: params_student[:classroom].to_i
     }
     @student = Student.create!(student)
     redirect_to classrooms_path
@@ -59,20 +59,22 @@ class StudentsController < ApplicationController
     @special_work_plan = WorkPlan.find_or_create_by(student: @student, grade: student_grade, special_wps: true)
     domain = Domain.find(params_add_validated_wps[:domain])
     level = if domain.special?
-        1
-      else
-        params_add_validated_wps[:level].to_i
-      end
+              1
+            else
+              params_add_validated_wps[:level].to_i
+            end
     skills = domain.skills.select { |skill| skill.level == level }
-    @no_validated_skills = skills.reject { |skill| Result.find_by(skill:, student: @student, kind: "ceinture", status: "completed") }
+    @no_validated_skills = skills.reject do |skill|
+      Result.find_by(skill:, student: @student, kind: "ceinture", status: "completed")
+    end
     @subdomain = @no_validated_skills.map { |skill| skill.sub_domain }.compact.uniq
     # binding.pry
-    unless @no_validated_skills.nil? || @no_validated_skills.empty?
-      # redirect_to student_path(@student), flash: { notice: "Il n'y pas de compétence à ajouter pour ce domaine/niveau" }
-      @special_work_plan.user = current_user
-      @special_work_plan.name = "special_work_plan"
-      @special_work_plan.save!
-    end
+    return if @no_validated_skills.nil? || @no_validated_skills.empty?
+
+    # redirect_to student_path(@student), flash: { notice: "Il n'y pas de compétence à ajouter pour ce domaine/niveau" }
+    @special_work_plan.user = current_user
+    @special_work_plan.name = "special_work_plan"
+    @special_work_plan.save!
   end
 
   def add_completed_wps
@@ -86,7 +88,7 @@ class StudentsController < ApplicationController
     work_plan_domain = special_work_plan.work_plan_domains.find_or_create_by(
       domain: skill.first.domain,
       work_plan: special_work_plan,
-      level: skill.first.level,
+      level: skill.first.level
     )
     # work_plan_domai.save
     @wps = WorkPlanDomain.add_wps_completed(skill, work_plan_domain, special_work_plan)
@@ -101,7 +103,6 @@ class StudentsController < ApplicationController
 
   def set_student
     @student = Student.find(params[:id])
-
   end
 
   def params_new_validated_wps

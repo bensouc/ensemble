@@ -1,10 +1,10 @@
 class ContactMailer < ApplicationMailer
-
   def new_contact(contact)
     @contact = contact
     mail(to: "bensoucdev@gmail.com", subject: "Nouveau contact")
   end
-    def new_demo_user(contact)
+
+  def new_demo_user(contact)
     @contact = contact
     mail(to: "bensoucdev@gmail.com", subject: "Nouveau Compte Démo")
   end
@@ -19,8 +19,7 @@ class ContactMailer < ApplicationMailer
     mail(to: "bensoucdev@gmail.com", subject: "Nouvelle demande")
   end
 
-private
-# def contact_params
-#   params.require(:contact).permit(:nom, :email, :school, :city, :message)
-# end
+  # def contact_params
+  #   params.require(:contact).permit(:nom, :email, :school, :city, :message)
+  # end
 end

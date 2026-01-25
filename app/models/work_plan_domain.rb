@@ -12,7 +12,7 @@ class WorkPlanDomain < ApplicationRecord
     "CM2" => ["Calcul", "Géométrie", "Grandeurs et Mesures", "Numération", "Opérations",
               "Résolution des Problèmes", "Calligraphie", "Conjugaison",
               "Poésie et Expression orale", "Production d’écrit", "Grammaire",
-              "Lecture", "Vocabulaire"],
+              "Lecture", "Vocabulaire"]
   }.freeze
   LEVELS = (1..7)
 
@@ -35,10 +35,7 @@ class WorkPlanDomain < ApplicationRecord
   #   super
   # end
   # METHODS
-  def special?
-    # binding.pry
-    domain.special?
-  end
+  delegate :special?, to: :domain
 
   def all_domain_skills(user)
     Skill.where(domain:, level:, school: user.school)
@@ -49,7 +46,8 @@ class WorkPlanDomain < ApplicationRecord
       # result = Result.find_by(skill:, student:)
       result = results.to_a.find { |result| result.skill == skill }
       # raise if skill.id == 105
-      next if (!result.nil? && result.belt_validated?) || (result.nil? && special?) # rubocop:disable Style/IfUnlessModifier
+      next if (!result.nil? && result.belt_validated?) || (result.nil? && special?)
+
       kind =  if result.nil? || result.kind.nil?
                 "exercice"
               else
@@ -65,5 +63,4 @@ class WorkPlanDomain < ApplicationRecord
       new_wps.attach_content(result, current_user)
     end
   end
-
 end

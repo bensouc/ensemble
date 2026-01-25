@@ -24,6 +24,7 @@ namespace :challenge do
 
         new_uri = response["location"]
         break if new_uri.to_s == url
+
         # p url
         # p new_uri
         # puts "Redirection vers : #{new_uri}"

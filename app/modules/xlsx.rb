@@ -1,5 +1,5 @@
 module Xlsx
-  def self.skills_generate_xlsx_file(school, grade, domains, skills)
+  def self.skills_generate_xlsx_file(_school, grade, _domains, skills)
     package = Axlsx::Package.new # create a package => https://github.com/caxlsx
     workbook = package.workbook
     header = %w[Ceinture Symbole Compétences]
@@ -15,7 +15,9 @@ module Xlsx
         sheet.add_row header.flatten
         sheet.column_widths 20, 20, nil
         sheet.row_style 0, header_style
-        skills.select { |skill| skill.domain == domain }.sort_by { |skill| [skill.level, skill.position] }.each do |skill|
+        skills.select do |skill|
+          skill.domain == domain
+        end.sort_by { |skill| [skill.level, skill.position] }.each do |skill|
           sheet.add_row [domain.special? ? "" : Belt::BELT_COLORS[skill.level - 1], skill.symbol, skill.name],
                         style: [row_style, row_style, nil]
         end

@@ -19,19 +19,20 @@ class Skill < ApplicationRecord
     where(school:)
   end
 
-
-  def self.sheets_to_temp_skills_creation(xlsx_sheets , grade, user,domains)
+  def self.sheets_to_temp_skills_creation(xlsx_sheets, grade, user, domains)
     errors = { domains: [], skills: [] }
     skills = []
     xlsx_sheets.each do |domain_sheet|
-      if domains.any?{|domain| domain.name == domain_sheet.name}
+      if domains.any? { |domain| domain.name == domain_sheet.name }
         # pour chauqe rows [1..-1] new skills is made # #<Skill id: nil, domain: nil, level: nil, name: nil, symbol: nil,#  nil, sub_domain: nil, school_id: nil, grade_id: nil>
         domain_sheet.rows[1..-1].each do |row| # row =>["Ceinture", "Symbole", "Compétences"]
-          if !(row.first.nil? || row.last.nil? || row.last.empty?)
-            skills << Skill.new(domain: domains.find{|domain| domain.name == domain_sheet.name}, level: Belt::BELT_COLORS.index(row.first) + 1,
-              name: row.last, symbol: row.second, school: user.school)
-          else
+          if row.first.nil? || row.last.nil? || row.last.empty?
             errors[:skills] << "La ligne #{row} doit avoir une couleur de ceinture et nom de compétence"
+          else
+            skills << Skill.new(domain: domains.find { |domain|
+              domain.name == domain_sheet.name
+            }, level: Belt::BELT_COLORS.index(row.first) + 1,
+                                name: row.last, symbol: row.second, school: user.school)
           end
         end
       else
@@ -44,10 +45,10 @@ class Skill < ApplicationRecord
   end
 
   def self.create_loaded_skills(temp_skills)
-    temp_skills.each {|skill| skill.save}
+    temp_skills.each { |skill| skill.save }
   end
 
-# Instances method
+  # Instances method
 
   # ###########################################
   # METHODS

@@ -5,5 +5,4 @@ class Belts::NoBeltComponent < ViewComponent::Base
     @student = student
     @domain = domain
   end
-
 end

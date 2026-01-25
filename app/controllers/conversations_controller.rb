@@ -11,7 +11,9 @@ class ConversationsController < ApplicationController
     # @user = User.includes([:avatar_attachment]).find(current_user.id)
     if params[:conversation_id].present?
       @conversation = Conversation.includes(messages: [:user, :rich_text_content]).find(params[:conversation_id])
-      @collegue_not_in_conversation = @collegues_with_avatars.reject { |collegue| @conversation.users.include?(collegue) }
+      @collegue_not_in_conversation = @collegues_with_avatars.reject do |collegue|
+        @conversation.users.include?(collegue)
+      end
       @conversation.mark_as_read!(current_user)
     else
       @conversation = @school_conversation || @school_conversations.sort_by(&:id).first
@@ -24,30 +26,36 @@ class ConversationsController < ApplicationController
     # la creation d'un conversation doit se faire avec comme paramas le conversation_type ()
     skip_authorization
     @conversation = Conversation.find_or_create_classic_conversation(current_user, @contact)
-    @collegue_not_in_conversation = current_user.collegues_with_avatars.reject { |collegue| @conversation.users.include?(collegue) }
+    @collegue_not_in_conversation = current_user.collegues_with_avatars.reject do |collegue|
+      @conversation.users.include?(collegue)
+    end
     respond_to do |format|
       format.html { redirect_to conversations_path(conversation_id: @conversation.id) }
-      format.turbo_stream {
+      format.turbo_stream do
         render turbo_stream: turbo_stream.replace("conversation", partial: "conversations/conversation",
                                                                   locals: { conversation: @conversation, collegue_not_in_conversation: @collegue_not_in_conversation })
-      }
+      end
     end
   end
 
   def show
-    @collegue_not_in_conversation = current_user.collegues_with_avatars.reject { |collegue| @conversation.users.include?(collegue) }
+    @collegue_not_in_conversation = current_user.collegues_with_avatars.reject do |collegue|
+      @conversation.users.include?(collegue)
+    end
   end
 
   def add_user
     @new_user = User.find(params[:new_user_id])
     @conversation.add_user!(@new_user)
-    @collegue_not_in_conversation = current_user.collegues_with_avatars.reject { |collegue| @conversation.users.include?(collegue) }
+    @collegue_not_in_conversation = current_user.collegues_with_avatars.reject do |collegue|
+      @conversation.users.include?(collegue)
+    end
     respond_to do |format|
       format.html { redirect_to conversations_path(conversation_id: @conversation.id) }
-      format.turbo_stream {
+      format.turbo_stream do
         render turbo_stream: turbo_stream.replace("conversation", partial: "conversations/conversation",
                                                                   locals: { conversation: @conversation, collegue_not_in_conversation: @collegue_not_in_conversation })
-      }
+      end
     end
   end
 
@@ -66,11 +74,11 @@ class ConversationsController < ApplicationController
     @conversation.update(update_params)
     respond_to do |format|
       format.html { redirect_to conversations_path(conversation: @conversation.id) }
-      format.turbo_stream {
+      format.turbo_stream do
         render turbo_stream: turbo_stream.replace("conversation_#{@conversation.id}_name",
                                                   partial: "conversations/name",
                                                   locals: { conversation: @conversation })
-      }
+      end
     end
   end
 
@@ -87,7 +95,8 @@ class ConversationsController < ApplicationController
 
   def set_index_conversations
     if current_user.admin?
-      @school_conversations = Conversation.includes(messages: [:user, :rich_text_content]).where(conversation_type: "school")
+      @school_conversations = Conversation.includes(messages: [:user,
+                                                               :rich_text_content]).where(conversation_type: "school")
     else
       @school_conversation = Conversation.find_or_create_school_conversation(current_user)
     end

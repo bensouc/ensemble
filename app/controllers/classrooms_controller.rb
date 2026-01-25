@@ -80,10 +80,10 @@ class ClassroomsController < ApplicationController
     @domain = Domain.find(set_domain)
     # create all  variables shared with the results Action
     @skills = if @domain.special?
-        Skill.where(domain: @domain).order(Arel.sql("COALESCE(sub_domain, '') ASC"))
-      else
-        Skill.where(domain: @domain).sort
-      end
+                Skill.where(domain: @domain).order(Arel.sql("COALESCE(sub_domain, '') ASC"))
+              else
+                Skill.where(domain: @domain).sort
+              end
     set_up_results(@domain)
     @results = @classroom.completed_results_by_domain(@domain)
     @students_list = @classroom.students.sort_by { |student| student.first_name.downcase }
@@ -142,7 +142,9 @@ class ClassroomsController < ApplicationController
       # all_completed_belts = Belt.includes([:student]).where(student: students_list, domain: domain, completed: true)
       workbook.add_worksheet(name: domain.name.to_s) do |sheet|
         sheet.add_row header.flatten
-        @skills.select { |skill| skill.domain == domain }.sort_by { |skill| [skill.level, skill.position] }.each do |skill|
+        @skills.select do |skill|
+          skill.domain == domain
+        end.sort_by { |skill| [skill.level, skill.position] }.each do |skill|
           sheet.add_row create_result_row(skill, students_list).flatten
         end
       end

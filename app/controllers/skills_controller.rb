@@ -60,7 +60,7 @@ class SkillsController < ApplicationController
         format.html { redirect_to skills_path, notice: "Compétence effacée" }
         format.turbo_stream
       end
-    rescue ActiveRecord::InvalidForeignKey => e
+    rescue ActiveRecord::InvalidForeignKey
       render partial: "skills/destroy_error", locals: { skill: @skill }
     end
     # redirect_to skills_path
@@ -93,7 +93,7 @@ class SkillsController < ApplicationController
     authorize Skill
     if @xls_file_path
       file_path = Rails.root.join("tmp", @xls_file_path.original_filename)
-      File.open(file_path, "wb") { |file| file.write(@xls_file_path.read) }
+      File.binwrite(file_path, @xls_file_path.read)
       # Stockez le chemin du fichier dans la session
       session[:uploaded_file_path] = file_path.to_s
       session[:grade_id] = params[:liste][:level]

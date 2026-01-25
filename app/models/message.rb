@@ -14,8 +14,8 @@ class Message < ApplicationRecord
   private
 
   def broadcast_message
-  broadcast_append_to "conversation_#{conversation.id}_messages",
-                      partial: "messages/message",
-                      locals: { message: self, user: user }
+    broadcast_append_to "conversation_#{conversation.id}_messages",
+                        partial: "messages/message",
+                        locals: { message: self, user: user }
   end
 end
