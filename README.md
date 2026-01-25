@@ -20,7 +20,7 @@ Developed by [VRoad Studio](https://www.vroadstudio.fr)
 ## Installation
 
 ### Prerequisites
-- Ruby 3.2+
+- Ruby 3.3.6+
 - PostgreSQL
 - Redis
 - Node.js 18+
@@ -77,6 +77,7 @@ COVERAGE=true bundle exec rspec
 - **Work Plan PDF**: Added footer with pagination, student info, and page break optimization
 - **esbuild Migration**: Removed Webpacker, now using esbuild for JavaScript bundling
 - **Scalingo Deployment**: Optimized with Chrome buildpack for PDF generation
+- **Stack Upgrade**: Ruby 3.1.2 → 3.3.6, Rails 7.0 → 7.1.6, Puma 4 → 6 (performance et sécurité)
 
 ### 2024 Features
 <details>
