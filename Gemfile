@@ -2,16 +2,16 @@ source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # ruby '2.7.4'
-ruby "3.1.2"
+ruby "3.3.6"
 
 # gem  'nokogiri', '1.12.5'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 
-# 7.0.0 UPGRADE
-gem "rails", "~> 7.0.0"
+# 7.1.0 UPGRADE
+gem "rails", "~> 7.1.0"
 gem "turbo-rails"
-# end of 7.0.0 UPGRADE v df
+# end of 7.1.0 UPGRADE
 
 #STRIPE setup
 # STRIPE SWITCH OFF
@@ -23,7 +23,7 @@ gem "recaptcha"
 # Use postgresql as the database for Active Record
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
-gem "puma", "~> 4.1"
+gem "puma", "~> 6.0"
 # Use SCSS for stylesheets and  minifies them
 gem "sassc-rails"
 # Transpile app-like JavaScript with esbuild
@@ -47,14 +47,6 @@ gem "image_processing", "~> 1.2"
 
 # Reduces boot times through caching; required errrein config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false
-# =============== SETUP SINCE ruby 3.1.2 migration===================
-# force psych version for ruby 3.1.2 migration
-gem "psych", "< 4"
-# to resolve rspec issues since migrating to ruby 3.1.2
-gem "net-smtp", require: false
-gem "net-imap", require: false
-gem "net-pop", require: false
-# =============== END SETUP SINCE ruby 3.1.2 migration===================
 # Notification erroer email + slack
 gem 'exception_notification'
 gem 'slack-notifier'
