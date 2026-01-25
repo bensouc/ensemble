@@ -1,10 +1,29 @@
-<div data-controller="table-editor" data-table-editor-id="<%= table.attachable_sgid %>">
-  <button type="button" data-action="table-editor#addRow"> Ajouter 1 Ligne </button><button type="button" data-action="table-editor#addColumn">Ajouter 1 Colonne</button>
+<div class="table-editor" id="table-<%= table.attachable_sgid %>">
+  <div class="table-toolbar">
+    <div class="table-toolbar-group">
+      <button type="button" class="table-btn table-btn-danger table-remove-row<%= ' disabled' if table.rows <= 1 %>" title="Supprimer une ligne" <%= 'disabled' if table.rows <= 1 %>>
+        <span class="table-btn-icon">−</span>
+      </button>
+      <button type="button" class="table-btn table-btn-success table-add-row" title="Ajouter une ligne">
+        <span class="table-btn-icon">+</span>
+      </button>
+      <span class="table-toolbar-label">Ligne</span>
+    </div>
+    <div class="table-toolbar-group">
+      <button type="button" class="table-btn table-btn-danger table-remove-column<%= ' disabled' if table.columns <= 1 %>" title="Supprimer une colonne" <%= 'disabled' if table.columns <= 1 %>>
+        <span class="table-btn-icon">−</span>
+      </button>
+      <button type="button" class="table-btn table-btn-success table-add-column" title="Ajouter une colonne">
+        <span class="table-btn-icon">+</span>
+      </button>
+      <span class="table-toolbar-label">Colonne</span>
+    </div>
+  </div>
   <table class="table is-bordered">
     <% (0...table.rows).each do |r| %>
       <tr>
         <% (0...table.columns).each do |c| %>
-          <td><input class="table-input" data-key="<%= r %>-<%= c %>" data-action="table-editor#updateCell" value="<%= table.data["#{r}-#{c}"]%>" /></td>
+          <td class="table-cell" contenteditable="true"><%= table.data["#{r}-#{c}"]%></td>
         <% end %>
       </tr>
     <% end %>
