@@ -25,7 +25,13 @@ module PdfGenerator
       end
 
       # Conversion du HTML en PDF avec Ferrum
-      html_to_pdf(pdf_html)
+      student_name = @work_plan.student&.first_name&.capitalize || ""
+      footer_text = "#{student_name} - #{@work_plan.name} - Du #{@work_plan.start_date.strftime('%d/%m/%Y')} au #{@work_plan.end_date.strftime('%d/%m/%Y')} - Page <span class='pageNumber'></span>/<span class='totalPages'></span>"
+      html_to_pdf(pdf_html, {
+        display_header_footer: true,
+        margin_bottom: 0.6,
+        footer_template: "<div style='font-size: 8px; width: 100%; text-align: right; padding-right: 20px;'>#{footer_text}</div>"
+      })
     end
   end
 end
