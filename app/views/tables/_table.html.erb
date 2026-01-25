@@ -1,8 +1,8 @@
-<table class="table is-bordered">
+<table class="table is-bordered table-display">
   <% (0...table.rows).each do |r| %>
     <tr>
       <% (0...table.columns).each do |c| %>
-        <td><%= table.data["#{r}-#{c}"]%></td>
+        <td class="table-cell-display"><%= table.data["#{r}-#{c}"]%></td>
       <% end %>
     </tr>
   <% end %>
