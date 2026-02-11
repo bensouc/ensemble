@@ -7,7 +7,17 @@ export default class extends Controller {
   }
 
   toggle(event) {
-    this.request = new Request(event.target.parentElement.href, {
+    event.preventDefault()
+    event.stopImmediatePropagation()
+
+    const href = event.target.parentElement?.href || event.target.closest('a')?.href
+    // Validate URL before making request
+    if (!href || href.includes('undefined') || href.includes('null')) {
+      console.error('Invalid URL detected:', href)
+      return
+    }
+
+    this.request = new Request(href, {
       method: 'PATCH',
       credentials: "include",
       headers: {
@@ -15,11 +25,7 @@ export default class extends Controller {
           'meta[name="csrf-token"]'
         ).content
       }});
-    event.preventDefault()
-    event.stopImmediatePropagation()
     this.fetchContent(this.request);
-    // change domain name
-    // this.lastEvalTarget.innerHTML = event.target.innerHTML
   }
 
   fetchContent(request) {

@@ -608,7 +608,7 @@ DEPENDENCIES
   webdrivers
 
 RUBY VERSION
-  ruby 3.3.6
+  ruby 3.3.10
 
 BUNDLED WITH
   4.0.4

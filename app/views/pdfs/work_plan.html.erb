@@ -50,7 +50,7 @@
 								<div class='belt-display'>
 									<%# belt pic %>
 									<div>
-										<%=image_tag(Belt::BELT_PNG[work_plan_domain.level.to_s], size: "100x50")%>
+										<%=image_tag(PdfGenerator.image_data_uri("belts/belt_#{work_plan_domain.level}.png"), size: "100x50")%>
 									</div>
 									<%# belt levelname %>
 									<div <%  if ['Géométrie', 'Grandeurs et Mesures'].include?(domain.name) then%> style = 'visibility: hidden'<%end%>>
@@ -63,7 +63,7 @@
 										<%# loop for each skills %>
 										<div class='a-skill'>
 											<div class='border-skill'>
-												<symbol ><%=image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1659600792/ensemble/#{plan_skill.skill.symbol_img_name}", size: "10x10")%></symbol>
+												<symbol ><%=image_tag(PdfGenerator.image_data_uri("symbols/#{plan_skill.skill.symbol_img_name}"), size: "10x10")%></symbol>
 												<%= plan_skill.skill.name%>
 											</div>
 											<%# tab for skill kind %>
@@ -78,17 +78,17 @@
 												<div class='kind-display'>
 													<div class='start'>
 														<% if plan_skill.kind.downcase == 'jeu' %>
-															<%=image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642591049/dot_PNG40_kibspo.png", size: "20x20")%>
+															<%=image_tag(PdfGenerator.image_data_uri("dot.png"), size: "20x20")%>
 														<% end%>
 													</div>
 													<div class='middle'>
 														<% if plan_skill.kind.downcase == 'exercice' %>
-															<%=image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642591049/dot_PNG40_kibspo.png", size: "20x20")%>
+															<%=image_tag(PdfGenerator.image_data_uri("dot.png"), size: "20x20")%>
 														<% end%>
 													</div>
 													<div class='end'>
 														<% if (plan_skill.kind.downcase == 'controle') || plan_skill.kind.downcase == 'ceinture' %>
-															<%=image_tag("https://res.cloudinary.com/bensoucdev/image/upload/v1642591049/dot_PNG40_kibspo.png", size: "20x20")%>
+															<%=image_tag(PdfGenerator.image_data_uri("dot.png"), size: "20x20")%>
 														<% end%>
 													</div>
 												</div>

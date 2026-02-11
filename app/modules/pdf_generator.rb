@@ -1,4 +1,14 @@
 module PdfGenerator
+  # Retourne un data URI base64 pour une image locale (avec cache)
+  # Usage dans les templates PDF : PdfGenerator.image_data_uri("belts/belt_1.png")
+  def self.image_data_uri(relative_path)
+    @image_cache ||= {}
+    @image_cache[relative_path] ||= begin
+      full_path = Rails.root.join("app", "assets", "images", relative_path)
+      "data:image/png;base64,#{Base64.strict_encode64(File.binread(full_path))}"
+    end
+  end
+
   class Base
     def initialize(layout = "pdf.html")
       @layout = layout
@@ -17,6 +27,8 @@ module PdfGenerator
       browser = Ferrum::Browser.new(
         browser_path: CHROME_PATH,
         headless: true,
+        timeout: 30,
+        process_timeout: 10,
         browser_options: {
           "no-sandbox": true,
           "disable-setuid-sandbox": true,

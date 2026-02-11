@@ -148,6 +148,20 @@ class WorkPlansController < ApplicationController
   end
 
   def update
+    # Reject invalid IDs (e.g., "undefined" from JavaScript bugs)
+    unless params[:id].to_s.match?(/\A\d+\z/)
+      Rails.logger.warn "WorkPlansController#update: Invalid ID '#{params[:id]}' received"
+      head :bad_request
+      return
+    end
+
+    # Reject requests without work_plan params (malformed JS requests)
+    if params[:work_plan].blank?
+      Rails.logger.warn "WorkPlansController#update: Missing work_plan params for ID #{params[:id]}"
+      head :bad_request
+      return
+    end
+
     temp_wp = WorkPlan.new(true_wp_params)
     @work_plan = WorkPlan.find(params[:id])
     authorize @work_plan
