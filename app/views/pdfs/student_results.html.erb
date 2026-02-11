@@ -20,7 +20,7 @@
           <% if skills_level.any? %>
             <tr>
               <td class="col-belt" rowspan="<%= skills_level.count %>">
-                <%= image_tag(Belt::BELT_PNG[level.to_s], size: "80x40") %>
+                <%= image_tag(PdfGenerator.image_data_uri("belts/belt_#{level}.png"), size: "80x40") %>
               </td>
               <td class="col-skill"><%= skills_level.first.name %></td>
               <td class="col-date" style="text-align: left;">
