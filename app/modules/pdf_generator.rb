@@ -17,6 +17,8 @@ module PdfGenerator
       browser = Ferrum::Browser.new(
         browser_path: CHROME_PATH,
         headless: true,
+        timeout: 30,
+        process_timeout: 10,
         browser_options: {
           "no-sandbox": true,
           "disable-setuid-sandbox": true,

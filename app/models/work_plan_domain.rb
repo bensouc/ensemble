@@ -36,6 +36,12 @@ class WorkPlanDomain < ApplicationRecord
   # end
   # METHODS
   delegate :special?, to: :domain
+  delegate :position, to: :domain
+
+  scope :order_by_domain_position, -> {
+    joins(:domain).order('domains.position ASC')
+  }
+
 
   def all_domain_skills(user)
     Skill.where(domain:, level:, school: user.school)
