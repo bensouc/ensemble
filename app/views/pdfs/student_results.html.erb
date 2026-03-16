@@ -27,10 +27,10 @@
                 <% result = results[skills_level.first.id] %>
                 <% if result %>
                   <% if result.belt_validated? %>
-                    <span class="bg-success rounded-circle d-inline-block" style="width: 12px; height: 12px;"></span>
+                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #198754;"></span>
                     <%= result.updated_at.strftime("%d/%m/%Y") %>
                   <% else %>
-                    <span class="bg-warning rounded-circle d-inline-block" style="width: 12px; height: 12px;"></span>
+                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #ffc107;"></span>
                   <% end %>
                 <% end %>
               </td>
@@ -42,10 +42,10 @@
                   <% result = results[skill.id] %>
                   <% if result %>
                     <% if result.belt_validated? %>
-                      <span class="bg-success rounded-circle d-inline-block" style="width: 12px; height: 12px;"></span>
+                      <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #198754;"></span>
                       <%= result.updated_at.strftime("%d/%m/%Y") %>
                     <% else %>
-                      <span class="bg-warning rounded-circle d-inline-block" style="width: 12px; height: 12px;"></span>
+                      <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #ffc107;"></span>
                     <% end %>
                   <% end %>
                 </td>
