@@ -9,21 +9,14 @@ module PdfGenerator
     end
   end
 
-  # Retourne un data URI base64 pour une font locale (avec cache)
-  def self.font_data_uri(font_filename)
-    @font_cache ||= {}
-    @font_cache[font_filename] ||= begin
-      full_path = Rails.root.join("app", "assets", "fonts", font_filename)
-      "data:font/woff2;base64,#{Base64.strict_encode64(File.binread(full_path))}"
-    end
-  end
-
-  # Remplace les url("font.woff2") par des data URIs dans le HTML
-  def self.inline_fonts(html)
+  # Remplace les url("font.woff2") par des chemins file:// absolus dans le HTML
+  def self.resolve_font_paths(html)
+    fonts_dir = Rails.root.join("app", "assets", "fonts")
     html.gsub(/url\("([^"]+\.woff2)"\)/) do |_match|
       font_file = Regexp.last_match(1)
-      if File.exist?(Rails.root.join("app", "assets", "fonts", font_file))
-        "url(\"#{font_data_uri(font_file)}\")"
+      full_path = fonts_dir.join(font_file)
+      if File.exist?(full_path)
+        "url(\"file://#{full_path}\")"
       else
         _match
       end
@@ -100,9 +93,17 @@ module PdfGenerator
     private
 
     def generate_pdf_with_browser(browser, html, options)
+      # Résoudre les fonts en chemins file:// locaux
+      resolved_html = PdfGenerator.resolve_font_paths(html)
+
+      # Écrire le HTML dans un fichier temp pour que Chrome le charge via file://
+      # (évite d'envoyer un gros HTML via DevTools Protocol)
+      tmp = Tempfile.new(["pdf_", ".html"])
+      tmp.write(resolved_html)
+      tmp.close
+
       page = browser.create_page
-      # Inliner les fonts en base64 pour éviter les requêtes réseau
-      page.content = PdfGenerator.inline_fonts(html)
+      page.go_to("file://#{tmp.path}")
 
       # Marges en pouces (1 inch = 25.4mm)
       pdf_options = {
@@ -126,6 +127,7 @@ module PdfGenerator
       Base64.decode64(pdf_data)
     ensure
       page&.close
+      tmp&.unlink
     end
   end
 end
