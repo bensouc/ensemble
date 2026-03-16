@@ -1,10 +1,69 @@
 // Graphical variables
 
-// Define fonts for body and headers
-@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+// Fonts locales (plus de dépendance CDN Google Fonts)
+@font-face {
+  font-family: "Roboto";
+  font-weight: 400;
+  font-style: normal;
+  src: url("roboto-400.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Roboto";
+  font-weight: 700;
+  font-style: normal;
+  src: url("roboto-700.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Baloo 2";
+  font-weight: 400;
+  font-style: normal;
+  src: url("baloo2-400.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Baloo 2";
+  font-weight: 700;
+  font-style: normal;
+  src: url("baloo2-700.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Oswald";
+  font-weight: 400;
+  font-style: normal;
+  src: url("oswald-400.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Oswald";
+  font-weight: 700;
+  font-style: normal;
+  src: url("oswald-700.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  font-weight: 400;
+  font-style: normal;
+  src: url("poppins-400.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  font-weight: 600;
+  font-style: normal;
+  src: url("poppins-600.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  font-weight: 700;
+  font-style: normal;
+  src: url("poppins-700.woff2") format("woff2");
+  font-display: swap;
+}
 
 body {
   width: 1000px;

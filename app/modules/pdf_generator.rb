@@ -9,6 +9,27 @@ module PdfGenerator
     end
   end
 
+  # Retourne un data URI base64 pour une font locale (avec cache)
+  def self.font_data_uri(font_filename)
+    @font_cache ||= {}
+    @font_cache[font_filename] ||= begin
+      full_path = Rails.root.join("app", "assets", "fonts", font_filename)
+      "data:font/woff2;base64,#{Base64.strict_encode64(File.binread(full_path))}"
+    end
+  end
+
+  # Remplace les url("font.woff2") par des data URIs dans le HTML
+  def self.inline_fonts(html)
+    html.gsub(/url\("([^"]+\.woff2)"\)/) do |_match|
+      font_file = Regexp.last_match(1)
+      if File.exist?(Rails.root.join("app", "assets", "fonts", font_file))
+        "url(\"#{font_data_uri(font_file)}\")"
+      else
+        _match
+      end
+    end
+  end
+
   # Crée un browser Ferrum partageable pour générer plusieurs PDFs
   def self.create_browser(retries: 2)
     Rails.logger.info "[PdfGenerator] Lancement de Chrome: #{CHROME_PATH} (exists: #{File.exist?(CHROME_PATH.to_s)})"
@@ -80,10 +101,8 @@ module PdfGenerator
 
     def generate_pdf_with_browser(browser, html, options)
       page = browser.create_page
-      page.content = html
-
-      # Attendre que le contenu soit chargé
-      page.network.wait_for_idle
+      # Inliner les fonts en base64 pour éviter les requêtes réseau
+      page.content = PdfGenerator.inline_fonts(html)
 
       # Marges en pouces (1 inch = 25.4mm)
       pdf_options = {
