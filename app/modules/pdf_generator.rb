@@ -9,11 +9,18 @@ module PdfGenerator
     end
   end
 
-  # Remplace les url("font.woff2") par des chemins file:// absolus dans le HTML
+  # Remplace les url() de fonts woff2 par des chemins file:// absolus dans le HTML
+  # Gère les deux formats :
+  #   - Dev (Sprockets live) : url("roboto-400.woff2")
+  #   - Prod (precompiled)   : url(/assets/roboto-400-DIGEST.woff2)
   def self.resolve_font_paths(html)
     fonts_dir = Rails.root.join("app", "assets", "fonts")
-    html.gsub(/url\("([^"]+\.woff2)"\)/) do |_match|
-      font_file = Regexp.last_match(1)
+    html.gsub(/url\(["']?([^"')]+\.woff2)["']?\)/) do |_match|
+      font_url = Regexp.last_match(1)
+      # Extraire le nom de base du fichier (sans /assets/ ni digest)
+      # "/assets/roboto-400-abc123.woff2" → "roboto-400"
+      basename = File.basename(font_url, ".woff2").sub(/-[0-9a-f]{32,}$/, "")
+      font_file = "#{basename}.woff2"
       full_path = fonts_dir.join(font_file)
       if File.exist?(full_path)
         "url(\"file://#{full_path}\")"
