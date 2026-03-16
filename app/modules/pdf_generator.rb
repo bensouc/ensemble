@@ -10,18 +10,28 @@ module PdfGenerator
   end
 
   # Crée un browser Ferrum partageable pour générer plusieurs PDFs
-  def self.create_browser
+  def self.create_browser(retries: 2)
+    Rails.logger.info "[PdfGenerator] Lancement de Chrome: #{CHROME_PATH} (exists: #{File.exist?(CHROME_PATH.to_s)})"
     Ferrum::Browser.new(
       browser_path: CHROME_PATH,
       headless: true,
       timeout: 60,
-      process_timeout: 30,
+      process_timeout: 60,
       browser_options: {
         "no-sandbox": true,
         "disable-setuid-sandbox": true,
-        "disable-dev-shm-usage": true
+        "disable-dev-shm-usage": true,
+        "disable-gpu": true,
+        "single-process": true
       }
     )
+  rescue Ferrum::ProcessTimeoutError => e
+    retries -= 1
+    if retries >= 0
+      Rails.logger.warn "[PdfGenerator] Chrome timeout, retry (#{retries} restants)..."
+      retry
+    end
+    raise e
   end
 
   # Exécute un bloc avec un browser partagé, puis le ferme proprement
