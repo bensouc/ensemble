@@ -15,10 +15,12 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
       Rails.logger.info("Created empty zip file at #{temp_file.path}")
       # Open the zip file and add a PDF for each student
       Zip::File.open(temp_file.path, Zip::File::CREATE) do |zipfile|
-        students.each do |student|
-          pdf = PdfGenerator::StudentResultPdf.new(student).generate
-          zipfile.get_output_stream("Progression de #{I18n.transliterate(student.first_name).capitalize}_#{Time.current.strftime('_%Y_%m_%d')}.pdf") do |f|
-            f.write(pdf)
+        PdfGenerator.with_browser do |browser|
+          students.each do |student|
+            pdf = PdfGenerator::StudentResultPdf.new(student).with_browser(browser).generate
+            zipfile.get_output_stream("Progression de #{I18n.transliterate(student.first_name).capitalize}_#{Time.current.strftime('_%Y_%m_%d')}.pdf") do |f|
+              f.write(pdf)
+            end
           end
         end
       end
