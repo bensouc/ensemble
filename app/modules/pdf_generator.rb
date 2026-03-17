@@ -9,11 +9,14 @@ module PdfGenerator
     end
   end
 
-  # Remplace les url() de fonts woff2 par des chemins file:// absolus dans le HTML
+  # Remplace les url() de fonts woff2 par des data URIs base64 dans le HTML
   # Gère les deux formats :
   #   - Dev (Sprockets live) : url("roboto-400.woff2")
   #   - Prod (precompiled)   : url(/assets/roboto-400-DIGEST.woff2)
+  # On inline en base64 pour éviter que Chrome headless fasse des requêtes file://
+  # qui restent en "pending connections" et causent des timeouts.
   def self.resolve_font_paths(html)
+    @font_cache ||= {}
     fonts_dir = Rails.root.join("app", "assets", "fonts")
     html.gsub(/url\(["']?([^"')]+\.woff2)["']?\)/) do |_match|
       font_url = Regexp.last_match(1)
@@ -23,7 +26,8 @@ module PdfGenerator
       font_file = "#{basename}.woff2"
       full_path = fonts_dir.join(font_file)
       if File.exist?(full_path)
-        "url(\"file://#{full_path}\")"
+        @font_cache[font_file] ||= Base64.strict_encode64(File.binread(full_path))
+        "url(\"data:font/woff2;base64,#{@font_cache[font_file]}\")"
       else
         _match
       end
