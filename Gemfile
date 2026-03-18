@@ -78,6 +78,9 @@ gem "roo", "~> 2.10.0"
 # reduce log size with lograge
 gem "lograge"
 
+# Rate limiting & bot protection
+gem "rack-attack"
+
 # gem de navbar
 gem "simple_calendar", "~> 2.4"
 
