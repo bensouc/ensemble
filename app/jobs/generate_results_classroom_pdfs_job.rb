@@ -34,7 +34,7 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
         temp_file.path,
         resource_type: "raw",
         folder: "ensemble/results",
-        public_id: "resultats_classe_#{classroom.id}_#{Time.current.strftime('%Y_%m_%d')}",
+        public_id: "resultats_#{I18n.transliterate(classroom.safe_name).parameterize}_#{Time.current.strftime('%Y_%m_%d')}",
         overwrite: true
       )
       # URL signée valide 7 jours, force le téléchargement
@@ -45,7 +45,7 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
         secure: true,
         sign_url: true,
         expires_at: 7.days.from_now.to_i,
-        flags: "attachment:resultats_classe_#{classroom.id}"
+        flags: "attachment:resultats_#{classroom.safe_name.parameterize}"
       )
       Rails.logger.info("[PdfGenerator] ZIP uploadé sur Cloudinary: #{download_url}")
 
