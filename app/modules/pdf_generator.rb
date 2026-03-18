@@ -40,8 +40,8 @@ module PdfGenerator
     Ferrum::Browser.new(
       browser_path: CHROME_PATH,
       headless: true,
-      timeout: 60,
-      process_timeout: 60,
+      timeout: 120,
+      process_timeout: 120,
       browser_options: {
         "no-sandbox": true,
         "disable-setuid-sandbox": true,
