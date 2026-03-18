@@ -7,8 +7,7 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
     Rails.logger.info("Generating PDFs for classroom #{classroom.id}")
     students = classroom.students
     # Define the name of the zip file
-    zipfile_name = "classroom_#{classroom.id}_students_pdfs.zip"
-    temp_file = Tempfile.new(zipfile_name)
+    temp_file = Tempfile.new(["classroom_#{classroom.id}_pdfs", ".zip"])
     begin
       # Create a new zip file
       Zip::OutputStream.open(temp_file) { |zos| } # Create a new zip file
@@ -38,13 +37,15 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
         public_id: "resultats_classe_#{classroom.id}_#{Time.current.strftime('%Y_%m_%d')}",
         overwrite: true
       )
-      # URL signée valide 7 jours
+      # URL signée valide 7 jours, force le téléchargement
       download_url = Cloudinary::Utils.cloudinary_url(
         upload["public_id"],
         resource_type: "raw",
         type: "upload",
+        secure: true,
         sign_url: true,
-        expires_at: 7.days.from_now.to_i
+        expires_at: 7.days.from_now.to_i,
+        flags: "attachment:resultats_classe_#{classroom.id}"
       )
       Rails.logger.info("[PdfGenerator] ZIP uploadé sur Cloudinary: #{download_url}")
 
