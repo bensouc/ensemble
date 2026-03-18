@@ -1,7 +1,7 @@
 class GenerateResultsClassroomPdfsJob < ApplicationJob
   include ApplicationHelper
 
-  queue_as :default
+  queue_as :pdf
   # This method performs the job of generating PDFs for each student in a classroom
   def perform(classroom, user_id)
     Rails.logger.info("Generating PDFs for classroom #{classroom.id}")
