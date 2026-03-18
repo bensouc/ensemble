@@ -30,8 +30,25 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
       # Enregistrer le fichier ZIP dans public/downloads
       # destination_path = Rails.root.join("tmp", zipfile_name)
 
-      # send email with the zip file
-      TeacherMailer.send_classroom_results_email(User.find(user_id), classroom, temp_file).deliver_now
+      # Upload ZIP sur Cloudinary (raw) et envoyer le lien par email
+      upload = Cloudinary::Uploader.upload(
+        temp_file.path,
+        resource_type: "raw",
+        folder: "ensemble/results",
+        public_id: "resultats_classe_#{classroom.id}_#{Time.current.strftime('%Y_%m_%d')}",
+        overwrite: true
+      )
+      # URL signée valide 7 jours
+      download_url = Cloudinary::Utils.cloudinary_url(
+        upload["public_id"],
+        resource_type: "raw",
+        type: "upload",
+        sign_url: true,
+        expires_at: 7.days.from_now.to_i
+      )
+      Rails.logger.info("[PdfGenerator] ZIP uploadé sur Cloudinary: #{download_url}")
+
+      TeacherMailer.send_classroom_results_email(User.find(user_id), classroom, download_url).deliver_now
 
       # Ensure the temporary file is closed and unlinked
       temp_file.close

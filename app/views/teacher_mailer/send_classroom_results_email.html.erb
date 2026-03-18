@@ -5,7 +5,15 @@
 
 <h2>Bonjour <%= @teacher.first_name.capitalize %>,</h2>
 <p>
-	Les résultats de votre classe, du <%=I18n.l(Time.current,format: :full_day_month_year)%>, sont prêts et joints à cet email(En Zip).
+	Les résultats de votre classe <strong><%= @classroom.safe_name %></strong>, à la date du <%= I18n.l(Time.current, format: :full_day_month_year) %>, sont prêts.
+</p>
+<p>
+	<a href="<%= @download_url %>" style="display: inline-block; padding: 12px 24px; background-color: #198754; color: white; text-decoration: none; border-radius: 6px; font-weight: bold;">
+		Télécharger les résultats (ZIP)
+	</a>
+</p>
+<p style="color: #666; font-size: 14px;">
+	Ce lien est valable 7 jours. Vous pouvez toujours régénérer les résultats depuis l'application.
 </p>
 <p>
 	Cordialement,<br>
