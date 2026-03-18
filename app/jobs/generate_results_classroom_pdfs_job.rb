@@ -15,15 +15,13 @@ class GenerateResultsClassroomPdfsJob < ApplicationJob
       Rails.logger.info("Created empty zip file at #{temp_file.path}")
       # Open the zip file and add a PDF for each student
       Zip::File.open(temp_file.path, Zip::File::CREATE) do |zipfile|
-        # Redémarrer le browser tous les 5 élèves pour éviter l'accumulation mémoire
-        students.each_slice(5) do |batch|
-          PdfGenerator.with_browser do |browser|
-            batch.each do |student|
-              pdf = PdfGenerator::StudentResultPdf.new(student).with_browser(browser).generate
-              zipfile.get_output_stream("Progression de #{I18n.transliterate(student.first_name).capitalize}_#{Time.current.strftime('_%Y_%m_%d')}.pdf") do |f|
-                f.write(pdf)
-              end
-            end
+        # Un browser neuf par élève : Chrome single-process accumule la mémoire
+        # et finit par ne plus répondre dans le container
+        students.each do |student|
+          Rails.logger.info("[PdfGenerator] Génération PDF pour #{student.first_name} (id: #{student.id})")
+          pdf = PdfGenerator::StudentResultPdf.new(student).generate
+          zipfile.get_output_stream("Progression de #{I18n.transliterate(student.first_name).capitalize}_#{Time.current.strftime('_%Y_%m_%d')}.pdf") do |f|
+            f.write(pdf)
           end
         end
       end
