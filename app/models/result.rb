@@ -26,11 +26,10 @@ class Result < ApplicationRecord
   end
 
   def self.update_with_new_belt(belt)
-    # get all skills from belt domain
     skills = belt.domain.skills.select { |skill| skill.level == belt.level }
-    # find or creates special_wps and pass it as validated and ceinture
     skills.each do |skill|
-      Result.find_or_create_by(student: belt.student, skill: skill).update!(status: "completed", kind: "ceinture")
+      result = Result.find_or_create_by(student: belt.student, skill: skill)
+      result.update_columns(status: "completed", kind: "ceinture") unless result.belt_validated?
     end
   end
 
