@@ -79,7 +79,8 @@ test:
 #
 production:
   <<: *default
-  database: myapp_production
-  username: myapp
-  password: <%= ENV['MYAPP_DATABASE_PASSWORD'] %>
-  # url: <%= ENV['POSTGRESQL_ADDON_URI'] %>
+  # Connexion fournie entièrement par l'environnement (12-factor) :
+  # - Scalingo injecte aujourd'hui DATABASE_URL
+  # - Coolify injectera DATABASE_URL vers le Postgres interne
+  # Aucune info de connexion (host/user/password) en dur ici.
+  url: <%= ENV["DATABASE_URL"] %>

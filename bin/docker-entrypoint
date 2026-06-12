@@ -1,0 +1,13 @@
+#!/bin/bash -e
+
+# Entrypoint du conteneur.
+#
+# Les migrations de base de données ne sont VOLONTAIREMENT pas lancées ici :
+# sur Coolify on les exécutera via une "pre-deployment command"
+# (./bin/rails db:migrate), pour qu'elles ne tournent qu'une seule fois et pas
+# en double depuis le conteneur worker Sidekiq (qui partage la même image).
+#
+# Ce script se contente donc de lancer la commande passée au conteneur
+# (Puma pour le web, Sidekiq pour le worker).
+
+exec "${@}"

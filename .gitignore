@@ -48,6 +48,9 @@ yarn-debug.log*
 # Ignore .env file containing credentials.
 .env*
 
+# Claude Code local files (notes, plans, settings) — pas versionnés
+.claude/
+
 # Ignore Mac and Linux file system files
 *.swp
 .DS_Store

@@ -1,6 +1,10 @@
 # rubocop:disable all
 require "sidekiq/web"
 Rails.application.routes.draw do
+  # Healthcheck pour Coolify / Traefik (renvoie 200 si l'app est debout).
+  # Équivaut au rails/health par défaut de Rails 7.1.
+  get "up" => "rails/health#show", as: :rails_health_check
+
   mount RailsAdmin::Engine => "/admin", as: "rails_admin"
   # routes for sidekiq dashboard
   authenticate :user, lambda { |u| u.admin? } do
