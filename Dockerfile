@@ -92,9 +92,15 @@ COPY . .
 # Précompile bootsnap (démarrage plus rapide au runtime).
 RUN bundle exec bootsnap precompile app/ lib/
 
-# Compile les assets (esbuild via jsbundling + SCSS). SECRET_KEY_BASE_DUMMY=1
-# fournit une clé bidon : ça évite d'avoir besoin du vrai master.key pendant le
-# build (les secrets restent HORS de l'image, on les injecte au runtime).
+# Bundle JavaScript avec esbuild AVANT la précompilation Sprockets.
+# INDISPENSABLE : app/assets/builds/ est gitignoré → vide dans le clone Git de
+# Coolify. Sans ce build explicite, app/assets/builds/application.js n'existe pas,
+# Sprockets ne le digère pas, et l'app retombe sur /javascripts/application.js (404)
+# → tout le JS (Stimulus/Turbo) casse. On ne se repose donc PAS sur le hook jsbundling.
+RUN yarn build
+
+# Compile les assets Sprockets : digère le bundle JS produit ci-dessus + le SCSS.
+# SECRET_KEY_BASE_DUMMY=1 fournit une clé bidon → pas besoin du vrai master.key au build.
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 
