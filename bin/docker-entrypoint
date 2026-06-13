@@ -2,12 +2,17 @@
 
 # Entrypoint du conteneur.
 #
-# Les migrations de base de données ne sont VOLONTAIREMENT pas lancées ici :
-# sur Coolify on les exécutera via une "pre-deployment command"
-# (./bin/rails db:migrate), pour qu'elles ne tournent qu'une seule fois et pas
-# en double depuis le conteneur worker Sidekiq (qui partage la même image).
+# UNE SEULE image sert pour le web (Puma) ET le worker (Sidekiq). Comme Coolify
+# n'offre pas de "Start Command" pour les apps Dockerfile, on choisit le process
+# à lancer via la variable d'environnement PROCESS_TYPE :
+#   - PROCESS_TYPE=worker  -> Sidekiq
+#   - sinon (app web)      -> la commande par défaut du Dockerfile (Puma)
 #
-# Ce script se contente donc de lancer la commande passée au conteneur
-# (Puma pour le web, Sidekiq pour le worker).
+# Les migrations ne sont PAS lancées ici : elles tourneront via une commande
+# pre-deploy Coolify, sur l'app WEB uniquement, pour ne s'exécuter qu'une fois.
+
+if [ "${PROCESS_TYPE}" = "worker" ]; then
+  exec bundle exec sidekiq -C config/sidekiq.yml
+fi
 
 exec "${@}"
