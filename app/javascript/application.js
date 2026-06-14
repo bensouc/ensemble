@@ -1,6 +1,7 @@
 // Entry point for the build script in your package.json
 
 // Rails imports
+import Rails from "@rails/ujs"
 import "@rails/activestorage"
 import "./channels"
 
@@ -26,6 +27,11 @@ import "./controllers"
 import "./plugins/quote"
 import "./plugins/trix-editor-overrides"
 import "./plugins/stimulus_scroll_progress"
+
+// Rails UJS : gère les liens `method: :delete/:put/:patch` (déconnexion, suppressions…).
+// L'app utilise massivement cette syntaxe (data-method) que Turbo seul n'intercepte
+// pas (Turbo attend data-turbo-method). Sans ça, ces liens partent en GET → erreur.
+Rails.start()
 
 // Initialize on Turbo load
 document.addEventListener('turbo:load', () => {
