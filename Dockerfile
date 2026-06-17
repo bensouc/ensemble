@@ -112,8 +112,10 @@ FROM base
 
 # Paquets nécessaires pour FAIRE TOURNER l'app :
 #  - libpq5            : client PostgreSQL (requis par la gem pg)
-#  - libvips           : traitement d'images (gem image_processing, processor vips)
-#  - imagemagick       : fournit `convert` — utilisé par MiniMagick pour les variantes Active Storage
+#  - libvips           : traitement d'images (gem image_processing + ruby-vips).
+#                        C'est le processor des variantes Active Storage
+#                        (config.active_storage.variant_processor = :vips) — pas
+#                        besoin du binaire `convert`/ImageMagick.
 #  - postgresql-client : commandes psql/pg_dump (debug, maintenance)
 #  - chromium          : navigateur headless pour la génération de PDF (Ferrum/Grover)
 #  - fonts-*           : polices, sinon les PDF rendent mal les accents/emojis
@@ -122,7 +124,6 @@ RUN apt-get update -qq && \
       curl \
       libpq5 \
       libvips \
-      imagemagick \
       postgresql-client \
       chromium \
       fonts-liberation \
