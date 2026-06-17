@@ -11,7 +11,7 @@ export default class extends Controller {
       title: "Ensemble Vous souhaite de belles vacances !! \n",
       text:
         "Nous restons ouverts pendant les fêtes, n'hesitez pas, " +
-        'contact@vroadstudio.fr'
+        'bensoucdev@gmail.com'
     });
   }
 }
