@@ -1,0 +1,18 @@
+#!/bin/bash -e
+
+# Entrypoint du conteneur.
+#
+# UNE SEULE image sert pour le web (Puma) ET le worker (Sidekiq). Comme Coolify
+# n'offre pas de "Start Command" pour les apps Dockerfile, on choisit le process
+# à lancer via la variable d'environnement PROCESS_TYPE :
+#   - PROCESS_TYPE=worker  -> Sidekiq
+#   - sinon (app web)      -> la commande par défaut du Dockerfile (Puma)
+#
+# Les migrations ne sont PAS lancées ici : elles tourneront via une commande
+# pre-deploy Coolify, sur l'app WEB uniquement, pour ne s'exécuter qu'une fois.
+
+if [ "${PROCESS_TYPE}" = "worker" ]; then
+  exec bundle exec sidekiq -C config/sidekiq.yml
+fi
+
+exec "${@}"

@@ -20,7 +20,7 @@ ExceptionNotification.configure do |config|
   config.add_notifier :email, {
     email_prefix: "[ERROR ON ENSEMBLE PRODUCTION]",
     sender_address: %("Notifier" <no-reply@app-ensemble.com>),
-    exception_recipients: %w[contact@vroadstudio.fr]
+    exception_recipients: %w[bensoucdev@gmail.com]
   }
   config.add_notifier :slack, {
     webhook_url: ENV.fetch("SLACK_NOTIF_WEBHOOK_URL", nil),

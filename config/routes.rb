@@ -1,6 +1,10 @@
 # rubocop:disable all
 require "sidekiq/web"
 Rails.application.routes.draw do
+  # Healthcheck pour Coolify / Traefik (renvoie 200 si l'app est debout).
+  # Équivaut au rails/health par défaut de Rails 7.1.
+  get "up" => "rails/health#show", as: :rails_health_check
+
   mount RailsAdmin::Engine => "/admin", as: "rails_admin"
   # routes for sidekiq dashboard
   authenticate :user, lambda { |u| u.admin? } do
@@ -162,8 +166,10 @@ Rails.application.routes.draw do
   end
 
   # ###############END for CONVERSATIONS###############
-  # Bloquer les requêtes .php (scanners bots) sans polluer les logs
-  match "/*path.php", to: proc { [404, {}, [""]] }, via: :all
+
+  # Les requêtes de scanners (.php, /wp-*, shells…) sont bloquées en amont par
+  # Rack::Attack (config/initializers/rack_attack.rb), AVANT le routage : elles
+  # renvoient 403 sans même générer de ligne de log.
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end

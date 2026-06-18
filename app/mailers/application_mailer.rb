@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "contact@vroadstudio.fr"
+  default from: "bensoucdev@gmail.com"
   layout "mailer"
 end

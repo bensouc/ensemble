@@ -1,0 +1,42 @@
+# =============================================================================
+# .dockerignore — ce que Docker NE doit PAS copier dans l'image
+# =============================================================================
+# But : garder l'image légère ET ne jamais y enfermer de secret.
+# Tout ce qui est listé ici est ignoré par la commande `COPY . .` du Dockerfile.
+
+# Dépôt Git et métadonnées
+.git
+.gitignore
+.github
+
+# Fichiers de dev / éditeurs
+.vscode
+.idea
+*.swp
+.DS_Store
+
+# Logs et fichiers temporaires (recréés au runtime)
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Dépendances JS : réinstallées proprement dans l'image via `yarn install`
+/node_modules
+
+# Stockage local Active Storage (on utilise Cloudinary en prod)
+/storage/*
+!/storage/.keep
+
+# ⚠️ SECRETS — ne JAMAIS embarquer dans l'image
+config/master.key
+config/credentials/*.key
+.env
+.env.*
+
+# Artefacts de test / couverture
+/coverage
+/spec/examples.txt
+
+# Cache bootsnap local (regénéré dans l'image)
+/tmp/cache
