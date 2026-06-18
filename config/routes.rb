@@ -166,8 +166,10 @@ Rails.application.routes.draw do
   end
 
   # ###############END for CONVERSATIONS###############
-  # Bloquer les requêtes .php (scanners bots) sans polluer les logs
-  match "/*path.php", to: proc { [404, {}, [""]] }, via: :all
+
+  # Les requêtes de scanners (.php, /wp-*, shells…) sont bloquées en amont par
+  # Rack::Attack (config/initializers/rack_attack.rb), AVANT le routage : elles
+  # renvoient 403 sans même générer de ligne de log.
 
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
