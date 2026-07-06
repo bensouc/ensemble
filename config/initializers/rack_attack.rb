@@ -38,11 +38,18 @@ class Rack::Attack
 
   blocklist("bots: chemins de scan") { |req| BAD_PATHS.match?(req.path) }
 
+  # Sondes Next.js Server Actions : l'en-tête "Next-Action" (env HTTP_NEXT_ACTION)
+  # n'a aucun sens sur une app Rails. Ces requêtes multipart malformées faisaient
+  # planter exception_notification -> 403 silencieux.
+  blocklist("bots: sondes Next-Action") do |req|
+    req.get_header("HTTP_NEXT_ACTION").present?
+  end
+
   # Fail2ban applicatif : une IP qui touche 3 mauvais chemins en 1 min est
   # bannie 1 h (toutes ses requêtes -> 403, y compris légitimes).
   blocklist("fail2ban: scanners") do |req|
     Rack::Attack::Fail2Ban.filter("scan-#{req.ip}", maxretry: 3, findtime: 60, bantime: 3600) do
-      BAD_PATHS.match?(req.path)
+      BAD_PATHS.match?(req.path) || req.get_header("HTTP_NEXT_ACTION").present?
     end
   end
 
