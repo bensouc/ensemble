@@ -3,7 +3,19 @@ require "exception_notification/rails"
 ExceptionNotification.configure do |config|
   # Ignore additional exception types.
   # ActiveRecord::RecordNotFound, Mongoid::Errors::DocumentNotFound, AbstractController::ActionNotFound and ActionController::RoutingError are already added.
-  # config.ignored_exceptions += %w{ActionView::TemplateError CustomError}
+  #
+  # Erreurs CLIENT (4xx) provoquées par des bots/scanners : requêtes malformées
+  # (ex. Content-Type multipart/form-data avec un corps vide, sondes Next.js
+  # "Next-Action"). Rails répond correctement 400 — inutile d'être notifié.
+  # Bonus : sans cette ligne, le mail de notif plante lui-même en essayant de
+  # lire les params cassés (Rack::Multipart::EmptyContentError re-levée dans le
+  # template _request.text.erb).
+  config.ignored_exceptions += %w[
+    ActionController::BadRequest
+    ActionController::InvalidAuthenticityToken
+    Rack::Multipart::EmptyContentError
+    Rack::QueryParser::InvalidParameterError
+  ]
 
   # Adds a condition to decide when an exception must be ignored or not.
   # The ignore_if method can be invoked multiple times to add extra conditions.
