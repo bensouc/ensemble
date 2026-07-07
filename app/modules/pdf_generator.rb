@@ -46,12 +46,16 @@ module PdfGenerator
   #     websocket url").
   def self.create_browser(retries: 2)
     if (chrome_url = ENV["CHROME_URL"]).present?
-      Rails.logger.info "[PdfGenerator] Connexion à Chrome distant: #{chrome_url}"
-      Ferrum::Browser.new(
-        url: chrome_url,
-        timeout: 120,
-        process_timeout: 120
-      )
+      Rails.logger.info "[PdfGenerator] Connexion à Chrome distant: #{chrome_url.sub(/token=[^&]+/, 'token=***')}"
+      opts = { timeout: 120, process_timeout: 120 }
+      # ws://host:3000?token=... (browserless) → ws_url (utilisé tel quel par Ferrum).
+      # http://host:9222 (endpoint CDP classique) → url (Ferrum lit /json/version).
+      if chrome_url.start_with?("ws://", "wss://")
+        opts[:ws_url] = chrome_url
+      else
+        opts[:url] = chrome_url
+      end
+      Ferrum::Browser.new(**opts)
     else
       Rails.logger.info "[PdfGenerator] Lancement de Chrome: #{CHROME_PATH} (exists: #{File.exist?(CHROME_PATH.to_s)})"
       Ferrum::Browser.new(
@@ -121,17 +125,24 @@ module PdfGenerator
     private
 
     def generate_pdf_with_browser(browser, html, options)
-      # Résoudre les fonts en chemins file:// locaux
+      # Inline les fonts woff2 en data URIs base64 (avec les images déjà inlinées,
+      # le HTML est 100% autonome : aucune requête réseau ni fichier).
       resolved_html = PdfGenerator.resolve_font_paths(html)
 
-      # Écrire le HTML dans un fichier temp pour que Chrome le charge via file://
-      # (évite d'envoyer un gros HTML via DevTools Protocol)
-      tmp = Tempfile.new(["pdf_", ".html"])
-      tmp.write(resolved_html)
-      tmp.close
-
       page = browser.create_page
-      page.go_to("file://#{tmp.path}")
+      # On injecte le HTML directement via CDP (Page.setDocumentContent) au lieu d'un
+      # fichier file:// : INDISPENSABLE avec un Chrome DISTANT (browserless), où un
+      # file:// pointerait vers le FS du conteneur Chrome, pas celui de Rails.
+      page.content = resolved_html
+
+      # S'assurer que les webfonts (data: URIs) sont appliquées avant de rendre le PDF.
+      # NB : capturer le callback resolve (arguments[0]) AVANT le .then, sinon il est
+      # ré-ombré par les arguments du callback.
+      begin
+        page.evaluate_async("var done = arguments[0]; document.fonts.ready.then(function() { done(true); });", 5)
+      rescue Ferrum::Error => e
+        Rails.logger.warn "[PdfGenerator] fonts.ready ignoré: #{e.message}"
+      end
 
       # Marges en pouces (1 inch = 25.4mm)
       pdf_options = {
@@ -155,7 +166,6 @@ module PdfGenerator
       Base64.decode64(pdf_data)
     ensure
       page&.close
-      tmp&.unlink
     end
   end
 end
