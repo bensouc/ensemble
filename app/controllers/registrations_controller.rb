@@ -21,7 +21,11 @@ class RegistrationsController < Devise::RegistrationsController
       @user.school = School.find_by(name: "Ensemble / DEMO")
       @user.demo = true
     end
-    if verify_recaptcha && @user.save!
+    # reCAPTCHA uniquement pour l'inscription publique (démo). Le formulaire
+    # d'ajout d'un professeur par un utilisateur déjà connecté n'affiche aucun
+    # widget captcha : exiger verify_recaptcha y renvoyait donc toujours 422.
+    captcha_ok = user_signed_in? || verify_recaptcha
+    if captcha_ok && @user.save
       if @user.demo?
         ContactMailer.new_demo_user(@user).deliver
         sign_in(@user)
