@@ -34,22 +34,39 @@ module PdfGenerator
     end
   end
 
-  # Crée un browser Ferrum partageable pour générer plusieurs PDFs
+  # Crée un browser Ferrum partageable pour générer plusieurs PDFs.
+  #
+  # Deux modes selon l'environnement :
+  #   - CHROME_URL défini (ex. "http://chrome:3000") → connexion à un Chromium
+  #     distant long-lived (service dédié, ex. browserless sur Coolify). Aucun
+  #     process n'est spawné localement ; le service pilote ses propres flags.
+  #   - sinon → spawn d'un Chromium local (dev macOS, ou fallback conteneur).
+  #     NB : PAS de "single-process" — ce flag (hack mémoire hérité de Scalingo)
+  #     fait figer Chromium au démarrage en conteneur ("Browser did not produce
+  #     websocket url").
   def self.create_browser(retries: 2)
-    Rails.logger.info "[PdfGenerator] Lancement de Chrome: #{CHROME_PATH} (exists: #{File.exist?(CHROME_PATH.to_s)})"
-    Ferrum::Browser.new(
-      browser_path: CHROME_PATH,
-      headless: true,
-      timeout: 120,
-      process_timeout: 120,
-      browser_options: {
-        "no-sandbox": true,
-        "disable-setuid-sandbox": true,
-        "disable-dev-shm-usage": true,
-        "disable-gpu": true,
-        "single-process": true
-      }
-    )
+    if (chrome_url = ENV["CHROME_URL"]).present?
+      Rails.logger.info "[PdfGenerator] Connexion à Chrome distant: #{chrome_url}"
+      Ferrum::Browser.new(
+        url: chrome_url,
+        timeout: 120,
+        process_timeout: 120
+      )
+    else
+      Rails.logger.info "[PdfGenerator] Lancement de Chrome: #{CHROME_PATH} (exists: #{File.exist?(CHROME_PATH.to_s)})"
+      Ferrum::Browser.new(
+        browser_path: CHROME_PATH,
+        headless: true,
+        timeout: 120,
+        process_timeout: 120,
+        browser_options: {
+          "no-sandbox": true,
+          "disable-setuid-sandbox": true,
+          "disable-dev-shm-usage": true,
+          "disable-gpu": true
+        }
+      )
+    end
   rescue Ferrum::ProcessTimeoutError => e
     retries -= 1
     if retries >= 0

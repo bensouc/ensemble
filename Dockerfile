@@ -119,6 +119,10 @@ FROM base
 #  - postgresql-client : commandes psql/pg_dump (debug, maintenance)
 #  - chromium          : navigateur headless pour la génération de PDF (Ferrum/Grover)
 #  - fonts-*           : polices, sinon les PDF rendent mal les accents/emojis
+#  - tini              : init minimal (PID 1) qui moissonne les process enfants.
+#                        Puma/Sidekiq ne reap pas les zombies ; sans tini les
+#                        Chromium enfants s'accumulent en <defunct> et finissent
+#                        par bloquer les lancements (timeouts intermittents).
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y \
       curl \
@@ -127,7 +131,8 @@ RUN apt-get update -qq && \
       postgresql-client \
       chromium \
       fonts-liberation \
-      fonts-noto-color-emoji && \
+      fonts-noto-color-emoji \
+      tini && \
     rm -rf /var/lib/apt/lists/*
 
 # Chemin du binaire Chromium installé ci-dessus. config/initializers/ferrum.rb
@@ -153,8 +158,9 @@ RUN groupadd --system --gid 1000 rails && \
     chown -R rails:rails log tmp storage
 USER 1000:1000
 
-# Entrypoint : prépare l'environnement avant de lancer la commande (voir le script).
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+# Entrypoint : tini (PID 1, reap des zombies) → notre script qui prépare
+# l'environnement avant de lancer la commande (voir le script).
+ENTRYPOINT ["/usr/bin/tini", "--", "/rails/bin/docker-entrypoint"]
 
 # Port exposé (Puma écoute sur $PORT, défaut 3000). Coolify/Traefik route dessus.
 EXPOSE 3000
