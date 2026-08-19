@@ -4,6 +4,9 @@
 
 .cont-challenge {
   width: 811px !important;
+  // max-width bat width : le rendu desktop est inchangé, mais le bloc ne
+  // déborde plus sur mobile/tablette (l'éditeur y était coupé).
+  max-width: 100%;
   padding-top: 5px;
   padding-bottom: 20px;
   padding-left: 30px;
@@ -80,13 +83,41 @@
   font-size: 2em;
 }
 
+// Champ « nom de l'exercice ».
+//
+// Avant : un aplat saumon (rgba(250, 128, 114, 0.308)) qui écrasait le texte et
+// ne correspondait à aucune couleur de la charte. Il est traité maintenant comme
+// ce qu'il est — le titre de l'énoncé — et repris sur les mêmes jetons que
+// l'éditeur juste en dessous (il est dans .rt-field, donc il en hérite ;
+// valeurs de repli au cas où il serait réutilisé ailleurs).
 .challenge-title {
-  padding: 10px;
-  border: thin solid #dddddd;
-  border-radius: 8px;
-  margin-bottom: 20px;
   width: 100%;
-  background-color: rgba(250, 128, 114, 0.308);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  font-family: $body-font;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--rt-ink, #{$grisF});
+  background-color: var(--rt-surface, #{$blanc});
+  border: 1px solid var(--rt-line-strong, #{$grisC});
+  border-radius: var(--rt-radius, 10px);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &::placeholder {
+    font-weight: 400;
+    color: var(--rt-ink-faint, #a1a1aa);
+  }
+
+  &:hover:not(:focus) {
+    border-color: darken($grisC, 10%);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--rt-accent, #{$rose});
+    box-shadow: 0 0 0 3px var(--rt-accent-ring, #{rgba($rose, 0.25)});
+  }
 }
 
 .height-validate-challenge {

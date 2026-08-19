@@ -1,0 +1,42 @@
+// Le champ d'édition lui-même.
+//
+// À noter : Trix injecte du CSS dans le <head> à l'exécution, donc *après* la
+// feuille compilée. Pour ces propriétés-là il faut une spécificité supérieure à
+// la sienne (`trix-editor …`), d'où les sélecteurs avec [placeholder] ci-dessous.
+trix-editor {
+  padding: 14px 16px; // avant : `padding: 0 !important`, le texte collait au bord
+  margin: 0;
+  min-height: 8.5em;
+  color: var(--rt-ink);
+  background: var(--rt-surface);
+  border: 1px solid var(--rt-line-strong);
+  border-radius: var(--rt-radius);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  overflow-wrap: break-word;
+
+  &:focus {
+    border-color: var(--rt-accent);
+    box-shadow: 0 0 0 3px var(--rt-accent-ring);
+  }
+
+  // Placeholder natif de Trix (`trix-editor:empty:not(:focus)::before`). Sa
+  // règle injectée impose `color: graytext` : il faut ce sélecteur plus
+  // spécifique pour reprendre la main.
+  &[placeholder]:empty:not(:focus)::before {
+    color: var(--rt-ink-faint);
+    font-style: italic;
+  }
+
+  // Barre d'outils d'une pièce jointe sélectionnée (bouton « supprimer »).
+  .trix-button-group {
+    border: 0;
+    box-shadow: none;
+  }
+}
+
+// Bloc-conteneur de l'éditeur dans le formulaire d'exercice.
+.rt-field {
+  display: flex;
+  flex-direction: column;
+}

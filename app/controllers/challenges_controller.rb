@@ -38,7 +38,6 @@ class ChallengesController < ApplicationController
     @challenge = Challenge.new(user: current_user, skill: Skill.find(params[:skill]))
     @challenge.for_belt = params[:for_belt] == "true"
     @challenge.name = "#{@challenge.skill.name} - #{current_user.first_name} #{(1..100).to_a.sample}"
-    @challenge.content = "Écrivez votre énoncé ici"
     authorize @challenge
   end
 

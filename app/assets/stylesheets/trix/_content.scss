@@ -1,0 +1,150 @@
+// Rendu du contenu riche — appliqué à l'identique en édition (trix-editor porte
+// la classe .trix-content) et en affichage, pour un vrai WYSIWYG.
+//
+// trix.css pose `.trix-content * { margin: 0; padding: 0 }` : c'est pourquoi le
+// rythme vertical est reconstruit explicitement ici.
+.trix-content {
+  font-family: $body-font; // avant : Arial, alors que toute l'app est en Poppins
+  font-size: 1.0625rem; // ~17px, au lieu de 18.5px en dur
+  line-height: 1.6;
+  color: var(--rt-ink);
+
+  > * + * {
+    margin-top: 0.7em;
+  }
+
+  // --- Titres --------------------------------------------------------------
+  h1,
+  h2,
+  h3 {
+    font-family: $body-font;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--rt-ink);
+  }
+
+  h1 { font-size: 1.45em; }
+  h2 { font-size: 1.2em; }
+  h3 { font-size: 1.05em; }
+
+  > h1 + *,
+  > h2 + *,
+  > h3 + * {
+    margin-top: 0.4em;
+  }
+
+  > * + h1,
+  > * + h2,
+  > * + h3 {
+    margin-top: 1.2em;
+  }
+
+  strong, b { font-weight: 700; }
+
+  // --- Liens ---------------------------------------------------------------
+  a {
+    color: var(--rt-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+
+    &:hover { text-decoration-thickness: 2px; }
+  }
+
+  // --- Listes --------------------------------------------------------------
+  ul, ol {
+    padding-left: 1.4em;
+    margin-left: 0;
+  }
+
+  li {
+    margin-left: 0;
+
+    + li { margin-top: 0.25em; }
+  }
+
+  ul { list-style: disc; }
+  ol { list-style: decimal; }
+  ul ul { list-style: circle; }
+
+  // --- Citation ------------------------------------------------------------
+  blockquote {
+    padding: 0.15em 0 0.15em 1em;
+    margin-left: 0;
+    color: var(--rt-ink-soft);
+    border: 0;
+    border-left: 3px solid var(--rt-accent);
+    border-radius: 2px;
+  }
+
+  // --- Code ----------------------------------------------------------------
+  pre {
+    padding: 0.85em 1em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.9em;
+    line-height: 1.5;
+    color: var(--rt-ink);
+    background: var(--rt-surface-soft);
+    border: 1px solid var(--rt-line);
+    border-radius: var(--rt-radius-sm);
+  }
+
+  hr {
+    height: 1px;
+    background: var(--rt-line);
+    border: 0;
+  }
+
+  // --- Images / pièces jointes --------------------------------------------
+  // `width: 100%` est conservé : c'est le comportement dont dépendent les
+  // énoncés déjà en base (photocopies scannées cadrées sur la colonne).
+  // `height: auto` est l'ajout qui compte : sans lui, l'attribut height écrit
+  // par Trix déforme l'image à l'affichage (l'éditeur, lui, était déjà couvert
+  // par le CSS que Trix injecte).
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+
+  .attachment {
+    max-width: 100%;
+  }
+
+  action-text-attachment .attachment {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  // Légendes : masquées comme avant. Trix y écrit par défaut « nom · taille »,
+  // ce qui n'a pas d'intérêt sous une photo d'énoncé. Les réafficher ferait
+  // apparaître d'un coup ces libellés sur tout le contenu existant.
+  .attachment--preview .attachment__caption {
+    display: none;
+  }
+
+  .attachment-gallery {
+    gap: 0.5em;
+
+    > action-text-attachment,
+    > .attachment {
+      flex: 1 0 calc(33.333% - 0.5em);
+      max-width: calc(33.333% - 0.5em);
+      padding: 0;
+    }
+
+    &.attachment-gallery--2,
+    &.attachment-gallery--4 {
+      > action-text-attachment,
+      > .attachment {
+        flex-basis: calc(50% - 0.5em);
+        max-width: calc(50% - 0.5em);
+      }
+    }
+  }
+
+  // Un tableau large ne doit pas élargir la page : il défile dans son bloc.
+  table {
+    max-width: 100%;
+  }
+}

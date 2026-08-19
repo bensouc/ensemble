@@ -1,0 +1,34 @@
+// Jetons de l'éditeur riche.
+//
+// Ils dérivent de config/_colors.scss et config/_fonts.scss : l'ancien CSS de
+// l'éditeur inventait sa propre charte (#f9fafb, #10b981, #ef4444, #3b82f6),
+// sans rapport avec la palette de l'app. Tout passe désormais par ces variables.
+//
+// Portée volontairement limitée aux éléments de l'éditeur : ce sont des
+// custom properties, elles s'héritent, mais on évite de les poser sur :root
+// pour ne pas polluer l'espace de noms global.
+trix-toolbar,
+trix-editor,
+.trix-content,
+.rt-field {
+  --rt-ink: #{$grisF};
+  --rt-ink-soft: #6f6f76;
+  --rt-ink-faint: #a1a1aa;
+
+  --rt-line: #e6e6ea;
+  --rt-line-strong: #{$grisC};
+
+  --rt-surface: #{$blanc};
+  --rt-surface-soft: #f7f7f9;
+
+  --rt-accent: #{$rose};
+  --rt-accent-soft: #{rgba($rose, 0.1)};
+  --rt-accent-ring: #{rgba($rose, 0.25)};
+
+  --rt-radius: 10px;
+  --rt-radius-sm: 8px;
+  --rt-btn-size: 32px;
+
+  --rt-shadow: 0 1px 2px rgba(16, 16, 20, 0.04);
+  --rt-shadow-pop: 0 8px 28px rgba(16, 16, 20, 0.16);
+}

@@ -1,0 +1,337 @@
+// Toolbar de l'éditeur.
+//
+// Les règles de trix/dist/trix.css ont la même spécificité que les nôtres
+// (`trix-toolbar .trix-button` = 0,1,1) : c'est l'ordre d'import qui tranche.
+// application.scss importe `trix/dist/trix` AVANT `trix/index`, donc ce fichier
+// gagne. Corollaire : toute propriété posée par trix.css et non redéclarée ici
+// subsiste — d'où les remises à zéro explicites (float, border, margin…).
+
+// Libellé accessible réservé aux lecteurs d'écran.
+.rt-tb__sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+trix-toolbar {
+  margin: 0 0 10px;
+
+  // --- Rangée et groupes ---------------------------------------------------
+  .trix-button-row {
+    display: flex;
+    flex-wrap: wrap; // au lieu de nowrap + overflow-x : lisible sur tablette
+    align-items: center;
+    justify-content: flex-start;
+    gap: 6px;
+    overflow: visible;
+    padding: 6px;
+    background: var(--rt-surface-soft);
+    border: 1px solid var(--rt-line);
+    border-radius: var(--rt-radius);
+  }
+
+  .trix-button-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 2px;
+    margin: 0;
+    background: var(--rt-surface);
+    border: 1px solid var(--rt-line);
+    border-radius: var(--rt-radius-sm);
+    box-shadow: var(--rt-shadow);
+
+    // trix.css ajoute une marge gauche en vw à partir du 2e groupe
+    &:not(:first-child) {
+      margin-left: 0;
+    }
+  }
+
+  .trix-button-group-spacer {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  // --- Boutons -------------------------------------------------------------
+  .trix-button {
+    position: relative;
+    display: inline-flex;
+    float: none;
+    align-items: center;
+    justify-content: center;
+    width: var(--rt-btn-size);
+    height: var(--rt-btn-size);
+    max-width: none;
+    padding: 0;
+    margin: 0;
+    color: var(--rt-ink-soft);
+    font: inherit;
+    letter-spacing: normal;
+    background: transparent;
+    border: 0;
+    border-radius: 7px;
+    transition: background-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+
+    &:not(:first-child) {
+      border-left: 0; // trix.css met un séparateur 1px
+    }
+
+    &:hover:not(:disabled) {
+      color: var(--rt-ink);
+      background: var(--rt-surface-soft);
+    }
+
+    &:focus-visible {
+      outline: none;
+      color: var(--rt-ink);
+      box-shadow: 0 0 0 2px var(--rt-accent-ring);
+    }
+
+    // Trix pose la classe ET l'attribut data-trix-active
+    &.trix-active {
+      color: var(--rt-accent);
+      background: var(--rt-accent-soft);
+    }
+
+    &:disabled {
+      color: var(--rt-ink-faint);
+      cursor: default;
+      opacity: 0.4;
+    }
+  }
+
+  // Icônes tracées
+  .rt-tb__icon {
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  // Glyphes typographiques (B / I / U / S / H1…H3)
+  .rt-tb__glyph {
+    display: inline-block;
+    font-family: $body-font;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1;
+    pointer-events: none;
+
+    &--bold { font-weight: 800; }
+    &--italic { font-style: italic; font-weight: 600; }
+    &--underline { text-decoration: underline; text-underline-offset: 2px; }
+    &--strike { text-decoration: line-through; }
+    &--heading { font-size: 13px; font-weight: 700; letter-spacing: -0.02em; }
+  }
+
+  // --- Chemin « icône historique » ----------------------------------------
+  // Le bouton Tableau est encore injecté par rich_text_table_controller avec
+  // les classes Trix d'origine : son visuel vient d'un background-image sur
+  // ::before, et son libellé est masqué par text-indent. On l'accorde
+  // simplement à la taille des autres boutons.
+  .trix-button--icon {
+    width: var(--rt-btn-size);
+    height: var(--rt-btn-size);
+    max-width: none;
+    text-indent: -9999px;
+
+    &::before {
+      inset: 0;
+      background-size: 18px 18px;
+      opacity: 0.65;
+    }
+
+    &:hover:not(:disabled)::before { opacity: 0.9; }
+    &.trix-active::before { opacity: 1; }
+    &:disabled::before { opacity: 0.3; }
+  }
+
+  // --- Nuancier de couleurs -----------------------------------------------
+  .rt-tb__palette {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .rt-tb__btn--palette {
+    flex-direction: column;
+    gap: 2px;
+    width: 34px;
+  }
+
+  .rt-tb__swatch {
+    width: 16px;
+    height: 3px;
+    background: var(--rt-swatch, transparent);
+    border-radius: 2px;
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+
+    &--empty {
+      background: var(--rt-line-strong);
+      box-shadow: none;
+    }
+  }
+
+  .rt-tb__popover {
+    position: absolute;
+    // Trix injecte `trix-toolbar { white-space: nowrap }` dans le <head>, donc
+    // après la feuille compilée : il faut une spécificité de classe pour le
+    // laisser respirer ici.
+    white-space: normal;
+    top: calc(100% + 8px);
+    left: 50%;
+    z-index: 20;
+    width: 208px;
+    padding: 10px;
+    background: var(--rt-surface);
+    border: 1px solid var(--rt-line);
+    border-radius: var(--rt-radius);
+    box-shadow: var(--rt-shadow-pop);
+    transform: translateX(-50%);
+
+    &[hidden] { display: none; }
+  }
+
+  .rt-tb__chips {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .rt-tb__chip {
+    width: 100%;
+    height: 0;
+    padding: 0 0 100%;
+    background: var(--rt-chip);
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 6px;
+    transition: transform 0.1s ease, box-shadow 0.12s ease;
+
+    &:hover { transform: scale(1.08); }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--rt-accent-ring);
+    }
+  }
+
+  .rt-tb__popover-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 10px;
+    margin-top: 10px;
+    border-top: 1px solid var(--rt-line);
+  }
+
+  .rt-tb__custom {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-family: $body-font;
+    font-size: 12px;
+    color: var(--rt-ink-soft);
+    cursor: pointer;
+
+    input[type="color"] {
+      width: 26px;
+      height: 22px;
+      padding: 0;
+      cursor: pointer;
+      background: none;
+      border: 1px solid var(--rt-line-strong);
+      border-radius: 5px;
+    }
+  }
+
+  .rt-tb__clear {
+    width: 100%;
+    padding: 6px 8px;
+    font-family: $body-font;
+    font-size: 12px;
+    color: var(--rt-ink-soft);
+    text-align: left;
+    background: var(--rt-surface-soft);
+    border: 0;
+    border-radius: 6px;
+
+    &:hover { color: var(--rt-ink); background: var(--rt-line); }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--rt-accent-ring);
+    }
+  }
+
+  // --- Boîte de dialogue « lien » -----------------------------------------
+  .trix-dialog {
+    padding: 12px;
+    font-size: 1rem;
+    background: var(--rt-surface);
+    border: 1px solid var(--rt-line);
+    border-top: 1px solid var(--rt-line);
+    border-radius: var(--rt-radius);
+    box-shadow: var(--rt-shadow-pop);
+  }
+
+  .trix-dialog__link-fields {
+    gap: 8px;
+    align-items: center;
+  }
+
+  .trix-input--dialog {
+    padding: 9px 12px;
+    font-family: $body-font;
+    font-size: 14px;
+    color: var(--rt-ink);
+    border: 1px solid var(--rt-line-strong);
+    border-radius: var(--rt-radius-sm);
+
+    &:focus {
+      border-color: var(--rt-accent);
+      box-shadow: 0 0 0 3px var(--rt-accent-ring);
+    }
+  }
+
+  .rt-tb__dialog-btn {
+    width: auto;
+    height: auto;
+    padding: 9px 14px;
+    font-family: $body-font;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--rt-ink-soft);
+    text-indent: 0;
+    border-radius: var(--rt-radius-sm);
+
+    &--primary {
+      color: $blanc;
+      background: var(--rt-accent);
+
+      &:hover:not(:disabled) {
+        color: $blanc;
+        background: darken($rose, 6%);
+      }
+    }
+  }
+}
+
+// Sur mobile la toolbar prend de la place : boutons un peu plus larges pour la
+// cible tactile, et les groupes s'étalent sur plusieurs lignes.
+@media (max-width: 576px) {
+  trix-toolbar {
+    --rt-btn-size: 34px;
+
+    .trix-button-row { padding: 5px; gap: 5px; }
+    .trix-button-group-spacer { display: none; }
+  }
+}
