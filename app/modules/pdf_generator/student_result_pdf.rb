@@ -15,10 +15,9 @@ module PdfGenerator
 
     def generate
       # Génération du HTML à partir de la vue
-      pdf_html = ActionController::Base.new.render_to_string("pdfs/student_results",
-                                                             layout: @layout,
-                                                             locals: { student: @student, skills: @skills, results: @validated_skills,
-                                                                       domains: @domains, title: @title })
+      pdf_html = render_html("pdfs/student_results",
+                             { student: @student, skills: @skills, results: @validated_skills,
+                               domains: @domains, title: @title })
 
       # Conversion du HTML en PDF avec Ferrum
       html_to_pdf(pdf_html, {
