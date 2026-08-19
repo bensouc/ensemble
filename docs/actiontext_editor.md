@@ -169,7 +169,9 @@ passage de vérification. Ils sont conservés tels quels, isolés et commentés 
 
 ## 5. Écarté à ce stade, avec la raison
 
-- **Nettoyage des sélecteurs globaux** (§3) — changement app-wide.
+- **Nettoyage des sélecteurs globaux** (§3) — changement app-wide. À noter :
+  `td:not([align]) { text-align: left }` a depuis mordu sur les tableaux, dont
+  les classes de mise en forme portent donc des sélecteurs scopés.
 - **Alignement de paragraphe.** Désormais faisable : les `blockAttributes` de
   Trix 2 acceptent `htmlAttributes` (liste blanche d'attributs HTML, avec
   `Block#addHTMLAttribute` et round-trip par le parser), ce qui manquait en 1.x
@@ -294,21 +296,14 @@ rendu, réenregistrer, et confirmer que rien n'est perdu.
 
 ---
 
-## 7. Phase 2 — tableaux
+## 7. Tableaux
 
-Non inclus ici : les tableaux restent inchangés. Le travail de fond est déjà
-commencé et parqué sur **`feat/actiontext-tables-v2`** :
+Fait. Le détail — fonctionnalités, modèle de données, contraintes de la vie à
+l'intérieur d'une pièce jointe Trix, dépannage — est dans
+[`challenges_tables.md`](challenges_tables.md). Ne restent ici que les points
+qui débordent des tableaux.
 
-- migration ajoutant `header_row`, `caption`, `col_aligns`, `col_widths`,
-  `cell_styles` (toutes défautées, donc rendu identique pour l'existant) ;
-- `Table` : insertion/suppression **positionnées** avec décalage réel des
-  données — l'implémentation actuelle ne sait que retirer la dernière ligne et
-  laisse des orphelins dans `data` ;
-- `TablesController` : endpoint groupé `replace` en un seul aller-retour, les
-  anciennes méthodes (`addRow`, `updateCell`…) restant servies pour les bundles
-  JS encore en cache navigateur.
-
-Les deux problèmes de fond, corrigés :
+### Les deux problèmes de fond, corrigés
 
 1. **Une requête HTTP par cellule quittée**, dont la réponse remplaçait
    l'`innerHTML` du tableau — ce qui faisait perdre le focus en cours de saisie.
@@ -320,50 +315,6 @@ Les deux problèmes de fond, corrigés :
    au champ : la capture y passe avant que l'événement n'atteigne
    `<trix-editor>`, ce qui suffit.
 
-### Vivre à l'intérieur d'une pièce jointe Trix
-
-Quatre pièges, tous rencontrés, tous vérifiés dans la source de Trix 2.1.19 :
-
-- **Le balisage est sanitisé.** `AttachmentView` appelle
-  `HTMLSanitizer.setHTML(innerElement, attachment.getContent())`. Ne survivent
-  que `style href src width height class language` et les attributs préfixés
-  `data-trix`. Donc : pas de `data-controller` (le contrôleur vit sur le champ),
-  pas d'`id` (le sgid est relu du JSON `data-trix-attachment`), pas de `title`,
-  pas de SVG (l'attribut `d` saute), et `type="button"` disparaît — les boutons
-  redeviennent des submit, d'où le `preventDefault` systématique. Tout l'état de
-  mise en forme passe donc par `class`.
-
-- **Trix réagit aux mutations qu'on fait dans la pièce jointe.** Poser
-  `contenteditable` sur une cellule déclenchait un re-rendu qui remplaçait le
-  tableau : la cellule cliquée était détruite et le focus retombait sur
-  `<trix-editor>`. Solution : `data-trix-mutable="true"` sur la racine du
-  tableau — l'observateur de Trix ignore alors ce sous-arbre
-  (`nodeIsSignificant` → `nodeIsMutable`). C'est le mécanisme que Trix utilise
-  pour sa propre toolbar de pièce jointe. Effet de bord à compenser : trix.css
-  y pose `user-select: none`.
-
-- **Une référence de nœud devient obsolète en silence.** Trix remplace le
-  balisage à divers moments ; garder un `activeCell` sous forme d'élément menait
-  à agir sur un arbre détaché, sans erreur ni effet visible. L'identité est
-  désormais le **sgid**, et le DOM vivant est re-résolu à chaque action.
-
-- **La spécificité CSS de l'app l'emporte sur des classes nues.**
-  `work_plans/_challenges.scss` pose `td:not([align]) { text-align: left }`, qui
-  vaut **(0,1,1)** — un `:not()` compte la spécificité de son argument. Une
-  classe `.rt-al-center` (0,1,0) perdait, quel que soit l'ordre d'import. Même
-  problème pour le gras face à la règle d'en-tête `th.rt-cell` (0,2,1). Les
-  classes de mise en forme sont donc portées par des sélecteurs scopés
-  (`.rt-table__grid .rt-cell.rt-al-center`). C'est aussi pourquoi le banc
-  d'essai charge la feuille compilée et vérifie le **style calculé**, pas
-  seulement la présence des classes : les deux bugs ci-dessus passaient au
-  travers d'une vérification par classe.
-
-- **Un re-rendu entre `mousedown` et `mouseup` avale le clic.** Le navigateur ne
-  dispatche `click` que si les deux atterrissent sur le même élément encore
-  présent. Le bouton paraissait simplement inerte. Il ne suffisait pas de faire
-  `preventDefault` sur le mousedown : il faut aussi `stopPropagation`, sinon
-  l'événement poursuit jusqu'à `<trix-editor>`, qui refocalise de son côté.
-
 ### Parité avec le PDF
 
 `pdf.scss` est une feuille autonome — elle déclare ses propres `@font-face`
@@ -371,14 +322,14 @@ locales et évite délibérément l'`@import` Google Fonts, pour que Chrome head
 ne fasse aucune requête réseau. Les styles de tableau y avaient donc été
 **dupliqués**, et les deux rendus ont divergé : plus de fond d'en-tête, ni
 alignement, ni style de cellule à l'impression, plus les anciennes règles
-héritées de Bulma (`border-width: 0 0 1px`) et le même piège
-`td:not([align])` qui cassait déjà l'alignement dans l'app.
+héritées de Bulma (`border-width: 0 0 1px`) et le même piège `td:not([align])`
+qui cassait déjà l'alignement dans l'app.
 
 `trix/_tables.scss` a donc été scindé :
 
 - `trix/_tables.scss` — **partagé** : grille, cellules, en-tête, classes de
   mise en forme. Importé par `trix/_index.scss` **et** par `pdf.scss`.
-- `trix/_tables_editor.scss` — toolbar, états de saisie, habillage de la pièce
+- `trix/_tables_editor.scss` — barre, états de saisie, habillage de la pièce
   jointe. Rien à faire dans un PDF.
 
 Les jetons se posent sur `.trix-content`, l'enveloppe qu'ActionText génère
@@ -391,20 +342,21 @@ Seule exception assumée à la parité : le corps de texte reste à 20 px en PDF
 dessus et qu'un changement re-paginerait tout l'existant. Une règle isolée dans
 `pdf.scss`, à retirer pour une parité stricte.
 
-    bin/rails runner scripts/table_pdf_parity_check.rb
+### Bancs d'essai navigateur
 
-Rend le même balisage sous les deux feuilles et compare les styles calculés par
-un vrai navigateur — fond, couleur, graisse, style, alignement, marges et les
-quatre bordures.
+```bash
+bin/rails runner scripts/table_editor_browser_check.rb
+bin/rails runner scripts/table_pdf_parity_check.rb
+```
 
-### Banc d'essai navigateur
+Rien de ce qui touche à l'interaction avec Trix ne se voit dans une spec Ruby, et
+le diagnostic à l'aveugle coûte très cher — on y a notamment laissé passer une
+boucle infinie (un `MutationObserver` qui réagissait au re-rendu qu'il
+provoquait) qui figeait le navigateur. Les deux scripts chargent le vrai bundle
+et le vrai Trix dans un Chrome piloté par Ferrum, sur des pages autonomes sans
+serveur ni authentification.
 
-    bin/rails runner scripts/table_editor_browser_check.rb
-
-Rien de ce qui précède ne se voit dans une spec Ruby, et le diagnostic à
-l'aveugle coûte très cher — on y a notamment laissé passer une boucle infinie
-(un `MutationObserver` qui réagissait au re-rendu qu'il provoquait) qui figeait
-le navigateur. Le script charge le vrai bundle et le vrai Trix dans un Chrome
-piloté par Ferrum, sur une page autonome sans serveur ni authentification, et
-vérifie le comportement DOM ainsi que la charge utile produite. À rejouer après
-toute modification de l'éditeur de tableaux ou montée de Trix.
+Ils contrôlent les **styles calculés**, pas seulement les classes posées : c'est
+ce qui a révélé deux bugs de spécificité qu'une vérification par classe laissait
+passer. À rejouer après toute modification de l'éditeur de tableaux, toute
+retouche de `pdf.scss`, et toute montée de Trix.
