@@ -12,7 +12,7 @@ class Classroom < ApplicationRecord
   before_validation :set_default
 
   def shared?
-    SharedClassroom.exists?(classroom: self)
+    shared_classrooms.any?
   end
 
   def results_pdf_exists?
@@ -24,10 +24,9 @@ class Classroom < ApplicationRecord
     [true, creation_time]
   end
 
+  # Le premier professeur avec qui la classe est partagée, nil si elle ne l'est pas.
   def shared_user
-    return unless shared?
-
-    SharedClassroom.select { |s_classroom| s_classroom.classroom == self }.first.user
+    shared_classrooms.first&.user
   end
 
   def safe_name
