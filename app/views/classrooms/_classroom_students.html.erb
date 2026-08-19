@@ -16,11 +16,24 @@
           <%= student.first_name %>
         </h1>
       <% end %>
-      <div class="edit-student">
-        <!-- Button trigger modal -->
-        <button type="button" class="bg-white" data-bs-toggle="modal" data-bs-target="#exampleModal-<%= student.id%>" >
+      <div class="edit-student dropdown">
+        <!-- Menu des actions sur l'élève -->
+        <button type="button" class="bg-white" id="studentActions-<%= student.id %>"
+                data-bs-toggle="dropdown" aria-expanded="false" aria-label="Actions sur <%= student.first_name %>">
           <i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" ></i>
         </button>
+        <ul class="dropdown-menu" aria-labelledby="studentActions-<%= student.id %>">
+          <li>
+            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal-<%= student.id%>">
+              Modifier le prénom
+            </button>
+          </li>
+          <li>
+            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#moveStudentModal-<%= student.id%>">
+              Changer de classe
+            </button>
+          </li>
+        </ul>
       </div>
       <%# MODAL STUDENT EDIT %>
       <div class="modal fade" id="exampleModal-<%=student.id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -34,6 +47,20 @@
               <%= simple_form_for student, html: { novalidate: false }, class: 'd-flex justify-content-between align-items-baseline pe-3' do |form|%>
                 <%= render 'edit_student_form', form: form, classroom: classroom %>
               <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%# MODAL STUDENT TRANSFER %>
+      <div class="modal fade" id="moveStudentModal-<%=student.id %>" tabindex="-1" aria-labelledby="moveStudentModalLabel-<%=student.id %>" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="moveStudentModalLabel-<%=student.id %>">Changer <%= student.first_name %> de classe</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <%= render 'move_student_form', student: student %>
             </div>
           </div>
         </div>

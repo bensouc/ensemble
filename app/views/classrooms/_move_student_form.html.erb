@@ -1,0 +1,24 @@
+<% target_classrooms = student.transferable_classrooms %>
+<% if target_classrooms.empty? %>
+  <p class='mb-0'>
+    Aucune autre classe de niveau <strong><%= student.grade.name %></strong> dans l'école.
+    Créez-en une pour pouvoir y transférer <%= student.first_name %>.
+  </p>
+<% else %>
+  <p>
+    <%= student.first_name %> quitte <strong><%= student.classroom.safe_name %></strong>.
+    Son historique (plans de travail, ceintures, résultats) le suit.
+  </p>
+  <%= simple_form_for student, url: transfer_student_path(student), method: :patch, html: { novalidate: false } do |form| %>
+    <%= form.input :classroom_id,
+                   collection: target_classrooms.map { |classroom| [classroom_transfer_label(classroom), classroom.id] },
+                   include_blank: "Choisissez la classe d'accueil",
+                   label: false,
+                   required: true,
+                   input_html: { class: 'area grow' },
+                   wrapper_html: { class: 'mb-3' } %>
+    <div class='d-flex flex-row-reverse mt-4'>
+      <%= form.submit "Transférer", class: "area btn-valid" %>
+    </div>
+  <% end %>
+<% end %>

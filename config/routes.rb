@@ -85,6 +85,9 @@ Rails.application.routes.draw do
 
   # ###############routes for STUDENTS###############
   resources :students, only: [:create, :update, :show, :destroy] do
+    member do
+      patch :transfer
+    end
     get "domains/:id/modal", to: "modals#display_skills_modal", as: :display_skills_modal
     resources :belts, only: [:create]
     post "", to: "work_plans#auto_new_wp", as: :auto_new_wp

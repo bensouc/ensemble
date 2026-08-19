@@ -34,6 +34,11 @@ class Classroom < ApplicationRecord
     name == "" ? grade.grade_level : name
   end
 
+  # Le prof titulaire, suivi des profs avec qui la classe est partagée.
+  def teachers
+    [user, *shared_classrooms.map(&:user)].compact.uniq
+  end
+
   def completed_results_by_domain(domain)
     # {student_id: Result.where(skills: domain.skills, student: student)}
     results = {}
