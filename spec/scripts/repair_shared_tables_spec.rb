@@ -42,7 +42,7 @@ RSpec.describe SharedTableRepair do
   describe "application" do
     before do
       FileUtils.rm_rf(described_class::DUMP_DIR)
-      described_class.new(dry_run: false, out: output).run
+      described_class.new(dry_run: false, confirm: 2, out: output).run
     end
 
     it "laisse son tableau au plus ancien" do
@@ -85,7 +85,7 @@ RSpec.describe SharedTableRepair do
     it "est idempotent" do
       second_pass = StringIO.new
 
-      expect { described_class.new(dry_run: false, out: second_pass).run }.not_to change(Table, :count)
+      expect { described_class.new(dry_run: false, confirm: 0, out: second_pass).run }.not_to change(Table, :count)
       expect(second_pass.string).to include("Aucun tableau partagé")
     end
   end
@@ -95,7 +95,7 @@ RSpec.describe SharedTableRepair do
     # sauvegarde est le seul chemin de retour.
     it "restitue l'état d'origine" do
       FileUtils.rm_rf(described_class::DUMP_DIR)
-      described_class.new(dry_run: false, out: output).run
+      described_class.new(dry_run: false, confirm: 2, out: output).run
       dump = Dir[described_class::DUMP_DIR.join("*.json")].max_by { |f| File.mtime(f) }
       copies = JSON.parse(File.read(dump))["created_table_ids"]
 
@@ -104,6 +104,35 @@ RSpec.describe SharedTableRepair do
       expect(table_of(middle).id).to eq(table.id)
       expect(table_of(newest).id).to eq(table.id)
       expect(Table.where(id: copies)).to be_empty
+    end
+  end
+
+  describe "garde-fous" do
+    it "refuse d'écrire sans confirmation du périmètre" do
+      expect { described_class.new(dry_run: false, out: output).run }.not_to change(Table, :count)
+      expect(output.string).to include("Confirmation requise : 2 copie(s)", "CONFIRM=2")
+    end
+
+    it "refuse d'écrire si le périmètre annoncé ne correspond pas" do
+      expect { described_class.new(dry_run: false, confirm: 99, out: output).run }.not_to change(Table, :count)
+      expect(output.string).to include("Confirmation requise")
+    end
+
+    it "annule TOUT si une vérification échoue en cours de route" do
+      # On simule une copie infidèle sur le second exercice traité.
+      call = 0
+      allow_any_instance_of(Table).to receive(:duplicate).and_wrap_original do |method|
+        call += 1
+        copy = method.call
+        copy.update_columns(columns: 99) if call == 2
+        copy
+      end
+
+      expect { described_class.new(dry_run: false, confirm: 2, out: output).run }
+        .not_to change { [middle, newest].map { |c| table_of(c).id } }
+
+      expect(output.string).to include("ANNULÉ — aucune écriture conservée")
+      expect(Table.where(columns: 99)).to be_empty
     end
   end
 end

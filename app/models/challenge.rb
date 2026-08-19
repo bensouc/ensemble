@@ -10,7 +10,10 @@ class Challenge < ApplicationRecord
   has_many :work_plan_skills, dependent: nil
 
   validates :name, presence: true, uniqueness: { message: "Le nom de cet exercice éxiste déja", scope: :skill }
-  validates :shared, presence: true
+  # `presence` rejette `false` autant que `nil` : la validation précédente
+  # rendait donc impossible de dé-partager un exercice. Sans effet aujourd'hui
+  # (les 2911 exercices sont à `true`), mais c'était un piège armé.
+  validates :shared, inclusion: { in: [true, false] }
 
   scope :for_belt, -> { where(for_belt: true) }
   scope :classic, -> { where(for_belt: false) }
@@ -20,7 +23,7 @@ class Challenge < ApplicationRecord
   end
 
   def new_clone
-    Challenge.new(name: "#{name}-Clone#{rand(1..100)}", content: cloned_content, skill_id:)
+    Challenge.new(name: clone_name, content: cloned_content, skill_id:)
   end
 
 
@@ -46,6 +49,23 @@ class Challenge < ApplicationRecord
   end
 
   private
+
+  # Suffixe déterministe plutôt que `rand(1..100)` : le nom est unique par
+  # compétence, et deux clonages successifs pouvaient tirer le même nombre —
+  # l'enregistrement échouait alors sans que l'utilisateur comprenne pourquoi.
+  def clone_name
+    base = "#{name}-Clone"
+    taken = Challenge.where(skill_id: skill_id)
+                     .where("name LIKE ?", "#{Challenge.sanitize_sql_like(base)}%")
+                     .pluck(:name)
+                     .to_set
+
+    return base unless taken.include?(base)
+
+    suffix = 2
+    suffix += 1 while taken.include?("#{base}#{suffix}")
+    "#{base}#{suffix}"
+  end
 
   # Recopie le corps BRUT, en remplaçant chaque tableau par une copie fraîche.
   #
