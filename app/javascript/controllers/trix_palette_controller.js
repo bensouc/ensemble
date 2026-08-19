@@ -155,10 +155,10 @@ export default class extends Controller {
     const toolbar = this.element.closest("trix-toolbar")
     if (!toolbar) return null
 
-    if (toolbar.id) {
-      const byId = document.querySelector(`trix-editor[toolbar="${CSS.escape(toolbar.id)}"]`)
-      if (byId) return byId
-    }
+    // API officielle depuis Trix 2.1.16 : <trix-toolbar> résout lui-même
+    // l'éditeur associé via l'attribut [toolbar].
+    if (toolbar.editorElement) return toolbar.editorElement
+
     // Secours : Trix insère la toolbar juste avant son éditeur.
     const sibling = toolbar.nextElementSibling
     return sibling && sibling.matches("trix-editor") ? sibling : null

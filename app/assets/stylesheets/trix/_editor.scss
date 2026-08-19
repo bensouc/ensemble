@@ -20,10 +20,11 @@ trix-editor {
     box-shadow: 0 0 0 3px var(--rt-accent-ring);
   }
 
-  // Placeholder natif de Trix (`trix-editor:empty:not(:focus)::before`). Sa
-  // règle injectée impose `color: graytext` : il faut ce sélecteur plus
-  // spécifique pour reprendre la main.
-  &[placeholder]:empty:not(:focus)::before {
+  // Placeholder natif de Trix (`trix-editor:empty::before`). Sa règle injectée
+  // impose `color: graytext` : il faut ce sélecteur plus spécifique pour
+  // reprendre la main. Depuis Trix 2 il reste affiché champ focalisé et vide,
+  // comme un input natif — d'où l'absence de `:not(:focus)`.
+  &[placeholder]:empty::before {
     color: var(--rt-ink-faint);
     font-style: italic;
   }

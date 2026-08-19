@@ -290,8 +290,11 @@ function findTrixAttachment(element, sgid) {
   const trixEditor = findTrixEditor(element);
   if (!trixEditor || !trixEditor.editor) return null;
 
-  const attachments = trixEditor.editor.composition.attachments;
-  return attachments.find(a => a.attributes.values.sgid === sgid);
+  // `composition.attachments` et `attachment.attributes.values` fonctionnent
+  // encore en Trix 2, mais ce sont des internes. On passe par l'API publique,
+  // qui ne dépend pas de la structure interne du Hash d'attributs.
+  const attachments = trixEditor.editor.getDocument().getAttachments();
+  return attachments.find(attachment => attachment.getAttribute('sgid') === sgid);
 }
 
 function updateTrixAndDom(tableEditor, sgid, tableAttachment) {

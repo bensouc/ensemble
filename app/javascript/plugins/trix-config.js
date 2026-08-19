@@ -250,7 +250,8 @@ Trix.config.toolbar.getDefaultHTML = function () {
   <div class="trix-dialog trix-dialog--link rt-tb__dialog" data-trix-dialog="href" data-trix-dialog-attribute="href">
     <div class="trix-dialog__link-fields rt-tb__dialog-fields">
       <input type="url" name="href" class="trix-input trix-input--dialog rt-tb__dialog-input"
-             placeholder="${lang.urlPlaceholder}" aria-label="${lang.url}" required data-trix-input>
+             placeholder="${lang.urlPlaceholder}" aria-label="${lang.url}"
+             required data-trix-validate-href data-trix-input>
       <div class="trix-button-group">
         <input type="button" class="trix-button trix-button--dialog rt-tb__dialog-btn rt-tb__dialog-btn--primary"
                value="${lang.link}" data-trix-method="setAttribute">
