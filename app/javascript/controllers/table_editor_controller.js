@@ -256,6 +256,32 @@ export default class extends Controller {
     this.activeCell = root && position ? { sgid: this.sgidFor(root), ...position } : null
 
     this.setMainToolbarInactive(true)
+    if (root) this.syncCellControls(root)
+  }
+
+  // Reflète dans la barre les réglages déjà posés sur la cellule courante :
+  // sans ça, rien ne distingue « cette cellule est en gras » de « le bouton
+  // gras existe », et il faut cliquer pour découvrir l'état.
+  syncCellControls(root) {
+    const bar = root.querySelector(".rt-table__bar--cell")
+    if (!bar) return
+
+    const cell = this.activeCellIn(root)
+
+    STYLE_FLAGS.forEach((flag) => {
+      bar.querySelector(`.rt-t-style-${flag}`)
+        ?.classList.toggle("rt-is-on", Boolean(cell?.classList.contains(`rt-c-${flag}`)))
+    })
+
+    const alignment = cell ? ALIGNMENTS.find((a) => cell.classList.contains(`rt-al-${a}`)) || "left" : null
+    ALIGNMENTS.forEach((a) => {
+      bar.querySelector(`.rt-t-align-${a}`)?.classList.toggle("rt-is-on", a === alignment)
+    })
+
+    const color = cell ? toHex(cell.style.color) : null
+    bar.querySelectorAll(".rt-t-color").forEach((chip) => {
+      chip.classList.toggle("rt-is-on", Boolean(color) && toHex(getComputedStyle(chip).backgroundColor) === color)
+    })
   }
 
   onFocusOut(event) {
@@ -369,6 +395,8 @@ export default class extends Controller {
       restored.focus()
       this.placeCaretAtEnd(restored)
     }
+
+    this.syncCellControls(root)
 
     this.scheduleSave(sgid, { immediate: true })
   }

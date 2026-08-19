@@ -121,6 +121,14 @@
   &--right { background-position: right top, right center, right bottom; }
 }
 
+// Les pastilles font 16px alors que les boutons voisins en font 28 : à padding
+// égal, un glyphe « B » paraît en retrait quand une pastille colle au bord. On
+// compense pour que les groupes s'alignent optiquement.
+.rt-table__group--chips {
+  padding: 2px 7px;
+  gap: 3px;
+}
+
 .rt-table__label {
   padding: 0 6px 0 4px;
   font-family: $body-font;
@@ -206,6 +214,12 @@
   &:focus-visible {
     outline: none;
     box-shadow: 0 0 0 2px var(--rt-accent-ring);
+  }
+
+  // La pastille de la couleur en place : un anneau, la teinte occupant déjà
+  // le fond.
+  &.rt-is-on {
+    box-shadow: 0 0 0 2px var(--rt-surface), 0 0 0 3px var(--rt-ink);
   }
 }
 
