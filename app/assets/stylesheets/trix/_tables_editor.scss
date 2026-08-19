@@ -47,9 +47,13 @@
 
 // --- Toolbar du tableau ----------------------------------------------------
 .rt-table__toolbar {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  // Grille à deux colonnes : les libellés de bloc partagent la première, dont
+  // la largeur s'ajuste au plus long. Les deux rangées d'actions démarrent
+  // donc exactement au même endroit, sans largeur fixe à maintenir.
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 6px 10px;
   padding: 6px;
   margin-bottom: 8px;
   background: var(--rt-surface-soft, #f7f7f9);
@@ -69,12 +73,14 @@
 // se montrent que lorsque le focus est dans le tableau. `:focus-within` suffit,
 // sans état à tenir en JS — et le focus reste dans la cellule au clic sur un
 // bouton de cette barre, puisque leur mousedown est neutralisé.
-.rt-table__bar--cell {
+.rt-table__bar--cell,
+.rt-table__bar-label--cell {
   display: none;
 }
 
-.rt-table--editor:focus-within .rt-table__bar--cell {
-  display: flex;
+.rt-table--editor:focus-within {
+  .rt-table__bar--cell { display: flex; }
+  .rt-table__bar-label--cell { display: block; }
 }
 
 .rt-table__group {
@@ -90,8 +96,6 @@
 // Libellé de bloc : dit ce sur quoi porte la rangée, ce qui dispense de
 // nommer chaque groupe.
 .rt-table__bar-label {
-  min-width: 78px;
-  padding-right: 2px;
   font-family: $body-font;
   font-size: 11px;
   font-weight: 700;

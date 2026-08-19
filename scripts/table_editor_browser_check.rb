@@ -107,6 +107,18 @@ begin
   check failures, "visible une fois la cellule active",
         browser.evaluate("getComputedStyle(document.querySelector('.rt-table__bar--cell')).display") != "none"
 
+  # Les deux rangées doivent démarrer au même endroit : c'est la raison d'être
+  # de la grille à deux colonnes de la barre (les libellés partagent la 1re).
+  offsets = browser.evaluate(<<~JS)
+    (() => {
+      const bars = document.querySelectorAll('.rt-table__bar')
+      return JSON.stringify(Array.from(bars).map(b => b.firstElementChild.getBoundingClientRect().left))
+    })()
+  JS
+  left = JSON.parse(offsets)
+  check failures, "les deux rangées alignées à gauche (#{left.map { |v| v.round(1) }.join(' / ')})",
+        (left[0] - left[1]).abs < 0.5
+
   puts "\n5. la toolbar principale se met-elle en retrait ?"
   check failures, "toolbar neutralisée pendant l'édition d'une cellule",
         browser.evaluate("document.querySelector('trix-toolbar').classList.contains('rt-tb--table-focus')")
