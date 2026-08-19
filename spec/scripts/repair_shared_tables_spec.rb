@@ -107,6 +107,36 @@ RSpec.describe SharedTableRepair do
     end
   end
 
+  # Cas rencontré en production : jusqu'à la refonte de l'éditeur, le partial de
+  # tableau posait `id="table-<sgid>"`, et ce HTML est figé dans l'attribut
+  # `content` de la pièce jointe. Le sgid apparaît donc DEUX fois dans le corps :
+  # celui qu'on réécrit, et celui de l'instantané — que l'on ne doit pas toucher,
+  # ActionText régénérant le partial à chaque rendu.
+  describe "corps portant un instantané de l'ancien éditeur" do
+    let(:snapshot) { %(<div class="table-editor" id="table-#{table.attachable_sgid}">…</div>) }
+
+    before do
+      [middle, newest].each do |challenge|
+        challenge.content = %(<action-text-attachment sgid="#{table.attachable_sgid}" ) +
+                            %(content-type="application/octet-stream" content="#{CGI.escapeHTML(snapshot)}"></action-text-attachment>)
+        challenge.save!
+      end
+    end
+
+    it "réassigne malgré l'ancien sgid figé dans l'instantané" do
+      described_class.new(dry_run: false, confirm: 2, out: output).run
+
+      expect(output.string).to include("2 copie(s) de tableau créées")
+      expect(table_of(newest).id).not_to eq(table.id)
+    end
+
+    it "laisse l'instantané intact" do
+      described_class.new(dry_run: false, confirm: 2, out: output).run
+
+      expect(newest.reload.content.body.to_html).to include("table-#{table.attachable_sgid}")
+    end
+  end
+
   describe "garde-fous" do
     it "refuse d'écrire sans confirmation du périmètre" do
       expect { described_class.new(dry_run: false, out: output).run }.not_to change(Table, :count)
@@ -116,6 +146,16 @@ RSpec.describe SharedTableRepair do
     it "refuse d'écrire si le périmètre annoncé ne correspond pas" do
       expect { described_class.new(dry_run: false, confirm: 99, out: output).run }.not_to change(Table, :count)
       expect(output.string).to include("Confirmation requise")
+    end
+
+    it "refuse si le sélecteur ne remplace aucun sgid" do
+      allow_any_instance_of(ActionText::Fragment).to receive(:update).and_return(
+        ActionText::Fragment.from_html(middle.reload.content.body.to_html)
+      )
+
+      described_class.new(dry_run: false, confirm: 2, out: output).run
+
+      expect(output.string).to include("ANNULÉ", "aucun sgid remplacé")
     end
 
     it "annule TOUT si une vérification échoue en cours de route" do
