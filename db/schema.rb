@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_30_082839) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_19_100000) do
   create_schema "_heroku"
   create_schema "heroku_ext"
 
@@ -346,6 +346,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_30_082839) do
     t.json "data", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "header_row", default: false, null: false
+    t.json "col_aligns", default: []
+    t.json "cell_styles", default: {}
   end
 
   create_table "user_conversations", force: :cascade do |t|

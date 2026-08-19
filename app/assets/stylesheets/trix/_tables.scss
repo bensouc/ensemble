@@ -1,146 +1,219 @@
-// Tableaux ActionText — reprise à l'identique de l'existant (phase 1 = style de
-// l'éditeur uniquement). Le fond de l'éditeur de tableau est traité en phase 2 :
-// voir docs/actiontext_editor.md.
+// Tableaux ActionText — éditeur et affichage.
 //
-// Seul changement ici : `table-layout: fixed` n'est plus posé sur *toutes* les
-// balises <table> de l'app depuis ce fichier (cf. le bloc « legacy » de
-// _index.scss, laissé en place pour ne rien casser ailleurs).
+// Ce fichier est importé après `work_plans/_challenges.scss` et après Bootstrap
+// (cf. l'ordre des @import dans application.scss), donc à spécificité égale nos
+// règles gagnent. C'est ce qui permet de neutraliser proprement, et uniquement
+// pour les tableaux de l'éditeur, les couleurs imposées par `.table`.
 
-// Table Editor - Modern Style
-.table-editor {
-  margin: 12px 0;
-}
-
-.table-toolbar {
-  display: inline-flex;
-  align-items: center;
-  gap: 2rem;
-  margin-bottom: 10px;
-  padding: 8px 12px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-}
-
-.table-toolbar-group {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.table-toolbar-label {
-  font-size: 14px;
-  font-weight: 600;
-  color: #374151;
-}
-
-.table-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
+// Trix rend une pièce jointe `application/octet-stream` comme un fichier : le
+// <figure> reçoit `.attachment--file`, soit une pastille encadrée, en
+// inline-block, avec `line-height: 1` et un padding — ce qui comprime la
+// toolbar du tableau et borne sa largeur. On neutralise ce traitement pour les
+// seules pièces jointes qui contiennent un tableau.
+.trix-content .attachment:has(.rt-table),
+.trix-content .attachment--file:has(.rt-table) {
+  display: block;
+  max-width: 100%;
   padding: 0;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-
-  &:hover {
-    transform: scale(1.1);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
+  margin: 0;
+  color: inherit;
+  line-height: inherit;
+  border: 0;
+  border-radius: 0;
 }
 
-.table-btn-icon {
-  font-size: 16px;
-  font-weight: bold;
-  line-height: 1;
-  color: #fff;
+.rt-table {
+  margin: 14px 0;
 }
 
-.table-btn-success {
-  background: #10b981;
-
-  &:hover {
-    background: #059669;
-  }
+// Un tableau large défile dans son bloc au lieu d'élargir la page.
+.rt-table__scroll {
+  max-width: 100%;
+  overflow-x: auto;
 }
 
-.table-btn-danger {
-  background: #ef4444;
+// --- Grille ----------------------------------------------------------------
+.rt-table__grid {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--rt-radius-sm, 8px);
+  overflow: hidden;
 
-  &:hover:not(:disabled) {
-    background: #dc2626;
-  }
+  // `.table` (work_plans/_challenges.scss) impose `color: #363636` et
+  // `background-color: #fff`, et Bootstrap peint le fond de chaque cellule via
+  // ses variables. Résultat : une couleur ou un surlignage appliqué au tableau
+  // entier depuis la toolbar Trix n'était jamais visible. On rend la grille
+  // transparente et héritante, pour ces tableaux seulement.
+  color: inherit;
+  background-color: transparent;
+  --bs-table-color: inherit;
+  --bs-table-bg: transparent;
+  --bs-table-accent-bg: transparent;
 }
 
-.table-btn.disabled,
-.table-btn:disabled {
-  background: #d1d5db;
-  cursor: not-allowed;
-  opacity: 0.6;
-
-  &:hover {
-    transform: none;
-    background: #d1d5db;
-  }
-}
-
-// Table cells editable style
-.table-editor td.table-cell,
-figure[data-trix-attachment] td {
-  min-width: 80px;
-  min-height: 40px;
+.rt-table__grid .rt-cell {
   height: 40px;
-  padding: 10px 12px;
-  cursor: text;
-  transition: all 0.15s ease;
-  border: 1px solid #e5e7eb !important;
+  min-width: 84px;
+  padding: 9px 12px;
+  color: inherit;
   vertical-align: middle;
+  background-color: transparent;
+  border: 0;
+  border-top: 1px solid var(--rt-line, #e6e6ea);
+  border-left: 1px solid var(--rt-line, #e6e6ea);
+  word-break: break-word;
 
+  &:last-child { border-right: 1px solid var(--rt-line, #e6e6ea); }
+
+  // Conserve une hauteur de ligne uniforme quand la cellule est vide.
   &:empty::before {
-    content: '\00a0';
+    content: "\00a0";
   }
+}
+
+.rt-table__grid tr:last-child .rt-cell {
+  border-bottom: 1px solid var(--rt-line, #e6e6ea);
+}
+
+// --- Ligne d'en-tête -------------------------------------------------------
+.rt-table__grid th.rt-cell {
+  font-weight: 600;
+  text-align: inherit;
+  background-color: var(--rt-surface-soft, #f7f7f9);
+}
+
+// --- Mise en forme portée par les classes ---------------------------------
+// Le sanitizer de Trix ne conserve que `class` dans une pièce jointe : c'est
+// donc le canal de tout l'état de mise en forme (cf. TablesHelper).
+.rt-al-center { text-align: center; }
+.rt-al-right { text-align: right; }
+
+.rt-c-b { font-weight: 700; }
+.rt-c-i { font-style: italic; }
+.rt-c-u { text-decoration: underline; text-underline-offset: 2px; }
+
+// --- Cellules en édition ---------------------------------------------------
+.rt-table--editor .rt-cell {
+  cursor: text;
+  transition: background-color 0.12s ease, box-shadow 0.12s ease;
 
   &:hover {
-    background-color: #f8fafc;
+    background-color: rgba(0, 0, 0, 0.015);
   }
 
   &:focus {
+    position: relative;
+    z-index: 1;
     outline: none;
-    background-color: #eff6ff;
-    border-color: #3b82f6 !important;
-    box-shadow: inset 0 0 0 1px #3b82f6;
+    background-color: var(--rt-accent-soft, rgba(242, 65, 80, 0.1));
+    box-shadow: inset 0 0 0 2px var(--rt-accent, #f24150);
   }
 }
 
-.table-editor table {
-  table-layout: fixed;
-  border-collapse: collapse;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+// --- Toolbar du tableau ----------------------------------------------------
+.rt-table__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 6px;
+  margin-bottom: 8px;
+  background: var(--rt-surface-soft, #f7f7f9);
+  border: 1px solid var(--rt-line, #e6e6ea);
+  border-radius: var(--rt-radius, 10px);
 }
 
-// Table display (rendered view)
-.table-display td.table-cell-display,
-td.table-cell-display {
-  min-width: 80px;
-  min-height: 40px;
+.rt-table__group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  background: var(--rt-surface, #fff);
+  border: 1px solid var(--rt-line, #e6e6ea);
+  border-radius: var(--rt-radius-sm, 8px);
+}
+
+.rt-table__label {
+  padding: 0 6px 0 4px;
+  font-family: $body-font;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rt-ink-faint, #a1a1aa);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+// Le sélecteur porte l'élément pour battre `button { padding: 10px }` et
+// `#challenge_content button[type="button"]`, qui vise les boutons situés dans
+// l'éditeur — c'est-à-dire précisément ceux-ci.
+.rt-table__toolbar button.rt-table__btn,
+#challenge_content .rt-table__toolbar button.rt-table__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 26px;
+  padding: 0 6px;
+  margin: 0;
+  font-family: $body-font;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--rt-ink-soft, #6f6f76);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  transition: background-color 0.12s ease, color 0.12s ease;
+
+  &:hover {
+    color: var(--rt-ink, #3d3d3d);
+    background: var(--rt-surface-soft, #f7f7f9);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--rt-accent-ring, rgba(242, 65, 80, 0.25));
+  }
+
+  &.rt-is-on {
+    color: var(--rt-accent, #f24150);
+    background: var(--rt-accent-soft, rgba(242, 65, 80, 0.1));
+  }
+
+  &.rt-table__btn--danger:hover {
+    color: #fff;
+    background: $rose;
+  }
+
+  &.rt-table__btn--wide {
+    padding: 0 10px;
+  }
+
+  &.rt-table__btn--b { font-weight: 800; }
+  &.rt-table__btn--i { font-style: italic; }
+  &.rt-table__btn--u { text-decoration: underline; }
+}
+
+// ---------------------------------------------------------------------------
+// LEGACY — classes de l'ancien éditeur de tableaux.
+//
+// Le contenu déjà en base est régénéré depuis le partial à chaque ouverture de
+// l'éditeur, donc l'ancien balisage ne réapparaît pas. Ces quelques règles ne
+// couvrent que le cas résiduel d'un instantané `content` servi de secours.
+// ---------------------------------------------------------------------------
+.table-editor td.table-cell:not(.rt-cell),
+.table-display td.table-cell-display:not(.rt-cell) {
   height: 40px;
-  padding: 10px 12px;
-  border: 1px solid #e5e7eb !important;
+  min-width: 84px;
+  padding: 9px 12px;
   vertical-align: middle;
+  border: 1px solid var(--rt-line, #e6e6ea);
 
   &:empty::before {
-    content: '\00a0';
+    content: "\00a0";
   }
-}
-
-.trix-content .table-display {
-  table-layout: fixed;
 }

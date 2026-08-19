@@ -1,31 +1,73 @@
-<div class="table-editor" id="table-<%= table.attachable_sgid %>">
-  <div class="table-toolbar">
-    <div class="table-toolbar-group">
-      <button type="button" class="table-btn table-btn-danger table-remove-row<%= ' disabled' if table.rows <= 1 %>" title="Supprimer une ligne" <%= 'disabled' if table.rows <= 1 %>>
-        <span class="table-btn-icon">−</span>
-      </button>
-      <button type="button" class="table-btn table-btn-success table-add-row" title="Ajouter une ligne">
-        <span class="table-btn-icon">+</span>
-      </button>
-      <span class="table-toolbar-label">Ligne</span>
+<%#
+  Rendu du tableau DANS l'éditeur Trix (via to_trix_content_attachment_partial_path).
+
+  Ce balisage traverse le sanitizer de Trix (AttachmentView -> HTMLSanitizer),
+  qui ne conserve que les attributs `style href src width height class language`
+  et ceux préfixés `data-trix`. Conséquences, toutes assumées ici :
+
+    - pas de `data-controller` / `data-action` : le contrôleur Stimulus vit sur
+      le champ, à l'extérieur de la pièce jointe, et délègue par classe ;
+    - pas d'`id` : le sgid est relu depuis le JSON `data-trix-attachment` du
+      <figure> parent ;
+    - `contenteditable` est retiré : le JS le repose à l'hydratation ;
+    - `type="button"` est retiré, donc les boutons redeviennent des submit :
+      le JS fait preventDefault sur tout clic de cette toolbar ;
+    - pas de SVG (l'attribut `d` d'un <path> ne survit pas), d'où des glyphes
+      textuels — qui ont l'avantage d'être explicites sans infobulle, elle-même
+      impossible (`title` est retiré).
+
+  Les classes historiques (table-editor, table-toolbar, table-cell,
+  table-add-row…) sont conservées à côté des nouvelles : elles restent
+  cohérentes avec le contenu déjà en base et avec la feuille de styles.
+%>
+<div class="rt-table rt-table--editor table-editor">
+  <div class="rt-table__toolbar table-toolbar">
+    <div class="rt-table__group table-toolbar-group">
+      <span class="rt-table__label table-toolbar-label">Ligne</span>
+      <button class="rt-table__btn rt-t-row-before">↑+</button>
+      <button class="rt-table__btn rt-t-row-after table-add-row">↓+</button>
+      <button class="rt-table__btn rt-table__btn--danger rt-t-row-delete table-remove-row">✕</button>
     </div>
-    <div class="table-toolbar-group">
-      <button type="button" class="table-btn table-btn-danger table-remove-column<%= ' disabled' if table.columns <= 1 %>" title="Supprimer une colonne" <%= 'disabled' if table.columns <= 1 %>>
-        <span class="table-btn-icon">−</span>
-      </button>
-      <button type="button" class="table-btn table-btn-success table-add-column" title="Ajouter une colonne">
-        <span class="table-btn-icon">+</span>
-      </button>
-      <span class="table-toolbar-label">Colonne</span>
+
+    <div class="rt-table__group table-toolbar-group">
+      <span class="rt-table__label table-toolbar-label">Colonne</span>
+      <button class="rt-table__btn rt-t-col-before">←+</button>
+      <button class="rt-table__btn rt-t-col-after table-add-column">→+</button>
+      <button class="rt-table__btn rt-table__btn--danger rt-t-col-delete table-remove-column">✕</button>
+    </div>
+
+    <div class="rt-table__group">
+      <span class="rt-table__label">Cellule</span>
+      <button class="rt-table__btn rt-table__btn--b rt-t-style-b">B</button>
+      <button class="rt-table__btn rt-table__btn--i rt-t-style-i">I</button>
+      <button class="rt-table__btn rt-table__btn--u rt-t-style-u">U</button>
+    </div>
+
+    <div class="rt-table__group">
+      <span class="rt-table__label">Aligner</span>
+      <button class="rt-table__btn rt-t-align-left">G</button>
+      <button class="rt-table__btn rt-t-align-center">C</button>
+      <button class="rt-table__btn rt-t-align-right">D</button>
+    </div>
+
+    <div class="rt-table__group">
+      <button class="rt-table__btn rt-table__btn--wide rt-t-header<%= ' rt-is-on' if table.header_row? %>">En-tête</button>
     </div>
   </div>
-  <table class="table is-bordered">
-    <% (0...table.rows).each do |r| %>
-      <tr>
-        <% (0...table.columns).each do |c| %>
-          <td class="table-cell" contenteditable="true"><%= table.data["#{r}-#{c}"]%></td>
-        <% end %>
-      </tr>
-    <% end %>
-  </table>
+
+  <div class="rt-table__scroll">
+    <table class="rt-table__grid table is-bordered">
+      <% (0...table.rows).each do |r| %>
+        <tr>
+          <% (0...table.columns).each do |c| %>
+            <% if table.header_row? && r.zero? %>
+              <th class="<%= table_cell_classes(table, r, c, editing: true) %>" contenteditable="true"><%= table.cell(r, c) %></th>
+            <% else %>
+              <td class="<%= table_cell_classes(table, r, c, editing: true) %>" contenteditable="true"><%= table.cell(r, c) %></td>
+            <% end %>
+          <% end %>
+        </tr>
+      <% end %>
+    </table>
+  </div>
 </div>

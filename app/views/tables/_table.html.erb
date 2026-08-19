@@ -1,9 +1,29 @@
-<table class="table is-bordered table-display">
-  <% (0...table.rows).each do |r| %>
-    <tr>
-      <% (0...table.columns).each do |c| %>
-        <td class="table-cell-display"><%= table.data["#{r}-#{c}"]%></td>
+<%#
+  Rendu du tableau en lecture (via to_attachable_partial_path).
+  Passe par le sanitizer de Rails (ActionText::ContentHelper), plus permissif
+  que celui de Trix : `class` et les balises de tableau y sont autorisées.
+%>
+<div class="rt-table rt-table--display">
+  <div class="rt-table__scroll">
+    <table class="rt-table__grid table is-bordered table-display">
+      <% if table.header_row? %>
+        <thead>
+          <tr>
+            <% (0...table.columns).each do |c| %>
+              <th class="<%= table_cell_classes(table, 0, c) %>"><%= table.cell(0, c) %></th>
+            <% end %>
+          </tr>
+        </thead>
       <% end %>
-    </tr>
-  <% end %>
-</table>
+      <tbody>
+        <% ((table.header_row? ? 1 : 0)...table.rows).each do |r| %>
+          <tr>
+            <% (0...table.columns).each do |c| %>
+              <td class="<%= table_cell_classes(table, r, c) %>"><%= table.cell(r, c) %></td>
+            <% end %>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
