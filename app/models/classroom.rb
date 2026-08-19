@@ -12,7 +12,7 @@ class Classroom < ApplicationRecord
   before_validation :set_default
 
   def shared?
-    SharedClassroom.exists?(classroom: self)
+    shared_classrooms.any?
   end
 
   def results_pdf_exists?
@@ -25,8 +25,6 @@ class Classroom < ApplicationRecord
   end
 
   # Le premier professeur avec qui la classe est partagée, nil si elle ne l'est pas.
-  # NB : on passe par l'association. L'ancienne version chargeait TOUTE la table
-  # shared_classrooms en mémoire pour la filtrer en Ruby ensuite.
   def shared_user
     shared_classrooms.first&.user
   end
