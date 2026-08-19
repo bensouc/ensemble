@@ -3,8 +3,6 @@
 require "rails_helper"
 
 RSpec.describe StudentTransfersController, type: :controller do
-  render_views
-
   let(:user) { create(:user) }
   let(:grade) { create(:grade, school: user.school, name: "NivOrigine", grade_level: "CE1") }
   let(:classroom) { create(:classroom, grade: grade) }
@@ -16,11 +14,12 @@ RSpec.describe StudentTransfersController, type: :controller do
   before { sign_in user }
 
   describe "GET #new" do
-    it "sert le formulaire de transfert avec les classes du même niveau" do
+    it "ne propose que les classes du même niveau" do
       destination
+      other_level
       get :new, params: { student_id: student.id }
       expect(response).to be_successful
-      expect(response.body).to include("Transférer")
+      expect(assigns(:target_classrooms)).to contain_exactly(destination)
     end
   end
 
