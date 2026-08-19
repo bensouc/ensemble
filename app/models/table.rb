@@ -129,10 +129,13 @@ class Table < ApplicationRecord
     self
   end
 
-  def clone
-    clone_table = dup
-    clone_table.save!
-    clone_table
+  # Copie persistée du tableau, mise en forme comprise.
+  #
+  # Nommée explicitement : la version précédente s'appelait `clone` et écrasait
+  # donc `Object#clone`, dont la sémantique Ruby est tout autre (copie
+  # superficielle, non persistée).
+  def duplicate
+    dup.tap(&:save!)
   end
 
   private
