@@ -1,26 +1,19 @@
-// Tableaux ActionText — éditeur et affichage.
+// Tableaux ActionText — styles PARTAGÉS entre l'éditeur et le PDF.
+//
+// Importé par `trix/_index.scss` (application) et par `pdf.scss`, pour que le
+// rendu PDF corresponde à ce que l'enseignant voit dans l'éditeur. Il ne doit
+// donc contenir que ce qui vaut dans les deux contextes : la grille, les
+// cellules, l'en-tête et les classes de mise en forme. Tout ce qui touche à
+// l'édition vit dans `_tables_editor.scss`.
+//
+// Ces règles sont importées après les feuilles qui posent les anciennes règles
+// de tableau (`work_plans/_challenges.scss` côté app, le bloc historique de
+// `pdf.scss` côté PDF), donc à spécificité égale elles gagnent.
 //
 // Ce fichier est importé après `work_plans/_challenges.scss` et après Bootstrap
 // (cf. l'ordre des @import dans application.scss), donc à spécificité égale nos
 // règles gagnent. C'est ce qui permet de neutraliser proprement, et uniquement
 // pour les tableaux de l'éditeur, les couleurs imposées par `.table`.
-
-// Trix rend une pièce jointe `application/octet-stream` comme un fichier : le
-// <figure> reçoit `.attachment--file`, soit une pastille encadrée, en
-// inline-block, avec `line-height: 1` et un padding — ce qui comprime la
-// toolbar du tableau et borne sa largeur. On neutralise ce traitement pour les
-// seules pièces jointes qui contiennent un tableau.
-.trix-content .attachment:has(.rt-table),
-.trix-content .attachment--file:has(.rt-table) {
-  display: block;
-  max-width: 100%;
-  padding: 0;
-  margin: 0;
-  color: inherit;
-  line-height: inherit;
-  border: 0;
-  border-radius: 0;
-}
 
 .rt-table {
   margin: 14px 0;
@@ -101,135 +94,3 @@
 .rt-table__grid .rt-cell.rt-c-b { font-weight: 700; }
 .rt-table__grid .rt-cell.rt-c-i { font-style: italic; }
 .rt-table__grid .rt-cell.rt-c-u { text-decoration: underline; text-underline-offset: 2px; }
-
-// trix.css pose `user-select: none` sur tout [data-trix-mutable] — ce qui
-// empêcherait de sélectionner le texte d'une cellule. On le rétablit.
-.rt-table--editor,
-.rt-table--editor * {
-  -webkit-user-select: text;
-  user-select: text;
-}
-
-// --- Cellules en édition ---------------------------------------------------
-.rt-table--editor .rt-cell {
-  cursor: text;
-  transition: background-color 0.12s ease, box-shadow 0.12s ease;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.015);
-  }
-
-  &:focus {
-    position: relative;
-    z-index: 1;
-    outline: none;
-    background-color: var(--rt-accent-soft, rgba(242, 65, 80, 0.1));
-    box-shadow: inset 0 0 0 2px var(--rt-accent, #f24150);
-  }
-}
-
-// --- Toolbar du tableau ----------------------------------------------------
-.rt-table__toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 10px;
-  padding: 6px;
-  margin-bottom: 8px;
-  background: var(--rt-surface-soft, #f7f7f9);
-  border: 1px solid var(--rt-line, #e6e6ea);
-  border-radius: var(--rt-radius, 10px);
-}
-
-.rt-table__group {
-  display: inline-flex;
-  align-items: center;
-  gap: 2px;
-  padding: 2px;
-  background: var(--rt-surface, #fff);
-  border: 1px solid var(--rt-line, #e6e6ea);
-  border-radius: var(--rt-radius-sm, 8px);
-}
-
-.rt-table__label {
-  padding: 0 6px 0 4px;
-  font-family: $body-font;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--rt-ink-faint, #a1a1aa);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
-  white-space: nowrap;
-}
-
-// Le sélecteur porte l'élément pour battre `button { padding: 10px }` et
-// `#challenge_content button[type="button"]`, qui vise les boutons situés dans
-// l'éditeur — c'est-à-dire précisément ceux-ci.
-.rt-table__toolbar button.rt-table__btn,
-#challenge_content .rt-table__toolbar button.rt-table__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  height: 26px;
-  padding: 0 6px;
-  margin: 0;
-  font-family: $body-font;
-  font-size: 12px;
-  font-weight: 600;
-  line-height: 1;
-  color: var(--rt-ink-soft, #6f6f76);
-  cursor: pointer;
-  background: transparent;
-  border: 0;
-  border-radius: 6px;
-  transition: background-color 0.12s ease, color 0.12s ease;
-
-  &:hover {
-    color: var(--rt-ink, #3d3d3d);
-    background: var(--rt-surface-soft, #f7f7f9);
-  }
-
-  &:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px var(--rt-accent-ring, rgba(242, 65, 80, 0.25));
-  }
-
-  &.rt-is-on {
-    color: var(--rt-accent, #f24150);
-    background: var(--rt-accent-soft, rgba(242, 65, 80, 0.1));
-  }
-
-  &.rt-table__btn--danger:hover {
-    color: #fff;
-    background: $rose;
-  }
-
-  &.rt-table__btn--wide {
-    padding: 0 10px;
-  }
-
-  &.rt-table__btn--b { font-weight: 800; }
-  &.rt-table__btn--i { font-style: italic; }
-  &.rt-table__btn--u { text-decoration: underline; }
-}
-
-// ---------------------------------------------------------------------------
-// LEGACY — classes de l'ancien éditeur de tableaux.
-//
-// Le contenu déjà en base est régénéré depuis le partial à chaque ouverture de
-// l'éditeur, donc l'ancien balisage ne réapparaît pas. Ces quelques règles ne
-// couvrent que le cas résiduel d'un instantané `content` servi de secours.
-// ---------------------------------------------------------------------------
-.table-editor td.table-cell:not(.rt-cell),
-.table-display td.table-cell-display:not(.rt-cell) {
-  height: 40px;
-  min-width: 84px;
-  padding: 9px 12px;
-  vertical-align: middle;
-  border: 1px solid var(--rt-line, #e6e6ea);
-
-  &:empty::before {
-    content: "\00a0";
-  }
-}

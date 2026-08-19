@@ -364,6 +364,39 @@ Quatre pièges, tous rencontrés, tous vérifiés dans la source de Trix 2.1.19 
   `preventDefault` sur le mousedown : il faut aussi `stopPropagation`, sinon
   l'événement poursuit jusqu'à `<trix-editor>`, qui refocalise de son côté.
 
+### Parité avec le PDF
+
+`pdf.scss` est une feuille autonome — elle déclare ses propres `@font-face`
+locales et évite délibérément l'`@import` Google Fonts, pour que Chrome headless
+ne fasse aucune requête réseau. Les styles de tableau y avaient donc été
+**dupliqués**, et les deux rendus ont divergé : plus de fond d'en-tête, ni
+alignement, ni style de cellule à l'impression, plus les anciennes règles
+héritées de Bulma (`border-width: 0 0 1px`) et le même piège
+`td:not([align])` qui cassait déjà l'alignement dans l'app.
+
+`trix/_tables.scss` a donc été scindé :
+
+- `trix/_tables.scss` — **partagé** : grille, cellules, en-tête, classes de
+  mise en forme. Importé par `trix/_index.scss` **et** par `pdf.scss`.
+- `trix/_tables_editor.scss` — toolbar, états de saisie, habillage de la pièce
+  jointe. Rien à faire dans un PDF.
+
+Les jetons se posent sur `.trix-content`, l'enveloppe qu'ActionText génère
+autour du contenu rendu, présente dans les deux contextes. Les noms de familles
+de polices ont été extraits dans `config/_font_families.scss` pour que le PDF
+s'y réfère sans tirer l'appel réseau.
+
+Seule exception assumée à la parité : le corps de texte reste à 20 px en PDF
+(l'éditeur est à 17 px), parce que les plans de travail imprimés sont calibrés
+dessus et qu'un changement re-paginerait tout l'existant. Une règle isolée dans
+`pdf.scss`, à retirer pour une parité stricte.
+
+    bin/rails runner scripts/table_pdf_parity_check.rb
+
+Rend le même balisage sous les deux feuilles et compare les styles calculés par
+un vrai navigateur — fond, couleur, graisse, style, alignement, marges et les
+quatre bordures.
+
 ### Banc d'essai navigateur
 
     bin/rails runner scripts/table_editor_browser_check.rb

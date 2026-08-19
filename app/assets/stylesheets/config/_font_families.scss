@@ -1,0 +1,12 @@
+// Noms de familles seuls — aucun appel réseau.
+//
+// Extrait de `_fonts.scss` pour que `pdf.scss` puisse s'y référer : la feuille
+// PDF déclare ses propres @font-face locales et évite délibérément l'@import
+// Google Fonts, mais doit désigner les mêmes familles que l'application.
+$headers-font: 'Poppins', sans-serif;
+$body-font: 'Poppins', sans-serif;
+$nav-gauche-font: 'Poppins', sans-serif;
+$bandeau-haut-font: 'Roboto', sans-serif;
+$plan-font: 'Oswald', sans-serif;
+$titres-font: 'Baloo 2', cursive;
+$titres-font-2: "Merriweather Sans", sans-serif;

@@ -350,8 +350,12 @@ symbol {
   display: none;
 }
 
-//css for table edition
-
+// ---------------------------------------------------------------------------
+// LEGACY — anciennes règles de tableau (dérivées de Bulma), conservées pour le
+// contenu qui ne passe pas par l'éditeur riche. Les tableaux ActionText sont
+// désormais traités par `trix/tables`, importé en fin de fichier, dont les
+// sélecteurs `.rt-table__grid` prennent le dessus.
+// ---------------------------------------------------------------------------
 table {
   border-collapse: collapse;
   border-spacing: 0;
@@ -442,4 +446,33 @@ th:not([align]) {
   padding-left: 0;
   padding-right: 0;
   margin: 0;
+}
+
+// ---------------------------------------------------------------------------
+// Tableaux ActionText — mêmes styles que dans l'éditeur.
+//
+// Le PDF doit rendre les tableaux exactement comme l'enseignant les voit en
+// édition. Plutôt que d'en dupliquer les styles ici (c'est ce qui avait fait
+// diverger les deux rendus : ni fond d'en-tête, ni alignement, ni style de
+// cellule), on importe la partie partagée. `trix/_tables_editor.scss`, lui,
+// n'a rien à faire dans un PDF.
+//
+// Les jetons sont posés sur `.trix-content`, l'enveloppe qu'ActionText génère
+// autour du contenu rendu — présente aussi bien dans le PDF que dans l'app.
+//
+// `config/colors` ne contient que des variables et des classes utilitaires :
+// aucun appel réseau, contrairement à `config/fonts` que le PDF évite
+// volontairement au profit de ses @font-face locales.
+// ---------------------------------------------------------------------------
+@import "config/colors";
+@import "config/font_families";
+@import "trix/tokens";
+@import "trix/content";
+@import "trix/tables";
+
+// Seule exception à la parité : le corps de texte. Les plans de travail
+// imprimés sont calibrés sur 20px, et adopter les 17px de l'éditeur
+// re-paginerait tout l'existant. Retirer cette règle pour une parité stricte.
+.cont-challenge .trix-content {
+  font-size: 20px;
 }
