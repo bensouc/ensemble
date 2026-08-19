@@ -20,7 +20,17 @@
   table-add-row…) sont conservées à côté des nouvelles : elles restent
   cohérentes avec le contenu déjà en base et avec la feuille de styles.
 %>
-<div class="rt-table rt-table--editor table-editor">
+<%#
+  data-trix-mutable : l'observateur de mutations de Trix ignore tout ce qui se
+  trouve sous cet attribut (`nodeIsSignificant` -> `nodeIsMutable`). Sans lui,
+  poser `contenteditable` sur une cellule déclenche un re-rendu de la pièce
+  jointe, qui remplace le tableau par du balisage neuf : la cellule cliquée est
+  détruite et le focus retombe sur <trix-editor>. C'est le mécanisme que Trix
+  utilise lui-même pour sa toolbar de pièce jointe et son éditeur de légende.
+  L'attribut est préfixé `data-trix`, donc il survit au sanitizer, et il figure
+  dans `unserializableAttributeNames`, donc il ne pollue pas le HTML stocké.
+%>
+<div class="rt-table rt-table--editor table-editor" data-trix-mutable="true">
   <div class="rt-table__toolbar table-toolbar">
     <div class="rt-table__group table-toolbar-group">
       <span class="rt-table__label table-toolbar-label">Ligne</span>

@@ -94,6 +94,14 @@
 .rt-c-i { font-style: italic; }
 .rt-c-u { text-decoration: underline; text-underline-offset: 2px; }
 
+// trix.css pose `user-select: none` sur tout [data-trix-mutable] — ce qui
+// empêcherait de sélectionner le texte d'une cellule. On le rétablit.
+.rt-table--editor,
+.rt-table--editor * {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
 // --- Cellules en édition ---------------------------------------------------
 .rt-table--editor .rt-cell {
   cursor: text;

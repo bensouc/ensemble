@@ -42,11 +42,10 @@ export default class extends Controller {
     this.onFocusOut = this.onFocusOut.bind(this)
     this.onSubmit = this.onSubmit.bind(this)
 
-    // Trix retire `contenteditable` du balisage des pièces jointes et re-rend
-    // la vue à chaque render (annulation, insertion…) : on repose l'attribut à
-    // chaque fois.
+    // Trix retire `contenteditable` du balisage des pièces jointes. On le
+    // repose à l'initialisation et à l'insertion d'un tableau — mais surtout
+    // pas sur `trix-render`, qui rendrait la boucle décrite plus bas.
     this.element.addEventListener("trix-initialize", this.hydrate)
-    this.element.addEventListener("trix-render", this.hydrate)
     this.element.addEventListener("trix-attachment-add", this.hydrate)
 
     this.element.addEventListener("mousedown", this.onMousedown, true)
@@ -60,24 +59,25 @@ export default class extends Controller {
     this.form = this.element.closest("form")
     this.form?.addEventListener("submit", this.onSubmit, true)
 
-    // Les événements Trix couvrent le cas courant, mais le premier rendu du
-    // document est planifié dans une frame d'animation : selon l'ordre des
-    // callbacks, `trix-initialize` peut précéder l'insertion des cellules.
-    // Un observateur scopé à l'éditeur ferme la fenêtre — `hydrate` est
-    // idempotent (`:not([contenteditable])`), donc sans boucle de rétroaction.
-    this.observer = new MutationObserver(() => this.hydrate())
-    this.observer.observe(this.element, { childList: true, subtree: true })
-
+    // Pas de MutationObserver ici, et pas d'hydratation sur `trix-render` :
+    // poser `contenteditable` est une mutation que l'observateur interne de
+    // Trix voit, ce qui déclenche un re-rendu, qui remplace le balisage de la
+    // pièce jointe (donc sans `contenteditable`), qui déclenche une nouvelle
+    // hydratation… La boucle fige le navigateur.
+    //
+    // L'éditabilité est donc posée paresseusement, au moment où elle sert :
+    // au mousedown sur une cellule et avant un déplacement au clavier. Les
+    // deux passes ci-dessous ne servent qu'à l'affordance visuelle et sont
+    // bornées.
+    requestAnimationFrame(() => this.hydrate())
     this.hydrate()
   }
 
   disconnect() {
     this.pending.forEach((timer) => clearTimeout(timer))
     this.pending.clear()
-    this.observer?.disconnect()
 
     this.element.removeEventListener("trix-initialize", this.hydrate)
-    this.element.removeEventListener("trix-render", this.hydrate)
     this.element.removeEventListener("trix-attachment-add", this.hydrate)
     this.element.removeEventListener("mousedown", this.onMousedown, true)
     this.element.removeEventListener("click", this.onClick, true)
@@ -100,10 +100,15 @@ export default class extends Controller {
   // --- Écouteurs -----------------------------------------------------------
 
   onMousedown(event) {
-    // Empêche le clic sur un bouton de la toolbar de sortir le focus de la
-    // cellule courante : les actions de style et d'alignement en dépendent.
+    // Le mousedown sur un bouton de la toolbar doit être neutralisé ET soustrait
+    // à Trix. `preventDefault` seul ne suffit pas : l'événement poursuivait sa
+    // route jusqu'à <trix-editor>, qui refocalise de son côté. Le focus quittait
+    // alors la cellule, Trix re-rendait la pièce jointe, et le bouton était
+    // remplacé entre le mousedown et le mouseup — si bien que le navigateur ne
+    // dispatchait aucun `click` : le bouton semblait simplement inerte.
     if (this.buttonFor(event.target)) {
       event.preventDefault()
+      event.stopPropagation()
       return
     }
 
@@ -130,8 +135,9 @@ export default class extends Controller {
       event.preventDefault()
       event.stopPropagation()
 
-      const root = button.closest(".rt-table--editor, .table-editor")
-      if (root) this.runAction(root, button)
+      const sgid = this.sgidFor(button.closest(".rt-table--editor, .table-editor"))
+      const root = this.liveRootFor(sgid)
+      if (root) this.runAction(root, sgid, button)
       return
     }
 
@@ -182,7 +188,8 @@ export default class extends Controller {
           const flag = { b: "b", i: "i", u: "u" }[event.key.toLowerCase()]
           if (flag) {
             event.preventDefault()
-            this.toggleStyle(root, cell, flag)
+            cell.classList.toggle(`rt-c-${flag}`)
+            this.scheduleSave(this.sgidFor(root), { immediate: true })
           }
         }
     }
@@ -193,8 +200,7 @@ export default class extends Controller {
     if (!cell) return
 
     event.stopPropagation()
-    const root = cell.closest(".rt-table--editor, .table-editor")
-    if (root) this.scheduleSave(root)
+    this.scheduleSave(this.sgidFor(cell.closest(".rt-table--editor, .table-editor")))
   }
 
   onPaste(event) {
@@ -223,12 +229,20 @@ export default class extends Controller {
       this.placeCaretAtEnd(cell)
     }
 
-    this.scheduleSave(root, { immediate: true })
+    this.scheduleSave(this.sgidFor(root), { immediate: true })
   }
 
+  // On mémorise une POSITION, pas un nœud : Trix remplace le balisage de la
+  // pièce jointe à divers moments (prise de focus, re-rendu), et une référence
+  // d'élément devient alors silencieusement obsolète — la cellule mémorisée
+  // n'est plus dans le document, et les actions qui en dépendent ne font rien.
   onFocusIn(event) {
     const cell = this.cellFor(event.target)
-    if (cell) this.activeCell = cell
+    if (!cell) return
+
+    const root = cell.closest(".rt-table--editor, .table-editor")
+    const position = this.positionOf(cell)
+    this.activeCell = root && position ? { sgid: this.sgidFor(root), ...position } : null
   }
 
   onFocusOut(event) {
@@ -242,7 +256,7 @@ export default class extends Controller {
     // resynchroniser l'instantané : cela re-rendrait la pièce jointe et
     // volerait le focus à la cellule qui vient de le recevoir.
     const staysInside = event.relatedTarget && root.contains(event.relatedTarget)
-    this.scheduleSave(root, { immediate: true, syncSnapshot: !staysInside })
+    this.scheduleSave(this.sgidFor(root), { immediate: true, syncSnapshot: !staysInside })
   }
 
   // Le contenu des cellules vit dans l'enregistrement Table, pas dans le corps
@@ -262,12 +276,13 @@ export default class extends Controller {
 
   // --- Actions de la toolbar -----------------------------------------------
 
-  runAction(root, button) {
+  runAction(root, sgid, button) {
     const table = root.querySelector("table")
     if (!table) return
 
+    const position = this.activePositionIn(root)
     const cell = this.activeCellIn(root)
-    const { row, col } = this.positionOf(cell) ?? { row: null, col: null }
+    const { row, col } = position ?? { row: null, col: null }
 
     const classes = button.classList
     if (classes.contains("rt-t-row-before")) this.insertRow(table, row ?? table.rows.length, { before: true })
@@ -282,12 +297,12 @@ export default class extends Controller {
     else if (classes.contains("rt-t-align-right")) this.alignColumn(table, col, "right")
     else {
       const flag = STYLE_FLAGS.find((f) => classes.contains(`rt-t-style-${f}`))
-      if (flag && cell) this.toggleStyle(root, cell, flag)
+      if (flag && cell) cell.classList.toggle(`rt-c-${flag}`)
       else return
     }
 
     this.hydrate()
-    this.scheduleSave(root, { immediate: true })
+    this.scheduleSave(sgid, { immediate: true })
   }
 
   insertRow(table, index, { before }) {
@@ -362,11 +377,6 @@ export default class extends Controller {
     })
   }
 
-  toggleStyle(root, cell, flag) {
-    cell.classList.toggle(`rt-c-${flag}`)
-    this.scheduleSave(root, { immediate: true })
-  }
-
   // --- Manipulation de grille ----------------------------------------------
 
   buildCell(tagName, alignment) {
@@ -422,6 +432,9 @@ export default class extends Controller {
 
     const target = table.rows[row]?.cells[col]
     if (target) {
+      // Une cellule non éditable n'est pas focusable : l'éditabilité étant
+      // posée paresseusement, on l'assure ici avant de déplacer le focus.
+      target.setAttribute("contenteditable", "true")
       target.focus()
       this.placeCaretAtEnd(target)
     }
@@ -438,29 +451,31 @@ export default class extends Controller {
 
   // --- Persistance ---------------------------------------------------------
 
-  scheduleSave(root, { immediate = false, syncSnapshot = false } = {}) {
-    clearTimeout(this.pending.get(root))
+  scheduleSave(sgid, { immediate = false, syncSnapshot = false } = {}) {
+    if (!sgid) return
+
+    clearTimeout(this.pending.get(sgid))
 
     if (immediate) {
-      this.pending.delete(root)
-      this.save(root, { syncSnapshot })
+      this.pending.delete(sgid)
+      this.save(sgid, { syncSnapshot })
       return
     }
 
-    this.pending.set(root, setTimeout(() => {
-      this.pending.delete(root)
-      this.save(root)
+    this.pending.set(sgid, setTimeout(() => {
+      this.pending.delete(sgid)
+      this.save(sgid)
     }, SAVE_DELAY))
   }
 
   async flushAll() {
-    const roots = new Set(this.pending.keys())
-    roots.forEach((root) => clearTimeout(this.pending.get(root)))
+    const sgids = new Set(this.pending.keys())
+    sgids.forEach((sgid) => clearTimeout(this.pending.get(sgid)))
     this.pending.clear()
 
     // Avant envoi du formulaire, le focus n'a plus d'importance : on
     // resynchronise l'instantané de chaque tableau.
-    await Promise.all([...roots].map((root) => this.save(root, { syncSnapshot: true })))
+    await Promise.all([...sgids].map((sgid) => this.save(sgid, { syncSnapshot: true })))
     // Les enregistrements déjà partis doivent aussi être terminés.
     await Promise.all([...this.inFlight])
   }
@@ -474,9 +489,11 @@ export default class extends Controller {
   // réapparaîtrait absente au premier re-rendu. La resynchronisation n'a lieu
   // qu'aux moments où le focus n'est plus dans le tableau (`syncSnapshot`),
   // puisque `setAttributes` déclenche justement ce re-rendu.
-  async save(root, { syncSnapshot = false } = {}) {
-    const sgid = this.sgidFor(root)
-    if (!sgid) return
+  async save(sgid, { syncSnapshot = false } = {}) {
+    // Toujours relire le DOM vivant : un root capturé plus tôt peut avoir été
+    // détaché par un re-rendu, et on enregistrerait alors un état périmé.
+    const root = this.liveRootFor(sgid)
+    if (!root) return
 
     const request = new FetchRequest("patch", `/tables/${encodeURIComponent(sgid)}`, {
       contentType: "application/json",
@@ -489,7 +506,7 @@ export default class extends Controller {
       .then(async (response) => {
         if (!response.ok) return
         const payload = await response.json
-        if (syncSnapshot && payload?.content) this.syncSnapshot(root, sgid, payload.content)
+        if (syncSnapshot && payload?.content) this.syncSnapshot(sgid, payload.content)
       })
       .catch((error) => {
         console.error("Enregistrement du tableau impossible", error)
@@ -500,7 +517,7 @@ export default class extends Controller {
     this.inFlight.delete(promise)
   }
 
-  syncSnapshot(root, sgid, content) {
+  syncSnapshot(sgid, content) {
     const editor = this.element.querySelector("trix-editor")
     const attachment = editor?.editor?.getDocument().getAttachments()
       .find((candidate) => candidate.getAttribute("sgid") === sgid)
@@ -549,6 +566,26 @@ export default class extends Controller {
 
   // --- Utilitaires ---------------------------------------------------------
 
+  // Trix remplace le balisage d'une pièce jointe à divers moments (changement
+  // de focus, re-rendu). Le nœud porté par un événement peut donc appartenir à
+  // un arbre déjà détaché : agir dessus n'a aucun effet visible. Toute
+  // opération repart donc du sgid — la seule identité stable — et re-résout le
+  // DOM vivant, `this.element` étant par construction dans le document.
+  liveRootFor(sgid) {
+    if (!sgid) return null
+
+    for (const figure of this.element.querySelectorAll("figure[data-trix-attachment]")) {
+      let candidate = null
+      try {
+        candidate = JSON.parse(figure.getAttribute("data-trix-attachment")).sgid
+      } catch {
+        continue
+      }
+      if (candidate === sgid) return figure.querySelector(".rt-table--editor, .table-editor")
+    }
+    return null
+  }
+
   // `id` ne survit pas au sanitizer de Trix : le sgid est relu depuis le JSON
   // que Trix pose sur le <figure> de la pièce jointe.
   sgidFor(root) {
@@ -574,8 +611,17 @@ export default class extends Controller {
     return button && this.element.contains(button) ? button : null
   }
 
+  // Résout la position mémorisée sur le DOM vivant du tableau concerné.
+  activePositionIn(root) {
+    if (!this.activeCell) return null
+    return this.sgidFor(root) === this.activeCell.sgid ? this.activeCell : null
+  }
+
   activeCellIn(root) {
-    return this.activeCell && root.contains(this.activeCell) ? this.activeCell : null
+    const position = this.activePositionIn(root)
+    if (!position) return null
+
+    return root.querySelector("table")?.rows[position.row]?.cells[position.col] ?? null
   }
 
   positionOf(cell) {

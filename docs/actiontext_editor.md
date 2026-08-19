@@ -308,11 +308,59 @@ commencé et parqué sur **`feat/actiontext-tables-v2`** :
   anciennes méthodes (`addRow`, `updateCell`…) restant servies pour les bundles
   JS encore en cache navigateur.
 
-Les deux problèmes de fond à traiter côté client (cf. `docs/challenges_tables.md`
-pour l'état actuel) :
+Les deux problèmes de fond, corrigés :
 
-1. **Une requête HTTP par cellule quittée**, dont la réponse remplace
-   l'`innerHTML` du tableau — ce qui fait perdre le focus en cours de saisie.
+1. **Une requête HTTP par cellule quittée**, dont la réponse remplaçait
+   l'`innerHTML` du tableau — ce qui faisait perdre le focus en cours de saisie.
+   Désormais tout est local et immédiat, l'état complet part en une requête
+   groupée, et la réponse ne remplace jamais le DOM en cours d'édition.
 2. **Des écouteurs `document` en phase de capture** posés à l'import du module
-   (`click`, `mousedown`, `keydown`, `keyup`, `keypress`, `blur`), qui tournent
-   donc sur chaque clic de l'application entière, éditeur ou non.
+   (`click`, `mousedown`, `keydown`, `keyup`, `keypress`, `blur`), qui tournaient
+   sur chaque clic de l'application entière. Remplacés par une délégation scopée
+   au champ : la capture y passe avant que l'événement n'atteigne
+   `<trix-editor>`, ce qui suffit.
+
+### Vivre à l'intérieur d'une pièce jointe Trix
+
+Quatre pièges, tous rencontrés, tous vérifiés dans la source de Trix 2.1.19 :
+
+- **Le balisage est sanitisé.** `AttachmentView` appelle
+  `HTMLSanitizer.setHTML(innerElement, attachment.getContent())`. Ne survivent
+  que `style href src width height class language` et les attributs préfixés
+  `data-trix`. Donc : pas de `data-controller` (le contrôleur vit sur le champ),
+  pas d'`id` (le sgid est relu du JSON `data-trix-attachment`), pas de `title`,
+  pas de SVG (l'attribut `d` saute), et `type="button"` disparaît — les boutons
+  redeviennent des submit, d'où le `preventDefault` systématique. Tout l'état de
+  mise en forme passe donc par `class`.
+
+- **Trix réagit aux mutations qu'on fait dans la pièce jointe.** Poser
+  `contenteditable` sur une cellule déclenchait un re-rendu qui remplaçait le
+  tableau : la cellule cliquée était détruite et le focus retombait sur
+  `<trix-editor>`. Solution : `data-trix-mutable="true"` sur la racine du
+  tableau — l'observateur de Trix ignore alors ce sous-arbre
+  (`nodeIsSignificant` → `nodeIsMutable`). C'est le mécanisme que Trix utilise
+  pour sa propre toolbar de pièce jointe. Effet de bord à compenser : trix.css
+  y pose `user-select: none`.
+
+- **Une référence de nœud devient obsolète en silence.** Trix remplace le
+  balisage à divers moments ; garder un `activeCell` sous forme d'élément menait
+  à agir sur un arbre détaché, sans erreur ni effet visible. L'identité est
+  désormais le **sgid**, et le DOM vivant est re-résolu à chaque action.
+
+- **Un re-rendu entre `mousedown` et `mouseup` avale le clic.** Le navigateur ne
+  dispatche `click` que si les deux atterrissent sur le même élément encore
+  présent. Le bouton paraissait simplement inerte. Il ne suffisait pas de faire
+  `preventDefault` sur le mousedown : il faut aussi `stopPropagation`, sinon
+  l'événement poursuit jusqu'à `<trix-editor>`, qui refocalise de son côté.
+
+### Banc d'essai navigateur
+
+    bin/rails runner scripts/table_editor_browser_check.rb
+
+Rien de ce qui précède ne se voit dans une spec Ruby, et le diagnostic à
+l'aveugle coûte très cher — on y a notamment laissé passer une boucle infinie
+(un `MutationObserver` qui réagissait au re-rendu qu'il provoquait) qui figeait
+le navigateur. Le script charge le vrai bundle et le vrai Trix dans un Chrome
+piloté par Ferrum, sur une page autonome sans serveur ni authentification, et
+vérifie le comportement DOM ainsi que la charge utile produite. À rejouer après
+toute modification de l'éditeur de tableaux ou montée de Trix.
