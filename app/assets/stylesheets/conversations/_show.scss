@@ -46,4 +46,13 @@
   trix-toolbar {
     display: none;
   }
+
+  // Le composeur de message est une barre de saisie, pas un champ d'énoncé :
+  // on reprend la hauteur compacte et des coins jointifs avec le bouton
+  // d'envoi (qui porte `border-radius: 0 5px 5px 0`).
+  trix-editor {
+    min-height: 2.75em;
+    padding: 9px 13px;
+    border-radius: 5px 0 0 5px;
+  }
 }

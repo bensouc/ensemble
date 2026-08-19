@@ -11,13 +11,14 @@ import "@hotwired/turbo-rails"
 import { initFlatpickr } from "./plugins/flatpickr"
 import "@rails/request.js"
 import "@stripe/stripe-js"
-import "@jaames/iro"
 
 // Internal imports
 import "./packs/get_anchor"
 
-// Trix editor
+// Trix editor — la config doit être importée juste apres `trix` et avant
+// les controllers, pour etre en place avant l'init du premier editeur.
 import "trix"
+import "./plugins/trix-config"
 import "@rails/actiontext"
 
 // Stimulus controllers

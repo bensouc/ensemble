@@ -1,0 +1,88 @@
+// Tableaux ActionText — styles PARTAGÉS entre l'éditeur et le PDF.
+//
+// Importé par `trix/_index.scss` (application) et par `pdf.scss`, pour que le
+// rendu PDF corresponde à ce que l'enseignant voit dans l'éditeur. Il ne doit
+// donc contenir que ce qui vaut dans les deux contextes : la grille, les
+// cellules, l'en-tête et les classes de mise en forme. Tout ce qui touche à
+// l'édition vit dans `_tables_editor.scss`.
+//
+// Ces règles sont importées après les feuilles qui posent les anciennes règles
+// de tableau (`work_plans/_challenges.scss` côté app, le bloc historique de
+// `pdf.scss` côté PDF), donc à spécificité égale elles gagnent.
+//
+// Ce fichier est importé après `work_plans/_challenges.scss` et après Bootstrap
+// (cf. l'ordre des @import dans application.scss), donc à spécificité égale nos
+// règles gagnent. C'est ce qui permet de neutraliser proprement, et uniquement
+// pour les tableaux de l'éditeur, les couleurs imposées par `.table`.
+
+.rt-table {
+  margin: 14px 0;
+}
+
+// Un tableau large défile dans son bloc au lieu d'élargir la page.
+.rt-table__scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+// --- Grille ----------------------------------------------------------------
+.rt-table__grid {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--rt-radius-sm, 8px);
+  overflow: hidden;
+
+  color: inherit;
+  background-color: transparent;
+}
+
+.rt-table__grid .rt-cell {
+  height: 40px;
+  min-width: 84px;
+  padding: 9px 12px;
+  color: inherit;
+  vertical-align: middle;
+  background-color: transparent;
+  border: 0;
+  border-top: 1px solid var(--rt-line, #e6e6ea);
+  border-left: 1px solid var(--rt-line, #e6e6ea);
+  word-break: break-word;
+
+  &:last-child { border-right: 1px solid var(--rt-line, #e6e6ea); }
+
+  // Conserve une hauteur de ligne uniforme quand la cellule est vide.
+  &:empty::before {
+    content: "\00a0";
+  }
+}
+
+.rt-table__grid tr:last-child .rt-cell {
+  border-bottom: 1px solid var(--rt-line, #e6e6ea);
+}
+
+// --- Ligne d'en-tête -------------------------------------------------------
+.rt-table__grid th.rt-cell {
+  font-weight: 600;
+  text-align: inherit;
+  background-color: var(--rt-surface-soft, #f7f7f9);
+}
+
+// --- Mise en forme portée par les classes ---------------------------------
+// Le sanitizer de Trix ne conserve que `class` dans une pièce jointe : c'est
+// donc le canal de tout l'état de mise en forme (cf. TablesHelper).
+// Spécificité volontairement élevée : `work_plans/_challenges.scss` pose
+// `td:not([align]) { text-align: left }`, qui vaut (0,1,1) — le `:not()` compte
+// la spécificité de son argument. Une simple classe (0,1,0) perdait, quel que
+// soit l'ordre d'import.
+.rt-table__grid .rt-cell.rt-al-left { text-align: left; }
+.rt-table__grid .rt-cell.rt-al-center { text-align: center; }
+.rt-table__grid .rt-cell.rt-al-right { text-align: right; }
+
+// Même précaution que pour l'alignement : la règle d'en-tête
+// `.rt-table__grid th.rt-cell` vaut (0,2,1) et l'emportait sur une classe nue,
+// si bien qu'une cellule d'en-tête mise en gras restait en graisse 600.
+.rt-table__grid .rt-cell.rt-c-b { font-weight: 700; }
+.rt-table__grid .rt-cell.rt-c-i { font-style: italic; }
+.rt-table__grid .rt-cell.rt-c-u { text-decoration: underline; text-underline-offset: 2px; }

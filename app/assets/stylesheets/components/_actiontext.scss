@@ -1,95 +1,15 @@
+// Les styles de l'éditeur riche vivent désormais dans app/assets/stylesheets/trix/ :
 //
-// Provides a drop-in pointer for the default Trix stylesheet that will format the toolbar and
-// the trix-editor content (whether displayed or under editing). Feel free to incorporate this
-// inclusion directly in any other asset bundle and remove this file.
+//   _tokens.scss   variables dérivées de la charte de l'app
+//   _toolbar.scss  barre d'outils
+//   _editor.scss   champ d'édition
+//   _content.scss  typographie du contenu (édition et affichage)
+//   _tables.scss   tableaux
 //
-//= require trix/dist/trix
+// Ce fichier ne conserve que le legacy dont la portée dépasse l'éditeur.
 
-// We need to override trix.css’s image gallery styles to accommodate the
-// <action-text-attachment> element we wrap around attachments. Otherwise,
-// images in galleries will be squished by the max-width: 33%; rule.
-.trix-content {
-  font-size: 18.5px;
-  font-family: Arial, Helvetica, sans-serif;
-  img {
-    width: 100%;
-  }
-  .attachment-gallery {
-    > action-text-attachment,
-    > .attachment {
-      flex: 1 0 33%;
-      padding: 0 0.5em;
-      max-width: 33%;
-    }
-
-    &.attachment-gallery--2,
-    &.attachment-gallery--4 {
-      > action-text-attachment,
-      > .attachment {
-        flex-basis: 50%;
-        max-width: 50%;
-      }
-    }
-  }
-
-  action-text-attachment {
-    .attachment {
-      padding: 0 !important;
-      max-width: 100% !important;
-    }
-  }
-  .attachment--preview {
-    .attachment__caption {
-      display: none;
-    }
-  }
-}
-
-trix-editor {
-  background-color: none;
-  padding: 0 !important;
-}
-.trix-button-group--text-tools {
-  width: 200px;
-}
-
-#challenge_content {
-  button[type="button"] {
-    margin: 10px 10px;
-    padding: 10px;
-    border-radius: 15px;
-  }
-}
-
-.add-trix-btn {
-  width: 24px;
-  height: 24px;
-  padding: 1px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  // background-color: $blanc;
-  border-left: 1px solid #ccc;
-  cursor: pointer;
-}
-.trix-color-pickr {
-  position: absolute;
-  left: 100px;
-  /* padding-bottom: 254px; */
-}
-.underline-btn {
-  width: 2rem;
-  height: 1.65rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border-left: 1px solid #ccc;
-}
-.trix-active {
-  background: #cbeefa;
-  color: black;
-}
-.trix-button--icon-link{
-  display: none;
-}
+// Rien d'autre ici : la règle `#challenge_content button[type="button"]` qui y
+// vivait ne matchait plus aucun bouton — Trix retire l'attribut `type` du
+// balisage des pièces jointes (mesuré : 0 sur 22 boutons de l'éditeur). Elle
+// obligeait par ailleurs chaque composant rendu dans l'éditeur à dupliquer son
+// sélecteur avec un préfixe d'id pour la battre.

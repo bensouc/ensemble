@@ -1,31 +1,104 @@
-<div class="table-editor" id="table-<%= table.attachable_sgid %>">
-  <div class="table-toolbar">
-    <div class="table-toolbar-group">
-      <button type="button" class="table-btn table-btn-danger table-remove-row<%= ' disabled' if table.rows <= 1 %>" title="Supprimer une ligne" <%= 'disabled' if table.rows <= 1 %>>
-        <span class="table-btn-icon">−</span>
-      </button>
-      <button type="button" class="table-btn table-btn-success table-add-row" title="Ajouter une ligne">
-        <span class="table-btn-icon">+</span>
-      </button>
-      <span class="table-toolbar-label">Ligne</span>
+<%#
+  Rendu du tableau DANS l'éditeur Trix (via to_trix_content_attachment_partial_path).
+
+  Ce balisage traverse le sanitizer de Trix (AttachmentView -> HTMLSanitizer),
+  qui ne conserve que les attributs `style href src width height class language`
+  et ceux préfixés `data-trix`. Conséquences, toutes assumées ici :
+
+    - pas de `data-controller` / `data-action` : le contrôleur Stimulus vit sur
+      le champ, à l'extérieur de la pièce jointe, et délègue par classe ;
+    - pas d'`id` : le sgid est relu depuis le JSON `data-trix-attachment` du
+      <figure> parent ;
+    - `contenteditable` est retiré : le JS le repose à l'hydratation ;
+    - `type="button"` est retiré, donc les boutons redeviennent des submit :
+      le JS fait preventDefault sur tout clic de cette toolbar ;
+    - pas de SVG (l'attribut `d` d'un <path> ne survit pas), d'où des glyphes
+      textuels — qui ont l'avantage d'être explicites sans infobulle, elle-même
+      impossible (`title` est retiré).
+
+  Les classes historiques (table-editor, table-toolbar, table-cell,
+  table-add-row…) sont conservées à côté des nouvelles : elles restent
+  cohérentes avec le contenu déjà en base et avec la feuille de styles.
+%>
+<%#
+  data-trix-mutable : l'observateur de mutations de Trix ignore tout ce qui se
+  trouve sous cet attribut (`nodeIsSignificant` -> `nodeIsMutable`). Sans lui,
+  poser `contenteditable` sur une cellule déclenche un re-rendu de la pièce
+  jointe, qui remplace le tableau par du balisage neuf : la cellule cliquée est
+  détruite et le focus retombe sur <trix-editor>. C'est le mécanisme que Trix
+  utilise lui-même pour sa toolbar de pièce jointe et son éditeur de légende.
+  L'attribut est préfixé `data-trix`, donc il survit au sanitizer, et il figure
+  dans `unserializableAttributeNames`, donc il ne pollue pas le HTML stocké.
+%>
+<div class="rt-table rt-table--editor" data-trix-mutable="true">
+  <%#
+    Deux corps distincts : ce qui touche à la STRUCTURE du tableau, puis ce qui
+    touche à la CELLULE courante. Les deux familles d'actions n'ont ni la même
+    portée ni le même moment d'usage — les mélanger sur une seule ligne obligeait
+    à relire les libellés à chaque fois.
+  %>
+  <div class="rt-table__toolbar">
+    <span class="rt-table__bar-label">Mise en page</span>
+    <div class="rt-table__bar">
+      <div class="rt-table__group">
+        <button class="rt-table__btn rt-table__btn--wide rt-t-header<%= ' rt-is-on' if table.header_row? %>">En-tête</button>
+      </div>
+
+      <div class="rt-table__group">
+        <span class="rt-table__label">Ligne</span>
+        <button class="rt-table__btn rt-t-row-before">↑+</button>
+        <button class="rt-table__btn rt-t-row-after">↓+</button>
+        <button class="rt-table__btn rt-table__btn--danger rt-t-row-delete">✕</button>
+      </div>
+
+      <div class="rt-table__group">
+        <span class="rt-table__label">Colonne</span>
+        <button class="rt-table__btn rt-t-col-before">←+</button>
+        <button class="rt-table__btn rt-t-col-after">→+</button>
+        <button class="rt-table__btn rt-table__btn--danger rt-t-col-delete">✕</button>
+      </div>
     </div>
-    <div class="table-toolbar-group">
-      <button type="button" class="table-btn table-btn-danger table-remove-column<%= ' disabled' if table.columns <= 1 %>" title="Supprimer une colonne" <%= 'disabled' if table.columns <= 1 %>>
-        <span class="table-btn-icon">−</span>
-      </button>
-      <button type="button" class="table-btn table-btn-success table-add-column" title="Ajouter une colonne">
-        <span class="table-btn-icon">+</span>
-      </button>
-      <span class="table-toolbar-label">Colonne</span>
+
+    <span class="rt-table__bar-label rt-table__bar-label--cell">Cellule</span>
+    <div class="rt-table__bar rt-table__bar--cell">
+      <div class="rt-table__group">
+        <button class="rt-table__btn rt-table__btn--b rt-t-style-b">B</button>
+        <button class="rt-table__btn rt-table__btn--i rt-t-style-i">I</button>
+        <button class="rt-table__btn rt-table__btn--u rt-t-style-u">U</button>
+      </div>
+
+      <div class="rt-table__group rt-table__group--chips">
+        <% Table::TEXT_COLORS.each do |hex| %>
+          <button class="rt-table__chip rt-t-color" style="background-color: <%= hex %>"></button>
+        <% end %>
+        <button class="rt-table__btn rt-t-color-clear">✕</button>
+      </div>
+
+      <%# Icônes dessinées en CSS : un SVG ne survivrait pas au sanitizer de
+          Trix, qui retire l'attribut `d` d'un <path>. Seule `class` passe. %>
+      <div class="rt-table__group">
+        <button class="rt-table__btn rt-t-align-left"><span class="rt-align-icon"></span></button>
+        <button class="rt-table__btn rt-t-align-center"><span class="rt-align-icon rt-align-icon--center"></span></button>
+        <button class="rt-table__btn rt-t-align-right"><span class="rt-align-icon rt-align-icon--right"></span></button>
+      </div>
     </div>
   </div>
-  <table class="table is-bordered">
-    <% (0...table.rows).each do |r| %>
-      <tr>
-        <% (0...table.columns).each do |c| %>
-          <td class="table-cell" contenteditable="true"><%= table.data["#{r}-#{c}"]%></td>
-        <% end %>
-      </tr>
-    <% end %>
-  </table>
+
+  <div class="rt-table__scroll">
+    <table class="rt-table__grid">
+      <% (0...table.rows).each do |r| %>
+        <tr>
+          <% (0...table.columns).each do |c| %>
+            <%= tag.public_send(
+                  table.header_row? && r.zero? ? :th : :td,
+                  table.cell(r, c),
+                  class: table_cell_classes(table, r, c),
+                  style: table_cell_style(table, r, c),
+                  contenteditable: "true"
+                ) %>
+          <% end %>
+        </tr>
+      <% end %>
+    </table>
+  </div>
 </div>

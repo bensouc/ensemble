@@ -1,0 +1,245 @@
+// Tableaux ActionText — styles propres à l'ÉDITEUR.
+// Non importés par pdf.scss : toolbar, états de saisie, habillage de la pièce
+// jointe. La partie commune avec le PDF est dans `_tables.scss`.
+
+// Trix rend une pièce jointe `application/octet-stream` comme un fichier : le
+// <figure> reçoit `.attachment--file`, soit une pastille encadrée, en
+// inline-block, avec `line-height: 1` et un padding — ce qui comprime la
+// toolbar du tableau et borne sa largeur. On neutralise ce traitement pour les
+// seules pièces jointes qui contiennent un tableau.
+.trix-content .attachment:has(.rt-table),
+.trix-content .attachment--file:has(.rt-table) {
+  display: block;
+  max-width: 100%;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  line-height: inherit;
+  border: 0;
+  border-radius: 0;
+}
+
+// trix.css pose `user-select: none` sur tout [data-trix-mutable] — ce qui
+// empêcherait de sélectionner le texte d'une cellule. On le rétablit.
+.rt-table--editor,
+.rt-table--editor * {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+// --- Cellules en édition ---------------------------------------------------
+.rt-table--editor .rt-cell {
+  cursor: text;
+  transition: background-color 0.12s ease, box-shadow 0.12s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.015);
+  }
+
+  &:focus {
+    position: relative;
+    z-index: 1;
+    outline: none;
+    background-color: var(--rt-accent-soft, rgba(242, 65, 80, 0.1));
+    box-shadow: inset 0 0 0 2px var(--rt-accent, #f24150);
+  }
+}
+
+// --- Toolbar du tableau ----------------------------------------------------
+.rt-table__toolbar {
+  // Grille à deux colonnes : les libellés de bloc partagent la première, dont
+  // la largeur s'ajuste au plus long. Les deux rangées d'actions démarrent
+  // donc exactement au même endroit, sans largeur fixe à maintenir.
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 6px;
+  margin-bottom: 8px;
+  background: var(--rt-surface-soft, #f7f7f9);
+  border: 1px solid var(--rt-line, #e6e6ea);
+  border-radius: var(--rt-radius, 10px);
+}
+
+// Une rangée par famille d'actions : structure du tableau, puis cellule.
+.rt-table__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+
+// Les options de cellule n'ont de sens qu'avec une cellule active : elles ne
+// se montrent que lorsque le focus est dans le tableau. `:focus-within` suffit,
+// sans état à tenir en JS — et le focus reste dans la cellule au clic sur un
+// bouton de cette barre, puisque leur mousedown est neutralisé.
+.rt-table__bar--cell,
+.rt-table__bar-label--cell {
+  display: none;
+}
+
+.rt-table--editor:focus-within {
+  .rt-table__bar--cell { display: flex; }
+  .rt-table__bar-label--cell { display: block; }
+}
+
+.rt-table__group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  background: var(--rt-surface, #fff);
+  border: 1px solid var(--rt-line, #e6e6ea);
+  border-radius: var(--rt-radius-sm, 8px);
+}
+
+// Libellé de bloc : dit ce sur quoi porte la rangée, ce qui dispense de
+// nommer chaque groupe.
+.rt-table__bar-label {
+  font-family: $body-font;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rt-ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+// Icônes d'alignement dessinées en CSS : trois filets dont la position varie.
+// Un SVG ne survivrait pas au sanitizer de Trix (l'attribut `d` d'un <path>
+// est retiré), alors qu'une classe passe.
+.rt-align-icon {
+  display: block;
+  width: 14px;
+  height: 10px;
+  background-image:
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-size: 100% 2px, 64% 2px, 100% 2px;
+  background-position: left top, left center, left bottom;
+  pointer-events: none;
+
+  &--center { background-position: center top, center center, center bottom; }
+  &--right { background-position: right top, right center, right bottom; }
+}
+
+// Les pastilles font 16px alors que les boutons voisins en font 28 : à padding
+// égal, un glyphe « B » paraît en retrait quand une pastille colle au bord. On
+// compense pour que les groupes s'alignent optiquement.
+.rt-table__group--chips {
+  padding: 2px 7px;
+  gap: 3px;
+}
+
+.rt-table__label {
+  padding: 0 6px 0 4px;
+  font-family: $body-font;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--rt-ink-faint, #a1a1aa);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+// Le sélecteur porte l'élément pour battre la globale `button { padding: 10px }`
+// de work_plans/_challenges.scss.
+.rt-table__toolbar button.rt-table__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 26px;
+  padding: 0 6px;
+  margin: 0;
+  font-family: $body-font;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--rt-ink-soft, #6f6f76);
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  transition: background-color 0.12s ease, color 0.12s ease;
+
+  &:hover {
+    color: var(--rt-ink, #3d3d3d);
+    background: var(--rt-surface-soft, #f7f7f9);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--rt-accent-ring, rgba(242, 65, 80, 0.25));
+  }
+
+  &.rt-is-on {
+    color: var(--rt-accent, #f24150);
+    background: var(--rt-accent-soft, rgba(242, 65, 80, 0.1));
+  }
+
+  &.rt-table__btn--danger:hover {
+    color: #fff;
+    background: $rose;
+  }
+
+  &.rt-table__btn--wide {
+    padding: 0 10px;
+  }
+
+  &.rt-table__btn--b { font-weight: 800; }
+  &.rt-table__btn--i { font-style: italic; }
+  &.rt-table__btn--u { text-decoration: underline; }
+}
+
+// Pastilles de couleur de la barre du tableau. Leur teinte est posée en `style`
+// inline (elle bat donc toute règle d'ici) : c'est aussi ce que le JS relit,
+// faute de pouvoir la transporter par un `data-*` dans une pièce jointe.
+.rt-table__toolbar button.rt-table__chip {
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  transition: transform 0.1s ease, box-shadow 0.12s ease;
+
+  &:hover {
+    transform: scale(1.18);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--rt-accent-ring);
+  }
+
+  // La pastille de la couleur en place : un anneau, la teinte occupant déjà
+  // le fond.
+  &.rt-is-on {
+    box-shadow: 0 0 0 2px var(--rt-surface), 0 0 0 3px var(--rt-ink);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// LEGACY — classes de l'ancien éditeur de tableaux.
+//
+// Le contenu déjà en base est régénéré depuis le partial à chaque ouverture de
+// l'éditeur, donc l'ancien balisage ne réapparaît pas. Ces quelques règles ne
+// couvrent que le cas résiduel d'un instantané `content` servi de secours.
+// ---------------------------------------------------------------------------
+.table-editor td.table-cell:not(.rt-cell),
+.table-display td.table-cell-display:not(.rt-cell) {
+  height: 40px;
+  min-width: 84px;
+  padding: 9px 12px;
+  vertical-align: middle;
+  border: 1px solid var(--rt-line, #e6e6ea);
+
+  &:empty::before {
+    content: "\00a0";
+  }
+}
