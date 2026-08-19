@@ -18,4 +18,13 @@ module TablesHelper
 
     classes.join(" ")
   end
+
+  # La couleur du texte est le seul réglage qui ne passe pas par une classe : sa
+  # valeur est libre. `style` fait partie des attributs conservés aussi bien par
+  # le sanitizer de Trix que par celui de Rails, et le modèle n'y laisse entrer
+  # que des teintes de sa liste blanche.
+  def table_cell_style(table, row, col)
+    color = table.color_for(row, col)
+    "color: #{color}" if color
+  end
 end

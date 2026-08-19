@@ -61,6 +61,14 @@
     </div>
 
     <div class="rt-table__group">
+      <span class="rt-table__label">Texte</span>
+      <% Table::TEXT_COLORS.each do |hex| %>
+        <button class="rt-table__chip rt-t-color" style="background-color: <%= hex %>"></button>
+      <% end %>
+      <button class="rt-table__btn rt-t-color-clear">✕</button>
+    </div>
+
+    <div class="rt-table__group">
       <button class="rt-table__btn rt-table__btn--wide rt-t-header<%= ' rt-is-on' if table.header_row? %>">En-tête</button>
     </div>
   </div>
@@ -70,11 +78,13 @@
       <% (0...table.rows).each do |r| %>
         <tr>
           <% (0...table.columns).each do |c| %>
-            <% if table.header_row? && r.zero? %>
-              <th class="<%= table_cell_classes(table, r, c, editing: true) %>" contenteditable="true"><%= table.cell(r, c) %></th>
-            <% else %>
-              <td class="<%= table_cell_classes(table, r, c, editing: true) %>" contenteditable="true"><%= table.cell(r, c) %></td>
-            <% end %>
+            <%= tag.public_send(
+                  table.header_row? && r.zero? ? :th : :td,
+                  table.cell(r, c),
+                  class: table_cell_classes(table, r, c, editing: true),
+                  style: table_cell_style(table, r, c),
+                  contenteditable: "true"
+                ) %>
           <% end %>
         </tr>
       <% end %>

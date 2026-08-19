@@ -130,6 +130,13 @@ begin
   check failures, "ligne d'en-tête convertie en th",
         browser.evaluate("document.querySelectorAll('.rt-table--editor th').length").positive?
 
+  # 3e pastille = #F24150, choisie parce qu'elle se distingue nettement de la
+  # couleur de texte par défaut (la 1re, #3D3D3D, lui est identique).
+  browser.css(".rt-table__toolbar .rt-t-color")[2].click
+  sleep 0.4
+  check failures, "couleur de texte appliquée à la cellule",
+        browser.evaluate("document.querySelector('.rt-table--editor .rt-cell').style.color") == "rgb(242, 65, 80)"
+
   puts "\n6. le style est-il réellement RENDU ? (et pas seulement posé en classe)"
   computed = browser.evaluate(<<~JS)
     (() => {
@@ -157,6 +164,7 @@ begin
   check failures, "style de cellule transmis", payload.dig("cell_styles", "0-0") == ["b"]
   check failures, "alignement transmis", payload["col_aligns"][0] == "center"
   check failures, "texte saisi transmis", payload.dig("data", "0-0").to_s.include?("X")
+  check failures, "couleur de cellule transmise", payload.dig("cell_colors", "0-0") == "#F24150"
 
   puts "\n8. toujours vivant après toutes les opérations"
   check failures, "page réactive", browser.evaluate("2 + 2") == 4

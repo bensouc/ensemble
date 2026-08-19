@@ -10,7 +10,7 @@
         <thead>
           <tr>
             <% (0...table.columns).each do |c| %>
-              <th class="<%= table_cell_classes(table, 0, c) %>"><%= table.cell(0, c) %></th>
+              <%= tag.th table.cell(0, c), class: table_cell_classes(table, 0, c), style: table_cell_style(table, 0, c) %>
             <% end %>
           </tr>
         </thead>
@@ -19,7 +19,7 @@
         <% ((table.header_row? ? 1 : 0)...table.rows).each do |r| %>
           <tr>
             <% (0...table.columns).each do |c| %>
-              <td class="<%= table_cell_classes(table, r, c) %>"><%= table.cell(r, c) %></td>
+              <%= tag.td table.cell(r, c), class: table_cell_classes(table, r, c), style: table_cell_style(table, r, c) %>
             <% end %>
           </tr>
         <% end %>

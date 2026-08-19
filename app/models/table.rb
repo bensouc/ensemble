@@ -18,6 +18,14 @@ class Table < ApplicationRecord
   ALIGNMENTS = %w[left center right].freeze
   CELL_STYLE_FLAGS = %w[b i u].freeze
 
+  # La couleur d'une cellule est écrite en `style` inline : c'est le seul canal
+  # qui accepte une valeur libre à l'intérieur d'une pièce jointe Trix (son
+  # sanitizer ne conserve que style/href/src/width/height/class/language).
+  # On s'en tient donc à une liste blanche, plutôt qu'à une validation de
+  # format : aucune valeur arbitraire ne peut atteindre l'attribut.
+  # Mêmes teintes que le nuancier de la toolbar principale (trix-config.js).
+  TEXT_COLORS = %w[#3D3D3D #9C9C9C #F24150 #C44003 #E67E22 #4CAF50 #167FFB #7C5CE7].freeze
+
   def to_trix_content_attachment_partial_path
     "tables/editor"
   end
@@ -31,6 +39,11 @@ class Table < ApplicationRecord
   def align_for(col)
     align = Array(col_aligns)[col]
     ALIGNMENTS.include?(align) ? align : "left"
+  end
+
+  def color_for(row, col)
+    color = cell_colors.is_a?(Hash) ? cell_colors[key(row, col)] : nil
+    color if TEXT_COLORS.include?(color)
   end
 
   def styles_for(row, col)
@@ -106,6 +119,7 @@ class Table < ApplicationRecord
     self.header_row  = to_boolean(attrs[:header_row]) if attrs.key?(:header_row)
     self.data        = sanitized_data(attrs[:data]) if attrs.key?(:data)
     self.cell_styles = sanitized_cell_styles(attrs[:cell_styles]) if attrs.key?(:cell_styles)
+    self.cell_colors = sanitized_cell_colors(attrs[:cell_colors]) if attrs.key?(:cell_colors)
     self.col_aligns  = sanitized_aligns(attrs[:col_aligns]) if attrs.key?(:col_aligns)
     prune_out_of_range!
     save!
@@ -129,6 +143,7 @@ class Table < ApplicationRecord
   def remap!
     self.data = remap_hash(data) { |r, c| yield(r, c) }
     self.cell_styles = remap_hash(cell_styles) { |r, c| yield(r, c) }
+    self.cell_colors = remap_hash(cell_colors) { |r, c| yield(r, c) }
   end
 
   def remap_hash(hash)
@@ -146,6 +161,7 @@ class Table < ApplicationRecord
   def prune_out_of_range!
     self.data = data.select { |k, _| in_range?(k) } if data.is_a?(Hash)
     self.cell_styles = cell_styles.select { |k, _| in_range?(k) } if cell_styles.is_a?(Hash)
+    self.cell_colors = cell_colors.select { |k, _| in_range?(k) } if cell_colors.is_a?(Hash)
     self.col_aligns = Array(col_aligns).first(columns)
   end
 
@@ -175,6 +191,17 @@ class Table < ApplicationRecord
 
       kept = Array(flags).map(&:to_s) & CELL_STYLE_FLAGS
       result[cell_key.to_s] = kept if kept.any?
+    end
+  end
+
+  def sanitized_cell_colors(incoming)
+    return {} unless incoming.is_a?(Hash)
+
+    incoming.each_with_object({}) do |(cell_key, color), result|
+      next unless cell_key.to_s.match?(/\A\d+-\d+\z/)
+
+      value = color.to_s.upcase
+      result[cell_key.to_s] = value if TEXT_COLORS.include?(value)
     end
   end
 

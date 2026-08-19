@@ -27,6 +27,15 @@ const TOOLBAR_INACTIVE_HINT =
 const MAX_ROWS = 60
 const MAX_COLUMNS = 20
 
+// Le DOM restitue toujours une couleur en `rgb(...)`, alors que le modèle
+// n'accepte que les teintes de sa liste blanche, en hexadécimal.
+function toHex(value) {
+  const parts = String(value).match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/)
+  if (!parts) return null
+
+  return `#${parts.slice(1, 4).map((n) => Number(n).toString(16).padStart(2, "0")).join("").toUpperCase()}`
+}
+
 export default class extends Controller {
   connect() {
     this.pending = new Map() // racine de tableau -> timer
@@ -331,6 +340,17 @@ export default class extends Controller {
     else if (classes.contains("rt-t-align-left")) this.alignColumn(table, col, "left")
     else if (classes.contains("rt-t-align-center")) this.alignColumn(table, col, "center")
     else if (classes.contains("rt-t-align-right")) this.alignColumn(table, col, "right")
+    // La couleur du texte est portée par un `style` inline, seul canal libre
+    // dans une pièce jointe. La teinte est relue sur la pastille elle-même,
+    // faute de pouvoir la transporter par un `data-*` (retiré par le sanitizer).
+    else if (classes.contains("rt-t-color-clear")) {
+      if (cell) cell.style.color = ""
+      else return
+    }
+    else if (classes.contains("rt-t-color")) {
+      if (cell) cell.style.color = getComputedStyle(button).backgroundColor
+      else return
+    }
     else {
       const flag = STYLE_FLAGS.find((f) => classes.contains(`rt-t-style-${f}`))
       if (flag && cell) cell.classList.toggle(`rt-c-${flag}`)
@@ -570,6 +590,7 @@ export default class extends Controller {
     const rows = Array.from(table?.rows ?? [])
     const data = {}
     const cellStyles = {}
+    const cellColors = {}
     let columns = 0
 
     rows.forEach((tr, r) => {
@@ -584,6 +605,9 @@ export default class extends Controller {
 
         const flags = STYLE_FLAGS.filter((flag) => cell.classList.contains(`rt-c-${flag}`))
         if (flags.length) cellStyles[`${r}-${c}`] = flags
+
+        const color = toHex(cell.style.color)
+        if (color) cellColors[`${r}-${c}`] = color
       })
     })
 
@@ -596,6 +620,7 @@ export default class extends Controller {
       header_row: this.hasHeader(table),
       data,
       cell_styles: cellStyles,
+      cell_colors: cellColors,
       col_aligns: colAligns
     }
   }

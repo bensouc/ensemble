@@ -131,6 +131,31 @@
   &.rt-table__btn--u { text-decoration: underline; }
 }
 
+// Pastilles de couleur de la barre du tableau. Leur teinte est posée en `style`
+// inline (elle bat donc toute règle d'ici) : c'est aussi ce que le JS relit,
+// faute de pouvoir la transporter par un `data-*` dans une pièce jointe.
+.rt-table__toolbar button.rt-table__chip,
+#challenge_content .rt-table__toolbar button.rt-table__chip {
+  width: 16px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  transition: transform 0.1s ease, box-shadow 0.12s ease;
+
+  &:hover {
+    transform: scale(1.18);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--rt-accent-ring);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // LEGACY — classes de l'ancien éditeur de tableaux.
 //

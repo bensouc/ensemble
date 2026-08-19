@@ -140,6 +140,53 @@ RSpec.describe Table, type: :model do
     end
   end
 
+  describe "couleur du texte des cellules" do
+    # La couleur voyage en `style` inline — le seul canal libre à l'intérieur
+    # d'une pièce jointe Trix. D'où une liste blanche stricte plutôt qu'une
+    # validation de format : aucune valeur arbitraire ne peut atteindre
+    # l'attribut, ni côté éditeur ni côté PDF.
+    it "accepte une teinte de la palette" do
+      table = described_class.create!(rows: 1, columns: 1)
+
+      table.replace!("cell_colors" => { "0-0" => "#F24150" })
+
+      expect(table.color_for(0, 0)).to eq("#F24150")
+    end
+
+    it "normalise la casse" do
+      table = described_class.create!(rows: 1, columns: 1)
+
+      table.replace!("cell_colors" => { "0-0" => "#f24150" })
+
+      expect(table.color_for(0, 0)).to eq("#F24150")
+    end
+
+    it "rejette toute valeur hors palette" do
+      table = described_class.create!(rows: 1, columns: 1)
+
+      table.replace!("cell_colors" => { "0-0" => "#123456" })
+
+      expect(table.cell_colors).to be_empty
+      expect(table.color_for(0, 0)).to be_nil
+    end
+
+    it "rejette une valeur qui tenterait de sortir de la déclaration CSS" do
+      table = described_class.create!(rows: 1, columns: 1)
+
+      table.replace!("cell_colors" => { "0-0" => "red; background: url(javascript:alert(1))" })
+
+      expect(table.cell_colors).to be_empty
+    end
+
+    it "suit le décalage des lignes" do
+      table = described_class.create!(rows: 2, columns: 1, cell_colors: { "1-0" => "#F24150" })
+
+      table.delete_row!(0)
+
+      expect(table.cell_colors).to eq("0-0" => "#F24150")
+    end
+  end
+
   describe "rétrocompatibilité" do
     # Un tableau créé avant l'ajout des colonnes de mise en forme n'a ni
     # en-tête, ni alignement, ni style : il doit se rendre exactement comme avant.
@@ -150,6 +197,7 @@ RSpec.describe Table, type: :model do
       expect(table.align_for(0)).to eq("left")
       expect(table.align_for(1)).to eq("left")
       expect(table.styles_for(0, 0)).to eq([])
+      expect(table.color_for(0, 0)).to be_nil
       expect(table.cell(0, 0)).to eq("a")
       expect(table.cell(0, 1)).to be_nil
     end

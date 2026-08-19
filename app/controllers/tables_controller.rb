@@ -44,7 +44,7 @@ class TablesController < ApplicationController
 
   def table_params
     params.require(:table)
-          .permit(:rows, :columns, :header_row, col_aligns: [], data: {}, cell_styles: {})
+          .permit(:rows, :columns, :header_row, col_aligns: [], data: {}, cell_styles: {}, cell_colors: {})
           .to_h
   end
 

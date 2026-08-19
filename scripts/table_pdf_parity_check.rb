@@ -23,6 +23,7 @@ ActiveRecord::Base.transaction do
     rows: 2, columns: 3, header_row: true,
     data: { "0-0" => "Mot", "0-1" => "Nature", "1-0" => "chat" },
     cell_styles: { "1-0" => %w[b i] },
+    cell_colors: { "1-0" => "#F24150" },
     col_aligns: %w[left center right]
   )
   markup = ApplicationController.render(partial: "tables/table", locals: { table: table }, formats: [:html])
