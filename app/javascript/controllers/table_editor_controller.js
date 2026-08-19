@@ -60,12 +60,21 @@ export default class extends Controller {
     this.form = this.element.closest("form")
     this.form?.addEventListener("submit", this.onSubmit, true)
 
+    // Les événements Trix couvrent le cas courant, mais le premier rendu du
+    // document est planifié dans une frame d'animation : selon l'ordre des
+    // callbacks, `trix-initialize` peut précéder l'insertion des cellules.
+    // Un observateur scopé à l'éditeur ferme la fenêtre — `hydrate` est
+    // idempotent (`:not([contenteditable])`), donc sans boucle de rétroaction.
+    this.observer = new MutationObserver(() => this.hydrate())
+    this.observer.observe(this.element, { childList: true, subtree: true })
+
     this.hydrate()
   }
 
   disconnect() {
     this.pending.forEach((timer) => clearTimeout(timer))
     this.pending.clear()
+    this.observer?.disconnect()
 
     this.element.removeEventListener("trix-initialize", this.hydrate)
     this.element.removeEventListener("trix-render", this.hydrate)
@@ -93,20 +102,42 @@ export default class extends Controller {
   onMousedown(event) {
     // Empêche le clic sur un bouton de la toolbar de sortir le focus de la
     // cellule courante : les actions de style et d'alignement en dépendent.
-    if (this.buttonFor(event.target)) event.preventDefault()
+    if (this.buttonFor(event.target)) {
+      event.preventDefault()
+      return
+    }
+
+    const cell = this.cellFor(event.target)
+    if (!cell) return
+
+    // Cliquer dans une pièce jointe amène Trix à la SÉLECTIONNER en bloc au
+    // lieu d'y poser un caret : sans cette interception, les cellules ne sont
+    // pas éditables. On soustrait l'événement à Trix (l'écouteur de
+    // <trix-editor> est en aval de cette capture) et on rend la cellule
+    // éditable avant que le navigateur ne calcule la position du caret —
+    // ce qui laisse le clic positionner le curseur normalement, au lieu de le
+    // forcer en fin de cellule.
+    event.stopPropagation()
+    cell.setAttribute("contenteditable", "true")
   }
 
   onClick(event) {
     const button = this.buttonFor(event.target)
-    if (!button) return
 
-    // Le sanitizer de Trix retire `type="button"` : sans ça, un clic sur la
-    // toolbar soumettrait le formulaire.
-    event.preventDefault()
-    event.stopPropagation()
+    if (button) {
+      // Le sanitizer de Trix retire `type="button"` : sans ça, un clic sur la
+      // toolbar soumettrait le formulaire.
+      event.preventDefault()
+      event.stopPropagation()
 
-    const root = button.closest(".rt-table--editor, .table-editor")
-    if (root) this.runAction(root, button)
+      const root = button.closest(".rt-table--editor, .table-editor")
+      if (root) this.runAction(root, button)
+      return
+    }
+
+    // Clic dans une cellule : on le soustrait à Trix, sans preventDefault pour
+    // que le navigateur place le caret là où l'utilisateur a cliqué.
+    if (this.cellFor(event.target)) event.stopPropagation()
   }
 
   onKeydown(event) {
@@ -318,14 +349,16 @@ export default class extends Controller {
     })
   }
 
+  // Sans cellule active, l'alignement s'applique à tout le tableau plutôt que
+  // de ne rien faire en silence.
   alignColumn(table, col, alignment) {
-    if (col == null) return
-
     Array.from(table.rows).forEach((tr) => {
-      const cell = tr.cells[col]
-      if (!cell) return
-      ALIGNMENTS.forEach((a) => cell.classList.remove(`rt-al-${a}`))
-      if (alignment !== "left") cell.classList.add(`rt-al-${alignment}`)
+      const cells = col == null ? Array.from(tr.cells) : [tr.cells[col]]
+      cells.forEach((cell) => {
+        if (!cell) return
+        ALIGNMENTS.forEach((a) => cell.classList.remove(`rt-al-${a}`))
+        if (alignment !== "left") cell.classList.add(`rt-al-${alignment}`)
+      })
     })
   }
 
