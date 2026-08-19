@@ -347,6 +347,17 @@ Quatre pièges, tous rencontrés, tous vérifiés dans la source de Trix 2.1.19 
   à agir sur un arbre détaché, sans erreur ni effet visible. L'identité est
   désormais le **sgid**, et le DOM vivant est re-résolu à chaque action.
 
+- **La spécificité CSS de l'app l'emporte sur des classes nues.**
+  `work_plans/_challenges.scss` pose `td:not([align]) { text-align: left }`, qui
+  vaut **(0,1,1)** — un `:not()` compte la spécificité de son argument. Une
+  classe `.rt-al-center` (0,1,0) perdait, quel que soit l'ordre d'import. Même
+  problème pour le gras face à la règle d'en-tête `th.rt-cell` (0,2,1). Les
+  classes de mise en forme sont donc portées par des sélecteurs scopés
+  (`.rt-table__grid .rt-cell.rt-al-center`). C'est aussi pourquoi le banc
+  d'essai charge la feuille compilée et vérifie le **style calculé**, pas
+  seulement la présence des classes : les deux bugs ci-dessus passaient au
+  travers d'une vérification par classe.
+
 - **Un re-rendu entre `mousedown` et `mouseup` avale le clic.** Le navigateur ne
   dispatche `click` que si les deux atterrissent sur le même élément encore
   présent. Le bouton paraissait simplement inerte. Il ne suffisait pas de faire

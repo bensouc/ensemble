@@ -243,6 +243,8 @@ export default class extends Controller {
     const root = cell.closest(".rt-table--editor, .table-editor")
     const position = this.positionOf(cell)
     this.activeCell = root && position ? { sgid: this.sgidFor(root), ...position } : null
+
+    this.setMainToolbarInactive(true)
   }
 
   onFocusOut(event) {
@@ -257,6 +259,21 @@ export default class extends Controller {
     // volerait le focus à la cellule qui vient de le recevoir.
     const staysInside = event.relatedTarget && root.contains(event.relatedTarget)
     this.scheduleSave(this.sgidFor(root), { immediate: true, syncSnapshot: !staysInside })
+
+    if (!staysInside) this.setMainToolbarInactive(false)
+  }
+
+  // La toolbar principale agit sur le document Trix, jamais sur le contenu
+  // d'une cellule : celui-ci vit dans une pièce jointe, hors du document. Tant
+  // qu'une cellule a le focus, la neutraliser évite de laisser croire que
+  // « gras » ou « titre » s'y appliqueraient. La bascule est purement visuelle
+  // (classe + pointer-events) plutôt qu'un `disabled` sur les boutons, que
+  // Trix repose lui-même à chaque changement de sélection.
+  //
+  // Le clavier est déjà correctement routé : ⌘B/⌘I/⌘U dans une cellule sont
+  // interceptés par onKeydown et appliquent le style de cellule.
+  setMainToolbarInactive(inactive) {
+    this.element.querySelector("trix-toolbar")?.classList.toggle("rt-tb--table-focus", inactive)
   }
 
   // Le contenu des cellules vit dans l'enregistrement Table, pas dans le corps

@@ -87,12 +87,20 @@
 // --- Mise en forme portée par les classes ---------------------------------
 // Le sanitizer de Trix ne conserve que `class` dans une pièce jointe : c'est
 // donc le canal de tout l'état de mise en forme (cf. TablesHelper).
-.rt-al-center { text-align: center; }
-.rt-al-right { text-align: right; }
+// Spécificité volontairement élevée : `work_plans/_challenges.scss` pose
+// `td:not([align]) { text-align: left }`, qui vaut (0,1,1) — le `:not()` compte
+// la spécificité de son argument. Une simple classe (0,1,0) perdait, quel que
+// soit l'ordre d'import.
+.rt-table__grid .rt-cell.rt-al-left { text-align: left; }
+.rt-table__grid .rt-cell.rt-al-center { text-align: center; }
+.rt-table__grid .rt-cell.rt-al-right { text-align: right; }
 
-.rt-c-b { font-weight: 700; }
-.rt-c-i { font-style: italic; }
-.rt-c-u { text-decoration: underline; text-underline-offset: 2px; }
+// Même précaution que pour l'alignement : la règle d'en-tête
+// `.rt-table__grid th.rt-cell` vaut (0,2,1) et l'emportait sur une classe nue,
+// si bien qu'une cellule d'en-tête mise en gras restait en graisse 600.
+.rt-table__grid .rt-cell.rt-c-b { font-weight: 700; }
+.rt-table__grid .rt-cell.rt-c-i { font-style: italic; }
+.rt-table__grid .rt-cell.rt-c-u { text-decoration: underline; text-underline-offset: 2px; }
 
 // trix.css pose `user-select: none` sur tout [data-trix-mutable] — ce qui
 // empêcherait de sélectionner le texte d'une cellule. On le rétablit.

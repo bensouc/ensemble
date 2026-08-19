@@ -45,8 +45,14 @@ JS
 File.write(HARNESS.join("build.js"), build)
 abort("échec de la compilation du bundle") unless system("node", HARNESS.join("build.js").to_s)
 
+# La feuille compilée est nécessaire : plusieurs bugs de cet éditeur étaient des
+# problèmes de spécificité CSS, invisibles si l'on ne vérifie que les classes.
+css = Rails.application.assets["application.css"].to_s
+File.write(HARNESS.join("application.css"), css)
+
 File.write(HARNESS.join("index.html"), <<~HTML)
-  <!doctype html><html lang="fr"><head><meta charset="utf-8"><title>banc tableaux</title></head><body>
+  <!doctype html><html lang="fr"><head><meta charset="utf-8"><title>banc tableaux</title>
+  <link rel="stylesheet" href="./application.css"></head><body>
     <form id="f">
       <div class="field rt-field" data-controller="rich-text-table table-editor">
         <input type="hidden" id="content_input" value="#{CGI.escapeHTML(value)}">
@@ -94,7 +100,15 @@ begin
   check failures, "la saisie s'inscrit",
         browser.evaluate("document.querySelector('.rt-table--editor .rt-cell').textContent").include?("X")
 
-  puts "\n4. actions de la toolbar"
+  puts "\n4. la toolbar principale se met-elle en retrait ?"
+  check failures, "toolbar neutralisée pendant l'édition d'une cellule",
+        browser.evaluate("document.querySelector('trix-toolbar').classList.contains('rt-tb--table-focus')")
+  check failures, "groupes de boutons inertes",
+        browser.evaluate("getComputedStyle(document.querySelector('trix-toolbar .trix-button-group')).pointerEvents") == "none"
+  check failures, "message d'état visible",
+        browser.evaluate("getComputedStyle(document.querySelector('.rt-tb__notice')).display") != "none"
+
+  puts "\n5. actions de la toolbar du tableau"
   browser.at_css(".rt-table__toolbar .rt-t-style-b").click
   sleep 0.4
   check failures, "gras appliqué à la cellule",
@@ -116,7 +130,20 @@ begin
   check failures, "ligne d'en-tête convertie en th",
         browser.evaluate("document.querySelectorAll('.rt-table--editor th').length").positive?
 
-  puts "\n5. charge utile envoyée au serveur"
+  puts "\n6. le style est-il réellement RENDU ? (et pas seulement posé en classe)"
+  computed = browser.evaluate(<<~JS)
+    (() => {
+      const c = document.querySelector('.rt-table--editor .rt-cell')
+      const s = getComputedStyle(c)
+      return JSON.stringify({ textAlign: s.textAlign, fontWeight: s.fontWeight })
+    })()
+  JS
+  style = JSON.parse(computed)
+  puts "  #{computed}"
+  check failures, "alignement effectivement centré", style["textAlign"] == "center"
+  check failures, "gras effectivement appliqué", style["fontWeight"].to_i >= 700
+
+  puts "\n7. charge utile envoyée au serveur"
   state = browser.evaluate(<<~JS)
     (() => {
       const c = window.Stimulus.getControllerForElementAndIdentifier(document.querySelector('.rt-field'), 'table-editor')
@@ -131,7 +158,7 @@ begin
   check failures, "alignement transmis", payload["col_aligns"][0] == "center"
   check failures, "texte saisi transmis", payload.dig("data", "0-0").to_s.include?("X")
 
-  puts "\n6. toujours vivant après toutes les opérations"
+  puts "\n8. toujours vivant après toutes les opérations"
   check failures, "page réactive", browser.evaluate("2 + 2") == 4
   check failures, "aucune exception JS", exceptions.empty?
 ensure
