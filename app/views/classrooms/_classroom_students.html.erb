@@ -16,11 +16,23 @@
           <%= student.first_name %>
         </h1>
       <% end %>
-      <div class="edit-student">
-        <!-- Button trigger modal -->
-        <button type="button" class="bg-white" data-bs-toggle="modal" data-bs-target="#exampleModal-<%= student.id%>" >
+      <div class="edit-student dropdown">
+        <!-- Menu des actions sur l'élève -->
+        <button type="button" class="bg-white" id="studentActions-<%= student.id %>"
+                data-bs-toggle="dropdown" aria-expanded="false" aria-label="Actions sur <%= student.first_name %>">
           <i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" ></i>
         </button>
+        <ul class="dropdown-menu" aria-labelledby="studentActions-<%= student.id %>">
+          <li>
+            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#exampleModal-<%= student.id%>">
+              Modifier le prénom
+            </button>
+          </li>
+          <li>
+            <%= link_to "Changer de classe", new_student_transfer_path(student),
+                        class: "dropdown-item", data: { turbo_frame: "general_modal" } %>
+          </li>
+        </ul>
       </div>
       <%# MODAL STUDENT EDIT %>
       <div class="modal fade" id="exampleModal-<%=student.id %>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

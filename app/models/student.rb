@@ -19,6 +19,12 @@ class Student < ApplicationRecord
     Domain.includes(:skills).where(grade:)
   end
 
+  # Restreindre le transfert au même niveau garde l'historique cohérent :
+  # work_plans, results et belts sont indexés sur le grade.
+  def transferable_classrooms
+    classroom.sibling_classrooms
+  end
+
   def belt_status(domain, level) # return true if belt is completed
     Belt.completed.where(student: self, domain:, level:).count.positive?
   end
