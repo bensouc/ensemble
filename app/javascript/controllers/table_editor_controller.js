@@ -27,6 +27,15 @@ const TOOLBAR_INACTIVE_HINT =
 const MAX_ROWS = 60
 const MAX_COLUMNS = 20
 
+// Le partial pose toujours `rt-table rt-table--editor table-editor` sur le même
+// nœud : `.table-editor` ne peut jamais matcher seule, et le mot désigne par
+// ailleurs l'identifiant Stimulus de ce contrôleur. On ne parle donc que le
+// vocabulaire `rt-`. Le balisage historique, lui, n'atteint jamais l'éditeur :
+// ActionText régénère le partial à chaque rendu.
+const ROOT = ".rt-table--editor"
+const CELL = ".rt-cell"
+const TOOLBAR_BUTTON = ".rt-table__toolbar button"
+
 // Le DOM restitue toujours une couleur en `rgb(...)`, alors que le modèle
 // n'accepte que les teintes de sa liste blanche, en hexadécimal.
 function toHex(value) {
@@ -42,6 +51,7 @@ export default class extends Controller {
     this.inFlight = new Set()
     this.activeCell = null
     this.resubmitting = false
+    this.sgidCache = new WeakMap()
 
     this.hydrate = this.hydrate.bind(this)
     this.onMousedown = this.onMousedown.bind(this)
@@ -80,8 +90,10 @@ export default class extends Controller {
     // au mousedown sur une cellule et avant un déplacement au clavier. Les
     // deux passes ci-dessous ne servent qu'à l'affordance visuelle et sont
     // bornées.
+    // Une seule passe, différée : au moment du connect, Trix n'a pas encore
+    // défini ses custom elements, le champ est vide et un hydrate synchrone ne
+    // trouverait rien.
     requestAnimationFrame(() => this.hydrate())
-    this.hydrate()
   }
 
   disconnect() {
@@ -104,7 +116,7 @@ export default class extends Controller {
 
   hydrate() {
     this.element
-      .querySelectorAll(".rt-table--editor .rt-cell:not([contenteditable]), .table-editor td:not([contenteditable])")
+      .querySelectorAll(`${ROOT} ${CELL}:not([contenteditable])`)
       .forEach((cell) => cell.setAttribute("contenteditable", "true"))
   }
 
@@ -146,7 +158,7 @@ export default class extends Controller {
       event.preventDefault()
       event.stopPropagation()
 
-      const sgid = this.sgidFor(button.closest(".rt-table--editor, .table-editor"))
+      const sgid = this.sgidFor(button.closest(ROOT))
       const root = this.liveRootFor(sgid)
       if (root) this.runAction(root, sgid, button)
       return
@@ -165,7 +177,7 @@ export default class extends Controller {
     // sans empêcher l'action par défaut : la saisie dans la cellule fonctionne.
     event.stopPropagation()
 
-    const root = cell.closest(".rt-table--editor, .table-editor")
+    const root = cell.closest(ROOT)
 
     switch (event.key) {
       case "Tab":
@@ -194,15 +206,15 @@ export default class extends Controller {
         // n'aille mordre sur le balisage du tableau.
         if (!cell.textContent.trim()) event.preventDefault()
         return
-      default:
-        if ((event.metaKey || event.ctrlKey) && root) {
-          const flag = { b: "b", i: "i", u: "u" }[event.key.toLowerCase()]
-          if (flag) {
-            event.preventDefault()
-            cell.classList.toggle(`rt-c-${flag}`)
-            this.scheduleSave(this.sgidFor(root), { immediate: true })
-          }
-        }
+      default: {
+        if (!(event.metaKey || event.ctrlKey) || !root) return
+
+        const flag = STYLE_FLAGS.find((f) => f === event.key.toLowerCase())
+        if (!flag) return
+
+        event.preventDefault()
+        this.toggleStyle(root, cell, flag)
+      }
     }
   }
 
@@ -211,7 +223,8 @@ export default class extends Controller {
     if (!cell) return
 
     event.stopPropagation()
-    this.scheduleSave(this.sgidFor(cell.closest(".rt-table--editor, .table-editor")))
+    // Le sgid est déjà connu depuis la prise de focus : inutile de le relire.
+    this.scheduleSave(this.activeCell?.sgid ?? this.sgidFor(cell.closest(ROOT)))
   }
 
   onPaste(event) {
@@ -227,7 +240,7 @@ export default class extends Controller {
 
     event.preventDefault()
 
-    const root = cell.closest(".rt-table--editor, .table-editor")
+    const root = cell.closest(ROOT)
     if (!root) return
 
     if (isGrid) {
@@ -251,7 +264,7 @@ export default class extends Controller {
     const cell = this.cellFor(event.target)
     if (!cell) return
 
-    const root = cell.closest(".rt-table--editor, .table-editor")
+    const root = cell.closest(ROOT)
     const position = this.positionOf(cell)
     this.activeCell = root && position ? { sgid: this.sgidFor(root), ...position } : null
 
@@ -280,7 +293,10 @@ export default class extends Controller {
 
     const color = cell ? toHex(cell.style.color) : null
     bar.querySelectorAll(".rt-t-color").forEach((chip) => {
-      chip.classList.toggle("rt-is-on", Boolean(color) && toHex(getComputedStyle(chip).backgroundColor) === color)
+      // `style.backgroundColor` lit le CSSOM inline (le partial pose la teinte
+      // en dur) : pas de recalcul de style forcé, contrairement à
+      // getComputedStyle appelé sur les huit pastilles à chaque déplacement.
+      chip.classList.toggle("rt-is-on", Boolean(color) && toHex(chip.style.backgroundColor) === color)
     })
   }
 
@@ -288,14 +304,18 @@ export default class extends Controller {
     const cell = this.cellFor(event.target)
     if (!cell) return
 
-    const root = cell.closest(".rt-table--editor, .table-editor")
+    const root = cell.closest(ROOT)
     if (!root) return
 
     // Le focus reste-t-il dans ce tableau ? Si oui on enregistre, mais sans
     // resynchroniser l'instantané : cela re-rendrait la pièce jointe et
     // volerait le focus à la cellule qui vient de le recevoir.
+    // Rester dans le même tableau (Tab, flèches) ne justifie pas un
+    // aller-retour : sinon parcourir une ligne de dix colonnes envoyait dix
+    // PATCH concurrents sur le même enregistrement, et annulait le debounce de
+    // la frappe à chaque saut. On ne ferme que lorsque le focus sort vraiment.
     const staysInside = event.relatedTarget && root.contains(event.relatedTarget)
-    this.scheduleSave(this.sgidFor(root), { immediate: true, syncSnapshot: !staysInside })
+    this.scheduleSave(this.sgidFor(root), { immediate: !staysInside, syncSnapshot: !staysInside })
 
     if (!staysInside) this.setMainToolbarInactive(false)
   }
@@ -374,12 +394,12 @@ export default class extends Controller {
       else return
     }
     else if (classes.contains("rt-t-color")) {
-      if (cell) cell.style.color = getComputedStyle(button).backgroundColor
+      if (cell) cell.style.color = button.style.backgroundColor
       else return
     }
     else {
       const flag = STYLE_FLAGS.find((f) => classes.contains(`rt-t-style-${f}`))
-      if (flag && cell) cell.classList.toggle(`rt-c-${flag}`)
+      if (flag && cell) this.toggleStyle(root, cell, flag)
       else return
     }
 
@@ -475,9 +495,17 @@ export default class extends Controller {
 
   // --- Manipulation de grille ----------------------------------------------
 
+  // Chemin unique pour le bouton et le raccourci clavier : la duplication avait
+  // déjà divergé, ⌘B ne rafraîchissant pas l'état visuel des boutons.
+  toggleStyle(root, cell, flag) {
+    cell.classList.toggle(`rt-c-${flag}`)
+    this.syncCellControls(root)
+    this.scheduleSave(this.sgidFor(root), { immediate: true })
+  }
+
   buildCell(tagName, alignment) {
     const cell = document.createElement(tagName)
-    cell.className = `rt-cell table-cell${alignment && alignment !== "left" ? ` rt-al-${alignment}` : ""}`
+    cell.className = `rt-cell${alignment && alignment !== "left" ? ` rt-al-${alignment}` : ""}`
     cell.setAttribute("contenteditable", "true")
     return cell
   }
@@ -594,7 +622,9 @@ export default class extends Controller {
     const request = new FetchRequest("patch", `/tables/${encodeURIComponent(sgid)}`, {
       contentType: "application/json",
       responseKind: "json",
-      body: JSON.stringify({ method: "replace", table: this.readState(root) })
+      // Le rendu du partial coûte deux appels de helper par cellule : on ne le
+      // demande que lorsqu'on va s'en servir.
+      body: JSON.stringify({ method: "replace", snapshot: syncSnapshot, table: this.readState(root) })
     })
 
     const promise = request
@@ -676,40 +706,48 @@ export default class extends Controller {
     if (!sgid) return null
 
     for (const figure of this.element.querySelectorAll("figure[data-trix-attachment]")) {
-      let candidate = null
-      try {
-        candidate = JSON.parse(figure.getAttribute("data-trix-attachment")).sgid
-      } catch {
-        continue
-      }
-      if (candidate === sgid) return figure.querySelector(".rt-table--editor, .table-editor")
+      if (this.sgidOfFigure(figure) === sgid) return figure.querySelector(ROOT)
     }
     return null
+  }
+
+  // `data-trix-attachment` sérialise TOUS les attributs de la pièce jointe,
+  // dont `content` — soit le HTML complet du tableau. Le parser à chaque frappe
+  // pour en extraire une chaîne coûtait plusieurs kilo-octets par appel, et un
+  // seul clic en déclenche une dizaine. Le sgid d'une figure ne changeant
+  // jamais, une WeakMap suffit : elle se vide avec les figures détachées.
+  sgidOfFigure(figure) {
+    if (this.sgidCache.has(figure)) return this.sgidCache.get(figure)
+
+    let sgid = null
+    try {
+      sgid = JSON.parse(figure.getAttribute("data-trix-attachment")).sgid || null
+    } catch {
+      sgid = null
+    }
+    this.sgidCache.set(figure, sgid)
+    return sgid
   }
 
   // `id` ne survit pas au sanitizer de Trix : le sgid est relu depuis le JSON
   // que Trix pose sur le <figure> de la pièce jointe.
   sgidFor(root) {
-    const figure = root.closest("figure[data-trix-attachment]")
-    if (!figure) return null
+    const figure = root?.closest("figure[data-trix-attachment]")
+    return figure ? this.sgidOfFigure(figure) : null
+  }
 
-    try {
-      return JSON.parse(figure.getAttribute("data-trix-attachment")).sgid || null
-    } catch {
-      return null
-    }
+  closestIn(node, selector) {
+    const element = node instanceof Element ? node : node?.parentElement
+    const found = element?.closest(selector)
+    return found && this.element.contains(found) ? found : null
   }
 
   cellFor(node) {
-    const element = node instanceof Element ? node : node?.parentElement
-    const cell = element?.closest(".rt-cell, .table-cell, .table-editor td, .table-editor th")
-    return cell && this.element.contains(cell) ? cell : null
+    return this.closestIn(node, CELL)
   }
 
   buttonFor(node) {
-    const element = node instanceof Element ? node : node?.parentElement
-    const button = element?.closest(".rt-table__toolbar button, .table-toolbar button")
-    return button && this.element.contains(button) ? button : null
+    return this.closestIn(node, TOOLBAR_BUTTON)
   }
 
   // Résout la position mémorisée sur le DOM vivant du tableau concerné.

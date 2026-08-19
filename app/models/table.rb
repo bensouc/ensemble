@@ -16,6 +16,10 @@ class Table < ApplicationRecord
   MAX_COLUMNS = 20
   MAX_CELL_LENGTH = 2_000
   ALIGNMENTS = %w[left center right].freeze
+  # Format d'une clé de grille creuse : "<ligne>-<colonne>".
+  CELL_KEY = /\A\d+-\d+\z/
+  # Les trois grilles creuses, décalées et purgées ensemble.
+  SPARSE_ATTRIBUTES = %i[data cell_styles cell_colors].freeze
   CELL_STYLE_FLAGS = %w[b i u].freeze
 
   # La couleur d'une cellule est écrite en `style` inline : c'est le seul canal
@@ -117,11 +121,10 @@ class Table < ApplicationRecord
     self.rows    = int_within(attrs[:rows], 1, MAX_ROWS, rows)
     self.columns = int_within(attrs[:columns], 1, MAX_COLUMNS, columns)
     self.header_row  = to_boolean(attrs[:header_row]) if attrs.key?(:header_row)
-    self.data        = sanitized_data(attrs[:data]) if attrs.key?(:data)
-    self.cell_styles = sanitized_cell_styles(attrs[:cell_styles]) if attrs.key?(:cell_styles)
-    self.cell_colors = sanitized_cell_colors(attrs[:cell_colors]) if attrs.key?(:cell_colors)
-    self.col_aligns  = sanitized_aligns(attrs[:col_aligns]) if attrs.key?(:col_aligns)
-    prune_out_of_range!
+    self.data        = sanitized_data(attrs.fetch(:data, data))
+    self.cell_styles = sanitized_cell_styles(attrs.fetch(:cell_styles, cell_styles))
+    self.cell_colors = sanitized_cell_colors(attrs.fetch(:cell_colors, cell_colors))
+    self.col_aligns  = sanitized_aligns(attrs.fetch(:col_aligns, col_aligns)).first(columns)
     save!
     self
   end
@@ -140,17 +143,15 @@ class Table < ApplicationRecord
 
   # Réécrit toutes les clés de `data` et `cell_styles` via le bloc fourni.
   # Le bloc reçoit [row, col] et renvoie la nouvelle position, ou nil pour supprimer.
-  def remap!
-    self.data = remap_hash(data) { |r, c| yield(r, c) }
-    self.cell_styles = remap_hash(cell_styles) { |r, c| yield(r, c) }
-    self.cell_colors = remap_hash(cell_colors) { |r, c| yield(r, c) }
+  def remap!(&block)
+    SPARSE_ATTRIBUTES.each { |name| public_send(:"#{name}=", remap_hash(public_send(name), &block)) }
   end
 
   def remap_hash(hash)
     return {} unless hash.is_a?(Hash)
 
     hash.each_with_object({}) do |(cell_key, value), result|
-      next unless cell_key.to_s.match?(/\A\d+-\d+\z/)
+      next unless cell_key.to_s.match?(CELL_KEY)
 
       row, col = cell_key.to_s.split("-", 2).map(&:to_i)
       position = yield(row, col)
@@ -158,51 +159,33 @@ class Table < ApplicationRecord
     end
   end
 
-  def prune_out_of_range!
-    self.data = data.select { |k, _| in_range?(k) } if data.is_a?(Hash)
-    self.cell_styles = cell_styles.select { |k, _| in_range?(k) } if cell_styles.is_a?(Hash)
-    self.cell_colors = cell_colors.select { |k, _| in_range?(k) } if cell_colors.is_a?(Hash)
-    self.col_aligns = Array(col_aligns).first(columns)
-  end
+  # Un seul parcours par grille : format de clé, bornes et filtre de valeur.
+  # Auparavant chaque hash était reconstruit deux fois, avec deux notions
+  # distinctes de « clé valide » à garder cohérentes.
+  def rebuild_cells(hash)
+    return {} unless hash.is_a?(Hash)
 
-  def in_range?(cell_key)
-    return false unless cell_key.to_s.match?(/\A\d+-\d+\z/)
+    hash.each_with_object({}) do |(cell_key, raw), result|
+      next unless cell_key.to_s.match?(CELL_KEY)
 
-    row, col = cell_key.to_s.split("-", 2).map(&:to_i)
-    row < rows && col < columns
+      row, col = cell_key.to_s.split("-", 2).map(&:to_i)
+      next unless row < rows && col < columns
+
+      value = yield(raw)
+      result[key(row, col)] = value unless value.nil?
+    end
   end
 
   def sanitized_data(incoming)
-    return {} unless incoming.is_a?(Hash)
-
-    incoming.each_with_object({}) do |(cell_key, value), result|
-      next unless cell_key.to_s.match?(/\A\d+-\d+\z/)
-
-      text = value.to_s.first(MAX_CELL_LENGTH)
-      result[cell_key.to_s] = text unless text.empty?
-    end
+    rebuild_cells(incoming) { |value| value.to_s.first(MAX_CELL_LENGTH).presence }
   end
 
   def sanitized_cell_styles(incoming)
-    return {} unless incoming.is_a?(Hash)
-
-    incoming.each_with_object({}) do |(cell_key, flags), result|
-      next unless cell_key.to_s.match?(/\A\d+-\d+\z/)
-
-      kept = Array(flags).map(&:to_s) & CELL_STYLE_FLAGS
-      result[cell_key.to_s] = kept if kept.any?
-    end
+    rebuild_cells(incoming) { |flags| (Array(flags).map(&:to_s) & CELL_STYLE_FLAGS).presence }
   end
 
   def sanitized_cell_colors(incoming)
-    return {} unless incoming.is_a?(Hash)
-
-    incoming.each_with_object({}) do |(cell_key, color), result|
-      next unless cell_key.to_s.match?(/\A\d+-\d+\z/)
-
-      value = color.to_s.upcase
-      result[cell_key.to_s] = value if TEXT_COLORS.include?(value)
-    end
+    rebuild_cells(incoming) { |color| color.to_s.upcase.presence_in(TEXT_COLORS) }
   end
 
   def sanitized_aligns(incoming)

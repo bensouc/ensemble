@@ -150,13 +150,13 @@ function button({ label, glyph, attribute, action, key, extraClass = "" }) {
     (action ? ` data-trix-action="${action}"` : "") +
     (key ? ` data-trix-key="${key}"` : "") +
     ` title="${label}${hint}" aria-label="${label}${hint}" tabindex="-1">` +
-    `${glyph}<span class="rt-tb__sr">${label}</span></button>`
+    `${glyph}<span class="visually-hidden">${label}</span></button>`
 }
 
 function headingButton(attribute, level, label) {
   return `<button type="button" class="trix-button rt-tb__btn rt-tb__btn--text"
     data-trix-attribute="${attribute}" title="${label}" aria-label="${label}" tabindex="-1">
-    <span class="rt-tb__glyph rt-tb__glyph--heading" aria-hidden="true">H${level}</span><span class="rt-tb__sr">${label}</span>
+    <span class="rt-tb__glyph rt-tb__glyph--heading" aria-hidden="true">H${level}</span><span class="visually-hidden">${label}</span>
   </button>`
 }
 
@@ -175,7 +175,7 @@ function palette({ attribute, label, glyph, swatches, clearLabel }) {
       title="${label}" aria-label="${label}" tabindex="-1">
       ${glyph}
       <span class="rt-tb__swatch" data-trix-palette-target="preview" aria-hidden="true"></span>
-      <span class="rt-tb__sr">${label}</span>
+      <span class="visually-hidden">${label}</span>
     </button>
     <div class="rt-tb__popover" data-trix-palette-target="panel" role="dialog" aria-label="${label}" hidden>
       <div class="rt-tb__chips">${chips}</div>

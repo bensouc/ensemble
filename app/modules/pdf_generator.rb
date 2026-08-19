@@ -96,20 +96,31 @@ module PdfGenerator
       end
       Ferrum::Browser.new(**opts)
     else
-      Rails.logger.info "[PdfGenerator] Lancement de Chrome: #{CHROME_PATH} (exists: #{File.exist?(CHROME_PATH.to_s)})"
-      Ferrum::Browser.new(
-        browser_path: CHROME_PATH,
-        headless: true,
-        timeout: 120,
-        process_timeout: 120,
-        browser_options: {
-          "no-sandbox": true,
-          "disable-setuid-sandbox": true,
-          "disable-dev-shm-usage": true,
-          "disable-gpu": true
-        }
-      )
+      local_browser(retries: retries)
     end
+  end
+
+  # Chrome lancé en local, sans passer par CHROME_URL.
+  #
+  # Extrait de create_browser pour être appelable seul : un Chrome distant ne
+  # voit pas le système de fichiers de Rails, il ne peut donc pas ouvrir une
+  # page `file://` — ce dont ont besoin les bancs d'essai de scripts/.
+  # Y vivent la détection du binaire (config/initializers/ferrum.rb), les flags
+  # indispensables en conteneur et le retry sur démarrage lent.
+  def self.local_browser(retries: 2, **overrides)
+    Rails.logger.info "[PdfGenerator] Lancement de Chrome: #{CHROME_PATH} (exists: #{File.exist?(CHROME_PATH.to_s)})"
+    Ferrum::Browser.new(**{
+      browser_path: CHROME_PATH,
+      headless: true,
+      timeout: 120,
+      process_timeout: 120,
+      browser_options: {
+        "no-sandbox": true,
+        "disable-setuid-sandbox": true,
+        "disable-dev-shm-usage": true,
+        "disable-gpu": true
+      }
+    }.merge(overrides))
   rescue Ferrum::ProcessTimeoutError => e
     retries -= 1
     if retries >= 0

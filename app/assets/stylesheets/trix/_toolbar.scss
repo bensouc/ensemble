@@ -6,18 +6,8 @@
 // gagne. Corollaire : toute propriété posée par trix.css et non redéclarée ici
 // subsiste — d'où les remises à zéro explicites (float, border, margin…).
 
-// Libellé accessible réservé aux lecteurs d'écran.
-.rt-tb__sr {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
-}
+// Les libellés lecteur d'écran utilisent `.visually-hidden`, l'utilitaire
+// Bootstrap déjà chargé et déjà employé ailleurs dans l'app.
 
 trix-toolbar {
   margin: 0 0 10px;

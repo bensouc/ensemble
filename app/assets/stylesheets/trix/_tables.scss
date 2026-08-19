@@ -34,16 +34,8 @@
   border-radius: var(--rt-radius-sm, 8px);
   overflow: hidden;
 
-  // `.table` (work_plans/_challenges.scss) impose `color: #363636` et
-  // `background-color: #fff`, et Bootstrap peint le fond de chaque cellule via
-  // ses variables. Résultat : une couleur ou un surlignage appliqué au tableau
-  // entier depuis la toolbar Trix n'était jamais visible. On rend la grille
-  // transparente et héritante, pour ces tableaux seulement.
   color: inherit;
   background-color: transparent;
-  --bs-table-color: inherit;
-  --bs-table-bg: transparent;
-  --bs-table-accent-bg: transparent;
 }
 
 .rt-table__grid .rt-cell {

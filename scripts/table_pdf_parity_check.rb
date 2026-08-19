@@ -7,36 +7,30 @@
 # Le PDF a sa propre feuille (`pdf.scss`, autonome, sans dépendance réseau) :
 # les styles de tableau y avaient été dupliqués, puis les deux rendus ont
 # divergé — plus de fond d'en-tête, ni alignement, ni style de cellule côté PDF.
-# Depuis, `pdf.scss` importe `trix/tables`, la partie partagée. Ce script vérifie
-# que la parité tient, en rendant le MÊME balisage sous les deux feuilles et en
-# comparant les styles calculés par un vrai navigateur.
-require "ferrum"
+# Depuis, `pdf.scss` importe `trix/tables`, la partie partagée. Ce script rend le
+# MÊME balisage sous les deux feuilles et compare les styles calculés par un
+# vrai navigateur.
 require "json"
+require_relative "support/browser_harness"
 
-HARNESS = Rails.root.join("tmp/table_pdf_parity")
-FileUtils.mkdir_p(HARNESS)
+SHEETS = %w[application pdf].freeze
 
-# Un tableau qui exerce tout : en-tête, alignement, styles de cellule.
-markup = nil
-ActiveRecord::Base.transaction do
-  table = Table.create!(
-    rows: 2, columns: 3, header_row: true,
-    data: { "0-0" => "Mot", "0-1" => "Nature", "1-0" => "chat" },
-    cell_styles: { "1-0" => %w[b i] },
-    cell_colors: { "1-0" => "#F24150" },
-    col_aligns: %w[left center right]
-  )
-  markup = ApplicationController.render(partial: "tables/table", locals: { table: table }, formats: [:html])
-  raise ActiveRecord::Rollback
-end
+harness = BrowserHarness::Runner.new("table_pdf_parity")
 
-%w[application pdf].each do |sheet|
-  File.write(HARNESS.join("#{sheet}.css"), Rails.application.assets["#{sheet}.css"].to_s)
-  File.write(HARNESS.join("#{sheet}.html"), <<~HTML)
-    <!doctype html><html lang="fr"><head><meta charset="utf-8">
-    <link rel="stylesheet" href="./#{sheet}.css"></head>
-    <body><div class="cont-challenge"><div class="trix-content">#{markup}</div></div></body></html>
-  HTML
+# Un tableau qui exerce tout : en-tête, alignement, styles et couleur de cellule.
+markup = harness.sample_table(
+  rows: 2, columns: 3, header_row: true,
+  data: { "0-0" => "Mot", "0-1" => "Nature", "1-0" => "chat" },
+  cell_styles: { "1-0" => %w[b i] },
+  cell_colors: { "1-0" => "#F24150" },
+  col_aligns: %w[left center right]
+) { |table| ApplicationController.render(partial: "tables/table", locals: { table: table }, formats: [:html]) }
+
+SHEETS.each do |sheet|
+  harness.dump_stylesheet(sheet)
+  harness.page(sheet,
+               head: %(<link rel="stylesheet" href="./#{sheet}.css">),
+               body: %(<div class="cont-challenge"><div class="trix-content">#{markup}</div></div>))
 end
 
 # Propriétés qui portent la différence visible entre les deux rendus.
@@ -64,37 +58,23 @@ PROBE = <<~JS
   })()
 JS
 
-browser = Ferrum::Browser.new(headless: true, timeout: 20)
 results = {}
-begin
-  %w[application pdf].each do |sheet|
-    browser.go_to("file://#{HARNESS.join("#{sheet}.html")}")
+harness.with_browser do |browser|
+  SHEETS.each do |sheet|
+    browser.go_to(harness.url(sheet))
     sleep 0.6
     results[sheet] = JSON.parse(browser.evaluate(PROBE))
   end
-ensure
-  browser.quit
 end
 
-failures = []
 results["application"].each do |zone, expected|
   actual = results["pdf"][zone]
-  expected.each do |prop, value|
-    same = actual[prop] == value
-    failures << "#{zone}.#{prop}" unless same
-    next if same
-
-    puts format("  %-28s éditeur=%-22s pdf=%s", "#{zone}.#{prop}", value, actual[prop])
+  expected.each do |property, value|
+    harness.check("#{zone}.#{property}", actual[property] == value) unless actual[property] == value
   end
 end
 
-puts "\nRéférence éditeur (en-tête) : #{results['application']['headerCell'].slice('backgroundColor', 'fontWeight', 'borderBottomWidth')}"
-puts "Référence éditeur (cellule) : #{results['application']['styledCell'].slice('fontWeight', 'fontStyle')}"
+puts "Référence éditeur (en-tête) : #{results['application']['headerCell'].slice('backgroundColor', 'fontWeight', 'borderBottomWidth')}"
+puts "Référence éditeur (cellule) : #{results['application']['styledCell'].slice('fontWeight', 'fontStyle', 'color')}"
 puts "Alignement 3e colonne       : #{results['application']['headerRight']['textAlign']}"
-
-if failures.empty?
-  puts "\nParité éditeur / PDF : identique sur toutes les propriétés contrôlées."
-else
-  puts "\n#{failures.size} écart(s) : #{failures.join(', ')}"
-end
-exit(failures.empty? ? 0 : 1)
+harness.report!

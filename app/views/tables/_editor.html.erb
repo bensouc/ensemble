@@ -30,32 +30,32 @@
   L'attribut est préfixé `data-trix`, donc il survit au sanitizer, et il figure
   dans `unserializableAttributeNames`, donc il ne pollue pas le HTML stocké.
 %>
-<div class="rt-table rt-table--editor table-editor" data-trix-mutable="true">
+<div class="rt-table rt-table--editor" data-trix-mutable="true">
   <%#
     Deux corps distincts : ce qui touche à la STRUCTURE du tableau, puis ce qui
     touche à la CELLULE courante. Les deux familles d'actions n'ont ni la même
     portée ni le même moment d'usage — les mélanger sur une seule ligne obligeait
     à relire les libellés à chaque fois.
   %>
-  <div class="rt-table__toolbar table-toolbar">
+  <div class="rt-table__toolbar">
     <span class="rt-table__bar-label">Mise en page</span>
     <div class="rt-table__bar">
       <div class="rt-table__group">
         <button class="rt-table__btn rt-table__btn--wide rt-t-header<%= ' rt-is-on' if table.header_row? %>">En-tête</button>
       </div>
 
-      <div class="rt-table__group table-toolbar-group">
-        <span class="rt-table__label table-toolbar-label">Ligne</span>
+      <div class="rt-table__group">
+        <span class="rt-table__label">Ligne</span>
         <button class="rt-table__btn rt-t-row-before">↑+</button>
-        <button class="rt-table__btn rt-t-row-after table-add-row">↓+</button>
-        <button class="rt-table__btn rt-table__btn--danger rt-t-row-delete table-remove-row">✕</button>
+        <button class="rt-table__btn rt-t-row-after">↓+</button>
+        <button class="rt-table__btn rt-table__btn--danger rt-t-row-delete">✕</button>
       </div>
 
-      <div class="rt-table__group table-toolbar-group">
-        <span class="rt-table__label table-toolbar-label">Colonne</span>
+      <div class="rt-table__group">
+        <span class="rt-table__label">Colonne</span>
         <button class="rt-table__btn rt-t-col-before">←+</button>
-        <button class="rt-table__btn rt-t-col-after table-add-column">→+</button>
-        <button class="rt-table__btn rt-table__btn--danger rt-t-col-delete table-remove-column">✕</button>
+        <button class="rt-table__btn rt-t-col-after">→+</button>
+        <button class="rt-table__btn rt-table__btn--danger rt-t-col-delete">✕</button>
       </div>
     </div>
 
@@ -85,14 +85,14 @@
   </div>
 
   <div class="rt-table__scroll">
-    <table class="rt-table__grid table is-bordered">
+    <table class="rt-table__grid">
       <% (0...table.rows).each do |r| %>
         <tr>
           <% (0...table.columns).each do |c| %>
             <%= tag.public_send(
                   table.header_row? && r.zero? ? :th : :td,
                   table.cell(r, c),
-                  class: table_cell_classes(table, r, c, editing: true),
+                  class: table_cell_classes(table, r, c),
                   style: table_cell_style(table, r, c),
                   contenteditable: "true"
                 ) %>

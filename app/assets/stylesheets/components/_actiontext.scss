@@ -8,17 +8,8 @@
 //
 // Ce fichier ne conserve que le legacy dont la portée dépasse l'éditeur.
 
-// ---------------------------------------------------------------------------
-// LEGACY — cible les <button> situés DANS l'éditeur de l'exercice
-// (`#challenge_content` est l'id du <trix-editor> généré pour Challenge#content),
-// c'est-à-dire les boutons de la toolbar des tableaux et le bouton « supprimer »
-// d'une pièce jointe. Le sélecteur porte un id : il bat les règles de classe.
-// Conservé tel quel — son nettoyage fait partie de la reprise des tableaux.
-// ---------------------------------------------------------------------------
-#challenge_content {
-  button[type="button"] {
-    margin: 10px 10px;
-    padding: 10px;
-    border-radius: 15px;
-  }
-}
+// Rien d'autre ici : la règle `#challenge_content button[type="button"]` qui y
+// vivait ne matchait plus aucun bouton — Trix retire l'attribut `type` du
+// balisage des pièces jointes (mesuré : 0 sur 22 boutons de l'éditeur). Elle
+// obligeait par ailleurs chaque composant rendu dans l'éditeur à dupliquer son
+// sélecteur avec un préfixe d'id pour la battre.

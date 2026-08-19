@@ -8,8 +8,8 @@ module TablesHelper
   # Trix, qui ne conserve que `style href src width height class language`.
   # `class` est donc le seul canal disponible — et il l'est aussi côté
   # affichage, où c'est le sanitizer de Rails qui s'applique.
-  def table_cell_classes(table, row, col, editing: false)
-    classes = ["rt-cell", editing ? "table-cell" : "table-cell-display"]
+  def table_cell_classes(table, row, col)
+    classes = ["rt-cell"]
 
     align = table.align_for(col)
     classes << "rt-al-#{align}" unless align == "left"

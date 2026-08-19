@@ -144,11 +144,9 @@
   white-space: nowrap;
 }
 
-// Le sélecteur porte l'élément pour battre `button { padding: 10px }` et
-// `#challenge_content button[type="button"]`, qui vise les boutons situés dans
-// l'éditeur — c'est-à-dire précisément ceux-ci.
-.rt-table__toolbar button.rt-table__btn,
-#challenge_content .rt-table__toolbar button.rt-table__btn {
+// Le sélecteur porte l'élément pour battre la globale `button { padding: 10px }`
+// de work_plans/_challenges.scss.
+.rt-table__toolbar button.rt-table__btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -199,8 +197,7 @@
 // Pastilles de couleur de la barre du tableau. Leur teinte est posée en `style`
 // inline (elle bat donc toute règle d'ici) : c'est aussi ce que le JS relit,
 // faute de pouvoir la transporter par un `data-*` dans une pièce jointe.
-.rt-table__toolbar button.rt-table__chip,
-#challenge_content .rt-table__toolbar button.rt-table__chip {
+.rt-table__toolbar button.rt-table__chip {
   width: 16px;
   min-width: 16px;
   height: 16px;
