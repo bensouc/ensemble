@@ -231,6 +231,11 @@ class SharedTableRepair
   # Le corps réécrit ne doit différer QUE par le sgid : on remet l'ancien à la
   # place du nouveau et on doit retrouver l'original au caractère près.
   def verify_rewrite!(original, updated, old_sgid, new_sgid, reference)
+    if updated == original
+      raise VerificationError,
+            "aucun sgid remplacé sur l'exercice ##{reference.challenge.id} — le sélecteur n'a rien trouvé."
+    end
+
     return if updated.gsub(new_sgid, old_sgid) == original
 
     raise VerificationError,
@@ -238,12 +243,27 @@ class SharedTableRepair
   end
 
   # Relecture depuis la base, pas depuis l'objet en mémoire.
-  def verify_persisted!(reference, copy)
-    body = ActionText::RichText.find(reference.rich_text.id).body.to_html
-    raise VerificationError, "l'ancien sgid subsiste sur l'exercice ##{reference.challenge.id}." if body.include?(reference.sgid)
+  #
+  # On inspecte les sgid PORTÉS PAR LES PIÈCES JOINTES, pas le corps comme une
+  # chaîne : jusqu'à la refonte de l'éditeur, le partial de tableau posait
+  # `id="table-<sgid>"`, et ce HTML est figé dans l'attribut `content` de la
+  # pièce jointe. Un `include?` sur le corps y retrouvait donc l'ancien sgid et
+  # concluait à tort à un échec. Cet instantané est sans importance : ActionText
+  # régénère le partial à chaque rendu.
+  def attachment_sgids(rich_text)
+    ActionText::Fragment.wrap(rich_text.body.to_html)
+                        .find_all("action-text-attachment[sgid]")
+                        .map { |node| node["sgid"] }
+  end
 
-    resolved = body.scan(/sgid="([^"]+)"/).flatten.filter_map { |sgid| table_for(sgid) }
-    return if resolved.map(&:id).include?(copy.id)
+  def verify_persisted!(reference, copy)
+    sgids = attachment_sgids(ActionText::RichText.find(reference.rich_text.id))
+
+    if sgids.include?(reference.sgid)
+      raise VerificationError, "l'ancien sgid subsiste sur l'exercice ##{reference.challenge.id}."
+    end
+
+    return if sgids.filter_map { |sgid| table_for(sgid) }.map(&:id).include?(copy.id)
 
     raise VerificationError, "le tableau ##{copy.id} n'est pas résolvable depuis l'exercice ##{reference.challenge.id}."
   end
