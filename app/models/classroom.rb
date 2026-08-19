@@ -34,6 +34,16 @@ class Classroom < ApplicationRecord
     name == "" ? grade.grade_level : name
   end
 
+  def teachers
+    [user, *shared_classrooms.map(&:user)].uniq
+  end
+
+  # Les autres classes du même niveau. Un grade appartenant à une école, elles
+  # sont de fait dans la même école que celle-ci.
+  def sibling_classrooms
+    grade.classrooms.where.not(id: id)
+  end
+
   def completed_results_by_domain(domain)
     # {student_id: Result.where(skills: domain.skills, student: student)}
     results = {}

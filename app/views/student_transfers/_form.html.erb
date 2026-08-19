@@ -1,0 +1,25 @@
+<% if target_classrooms.empty? %>
+  <p class='mb-0'>
+    Aucune autre classe de niveau <strong><%= student.grade.name %></strong> dans l'école.
+    Créez-en une pour pouvoir y transférer <%= student.first_name %>.
+  </p>
+<% else %>
+  <p>
+    <%= student.first_name %> quitte <strong><%= student.classroom.safe_name %></strong>.
+    Son historique (plans de travail, ceintures, résultats) le suit.
+  </p>
+  <%# turbo_frame: "_top" : la redirection doit remplacer la page, pas le frame. %>
+  <%= simple_form_for student, url: student_transfer_path(student), method: :post,
+                      html: { novalidate: false, data: { turbo_frame: "_top" } } do |form| %>
+    <%= form.input :classroom_id,
+                   collection: target_classrooms.map { |target| [classroom_transfer_label(target), target.id] },
+                   include_blank: "Choisissez la classe d'accueil",
+                   label: false,
+                   required: true,
+                   input_html: { class: 'area grow' },
+                   wrapper_html: { class: 'mb-3' } %>
+    <div class='d-flex flex-row-reverse mt-4'>
+      <%= form.submit "Transférer", class: "area btn-valid" %>
+    </div>
+  <% end %>
+<% end %>
