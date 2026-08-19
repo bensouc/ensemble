@@ -9,7 +9,7 @@ class StudentPolicy < ApplicationPolicy
     true
   end
 
-  # Transférer un élève reste interne à son école : même règle que WorkPlanPolicy.
+  # Transférer un élève reste interne à son école.
   def transfer?
     user.admin? || record.school == user.school
   end

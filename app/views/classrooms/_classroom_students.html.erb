@@ -1,3 +1,7 @@
+<%# Identique pour tous les élèves de la classe (même niveau) : calculé une seule
+    fois ici, sinon chaque élève déclenchait sa propre requête. %>
+<% transfer_options = classroom.sibling_classrooms.includes(:user, :grade, shared_classrooms: :user).
+                                map { |target| [classroom_transfer_label(target), target.id] } %>
 <div class="students-names">
   <%# <% (@students_list.select { |s| s.first == classroom }).first[1].order(:first_name).each do |student| %>
   <% classroom.students.order(:first_name).each do |student| %>
@@ -60,7 +64,8 @@
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <%= render 'move_student_form', student: student %>
+              <%= render 'move_student_form', student: student, classroom: classroom,
+                                              transfer_options: transfer_options %>
             </div>
           </div>
         </div>

@@ -34,9 +34,14 @@ class Classroom < ApplicationRecord
     name == "" ? grade.grade_level : name
   end
 
-  # Le prof titulaire, suivi des profs avec qui la classe est partagée.
   def teachers
-    [user, *shared_classrooms.map(&:user)].compact.uniq
+    [user, *shared_classrooms.map(&:user)].uniq
+  end
+
+  # Les autres classes du même niveau. Un grade appartenant à une école, elles
+  # sont de fait dans la même école que celle-ci.
+  def sibling_classrooms
+    grade.classrooms.where.not(id: id)
   end
 
   def completed_results_by_domain(domain)

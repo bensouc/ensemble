@@ -19,13 +19,10 @@ class Student < ApplicationRecord
     Domain.includes(:skills).where(grade:)
   end
 
-  # Classes vers lesquelles l'élève peut être transféré : celles du MÊME grade,
-  # la sienne exclue. Le grade appartenant à une école, on reste de fait dans la
-  # même école — et l'historique (work_plans, results, belts) reste cohérent,
-  # puisqu'il est indexé sur le grade.
+  # Restreindre le transfert au même niveau garde l'historique cohérent :
+  # work_plans, results et belts sont indexés sur le grade.
   def transferable_classrooms
-    Classroom.includes(:user, :grade, shared_classrooms: :user).
-      where(grade:).where.not(id: classroom_id)
+    classroom.sibling_classrooms
   end
 
   def belt_status(domain, level) # return true if belt is completed
