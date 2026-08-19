@@ -31,27 +31,4 @@ RSpec.describe StudentsController, type: :controller do
     end
   end
 
-  describe "PATCH #transfer" do
-    let(:destination) { create(:classroom, grade: grade) }
-    let(:other_grade) { create(:grade, school: user.school, name: "NivAutre", grade_level: "CM1") }
-    let(:other_level) { create(:classroom, grade: other_grade) }
-
-    it "déplace l'élève vers une classe du même niveau" do
-      patch :transfer, params: { id: student.id, student: { classroom_id: destination.id } }
-      expect(student.reload.classroom).to eq(destination)
-      expect(flash[:notice]).to be_present
-    end
-
-    it "refuse une classe d'un autre niveau sans déplacer l'élève" do
-      patch :transfer, params: { id: student.id, student: { classroom_id: other_level.id } }
-      expect(student.reload.classroom).to eq(classroom)
-      expect(flash[:alert]).to be_present
-    end
-
-    it "refuse un identifiant de classe inexistant" do
-      patch :transfer, params: { id: student.id, student: { classroom_id: 0 } }
-      expect(student.reload.classroom).to eq(classroom)
-      expect(flash[:alert]).to be_present
-    end
-  end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class StudentsController < ApplicationController
-  before_action :set_student, only: %i[show transfer]
+  before_action :set_student, only: %i[show]
 
   def show
     skip_authorization
@@ -42,23 +42,6 @@ class StudentsController < ApplicationController
     @student.first_name = params_student_edit_name[:first_name]
     @student.save
     redirect_to classrooms_path
-  end
-
-  # On ne cherche la classe cible QUE parmi transferable_classrooms : un id forgé
-  # à la main ne peut donc ni sortir l'élève de son grade, ni de son école.
-  def transfer
-    authorize @student
-    target = @student.transferable_classrooms.find_by(id: params_transfer[:classroom_id])
-
-    if target.nil?
-      redirect_to classrooms_path,
-                  alert: "Transfert impossible : cette classe n'est pas disponible pour #{@student.first_name}."
-    else
-      # Formulation sans accord de genre : Student n'a pas de champ pour le sexe.
-      notice = "#{@student.first_name} a changé de classe : #{@student.classroom.safe_name} → #{target.safe_name}."
-      @student.update!(classroom: target)
-      redirect_to classrooms_path, notice:
-    end
   end
 
   def destroy
@@ -136,10 +119,6 @@ class StudentsController < ApplicationController
 
   def params_student_edit_name
     params.require(:student).permit(:first_name)
-  end
-
-  def params_transfer
-    params.require(:student).permit(:classroom_id)
   end
 
   def classroom_params_id
