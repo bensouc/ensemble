@@ -358,6 +358,18 @@ export default class extends Controller {
     }
 
     this.hydrate()
+
+    // Rendre le focus à la cellule courante. Plusieurs actions reconstruisent
+    // des cellules — basculer l'en-tête re-crée les éléments, une balise ne se
+    // renommant pas — et le focus se perdrait. Or le bloc « Cellule » de la
+    // barre s'affiche sur `:focus-within` : sans ça, il disparaîtrait au
+    // premier changement de structure, et l'utilisateur perdrait sa place.
+    const restored = this.activeCellIn(root)
+    if (restored) {
+      restored.focus()
+      this.placeCaretAtEnd(restored)
+    }
+
     this.scheduleSave(sgid, { immediate: true })
   }
 

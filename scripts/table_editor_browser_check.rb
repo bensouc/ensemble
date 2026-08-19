@@ -91,6 +91,8 @@ begin
   check failures, "toolbar complète", browser.evaluate("document.querySelectorAll('.rt-table__toolbar button').length") >= 12
 
   puts "\n3. édition d'une cellule"
+  @cell_bar_hidden_before =
+    browser.evaluate("getComputedStyle(document.querySelector('.rt-table__bar--cell')).display") == "none"
   browser.at_css(".rt-table--editor .rt-cell").click
   sleep 0.4
   check failures, "la cellule cliquée prend le focus",
@@ -100,7 +102,12 @@ begin
   check failures, "la saisie s'inscrit",
         browser.evaluate("document.querySelector('.rt-table--editor .rt-cell').textContent").include?("X")
 
-  puts "\n4. la toolbar principale se met-elle en retrait ?"
+  puts "\n4. le bloc « Cellule » suit-il le focus ?"
+  check failures, "masqué tant qu'aucune cellule n'a le focus", @cell_bar_hidden_before
+  check failures, "visible une fois la cellule active",
+        browser.evaluate("getComputedStyle(document.querySelector('.rt-table__bar--cell')).display") != "none"
+
+  puts "\n5. la toolbar principale se met-elle en retrait ?"
   check failures, "toolbar neutralisée pendant l'édition d'une cellule",
         browser.evaluate("document.querySelector('trix-toolbar').classList.contains('rt-tb--table-focus')")
   check failures, "groupes de boutons inertes",
@@ -108,7 +115,7 @@ begin
   check failures, "infobulle explicative posée",
         browser.evaluate("(document.querySelector('trix-toolbar .trix-button-row').getAttribute('title') || '').includes('barre du tableau')")
 
-  puts "\n5. actions de la toolbar du tableau"
+  puts "\n6. actions de la toolbar du tableau"
   browser.at_css(".rt-table__toolbar .rt-t-style-b").click
   sleep 0.4
   check failures, "gras appliqué à la cellule",
@@ -137,7 +144,7 @@ begin
   check failures, "couleur de texte appliquée à la cellule",
         browser.evaluate("document.querySelector('.rt-table--editor .rt-cell').style.color") == "rgb(242, 65, 80)"
 
-  puts "\n6. le style est-il réellement RENDU ? (et pas seulement posé en classe)"
+  puts "\n7. le style est-il réellement RENDU ? (et pas seulement posé en classe)"
   computed = browser.evaluate(<<~JS)
     (() => {
       const c = document.querySelector('.rt-table--editor .rt-cell')
@@ -150,7 +157,7 @@ begin
   check failures, "alignement effectivement centré", style["textAlign"] == "center"
   check failures, "gras effectivement appliqué", style["fontWeight"].to_i >= 700
 
-  puts "\n7. charge utile envoyée au serveur"
+  puts "\n8. charge utile envoyée au serveur"
   state = browser.evaluate(<<~JS)
     (() => {
       const c = window.Stimulus.getControllerForElementAndIdentifier(document.querySelector('.rt-field'), 'table-editor')
@@ -166,7 +173,7 @@ begin
   check failures, "texte saisi transmis", payload.dig("data", "0-0").to_s.include?("X")
   check failures, "couleur de cellule transmise", payload.dig("cell_colors", "0-0") == "#F24150"
 
-  puts "\n8. toujours vivant après toutes les opérations"
+  puts "\n9. toujours vivant après toutes les opérations"
   check failures, "page réactive", browser.evaluate("2 + 2") == 4
   check failures, "aucune exception JS", exceptions.empty?
 ensure

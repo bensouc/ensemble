@@ -48,14 +48,33 @@
 // --- Toolbar du tableau ----------------------------------------------------
 .rt-table__toolbar {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 10px;
+  flex-direction: column;
+  gap: 6px;
   padding: 6px;
   margin-bottom: 8px;
   background: var(--rt-surface-soft, #f7f7f9);
   border: 1px solid var(--rt-line, #e6e6ea);
   border-radius: var(--rt-radius, 10px);
+}
+
+// Une rangée par famille d'actions : structure du tableau, puis cellule.
+.rt-table__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+}
+
+// Les options de cellule n'ont de sens qu'avec une cellule active : elles ne
+// se montrent que lorsque le focus est dans le tableau. `:focus-within` suffit,
+// sans état à tenir en JS — et le focus reste dans la cellule au clic sur un
+// bouton de cette barre, puisque leur mousedown est neutralisé.
+.rt-table__bar--cell {
+  display: none;
+}
+
+.rt-table--editor:focus-within .rt-table__bar--cell {
+  display: flex;
 }
 
 .rt-table__group {
@@ -66,6 +85,40 @@
   background: var(--rt-surface, #fff);
   border: 1px solid var(--rt-line, #e6e6ea);
   border-radius: var(--rt-radius-sm, 8px);
+}
+
+// Libellé de bloc : dit ce sur quoi porte la rangée, ce qui dispense de
+// nommer chaque groupe.
+.rt-table__bar-label {
+  min-width: 78px;
+  padding-right: 2px;
+  font-family: $body-font;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rt-ink-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+// Icônes d'alignement dessinées en CSS : trois filets dont la position varie.
+// Un SVG ne survivrait pas au sanitizer de Trix (l'attribut `d` d'un <path>
+// est retiré), alors qu'une classe passe.
+.rt-align-icon {
+  display: block;
+  width: 14px;
+  height: 10px;
+  background-image:
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(currentColor, currentColor),
+    linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-size: 100% 2px, 64% 2px, 100% 2px;
+  background-position: left top, left center, left bottom;
+  pointer-events: none;
+
+  &--center { background-position: center top, center center, center bottom; }
+  &--right { background-position: right top, right center, right bottom; }
 }
 
 .rt-table__label {
