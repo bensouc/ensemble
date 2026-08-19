@@ -1,6 +1,9 @@
 <figure class="attachment attachment--<%= blob.representable? ? "preview" : "file" %> attachment--<%= blob.filename.extension %>">
   <% if blob.representable? %>
-    <%= image_tag blob.representation(resize_to_limit: local_assigns[:in_gallery] ? [ 800, 600 ] : [ 1024, 768 ]) %>
+    <% representation = blob.representation(resize_to_limit: local_assigns[:in_gallery] ? [ 800, 600 ] : [ 1024, 768 ]) %>
+    <%# En contexte PDF, image_source_for renvoie l'URL Cloudinary directe pour
+        éviter à Chrome un aller-retour par le proxy Rails. Inchangé sur le web. %>
+    <%= image_tag PdfGenerator.image_source_for(representation) %>
   <% end %>
 
   <figcaption class="attachment__caption">

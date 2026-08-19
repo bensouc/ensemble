@@ -13,10 +13,9 @@ module PdfGenerator
 
     def generate
       # Génération du HTML à partir de la vue
-      pdf_html = ActionController::Base.new.render_to_string("pdfs/work_plan",
-                                                             layout: @layout,
-                                                             locals: { work_plan: @work_plan, belt: @belt, work_plan_domains: @work_plan_domains,
-                                                                       domains: @domains, title: @title })
+      pdf_html = render_html("pdfs/work_plan",
+                             { work_plan: @work_plan, belt: @belt, work_plan_domains: @work_plan_domains,
+                               domains: @domains, title: @title })
 
       # Écrire le HTML dans un fichier pour debug
       if Rails.env.development?

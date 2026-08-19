@@ -34,6 +34,45 @@ module PdfGenerator
     end
   end
 
+  # Marqueur "on est en train de rendre le HTML d'un PDF", posé par
+  # PdfGenerator::Base#render_html et lu par image_source_for.
+  RENDERING_KEY = :pdf_generator_rendering
+
+  def self.rendering?
+    ActiveSupport::IsolatedExecutionState[RENDERING_KEY] || false
+  end
+
+  def self.with_rendering_context
+    previous = ActiveSupport::IsolatedExecutionState[RENDERING_KEY]
+    ActiveSupport::IsolatedExecutionState[RENDERING_KEY] = true
+    yield
+  ensure
+    ActiveSupport::IsolatedExecutionState[RENDERING_KEY] = previous
+  end
+
+  # Source à passer à image_tag pour une représentation Active Storage.
+  # Utilisé par app/views/active_storage/blobs/_blob.html.erb.
+  #
+  # En contexte PDF on renvoie l'URL Cloudinary directe, au lieu de l'objet qui
+  # produirait une URL /rails/active_storage/representations/redirect : Chrome
+  # ferait alors un aller-retour HTTP vers notre propre Puma juste pour récupérer
+  # un 302 (~500 ms par image, et autant de requêtes internes concurrentes).
+  # Hors contexte PDF (web), on renvoie l'objet inchangé.
+  #
+  # NB : .processed est INDISPENSABLE — il génère le variant s'il n'existe pas
+  # encore sur Cloudinary. C'est ce que fait le proxy Rails avant de rediriger
+  # (ActiveStorage::Representations::RedirectController) ; sans lui, .url
+  # renverrait l'URL d'un fichier inexistant et l'image manquerait dans le PDF.
+  # En cas d'échec on retombe sur le proxy plutôt que de casser tout l'export.
+  def self.image_source_for(representation)
+    return representation unless rendering?
+
+    representation.processed.url
+  rescue StandardError => e
+    Rails.logger.warn "[PdfGenerator] URL directe indisponible, fallback proxy: #{e.message}"
+    representation
+  end
+
   # Crée un browser Ferrum partageable pour générer plusieurs PDFs.
   #
   # Deux modes selon l'environnement :
@@ -89,6 +128,10 @@ module PdfGenerator
   end
 
   class Base
+    # Temps max d'attente du téléchargement des images distantes, en secondes
+    # (le timeout de la page Ferrum est à 120s, on reste largement en dessous).
+    IMAGES_TIMEOUT = 20
+
     def initialize(layout = "pdf.html")
       @layout = layout
       @shared_browser = nil
@@ -106,6 +149,15 @@ module PdfGenerator
     end
 
     protected
+
+    # Rend le HTML d'un template PDF, dans le contexte de rendu PDF (cf.
+    # PdfGenerator.image_source_for) pour que les images ActionText pointent
+    # directement sur Cloudinary au lieu du proxy Rails.
+    def render_html(template, locals)
+      PdfGenerator.with_rendering_context do
+        ActionController::Base.new.render_to_string(template, layout: @layout, locals: locals)
+      end
+    end
 
     # Génère un PDF à partir de HTML en utilisant Ferrum
     # Les marges sont en pouces (inches) pour Ferrum
@@ -125,8 +177,9 @@ module PdfGenerator
     private
 
     def generate_pdf_with_browser(browser, html, options)
-      # Inline les fonts woff2 en data URIs base64 (avec les images déjà inlinées,
-      # le HTML est 100% autonome : aucune requête réseau ni fichier).
+      # Inline les fonts woff2 en data URIs base64. ATTENTION : le document n'est
+      # PAS autonome pour autant — les images des exercices (ActionText/Trix)
+      # restent des URL distantes, d'où le wait_for_images ci-dessous.
       resolved_html = PdfGenerator.resolve_font_paths(html)
 
       page = browser.create_page
@@ -134,6 +187,10 @@ module PdfGenerator
       # fichier file:// : INDISPENSABLE avec un Chrome DISTANT (browserless), où un
       # file:// pointerait vers le FS du conteneur Chrome, pas celui de Rails.
       page.content = resolved_html
+
+      # Les images des exercices (ActionText/Trix) sont distantes : sans cette
+      # attente, printToPDF part avant leur arrivée et le PDF sort sans elles.
+      wait_for_images(page)
 
       # S'assurer que les webfonts (data: URIs) sont appliquées avant de rendre le PDF.
       # NB : capturer le callback resolve (arguments[0]) AVANT le .then, sinon il est
@@ -166,6 +223,50 @@ module PdfGenerator
       Base64.decode64(pdf_data)
     ensure
       page&.close
+    end
+
+    # Attend que Chrome ait fini de télécharger les images avant de lancer l'impression.
+    #
+    # INDISPENSABLE depuis qu'on injecte le HTML via page.content= (CDP
+    # Page.setDocumentContent) : contrairement à go_to, qui bloquait jusqu'à
+    # l'événement load, document.write() ne fait que terminer le parsing et
+    # n'attend AUCUNE sous-ressource. Les images des exercices (ActionText/Trix)
+    # étant distantes, printToPDF partait avant leur arrivée.
+    #
+    # On attend sur document.images plutôt que sur le réseau : à ce stade
+    # document.close() est passé, donc le DOM est complet et l'attente est
+    # déterministe. Un network.wait_for_idle seul aurait une course : si les
+    # requêtes ne sont pas encore parties, il rendrait la main immédiatement.
+    def wait_for_images(page)
+      not_loaded = page.evaluate_async(<<~JS, IMAGES_TIMEOUT)
+        var done = arguments[0];
+        var images = Array.prototype.slice.call(document.images);
+        images.forEach(function(img) { img.loading = "eager"; });
+        Promise.all(images.map(function(img) {
+          if (img.complete) { return Promise.resolve(); }
+          // On résout aussi sur "error" : une image cassée ne doit pas bloquer l'export.
+          return new Promise(function(resolve) {
+            img.addEventListener("load", resolve, { once: true });
+            img.addEventListener("error", resolve, { once: true });
+          });
+        })).then(function() {
+          done(images.filter(function(img) {
+            return !img.complete || img.naturalWidth === 0;
+          }).length);
+        });
+      JS
+
+      Rails.logger.warn "[PdfGenerator] #{not_loaded} image(s) non chargée(s)" if not_loaded.to_i.positive?
+
+      # Filet pour les ressources qui ne sont pas des <img>. NB : wait_for_idle
+      # renvoie false en cas de timeout, il ne lève pas.
+      return if page.network.wait_for_idle(timeout: 5)
+
+      Rails.logger.warn "[PdfGenerator] réseau non idle: #{page.network.pending_connections} requête(s) en cours"
+    rescue Ferrum::Error => e
+      # On imprime quand même : un PDF avec une image manquante vaut mieux qu'un
+      # export en erreur (même parti pris que fonts.ready ci-dessus).
+      Rails.logger.warn "[PdfGenerator] attente des images interrompue: #{e.message}"
     end
   end
 end
