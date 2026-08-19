@@ -96,7 +96,10 @@ export default class extends Controller {
   clear(event) {
     event.preventDefault()
     const editor = this.withRestoredSelection()
-    editor?.deactivateAttribute(this.attributeValue)
+    if (!editor) return
+
+    this.recordFormattingUndoEntry(editor)
+    editor.deactivateAttribute(this.attributeValue)
     this.setPreview(null)
     this.hide()
   }
@@ -105,9 +108,37 @@ export default class extends Controller {
     const editor = this.withRestoredSelection()
     if (!editor) return
 
+    this.recordFormattingUndoEntry(editor)
     editor.activateAttribute(this.attributeValue, color)
     this.setPreview(color)
     if (!keepOpen) this.hide()
+  }
+
+  // Trix n'enregistre l'historique que dans EditorController, sur le chemin de
+  // ses propres boutons :
+  //
+  //   toolbarDidUpdateAttribute(name, value) {
+  //     this.recordFormattingUndoEntry(name)   // <- l'entrée d'annulation
+  //     this.composition.setCurrentAttribute(name, value)
+  //     ...
+  //
+  // `editor.activateAttribute()` appelle directement `setCurrentAttribute` et
+  // court-circuite donc cette étape : sans ce qui suit, un changement de couleur
+  // n'est ni annulable ni rétablissable.
+  //
+  // On reproduit la condition de Trix (`recordFormattingUndoEntry`) : rien à
+  // enregistrer si la sélection est vide, l'attribut est alors seulement mis en
+  // attente pour la frappe suivante.
+  //
+  // Trix passe `consolidatable: true` avec un contexte de position/temps calculé
+  // par EditorController, hors de portée d'ici. On prend `false` : chaque
+  // changement de couleur devient une entrée distincte, ce qui évite de fusionner
+  // à tort deux mises en couleur sur des sélections différentes.
+  recordFormattingUndoEntry(editor) {
+    const range = editor.getSelectedRange()
+    if (!range || range[0] === range[1]) return
+
+    editor.recordUndoEntry("Formatting", { consolidatable: false })
   }
 
   // Cliquer dans la toolbar peut sortir le focus de l'éditeur. Trix conserve sa
