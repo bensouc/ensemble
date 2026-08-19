@@ -24,10 +24,11 @@ class Classroom < ApplicationRecord
     [true, creation_time]
   end
 
+  # Le premier professeur avec qui la classe est partagée, nil si elle ne l'est pas.
+  # NB : on passe par l'association. L'ancienne version chargeait TOUTE la table
+  # shared_classrooms en mémoire pour la filtrer en Ruby ensuite.
   def shared_user
-    return unless shared?
-
-    SharedClassroom.select { |s_classroom| s_classroom.classroom == self }.first.user
+    shared_classrooms.first&.user
   end
 
   def safe_name
