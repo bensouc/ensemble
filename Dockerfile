@@ -37,10 +37,17 @@ FROM ruby:${RUBY_VERSION}-slim AS base
 # Dossier de travail de l'app dans le conteneur.
 WORKDIR /rails
 
+# Préférer IPv4 à IPv6 pour toutes les résolutions DNS du conteneur.
+# Sur l'hôte OVH, l'IPv6 est annoncée mais pas routée : les connexions sortantes
+# partent en IPv6 et expirent au bout de 60s ("Failed to open TCP connection to
+# rubygems.org:443"), ce qui faisait échouer bundle install au build.
+RUN printf 'precedence ::ffff:0:0/96 100\n' >> /etc/gai.conf
+
 # Variables d'environnement valables pour la construction ET l'exécution.
 ENV RAILS_ENV="production" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_RETRY="5" \
     BUNDLE_WITHOUT="development:test"
 
 
@@ -77,7 +84,11 @@ RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
 # On copie d'abord SEULEMENT Gemfile/Gemfile.lock : tant qu'ils ne changent pas,
 # Docker réutilise le cache de cette couche (= builds beaucoup plus rapides).
 COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
+# On installe la version de bundler inscrite dans le lock (BUNDLED WITH) AVANT
+# bundle install : sinon le bundler de l'image (2.5.x) démarre, détecte le
+# décalage, se réinstalle puis redémarre — un aller-retour réseau inutile.
+RUN gem install bundler -v "$(grep -A1 'BUNDLED WITH' Gemfile.lock | tail -1 | tr -d '[:space:]')" --no-document && \
+    bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache && \
     bundle exec bootsnap precompile --gemfile
 
