@@ -277,7 +277,10 @@ class SharedTableRepair
   def say(message) = @out.puts(message)
 end
 
-if $PROGRAM_NAME.end_with?("runner")
+# `rails runner <fichier>` réaffecte $PROGRAM_NAME au chemin du script (et non
+# à "runner") : c'est donc sur le nom du fichier qu'on teste. Sous rspec, $0
+# vaut "rspec", le fichier peut donc être requis sans rien exécuter.
+if $PROGRAM_NAME.end_with?("repair_shared_tables.rb")
   SharedTableRepair.new(
     dry_run: ENV["DRY_RUN"] != "0",
     restore: ENV["RESTORE"].presence,
