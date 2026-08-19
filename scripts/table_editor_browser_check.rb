@@ -105,8 +105,8 @@ begin
         browser.evaluate("document.querySelector('trix-toolbar').classList.contains('rt-tb--table-focus')")
   check failures, "groupes de boutons inertes",
         browser.evaluate("getComputedStyle(document.querySelector('trix-toolbar .trix-button-group')).pointerEvents") == "none"
-  check failures, "message d'état visible",
-        browser.evaluate("getComputedStyle(document.querySelector('.rt-tb__notice')).display") != "none"
+  check failures, "infobulle explicative posée",
+        browser.evaluate("(document.querySelector('trix-toolbar .trix-button-row').getAttribute('title') || '').includes('barre du tableau')")
 
   puts "\n5. actions de la toolbar du tableau"
   browser.at_css(".rt-table__toolbar .rt-t-style-b").click

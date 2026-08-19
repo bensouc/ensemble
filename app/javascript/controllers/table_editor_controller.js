@@ -22,6 +22,8 @@ import { FetchRequest } from "@rails/request.js"
 const STYLE_FLAGS = ["b", "i", "u"]
 const ALIGNMENTS = ["left", "center", "right"]
 const SAVE_DELAY = 600
+const TOOLBAR_INACTIVE_HINT =
+  "Indisponible pendant l'édition d'un tableau — la mise en forme se fait dans la barre du tableau"
 const MAX_ROWS = 60
 const MAX_COLUMNS = 20
 
@@ -273,7 +275,24 @@ export default class extends Controller {
   // Le clavier est déjà correctement routé : ⌘B/⌘I/⌘U dans une cellule sont
   // interceptés par onKeydown et appliquent le style de cellule.
   setMainToolbarInactive(inactive) {
-    this.element.querySelector("trix-toolbar")?.classList.toggle("rt-tb--table-focus", inactive)
+    const toolbar = this.element.querySelector("trix-toolbar")
+    if (!toolbar) return
+
+    toolbar.classList.toggle("rt-tb--table-focus", inactive)
+
+    // Infobulle native, cohérente avec les boutons de la toolbar. Les groupes
+    // étant en `pointer-events: none`, le survol atteint la rangée elle-même,
+    // qui porte donc le `title`.
+    const row = toolbar.querySelector(".trix-button-row")
+    if (!row) return
+
+    if (inactive) {
+      row.setAttribute("title", TOOLBAR_INACTIVE_HINT)
+      row.setAttribute("aria-disabled", "true")
+    } else {
+      row.removeAttribute("title")
+      row.removeAttribute("aria-disabled")
+    }
   }
 
   // Le contenu des cellules vit dans l'enregistrement Table, pas dans le corps

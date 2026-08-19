@@ -238,8 +238,6 @@ Trix.config.toolbar.getDefaultHTML = function () {
     ${button({ label: lang.link, glyph: ICONS.link, attribute: "href", action: "link", key: "k" })}
   </span>
 
-  <span class="rt-tb__notice" aria-live="polite">Édition d'un tableau — la mise en forme se fait dans la barre du tableau</span>
-
   <span class="trix-button-group-spacer"></span>
 
   <span class="trix-button-group trix-button-group--history-tools rt-tb__group" data-trix-button-group="history-tools">
