@@ -34,9 +34,10 @@ export default class extends Controller {
   }
 
   show() {
-    // Une seule palette ouverte à la fois, sinon les deux popovers se chevauchent.
+    // Un seul popover ouvert à la fois dans la toolbar — nuanciers et menu
+    // d'alignement compris, sinon deux popovers se chevauchent.
     this.element.closest("trix-toolbar")
-      ?.querySelectorAll('[data-trix-palette-target="panel"]')
+      ?.querySelectorAll(".rt-tb__popover")
       .forEach((panel) => { panel.hidden = true })
 
     this.panelTarget.hidden = false

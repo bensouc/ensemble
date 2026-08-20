@@ -18,6 +18,36 @@ RSpec.describe Challenge, type: :model do
     expect(challenge2).to_not be_valid
   end
 
+  # L'alignement du texte est porté par `style="text-align: …"` justement parce que
+  # `style` traverse le sanitizer d'ActionText sans qu'on ait à toucher son
+  # allowlist. Une balise maison, elle, en serait retirée à l'affichage : le texte
+  # resterait, la mise en forme serait perdue.
+  describe "alignement du texte à l'affichage" do
+    it "conserve l'alignement d'un paragraphe et d'un titre" do
+      challenge = create(:challenge)
+      challenge.content = <<~HTML
+        <p style="text-align: center">Centré</p>
+        <h1 style="text-align: right">Titre à droite</h1>
+        <div>Paragraphe normal</div>
+      HTML
+      challenge.save!
+
+      rendered = challenge.reload.content.to_s
+
+      expect(rendered).to include("text-align:center")
+      expect(rendered).to include("text-align:right")
+      expect(rendered).to include("Paragraphe normal")
+    end
+
+    it "retire une balise maison — d'où le choix de `style`" do
+      rendered = ActionText::Content.new("<trix-align-center>Centré</trix-align-center>").to_s
+
+      # le texte survit, mais la balise qui portait l'alignement a disparu
+      expect(rendered).to include("Centré")
+      expect(rendered).not_to include("trix-align-center")
+    end
+  end
+
   describe "ordre au sein d'une compétence" do
     let(:skill) { create(:skill) }
 

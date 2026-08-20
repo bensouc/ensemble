@@ -214,6 +214,66 @@ trix-toolbar {
     }
   }
 
+  // Le bouton Lien quitte la barre pour laisser la place au menu d'alignement : il
+  // reste dans le DOM, donc ⌘K fonctionne toujours (Trix résout ses raccourcis via
+  // `[data-trix-key]`) et un lecteur d'écran le trouve encore dans la toolbar.
+  .rt-tb__btn--offscreen {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  // Menu d'alignement : même popover que les nuanciers, en liste d'options.
+  .rt-tb__popover--menu {
+    width: 190px;
+    padding: 6px;
+  }
+
+  .rt-tb__menu-item {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 9px;
+    background: none;
+    border: 0;
+    border-radius: 8px;
+    font-family: $body-font;
+    font-size: 13px;
+    color: var(--rt-ink);
+    text-align: left;
+    cursor: pointer;
+
+    .rt-tb__icon {
+      flex: 0 0 auto;
+    }
+
+    &:hover {
+      background: var(--rt-surface-hover);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--rt-accent);
+      outline-offset: -2px;
+    }
+  }
+
+  .rt-tb__menu-item--active {
+    color: var(--rt-accent);
+    font-weight: 600;
+  }
+
+  // L'icône du déclencheur est recopiée depuis l'option active.
+  .rt-tb__align-preview {
+    display: inline-flex;
+  }
+
   .rt-tb__popover-footer {
     display: flex;
     flex-direction: column;
