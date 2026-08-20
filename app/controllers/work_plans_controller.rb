@@ -213,7 +213,7 @@ class WorkPlansController < ApplicationController
       # Set the WorkPlanDomain's level to 1 and save it if Domain is special
       wpd.update(level: 1) if domain.special?
       # Find all the skills for the current domain, level, and grade
-      wpd.attach_next_skills(current_user, @results)
+      wpd.attach_next_skills(@results)
     end
     # Save the work plan and redirect to the appropriate page
     if @work_plan.save

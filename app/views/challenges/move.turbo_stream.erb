@@ -1,0 +1,5 @@
+<%# La liste entière de la compétence est re-rendue : les deux positions
+    échangées ET l'ordre affiché restent ainsi cohérents. %>
+<%= turbo_stream.update challenges_list_frame_id do %>
+  <%= render "challenges/challenges_list", challenges: @challenges %>
+<% end %>

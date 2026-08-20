@@ -13,6 +13,24 @@ export default class extends Controller {
 
   }
 
+  // CTA « Ajouter » d'une compétence : le formulaire de création vit en bas de la
+  // liste, il faut donc la déplier avant de s'y rendre. On ne fait qu'ouvrir —
+  // jamais refermer — pour ne pas masquer le formulaire qu'on vient d'appeler.
+  openList() {
+    if (this.wplistTarget.classList.contains('d-none')) {
+      this.displayList()
+    }
+    const frame = this.element.querySelector('turbo-frame[id$="_new_challenge"]')
+    if (!frame) return
+    // Le formulaire arrive de façon asynchrone : on attend son rendu pour
+    // descendre dessus, sinon on visait une frame encore vide.
+    frame.addEventListener(
+      'turbo:frame-load',
+      () => frame.scrollIntoView({ behavior: 'smooth', block: 'center' }),
+      { once: true }
+    )
+  }
+
   deleteWorkPlan(event) {
 
     event.preventDefault()

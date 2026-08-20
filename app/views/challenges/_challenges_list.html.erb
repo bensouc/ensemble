@@ -1,0 +1,5 @@
+<%# Liste ordonnée des exercices d'une compétence : un seul endroit qui sait
+    passer `in_index` et `list_size` au partiel d'exercice. %>
+<%= render partial: "challenges/challenge",
+           collection: challenges,
+           locals: { in_index: true, list_size: challenges.size } %>

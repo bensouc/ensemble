@@ -135,5 +135,51 @@ RSpec.describe WorkPlansController, type: :controller do
         expect(response).to redirect_to(work_plan_path(WorkPlan.last))
       end
     end
+
+    # Toute la chaîne partage l'école de l'enseignant : `Skill.for_school` sert à
+    # décider si une ceinture est validée, et un jeu de compétences vide la
+    # valide par défaut — ce qui ferait sauter le niveau du domaine généré.
+    context "avec des exercices ordonnés sur la compétence" do
+      let(:grade) { create(:grade, school: user.school) }
+      let(:classroom) { create(:classroom, user:, grade:) }
+      let(:student) { create(:student, classroom:) }
+      let(:domain) { create(:domain, grade:, name: "Calcul", special: false) }
+      let(:skill) { create(:skill, school: user.school, domain:, level: 1) }
+      let(:params) { { "/students/#{student.id}" => { domains: ["", domain.id] }, student_id: student.id } }
+
+      def generated_wps
+        WorkPlan.last.work_plan_skills.find_by(skill:)
+      end
+
+      it "attache le premier exercice, puis le suivant dans l'ordre" do
+        first = create(:challenge, user:, skill:)
+        second = create(:challenge, user:, skill:)
+        second.move_to_bottom
+
+        post :auto_new_wp, params: params
+        expect(generated_wps.challenge).to eq(first)
+
+        # exercice raté : le plan suivant donne l'exercice d'après, pas un au hasard
+        generated_wps.update!(status: "redo")
+
+        post :auto_new_wp, params: params
+        expect(generated_wps.challenge).to eq(second)
+      end
+
+      it "laisse le plan de travail sans exercice quand l'élève les a tous eus" do
+        only_one = create(:challenge, user:, skill:)
+
+        post :auto_new_wp, params: params
+        expect(generated_wps.challenge).to eq(only_one)
+
+        generated_wps.update!(status: "redo")
+
+        expect do
+          post :auto_new_wp, params: params
+        end.not_to change(Challenge, :count)
+        expect(generated_wps.challenge).to be_nil
+        expect(generated_wps.kind).to eq("exercice")
+      end
+    end
   end
 end

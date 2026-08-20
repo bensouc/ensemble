@@ -132,7 +132,11 @@ Rails.application.routes.draw do
   # ###############END for SKILLS###############
 
   # ###############routesfor Challenge#########
-  resources :challenges, only: [:show, :edit, :update, :destroy, :index, :new, :create]
+  resources :challenges, only: [:show, :edit, :update, :destroy, :index, :new, :create] do
+    member do
+      patch :move
+    end
+  end
 
   # ###############routes for SCHOOL/SCHOOL_ROLES###############
   get "schools/join", to: "schools#join", as: :join_school

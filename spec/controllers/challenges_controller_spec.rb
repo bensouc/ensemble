@@ -189,6 +189,141 @@ RSpec.describe ChallengesController, type: :controller do
     end
   end
 
+  describe "#index, ordre des exercices" do
+    render_views
+
+    it "affiche la position et les flèches de chaque exercice de la compétence" do
+      grade = create(:grade, school: user.school)
+      create(:classroom, user:, grade:)
+      domain = create(:domain, grade:)
+      ordered_skill = create(:skill, school: user.school, domain:, level: 1)
+      first = create(:challenge, user:, skill: ordered_skill)
+      second = create(:challenge, user:, skill: ordered_skill)
+      sign_in(user)
+
+      get :index
+
+      expect(response.body).to include(move_challenge_path(first, direction: "down"))
+      expect(response.body).to include(move_challenge_path(second, direction: "up"))
+      # pas de flèche vers le haut sur le premier, ni vers le bas sur le dernier
+      expect(response.body).not_to include(move_challenge_path(first, direction: "up"))
+      expect(response.body).not_to include(move_challenge_path(second, direction: "down"))
+      expect(response.body.index(first.name)).to be < response.body.index(second.name)
+    end
+  end
+
+  describe "les flux Turbo re-rendent la liste ordonnée" do
+    render_views
+
+    let(:ordered_skill) { create(:skill, school: user.school) }
+    let!(:first) { create(:challenge, user:, skill: ordered_skill) }
+
+    before { sign_in(user) }
+
+    it "à la création, ajoute le nouvel exercice en fin de liste" do
+      post :create,
+           params: { challenge: { skill_id: ordered_skill.id, name: "Nouvel exo", content: "énoncé" } },
+           format: :turbo_stream
+
+      expect(response.body).to include("skill_#{ordered_skill.id}_challenges_list")
+      expect(response.body.index(first.name)).to be < response.body.index("Nouvel exo")
+      expect(Challenge.last.position).to eq(2)
+    end
+
+    it "à la suppression, renumérote la liste affichée" do
+      second = create(:challenge, user:, skill: ordered_skill)
+
+      delete :destroy, params: { id: first.id }, format: :turbo_stream
+
+      expect(response.body).to include("skill_#{ordered_skill.id}_challenges_list")
+      expect(response.body).to include(second.name)
+      expect(second.reload.position).to eq(1)
+    end
+  end
+
+  describe "la gouttière de tri vit hors de la frame de l'exercice" do
+    render_views
+
+    let(:ordered_skill) { create(:skill, school: user.school) }
+    let!(:first) { create(:challenge, user:, skill: ordered_skill) }
+    let!(:second) { create(:challenge, user:, skill: ordered_skill) }
+
+    before { sign_in(user) }
+
+    it "rend la gouttière avant la frame, dans l'index" do
+      grade = create(:grade, school: user.school)
+      create(:classroom, user:, grade:)
+      domain = create(:domain, grade:)
+      ordered_skill.update!(domain:, level: 1)
+
+      get :index
+
+      gutter = response.body.index("challenge-order")
+      frame = response.body.index("<turbo-frame id=\"challenge_#{first.id}\"")
+      expect(gutter).to be < frame
+    end
+
+    it "ne renvoie que la frame et le formulaire à l'édition" do
+      get :edit, params: { id: first.id }
+
+      expect(response.body).to include("cont-challenge")
+      expect(response.body).not_to include("challenge-order")
+    end
+
+    it "ne renvoie que la frame après l'enregistrement" do
+      patch :update, params: { id: first.id, challenge: { name: "nouveau nom" } }, format: :turbo_stream
+
+      expect(response.body).to include("challenge_#{first.id}")
+      expect(response.body).not_to include("challenge-order")
+    end
+  end
+
+  describe "#move" do
+    render_views
+
+    let(:ordered_skill) { create(:skill, school: user.school) }
+    let!(:first) { create(:challenge, user:, skill: ordered_skill) }
+    let!(:second) { create(:challenge, user:, skill: ordered_skill) }
+
+    context "when user is not signed in" do
+      it "returns a failure response" do
+        patch :move, params: { id: second.id, direction: "up" }
+        expect(response).not_to be_successful
+      end
+    end
+
+    context "when user is signed in" do
+      before { sign_in(user) }
+
+      it "fait remonter l'exercice d'un cran" do
+        patch :move, params: { id: second.id, direction: "up" }, format: :turbo_stream
+
+        expect([first.reload.position, second.reload.position]).to eq([2, 1])
+      end
+
+      it "fait descendre l'exercice d'un cran" do
+        patch :move, params: { id: first.id, direction: "down" }, format: :turbo_stream
+
+        expect([first.reload.position, second.reload.position]).to eq([2, 1])
+      end
+
+      it "re-rend la liste ordonnée de la compétence" do
+        patch :move, params: { id: second.id, direction: "up" }, format: :turbo_stream
+
+        expect(response.body).to include("skill_#{ordered_skill.id}_challenges_list")
+        expect(response.body.index(second.name)).to be < response.body.index(first.name)
+      end
+
+      it "ne touche pas aux exercices d'une autre compétence" do
+        other = create(:challenge, user:, skill: create(:skill, school: user.school))
+
+        patch :move, params: { id: second.id, direction: "up" }, format: :turbo_stream
+
+        expect(other.reload.position).to eq(1)
+      end
+    end
+  end
+
   describe "#display_challenges" do
     it "renders caroussel of  XXX challenges" do
       sign_in(user)

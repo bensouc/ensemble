@@ -10,19 +10,7 @@ class WorkPlanSkillsController < ApplicationController
   def create
     @work_plan_skill = WorkPlanSkill.new(set_params_wpskill)
     authorize @work_plan_skill
-    # @work_plan_skill.student = @work_plan_skill.work_plan_domain.work_plan.student
-    challenges = Challenge.classic.where(skill_id: @work_plan_skill.skill)
-    if @work_plan_skill.kind.downcase == "exercice"
-      if challenges == []
-        # if no existing challeng 4 that skill
-        # create a empty challenge 4 that skill
-        @work_plan_skill.challenge = add_new_chall_2_wps(@work_plan_skill)
-      else
-        # recuper un des exo existant avec le skill id de @work_plan_skill
-        challenge = challenges.sample
-        @work_plan_skill.challenge = challenge
-      end
-    end
+    @work_plan_skill.challenge = @work_plan_skill.get_challenge_4_wps if @work_plan_skill.kind.downcase == "exercice"
     if @work_plan_skill.save!
       @work_plan_domain = @work_plan_skill.work_plan_domain
       @work_plan_skills = @work_plan_domain.work_plan_skills
@@ -214,12 +202,6 @@ class WorkPlanSkillsController < ApplicationController
       kind: params.require(:kind),
       status: "new"
     }
-  end
-
-  def add_new_chall_2_wps(work_plan_skill)
-    name = work_plan_skill.skill.name + (Challenge.classic.where(skill_id: work_plan_skill.skill).count + 1).to_s
-    Challenge.create_empty(work_plan_skill, name, current_user)
-    # @work_plan_skill.challenge = challenge
   end
 
   # cONTROLLER PRIVATE METHOD

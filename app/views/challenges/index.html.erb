@@ -54,49 +54,59 @@
 			<% unless @skills.empty? %>
 				<% @skills.sort_by(&:position).each do |skill| %>
 					<div class="challenges-by-skill mb-2" data-controller='wp-by-student'>
-						<div class='d-flex wp-student-folder'
-              data-action="click->wp-by-student#displayList"
-							>
-							<div class="index-folder">
-								<i
-                  class="fa-solid fa-folder-closed me-4 ms-3"
-                  data-wp-by-student-target="folderopen"
-                ></i>
-								<i
-                  class="fa-solid fa-folder-open me-4 ms-3 d-none"
-                  data-wp-by-student-target="folderclosed"
-                ></i>
+						<div class="d-flex challenge-skill-header">
+							<div class='d-flex wp-student-folder'
+	              data-action="click->wp-by-student#displayList"
+								>
+								<div class="index-folder">
+									<i
+	                  class="fa-solid fa-folder-closed me-4 ms-3"
+	                  data-wp-by-student-target="folderopen"
+	                ></i>
+									<i
+	                  class="fa-solid fa-folder-open me-4 ms-3 d-none"
+	                  data-wp-by-student-target="folderclosed"
+	                ></i>
+								</div>
+								<div class='index-wp-name d-flex'>
+									<div class="wp-firstname max-length-skill-name">
+										<%= skill.name %>
+									</div>
+									<div class='invisible'>
+										--
+									</div>
+									<div class="index-wp-count" data-wp-by-student-target='count'>
+										<%=  turbo_frame_tag "skill_#{skill.id}_count" do %>
+											<% count =  @challenges.select { |chall| chall.skill == skill }.count%>
+											<%=  count %> exo<%= count > 1 ? "s" : "" %>
+										<% end %>
+									</div>
+								</div>
 							</div>
-							<div class='index-wp-name d-flex'>
-								<div class="wp-firstname max-length-skill-name">
-									<%= skill.name %>
-								</div>
-								<div class='invisible'>
-									--
-								</div>
-								<div class="index-wp-count" data-wp-by-student-target='count'>
-									<%=  turbo_frame_tag "skill_#{skill.id}_count" do %>
-										<% count =  @challenges.select { |chall| chall.skill == skill }.count%>
-										<%=  count %> exo<%= count > 1 ? "s" : "" %>
-									<% end %>
-								</div>
-							</div>
+							<%# Le CTA est un frère de la zone cliquable, pas un enfant : pas besoin
+							    d'arrêter la propagation pour éviter de replier le dossier. %>
+							<%= link_to new_challenge_path(skill: skill),
+                  data: { turbo_frame: "skill_#{skill.id}_new_challenge",
+                          action: "click->wp-by-student#openList" },
+                  class: "add-challenge-btn",
+                  title: "Ajouter un exercice à cette compétence" do %>
+								<i class="fa-solid fa-circle-plus"></i>
+								<span>Ajouter</span>
+							<% end %>
 						</div>
 						<div data-wp-by-student-target="wplist" class='list-wp-index d-none p-0'>
-							<div class="new-challenge">
-								<%= link_to new_challenge_path(skill:skill),
-                data: { turbo_frame: "skill_#{skill.id}_new_challenge"},
-                class: 'replace-challenge-btn mt-2' do %>
-									Ajouter
-									<i class="fa-solid fa-plus --white" class="fa-solid fa-user-plus"></i>
-								<% end %>
-							</div>
-							<%= turbo_frame_tag "skill_#{skill.id}_new_challenge" %>
 							<%= turbo_frame_tag "#{dom_id(skill)}_challenges_list" do %>
-								<% challenges = @challenges.select{|chall| chall.skill == skill} %>
-									<%= render challenges %>
-
+								<%= render "challenges/challenges_list",
+								           challenges: @challenges.select { |chall| chall.skill == skill } %>
 							<% end %>
+							<%# En dernier : le nouvel exercice se placera en fin de liste, juste
+							    au-dessus de ce formulaire. La gouttière vide met la carte du
+							    formulaire dans la même grille que les cartes d'exercice — le
+							    partiel `challenges/_form`, partagé avec l'édition, n'est pas touché. %>
+							<div class="challenge-row new-challenge-row">
+								<div class="challenge-order-placeholder"></div>
+								<%= turbo_frame_tag "skill_#{skill.id}_new_challenge", class: "challenge-row-content" %>
+							</div>
 						</div>
 					</div>
 				<% end %>

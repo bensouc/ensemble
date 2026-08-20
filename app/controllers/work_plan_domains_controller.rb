@@ -46,12 +46,7 @@ class WorkPlanDomainsController < ApplicationController
           kind:
           # REMOVE student: @work_plan.student
         )
-        if kind == "exercice"
-          ############### refacto START get_challenge_4_wps############
-          challenge = work_plan_skill.get_challenge_4_wps(current_user)
-          ############ refacto END ############
-          work_plan_skill.challenge = challenge
-        end
+        work_plan_skill.challenge = work_plan_skill.get_challenge_4_wps if kind == "exercice"
         work_plan_skill.save!
       end
       ######################### SKILLS loop END ######################
