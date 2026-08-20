@@ -26,6 +26,25 @@
 
 }
 
+// Pastille « Ajouter » en tête d'un dossier repliable (une compétence dans la liste
+// des exercices, un élève dans la liste des plans de travail). Sans fond au repos :
+// il y en a une par dossier, un fond teinté ferait une colonne de taches roses.
+// Les marges de placement sont portées par chaque page.
+.add-folder-btn {
+  @include pill-cta($height: 30px);
+  flex: 0 0 auto;
+  background-color: transparent;
+
+  i {
+    font-size: 15px;
+    transition: 0.25s;
+  }
+
+  &:hover i {
+    transform: rotate(90deg);
+  }
+}
+
 // Actions d'un plan de travail (Partager, Correction, Export PDF, Cloner) : même
 // pastille que les CTA des exercices, à la place des pavés de 110px à bordure de
 // 3px. Chacune porte désormais une icône.

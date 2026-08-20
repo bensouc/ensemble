@@ -155,23 +155,10 @@
   gap: 4px;
 }
 
-.add-challenge-btn {
-  @include pill-cta($height: 30px);
-  flex: 0 0 auto;
-  // Bord droit aligné sur celui des cartes d'exercice :
-  // 1000 (conteneur) - 16 (retrait liste) - 70 (gouttière) - 30 - 811 (carte).
+// Placement seul : l'apparence vient de `.add-folder-btn`. Bord droit aligné sur
+// celui des cartes d'exercice :
+// 1000 (conteneur) - 16 (retrait liste) - 70 (gouttière) - 30 - 811 (carte).
+.challenge-skill-header .add-folder-btn {
   margin-right: 73px;
   margin-left: auto;
-  // Dans l'en-tête d'une compétence, la pastille reste sans fond au repos : une
-  // par compétence dépliable, ça ferait beaucoup de taches roses.
-  background-color: transparent;
-
-  i {
-    font-size: 15px;
-    transition: 0.25s;
-  }
-
-  &:hover i {
-    transform: rotate(90deg);
-  }
 }

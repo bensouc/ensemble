@@ -1,21 +1,32 @@
-<div class='d-flex wp-student-folder' data-action="click->wp-by-student#displayList">
-  <div class="index-folder">
-      <i class="fa-solid fa-folder-closed me-4 ms-3" data-wp-by-student-target="folderopen"
-        ></i>
-      <i class="fa-solid fa-folder-open me-4 ms-3 d-none" data-wp-by-student-target="folderclosed"
-        ></i>
-  </div>
-  <div class='index-wp-name d-flex'>
-    <div class="wp-firstname">
-      <%= student.first_name%>
+<%# La pastille est un frère de la zone cliquable, pas un enfant : cliquer sur
+    « Ajouter » ne replie pas le dossier de l'élève. %>
+<div class="d-flex wp-student-header">
+  <div class='d-flex wp-student-folder' data-action="click->wp-by-student#displayList">
+    <div class="index-folder">
+        <i class="fa-solid fa-folder-closed me-4 ms-3" data-wp-by-student-target="folderopen"
+          ></i>
+        <i class="fa-solid fa-folder-open me-4 ms-3 d-none" data-wp-by-student-target="folderclosed"
+          ></i>
     </div>
-  <div class='invisible'>
-  --
+    <div class='index-wp-name d-flex'>
+      <div class="wp-firstname">
+        <%= student.first_name%>
+      </div>
+    <div class='invisible'>
+    --
+    </div>
+    <div class="index-wp-count" data-wp-by-student-target='count'>
+    <%= turbo_frame_tag "student_#{student.id}_work_plan_count" do %>
+      ( <%= @my_work_plans.select { |a| a.student_id == student.id }.count %> Plan<%= "s" if @my_work_plans.select { |a| a.student_id == student.id }.count > 1 %> de travail )
+    <% end %>
+      </div>
+    </div>
   </div>
-  <div class="index-wp-count" data-wp-by-student-target='count'>
-  <%= turbo_frame_tag "student_#{student.id}_work_plan_count" do %>
-    ( <%= @my_work_plans.select { |a| a.student_id == student.id }.count %> Plan<%= "s" if @my_work_plans.select { |a| a.student_id == student.id }.count > 1 %> de travail )
+  <%= link_to student_new_work_plan_modal_path(student),
+              class: "add-folder-btn",
+              data: { turbo_frame: "general_modal" },
+              title: "Nouveau plan de travail pour #{student.first_name}" do %>
+    <i class="fa-solid fa-circle-plus"></i>
+    <span>Ajouter</span>
   <% end %>
-    </div>
-  </div>
 </div>

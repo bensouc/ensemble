@@ -100,6 +100,72 @@ RSpec.describe WorkPlansController, type: :controller do
     end
   end
 
+  describe "#index, création rapide" do
+    render_views
+
+    it "affiche une pastille d'ajout par élève" do
+      sign_in user
+      grade = create(:grade, school: user.school)
+      classroom = create(:classroom, user:, grade:)
+      student = create(:student, classroom:)
+
+      get :index
+
+      expect(response.body).to include(student_new_work_plan_modal_path(student))
+    end
+  end
+
+  # Les deux issues de la modale de création rapide, depuis la liste des plans de
+  # travail.
+  describe "création rapide pour un élève" do
+    let(:grade) { create(:grade, school: user.school) }
+    let(:classroom) { create(:classroom, user:, grade:) }
+    let(:student) { create(:student, classroom:) }
+
+    before { sign_in user }
+
+    it "crée un plan vierge avec le nom et la période saisis" do
+      expect do
+        post :create, params: { work_plan: { name: "Semaine 12", student_id: student.id,
+                                            grade_id: grade.id, start_date: "16/03/2026",
+                                            end_date: "20/03/2026" } }
+      end.to change(WorkPlan, :count).by(1)
+
+      created = WorkPlan.last
+      expect(created.student).to eq(student)
+      expect(created.name).to eq("Semaine 12")
+      expect(created.start_date).to eq(Date.new(2026, 3, 16))
+      expect(created.work_plan_domains).to be_empty
+      expect(response).to redirect_to(work_plan_path(created))
+    end
+
+    it "génère un plan auto sur tous les domaines sans qu'on les transmette" do
+      domain = create(:domain, grade:, name: "Calcul", special: false)
+      skill = create(:skill, school: user.school, domain:, level: 1)
+      challenge = create(:challenge, user:, skill:)
+
+      post :auto_new_wp, params: { student_id: student.id,
+                                   work_plan: { name: "Auto semaine 12",
+                                                start_date: "16/03/2026", end_date: "20/03/2026" } }
+
+      created = WorkPlan.last
+      expect(created.name).to eq("Auto semaine 12")
+      expect(created.start_date).to eq(Date.new(2026, 3, 16))
+      expect(created.work_plan_domains.map(&:domain)).to eq([domain])
+      expect(created.work_plan_skills.find_by(skill:).challenge).to eq(challenge)
+    end
+
+    it "garde les valeurs par défaut quand le nom et la période ne sont pas transmis" do
+      create(:domain, grade:, name: "Calcul", special: false)
+
+      post :auto_new_wp, params: { student_id: student.id }
+
+      created = WorkPlan.last
+      expect(created.name).to start_with("AUTO - N°")
+      expect(created.start_date).to eq(Time.zone.today.next_occurring(:monday))
+    end
+  end
+
   describe "#evaluation" do
     before { sign_in user }
     it "redirect to the workplan evaluation page" do

@@ -158,6 +158,7 @@ Rails.application.routes.draw do
   end
   # ###############ROUTES FOR MODALS###############
   get "students/:id/auto_gen", to: "modals#auto_gen", as: :student_auto_gen_modal
+  get "students/:id/new_work_plan", to: "modals#new_work_plan", as: :student_new_work_plan_modal
 
   # ###############END for SKILLS###############
 
