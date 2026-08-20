@@ -313,7 +313,13 @@ class WorkPlansController < ApplicationController
   def setup_show
     @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
-    @work_plan_domains = WorkPlanDomain.includes(:domain, :work_plan).where(work_plan: @work_plan)
+    # `work_plan_skills` et leurs compétences/exercices sont chargés d'avance : la vue
+    # du PDF les parcourt domaine par domaine, ce qui déclenchait une requête par
+    # domaine puis par WPS (détecté sur `pdfs/work_plan.html.erb:37` et `:62`).
+    # `:work_plan` reste malgré tout : la vue HTML lit `work_plan_domain.work_plan.grade`.
+    @work_plan_domains = WorkPlanDomain.
+                         includes(:domain, :work_plan, work_plan_skills: [:skill, :challenge]).
+                         where(work_plan: @work_plan)
     @domains = Domain.where(grade: @work_plan.grade).sort_by(&:position)
     @work_plan_skills = WorkPlanSkill.includes(:work_plan_domain, :skill,
                                                :challenge).where(work_plan_domain: @work_plan_domains)
