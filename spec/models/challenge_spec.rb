@@ -58,6 +58,27 @@ RSpec.describe Challenge, type: :model do
       expect(last.reload.position).to eq(2)
     end
 
+    it "crée un exercice vide en fin de liste" do
+      create(:challenge, skill:)
+      user = create(:user)
+
+      empty = Challenge.create_empty(skill, user)
+
+      expect(empty.position).to eq(2)
+      expect(empty.user).to eq(user)
+      expect(empty.content.to_plain_text).to include("REDIGER")
+      expect(empty).to be_persisted
+    end
+
+    it "crée un exercice vide même quand le nom construit sur le compteur est pris" do
+      taken = create(:challenge, skill:, name: "#{skill.name} 1-NEW")
+
+      empty = Challenge.create_empty(skill, create(:user))
+
+      expect(empty).to be_persisted
+      expect(empty.name).not_to eq(taken.name)
+    end
+
     it "ordonne la liste avec le scope ordered" do
       first = create(:challenge, skill:)
       second = create(:challenge, skill:)

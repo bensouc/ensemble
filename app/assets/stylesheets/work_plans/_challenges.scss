@@ -352,3 +352,33 @@ trix-toolbar .trix-button--icon-table::before {
 button {
   padding: 10px 10px;
 }
+
+// WPS de type exercice sans exercice : la génération automatique n'en fabrique
+// plus en silence quand l'élève a eu tous ceux de la compétence. Message à
+// gauche, les deux CTA (Charger / Créer) à droite, comme pour un vrai exercice.
+.empty-challenge {
+  align-items: center;
+
+  .empty-challenge-msg {
+    display: flex;
+    width: 811px;
+    max-width: 100%;
+    align-items: center;
+    gap: 14px;
+    margin: 20px 20px 30px 30px;
+    padding: 22px 30px;
+    border: 2px dashed $grisC;
+    border-radius: 14px;
+
+    i {
+      font-size: 22px;
+      color: rgba($rose, 0.5);
+    }
+
+    p {
+      margin: 0;
+      color: #9c9c9c;
+      font-style: italic;
+    }
+  }
+}

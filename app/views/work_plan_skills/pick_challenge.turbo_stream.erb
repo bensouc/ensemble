@@ -1,0 +1,15 @@
+<%# Le carrousel prend la place du WPS : c'est sa frame qu'il faut viser, il n'y a
+    pas d'exercice courant sur lequel s'appuyer. %>
+<%= turbo_stream.replace dom_id(@work_plan_skill) do %>
+  <% if @challenges.empty? %>
+    <%# Le dernier exercice de la compétence a été supprimé depuis l'affichage de
+        la page : on réaffiche les CTA plutôt que de planter sur un carrousel vide. %>
+    <%= render "work_plan_skills/work_plan_skill_challenge", work_plan_skill: @work_plan_skill %>
+  <% else %>
+    <%= render "challenges/challenges_carroussel",
+               frame_id: dom_id(@work_plan_skill),
+               challenge: nil,
+               challenges: @challenges,
+               work_plan_skill: @work_plan_skill %>
+  <% end %>
+<% end %>

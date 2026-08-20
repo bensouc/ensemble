@@ -78,6 +78,28 @@ RSpec.describe WorkPlansController, type: :controller do
     end
   end
 
+  # L'écran réel visé par la feature : l'éditeur du plan de travail, avec un WPS
+  # de type exercice qui n'a pas d'exercice.
+  describe "#show avec un exercice manquant" do
+    render_views
+
+    it "affiche les CTA Charger et Créer dans l'éditeur" do
+      sign_in user
+      # `work_plans#show` ne rend que les domaines de la classe du plan de travail
+      domain = create(:domain, grade: work_plan.grade)
+      skill = create(:skill, school: user.school, domain:)
+      create(:challenge, user:, skill:)
+      work_plan_domain = create(:work_plan_domain, work_plan:, domain:)
+      wps = create(:work_plan_skill, work_plan_domain:, skill:, kind: "exercice", challenge: nil)
+
+      get :show, params: { id: work_plan.id }
+
+      expect(response).to be_successful
+      expect(response.body).to include(work_plan_skill_pick_challenge_path(wps))
+      expect(response.body).to include(work_plan_skill_create_empty_challenge_path(wps))
+    end
+  end
+
   describe "#evaluation" do
     before { sign_in user }
     it "redirect to the workplan evaluation page" do

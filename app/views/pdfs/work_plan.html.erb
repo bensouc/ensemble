@@ -115,7 +115,13 @@
 													<div class= "challenge-card">
 														<div class= 'challenge-content'>
 															<%# display le content.body d'un exo %>
-															<%= work_plan_skill.challenge.content.body %>
+															<%# Un WPS exercice peut ne pas encore porter d'exercice : impression
+															    d'un plan en cours de préparation. %>
+															<% if work_plan_skill.challenge.nil? %>
+																<p><i>Exercice à définir</i></p>
+															<% else %>
+																<%= work_plan_skill.challenge.content.body %>
+															<% end %>
 															<%# END display le content.body d'un exo %>
 														</div>
 													</div>

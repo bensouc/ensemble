@@ -47,17 +47,29 @@ class Challenge < ApplicationRecord
       distinct
   end
 
-  def self.create_empty(work_plan_skill, name, current_user)
-    challenge = Challenge.create({
-                                   skill: work_plan_skill.skill,
-                                   name: "#{name}-NEW",
-                                   user: current_user
-                                 })
-    challenge.content.body = <<~HTML
-      Exercice à REDIGER............................
-    HTML
-    challenge.save
+  # Exercice vide, à rédiger, placé en fin de liste de la compétence par
+  # acts_as_list. Déclenché par le bouton « Créer » de l'éditeur de plan de
+  # travail quand l'élève a eu tous les exercices existants.
+  #
+  # Le nom doit être unique par compétence : celui construit sur `count + 1`
+  # retombe sur un nom déjà pris dès qu'un exercice a été supprimé, et
+  # l'enregistrement échouait alors en silence.
+  def self.create_empty(skill, current_user)
+    challenge = Challenge.new(skill:, name: empty_challenge_name(skill), user: current_user)
+    challenge.content = "Exercice à REDIGER............................"
+    challenge.save!
     challenge
+  end
+
+  def self.empty_challenge_name(skill)
+    base = "#{skill.name} #{Challenge.classic.where(skill_id: skill.id).count + 1}-NEW"
+    taken = Challenge.where(skill_id: skill.id).pluck(:name).to_set
+
+    return base unless taken.include?(base)
+
+    suffix = 2
+    suffix += 1 while taken.include?("#{base}-#{suffix}")
+    "#{base}-#{suffix}"
   end
 
   private

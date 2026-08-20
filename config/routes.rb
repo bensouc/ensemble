@@ -67,6 +67,9 @@ Rails.application.routes.draw do
     # completed / failed / redo
     patch "change_challenge", to: "work_plan_skills#change_challenge", as: :change_challenge
     post "challenges/:id/display_challenges", to: "challenges#display_challenges", as: :display_challenges
+    # WPS de type exercice sans exercice : l'enseignant en reprend un ou en crée un
+    post "pick_challenge", to: "work_plan_skills#pick_challenge", as: :pick_challenge
+    post "create_empty_challenge", to: "work_plan_skills#create_empty_challenge", as: :create_empty_challenge
   end
 
   # ###############routes for CLASSROOMS###############

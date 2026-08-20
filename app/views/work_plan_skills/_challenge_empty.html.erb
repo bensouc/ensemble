@@ -1,0 +1,31 @@
+<%# Deux CTA seulement : pas de « Cloner » (rien à cloner) et surtout pas le
+    « Charger » de `challenges/_mngt`, qui n'est pas rendu dans cet état. %>
+<% loadable = Challenge.classic.where(skill: work_plan_skill.skill).exists? %>
+<div class="challenge-card empty-challenge">
+	<div class="empty-challenge-msg">
+		<i class="fa-regular fa-file-lines"></i>
+		<p>
+			<% if loadable %>
+				Cet élève a déjà eu tous les exercices de cette compétence.
+			<% else %>
+				Aucun exercice n'existe encore pour cette compétence.
+			<% end %>
+		</p>
+	</div>
+	<div class="challenge-mngt">
+		<% if loadable %>
+			<%= button_to work_plan_skill_pick_challenge_path(work_plan_skill),
+			              class: "replace-challenge-btn",
+			              title: "Reprendre un exercice existant" do %>
+				<i class="far fa-folder-open me-2"></i>
+				<h6>Charger</h6>
+			<% end %>
+		<% end %>
+		<%= button_to work_plan_skill_create_empty_challenge_path(work_plan_skill),
+		              class: "replace-challenge-btn",
+		              title: "Créer un exercice à rédiger" do %>
+			<i class="fa-solid fa-plus me-2"></i>
+			<h6>Créer</h6>
+		<% end %>
+	</div>
+</div>

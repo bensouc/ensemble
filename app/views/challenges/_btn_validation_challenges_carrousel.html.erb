@@ -1,4 +1,6 @@
-<%= link_to challenge_path(work_plan_skill.challenge),
+<%# Sans exercice courant, on ne peut pas revenir à sa fiche : on re-rend le WPS,
+    qui réaffiche les CTA Charger / Créer. %>
+<%= link_to (work_plan_skill.challenge.nil? ? work_plan_skill_path(work_plan_skill) : challenge_path(work_plan_skill.challenge)),
   class:"carrousel-cancellation --roseL --bgc-blanc --cursor-pointer" do %>
   <i class="fa-solid fa-circle-xmark"></i>
 <% end %>
