@@ -116,3 +116,22 @@
     color: $white !important;
   }
 }
+
+// Export PDF indisponible pendant un enregistrement : le PDF est rendu depuis la
+// base, il sortirait sur l'état précédent. Dure typiquement une centaine de
+// millisecondes (cf. `plugins/save_tracker`).
+.is-saving {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: progress;
+}
+
+// Génération du PDF en cours : le lien s'ouvre dans un onglet, qui reste blanc une
+// à deux secondes. L'attente est donc montrée ici, sur le bouton d'origine.
+.is-generating {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  cursor: progress;
+}

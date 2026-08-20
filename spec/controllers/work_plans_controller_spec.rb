@@ -181,6 +181,47 @@ RSpec.describe WorkPlansController, type: :controller do
     end
   end
 
+  # L'export PDF est un lien simple ouvert dans un onglet : aucun JS entre le clic et
+  # le fichier. La visionneuse du navigateur y offre Imprimer et Enregistrer.
+  describe "#show au format PDF" do
+    render_views
+
+    before { sign_in user }
+
+    it "s'affiche dans l'onglet au lieu de se télécharger" do
+      # la génération réelle lance Chrome : hors sujet ici, on ne teste que l'envoi
+      allow_any_instance_of(PdfGenerator::WorkPlanPdf).to receive(:generate).and_return("%PDF-1.4")
+
+      get :show, params: { id: work_plan.id }, format: :pdf
+
+      expect(response.headers["Content-Disposition"]).to start_with("inline")
+      expect(response.media_type).to eq("application/pdf")
+    end
+
+    it "affiche une page d'attente qui demande ensuite le PDF" do
+      # sans elle, l'onglet restait blanc pendant toute la génération
+      get :export, params: { id: work_plan.id }
+
+      expect(response).to be_successful
+      expect(response.body).to include("Génération du plan de travail")
+      expect(response.body).to include("/work_plans/#{work_plan.id}.pdf")
+      # `replace` : pas d'entrée dans l'historique, le Retour ne peut pas relancer
+      expect(response.body).to include("location.replace")
+    end
+
+    it "propose l'export par un lien, sans passer par du JS" do
+      get :show, params: { id: work_plan.id }
+
+      expect(response.body).to include("/work_plans/#{work_plan.id}/export")
+      expect(response.body).to include('target="_blank"')
+      # c'est ce chemin JS qui annulait le téléchargement en silence
+      expect(response.body).not_to include("workplanpdf")
+      # le garde : indisponible pendant un enregistrement, confirmation si du
+      # contenu n'est pas enregistré
+      expect(response.body).to include("pdf-export")
+    end
+  end
+
   describe "#evaluation" do
     before { sign_in user }
     it "redirect to the workplan evaluation page" do

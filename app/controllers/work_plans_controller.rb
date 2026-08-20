@@ -86,6 +86,18 @@ class WorkPlansController < ApplicationController
     @my_work_plans_unassigned = WorkPlan.where(user: current_user, special_wps: false, student: nil)
   end
 
+  # Page d'attente affichée dans l'onglet le temps de la génération (~1,5 s), qui
+  # demande ensuite le PDF elle-même.
+  #
+  # Sans elle, l'onglet restait blanc : la réponse PDF ne peut rien afficher avant
+  # d'arriver, et un indicateur posé sur la page d'origine ne sert à personne — au
+  # clic, le regard est déjà dans le nouvel onglet.
+  def export
+    @work_plan = WorkPlan.find(params[:id])
+    authorize @work_plan, :show?
+    render layout: false
+  end
+
   def evaluation
     # binding.pry
     @work_plan = WorkPlan.find(params[:id])
@@ -116,10 +128,14 @@ class WorkPlansController < ApplicationController
       format.html
       format.pdf do
         data_pdf = PdfGenerator::WorkPlanPdf.new(@work_plan, @belt, @work_plan_domains, @domains)
+        # `inline` et pas `attachment` : le lien s'ouvre dans un onglet, où la
+        # visionneuse du navigateur offre Imprimer et Enregistrer — ce que
+        # l'enseignant veut faire du plan. En `attachment`, l'onglet se serait
+        # ouvert puis refermé aussitôt.
         send_data data_pdf.generate,
                   filename: "#{data_pdf.title}.pdf",
                   type: "application/pdf",
-                  disposition: "attachment" # sending the pdf to the browser as a file
+                  disposition: "inline"
       end
     end
   end
@@ -297,7 +313,13 @@ class WorkPlansController < ApplicationController
   def setup_show
     @belt = Belt::BELT_COLORS
     @work_plan = WorkPlan.find(params[:id])
-    @work_plan_domains = WorkPlanDomain.includes(:domain, :work_plan).where(work_plan: @work_plan)
+    # `work_plan_skills` et leurs compétences/exercices sont chargés d'avance : la vue
+    # du PDF les parcourt domaine par domaine, ce qui déclenchait une requête par
+    # domaine puis par WPS (détecté sur `pdfs/work_plan.html.erb:37` et `:62`).
+    # `:work_plan` reste malgré tout : la vue HTML lit `work_plan_domain.work_plan.grade`.
+    @work_plan_domains = WorkPlanDomain.
+                         includes(:domain, :work_plan, work_plan_skills: [:skill, :challenge]).
+                         where(work_plan: @work_plan)
     @domains = Domain.where(grade: @work_plan.grade).sort_by(&:position)
     @work_plan_skills = WorkPlanSkill.includes(:work_plan_domain, :skill,
                                                :challenge).where(work_plan_domain: @work_plan_domains)
