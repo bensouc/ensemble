@@ -213,7 +213,7 @@ class WorkPlansController < ApplicationController
       # Set the WorkPlanDomain's level to 1 and save it if Domain is special
       wpd.update(level: 1) if domain.special?
       # Find all the skills for the current domain, level, and grade
-      wpd.attach_next_skills(current_user, @results)
+      wpd.attach_next_skills(@results)
     end
     # Save the work plan and redirect to the appropriate page
     if @work_plan.save
@@ -251,20 +251,39 @@ class WorkPlansController < ApplicationController
 
   def auto_new_wp_params
     @student = Student.find(params.require(:student_id))
-    @work_plan = WorkPlan.create(
-      name: "AUTO - N°#{@student.work_plans.count + 1}",
-      grade: @student.classroom.grade,
-      student: @student, user: current_user,
-      start_date: Time.zone.today.next_occurring(:monday),
-      end_date: Time.zone.today.next_occurring(:monday) + 4
-    )
+    @work_plan = WorkPlan.create(auto_work_plan_attributes)
     @results = Result.includes(:skill).where(student: @student)
-    # binding.pry
-    @domains = if params[:student].nil?
-                 params.require(:"/students/#{@student.id}")[:domains][1..].map { |id| Domain.find(id) }
-               else
-                 params.require(:student)[:domains][1..].map { |id| Domain.find(id) }
-               end
+    @domains = requested_domains
+  end
+
+  # La modale de création rapide fournit un nom et une période ; le chemin
+  # historique (page de résultats d'une classe) n'envoie que les domaines, on garde
+  # alors les valeurs par défaut.
+  def auto_work_plan_attributes
+    monday = Time.zone.today.next_occurring(:monday)
+    {
+      name: "AUTO - N°#{@student.work_plans.count + 1}",
+      start_date: monday,
+      end_date: monday + 4
+    }.merge(submitted_work_plan).
+      merge(grade: @student.classroom.grade, student: @student, user: current_user)
+  end
+
+  def submitted_work_plan
+    return {} if params[:work_plan].blank?
+
+    params.require(:work_plan).permit(:name, :start_date, :end_date).to_h.compact_blank.symbolize_keys
+  end
+
+  # Sans aucun domaine transmis — la modale de création rapide ne les demande pas —
+  # on prend tous ceux de la classe. Les cases à cocher de la modale des domaines
+  # émettent un champ vide en tête (simple_form, pour permettre la désélection
+  # totale), d'où le rejet des valeurs vides.
+  def requested_domains
+    submitted = params[:student] || params[:"/students/#{@student.id}"]
+    return @student.classroom.grade.domains.sort_by(&:position) if submitted.blank?
+
+    Domain.where(id: submitted[:domains].to_a.compact_blank).sort_by(&:position)
   end
 
   def multiplecloning_params(id)

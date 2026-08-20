@@ -42,6 +42,14 @@ class WorkPlanSkillPolicy < ApplicationPolicy
     user_is_owner_or_admin?
   end
 
+  def pick_challenge?
+    user_is_owner_or_admin?
+  end
+
+  def create_empty_challenge?
+    user_is_owner_or_admin?
+  end
+
   private
 
   def user_is_owner_or_admin?

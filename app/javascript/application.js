@@ -38,3 +38,9 @@ Rails.start()
 document.addEventListener('turbo:load', () => {
   initFlatpickr();
 });
+
+// Les modales et formulaires chargés dans une frame Turbo ne déclenchent pas
+// `turbo:load` : sans ça, un champ date arrivé par frame reste un champ texte.
+document.addEventListener('turbo:frame-load', () => {
+  initFlatpickr();
+});

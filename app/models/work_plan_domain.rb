@@ -47,7 +47,7 @@ class WorkPlanDomain < ApplicationRecord
     Skill.where(domain:, level:, school: user.school)
   end
 
-  def attach_next_skills(current_user, results)
+  def attach_next_skills(results)
     Skill.where(domain:, level: level).sort_by(&:position).each do |skill|
       # result = Result.find_by(skill:, student:)
       result = results.to_a.find { |result| result.skill == skill }
@@ -66,7 +66,7 @@ class WorkPlanDomain < ApplicationRecord
         status: "new"
       )
 
-      new_wps.attach_content(result, current_user)
+      new_wps.attach_content(result)
     end
   end
 end

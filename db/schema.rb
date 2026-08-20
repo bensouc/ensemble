@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_19_190000) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_20_100000) do
   create_schema "_heroku"
   create_schema "heroku_ext"
 
@@ -76,6 +76,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_19_190000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "for_belt", default: false
+    t.integer "position"
+    t.index ["skill_id", "for_belt", "position"], name: "index_challenges_on_skill_id_and_for_belt_and_position"
     t.index ["skill_id"], name: "index_challenges_on_skill_id"
     t.index ["user_id"], name: "index_challenges_on_user_id"
   end

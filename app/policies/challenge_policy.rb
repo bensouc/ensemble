@@ -35,6 +35,10 @@ class ChallengePolicy < ApplicationPolicy
     user_is_owner_or_admin?
   end
 
+  def move?
+    user_is_owner_or_admin?
+  end
+
   def destroy?
     user_can_destroy? && challenge_not_used?
   end

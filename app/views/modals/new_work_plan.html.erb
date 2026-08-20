@@ -1,0 +1,54 @@
+<%= turbo_frame_tag "general_modal" do %>
+	<div class="modal-ensemble" data-controller="modals">
+		<%# Un seul formulaire, deux boutons : `formaction` envoie l'un vers la création
+		    d'un plan vierge, l'autre vers la génération automatique. Le nom et la
+		    période saisis servent dans les deux cas.
+		    `turbo: false` : les deux chemins répondent par une redirection vers le plan
+		    créé, qui doit charger la page entière et non le contenu de cette frame. %>
+		<%= simple_form_for @work_plan,
+		                    url: work_plans_path,
+		                    method: :post,
+		                    html: { novalidate: false, class: "wp-edit-form",
+		                            data: { turbo: false } } do |f| %>
+			<div class="modal-ensemble-dialog">
+				<div class="modal-ensemble-content">
+					<div class="modal-ensemble-header">
+						<h5 class="modal-title">
+							Nouveau plan de travail pour <%= @student.first_name.capitalize %>
+						</h5>
+						<button type="button" class="btn-close" aria-label="Fermer"
+						        data-action="click->modals#emptyModal"></button>
+					</div>
+					<div class="modal-body">
+						<%= f.hidden_field :student_id %>
+						<%= f.hidden_field :grade_id %>
+						<%= f.input :name, label: "Nom du plan de travail",
+                        required: :true,
+                        wrapper_html: { class: 'wp-edit-full-row' },
+                        input_html: { class: 'area' } %>
+						<%= f.input :start_date, as: :string, label: "Du",
+                        required: :true,
+                        input_html: { class: 'datepicker area', locale: "fr",
+                                      value: @work_plan.start_date.strftime("%d/%m/%Y") } %>
+						<%= f.input :end_date, as: :string, label: "Au",
+                        required: :true,
+                        input_html: { class: 'datepicker area', locale: "fr",
+                                      value: @work_plan.end_date.strftime("%d/%m/%Y") } %>
+					</div>
+					<div class="modal-ensemble-footer wp-new-actions">
+						<p class="wp-new-hint">
+							<em>Un plan auto-généré reprend les ceintures et résultats de
+								<%= @student.first_name.capitalize %>.</em>
+						</p>
+						<div class="d-flex">
+							<%= f.submit "Plan vierge", class: "utility-wp-btn" %>
+							<%= f.submit "Auto, selon son niveau",
+							             class: "utility-wp-btn utility-wp-btn--primary",
+							             formaction: student_auto_new_wp_path(@student) %>
+						</div>
+					</div>
+				</div>
+			</div>
+		<% end %>
+	</div>
+<% end %>

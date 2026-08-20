@@ -5,8 +5,9 @@
 
 class ChallengesController < ApplicationController
   before_action :set_work_plan_skill, only: [:clone, :display_challenges] # , :update, :show]
-  before_action :set_challenge, only: [:clone, :update, :display_challenges, :show, :edit, :destroy]
+  before_action :set_challenge, only: [:clone, :update, :display_challenges, :show, :edit, :destroy, :move]
   skip_after_action :verify_policy_scoped, only: [:index]
+  helper_method :challenges_frame_id, :challenges_list_frame_id
 
   def index
     # binding.pry
@@ -14,7 +15,7 @@ class ChallengesController < ApplicationController
     # "/challenges"=>{"grade"=>"CE2", "domain"=>"26", "level"=>"1", "skills"=>"11067"}
     set_filters
     challenges = Challenge.includes([:rich_text_content, :work_plan_skills, :skill,
-                                     :user]).joins(:skill).where(skills: { id: @skills.map(&:id) })
+                                     :user]).joins(:skill).where(skills: { id: @skills.map(&:id) }).ordered
     # binding.pry
     @challenges = challenges.select do |challenge|
       challenge.skill.domain == @domain &&
@@ -53,6 +54,7 @@ class ChallengesController < ApplicationController
     authorize @challenge
     if @challenge.save
       @count = count_challenges
+      @challenges = skill_challenges_list
       respond_to do |format|
         format.html { redirect_to challenge_path(@challenge), notice: "Excercice Sauvegardé" }
         format.turbo_stream { flash.now[:notice] = "Excercice Sauvegardé" }
@@ -84,6 +86,7 @@ class ChallengesController < ApplicationController
     authorize @challenge
     if @challenge.destroy
       @count = count_challenges
+      @challenges = skill_challenges_list
       respond_to do |format|
         format.html { redirect_to challenges_path, notice: "Excercice Supprimé" }
         format.turbo_stream
@@ -110,9 +113,27 @@ class ChallengesController < ApplicationController
     end
   end
 
+  # Une flèche ⬆️/⬇️ : `move_higher`/`move_lower` n'écrivent que les deux positions
+  # qui s'échangent, jamais toute la liste.
+  def move
+    authorize @challenge
+    case params[:direction]
+    when "up" then @challenge.move_higher
+    when "down" then @challenge.move_lower
+    end
+    @challenges = skill_challenges_list
+    respond_to do |format|
+      format.html { redirect_to challenges_path }
+      format.turbo_stream
+    end
+  end
+
   def display_challenges
     skip_authorization
-    @challenges = Challenge.includes([:rich_text_content]).where(skill: @challenge.skill).reject do |chal|
+    # `classic` manquait : les exercices de ceinture apparaissaient dans le
+    # carrousel de remplacement, alors que le bouton qui l'ouvre ne compte que
+    # les exercices classiques.
+    @challenges = Challenge.classic.includes([:rich_text_content]).where(skill: @challenge.skill).ordered.reject do |chal|
       chal == @challenge
     end
     # raise
@@ -133,6 +154,25 @@ class ChallengesController < ApplicationController
   end
 
   private
+
+  # Liste ordonnée de la compétence, telle que l'affiche l'index — re-rendue à
+  # chaque changement d'ordre, d'ajout ou de suppression pour que les numéros de
+  # position et les flèches restent justes sans recharger la page.
+  def skill_challenges_list
+    Challenge.includes([:rich_text_content, :work_plan_skills, :user]).
+      where(skill_id: @challenge.skill_id, for_belt: @challenge.for_belt).ordered
+  end
+
+  # Les frames de l'index sont préfixées pour les exercices de ceinture, qui
+  # forment une liste distincte.
+  def challenges_frame_id(suffix)
+    prefix = @challenge.for_belt? ? "for_belt_" : nil
+    "#{prefix}skill_#{@challenge.skill_id}_#{suffix}"
+  end
+
+  def challenges_list_frame_id
+    challenges_frame_id("challenges_list")
+  end
 
   def count_challenges
     if @challenge.for_belt?

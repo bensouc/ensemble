@@ -26,37 +26,93 @@
 
 }
 
-.utility-wp-btn {
-  margin: 7px 0 0 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  width: 110px;
-  height: 2em;
-  border: 3px solid $rose;
-  transition: 0.3s;
-  color: $rose;
-  background-color: white;
+// Pastille « Ajouter » en tête d'un dossier repliable (une compétence dans la liste
+// des exercices, un élève dans la liste des plans de travail). Sans fond au repos :
+// il y en a une par dossier, un fond teinté ferait une colonne de taches roses.
+// Les marges de placement sont portées par chaque page.
+.add-folder-btn {
+  @include pill-cta($height: 30px);
+  flex: 0 0 auto;
+  background-color: transparent;
 
-  h6 {
-    // padding: 10px;
-    margin: 0;
-  }
   i {
-    font-size: 12px;
+    font-size: 15px;
+    transition: 0.25s;
+  }
+
+  &:hover i {
+    transform: rotate(90deg);
+  }
+}
+
+// Actions d'un plan de travail (Partager, Correction, Export PDF, Cloner) : même
+// pastille que les CTA des exercices, à la place des pavés de 110px à bordure de
+// 3px. Chacune porte désormais une icône.
+.utility-wp-btn {
+  @include pill-cta($height: 34px);
+  margin: 7px 0 0 12px;
+}
+
+// Action principale d'un plan de travail (la Correction) : déjà remplie au repos,
+// pour qu'elle ressorte des actions secondaires.
+.utility-wp-btn--primary {
+  background-color: $rose;
+  color: $blanc;
+
+  i,
+  h6,
+  span {
+    color: $blanc;
+  }
+}
+
+// Actions occasionnelles (Partager, Cloner) : un simple ⋮ qui ouvre le menu.
+.wp-actions {
+  gap: 2px;
+
+  .wp-actions-menu-btn {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+    align-items: center;
+    justify-content: center;
+    margin: 7px 0 0 8px;
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    color: $rose;
+    font-size: 16px;
+    transition: 0.25s;
+
+    &:hover,
+    &[aria-expanded="true"] {
+      background-color: rgba($rose, 0.08);
+      cursor: pointer;
+    }
+  }
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: $grisF;
+
+    i {
+      width: 16px;
+      color: $rose;
+    }
+
+    &:hover {
+      background-color: rgba($rose, 0.08);
+      color: $rose;
+    }
   }
 }
 
 .utility-wp-btn:hover {
-  transition: 0.2s;
-  background-color: $rose;
-  border-color: $rose;
-  color: $rose;
-  cursor: pointer;
-  color: $white !important;
   i,
-  h6 {
+  h6,
+  span {
     color: $white !important;
   }
 }

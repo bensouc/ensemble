@@ -4,40 +4,40 @@
   </h1>
   <div class='m-top'>
     <%= simple_form_for @work_plan, html: { novalidate: false } do |f| %>
-      <div class='box-start m-top'>
-        <div class='box-column'>
-          <p class='pad-35'>Nommez votre plan de travail : *</p>
-          <p class='pad-35'>Niveau de : *</p>
-          <p class='pad-35'>Période du : *</p>
-          <p class='pad-35'>Personnalisez pour l'élève :</p>
-        </div>
-        <div class='box-column'>
-          <%= f.input :name, label: false, required: :true,
-                      # placeholder: 'CE2...',
-                      input_html: { class: 'area grow m-left' } %>
-          <%= f.association :grade, label: false,  required: true,
-                            collection: @grades,
-                            input_html: { class: 'area grow m-left'}
-                            %>
-          <%# <i class="far fa-calendar-check font-fa"></i> %>
-          <div class='box-start pad-35' data-controller='wp-default-period'>
-          <%# data-wp-default-period-target='start' /// data-action='click->wp-default-period#add' %>
-            <div>
-              <%= f.input :start_date, as: :string, label: false, required: :true,
-                          input_html: {value: Date.today.at_beginning_of_week.strftime("%d/%m/%Y") ,class: 'datepicker area rect-lg m-left ', locale: "fr", data:{ wp_default_period_target: "start",action:"click->wp-default-period#add"}} %>
-            </div>
-            <p class='m-left'>au</p>
-            <div data-wp-default-period-target='end'>
-              <%= f.input :end_date, as: :string, label: false,  required: true,
-                          input_html: {value: ((Date.today.at_end_of_week) - 2).strftime("%d/%m/%Y"), class: 'datepicker area rect-lg m-left', locale: "fr",data:{ wp_default_period_target: "end"}} %>
-            </div>
+      <%# Grille libellé / champ : chaque libellé est dans la même RANGÉE que son
+          champ, donc alignés par construction. Les deux colonnes parallèles qui
+          précédaient ne s'alignaient que si chaque bloc de champ avait exactement la
+          hauteur du paragraphe d'en face — au moindre écart, tout dérivait. %>
+      <div class='wp-new-grid m-top'>
+        <p class='wp-new-label'>Nommez votre plan de travail : *</p>
+        <%= f.input :name, label: false, required: :true,
+                    input_html: { class: 'area grow' } %>
+
+        <p class='wp-new-label'>Niveau de : *</p>
+        <%= f.association :grade, label: false,  required: true,
+                          collection: @grades,
+                          input_html: { class: 'area grow'}
+                          %>
+
+        <p class='wp-new-label'>Période du : *</p>
+        <div class='box-start wp-new-period' data-controller='wp-default-period'>
+          <div>
+            <%= f.input :start_date, as: :string, label: false, required: :true,
+                        input_html: {value: Date.today.at_beginning_of_week.strftime("%d/%m/%Y") ,class: 'datepicker area rect-lg', locale: "fr", data:{ wp_default_period_target: "start",action:"click->wp-default-period#add"}} %>
           </div>
-          <%= f.association :student, label: false,
-                            collection: @students.order(:first_name),
-                            input_html: {class: 'area grow m-left'},
-                            label_method: :first_name %>
+          <p class='m-left'>au</p>
+          <div data-wp-default-period-target='end'>
+            <%= f.input :end_date, as: :string, label: false,  required: true,
+                        input_html: {value: ((Date.today.at_end_of_week) - 2).strftime("%d/%m/%Y"), class: 'datepicker area rect-lg m-left', locale: "fr",data:{ wp_default_period_target: "end"}} %>
+          </div>
         </div>
-       </div>
+
+        <p class='wp-new-label'>Personnalisez pour l'élève :</p>
+        <%= f.association :student, label: false,
+                          collection: @students.order(:first_name),
+                          input_html: {class: 'area grow'},
+                          label_method: :first_name %>
+      </div>
 
       <div class='m-top box-end'>
         <%= f.submit "Valider", class: 'area rect-sm btn-valid' %>

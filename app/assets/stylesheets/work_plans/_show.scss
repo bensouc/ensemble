@@ -20,13 +20,17 @@
   }
 }
 
-.show-sticky-header{
+// Hauteur libre, plus les 143px figés : le contenu les dépassait (titre + dates,
+// puis nom de l'élève et rangée de quatre boutons), et il fallait pousser les
+// domaines de 85px pour dégager la zone qui débordait. L'en-tête tient
+// maintenant sur une ligne, la bande se dimensionne sur son contenu.
+.show-sticky-header {
   width: 996px;
-    height: 143px;
-    top: 8px;
-    position: sticky;
-    background-color: rgb(255, 255, 255);
-    z-index: 1
+  top: 8px;
+  position: sticky;
+  padding-bottom: 8px;
+  background-color: rgb(255, 255, 255);
+  z-index: 1;
 }
 // modal bootstrap
 .modal-content {
@@ -48,9 +52,6 @@
 #wp-edition {
   .bg-white {
     background-color: white;
-  }
-  p {
-    margin-left: 22px;
   }
   .datepicker {
     margin-left: 12px;
@@ -205,29 +206,176 @@
   padding: 5px 5px 0 15px;
 }
 
+// Modale d'édition d'un plan de travail : champs en colonne, pleine largeur, avec
+// leurs libellés.
+.wp-edit-form {
+  .modal-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 12px;
+    padding: 20px 24px;
+  }
+
+  // Nom et élève sur la largeur entière, les deux dates côte à côte.
+  .wp-edit-full-row {
+    grid-column: 1 / -1;
+  }
+
+  .form-group {
+    min-width: 0;
+    margin: 0;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: $grisF;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  // L'astérisque « obligatoire » arrivait souligné en pointillés (rendu par
+  // défaut d'un <abbr>).
+  abbr {
+    color: $rose;
+    text-decoration: none;
+  }
+
+  .area {
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+  }
+
+  // `config.input_field_valid_class = 'is-valid'` : simple_form marque tous les
+  // champs valides dès que l'objet est sans erreur. À l'ouverture, la modale
+  // s'affichait donc entièrement bordée de vert avec une coche par champ, ce qui
+  // ne dit rien à l'enseignant. Neutralisé ici seulement.
+  .is-valid {
+    border-color: $grisC;
+    background-image: none;
+    padding-right: 12px;
+
+    &:focus {
+      border-color: $rose;
+      box-shadow: none;
+    }
+  }
+
+  .modal-footer {
+    padding: 12px 24px;
+  }
+}
+
+// En-tête d'un plan de travail : le titre prend la place restante, les dates sont
+// épinglées à droite et ne bougent donc pas avec la longueur du nom. Le niveau est
+// descendu sur la ligne suivante, avec l'élève.
+.wp-header-titles {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 16px;
+
+  // `<center>` remplacé par le titre lui-même : c'est la grille qui le place.
+  > .date-domain {
+    justify-self: end;
+    margin: 0;
+  }
+}
+
+// Ligne de contexte sous le titre : « Niveau : CE2 / Benoît ↗ ».
+.wp-context {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: $grisF;
+
+  .wp-context-sep {
+    color: $grisC;
+  }
+
+  // Même gris que le reste de la ligne : c'est une information de contexte, pas une
+  // action — le rose la faisait crier plus fort que les vrais boutons.
+  .wp-context-student {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: $grisF;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.25s;
+
+    i {
+      font-size: 11px;
+      opacity: 0.5;
+    }
+
+    &:hover {
+      text-decoration: underline;
+
+      i {
+        opacity: 0.9;
+      }
+    }
+  }
+}
+
+.wp-title {
+  display: flex;
+  min-width: 0;
+  align-items: baseline;
+
+  // Une seule ligne, coupée en points de suspension. Un bloc qui passe à la ligne
+  // occupe toute la largeur de sa colonne même quand sa dernière ligne est courte :
+  // le stylo se retrouvait alors seul au milieu du vide. Sur une ligne, la boîte du
+  // texte s'arrête à la dernière lettre et le stylo la suit.
+  .wp-title-name {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .edit-wp-title-btn {
+    flex: 0 0 auto;
+  }
+}
+
+// Le stylo d'édition du titre vit dans le <h1> : `fa-xs` le dimensionnait à 0.75em
+// de la taille du titre, donc énorme. Taille fixe, et la couleur quitte le style
+// inline.
+.edit-wp-title-btn {
+  border: none;
+  background-color: transparent;
+  color: $rose;
+  font-size: 12px;
+  vertical-align: middle;
+  transition: 0.25s;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.7;
+  }
+}
+
 .student-name {
-  height: 60px;
+  // `min-height` et pas `height` : le nom et les actions partagent la ligne
+  min-height: 44px;
   // position: sticky;
   //   top: 118px;
   //   background-color: white;
 }
+// Grand nom d'élève de la page de correction, qui a son propre en-tête.
 .student_name_link {
   color: $grisF;
+
   &:hover {
     color: $grisC;
   }
 }
-.link_details {
-  position: relative;
-  top: 34px;
-  left: -40px;
-  font-size: smaller;
-  font-weight: bolder;
-  color: white;
-  background-color: #f2415083;
-  padding: 10px;
-  border-radius: 5px;
-}
+
 
 .bilan {
   height: 80px;
@@ -332,6 +480,15 @@
   select:focus-visible {
     outline: 1px solid transparent;
   }
+}
+
+// « Ajouter une compétence » / « Ajouter un domaine » de l'éditeur de plan de
+// travail. Classe dédiée : `add-skill-btn` sert aussi aux boutons de soumission
+// devise, des grades et des compétences, qu'on ne touche pas ici.
+.add-item-btn {
+  @include pill-cta($height: 34px);
+  margin-top: 10px;
+  margin-left: 8px;
 }
 
 .add-skill-btn {

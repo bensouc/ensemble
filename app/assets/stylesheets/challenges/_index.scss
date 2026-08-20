@@ -66,3 +66,99 @@
 .max-length-skill-name {
   max-width: 713px;
 }
+
+// Gouttière de tri à gauche de chaque exercice, dans la liste d'une compétence :
+// numéro de position + flèches. La carte d'exercice (`.cont-challenge`) garde sa
+// largeur fixe, et le bouton de suppression — positionné en relatif — se décale
+// d'autant que la carte puisque tous deux vivent dans la même colonne flex.
+// La liste des exercices est retirée de 16px, comme l'icône de dossier de
+// l'en-tête (`ms-3`) : numéro et flèches tombent ainsi sous le dossier. Réglé ici
+// et pas sur `.list-wp-index`, partagée avec l'index des plans de travail.
+.challenges-by-skill .list-wp-index {
+  padding-left: 16px;
+}
+
+// Rythme vertical resserré entre deux exercices : 50px de marges cumulées, la
+// liste respirait trop. Scopé à l'index — `.cont-challenge` sert aussi à
+// l'éditeur de plan de travail et au formulaire.
+.challenges-by-skill .cont-challenge {
+  margin-top: 6px;
+  margin-bottom: 10px;
+}
+
+.challenge-row {
+  display: flex;
+  align-items: flex-start;
+}
+
+.challenge-row-content {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+// Formulaire de création : une gouttière vide de la largeur de celle du tri, pour
+// que sa carte tombe exactement sur celles des exercices (le formulaire porte
+// déjà `.cont-challenge`, donc la marge de 30px). Sans marge ni hauteur : quand
+// la frame est vide, la ligne n'occupe aucune place.
+.new-challenge-row .challenge-order-placeholder {
+  flex: 0 0 70px;
+  width: 70px;
+}
+
+// Numéro puis les deux flèches, sur une seule ligne, calée à gauche.
+.challenge-order {
+  display: flex;
+  flex: 0 0 70px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  width: 70px;
+  margin-top: 12px;
+
+  .challenge-order-position {
+    // Largeur minimale : les flèches restent alignées d'une ligne à l'autre,
+    // que la position ait un ou deux chiffres.
+    min-width: 15px;
+    font-size: 15px;
+    font-weight: 700;
+    color: $grisF;
+    text-align: left;
+  }
+
+  .challenge-order-btn {
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    color: $roseL;
+    font-size: 19px;
+    line-height: 1;
+    transition: 0.3s;
+
+    &:hover {
+      transform: scale(1.4);
+    }
+  }
+
+
+  .button_to {
+    display: flex;
+    margin: 0;
+  }
+}
+
+// En-tête d'une compétence : le dossier repliable (icône + nom + compteur) puis
+// le CTA d'ajout, poussé à droite. Le CTA est un frère de la zone cliquable pour
+// ne pas déclencher le pliage du dossier.
+.challenge-skill-header {
+  align-items: center;
+  gap: 4px;
+}
+
+// Placement seul : l'apparence vient de `.add-folder-btn`. Bord droit aligné sur
+// celui des cartes d'exercice :
+// 1000 (conteneur) - 16 (retrait liste) - 70 (gouttière) - 30 - 811 (carte).
+.challenge-skill-header .add-folder-btn {
+  margin-right: 73px;
+  margin-left: auto;
+}

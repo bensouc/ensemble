@@ -24,6 +24,8 @@ RSpec.describe WorkPlansController, type: :controller do
   end
 
   describe "#new" do
+    render_views
+
     context "when user is not signed in" do
       it "returns a failure response" do
         get :new
@@ -36,6 +38,19 @@ RSpec.describe WorkPlansController, type: :controller do
         get :new
         expect(response).to be_successful
         expect(response).to render_template(:new)
+      end
+
+      it "range chaque libellé dans la même rangée que son champ" do
+        sign_in(user)
+
+        get :new
+
+        expect(response.body.scan("wp-new-label").size).to eq(4)
+        expect(response.body).to include("wp-new-grid")
+        expect(response.body).to include("wp-new-period")
+        %w[work_plan_name work_plan_grade work_plan_student].each do |field|
+          expect(response.body).to include(field)
+        end
       end
     end
   end
@@ -75,6 +90,94 @@ RSpec.describe WorkPlansController, type: :controller do
         end.to change(WorkPlan, :count).by(2)
         expect(response).to redirect_to(work_plans_path)
       end
+    end
+  end
+
+  # L'écran réel visé par la feature : l'éditeur du plan de travail, avec un WPS
+  # de type exercice qui n'a pas d'exercice.
+  describe "#show avec un exercice manquant" do
+    render_views
+
+    it "affiche les CTA Charger et Créer dans l'éditeur" do
+      sign_in user
+      # `work_plans#show` ne rend que les domaines de la classe du plan de travail
+      domain = create(:domain, grade: work_plan.grade)
+      skill = create(:skill, school: user.school, domain:)
+      create(:challenge, user:, skill:)
+      work_plan_domain = create(:work_plan_domain, work_plan:, domain:)
+      wps = create(:work_plan_skill, work_plan_domain:, skill:, kind: "exercice", challenge: nil)
+
+      get :show, params: { id: work_plan.id }
+
+      expect(response).to be_successful
+      expect(response.body).to include(work_plan_skill_pick_challenge_path(wps))
+      expect(response.body).to include(work_plan_skill_create_empty_challenge_path(wps))
+    end
+  end
+
+  describe "#index, création rapide" do
+    render_views
+
+    it "affiche une pastille d'ajout par élève" do
+      sign_in user
+      grade = create(:grade, school: user.school)
+      classroom = create(:classroom, user:, grade:)
+      student = create(:student, classroom:)
+
+      get :index
+
+      expect(response.body).to include(student_new_work_plan_modal_path(student))
+    end
+  end
+
+  # Les deux issues de la modale de création rapide, depuis la liste des plans de
+  # travail.
+  describe "création rapide pour un élève" do
+    let(:grade) { create(:grade, school: user.school) }
+    let(:classroom) { create(:classroom, user:, grade:) }
+    let(:student) { create(:student, classroom:) }
+
+    before { sign_in user }
+
+    it "crée un plan vierge avec le nom et la période saisis" do
+      expect do
+        post :create, params: { work_plan: { name: "Semaine 12", student_id: student.id,
+                                            grade_id: grade.id, start_date: "16/03/2026",
+                                            end_date: "20/03/2026" } }
+      end.to change(WorkPlan, :count).by(1)
+
+      created = WorkPlan.last
+      expect(created.student).to eq(student)
+      expect(created.name).to eq("Semaine 12")
+      expect(created.start_date).to eq(Date.new(2026, 3, 16))
+      expect(created.work_plan_domains).to be_empty
+      expect(response).to redirect_to(work_plan_path(created))
+    end
+
+    it "génère un plan auto sur tous les domaines sans qu'on les transmette" do
+      domain = create(:domain, grade:, name: "Calcul", special: false)
+      skill = create(:skill, school: user.school, domain:, level: 1)
+      challenge = create(:challenge, user:, skill:)
+
+      post :auto_new_wp, params: { student_id: student.id,
+                                   work_plan: { name: "Auto semaine 12",
+                                                start_date: "16/03/2026", end_date: "20/03/2026" } }
+
+      created = WorkPlan.last
+      expect(created.name).to eq("Auto semaine 12")
+      expect(created.start_date).to eq(Date.new(2026, 3, 16))
+      expect(created.work_plan_domains.map(&:domain)).to eq([domain])
+      expect(created.work_plan_skills.find_by(skill:).challenge).to eq(challenge)
+    end
+
+    it "garde les valeurs par défaut quand le nom et la période ne sont pas transmis" do
+      create(:domain, grade:, name: "Calcul", special: false)
+
+      post :auto_new_wp, params: { student_id: student.id }
+
+      created = WorkPlan.last
+      expect(created.name).to start_with("AUTO - N°")
+      expect(created.start_date).to eq(Time.zone.today.next_occurring(:monday))
     end
   end
 
@@ -133,6 +236,52 @@ RSpec.describe WorkPlansController, type: :controller do
       it "redirects to the Auto Generated WorkPlan " do
         post :auto_new_wp, params: params.merge(student_id: student.id)
         expect(response).to redirect_to(work_plan_path(WorkPlan.last))
+      end
+    end
+
+    # Toute la chaîne partage l'école de l'enseignant : `Skill.for_school` sert à
+    # décider si une ceinture est validée, et un jeu de compétences vide la
+    # valide par défaut — ce qui ferait sauter le niveau du domaine généré.
+    context "avec des exercices ordonnés sur la compétence" do
+      let(:grade) { create(:grade, school: user.school) }
+      let(:classroom) { create(:classroom, user:, grade:) }
+      let(:student) { create(:student, classroom:) }
+      let(:domain) { create(:domain, grade:, name: "Calcul", special: false) }
+      let(:skill) { create(:skill, school: user.school, domain:, level: 1) }
+      let(:params) { { "/students/#{student.id}" => { domains: ["", domain.id] }, student_id: student.id } }
+
+      def generated_wps
+        WorkPlan.last.work_plan_skills.find_by(skill:)
+      end
+
+      it "attache le premier exercice, puis le suivant dans l'ordre" do
+        first = create(:challenge, user:, skill:)
+        second = create(:challenge, user:, skill:)
+        second.move_to_bottom
+
+        post :auto_new_wp, params: params
+        expect(generated_wps.challenge).to eq(first)
+
+        # exercice raté : le plan suivant donne l'exercice d'après, pas un au hasard
+        generated_wps.update!(status: "redo")
+
+        post :auto_new_wp, params: params
+        expect(generated_wps.challenge).to eq(second)
+      end
+
+      it "laisse le plan de travail sans exercice quand l'élève les a tous eus" do
+        only_one = create(:challenge, user:, skill:)
+
+        post :auto_new_wp, params: params
+        expect(generated_wps.challenge).to eq(only_one)
+
+        generated_wps.update!(status: "redo")
+
+        expect do
+          post :auto_new_wp, params: params
+        end.not_to change(Challenge, :count)
+        expect(generated_wps.challenge).to be_nil
+        expect(generated_wps.kind).to eq("exercice")
       end
     end
   end

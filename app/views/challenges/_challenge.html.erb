@@ -1,27 +1,42 @@
-<%= turbo_frame_tag dom_id(challenge) do %>
-  <% if policy(challenge).can_show_delete_button? && params[:controller] == "challenges"%>
-    <div class="delete-challenge-btn">
-      <%= button_to challenge_path(challenge), method: :delete, class: "move-left-btn",
-        data: {confirm: "Souhaitez vous supprimer cet éxercice?"} do %>
-        <i class="fa-solid fa-circle-xmark"></i>
-      <% end %>
-    </div>
-  <% end %>
-  <%= link_to edit_challenge_path(challenge), class:"--color-inherit" do %>
-    <div class="cont-challenge pencil-pointor mb-1" id="<%= challenge.id%>">
-      <div class= "">
-        <div  data-edit-challenge-target="infos">
-          <div class="challenge-infos"   data-ajax-replace-challenge-target='content' id='<%=challenge.id %>'>
-            <div class="challenge-name-in-content">
-              <%= challenge.name%>
+<%# `in_index` : la liste des exercices d'une compétence (page /challenges). Le
+    partiel sert aussi dans l'éditeur de plan de travail et dans le carrousel de
+    remplacement, où ni les flèches ni l'auteur n'ont leur place.
+    `list_size` n'est fourni que par les rendus de collection : sans lui, pas de
+    flèches (on ne sait pas où est la fin de la liste). %>
+<% in_index = local_assigns.fetch(:in_index) { params[:controller] == "challenges" && params[:action] == "index" } %>
+<% orderable = in_index && local_assigns[:list_size].present? && local_assigns.key?(:challenge_counter) %>
+
+<%# La frame ne contient QUE la carte : éditer un exercice ou l'enregistrer y
+    substitue le formulaire, et la gouttière — qui vit à l'extérieur — survit. %>
+<% card = capture do %>
+  <%= turbo_frame_tag dom_id(challenge) do %>
+    <% if policy(challenge).can_show_delete_button? && params[:controller] == "challenges"%>
+      <div class="delete-challenge-btn">
+        <%= button_to challenge_path(challenge), method: :delete, class: "move-left-btn",
+          data: {confirm: "Souhaitez vous supprimer cet éxercice?"} do %>
+          <i class="fa-solid fa-circle-xmark"></i>
+        <% end %>
+      </div>
+    <% end %>
+    <%= link_to edit_challenge_path(challenge), class:"--color-inherit" do %>
+      <div class="cont-challenge pencil-pointor mb-1" id="<%= challenge.id%>">
+        <div class= "">
+          <div  data-edit-challenge-target="infos">
+            <div class="challenge-infos"   data-ajax-replace-challenge-target='content' id='<%=challenge.id %>'>
+              <div class="challenge-name-in-content">
+                <%= challenge.name%>
+              </div>
+              <%= challenge.content %>
             </div>
-            <%= challenge.content %>
           </div>
         </div>
       </div>
-    </div>
+    <% end %>
   <% end %>
-  <% if params[:controller]  == "challenges" && params[:action] == "index"%>
+<% end %>
+
+<% infos = capture do %>
+  <% if in_index %>
     <div class="challenge-infos-box">
       <p class="ms-5 --grisC --italic"> <i class='fas fa-pen fa-xs'></i> <%= challenge.user.first_name %></p>
       <%if !challenge.work_plan_skills.empty?  %>
@@ -29,4 +44,39 @@
       <% end %>
     </div>
   <% end %>
+<% end %>
+
+<% if orderable %>
+  <div class="challenge-row">
+    <div class="challenge-order">
+      <span class="challenge-order-position" title="Position dans la compétence">
+        <%= challenge.position %>
+      </span>
+      <%# Pas de place réservée pour une flèche absente : en haut et en bas de
+          liste, le groupe se resserre. %>
+      <% unless challenge_counter.zero? %>
+        <%= button_to move_challenge_path(challenge, direction: "up"),
+              method: :patch,
+              class: "challenge-order-btn",
+              title: "Monter cet exercice" do %>
+          <i class="fa-solid fa-circle-chevron-up"></i>
+        <% end %>
+      <% end %>
+      <% unless challenge_counter == list_size - 1 %>
+        <%= button_to move_challenge_path(challenge, direction: "down"),
+              method: :patch,
+              class: "challenge-order-btn",
+              title: "Descendre cet exercice" do %>
+          <i class="fa-solid fa-circle-chevron-down"></i>
+        <% end %>
+      <% end %>
+    </div>
+    <div class="challenge-row-content">
+      <%= card %>
+      <%= infos %>
+    </div>
+  </div>
+<% else %>
+  <%= card %>
+  <%= infos %>
 <% end %>

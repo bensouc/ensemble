@@ -10,19 +10,7 @@ class WorkPlanSkillsController < ApplicationController
   def create
     @work_plan_skill = WorkPlanSkill.new(set_params_wpskill)
     authorize @work_plan_skill
-    # @work_plan_skill.student = @work_plan_skill.work_plan_domain.work_plan.student
-    challenges = Challenge.classic.where(skill_id: @work_plan_skill.skill)
-    if @work_plan_skill.kind.downcase == "exercice"
-      if challenges == []
-        # if no existing challeng 4 that skill
-        # create a empty challenge 4 that skill
-        @work_plan_skill.challenge = add_new_chall_2_wps(@work_plan_skill)
-      else
-        # recuper un des exo existant avec le skill id de @work_plan_skill
-        challenge = challenges.sample
-        @work_plan_skill.challenge = challenge
-      end
-    end
+    @work_plan_skill.challenge = @work_plan_skill.get_challenge_4_wps if @work_plan_skill.kind.downcase == "exercice"
     if @work_plan_skill.save!
       @work_plan_domain = @work_plan_skill.work_plan_domain
       @work_plan_skills = @work_plan_domain.work_plan_skills
@@ -135,6 +123,31 @@ class WorkPlanSkillsController < ApplicationController
     render partial: "/challenges/full_challenge_display"
   end
 
+  # Un WPS de type exercice peut désormais ne porter aucun exercice : la
+  # génération automatique ne fabrique plus d'exercice vide quand l'élève a eu
+  # tous ceux de la compétence. L'enseignant tranche depuis l'éditeur, soit en
+  # reprenant un exercice existant...
+  def pick_challenge
+    @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
+    authorize @work_plan_skill
+    @challenges = Challenge.classic.includes(:rich_text_content).where(skill: @work_plan_skill.skill).ordered
+    respond_to do |format|
+      format.html { redirect_to work_plan_skill_path(@work_plan_skill) }
+      format.turbo_stream
+    end
+  end
+
+  # ...soit en en créant un vide, à rédiger, ajouté en fin de liste.
+  def create_empty_challenge
+    @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
+    authorize @work_plan_skill
+    @work_plan_skill.update!(challenge: Challenge.create_empty(@work_plan_skill.skill, current_user))
+    respond_to do |format|
+      format.html { redirect_to work_plan_skill_path(@work_plan_skill) }
+      format.turbo_stream { flash.now[:notice] = "Exercice à rédiger ajouté" }
+    end
+  end
+
   # to add a validated wps on a student on special_wps=true Workplan
   def add_validated_wps
     skip_authorization
@@ -214,12 +227,6 @@ class WorkPlanSkillsController < ApplicationController
       kind: params.require(:kind),
       status: "new"
     }
-  end
-
-  def add_new_chall_2_wps(work_plan_skill)
-    name = work_plan_skill.skill.name + (Challenge.classic.where(skill_id: work_plan_skill.skill).count + 1).to_s
-    Challenge.create_empty(work_plan_skill, name, current_user)
-    # @work_plan_skill.challenge = challenge
   end
 
   # cONTROLLER PRIVATE METHOD

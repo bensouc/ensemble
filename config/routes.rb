@@ -67,6 +67,9 @@ Rails.application.routes.draw do
     # completed / failed / redo
     patch "change_challenge", to: "work_plan_skills#change_challenge", as: :change_challenge
     post "challenges/:id/display_challenges", to: "challenges#display_challenges", as: :display_challenges
+    # WPS de type exercice sans exercice : l'enseignant en reprend un ou en crée un
+    post "pick_challenge", to: "work_plan_skills#pick_challenge", as: :pick_challenge
+    post "create_empty_challenge", to: "work_plan_skills#create_empty_challenge", as: :create_empty_challenge
   end
 
   # ###############routes for CLASSROOMS###############
@@ -132,7 +135,11 @@ Rails.application.routes.draw do
   # ###############END for SKILLS###############
 
   # ###############routesfor Challenge#########
-  resources :challenges, only: [:show, :edit, :update, :destroy, :index, :new, :create]
+  resources :challenges, only: [:show, :edit, :update, :destroy, :index, :new, :create] do
+    member do
+      patch :move
+    end
+  end
 
   # ###############routes for SCHOOL/SCHOOL_ROLES###############
   get "schools/join", to: "schools#join", as: :join_school
@@ -151,6 +158,7 @@ Rails.application.routes.draw do
   end
   # ###############ROUTES FOR MODALS###############
   get "students/:id/auto_gen", to: "modals#auto_gen", as: :student_auto_gen_modal
+  get "students/:id/new_work_plan", to: "modals#new_work_plan", as: :student_new_work_plan_modal
 
   # ###############END for SKILLS###############
 

@@ -118,3 +118,29 @@
   font-weight: 600;
   min-width: 4ch;
 }
+
+// Ligne d'un élève dans la liste des plans de travail : la pastille « Ajouter » est
+// poussée à droite, hors de la zone qui replie le dossier.
+.wp-student-header {
+  align-items: center;
+
+  .add-folder-btn {
+    margin-right: 20px;
+    margin-left: auto;
+  }
+}
+
+// Le formulaire de création rapide vit dans une modale plein écran : ses actions
+// tiennent sur une ligne, l'aide à gauche et les deux boutons à droite.
+.wp-new-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+
+  .wp-new-hint {
+    margin: 0;
+    color: #9c9c9c;
+    font-size: 12px;
+  }
+}

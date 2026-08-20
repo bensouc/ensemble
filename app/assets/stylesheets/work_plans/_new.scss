@@ -76,6 +76,41 @@
   }
 }
 
-.work_plan_name, .work_plan_grade, .work_plan_student{
-  padding: 0.35rem !important;
+
+// Libellé et champ dans la même rangée de grille : l'alignement ne dépend plus de la
+// hauteur relative des deux colonnes. C'est ce qui remplace le
+// `.work_plan_name, .work_plan_grade, .work_plan_student { padding: 0.35rem !important }`
+// qui portait l'alignement d'ici tout en décalant les champs de la modale d'édition.
+.wp-new-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 18px 24px;
+
+  .wp-new-label {
+    margin: 0;
+  }
+
+  .form-group {
+    margin: 0;
+  }
+
+  // Les champs pleine largeur ; ceux de la période gardent leur `rect-lg`, ils sont
+  // imbriqués plus profond et échappent au sélecteur d'enfant direct.
+  > .form-group .area {
+    width: 100%;
+  }
+
+  .wp-new-period {
+    align-items: center;
+    gap: 8px;
+
+    .form-group {
+      margin: 0;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
 }

@@ -157,3 +157,53 @@ a {
     border-right-color: transparent;
     margin: 0 !important;
   }}
+
+// CTA « pastille » : aucune bordure, fond de la couleur à 8% au repos,
+// remplissage plein et léger soulèvement au survol. Langage commun à toutes les
+// actions d'ajout et de remplacement (ajouter un exercice, une compétence, un
+// domaine, cloner, charger), en remplacement des pavés à bordure de 3px.
+@mixin pill-cta($color: $rose, $height: 32px) {
+  display: inline-flex;
+  height: $height;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 999px;
+  background-color: rgba($color, 0.08);
+  color: $color;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: 0.25s;
+
+  i {
+    font-size: 13px;
+    color: inherit;
+  }
+
+  h6,
+  span {
+    margin: 0;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: inherit;
+  }
+
+  &:hover {
+    background-color: $color;
+    color: $blanc;
+    cursor: pointer;
+    text-decoration: none;
+    transform: translateY(-1px);
+
+    i,
+    h6,
+    span {
+      color: $blanc;
+    }
+  }
+}

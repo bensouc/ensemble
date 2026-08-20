@@ -38,30 +38,22 @@ class WorkPlanSkill < ApplicationRecord
     new_wps.save
   end
 
-  def get_challenge_4_wps(current_user, _actual_challenge = nil)
-    challenges = Challenge.classic.where(skill_id: skill)
-    name = skill.name + " " + (challenges.count + 1).to_s
-    # get all challenges azssigned 4 current_student and that skill
-    # if new WorkPlanSkill.where(skill:, kind: "exercice").select { |wps| wps.student == student }.sort_by(&:created_at).last.challenge_id
-    last_wps = WorkPlanSkill.where(skill:, kind: "exercice").select do |wps|
-      wps.student == student
-    end.sort_by(&:created_at).last
-    if !last_wps.nil? && last_wps.status == "new" # a wps exists AND its status is new AKA challenge not done
-      #  => get the same challenge
-      Challenge.find(last_wps.challenge_id)
-    else
-      student_challenges = Challenge.assigned_challenges(skill, student)
-      challenges = challenges.reject { |c| student_challenges.include?(c) }
-      # [1,2,3].reject{|c| c==4}
-      if challenges.empty?
-        # if no existing challeng 4 that skill
-        # create a empty challenge 4 that skill
-        Challenge.create_empty(self, name, current_user)
-      else
-        # recuper un des exo existant avec le skill id de @self
-        challenges.sample
-      end
-    end
+  # Exercice à attacher à ce WPS : le premier de la compétence que l'élève n'a pas
+  # encore eu, dans l'ordre choisi par l'enseignant (`Challenge#position`).
+  #
+  # Renvoie `nil` quand la liste est épuisée. On ne fabrique plus d'exercice vide
+  # en silence : l'éditeur de plan de travail propose alors à l'enseignant de
+  # reprendre un exercice existant ou d'en créer un.
+  def get_challenge_4_wps
+    last_wps = last_exercice_wps_for_student
+    # exercice pas encore fait : on rejoue le même
+    return last_wps.challenge if last_wps&.status == "new" && last_wps.challenge.present?
+
+    Challenge.classic.
+      where(skill_id: skill_id).
+      where.not(id: Challenge.assigned_challenges(skill, student)).
+      ordered.
+      first
   end
 
   def self.last_4_wps(_work_plan, wps, current_student)
@@ -82,16 +74,16 @@ class WorkPlanSkill < ApplicationRecord
       order("work_plan_skills.updated_at")
   end
 
-  def attach_content(result, current_user)
+  def attach_content(result)
     if result.nil? || result.kind.nil?
-      self.challenge = get_challenge_4_wps(current_user)
+      self.challenge = get_challenge_4_wps
       save!
       # If the previous WorkPlanSkill is completed, create a new WorkPlanSkill of the appropriate kind and save it
     elsif result.status == "completed"
       case result.kind
       when "jeu"
         self.kind = "exercice"
-        self.challenge = get_challenge_4_wps(current_user)
+        self.challenge = get_challenge_4_wps
       when "exercice"
         self.kind = "ceinture"
       end
@@ -100,12 +92,23 @@ class WorkPlanSkill < ApplicationRecord
     elsif %w[redo failed redo_OK new].include?(result.status)
       self.kind = result.kind
       self.kind = "exercice" if result.kind == "ceinture" && result.status != "new"
-      self.challenge = get_challenge_4_wps(current_user) if kind == "exercice"
+      self.challenge = get_challenge_4_wps if kind == "exercice"
       save!
     end
   end
 
   private
+
+  # Dernier exercice de cet élève sur cette compétence. Le filtre élève se faisait
+  # en Ruby après avoir chargé TOUS les WPS de la compétence, tous élèves
+  # confondus.
+  def last_exercice_wps_for_student
+    WorkPlanSkill.joins(work_plan_domain: :work_plan).
+      where(skill_id: skill_id, kind: "exercice", work_plans: { student_id: student&.id }).
+      where.not(id: id).
+      order(:created_at, :id).
+      last
+  end
 
   def update_result
     return if work_plan_domain.student.nil?

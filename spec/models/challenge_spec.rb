@@ -17,4 +17,74 @@ RSpec.describe Challenge, type: :model do
     challenge2 = build(:challenge, name: @challenge1.name, skill: @challenge1.skill)
     expect(challenge2).to_not be_valid
   end
+
+  describe "ordre au sein d'une compétence" do
+    let(:skill) { create(:skill) }
+
+    it "place un nouvel exercice en fin de liste" do
+      first = create(:challenge, skill:)
+      second = create(:challenge, skill:)
+
+      expect([first.position, second.position]).to eq([1, 2])
+    end
+
+    it "numérote séparément les exercices classiques et ceux de ceinture" do
+      classic = create(:challenge, skill:)
+      belt = create(:challenge, skill:, for_belt: true)
+
+      expect([classic.position, belt.position]).to eq([1, 1])
+    end
+
+    it "échange deux positions avec move_higher / move_lower" do
+      first = create(:challenge, skill:)
+      second = create(:challenge, skill:)
+
+      second.move_higher
+
+      expect([first.reload.position, second.reload.position]).to eq([2, 1])
+
+      second.move_lower
+
+      expect([first.reload.position, second.reload.position]).to eq([1, 2])
+    end
+
+    it "renumérote la liste quand un exercice est supprimé" do
+      create(:challenge, skill:)
+      middle = create(:challenge, skill:)
+      last = create(:challenge, skill:)
+
+      middle.destroy
+
+      expect(last.reload.position).to eq(2)
+    end
+
+    it "crée un exercice vide en fin de liste" do
+      create(:challenge, skill:)
+      user = create(:user)
+
+      empty = Challenge.create_empty(skill, user)
+
+      expect(empty.position).to eq(2)
+      expect(empty.user).to eq(user)
+      expect(empty.content.to_plain_text).to include("REDIGER")
+      expect(empty).to be_persisted
+    end
+
+    it "crée un exercice vide même quand le nom construit sur le compteur est pris" do
+      taken = create(:challenge, skill:, name: "#{skill.name} 1-NEW")
+
+      empty = Challenge.create_empty(skill, create(:user))
+
+      expect(empty).to be_persisted
+      expect(empty.name).not_to eq(taken.name)
+    end
+
+    it "ordonne la liste avec le scope ordered" do
+      first = create(:challenge, skill:)
+      second = create(:challenge, skill:)
+      second.move_to_top
+
+      expect(Challenge.where(skill:).ordered.to_a).to eq([second, first])
+    end
+  end
 end

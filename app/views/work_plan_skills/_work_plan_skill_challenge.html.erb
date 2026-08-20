@@ -3,16 +3,22 @@
 		<%# titre de la skill %>
 		<h4><%= work_plan_skill.skill.name %></h4>
 	</div>
-	<div class="challenge-card">
-		<div
-      class="d-flex "
-      data-controller='edit-challenge'
-      id="<%=dom_id(work_plan_skill.challenge)%>"
-    >
-			<%= render "challenges/challenge",
-      work_plan_skill: work_plan_skill,
-      challenge: work_plan_skill.challenge %>
+	<%# La génération automatique ne fabrique plus d'exercice vide quand l'élève a
+	    eu tous ceux de la compétence : le WPS arrive alors sans exercice. %>
+	<% if work_plan_skill.challenge.nil? %>
+		<%= render "work_plan_skills/challenge_empty", work_plan_skill: work_plan_skill %>
+	<% else %>
+		<div class="challenge-card">
+			<div
+	      class="d-flex "
+	      data-controller='edit-challenge'
+	      id="<%=dom_id(work_plan_skill.challenge)%>"
+	    >
+				<%= render "challenges/challenge",
+	      work_plan_skill: work_plan_skill,
+	      challenge: work_plan_skill.challenge %>
+			</div>
+			<%= render "challenges/mngt", work_plan_skill: work_plan_skill, challenge: work_plan_skill.challenge%>
 		</div>
-		<%= render "challenges/mngt", work_plan_skill: work_plan_skill, challenge: work_plan_skill.challenge%>
-	</div>
+	<% end %>
 <% end %>
