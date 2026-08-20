@@ -27,6 +27,9 @@ Rails.application.routes.draw do
       resources :students, only: [:show, :index]
     end
     get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
+  # Page d'attente : elle s'affiche instantanément dans l'onglet, le temps que le PDF
+  # se génère (cf. WorkPlansController#export)
+  get "work_plans/:id/export", to: "work_plans#export", as: :export_work_plan
   end
   # ############### CONTACTROUTES ###############
   post "", to: "contact#create", as: :contact_create
@@ -40,6 +43,9 @@ Rails.application.routes.draw do
     post "", to: "work_plans#clone", as: :clone
   end
   get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
+  # Page d'attente : elle s'affiche instantanément dans l'onglet, le temps que le PDF
+  # se génère (cf. WorkPlansController#export)
+  get "work_plans/:id/export", to: "work_plans#export", as: :export_work_plan
   # post "work_plans/:id", to: "work_plans#share", as: :share
 
   resources :work_plan_domains, only: [:destroy, :show] do

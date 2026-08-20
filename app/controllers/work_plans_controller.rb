@@ -86,6 +86,18 @@ class WorkPlansController < ApplicationController
     @my_work_plans_unassigned = WorkPlan.where(user: current_user, special_wps: false, student: nil)
   end
 
+  # Page d'attente affichée dans l'onglet le temps de la génération (~1,5 s), qui
+  # demande ensuite le PDF elle-même.
+  #
+  # Sans elle, l'onglet restait blanc : la réponse PDF ne peut rien afficher avant
+  # d'arriver, et un indicateur posé sur la page d'origine ne sert à personne — au
+  # clic, le regard est déjà dans le nouvel onglet.
+  def export
+    @work_plan = WorkPlan.find(params[:id])
+    authorize @work_plan, :show?
+    render layout: false
+  end
+
   def evaluation
     # binding.pry
     @work_plan = WorkPlan.find(params[:id])
