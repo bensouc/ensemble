@@ -43,10 +43,13 @@ Object.assign(Trix.config.lang, {
   alignRight: "Aligner à droite",
   alignJustify: "Justifier",
   lineHeight: "Interligne",
-  lineHeightNormal: "Interligne normal",
-  lineHeightOneAndHalf: "Interligne 1,5",
-  lineHeightDouble: "Interligne double",
-  lineHeightTriple: "Interligne triple",
+  // Valeurs chiffrées plutôt que « double » ou « triple » : l'éditeur part déjà de
+  // 1,6 (cf. `trix/_content.scss`), un « double » y serait ambigu — et un 1,5
+  // resserrait le texte au lieu de l'aérer.
+  lineHeightNormal: "Interligne normal (1,6)",
+  lineHeightTwo: "Interligne 2",
+  lineHeightTwoAndHalf: "Interligne 2,5",
+  lineHeightThree: "Interligne 3",
   underline: "Souligné"
 })
 
@@ -334,9 +337,9 @@ Trix.config.toolbar.getDefaultHTML = function () {
       defaultValue: "normal",
       options: [
         { value: "normal", name: lang.lineHeightNormal, glyph: ICONS.lineNormal },
-        { value: "1.5", name: lang.lineHeightOneAndHalf, glyph: ICONS.lineOneAndHalf },
-        { value: "2", name: lang.lineHeightDouble, glyph: ICONS.lineDouble },
-        { value: "3", name: lang.lineHeightTriple, glyph: ICONS.lineTriple }
+        { value: "2", name: lang.lineHeightTwo, glyph: ICONS.lineOneAndHalf },
+        { value: "2.5", name: lang.lineHeightTwoAndHalf, glyph: ICONS.lineDouble },
+        { value: "3", name: lang.lineHeightThree, glyph: ICONS.lineTriple }
       ]
     })}
   </span>
