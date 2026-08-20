@@ -53,9 +53,6 @@
   .bg-white {
     background-color: white;
   }
-  p {
-    margin-left: 22px;
-  }
   .datepicker {
     margin-left: 12px;
   }
@@ -270,20 +267,14 @@
   }
 }
 
-// En-tête d'un plan de travail, en trois colonnes fixes : titre à gauche, niveau
-// au centre, dates à droite. Les deux colonnes latérales valent `1fr` chacune,
-// donc la colonne centrale reste au milieu de la bande quelle que soit la
-// longueur du nom, et les dates ne bougent plus.
+// En-tête d'un plan de travail : le titre prend la place restante, les dates sont
+// épinglées à droite et ne bougent donc pas avec la longueur du nom. Le niveau est
+// descendu sur la ligne suivante, avec l'élève.
 .wp-header-titles {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: 1fr auto;
   align-items: baseline;
   gap: 16px;
-
-  > p {
-    justify-self: center;
-    margin: 0;
-  }
 
   // `<center>` remplacé par le titre lui-même : c'est la grille qui le place.
   > .date-domain {
@@ -292,25 +283,63 @@
   }
 }
 
+// Ligne de contexte sous le titre : « Niveau : CE2 / Benoît ↗ ».
+.wp-context {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: $grisF;
+
+  .wp-context-sep {
+    color: $grisC;
+  }
+
+  // Même gris que le reste de la ligne : c'est une information de contexte, pas une
+  // action — le rose la faisait crier plus fort que les vrais boutons.
+  .wp-context-student {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: $grisF;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.25s;
+
+    i {
+      font-size: 11px;
+      opacity: 0.5;
+    }
+
+    &:hover {
+      text-decoration: underline;
+
+      i {
+        opacity: 0.9;
+      }
+    }
+  }
+}
+
 .wp-title {
   display: flex;
   min-width: 0;
-  align-items: flex-start;
+  align-items: baseline;
 
-  // Deux lignes au maximum, puis points de suspension : un nom long ne pousse
-  // plus le stylo à la ligne ni le reste de l'en-tête.
+  // Une seule ligne, coupée en points de suspension. Un bloc qui passe à la ligne
+  // occupe toute la largeur de sa colonne même quand sa dernière ligne est courte :
+  // le stylo se retrouvait alors seul au milieu du vide. Sur une ligne, la boîte du
+  // texte s'arrête à la dernière lettre et le stylo la suit.
   .wp-title-name {
-    display: -webkit-box;
+    flex: 0 1 auto;
+    min-width: 0;
     overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .edit-wp-title-btn {
     flex: 0 0 auto;
-    // le stylo suit la première ligne, que le titre en fasse une ou deux
-    margin-top: 7px;
   }
 }
 
@@ -338,23 +367,15 @@
   //   top: 118px;
   //   background-color: white;
 }
+// Grand nom d'élève de la page de correction, qui a son propre en-tête.
 .student_name_link {
   color: $grisF;
+
   &:hover {
     color: $grisC;
   }
 }
-.link_details {
-  position: relative;
-  top: 34px;
-  left: -40px;
-  font-size: smaller;
-  font-weight: bolder;
-  color: white;
-  background-color: #f2415083;
-  padding: 10px;
-  border-radius: 5px;
-}
+
 
 .bilan {
   height: 80px;

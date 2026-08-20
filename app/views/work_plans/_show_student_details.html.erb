@@ -1,20 +1,24 @@
-<div class='student-name text-right' data-controller='wps-result'>
-  <%# Nom de l'élève et actions sur la même ligne. Les quatre actions n'ont pas le
-      même poids : Correction est le geste quotidien, Export PDF est fréquent,
-      Partager et Cloner sont occasionnels et passent dans le menu ⋮. %>
+<div class='student-name'>
+  <%# Le niveau et l'élève tiennent la ligne sous le titre, les actions à droite.
+      Les quatre actions n'ont pas le même poids : Correction est le geste
+      quotidien, Export PDF est fréquent, Partager et Cloner sont occasionnels et
+      passent dans le menu ⋮. %>
   <div class="d-flex align-items-center justify-content-between wp-header-row">
-    <div class="d-flex">
+    <p class="wp-context">
+      <span>Niveau : <strong><%= work_plan.grade.name %></strong></span>
       <% unless work_plan.student.nil? %>
-        <%= link_to student_path(work_plan.student), class: 'student_name_link',
-        target: '_top',
-       data:{action: "mouseover->wps-result#displayName mouseout->wps-result#hideName click->loadingspinnermgnt#displaySpinner"}  do%>
-          <h2><strong><%= work_plan.student.first_name %></strong></h2>
+        <span class="wp-context-sep">/</span>
+        <%# `target: _top` : le lien sort de la frame du plan de travail pour charger
+            la fiche de l'élève. %>
+        <%= link_to student_path(work_plan.student),
+                    class: 'wp-context-student',
+                    target: '_top',
+                    title: "Voir la progression de #{work_plan.student.first_name}" do %>
+          <%= work_plan.student.first_name %>
+          <i class="fa-solid fa-arrow-up-right-from-square"></i>
         <% end %>
-        <div class="link_details d-none", data-wps-result-target= 'name'>
-          Progression de <%=work_plan.student.first_name%>
-        </div>
       <% end %>
-    </div>
+    </p>
 
     <div class="d-flex align-items-center wp-actions">
       <% unless work_plan.student.nil? %>

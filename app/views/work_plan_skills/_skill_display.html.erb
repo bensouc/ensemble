@@ -8,7 +8,7 @@
     <%# Button remmove Skill %>
     <div>
       <%= link_to work_plan_skill_path(plan_skill),class:'--bgc-transparent',
-                    data: { confirm: "Voulez vous enlever cette compétence?",
+                    data: { turbo_confirm: "Voulez vous enlever cette compétence?",
                           turbo_method: :delete
                           } do %>
         <div class='rmv-skill-btn '>

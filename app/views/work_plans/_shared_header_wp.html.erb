@@ -3,9 +3,9 @@
     <%# Les utilitaires `d-flex justify-content-between` sont retirés : Bootstrap les
         déclare en !important, ils empêchaient la grille de s'appliquer. %>
     <div class='wp-header-titles' >
-      <%# Un nom long passait à la ligne et emportait le stylo avec lui : le titre
-          tient désormais sur deux lignes au maximum, puis se coupe. Le nom complet
-          reste en infobulle. %>
+      <%# Le titre tient sur une ligne et se coupe en points de suspension : c'est ce
+          qui garde le stylo collé à la dernière lettre. Le nom complet reste en
+          infobulle. %>
       <h1 class="wp-title">
         <span class="wp-title-name" title="<%= work_plan.name %>"><%= work_plan.name %></span>
         <%# `editable` : la page de correction rend le même en-tête mais n'embarque
@@ -19,7 +19,6 @@
           <!-- END EDIT WP Button trigger modal -->
         <% end %>
       </h1>
-      <p>Niveau : <%= work_plan.grade.name%></p>
       <h4 class='date-domain'>Du <%= work_plan.start_date.strftime("%d/%m/%Y")%> Au <%= work_plan.end_date.strftime("%d/%m/%Y")%></h4>
     </div>
   </div>
