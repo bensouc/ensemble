@@ -40,7 +40,7 @@
           id='backToTopBtn'
           data-action="click->navigation#topFunction"
         ></i>
-        <%= link_to work_plan_path(@work_plan, format: :pdf) do %>
+        <%= link_to work_plan_path(@work_plan, format: :pdf), target: "_blank", rel: "noopener" do %>
           <i class="fa-solid fa-file-pdf"></i>
         <% end %>
       </div>

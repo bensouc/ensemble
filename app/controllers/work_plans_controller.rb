@@ -116,10 +116,14 @@ class WorkPlansController < ApplicationController
       format.html
       format.pdf do
         data_pdf = PdfGenerator::WorkPlanPdf.new(@work_plan, @belt, @work_plan_domains, @domains)
+        # `inline` et pas `attachment` : le lien s'ouvre dans un onglet, où la
+        # visionneuse du navigateur offre Imprimer et Enregistrer — ce que
+        # l'enseignant veut faire du plan. En `attachment`, l'onglet se serait
+        # ouvert puis refermé aussitôt.
         send_data data_pdf.generate,
                   filename: "#{data_pdf.title}.pdf",
                   type: "application/pdf",
-                  disposition: "attachment" # sending the pdf to the browser as a file
+                  disposition: "inline"
       end
     end
   end

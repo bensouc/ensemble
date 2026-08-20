@@ -8,7 +8,9 @@ module PdfGenerator
       @belt = belt
       @work_plan_domains = work_plan_domains
       @domains = domains
-      @title = "#{work_plan.name}  #{work_plan.student&.first_name}"
+      # Le titre sert de nom de fichier, désormais affiché par la visionneuse :
+      # « essai   .pdf » (deux espaces, prénom vide) devient « essai - Benoît ».
+      @title = [work_plan.name, work_plan.student&.first_name].compact_blank.join(" - ")
     end
 
     def generate
