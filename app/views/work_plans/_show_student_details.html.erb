@@ -38,7 +38,8 @@
       <%= link_to work_plan_path(@work_plan, format: :pdf),
                   class: "utility-wp-btn",
                   target: "_blank",
-                  rel: "noopener" do %>
+                  rel: "noopener",
+                  data: { controller: "pdf-export", action: "click->pdf-export#guard" } do %>
         <i class="fa-regular fa-file-pdf"></i>
         <h6>Export PDF</h6>
       <% end %>

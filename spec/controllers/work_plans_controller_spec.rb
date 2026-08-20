@@ -205,6 +205,9 @@ RSpec.describe WorkPlansController, type: :controller do
       expect(response.body).to include('target="_blank"')
       # c'est ce chemin JS qui annulait le téléchargement en silence
       expect(response.body).not_to include("workplanpdf")
+      # le garde : indisponible pendant un enregistrement, confirmation si du
+      # contenu n'est pas enregistré
+      expect(response.body).to include("pdf-export")
     end
   end
 

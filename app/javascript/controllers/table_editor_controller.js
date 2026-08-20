@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
+import { hold, release } from "../plugins/save_tracker"
 import { FetchRequest } from "@rails/request.js"
 
 // Éditeur de tableaux ActionText.
@@ -611,10 +612,14 @@ export default class extends Controller {
 
     if (immediate) {
       this.pending.delete(sgid)
+      hold(sgid)
       this.save(sgid, { syncSnapshot })
       return
     }
 
+    // La prise commence dès la programmation : entre la frappe et le PATCH, la base
+    // n'a pas encore le contenu de la cellule.
+    hold(sgid)
     this.pending.set(sgid, setTimeout(() => {
       this.pending.delete(sgid)
       this.save(sgid)
@@ -670,6 +675,8 @@ export default class extends Controller {
     this.inFlight.add(promise)
     await promise
     this.inFlight.delete(promise)
+    // Relâché seulement ici : l'enregistrement est acquitté par le serveur.
+    if (!this.pending.has(sgid)) release(sgid)
   }
 
   syncSnapshot(sgid, content) {

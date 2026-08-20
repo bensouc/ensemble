@@ -116,3 +116,12 @@
     color: $white !important;
   }
 }
+
+// Export PDF indisponible pendant un enregistrement : le PDF est rendu depuis la
+// base, il sortirait sur l'état précédent. Dure typiquement une centaine de
+// millisecondes (cf. `plugins/save_tracker`).
+.is-saving {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: progress;
+}
