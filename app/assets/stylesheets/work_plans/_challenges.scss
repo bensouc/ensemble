@@ -74,8 +74,15 @@
   }
 }
 .challenge-mngt {
-  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 28px;
   padding: 0 5px 0 0;
+
+  .button_to {
+    margin: 0;
+  }
 }
 
 .edit-challenge {
@@ -210,38 +217,7 @@
 }
 
 .replace-challenge-btn {
-  margin-bottom: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  border-radius: 12px;
-  width: 134px;
-  height: 3em;
-  border: 3px solid $rose;
-  transition: 0.3s;
-  color: $rose;
-  padding: 22px;
-  background-color: $blanc;
-
-  h6 {
-    padding: 10px;
-    margin: 0;
-  }
-  i {
-    font-size: 12px;
-  }
-}
-
-.replace-challenge-btn:hover {
-  transition: 0.2s;
-  background-color: $rose;
-  border-color: $rose;
-  color: $blanc;
-  cursor: pointer;
-  i,
-  h6 {
-    color: $white;
-  }
+  @include pill-cta;
 }
 
 .cancel-btn {
@@ -354,8 +330,9 @@ button {
 }
 
 // WPS de type exercice sans exercice : la génération automatique n'en fabrique
-// plus en silence quand l'élève a eu tous ceux de la compétence. Message à
-// gauche, les deux CTA (Charger / Créer) à droite, comme pour un vrai exercice.
+// plus en silence quand l'élève a eu tous ceux de la compétence. Le message ET
+// les deux actions vivent dans l'encart, aux dimensions d'une carte d'exercice —
+// aucune colonne de CTA à droite.
 .empty-challenge {
   align-items: center;
 
@@ -363,12 +340,18 @@ button {
     display: flex;
     width: 811px;
     max-width: 100%;
-    align-items: center;
-    gap: 14px;
+    flex-direction: column;
+    gap: 16px;
     margin: 20px 20px 30px 30px;
     padding: 22px 30px;
     border: 2px dashed $grisC;
     border-radius: 14px;
+  }
+
+  .empty-challenge-text {
+    display: flex;
+    align-items: center;
+    gap: 14px;
 
     i {
       font-size: 22px;
@@ -380,5 +363,20 @@ button {
       color: #9c9c9c;
       font-style: italic;
     }
+  }
+
+  .empty-challenge-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 12px;
+
+    .button_to {
+      margin: 0;
+    }
+  }
+
+  .empty-challenge-btn {
+    @include pill-cta($height: 34px);
   }
 }

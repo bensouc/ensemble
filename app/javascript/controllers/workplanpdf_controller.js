@@ -12,9 +12,12 @@ export default class extends Controller {
   }
   genPdf(event) {
     event.preventDefault();
-    const url = event.currentTarget.href;
     const btn = event.currentTarget;
-    console.log(event.currentTarget.href);
+    const url = btn.href;
+    // Contenu d'origine capturé ici, avant que `addSpinner` ne le remplace :
+    // c'est ce qu'on remettra, icône comprise. L'ordre des actions dans la vue
+    // garantit que ce contrôleur passe le premier.
+    const originalContent = btn.innerHTML;
 
     fetch(url)
       .then(response => {
@@ -50,12 +53,20 @@ export default class extends Controller {
         downloadLink.click();
         document.body.removeChild(downloadLink);
         window.URL.revokeObjectURL(blobUrl);
-        this.#resetPdfBtn(btn); // Réinitialiser le bouton après le téléchargement
+        this.#resetPdfBtn(btn, originalContent); // Réinitialiser le bouton après le téléchargement
       })
-      .catch(error => console.error('Fetch error:', error));
+      .catch(error => {
+        // Sans ça, un export raté laissait l'engrenage tourner indéfiniment.
+        this.#resetPdfBtn(btn, originalContent);
+        console.error('Fetch error:', error);
+      });
     }
 
-  #resetPdfBtn(btn) {
-    btn.innerHTML = `<h6>Export PDF</h6>`
+  #resetPdfBtn(btn, originalContent) {
+    btn.innerHTML = originalContent
+    // `addSpinner` fige la taille en style inline pour que le bouton ne saute pas
+    // pendant l'export : on la relâche, le bouton retrouve sa largeur auto.
+    btn.style.removeProperty('width')
+    btn.style.removeProperty('height')
   }
 }

@@ -6,43 +6,39 @@
 				<h5 class="modal-title" id="exampleModalLabel">Edition du Plan de Travail</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
+			<%# Le formulaire enveloppe le corps ET le pied : sa balise de fermeture doit
+			    donc rester à l'intérieur de `.modal-content`, ce qui n'était pas le cas. %>
 			<%= simple_form_for work_plan,
 			url: work_plan_path(work_plan),
 			method: :patch,
-			html: { novalidate: false },
-      class: 'd-flex justify-content-between align-items-baseline pe-3' do |f|%>
+			html: { novalidate: false, class: "wp-edit-form" } do |f|%>
+				<%# Grille à deux colonnes : les quatre champs sont des éléments de la même
+				    grille, leurs bords sont donc définis par les mêmes colonnes. Le nom et
+				    l'élève occupent la largeur entière, les deux dates une colonne chacune.
+				    Les champs étaient par ailleurs sans libellé : deux zones de texte
+				    anonymes et une liste déroulante, impossible de savoir ce qu'on éditait. %>
 				<div class="modal-body">
-					<%# <p class='m-left'>Nom :</p> %>
-					<%= f.input :name, label: false,
+					<%= f.input :name, label: "Nom du plan de travail",
                       required: :true,
-                      # placeholder: 'Nom :',
-                      input_html: { class: 'area  m-left' } %>
-					<div class=" d-flex mt-2">
-						<p class=''>Du</p>
-						<div class='edit-cal_wp'>
-							<%= f.input :start_date, as: :string, label: false,
-                          required: :true,
-                          input_html: {class: 'datepicker area m-left ', locale: "fr", value: work_plan.start_date.strftime("%d/%m/%Y") } %>
-						</div>
-						<p class=''>Au</p>
-						<div class='edit-cal_wp ms-2'>
-							<%= f.input :end_date, as: :string, label: false,
-                          required: :true,
-                          input_html: {class: 'datepicker area m-left', locale: "fr", value: work_plan.end_date.strftime("%d/%m/%Y")} %>
-						</div>
-					</div>
-					<%# <p class='m-left'>Elève :</p> %>
-					<%= f.association :student, label: false,
+                      wrapper_html: { class: 'wp-edit-full-row' },
+                      input_html: { class: 'area' } %>
+					<%= f.input :start_date, as: :string, label: "Du",
+                      required: :true,
+                      input_html: {class: 'datepicker area', locale: "fr", value: work_plan.start_date.strftime("%d/%m/%Y") } %>
+					<%= f.input :end_date, as: :string, label: "Au",
+                      required: :true,
+                      input_html: {class: 'datepicker area', locale: "fr", value: work_plan.end_date.strftime("%d/%m/%Y")} %>
+					<%= f.association :student, label: "Élève",
                             collection: @students,
-                            input_html: {class: 'area grow m-left'},
+                            wrapper_html: { class: 'wp-edit-full-row' },
+                            input_html: {class: 'area'},
                             label_method: :first_name %>
 				</div>
 				<div class="modal-footer">
-					<%# <button type="button" class="cancel-btn" data-bs-dismiss="modal"><i class="fas fa-times"></i></button> %>
-					<%# <button type="button" class="btn btn-primary">Save changes</button> %>
-					<%= f.submit "Valider", class: 'area rect-sm btn-valid', data: {turbo_frame: "_top"} %>
+					<%= f.submit "Valider", class: 'utility-wp-btn utility-wp-btn--primary',
+					             data: {turbo_frame: "_top"} %>
 				</div>
-			</div>
-		<% end %>
+			<% end %>
+		</div>
 	</div>
 </div>

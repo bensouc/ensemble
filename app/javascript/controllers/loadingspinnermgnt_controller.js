@@ -33,7 +33,9 @@ export default class extends Controller {
   // insert spinner
   addSpinner(event) {
     // event.preventDefault()
-    const target = event.target
+    // `currentTarget` et pas `target` : le bouton porte une icône et un libellé,
+    // un clic sur l'un d'eux visait l'enfant et le spinner remplaçait l'icône.
+    const target = event.currentTarget
     const width = target.offsetWidth
     const height = target.offsetHeight
     target.style.height = `${height}px`

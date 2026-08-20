@@ -1,47 +1,67 @@
 <div class='student-name text-right' data-controller='wps-result'>
-  <div class="d-flex">
-    <% unless work_plan.student.nil? %>
-      <%# data: { edit_challenge_target: 'form' } %>
-      <%# data-action="mouseover->wps-result#displayName mouseout->wps-result#hideName"
-  data: {action:"click->new-domain#displayBelt"}  %>
-      <%= link_to student_path(work_plan.student), class: 'student_name_link',
-      target: '_top',
-     data:{action: "mouseover->wps-result#displayName mouseout->wps-result#hideName click->loadingspinnermgnt#displaySpinner"}  do%>
-        <h2><strong><%= work_plan.student.first_name %></strong></h2>
-      <% end %>
-      <div class="link_details d-none", data-wps-result-target= 'name'>
-        Progression de <%=work_plan.student.first_name%>
-      </div>
-    <% end %>
-  </div>
-  <div class='text-right'>
-    <div class="d-flex  justify-content-end">
-      <!-- Button trigger sharing - modal -->
-      <button type="" class="utility-wp-btn" data-bs-toggle="modal" data-bs-target="#sharingModal">
-        Partager
-      </button>
-      <%# <% if current_user.admin %>
+  <%# Nom de l'élève et actions sur la même ligne. Les quatre actions n'ont pas le
+      même poids : Correction est le geste quotidien, Export PDF est fréquent,
+      Partager et Cloner sont occasionnels et passent dans le menu ⋮. %>
+  <div class="d-flex align-items-center justify-content-between wp-header-row">
+    <div class="d-flex">
       <% unless work_plan.student.nil? %>
-        <%=  link_to evaluation_path(@work_plan), class: "utility-wp-btn",
+        <%= link_to student_path(work_plan.student), class: 'student_name_link',
+        target: '_top',
+       data:{action: "mouseover->wps-result#displayName mouseout->wps-result#hideName click->loadingspinnermgnt#displaySpinner"}  do%>
+          <h2><strong><%= work_plan.student.first_name %></strong></h2>
+        <% end %>
+        <div class="link_details d-none", data-wps-result-target= 'name'>
+          Progression de <%=work_plan.student.first_name%>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="d-flex align-items-center wp-actions">
+      <% unless work_plan.student.nil? %>
+        <%= link_to evaluation_path(@work_plan), class: "utility-wp-btn utility-wp-btn--primary",
         data:{action: " click->loadingspinnermgnt#displaySpinner "} do %>
+          <i class="fa-solid fa-clipboard-check"></i>
           <h6>Correction</h6>
         <% end %>
       <% end %>
-      <%# end %>
       <%= link_to work_plan_path(@work_plan, format: :pdf), class: "utility-wp-btn", data:{
         controller: "loadingspinnermgnt workplanpdf",
-        action: "click->loadingspinnermgnt#addSpinner click->workplanpdf#genPdf",
+        # Ordre important : `genPdf` capture le contenu du bouton avant que
+        # `addSpinner` ne le remplace par l'engrenage.
+        action: "click->workplanpdf#genPdf click->loadingspinnermgnt#addSpinner",
       } do %>
+        <i class="fa-regular fa-file-pdf"></i>
         <h6>Export PDF</h6>
       <% end %>
-      <div class= "utility-wp-btn" data-action="click->cloning-wp#displayCloningForm">
-        <h6>Cloner</h6>
+
+      <%# `cloning-wp` est déclaré sur `.control-show`, ancêtre de ce partiel :
+          l'action reste résolue depuis l'intérieur du menu. %>
+      <div class="dropdown">
+        <button type="button" class="wp-actions-menu-btn" id="wpActions-<%= work_plan.id %>"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-label="Autres actions sur ce plan de travail">
+          <i class="fa-solid fa-ellipsis-vertical"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="wpActions-<%= work_plan.id %>">
+          <li>
+            <button type="button" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#sharingModal">
+              <i class="fa-solid fa-share-nodes"></i>
+              Partager
+            </button>
+          </li>
+          <li>
+            <button type="button" class="dropdown-item" data-action="click->cloning-wp#displayCloningForm">
+              <i class="fa-regular fa-clone"></i>
+              Cloner
+            </button>
+          </li>
+        </ul>
       </div>
     </div>
-    <%unless work_plan.shared_user_id.nil?%>
-      <div class='d-flex  justify-content-end'>
-        <h6 class='shared-by'>Partagé par <%= work_plan.shared_user.first_name.capitalize %> </h6>
-      </div>
-    <% end %>
   </div>
+  <%unless work_plan.shared_user_id.nil?%>
+    <div class='d-flex  justify-content-end'>
+      <h6 class='shared-by'>Partagé par <%= work_plan.shared_user.first_name.capitalize %> </h6>
+    </div>
+  <% end %>
 </div>

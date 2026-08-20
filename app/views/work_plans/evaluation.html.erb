@@ -9,7 +9,7 @@
         <i class="fa-solid fa-circle-arrow-down"></i>
       </div>
       <%# header WP %>
-      <%= render "shared_header_wp", work_plan: @work_plan %>
+      <%= render "shared_header_wp", work_plan: @work_plan, editable: false %>
       <%# Student details %>
       <div class='student-name d-flex justify-content-between'>
         <% unless @work_plan.student.nil? %>

@@ -1,17 +1,26 @@
 <div id="wp-edition" >
   <div >
-    <div class='d-flex justify-content-between align-items-baseline' >
-      <h1><%= work_plan.name%>
-        <!-- EDIT WP Button trigger modal -->
-        <button type="button" class="bg-white" data-bs-toggle="modal" data-bs-target="#exampleModal" >
-          <i style= 'color: #F24150' class="fas fa-pen fa-xs ms-2" ></i>
-        </button>
-        <!-- END EDIT WP Button trigger modal -->
+    <%# Les utilitaires `d-flex justify-content-between` sont retirés : Bootstrap les
+        déclare en !important, ils empêchaient la grille de s'appliquer. %>
+    <div class='wp-header-titles' >
+      <%# Un nom long passait à la ligne et emportait le stylo avec lui : le titre
+          tient désormais sur deux lignes au maximum, puis se coupe. Le nom complet
+          reste en infobulle. %>
+      <h1 class="wp-title">
+        <span class="wp-title-name" title="<%= work_plan.name %>"><%= work_plan.name %></span>
+        <%# `editable` : la page de correction rend le même en-tête mais n'embarque
+            pas la modale d'édition — le stylo y ouvrait donc le vide. %>
+        <% if local_assigns.fetch(:editable, true) %>
+          <!-- EDIT WP Button trigger modal -->
+          <button type="button" class="edit-wp-title-btn" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                  aria-label="Modifier le plan de travail">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          <!-- END EDIT WP Button trigger modal -->
+        <% end %>
       </h1>
       <p>Niveau : <%= work_plan.grade.name%></p>
-      <center>
-        <h4 class='date-domain'>Du <%= work_plan.start_date.strftime("%d/%m/%Y")%> Au <%= work_plan.end_date.strftime("%d/%m/%Y")%></h4>
-      </center>
+      <h4 class='date-domain'>Du <%= work_plan.start_date.strftime("%d/%m/%Y")%> Au <%= work_plan.end_date.strftime("%d/%m/%Y")%></h4>
     </div>
   </div>
 
