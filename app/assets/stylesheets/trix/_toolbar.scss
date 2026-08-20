@@ -18,9 +18,9 @@ trix-toolbar {
     flex-wrap: wrap; // au lieu de nowrap + overflow-x : lisible sur tablette
     align-items: center;
     justify-content: flex-start;
-    gap: 6px;
+    gap: 4px;
     overflow: visible;
-    padding: 6px;
+    padding: 4px;
     background: var(--rt-surface-soft);
     border: 1px solid var(--rt-line);
     border-radius: var(--rt-radius);
@@ -29,8 +29,8 @@ trix-toolbar {
   .trix-button-group {
     display: inline-flex;
     align-items: center;
-    gap: 2px;
-    padding: 2px;
+    gap: 1px;
+    padding: 1px;
     margin: 0;
     background: var(--rt-surface);
     border: 1px solid var(--rt-line);
@@ -98,8 +98,8 @@ trix-toolbar {
 
   // Icônes tracées
   .rt-tb__icon {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     pointer-events: none;
     fill: none;
     stroke: currentColor;
@@ -155,7 +155,7 @@ trix-toolbar {
   .rt-tb__btn--palette {
     flex-direction: column;
     gap: 2px;
-    width: 34px;
+    width: 30px;
   }
 
   .rt-tb__swatch {

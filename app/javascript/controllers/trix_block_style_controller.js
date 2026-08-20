@@ -1,37 +1,39 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Menu d'alignement du texte pour la toolbar Trix.
+// Menus de mise en forme du BLOC pour la toolbar Trix : alignement du texte,
+// interligne. Un seul contrôleur, paramétré par la propriété CSS qu'il écrit.
 //
-// L'alignement est porté par `<div align="…">` (cf. `plugins/trix-config.js`) :
-// l'attribut de bloc `align` pose l'enveloppe, sa VALEUR vit dans les
-// `htmlAttributes` du bloc. Trix n'a pas de bouton déclaratif pour ça — d'où ce
-// contrôleur, qui applique les deux en une fois, comme `trix-palette` le fait
-// pour les couleurs.
+// La valeur vit dans le `style` du bloc (cf. `plugins/trix-config.js`) : l'attribut
+// de bloc pose l'enveloppe `<p>`, et sa valeur voyage dans les `htmlAttributes`.
+// Trix n'a pas de bouton déclaratif pour ça — d'où ce contrôleur, qui applique les
+// deux en une fois, comme `trix-palette` le fait pour les couleurs.
 //
-// « Gauche » ne pose rien : c'est le défaut du document, on retire simplement
-// l'attribut. Un énoncé non aligné reste donc exactement ce qu'il était.
-const VALUES = ["left", "center", "right", "justify"]
-
-// L'alignement vit dans `style` : on ne remplace que la déclaration `text-align`,
-// pour ne pas écraser un éventuel style déjà porté par le bloc.
-function styleWithAlignment(style, value) {
+// La valeur « par défaut » de chaque menu (gauche, interligne normal) ne pose rien :
+// on retire la déclaration. Un énoncé qui n'a jamais été mis en forme reste donc
+// exactement ce qu'il était.
+// On ne remplace QUE la déclaration concernée : alignement et interligne cohabitent
+// dans le même `style`, et un bloc peut déjà porter l'autre.
+function styleWith(style, property, value) {
   const declarations = String(style || "")
     .split(";")
     .map((declaration) => declaration.trim())
-    .filter((declaration) => declaration && !/^text-align\s*:/i.test(declaration))
+    .filter((declaration) => declaration && !declaration.toLowerCase().startsWith(`${property}:`))
 
-  if (value && value !== "left") declarations.push(`text-align: ${value}`)
+  if (value) declarations.push(`${property}: ${value}`)
 
   return declarations.join("; ")
 }
 
-function alignmentFromStyle(style) {
-  const match = /text-align\s*:\s*(left|center|right|justify)/i.exec(style || "")
-  return match ? match[1].toLowerCase() : "left"
+function valueFromStyle(style, property) {
+  const match = new RegExp(`${property}\\s*:\\s*([^;]+)`, "i").exec(style || "")
+  return match ? match[1].trim() : null
 }
 
 export default class extends Controller {
   static targets = ["panel", "preview", "trigger", "item"]
+  // `property` : la propriété CSS écrite (text-align, line-height).
+  // `default` : la valeur qui signifie « retirer la déclaration ».
+  static values = { property: String, default: String }
 
   connect() {
     this.onOutsidePointer = this.onOutsidePointer.bind(this)
@@ -101,7 +103,7 @@ export default class extends Controller {
 
   pick(event) {
     event.preventDefault()
-    this.apply(event.currentTarget.dataset.align)
+    this.apply(event.currentTarget.dataset.value)
   }
 
   apply(value) {
@@ -112,8 +114,10 @@ export default class extends Controller {
 
     // « Gauche » retire l'enveloppe et repose la valeur par défaut : un titre garde
     // son <h1>, on n'y écrit que `align="left"`.
-    if (value === "left") {
-      while (editor.attributeIsActive("align")) editor.deactivateAttribute("align")
+    // La valeur par défaut retire l'enveloppe : un paragraphe sans mise en forme
+    // reste un paragraphe ordinaire.
+    if (value === this.defaultValue && !this.otherPropertySet(editor)) {
+      while (editor.attributeIsActive("blockStyle")) editor.deactivateAttribute("blockStyle")
     }
 
     this.eachSelectedBlock(editor, (index, position) => {
@@ -121,8 +125,8 @@ export default class extends Controller {
       // Un titre porte le style sur sa propre balise ; un paragraphe a besoin de
       // l'enveloppe <p>. Réactiver l'attribut sur un bloc qui le porte déjà
       // l'empilerait — mesuré : <p><p>texte</p></p>.
-      if (value !== "left" && !this.acceptsStyle(block) && !editor.attributeIsActive("align")) {
-        editor.activateAttribute("align")
+      if (value !== this.defaultValue && !this.acceptsStyle(block) && !editor.attributeIsActive("blockStyle")) {
+        editor.activateAttribute("blockStyle")
       }
       this.setAlignment(editor, position, value)
     })
@@ -153,7 +157,8 @@ export default class extends Controller {
 
     const index = editor.getDocument().locationFromPosition(position).index
     const current = editor.getDocument().getBlockAtIndex(index)?.htmlAttributes?.style
-    setter.call(composition, position, "style", styleWithAlignment(current, value))
+    const written = value === this.defaultValue ? null : value
+    setter.call(composition, position, "style", styleWith(current, this.propertyValue, written))
   }
 
   acceptsStyle(block) {
@@ -183,16 +188,16 @@ export default class extends Controller {
   // --- Aperçu ---------------------------------------------------------------
 
   syncPreview() {
-    this.setPreview(this.currentAlignment())
+    this.setPreview(this.currentValue())
   }
 
   // L'icône du déclencheur est celle de l'option active : pas de duplication de
   // SVG en JS, on recopie celui du menu.
   setPreview(value) {
-    const active = value && VALUES.includes(value) ? value : "left"
+    const active = value || this.defaultValue
 
     this.itemTargets.forEach((item) => {
-      const isActive = item.dataset.align === active
+      const isActive = item.dataset.value === active
       item.setAttribute("aria-checked", isActive ? "true" : "false")
       item.classList.toggle("rt-tb__menu-item--active", isActive)
       if (isActive && this.hasPreviewTarget) {
@@ -201,16 +206,34 @@ export default class extends Controller {
     })
   }
 
-  currentAlignment() {
+  currentValue() {
     try {
       const editor = this.editorElement?.editor
-      if (!editor) return "left"
+      if (!editor) return this.defaultValue
 
       const document = editor.getDocument()
       const index = document.locationFromPosition(editor.getPosition()).index
-      return alignmentFromStyle(document.getBlockAtIndex(index)?.htmlAttributes?.style)
+      const style = document.getBlockAtIndex(index)?.htmlAttributes?.style
+      return valueFromStyle(style, this.propertyValue) || this.defaultValue
     } catch {
-      return "left"
+      return this.defaultValue
+    }
+  }
+
+  // Retirer l'enveloppe alors que l'autre menu y a écrit effacerait sa mise en
+  // forme : on ne la retire que si le bloc ne porte plus que notre propriété.
+  otherPropertySet(editor) {
+    try {
+      const document = editor.getDocument()
+      const index = document.locationFromPosition(editor.getPosition()).index
+      const style = styleWith(
+        document.getBlockAtIndex(index)?.htmlAttributes?.style,
+        this.propertyValue,
+        null
+      )
+      return style.trim().length > 0
+    } catch {
+      return true
     }
   }
 
