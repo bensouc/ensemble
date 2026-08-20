@@ -24,6 +24,8 @@ RSpec.describe WorkPlansController, type: :controller do
   end
 
   describe "#new" do
+    render_views
+
     context "when user is not signed in" do
       it "returns a failure response" do
         get :new
@@ -36,6 +38,19 @@ RSpec.describe WorkPlansController, type: :controller do
         get :new
         expect(response).to be_successful
         expect(response).to render_template(:new)
+      end
+
+      it "range chaque libellé dans la même rangée que son champ" do
+        sign_in(user)
+
+        get :new
+
+        expect(response.body.scan("wp-new-label").size).to eq(4)
+        expect(response.body).to include("wp-new-grid")
+        expect(response.body).to include("wp-new-period")
+        %w[work_plan_name work_plan_grade work_plan_student].each do |field|
+          expect(response.body).to include(field)
+        end
       end
     end
   end
