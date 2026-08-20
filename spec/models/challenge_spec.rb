@@ -18,11 +18,11 @@ RSpec.describe Challenge, type: :model do
     expect(challenge2).to_not be_valid
   end
 
-  # L'alignement du texte est porté par `style="text-align: …"` justement parce que
-  # `style` traverse le sanitizer d'ActionText sans qu'on ait à toucher son
-  # allowlist. Une balise maison, elle, en serait retirée à l'affichage : le texte
-  # resterait, la mise en forme serait perdue.
-  describe "alignement du texte à l'affichage" do
+  # La mise en forme de bloc — alignement, interligne — est portée par `style`
+  # justement parce que `style` traverse le sanitizer d'ActionText sans qu'on ait à
+  # toucher son allowlist. Une balise maison, elle, en serait retirée à l'affichage :
+  # le texte resterait, la mise en forme serait perdue.
+  describe "mise en forme de bloc à l'affichage" do
     it "conserve l'alignement d'un paragraphe et d'un titre" do
       challenge = create(:challenge)
       challenge.content = <<~HTML
@@ -37,6 +37,22 @@ RSpec.describe Challenge, type: :model do
       expect(rendered).to include("text-align:center")
       expect(rendered).to include("text-align:right")
       expect(rendered).to include("Paragraphe normal")
+    end
+
+    it "conserve l'interligne, seul ou combiné à l'alignement" do
+      challenge = create(:challenge)
+      challenge.content = <<~HTML
+        <p style="line-height: 3">Trois lignes d'écart pour écrire</p>
+        <p style="text-align: center; line-height: 2">Centré et aéré</p>
+      HTML
+      challenge.save!
+
+      rendered = challenge.reload.content.to_s
+
+      expect(rendered).to include("line-height:3")
+      # les deux déclarations vivent dans le même style : aucune ne doit sauter
+      expect(rendered).to include("text-align:center")
+      expect(rendered).to include("line-height:2")
     end
 
     it "retire une balise maison — d'où le choix de `style`" do

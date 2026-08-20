@@ -42,6 +42,11 @@ Object.assign(Trix.config.lang, {
   alignCenter: "Centrer",
   alignRight: "Aligner à droite",
   alignJustify: "Justifier",
+  lineHeight: "Interligne",
+  lineHeightNormal: "Interligne normal",
+  lineHeightOneAndHalf: "Interligne 1,5",
+  lineHeightDouble: "Interligne double",
+  lineHeightTriple: "Interligne triple",
   underline: "Souligné"
 })
 
@@ -85,7 +90,7 @@ Trix.config.blockAttributes.heading3 = { tagName: "h3", terminal: true, breakOnR
 // ---------------------------------------------------------------------------
 // 3 bis. Alignement du texte
 //
-// L'alignement est porté par `style="text-align: …"`, et pas par une balise maison
+// La mise en forme de bloc est portée par `style`, et pas par une balise maison
 // ni par l'attribut `align`. Trois contraintes, toutes mesurées en Chrome headless :
 //
 //   1. une balise inconnue (<trix-align-center>) est retirée par le sanitizer
@@ -104,9 +109,12 @@ Trix.config.blockAttributes.heading3 = { tagName: "h3", terminal: true, breakOnR
 // masquait celle-ci. `p` n'appartient qu'à l'alignement.
 //
 // Les titres portent le style sur leur propre balise : ils sont `terminal`, donc ils
-// refusent l'enveloppe <p>. Sans ça, centrer un titre ne faisait rien.
+// refusent l'enveloppe <p>. Sans ça, centrer un titre — ou en aérer les lignes — ne
+// faisait rien.
 // ---------------------------------------------------------------------------
-Trix.config.blockAttributes.align = {
+// Un seul attribut pour toute la mise en forme de bloc : alignement et interligne
+// cohabitent dans le même `style`, sur la même enveloppe.
+Trix.config.blockAttributes.blockStyle = {
   tagName: "p",
   htmlAttributes: ["style"],
   group: false
@@ -157,6 +165,10 @@ const ICONS = {
   alignCenter: icon('<path d="M4 6h16M7 12h10M5.5 18h13"/>'),
   alignRight: icon('<path d="M4 6h16M10 12h10M7 18h13"/>'),
   alignJustify: icon('<path d="M4 6h16M4 12h16M4 18h16"/>'),
+  lineNormal: icon('<path d="M9 5h11M9 9.67h11M9 14.33h11M9 19h11"/><path d="M4.5 7v10"/><path d="m2.6 8.6 1.9-1.9 1.9 1.9M2.6 15.4l1.9 1.9 1.9-1.9"/>'),
+  lineOneAndHalf: icon('<path d="M9 5.5h11M9 12h11M9 18.5h11"/><path d="M4.5 7v10"/><path d="m2.6 8.6 1.9-1.9 1.9 1.9M2.6 15.4l1.9 1.9 1.9-1.9"/>'),
+  lineDouble: icon('<path d="M9 5h11M9 19h11"/><path d="M4.5 7v10"/><path d="m2.6 8.6 1.9-1.9 1.9 1.9M2.6 15.4l1.9 1.9 1.9-1.9"/>'),
+  lineTriple: icon('<path d="M9 4h11M9 20h11"/><path d="M4.5 6v12"/><path d="m2.6 7.6 1.9-1.9 1.9 1.9M2.6 16.4l1.9 1.9 1.9-1.9"/><path d="M9 12h6"/>'),
   undo: icon('<path d="m9 14-5-5 5-5"/><path d="M4 9h9.5a6 6 0 0 1 0 12H8"/>'),
   redo: icon('<path d="m15 14 5-5-5-5"/><path d="M20 9h-9.5a6 6 0 0 0 0 12H16"/>')
 }
@@ -233,27 +245,30 @@ function palette({ attribute, label, glyph, swatches, clearLabel }) {
   </span>`
 }
 
-// Menu déroulant : la toolbar n'a plus la place pour quatre boutons de plus.
-// Même mécanique que les nuanciers (déclencheur + popover), l'état courant est
-// repris sur l'icône du déclencheur.
-function alignMenu({ label, options }) {
+// Menu déroulant de mise en forme du bloc (alignement, interligne) : la toolbar n'a
+// pas la place pour huit boutons de plus. Même mécanique que les nuanciers
+// (déclencheur + popover) ; l'icône du déclencheur est celle de l'option active, ce
+// qui évite de dupliquer les SVG dans le contrôleur.
+function blockStyleMenu({ label, property, defaultValue, options }) {
   const items = options.map(({ value, name, glyph }) => `
     <button type="button" class="rt-tb__menu-item" role="menuitemradio" aria-checked="false"
-      data-action="trix-align#pick" data-align="${value}"
-      data-trix-align-target="item" tabindex="-1">
+      data-action="trix-block-style#pick" data-value="${value}"
+      data-trix-block-style-target="item" tabindex="-1">
       ${glyph}<span>${name}</span>
     </button>`).join("")
 
-  return `<span class="rt-tb__palette" data-controller="trix-align"
-    data-action="keydown->trix-align#keydown">
+  return `<span class="rt-tb__palette" data-controller="trix-block-style"
+    data-trix-block-style-property-value="${property}"
+    data-trix-block-style-default-value="${defaultValue}"
+    data-action="keydown->trix-block-style#keydown">
     <button type="button" class="trix-button rt-tb__btn rt-tb__btn--palette"
-      data-action="trix-align#toggle" data-trix-align-target="trigger"
+      data-action="trix-block-style#toggle" data-trix-block-style-target="trigger"
       aria-haspopup="menu" aria-expanded="false"
       title="${label}" aria-label="${label}" tabindex="-1">
-      <span class="rt-tb__align-preview" data-trix-align-target="preview" aria-hidden="true"></span>
+      <span class="rt-tb__align-preview" data-trix-block-style-target="preview" aria-hidden="true"></span>
       <span class="visually-hidden">${label}</span>
     </button>
-    <div class="rt-tb__popover rt-tb__popover--menu" data-trix-align-target="panel"
+    <div class="rt-tb__popover rt-tb__popover--menu" data-trix-block-style-target="panel"
          role="menu" aria-label="${label}" hidden>
       ${items}
     </div>
@@ -301,13 +316,27 @@ Trix.config.toolbar.getDefaultHTML = function () {
     ${button({ label: lang.numbers, glyph: ICONS.numbers, attribute: "number" })}
     ${button({ label: lang.outdent, glyph: ICONS.outdent, action: "decreaseNestingLevel" })}
     ${button({ label: lang.indent, glyph: ICONS.indent, action: "increaseNestingLevel" })}
-    ${alignMenu({
+    ${blockStyleMenu({
       label: lang.textAlign,
+      property: "text-align",
+      defaultValue: "left",
       options: [
         { value: "left", name: lang.alignLeft, glyph: ICONS.alignLeft },
         { value: "center", name: lang.alignCenter, glyph: ICONS.alignCenter },
         { value: "right", name: lang.alignRight, glyph: ICONS.alignRight },
         { value: "justify", name: lang.alignJustify, glyph: ICONS.alignJustify }
+      ]
+    })}
+    ${blockStyleMenu({
+      label: lang.lineHeight,
+      property: "line-height",
+      // « normal » retire la déclaration : le bloc reprend l'interligne du document
+      defaultValue: "normal",
+      options: [
+        { value: "normal", name: lang.lineHeightNormal, glyph: ICONS.lineNormal },
+        { value: "1.5", name: lang.lineHeightOneAndHalf, glyph: ICONS.lineOneAndHalf },
+        { value: "2", name: lang.lineHeightDouble, glyph: ICONS.lineDouble },
+        { value: "3", name: lang.lineHeightTriple, glyph: ICONS.lineTriple }
       ]
     })}
   </span>
