@@ -46,6 +46,12 @@ export default class extends Controller {
   }
 
   get buttons() {
-    return Array.from(this.element.querySelectorAll(".rt-tb__btn:not([disabled])"))
+    // `--offscreen` : le bouton Lien ne prend plus de place dans la barre, il ne
+    // participe donc pas au parcours aux flèches. Il reste dans le DOM pour que
+    // ⌘K continue de fonctionner — Trix résout ses raccourcis en cherchant
+    // `[data-trix-key]` dans la toolbar.
+    return Array.from(
+      this.element.querySelectorAll(".rt-tb__btn:not([disabled]):not(.rt-tb__btn--offscreen)")
+    )
   }
 }

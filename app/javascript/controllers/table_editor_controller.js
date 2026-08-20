@@ -378,10 +378,18 @@ export default class extends Controller {
     const classes = button.classList
     if (classes.contains("rt-t-row-before")) this.insertRow(table, row ?? table.rows.length, { before: true })
     else if (classes.contains("rt-t-row-after")) this.insertRow(table, row ?? table.rows.length - 1, { before: false })
-    else if (classes.contains("rt-t-row-delete")) this.deleteRow(table, row ?? table.rows.length - 1)
+    else if (classes.contains("rt-t-row-delete")) {
+      const index = row ?? table.rows.length - 1
+      if (!this.confirmDelete(table, { row: index })) return
+      this.deleteRow(table, index)
+    }
     else if (classes.contains("rt-t-col-before")) this.insertColumn(table, col ?? this.columnCount(table), { before: true })
     else if (classes.contains("rt-t-col-after")) this.insertColumn(table, col ?? this.columnCount(table) - 1, { before: false })
-    else if (classes.contains("rt-t-col-delete")) this.deleteColumn(table, col ?? this.columnCount(table) - 1)
+    else if (classes.contains("rt-t-col-delete")) {
+      const index = col ?? this.columnCount(table) - 1
+      if (!this.confirmDelete(table, { col: index })) return
+      this.deleteColumn(table, index)
+    }
     else if (classes.contains("rt-t-header")) this.toggleHeader(root, table, button)
     else if (classes.contains("rt-t-align-left")) this.alignColumn(table, col, "left")
     else if (classes.contains("rt-t-align-center")) this.alignColumn(table, col, "center")
@@ -435,6 +443,27 @@ export default class extends Controller {
       tr.appendChild(this.buildCell("td", this.alignOfColumn(table, c)))
     }
     this.applyHeader(table, this.hasHeader(table))
+  }
+
+  // Supprimer une ligne ou une colonne n'est pas annulable : le DOM est reconstruit
+  // puis enregistré côté serveur, et ni la pile de Trix — qui ne connaît que son
+  // document, pas l'enregistrement Table — ni l'annulation native du navigateur ne
+  // savent revenir en arrière.
+  //
+  // On ne demande confirmation que si du contenu est réellement perdu : confirmer la
+  // suppression d'une colonne vide serait du bruit à chaque mise en forme.
+  confirmDelete(table, { row = null, col = null }) {
+    const cells = row != null
+      ? Array.from(table.rows[row]?.cells ?? [])
+      : Array.from(table.rows).map((tr) => tr.cells[col]).filter(Boolean)
+
+    if (!cells.some((cell) => cell.textContent.trim() !== "")) return true
+
+    return window.confirm(
+      row != null
+        ? "Supprimer cette ligne ? Son contenu sera perdu."
+        : "Supprimer cette colonne ? Son contenu sera perdu."
+    )
   }
 
   deleteRow(table, index) {

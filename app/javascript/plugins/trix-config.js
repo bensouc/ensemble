@@ -37,6 +37,11 @@ Object.assign(Trix.config.lang, {
   highlight: "Surligner",
   table: "Tableau",
   textColor: "Couleur du texte",
+  textAlign: "Alignement",
+  alignLeft: "Aligner à gauche",
+  alignCenter: "Centrer",
+  alignRight: "Aligner à droite",
+  alignJustify: "Justifier",
   underline: "Souligné"
 })
 
@@ -78,6 +83,40 @@ Trix.config.blockAttributes.heading2 = { tagName: "h2", terminal: true, breakOnR
 Trix.config.blockAttributes.heading3 = { tagName: "h3", terminal: true, breakOnReturn: true, group: false }
 
 // ---------------------------------------------------------------------------
+// 3 bis. Alignement du texte
+//
+// L'alignement est porté par `style="text-align: …"`, et pas par une balise maison
+// ni par l'attribut `align`. Trois contraintes, toutes mesurées en Chrome headless :
+//
+//   1. une balise inconnue (<trix-align-center>) est retirée par le sanitizer
+//      d'ActionText : le texte reste, l'alignement est perdu à l'affichage. Il
+//      faudrait étendre son allowlist, soit un deuxième endroit à tenir à jour ;
+//   2. `align` ne survit pas au chargement — Trix filtre les attributs sur sa
+//      propre liste (`HTMLSanitizer`: "style href src width height language class"),
+//      une constante de module qu'aucune config ne peut étendre. L'attribut était
+//      perdu AVANT le parseur : rouvrir puis réenregistrer effaçait la mise en forme ;
+//   3. `style` est dans cette liste ET dans l'allowlist d'ActionText, donc il fait
+//      l'aller-retour intact.
+//
+// `tagName: "p"` et pas "div" : le parseur résout les attributs HTML d'un bloc en
+// cherchant la PREMIÈRE config dont la balise correspond (`getBlockHTMLAttributes`),
+// sans consulter `test`. Avec "div", la config `default` — un <div> elle aussi —
+// masquait celle-ci. `p` n'appartient qu'à l'alignement.
+//
+// Les titres portent le style sur leur propre balise : ils sont `terminal`, donc ils
+// refusent l'enveloppe <p>. Sans ça, centrer un titre ne faisait rien.
+// ---------------------------------------------------------------------------
+Trix.config.blockAttributes.align = {
+  tagName: "p",
+  htmlAttributes: ["style"],
+  group: false
+}
+
+Trix.config.blockAttributes.heading1.htmlAttributes = ["style"]
+Trix.config.blockAttributes.heading2.htmlAttributes = ["style"]
+Trix.config.blockAttributes.heading3.htmlAttributes = ["style"]
+
+// ---------------------------------------------------------------------------
 // 4. Toolbar
 // ---------------------------------------------------------------------------
 const IS_MAC = /Mac|^iP/.test(navigator.platform)
@@ -114,6 +153,10 @@ const ICONS = {
   indent: icon('<path d="M4 6h16M11 12h9M4 18h16"/><path d="m4.5 9 3 3-3 3"/>'),
   attach: icon('<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="m4 16.5 4.5-4.5 3.5 3.5 3-3 5 5"/><circle cx="15.5" cy="9" r="1.6"/>'),
   link: icon('<path d="m9.5 14.5 5-5"/><path d="M13 7.5 14.5 6a4 4 0 0 1 5.5 5.5L18.5 13"/><path d="M11 16.5 9.5 18A4 4 0 0 1 4 12.5L5.5 11"/>'),
+  alignLeft: icon('<path d="M4 6h16M4 12h10M4 18h13"/>'),
+  alignCenter: icon('<path d="M4 6h16M7 12h10M5.5 18h13"/>'),
+  alignRight: icon('<path d="M4 6h16M10 12h10M7 18h13"/>'),
+  alignJustify: icon('<path d="M4 6h16M4 12h16M4 18h16"/>'),
   undo: icon('<path d="m9 14-5-5 5-5"/><path d="M4 9h9.5a6 6 0 0 1 0 12H8"/>'),
   redo: icon('<path d="m15 14 5-5-5-5"/><path d="M20 9h-9.5a6 6 0 0 0 0 12H16"/>')
 }
@@ -190,6 +233,33 @@ function palette({ attribute, label, glyph, swatches, clearLabel }) {
   </span>`
 }
 
+// Menu déroulant : la toolbar n'a plus la place pour quatre boutons de plus.
+// Même mécanique que les nuanciers (déclencheur + popover), l'état courant est
+// repris sur l'icône du déclencheur.
+function alignMenu({ label, options }) {
+  const items = options.map(({ value, name, glyph }) => `
+    <button type="button" class="rt-tb__menu-item" role="menuitemradio" aria-checked="false"
+      data-action="trix-align#pick" data-align="${value}"
+      data-trix-align-target="item" tabindex="-1">
+      ${glyph}<span>${name}</span>
+    </button>`).join("")
+
+  return `<span class="rt-tb__palette" data-controller="trix-align"
+    data-action="keydown->trix-align#keydown">
+    <button type="button" class="trix-button rt-tb__btn rt-tb__btn--palette"
+      data-action="trix-align#toggle" data-trix-align-target="trigger"
+      aria-haspopup="menu" aria-expanded="false"
+      title="${label}" aria-label="${label}" tabindex="-1">
+      <span class="rt-tb__align-preview" data-trix-align-target="preview" aria-hidden="true"></span>
+      <span class="visually-hidden">${label}</span>
+    </button>
+    <div class="rt-tb__popover rt-tb__popover--menu" data-trix-align-target="panel"
+         role="menu" aria-label="${label}" hidden>
+      ${items}
+    </div>
+  </span>`
+}
+
 Trix.config.toolbar.getDefaultHTML = function () {
   const lang = Trix.config.lang
 
@@ -231,11 +301,27 @@ Trix.config.toolbar.getDefaultHTML = function () {
     ${button({ label: lang.numbers, glyph: ICONS.numbers, attribute: "number" })}
     ${button({ label: lang.outdent, glyph: ICONS.outdent, action: "decreaseNestingLevel" })}
     ${button({ label: lang.indent, glyph: ICONS.indent, action: "increaseNestingLevel" })}
+    ${alignMenu({
+      label: lang.textAlign,
+      options: [
+        { value: "left", name: lang.alignLeft, glyph: ICONS.alignLeft },
+        { value: "center", name: lang.alignCenter, glyph: ICONS.alignCenter },
+        { value: "right", name: lang.alignRight, glyph: ICONS.alignRight },
+        { value: "justify", name: lang.alignJustify, glyph: ICONS.alignJustify }
+      ]
+    })}
   </span>
 
   <span class="trix-button-group trix-button-group--file-tools rt-tb__group" data-trix-button-group="file-tools">
     ${button({ label: lang.attachFiles, glyph: ICONS.attach, action: "attachFiles" })}
-    ${button({ label: lang.link, glyph: ICONS.link, attribute: "href", action: "link", key: "k" })}
+    ${button({
+      label: lang.link,
+      glyph: ICONS.link,
+      attribute: "href",
+      action: "link",
+      key: "k",
+      extraClass: "rt-tb__btn--offscreen"
+    })}
   </span>
 
   <span class="trix-button-group-spacer"></span>
