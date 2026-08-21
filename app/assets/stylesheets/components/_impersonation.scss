@@ -1,0 +1,144 @@
+// Personnification : le rappel permanent dans la barre du haut, et la liste des
+// comptes.
+
+.impersonation-flag {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-right: 1.5rem;
+  padding: 0.25rem 0.5rem 0.25rem 0.85rem;
+  border-radius: 999px;
+  background-color: $rose;
+  color: $blanc;
+  font-size: 0.85rem;
+  white-space: nowrap;
+
+  strong { font-weight: 700; }
+}
+
+.impersonation-flag-exit {
+  border: none;
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  background-color: $blanc;
+  color: $rose;
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  &:hover { background-color: rgba(255, 255, 255, 0.85); }
+}
+
+// `button_to` produit un <form> : sans ça, l'entrée sortirait de l'alignement
+// des liens du menu déroulant.
+.impersonation-dropdown-exit {
+  width: 100%;
+  border: none;
+  background: none;
+  text-align: left;
+  color: $rose;
+  font-weight: 600;
+}
+
+.impersonation-index {
+  width: 900px;
+  margin: 0 auto 3rem;
+}
+
+.impersonation-intro {
+  color: $grisF;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+.impersonation-school {
+  margin-bottom: 1.5rem;
+}
+
+.impersonation-school-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.4rem 0.8rem;
+  border-bottom: 2px solid $grisC;
+}
+
+.impersonation-school-name {
+  font-weight: 700;
+  color: $grisF;
+}
+
+.impersonation-school-meta {
+  color: lighten($grisF, 30%);
+  font-size: 0.85rem;
+}
+
+.impersonation-school-count {
+  margin-left: 0.75rem;
+}
+
+.impersonation-user-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.impersonation-user {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid $light-gray;
+}
+
+.impersonation-user-identity {
+  display: flex;
+  flex-direction: column;
+}
+
+.impersonation-user-name {
+  font-weight: 600;
+}
+
+.impersonation-user-email {
+  font-size: 0.8rem;
+  color: lighten($grisF, 30%);
+}
+
+.impersonation-user-tags {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.impersonation-tag {
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background-color: $bleuC;
+  color: $grisF;
+}
+
+.impersonation-tag-demo {
+  background-color: $menuOff;
+}
+
+.impersonation-user-seen {
+  color: lighten($grisF, 35%);
+  font-style: italic;
+}
+
+.impersonation-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: none;
+  border-radius: 999px;
+  padding: 0.35rem 1rem;
+  background-color: $rose;
+  color: $blanc;
+  font-size: 0.85rem;
+  white-space: nowrap;
+
+  &:hover { background-color: darken($rose, 8%); }
+}

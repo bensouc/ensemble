@@ -293,6 +293,8 @@ GEM
     popper_js (2.11.8)
     pp (0.6.3)
       prettyprint
+    pretender (0.6.0)
+      actionpack (>= 7.1)
     prettier_print (1.2.1)
     prettyprint (0.2.0)
     prism (1.8.0)
@@ -579,6 +581,7 @@ DEPENDENCIES
   mobile
   money-rails (~> 1.12)
   pg (>= 0.18, < 2.0)
+  pretender
   pry-byebug
   pry-rails
   puma (~> 6.0)

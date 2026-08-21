@@ -15,6 +15,11 @@ Rails.application.routes.draw do
   devise_scope :user do
     post "create_demo_user", to: "registrations#add_demo_user"
   end
+  # Personnification : un admin navigue sous l'identité d'un enseignant.
+  # Hors du préfixe /admin, déjà pris par le moteur rails_admin monté plus haut.
+  get "impersonations", to: "impersonations#index", as: :impersonations
+  post "impersonations/:user_id", to: "impersonations#create", as: :impersonation
+  delete "impersonations", to: "impersonations#destroy", as: :stop_impersonation
   root to: "pages#home"
   get "/dashboard", to: "dashboard#show"
   post "add_discovery", to: "dashboard#add_discovery_method"
