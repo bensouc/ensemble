@@ -144,6 +144,7 @@ Rails.application.routes.draw do
   resources :challenges, only: [:show, :edit, :update, :destroy, :index, :new, :create] do
     member do
       patch :move
+      post :duplicate
     end
   end
 

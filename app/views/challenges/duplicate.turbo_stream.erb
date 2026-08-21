@@ -1,0 +1,7 @@
+<%= turbo_stream.prepend "flash" , partial: "shared/flashes" %>
+<%# La copie arrive en fin de liste : on re-rend la liste entière pour que les numéros
+    de position et les flèches restent justes. %>
+<%= turbo_stream.update challenges_list_frame_id do %>
+  <%= render "challenges/challenges_list", challenges: @challenges, reveal: @challenge.id %>
+<% end %>
+<%= turbo_stream.update challenges_frame_id("count"), "#{@count} exo#{@count > 1 ? "s" : ""}" %>

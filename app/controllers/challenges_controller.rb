@@ -5,7 +5,8 @@
 
 class ChallengesController < ApplicationController
   before_action :set_work_plan_skill, only: [:clone, :display_challenges] # , :update, :show]
-  before_action :set_challenge, only: [:clone, :update, :display_challenges, :show, :edit, :destroy, :move]
+  before_action :set_challenge,
+                only: [:clone, :update, :display_challenges, :show, :edit, :destroy, :move, :duplicate]
   skip_after_action :verify_policy_scoped, only: [:index]
   helper_method :challenges_frame_id, :challenges_list_frame_id
 
@@ -110,6 +111,31 @@ class ChallengesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to challenge_path(@challenge) }
       format.turbo_stream { flash.now[:notice] = "Excercice cloné" }
+    end
+  end
+
+  # Clonage depuis la liste des exercices, sans passer par un plan de travail.
+  #
+  # La copie se place en dernière position de la compétence (acts_as_list,
+  # `add_new_at: :bottom`) et ses tableaux sont dédoublés par `new_clone` : sans ça,
+  # éditer une cellule de la copie modifierait l'original, les deux exercices
+  # pointant le même enregistrement `Table`.
+  def duplicate
+    authorize @challenge, :clone?
+
+    copy = @challenge.new_clone
+    copy.user = current_user
+    copy.save!
+
+    # les helpers de frame lisent `@challenge` : la copie partage la compétence et la
+    # liste (classique ou ceinture) de l'original
+    @challenge = copy
+    @count = count_challenges
+    @challenges = skill_challenges_list
+
+    respond_to do |format|
+      format.html { redirect_to challenges_path, notice: "Exercice cloné" }
+      format.turbo_stream { flash.now[:notice] = "Exercice cloné" }
     end
   end
 

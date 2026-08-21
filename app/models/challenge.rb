@@ -28,8 +28,10 @@ class Challenge < ApplicationRecord
     for_belt == true
   end
 
+  # `for_belt` est recopié : sans lui, cloner un exercice de ceinture en faisait un
+  # exercice classique, qui changeait donc de liste.
   def new_clone
-    Challenge.new(name: clone_name, content: cloned_content, skill_id:)
+    Challenge.new(name: clone_name, content: cloned_content, skill_id:, for_belt:)
   end
 
 

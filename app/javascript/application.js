@@ -25,6 +25,7 @@ import "@rails/actiontext"
 import "./controllers"
 
 // Plugins
+import "./plugins/confirm_dialog"
 import "./plugins/quote"
 import "./plugins/trix-editor-overrides"
 import "./plugins/stimulus_scroll_progress"

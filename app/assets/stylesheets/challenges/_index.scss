@@ -51,17 +51,12 @@
   height: 0px !important;
 }
 
-.position-in-form {
-  position: relative;
-  top: -103px;
-  left: 577px;
-}
-
 .challenge-infos-box {
   display: flex;
   justify-content: space-between;
   flex-direction: row-reverse;
   margin: 0 40px;
+
 }
 .max-length-skill-name {
   max-width: 713px;
@@ -91,6 +86,13 @@
   align-items: flex-start;
 }
 
+// Signalement d'une copie qui vient d'être créée, le temps que l'œil la trouve : la
+// bordure de la carte, pas une ombre.
+.challenge-row.is-revealed .cont-challenge {
+  border-color: $rose;
+  transition: border-color 0.25s ease;
+}
+
 .challenge-row-content {
   flex: 1 1 auto;
   min-width: 0;
@@ -98,23 +100,50 @@
 
 // Formulaire de création : une gouttière vide de la largeur de celle du tri, pour
 // que sa carte tombe exactement sur celles des exercices (le formulaire porte
-// déjà `.cont-challenge`, donc la marge de 30px). Sans marge ni hauteur : quand
+// déjà `.cont-challenge`, donc la marge de 30px). 100px : cf. `.challenge-order`. Sans marge ni hauteur : quand
 // la frame est vide, la ligne n'occupe aucune place.
 .new-challenge-row .challenge-order-placeholder {
-  flex: 0 0 70px;
-  width: 70px;
+  flex: 0 0 100px;
+  width: 100px;
 }
 
-// Numéro puis les deux flèches, sur une seule ligne, calée à gauche.
+// Colonne de gauche : numéro et flèches sur une ligne, clonage juste en dessous.
 .challenge-order {
   display: flex;
-  flex: 0 0 70px;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 5px;
-  width: 70px;
+  // 100px et non 70 : le bouton de clonage porte son libellé, comme dans l'éditeur
+  // de plan de travail. Les deux valeurs dérivées ci-dessous suivent.
+  flex: 0 0 100px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100px;
   margin-top: 12px;
+
+  .challenge-order-row {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 5px;
+  }
+
+  .button_to {
+    display: flex;
+    margin: 0;
+  }
+
+  // Clonage : discret, il ne doit pas rivaliser avec les flèches d'ordre juste
+  // au-dessus.
+  .clone-challenge-btn {
+    @include pill-cta($height: 24px);
+    gap: 6px;
+    padding: 0 9px;
+    background-color: transparent;
+    font-size: 12px;
+
+    i {
+      font-size: 12px;
+    }
+  }
 
   .challenge-order-position {
     // Largeur minimale : les flèches restent alignées d'une ligne à l'autre,
@@ -157,8 +186,8 @@
 
 // Placement seul : l'apparence vient de `.add-folder-btn`. Bord droit aligné sur
 // celui des cartes d'exercice :
-// 1000 (conteneur) - 16 (retrait liste) - 70 (gouttière) - 30 - 811 (carte).
+// 1000 (conteneur) - 16 (retrait liste) - 100 (gouttière) - 30 - 811 (carte).
 .challenge-skill-header .add-folder-btn {
-  margin-right: 73px;
+  margin-right: 43px;
   margin-left: auto;
 }

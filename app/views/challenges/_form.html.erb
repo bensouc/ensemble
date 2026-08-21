@@ -18,7 +18,15 @@
 									<i class="fas fa-times"></i>
 							<% end%>
               <% else %>
-
+              <%# À la création, l'annulation vide la frame du formulaire. Elle vit dans
+                  cette rangée et non après le formulaire : elle y était placée à coups
+                  de `top: -103px; left: 577px`, donc jamais alignée sur Enregistrer. %>
+							<div class="cancel-btn"
+							     data-controller="manageturboframe"
+							     data-manageturboframe-id-value="<%= challenge.skill.id %>"
+							     data-action="click->manageturboframe#cleanTurboFrame">
+								Annuler
+							</div>
               <% end %>
 							<%= form.submit 'Enregistrer', class: 'validate-challenge-btn'%>
 						</div>

@@ -46,29 +46,42 @@
   <% end %>
 <% end %>
 
+<%# La copie d'un clonage atterrit en fin de liste, souvent hors écran : `reveal` la
+    désigne pour que le navigateur y descende. %>
+<% revealed = local_assigns[:reveal].present? && local_assigns[:reveal].to_s == challenge.id.to_s %>
 <% if orderable %>
-  <div class="challenge-row">
+  <div class="challenge-row" data-controller="<%= "reveal" if revealed %>">
     <div class="challenge-order">
-      <span class="challenge-order-position" title="Position dans la compétence">
-        <%= challenge.position %>
-      </span>
-      <%# Pas de place réservée pour une flèche absente : en haut et en bas de
-          liste, le groupe se resserre. %>
-      <% unless challenge_counter.zero? %>
-        <%= button_to move_challenge_path(challenge, direction: "up"),
-              method: :patch,
-              class: "challenge-order-btn",
-              title: "Monter cet exercice" do %>
-          <i class="fa-solid fa-circle-chevron-up"></i>
+      <div class="challenge-order-row">
+        <span class="challenge-order-position" title="Position dans la compétence">
+          <%= challenge.position %>
+        </span>
+        <%# Pas de place réservée pour une flèche absente : en haut et en bas de
+            liste, le groupe se resserre. %>
+        <% unless challenge_counter.zero? %>
+          <%= button_to move_challenge_path(challenge, direction: "up"),
+                method: :patch,
+                class: "challenge-order-btn",
+                title: "Monter cet exercice" do %>
+            <i class="fa-solid fa-circle-chevron-up"></i>
+          <% end %>
         <% end %>
-      <% end %>
-      <% unless challenge_counter == list_size - 1 %>
-        <%= button_to move_challenge_path(challenge, direction: "down"),
-              method: :patch,
-              class: "challenge-order-btn",
-              title: "Descendre cet exercice" do %>
-          <i class="fa-solid fa-circle-chevron-down"></i>
+        <% unless challenge_counter == list_size - 1 %>
+          <%= button_to move_challenge_path(challenge, direction: "down"),
+                method: :patch,
+                class: "challenge-order-btn",
+                title: "Descendre cet exercice" do %>
+            <i class="fa-solid fa-circle-chevron-down"></i>
+          <% end %>
         <% end %>
+      </div>
+      <%# Le clone se place en dernière position de la compétence, avec ses propres
+          tableaux. Libellé écrit, comme le « Cloner » de l'éditeur de plan de travail. %>
+      <%= button_to duplicate_challenge_path(challenge),
+                    class: "clone-challenge-btn",
+                    title: "Cloner cet exercice" do %>
+        <i class="fa-regular fa-clone"></i>
+        <span>Cloner</span>
       <% end %>
     </div>
     <div class="challenge-row-content">

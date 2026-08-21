@@ -212,6 +212,63 @@ RSpec.describe ChallengesController, type: :controller do
     end
   end
 
+  describe "#duplicate" do
+    render_views
+
+    let(:ordered_skill) { create(:skill, school: user.school) }
+    let!(:first) { create(:challenge, user:, skill: ordered_skill) }
+    let!(:second) { create(:challenge, user:, skill: ordered_skill) }
+
+    context "when user is not signed in" do
+      it "returns a failure response" do
+        post :duplicate, params: { id: first.id }
+        expect(response).not_to be_successful
+      end
+    end
+
+    context "when user is signed in" do
+      before { sign_in(user) }
+
+      it "place la copie en dernière position de la compétence" do
+        expect do
+          post :duplicate, params: { id: first.id }, format: :turbo_stream
+        end.to change(Challenge, :count).by(1)
+
+        copy = Challenge.last
+        expect(copy.skill).to eq(ordered_skill)
+        expect(copy.position).to eq(3)
+        expect(copy.name).to start_with(first.name)
+        expect(copy.user).to eq(user)
+      end
+
+      it "garde la nature de l'original" do
+        belt = create(:challenge, user:, skill: ordered_skill, for_belt: true)
+
+        post :duplicate, params: { id: belt.id }, format: :turbo_stream
+
+        # sans ça, un exercice de ceinture cloné changeait de liste
+        expect(Challenge.last).to be_for_belt
+      end
+
+      it "re-rend la liste avec la copie à la fin" do
+        post :duplicate, params: { id: first.id }, format: :turbo_stream
+
+        expect(response.body).to include("skill_#{ordered_skill.id}_challenges_list")
+        expect(response.body.index(second.name)).to be < response.body.index(Challenge.last.name)
+      end
+
+      it "désigne la copie pour que le navigateur y descende" do
+        # elle atterrit en dernière position, donc hors écran dès que la compétence
+        # compte quelques exercices
+        post :duplicate, params: { id: first.id }, format: :turbo_stream
+
+        # une seule ligne est désignée, et c'est celle qui suit les exercices existants
+        expect(response.body.scan('data-controller="reveal"').size).to eq(1)
+        expect(response.body.index('data-controller="reveal"')).to be > response.body.index(second.name)
+      end
+    end
+  end
+
   describe "les flux Turbo re-rendent la liste ordonnée" do
     render_views
 
