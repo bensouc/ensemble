@@ -73,12 +73,12 @@
         <% end %>
       </div>
       <%# Le clone se place en dernière position de la compétence, avec ses propres
-          tableaux. Icône seule : la gouttière fait 70px. %>
+          tableaux. Libellé écrit, comme le « Cloner » de l'éditeur de plan de travail. %>
       <%= button_to duplicate_challenge_path(challenge),
                     class: "clone-challenge-btn",
-                    title: "Cloner cet exercice",
-                    aria: { label: "Cloner cet exercice" } do %>
+                    title: "Cloner cet exercice" do %>
         <i class="fa-regular fa-clone"></i>
+        <span>Cloner</span>
       <% end %>
     </div>
     <div class="challenge-row-content">

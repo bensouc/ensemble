@@ -93,21 +93,23 @@
 
 // Formulaire de création : une gouttière vide de la largeur de celle du tri, pour
 // que sa carte tombe exactement sur celles des exercices (le formulaire porte
-// déjà `.cont-challenge`, donc la marge de 30px). Sans marge ni hauteur : quand
+// déjà `.cont-challenge`, donc la marge de 30px). 100px : cf. `.challenge-order`. Sans marge ni hauteur : quand
 // la frame est vide, la ligne n'occupe aucune place.
 .new-challenge-row .challenge-order-placeholder {
-  flex: 0 0 70px;
-  width: 70px;
+  flex: 0 0 100px;
+  width: 100px;
 }
 
 // Colonne de gauche : numéro et flèches sur une ligne, clonage juste en dessous.
 .challenge-order {
   display: flex;
-  flex: 0 0 70px;
+  // 100px et non 70 : le bouton de clonage porte son libellé, comme dans l'éditeur
+  // de plan de travail. Les deux valeurs dérivées ci-dessous suivent.
+  flex: 0 0 100px;
   flex-direction: column;
   align-items: flex-start;
   gap: 2px;
-  width: 70px;
+  width: 100px;
   margin-top: 12px;
 
   .challenge-order-row {
@@ -126,11 +128,13 @@
   // au-dessus.
   .clone-challenge-btn {
     @include pill-cta($height: 24px);
-    padding: 0 7px;
+    gap: 6px;
+    padding: 0 9px;
     background-color: transparent;
+    font-size: 12px;
 
     i {
-      font-size: 13px;
+      font-size: 12px;
     }
   }
 
@@ -175,8 +179,8 @@
 
 // Placement seul : l'apparence vient de `.add-folder-btn`. Bord droit aligné sur
 // celui des cartes d'exercice :
-// 1000 (conteneur) - 16 (retrait liste) - 70 (gouttière) - 30 - 811 (carte).
+// 1000 (conteneur) - 16 (retrait liste) - 100 (gouttière) - 30 - 811 (carte).
 .challenge-skill-header .add-folder-btn {
-  margin-right: 73px;
+  margin-right: 43px;
   margin-left: auto;
 }
