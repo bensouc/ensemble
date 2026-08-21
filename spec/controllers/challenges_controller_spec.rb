@@ -256,6 +256,16 @@ RSpec.describe ChallengesController, type: :controller do
         expect(response.body).to include("skill_#{ordered_skill.id}_challenges_list")
         expect(response.body.index(second.name)).to be < response.body.index(Challenge.last.name)
       end
+
+      it "désigne la copie pour que le navigateur y descende" do
+        # elle atterrit en dernière position, donc hors écran dès que la compétence
+        # compte quelques exercices
+        post :duplicate, params: { id: first.id }, format: :turbo_stream
+
+        # une seule ligne est désignée, et c'est celle qui suit les exercices existants
+        expect(response.body.scan('data-controller="reveal"').size).to eq(1)
+        expect(response.body.index('data-controller="reveal"')).to be > response.body.index(second.name)
+      end
     end
   end
 

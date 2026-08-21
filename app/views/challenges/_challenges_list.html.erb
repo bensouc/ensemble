@@ -1,5 +1,7 @@
 <%# Liste ordonnée des exercices d'une compétence : un seul endroit qui sait
     passer `in_index` et `list_size` au partiel d'exercice. %>
+<%# `reveal` : l'exercice à amener dans la vue (une copie qui vient d'être créée). %>
 <%= render partial: "challenges/challenge",
            collection: challenges,
-           locals: { in_index: true, list_size: challenges.size } %>
+           locals: { in_index: true, list_size: challenges.size,
+                     reveal: local_assigns[:reveal] } %>

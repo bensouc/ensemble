@@ -46,8 +46,11 @@
   <% end %>
 <% end %>
 
+<%# La copie d'un clonage atterrit en fin de liste, souvent hors écran : `reveal` la
+    désigne pour que le navigateur y descende. %>
+<% revealed = local_assigns[:reveal].present? && local_assigns[:reveal].to_s == challenge.id.to_s %>
 <% if orderable %>
-  <div class="challenge-row">
+  <div class="challenge-row" data-controller="<%= "reveal" if revealed %>">
     <div class="challenge-order">
       <div class="challenge-order-row">
         <span class="challenge-order-position" title="Position dans la compétence">

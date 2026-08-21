@@ -86,6 +86,13 @@
   align-items: flex-start;
 }
 
+// Signalement d'une copie qui vient d'être créée, le temps que l'œil la trouve : la
+// bordure de la carte, pas une ombre.
+.challenge-row.is-revealed .cont-challenge {
+  border-color: $rose;
+  transition: border-color 0.25s ease;
+}
+
 .challenge-row-content {
   flex: 1 1 auto;
   min-width: 0;
