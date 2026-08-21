@@ -72,8 +72,11 @@ class User < ApplicationRecord
     demo == true
   end
 
+  # `school_role` peut manquer (inscription abandonnée avant la création de
+  # l'école) : la barre de navigation appelle cette méthode à chaque page, un nil
+  # y rendait l'app entière inutilisable pour ce compte.
   def super_teacher?
-    school_role.super_teacher == true
+    school_role&.super_teacher == true
   end
 
   def classroom_grades

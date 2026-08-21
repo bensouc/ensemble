@@ -54,6 +54,8 @@ gem "slack-notifier"
 gem "devise"
 # devise plug_in to manage last seen
 gem "devise_last_seen"
+# usurpation d'identité par un admin (« naviguer en tant que »)
+gem "pretender"
 gem "sweetalert2"
 gem "pundit"
 gem "autoprefixer-rails", "10.2.5"

@@ -1,0 +1,58 @@
+<div class="impersonation-index">
+	<h1 class="title">Personnifier un utilisateur</h1>
+	<p class="impersonation-intro">
+		Vous naviguerez sous l'identité choisie sans quitter votre compte : ce que vous
+		voyez et ce que vous modifiez sont les siens. La facturation et ses identifiants
+		de connexion restent hors d'atteinte.
+	</p>
+
+	<% if @users_by_school.empty? %>
+		<p>Aucun utilisateur à personnifier.</p>
+	<% end %>
+
+	<% @users_by_school.each do |school, users| %>
+		<div class="impersonation-school">
+			<div class="impersonation-school-header">
+				<div class="impersonation-school-name">
+					<i class="fa-solid fa-school me-2"></i>
+					<%= school ? school.name.capitalize : "Sans école" %>
+				</div>
+				<div class="impersonation-school-meta">
+					<%= school&.city %>
+					<span class="impersonation-school-count"><%= users.count %> compte<%= "s" if users.count > 1 %></span>
+				</div>
+			</div>
+			<ul class="impersonation-user-list">
+				<% users.each do |user| %>
+					<li class="impersonation-user">
+						<div class="impersonation-user-identity">
+							<span class="impersonation-user-name">
+								<%= user.first_name %> <%= user.last_name %>
+							</span>
+							<span class="impersonation-user-email"><%= user.email %></span>
+						</div>
+						<div class="impersonation-user-tags">
+							<% if user.school_role&.super_teacher %>
+								<span class="impersonation-tag">responsable</span>
+							<% end %>
+							<% if user.demo? %>
+								<span class="impersonation-tag impersonation-tag-demo">démo</span>
+							<% end %>
+							<span class="impersonation-user-seen">
+								<%= user.last_seen ? "vu le #{user.last_seen.strftime('%d/%m/%Y')}" : "jamais connecté" %>
+							</span>
+						</div>
+						<%# Confirmation : la bascule est visible mais silencieuse côté enseignant,
+						    autant la rendre volontaire. %>
+						<%= button_to impersonation_path(user_id: user),
+						              class: "impersonation-btn",
+						              data: { turbo_confirm: "Naviguer en tant que #{user.first_name} #{user.last_name} ?" } do %>
+							<i class="fa-solid fa-user-secret"></i>
+							<span>Prendre le contrôle</span>
+						<% end %>
+					</li>
+				<% end %>
+			</ul>
+		</div>
+	<% end %>
+</div>
