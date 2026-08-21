@@ -130,6 +130,26 @@
 .height-validate-challenge {
   height: 50px;
 }
+
+// Rangée d'actions du formulaire d'énoncé : Annuler et Enregistrer alignés, à la
+// même échelle. `.cancel-btn` sert à six autres endroits de l'app, sa taille n'est
+// donc ajustée qu'ici.
+.form-actions {
+  align-items: center;
+  gap: 10px;
+
+  .cancel-btn {
+    padding: 0.35rem 0.9rem;
+    border-width: 2px;
+    font-size: 15px;
+  }
+
+  .validate-challenge-btn {
+    margin-left: 0;
+    padding: 0.35rem 0.9rem;
+    font-size: 15px;
+  }
+}
 .validate-challenge-btn {
   display: flex;
   vertical-align: text-top;
