@@ -1,4 +1,8 @@
-<div class="challenges-container">
+<%# Les flèches flottantes : la liste des exercices, une fois les dossiers
+    dépliés, fait plusieurs écrans de haut. %>
+<div class="challenges-container"
+     data-controller="page-scroll"
+     data-action="scroll@window->page-scroll#refresh resize@window->page-scroll#refresh">
 	<div data-controller='submitonchange' class='challenge-filter'>
 		<%= simple_form_for challenges_path, method: :get,
     html: {id: "domainForm"},
@@ -121,4 +125,16 @@
     -->
 
   </div>
+	<div class="top-floating-btn"
+	     data-page-scroll-target="down"
+	     data-action="click->page-scroll#down"
+	     title="Aller en bas de la page">
+		<i class="fa-solid fa-circle-arrow-down"></i>
+	</div>
+	<div class="bottom-floating-btn"
+	     data-page-scroll-target="up"
+	     data-action="click->page-scroll#up"
+	     title="Remonter en haut de la page">
+		<i class="fa-solid fa-circle-arrow-up"></i>
+	</div>
 </div>
