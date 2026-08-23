@@ -4,10 +4,34 @@
   // background-size: 150%;
 }
 
+// L'accueil occupe sa propre place. Il était remonté de 72px et décalé de 139px
+// vers la gauche, donc dessiné dans la bande de la barre du haut : n'importe quel
+// lien de cette barre s'écrivait par-dessus, et rien dans la page ne le signalait.
 .com {
   position: relative;
-  top: -72px;
-  left: -139px;
+
+  // `.info-btn` est partagé avec la puce cliquable de la barre du haut — un div
+  // vide dont la largeur de 20ch sert d'espaceur. On surcharge donc ici seulement,
+  // sans toucher la règle commune.
+  .info-btn {
+    width: auto;
+    max-width: 100%;
+    white-space: normal;
+    overflow: visible;
+    border-right: none;
+    animation: welcome-appear 0.3s ease-out both;
+  }
+}
+
+@keyframes welcome-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 .info-btn {
   width: 20ch;
