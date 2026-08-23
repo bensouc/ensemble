@@ -33,6 +33,16 @@ RSpec.describe ImpersonationsController, type: :controller do
       expect(listed).not_to include(admin.email)
     end
 
+    # La colonne `admin` est nullable : `where(admin: false)` n'en gardait que les
+    # rares comptes à false explicite, et la page n'en montrait que deux en prod.
+    it "liste aussi les comptes dont la colonne admin est nulle" do
+      sign_in(admin)
+      teacher.update_column(:admin, nil)
+      get :index
+      listed = Nokogiri::HTML(response.body).css(".impersonation-user-email").map { |node| node.text.strip }
+      expect(listed).to include(teacher.email)
+    end
+
     it "range les comptes sans école dans un groupe à part" do
       sign_in(admin)
       teacher.school_role.destroy

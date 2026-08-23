@@ -39,7 +39,11 @@ class ImpersonationsController < ApplicationController
   # Les comptes sans `school_role` existent (inscription abandonnée avant la
   # création de l'école) : ils forment un groupe à part plutôt que de disparaître.
   def users_grouped_by_school
-    User.where(admin: false).
+    # `users.admin` est une colonne nullable sans valeur par défaut : la plupart
+    # des comptes valent NULL et `where(admin: false)` les écartait tous en
+    # silence, NULL n'étant pas égal à false en SQL. Le reste de l'app interroge
+    # `admin?` en Ruby, où nil est simplement faux — d'où le décalage.
+    User.where(admin: [nil, false]).
       includes(:avatar_attachment, school_role: :school).
       order(:first_name, :last_name).
       group_by { |user| user.school_role&.school }.
