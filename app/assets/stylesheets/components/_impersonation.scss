@@ -5,6 +5,11 @@
 // tableau de bord est remonté de 72px par `.com` et occupe la même bande que les
 // liens de la barre — une pastille posée là se superposait au texte.
 .impersonation-band {
+  // La barre de progression du défilement (`.scroll-progress` et son fond
+  // `.scroll-bar-tab`) est fixée à top: 0 sur 0.5rem de haut, pleine largeur :
+  // elle recouvrait le haut du bandeau. La barre du haut vit avec, son premier
+  // demi-rem étant vide — pas ce bandeau, qui porte du texte.
+  margin-top: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
