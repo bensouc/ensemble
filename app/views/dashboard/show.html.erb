@@ -47,6 +47,9 @@
                             has_empty_classroom: @has_empty_classroom,
                             has_work_plan: @has_work_plan %>
 <% end %>
-<% if current_user.discovery_method.nil? %>
+<%# Pas pendant une personnification : les comptes de démonstration n'ont jamais
+    renseigné leur méthode de découverte, la modale bloquait donc leur tableau de
+    bord — et la valider aurait écrit sur le compte de l'enseignant. %>
+<% if current_user.discovery_method.nil? && !impersonating? %>
   <%= render 'users/add_discovery_method'%>
 <% end %>

@@ -169,6 +169,23 @@ RSpec.describe DashboardController, type: :controller do
     expect(response).to be_successful
     expect(Nokogiri::HTML(response.body).css(".impersonation-band").text).to include("Zoé Martin")
   end
+
+  # Les comptes de démonstration n'ont pas de méthode de découverte : la modale
+  # s'ouvrait sur leur tableau de bord et le rendait inutilisable.
+  it "n'ouvre pas la modale de méthode de découverte du compte incarné" do
+    teacher.update_column(:discovery_method, nil)
+    sign_in(admin)
+    session[:impersonated_user_id] = teacher.id
+    get :show
+    expect(response.body).not_to include("Comment vous avez entendu parler de nous")
+  end
+
+  it "ouvre bien cette modale pour l'admin sur son propre compte" do
+    admin.update_column(:discovery_method, nil)
+    sign_in(admin)
+    get :show
+    expect(response.body).to include("Comment vous avez entendu parler de nous")
+  end
 end
 
 RSpec.describe RegistrationsController, type: :controller do
