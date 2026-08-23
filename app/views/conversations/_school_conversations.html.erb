@@ -12,7 +12,10 @@
           <div class="header" data-controller="tooltip"
               data-bs-toggle="tooltip"
               data-bs-placement="left"
-              title="<%= school_conversation.users.first.school.name %>"            >
+              <%# Même fragilité : l'admin liste TOUTES les conversations d'école, et une
+                  seule dont le participant a disparu cassait la page entière. Le nom de
+                  la conversation EST celui de l'école (voir `find_or_create_school_conversation`). %>
+              title="<%= school_conversation.name.presence || school_conversation.users.first&.school&.name %>"            >
             <i class="fa-solid fa-school --rose" style="font-size: x-large;">
             </i>
           </div>

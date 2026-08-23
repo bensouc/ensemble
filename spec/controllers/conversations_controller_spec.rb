@@ -179,3 +179,42 @@ RSpec.describe ConversationsController, type: :controller do
     end
   end
 end
+
+# Régression : le rendu des vues n'était pas exercé, et
+# `conversation.users.where.not(...)` — une relation, donc toujours vraie — laissait
+# passer un `.first` nil. Concrètement, la messagerie devenait inaccessible dès
+# qu'un interlocuteur avait supprimé son compte.
+RSpec.describe ConversationsController, type: :controller do
+  render_views
+
+  let(:teacher) { create(:user, admin: false) }
+  let(:admin) { create(:user, admin: true) }
+
+  describe "GET #index quand un interlocuteur a disparu" do
+    it "affiche la liste de l'enseignant sans planter, et signale le compte disparu" do
+      create(:conversation, conversation_type: "classic", name: "Zoé & Bob", users: [teacher])
+      sign_in teacher
+      get :index
+      expect(response).to be_successful
+      expect(response.body).to include("fa-user-slash")
+    end
+
+    it "affiche la liste de l'admin même sur une conversation d'école orpheline" do
+      create(:conversation, conversation_type: "school", name: "École sans personne", users: [])
+      sign_in admin
+      get :index
+      expect(response).to be_successful
+    end
+  end
+
+  describe "GET #index dans le cas normal" do
+    it "montre l'avatar de l'interlocuteur" do
+      colleague = create(:user, admin: false, school: teacher.school)
+      create(:conversation, conversation_type: "classic", name: "duo", users: [teacher, colleague])
+      sign_in teacher
+      get :index
+      expect(response).to be_successful
+      expect(response.body).to include("avatar-basic")
+    end
+  end
+end
