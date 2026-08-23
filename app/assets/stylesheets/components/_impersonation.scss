@@ -1,29 +1,37 @@
 // Personnification : le rappel permanent dans la barre du haut, et la liste des
 // comptes.
 
-.impersonation-flag {
+// Le bandeau vit AU-DESSUS de la barre du haut : le « Bienvenue Prénom !! » du
+// tableau de bord est remonté de 72px par `.com` et occupe la même bande que les
+// liens de la barre — une pastille posée là se superposait au texte.
+.impersonation-band {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  margin-right: 1.5rem;
-  padding: 0.25rem 0.5rem 0.25rem 0.85rem;
-  border-radius: 999px;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45rem 1.5rem;
   background-color: $rose;
   color: $blanc;
-  font-size: 0.85rem;
-  white-space: nowrap;
+  font-size: 0.9rem;
 
   strong { font-weight: 700; }
 }
 
-.impersonation-flag-exit {
+.impersonation-band-warning {
+  opacity: 0.8;
+  font-style: italic;
+}
+
+.impersonation-band-exit {
+  flex-shrink: 0;
   border: none;
   border-radius: 999px;
-  padding: 0.2rem 0.7rem;
+  padding: 0.2rem 0.9rem;
   background-color: $blanc;
   color: $rose;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 600;
+  white-space: nowrap;
 
   &:hover { background-color: rgba(255, 255, 255, 0.85); }
 }

@@ -6,16 +6,6 @@
 	<% if user_signed_in? %>
 		<div class="navbar navbar-expand-sm navbar-light ">
 			<div class="navbar-links">
-				<%# Rappel permanent : l'admin ne doit jamais croire qu'il est sur son compte. %>
-				<% if impersonating? %>
-					<div class="impersonation-flag" title="Vous naviguez sous l'identité d'un autre utilisateur">
-						<i class="fa-solid fa-user-secret"></i>
-						<span>Vous êtes <strong><%= current_user.first_name %> <%= current_user.last_name %></strong></span>
-						<%= button_to stop_impersonation_path, method: :delete, class: "impersonation-flag-exit" do %>
-							Revenir à mon compte
-						<% end %>
-					</div>
-				<% end %>
 				<%=link_to "Abonnez-vous",  subscriptions_on_boarding_path, class: "btn-flat text-center me-4" if current_user.demo%>
 				<%= render 'shared/chat_link' %>
 				<%= render 'shared/tuto_links' %>

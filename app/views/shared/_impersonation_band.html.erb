@@ -1,0 +1,17 @@
+<%# Un bandeau pleine largeur, au-dessus de la barre du haut, plutôt qu'une
+    pastille DANS cette barre : le « Bienvenue Prénom !! » du tableau de bord est
+    remonté de 72px par `.com`, il occupe donc la même bande que les liens de la
+    barre et les deux se superposaient, illisibles. %>
+<% if user_signed_in? && impersonating? %>
+	<div class="impersonation-band">
+		<div class="impersonation-band-text">
+			<i class="fa-solid fa-user-secret me-2"></i>
+			Vous naviguez en tant que <strong><%= current_user.first_name %> <%= current_user.last_name %></strong>
+			<span class="impersonation-band-warning">— vos modifications portent sur son compte</span>
+		</div>
+		<%= button_to stop_impersonation_path, method: :delete, class: "impersonation-band-exit" do %>
+			<i class="fa-solid fa-arrow-rotate-left me-2"></i>
+			Revenir sur mon compte (<%= true_user.first_name %>)
+		<% end %>
+	</div>
+<% end %>

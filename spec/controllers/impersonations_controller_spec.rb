@@ -108,8 +108,8 @@ RSpec.describe ImpersonationsController, type: :controller do
       session[:impersonated_user_id] = teacher.id
       get :index
       page = Nokogiri::HTML(response.body)
-      expect(page.css(".impersonation-flag").text).to include("Zoé Martin")
-      expect(page.css(".impersonation-flag-exit").text).to include("Revenir à mon compte")
+      expect(page.css(".impersonation-band").text).to include("Zoé Martin")
+      expect(page.css(".impersonation-band-exit").text).to include("Revenir sur mon compte")
       expect(page.css(".impersonation-dropdown-exit").text).to include(admin.first_name)
     end
 
@@ -117,7 +117,7 @@ RSpec.describe ImpersonationsController, type: :controller do
       sign_in(admin)
       get :index
       page = Nokogiri::HTML(response.body)
-      expect(page.css(".impersonation-flag")).to be_empty
+      expect(page.css(".impersonation-band")).to be_empty
       expect(response.body).to include("Personnifier un utilisateur")
     end
   end
@@ -167,7 +167,7 @@ RSpec.describe DashboardController, type: :controller do
     session[:impersonated_user_id] = teacher.id
     get :show
     expect(response).to be_successful
-    expect(Nokogiri::HTML(response.body).css(".impersonation-flag").text).to include("Zoé Martin")
+    expect(Nokogiri::HTML(response.body).css(".impersonation-band").text).to include("Zoé Martin")
   end
 end
 
