@@ -15,13 +15,16 @@ class ApplicationController < ActionController::Base
 
   helper_method :impersonating?
 
-  # Ces actions engagent le vrai compte de l'enseignant, hors de portée d'un
-  # retour arrière depuis l'app : la facturation Stripe (le portail permet de
-  # résilier l'abonnement d'un client payant) et ses identifiants de connexion.
-  # `:all` ferme le contrôleur entier.
+  # Seuls les identifiants de connexion restent fermés : les changer sous
+  # l'identité d'un enseignant lui coupe l'accès à son propre compte, sans
+  # retour arrière possible depuis l'app.
+  #
+  # L'abonnement, lui, est ouvert — souscription comme portail de facturation :
+  # accompagner une école jusqu'au paiement, ou aller lire l'état réel de sa
+  # facturation, fait partie du travail d'un admin. Le portail Stripe permet
+  # aussi de résilier : le bandeau de personnification est là pour rappeler
+  # sous quelle identité on agit.
   FORBIDDEN_WHILE_IMPERSONATING = {
-    "stripe/stripe" => :all,
-    "subscriptions" => %w[new create],
     "registrations" => %w[edit update destroy]
   }.freeze
 

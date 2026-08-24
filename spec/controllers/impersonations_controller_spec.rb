@@ -139,13 +139,15 @@ RSpec.describe SubscriptionsController, type: :controller do
   let(:admin) { create(:user, admin: true) }
   let(:teacher) { create(:user, admin: false) }
 
-  describe "garde-fous pendant une personnification" do
-    it "ferme la souscription d'un abonnement" do
+  describe "abonnement pendant une personnification" do
+    # Accompagner une école jusqu'au paiement fait partie du travail d'un admin :
+    # la page de souscription doit s'ouvrir sous l'identité incarnée.
+    it "ouvre la souscription au nom de l'école incarnée" do
       sign_in(admin)
       session[:impersonated_user_id] = teacher.id
       get :new
-      expect(response).to redirect_to(dashboard_path)
-      expect(flash[:alert]).to match(/personnification/i)
+      expect(response).to be_successful
+      expect(assigns(:school)).to eq(teacher.school)
     end
 
     it "laisse passer l'admin sur son propre compte" do
@@ -153,6 +155,28 @@ RSpec.describe SubscriptionsController, type: :controller do
       get :new
       expect(response).to be_successful
     end
+  end
+end
+
+RSpec.describe Stripe::StripeController, type: :controller do
+  let(:admin) { create(:user, admin: true) }
+  let(:teacher) { create(:user, admin: false) }
+
+  # `construct_from` plutôt qu'un double : Pundit résout la policy sur la classe
+  # de l'objet, et un double n'en a pas qui lui corresponde.
+  let(:portal_session) do
+    Stripe::BillingPortal::Session.construct_from(url: "https://billing.stripe.test/session")
+  end
+
+  it "ouvre le portail de facturation de l'école incarnée" do
+    teacher.school.update_column(:stripe_customer_id, "cus_incarne")
+    expect(Stripe::BillingPortal::Session).to receive(:create).
+      with(hash_including(customer: "cus_incarne")).and_return(portal_session)
+
+    sign_in(admin)
+    session[:impersonated_user_id] = teacher.id
+    get :create_portal_session
+    expect(response).to redirect_to(portal_session.url)
   end
 end
 
