@@ -32,6 +32,22 @@ namespace :stripe do
     auditer_prix
     auditer_abonnements
     auditer_factures
+    auditer_mention
+  end
+
+  # Le pied de page par défaut du compte n'est pas lisible par l'API — c'est un
+  # modèle de document, réglé dans le Dashboard. On le constate donc sur les
+  # factures qu'il produit : une facture émise APRÈS le réglage doit le porter.
+  def auditer_mention
+    puts "\nMention de franchise sur les dernières factures :"
+    recentes = Stripe::Invoice.list(limit: 10).data
+    if recentes.empty?
+      puts "  aucune facture à examiner"
+      return
+    end
+    recentes.each { |f| puts ligne_de_mention(f) }
+    puts "  Une facture antérieure au réglage ne la portera jamais : le pied de"
+    puts "  page est figé à la finalisation."
   end
 
   # Sans immatriculation fiscale, Stripe Tax ne prélève rien même s'il est actif.
@@ -48,6 +64,12 @@ namespace :stripe do
 
   def immatriculation(reg)
     "  #{reg.country} #{reg.type} depuis #{Time.zone.at(reg.active_from).to_date}"
+  end
+
+  def ligne_de_mention(facture)
+    etat = facture.footer.to_s.include?("293 B") ? "mention présente" : "SANS MENTION"
+    format("  %<id>-28s %<date>s %<etat>s", id: facture.id,
+                                            date: Time.zone.at(facture.created).to_date, etat:)
   end
 
   def auditer_prix
