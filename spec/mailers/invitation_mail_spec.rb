@@ -34,7 +34,7 @@ RSpec.describe "Mail d'invitation" do
   end
 
   it "nomme l'école et l'invitant, sans traîner l'espace de son prénom" do
-    expect(texte).to include("Claire vous invite à rejoindre le groupe École du centre")
+    expect(texte).to include("Claire vous invite à rejoindre École du centre")
     expect(texte).not_to include("Claire  ")
   end
 
@@ -47,6 +47,18 @@ RSpec.describe "Mail d'invitation" do
   it "porte le logo Ensemble et le lien d'acceptation" do
     expect(corps).to include("ensemble_icone")
     expect(corps).to match(%r{users/invitation/accept\?invitation_token=})
+  end
+
+  # Les clients mail ignorent les feuilles de style : ce qui n'est pas en ligne
+  # n'existe pas. Et sans pile de polices, le corps retombait en Times.
+  it "porte ses styles en ligne, avec une pile sans empattement" do
+    expect(corps).to include("font-family:-apple-system")
+    expect(corps).not_to match(/<link[^>]+stylesheet/)
+  end
+
+  # Certains clients avalent les boutons : l'adresse doit rester lisible.
+  it "répète le lien en clair sous le bouton" do
+    expect(texte).to include("Ou copiez ce lien")
   end
 
   # Un href sans schéma est relatif : mort dans un client mail.

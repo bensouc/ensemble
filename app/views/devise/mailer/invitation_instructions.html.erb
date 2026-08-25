@@ -1,55 +1,109 @@
 <%# Le mail nomme l'école : sans elle, l'invité ne sait pas qui l'attend ni
     pourquoi. `school` existe forcément, School#invite_teacher rattache avant
-    de faire partir l'envoi. %>
+    de faire partir l'envoi.
+
+    Tableaux et styles en ligne : c'est le seul HTML sur lequel on peut compter
+    d'un client mail à l'autre. La durée vient de `config.invite_for`. %>
 <% school = @resource.school %>
 <% inviter = @resource.invited_by %>
+<% prenom = inviter&.first_name&.strip.presence&.capitalize %>
+<% lien = accept_invitation_url(@resource, invitation_token: @token) %>
+<% expire_le = ((@resource.invitation_created_at || Time.current) + User.invite_for).to_date %>
+<% police = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" %>
 
-<div style='text-align: center; color:#F24150 !important'>
-	<%= link_to "https://www.app-ensemble.fr" do %>
-		<%= image_tag 'https://res.cloudinary.com/bensoucdev/image/upload/v1678871863/ensemble/logos/ensemble_icone_umdhbk.png', height: '100px' %>
-	<% end %>
-</div>
-<h1 style='text-align: center; color:#F24150 !important; text-decoration:none !important'>ENSEMBLE</h1>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+       style="background-color:#f5f5f7; margin:0; padding:0;">
+	<tr>
+		<td align="center" style="padding:32px 12px;">
 
-<div style='color: black'>
-	<p>Bonjour,</p>
+			<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" class="mail-card"
+			       style="width:600px; max-width:600px; background-color:#ffffff; border:1px solid #e8e8ed;
+			              border-radius:14px; overflow:hidden;">
 
-	<p>
-		<% if inviter&.first_name.present? %>
-			<strong><%= inviter.first_name.strip.capitalize %></strong> vous invite
-		<% else %>
-			Vous êtes invité(e)
-		<% end %>
-		à rejoindre le groupe
-		<strong><%= school&.name.to_s.capitalize %></strong>
-		sur Ensemble.
-	</p>
+				<%# En-tête : le logo, puis le nom. %>
+				<tr>
+					<td align="center" class="mail-pad" style="padding:36px 40px 24px 40px;">
+						<a href="https://www.app-ensemble.fr" style="text-decoration:none;">
+							<img src="https://res.cloudinary.com/bensoucdev/image/upload/v1678871863/ensemble/logos/ensemble_icone_umdhbk.png"
+							     width="54" height="54" alt="Ensemble"
+							     style="display:block; border:0; width:54px; height:54px; margin:0 auto 10px auto;" />
+							<div style="font-family:<%= police %>; font-size:15px; font-weight:700;
+							            letter-spacing:0.22em; color:#f24150; text-transform:uppercase;">Ensemble</div>
+						</a>
+					</td>
+				</tr>
 
-	<p>Il vous reste à choisir votre mot de passe : votre compte est déjà rattaché au groupe.</p>
+				<tr>
+					<td class="mail-pad" style="padding:0 40px;">
+						<div style="height:1px; background-color:#eeeef2; line-height:1px; font-size:0;">&nbsp;</div>
+					</td>
+				</tr>
 
-	<p style="text-align: center; margin: 28px 0;">
-		<%= link_to "Créer mon compte",
-		            accept_invitation_url(@resource, invitation_token: @token),
-		            style: "display: inline-block; padding: 12px 24px; background-color: #198754; " \
-		                   "color: white; text-decoration: none; border-radius: 6px; font-weight: bold;" %>
-	</p>
+				<%# Le titre porte l'information : qui invite, et où. %>
+				<tr>
+					<td class="mail-pad" style="padding:28px 40px 0 40px;">
+						<h1 style="margin:0 0 6px 0; font-family:<%= police %>; font-size:21px; line-height:1.35;
+						           font-weight:700; color:#1d1d1f;">
+							<% if prenom %><%= prenom %> vous invite à rejoindre<% else %>Vous êtes invité(e) à rejoindre<% end %>
+							<span style="color:#f24150;"><%= school&.name.to_s.capitalize %></span>
+						</h1>
+						<p style="margin:0; font-family:<%= police %>; font-size:15px; line-height:1.65; color:#515154;">
+							Votre compte est déjà rattaché au groupe. Il ne vous reste qu'à choisir votre mot de passe.
+						</p>
+					</td>
+				</tr>
 
-	<%# La durée vient de `config.invite_for` : la modifier dans l'initializer
-	    suffit, le mail suit. %>
-	<% expire_le = ((@resource.invitation_created_at || Time.current) + User.invite_for).to_date %>
-	<p style="color: #666; font-size: 14px;">
-		Ce lien est valable <%= distance_of_time_in_words(User.invite_for) %> :
-		il expire le <%= l(expire_le, format: :long) %>. Passé ce délai, demandez une
-		nouvelle invitation<%= " à #{inviter.first_name.strip.capitalize}" if inviter&.first_name.present? %>.
-	</p>
+				<%# Le bouton, en table : les clients mail n'affichent pas un <a> en bloc de façon fiable. %>
+				<tr>
+					<td align="center" class="mail-pad" style="padding:28px 40px 8px 40px;">
+						<table role="presentation" cellpadding="0" cellspacing="0" border="0">
+							<tr>
+								<td align="center" bgcolor="#f24150" style="border-radius:10px;">
+									<a href="<%= lien %>"
+									   style="display:inline-block; padding:14px 32px; font-family:<%= police %>;
+									          font-size:16px; font-weight:600; color:#ffffff; text-decoration:none;
+									          border-radius:10px;">Créer mon compte</a>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
 
-	<p style="color: #666; font-size: 14px;">
-		Si vous n'attendiez pas cette invitation, ignorez simplement ce message :
-		aucun compte ne sera créé tant que vous n'aurez pas choisi de mot de passe.
-	</p>
+				<%# Certains clients avalent les boutons : l'adresse reste lisible en clair. %>
+				<tr>
+					<td align="center" class="mail-pad" style="padding:4px 40px 24px 40px;">
+						<p style="margin:0; font-family:<%= police %>; font-size:12px; line-height:1.6; color:#a1a1a6;
+						          word-break:break-all;">
+							Ou copiez ce lien : <span style="color:#86868b;"><%= lien %></span>
+						</p>
+					</td>
+				</tr>
 
-	<p>
-		Cordialement,<br>
-		L'équipe d'Ensemble
-	</p>
-</div>
+				<tr>
+					<td class="mail-pad" style="padding:0 40px;">
+						<div style="height:1px; background-color:#eeeef2; line-height:1px; font-size:0;">&nbsp;</div>
+					</td>
+				</tr>
+
+				<tr>
+					<td class="mail-pad" style="padding:20px 40px 32px 40px;">
+						<p style="margin:0 0 10px 0; font-family:<%= police %>; font-size:13px; line-height:1.6; color:#86868b;">
+							Ce lien est valable <%= distance_of_time_in_words(User.invite_for) %> : il expire le
+							<%= l(expire_le, format: :long) %>. Passé ce délai, demandez une nouvelle
+							invitation<%= " à #{prenom}" if prenom %>.
+						</p>
+						<p style="margin:0; font-family:<%= police %>; font-size:13px; line-height:1.6; color:#86868b;">
+							Si vous n'attendiez pas cette invitation, ignorez ce message : aucun compte ne sera créé
+							tant que vous n'aurez pas choisi de mot de passe.
+						</p>
+					</td>
+				</tr>
+			</table>
+
+			<p style="margin:20px 0 0 0; font-family:<%= police %>; font-size:12px; color:#a1a1a6;">
+				Ensemble — la préparation et le partage des plans de travail
+			</p>
+
+		</td>
+	</tr>
+</table>
