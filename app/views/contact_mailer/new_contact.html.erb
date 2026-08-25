@@ -1,22 +1,10 @@
-<html>
-	<head>
-		<meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-	</head>
-	<body>
-		<div style="text-align: center;">
-			<%= image_tag 'https://res.cloudinary.com/bensoucdev/image/upload/v1678871863/ensemble/logos/ensemble_icone_umdhbk.png', width: '100px' %>
-		</div>
-		<h1>Hello Ensemble Team</h1>
-		<p>
-			Un nouveau contact:<br>
-		</p>
-		<p><strong>Nom :</strong> <%= @contact[:last_name] %></p>
-		<p><strong>Prénom :</strong> <%= @contact[:first_name] %></p>
-		<p><strong>Email :</strong> <%= @contact[:email] %></p>
-		<p><strong>Ecole :</strong> <%= @contact[:school] %></p>
-		<p><strong>Ville :</strong> <%= @contact[:city] %></p>
-		<p><strong>Decouvert :</strong> <%= @contact[:discovery_method] %></p>
-		<p><strong>Message :</strong> <%= @contact[:message] %></p>
-		<p>Thanks for joining and have a great day!</p>
-	</body>
-</html>
+<%# Notification interne : elle sert à traiter la demande, pas à séduire. Les
+    champs sont donc lisibles d'un coup d'œil. %>
+<h1 style="<%= mail_style(:titre) %>">Nouveau contact</h1>
+
+<%= mail_field("Nom", "#{@contact[:first_name]} #{@contact[:last_name]}".strip) %>
+<%= mail_field("Email", @contact[:email]) %>
+<%= mail_field("École", @contact[:school]) %>
+<%= mail_field("Ville", @contact[:city]) %>
+<%= mail_field("Découvert par", @contact[:discovery_method]) %>
+<%= mail_field("Message", @contact[:message]) %>

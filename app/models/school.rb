@@ -77,6 +77,18 @@ class School < ApplicationRecord
     subscription&.active_or_trialing?
   end
 
+  # Invite un collègue à créer son compte, déjà rattaché à cette école.
+  # `skip_invitation` retarde l'envoi : le mail nomme l'école, il ne peut donc
+  # partir qu'une fois le rattachement fait.
+  def invite_teacher(email, invited_by)
+    invited = User.invite!({ email:, demo: false }, invited_by) { |user| user.skip_invitation = true }
+    return invited if invited.errors.any?
+
+    add_teacher(invited)
+    invited.reload.deliver_invitation
+    invited
+  end
+
   def super_teachers
     users.where(school_roles: { super_teacher: true })
   end

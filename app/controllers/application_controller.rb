@@ -38,6 +38,11 @@ class ApplicationController < ActionController::Base
 
     # For additional in app/views/devise/registrations/edit.html.erb
     devise_parameter_sanitizer.permit(:account_update, keys: [:first_name, :last_name, :avatar])
+
+    # L'invité renseigne son identité en même temps que son mot de passe : c'est
+    # sa seule occasion, personne ne l'a saisie à sa place.
+    devise_parameter_sanitizer.permit(:invite, keys: [:email])
+    devise_parameter_sanitizer.permit(:accept_invitation, keys: [:first_name, :last_name])
   end
 
   # Uncomment when you *really understand* Pundit!

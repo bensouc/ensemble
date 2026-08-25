@@ -1,0 +1,31 @@
+<%# Le mail nomme l'école : sans elle, l'invité ne sait pas qui l'attend ni
+    pourquoi. `school` existe forcément, School#invite_teacher rattache avant
+    de faire partir l'envoi. La durée vient de `config.invite_for`. %>
+<% school = @resource.school %>
+<% prenom = @resource.invited_by&.first_name&.strip.presence&.capitalize %>
+<% lien = accept_invitation_url(@resource, invitation_token: @token) %>
+<% expire_le = ((@resource.invitation_created_at || Time.current) + User.invite_for).to_date %>
+
+<h1 style="<%= mail_style(:titre) %>">
+	<% if prenom %><%= prenom %> vous invite à rejoindre<% else %>Vous êtes invité(e) à rejoindre<% end %>
+	<span style="color:#f24150;"><%= school&.name.to_s.capitalize %></span>
+</h1>
+
+<p style="<%= mail_style(:texte) %>">
+	Votre compte est déjà rattaché au groupe. Il ne vous reste qu'à choisir votre mot de passe.
+</p>
+
+<div style="text-align:center; padding:14px 0 10px 0;"><%= mail_button("Créer mon compte", lien) %></div>
+<div style="text-align:center; padding-bottom:22px;"><%= mail_button_fallback(lien) %></div>
+
+<%= mail_divider %>
+
+<p style="<%= mail_style(:note) %> margin-top:20px;">
+	Ce lien est valable <%= distance_of_time_in_words(User.invite_for) %> : il expire le
+	<%= l(expire_le, format: :long) %>. Passé ce délai, demandez une nouvelle
+	invitation<%= " à #{prenom}" if prenom %>.
+</p>
+<p style="<%= mail_style(:note) %> margin-bottom:0;">
+	Si vous n'attendiez pas cette invitation, ignorez ce message : aucun compte ne sera créé
+	tant que vous n'aurez pas choisi de mot de passe.
+</p>

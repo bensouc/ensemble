@@ -1,0 +1,52 @@
+<%# Écran d'acceptation : l'invité n'est pas connecté, et son compte est déjà
+    rattaché à l'école. Il ne lui reste que son identité et son mot de passe.
+    Rendu hors du gabarit applicatif (voir `chrome_free_page?`) : sans compte
+    ouvert, le menu de gauche ne mènerait nulle part. %>
+<div class="invitation-accept">
+	<div class="container">
+		<div class="invitation-accept-card">
+			<div class="invitation-accept-logo">
+				<%= image_tag "https://res.cloudinary.com/bensoucdev/image/upload/v1678871863/ensemble/logos/ensemble_icone_umdhbk.png",
+				              alt: "Ensemble", height: "70" %>
+			</div>
+			<h2>Bienvenue sur Ensemble</h2>
+			<% if resource.school.present? %>
+				<p class="teacher-email">
+					Vous rejoignez le groupe <strong><%= resource.school.name.capitalize %></strong>.
+				</p>
+			<% end %>
+
+			<%= simple_form_for(resource, as: resource_name, url: invitation_path(resource_name),
+			                    html: { method: :put, novalidate: false }) do |f| %>
+				<%= f.error_notification %>
+				<%= f.hidden_field :invitation_token %>
+
+				<% if f.object.errors[:invitation_token].present? %>
+					<div class="alert alert-danger"><%= f.object.errors[:invitation_token].to_sentence %></div>
+				<% end %>
+
+				<div class="form-inputs">
+					<%# L'adresse est celle à laquelle l'invitation a été envoyée : elle est
+					    montrée pour lever le doute, mais reste figée. Elle se change ensuite
+					    depuis « Mon compte », mot de passe à l'appui. %>
+					<%= f.input :email, disabled: true,
+					            label: "Votre adresse email",
+					            hint: "L'adresse à laquelle l'invitation a été envoyée." %>
+					<%= f.input :first_name, required: true, autofocus: true,
+					            input_html: { autocomplete: "given-name" } %>
+					<%= f.input :last_name, required: true,
+					            input_html: { autocomplete: "family-name" } %>
+					<%= f.input :password, required: true, label: "Choisissez votre mot de passe",
+					            hint: ("#{@minimum_password_length} caractères minimum" if @minimum_password_length),
+					            input_html: { autocomplete: "new-password" } %>
+					<%= f.input :password_confirmation, required: true, label: "Confirmez votre mot de passe",
+					            input_html: { autocomplete: "new-password" } %>
+				</div>
+
+				<div class="form-actions">
+					<%= f.button :submit, "Créer mon compte", class: "add-skill-btn" %>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>

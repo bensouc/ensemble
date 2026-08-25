@@ -1,7 +1,17 @@
-<p>Hello <%= @email %>!</p>
+<%# Envoyé seulement si `config.send_email_changed_notification` est activé. %>
+<h1 style="<%= mail_style(:titre) %>">Votre adresse email a changé</h1>
 
-<% if @resource.try(:unconfirmed_email?) %>
-  <p>We're contacting you to notify you that your email is being changed to <%= @resource.unconfirmed_email %>.</p>
-<% else %>
-  <p>We're contacting you to notify you that your email has been changed to <%= @resource.email %>.</p>
-<% end %>
+<p style="<%= mail_style(:texte) %>">
+	Bonjour <strong><%= @email || @resource.email %></strong>,
+	<% if @resource.try(:unconfirmed_email?) %>
+		l'adresse de votre compte Ensemble est en cours de changement vers
+		<strong><%= @resource.unconfirmed_email %></strong>.
+	<% else %>
+		l'adresse de votre compte Ensemble est désormais
+		<strong><%= @resource.email %></strong>.
+	<% end %>
+</p>
+
+<p style="<%= mail_style(:note) %> margin-bottom:0;">
+	Si vous n'en êtes pas à l'origine, contactez-nous depuis le formulaire du site.
+</p>

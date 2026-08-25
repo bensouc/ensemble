@@ -126,6 +126,8 @@ GEM
       actionpack (>= 3.1)
       caxlsx (>= 3.0)
     cgi (0.5.1)
+    childprocess (5.1.0)
+      logger (~> 1.5)
     cloudinary (1.16.1)
       aws_cf_signer
       rest-client
@@ -144,6 +146,9 @@ GEM
       railties (>= 7.0)
       responders
       warden (~> 1.2.3)
+    devise_invitable (2.0.12)
+      actionmailer (>= 5.0)
+      devise (>= 4.6)
     devise_last_seen (0.3.0)
       devise
     diff-lcs (1.6.2)
@@ -218,6 +223,17 @@ GEM
       kaminari-core (= 1.2.2)
     kaminari-core (1.2.2)
     language_server-protocol (3.17.0.5)
+    launchy (3.1.1)
+      addressable (~> 2.8)
+      childprocess (~> 5.0)
+      logger (~> 1.6)
+    letter_opener (1.10.0)
+      launchy (>= 2.2, < 4)
+    letter_opener_web (3.0.0)
+      actionmailer (>= 6.1)
+      letter_opener (~> 1.9)
+      railties (>= 6.1)
+      rexml
     lint_roller (1.1.0)
     listen (3.10.0)
       logger
@@ -563,6 +579,7 @@ DEPENDENCIES
   cloudinary (~> 1.16.0)
   debug
   devise
+  devise_invitable
   devise_last_seen
   dotenv-rails
   erb-formatter
@@ -576,6 +593,7 @@ DEPENDENCIES
   image_processing (~> 1.2)
   jbuilder (~> 2.7)
   jsbundling-rails
+  letter_opener_web
   listen (~> 3.2)
   lograge
   mobile

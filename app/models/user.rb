@@ -15,7 +15,7 @@ class User < ApplicationRecord
   before_destroy :transmit_all_challenges
 
   # associations
-  devise :database_authenticatable, :registerable,
+  devise :invitable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :lastseenable
 
   # belongs_to :school
@@ -72,6 +72,18 @@ class User < ApplicationRecord
     demo == true
   end
 
+  # Un compte invité existe avant d'être accepté : il n'a encore ni prénom ni
+  # nom, et n'a jamais ouvert l'application.
+  def invitation_pending?
+    invited_to_sign_up?
+  end
+
+  # `first_name.capitalize` plantait sur les comptes invités. L'email en dernier
+  # recours : c'est la seule chose qu'on connaisse d'eux.
+  def display_name
+    [first_name, last_name].filter_map { |part| part&.strip.presence&.capitalize }.join(" ").presence || email
+  end
+
   # `school_role` peut manquer (inscription abandonnée avant la création de
   # l'école) : la barre de navigation appelle cette méthode à chaque page, un nil
   # y rendait l'app entière inutilisable pour ce compte.
@@ -91,13 +103,17 @@ class User < ApplicationRecord
     !classrooms.empty? || !shared_classrooms.empty?
   end
 
+  # Les invités en attente sont écartés : partager une classe ou ouvrir une
+  # conversation avec un compte qui n'a jamais été ouvert n'a pas de sens, et
+  # ils s'affichaient sans nom.
   def collegues
-    school.users.reject { |user| user == self || user.admin? }
+    school.users.reject { |user| user == self || user.admin? || user.invitation_pending? }
   end
 
   def collegues_with_avatars
     User.includes([avatar_attachment: :blob]).joins(:school_role).
-      where(school_roles: { school: school }).reject { |user| user == self || user.admin? }
+      where(school_roles: { school: school }).
+      reject { |user| user == self || user.admin? || user.invitation_pending? }
   end
 
   def all_students
