@@ -27,9 +27,11 @@ class School < ApplicationRecord
     classrooms.count { |classroom| !classroom.user.admin? }
   end
 
+  # `school_role` peut manquer (inscription abandonnée avant la création de
+  # l'école) : sans le `&.`, intégrer un tel compte plantait au lieu de marcher.
   def add_teacher(teacher, super_teacher = false)
     # remove previous school_roles
-    teacher.school_role.destroy
+    teacher.school_role&.destroy
     # create school_role
     SchoolRole.create(user: teacher, school: self, super_teacher:)
   end
@@ -40,6 +42,18 @@ class School < ApplicationRecord
 
   def valid_subscription?
     subscription&.active_or_trialing?
+  end
+
+  # Invite un collègue à créer son compte, déjà rattaché à cette école.
+  # `skip_invitation` retarde l'envoi : le mail nomme l'école, il ne peut donc
+  # partir qu'une fois le rattachement fait.
+  def invite_teacher(email, invited_by)
+    invited = User.invite!({ email:, demo: false }, invited_by) { |user| user.skip_invitation = true }
+    return invited if invited.errors.any?
+
+    add_teacher(invited)
+    invited.reload.deliver_invitation
+    invited
   end
 
   def super_teachers

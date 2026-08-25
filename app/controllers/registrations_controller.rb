@@ -4,15 +4,19 @@ class RegistrationsController < Devise::RegistrationsController
   before_action :authenticate_user!
   skip_before_action :require_no_authentication, only: [:new, :create]
 
+  # Ajouter un collègue passe désormais par l'invitation : il choisit son mot de
+  # passe lui-même. Ici, le responsable le saisissait à sa place et le collègue
+  # le recevait en clair par mail (ContactMailer#add_user_to_school).
+  # La branche publique — création d'un compte de démonstration — est inchangée.
   def new
-    if user_signed_in?
-      super
-    else
-      redirect_to root_path, notice: "Vous n'avez pas les droits pour cela"
-    end
+    return redirect_to new_user_invitation_path if user_signed_in?
+
+    redirect_to root_path, notice: "Vous n'avez pas les droits pour cela"
   end
 
   def create
+    return redirect_to new_user_invitation_path if user_signed_in?
+
     @user = User.new(param_user)
     if user_signed_in?
       @user.school = current_user.school

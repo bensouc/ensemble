@@ -52,6 +52,9 @@ gem "exception_notification"
 gem "slack-notifier"
 # add sweet alert
 gem "devise"
+# Invitation d'un collègue par email : le responsable ne choisit plus le mot de
+# passe à sa place. `invite_for` fixe la durée de validité du lien.
+gem "devise_invitable"
 # devise plug_in to manage last seen
 gem "devise_last_seen"
 # usurpation d'identité par un admin (« naviguer en tant que »)

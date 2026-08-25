@@ -21,4 +21,10 @@ class SchoolPolicy < ApplicationPolicy
   def show?
     record.users.any? { |school_user| school_user == user }
   end
+
+  # Inviter, c'est ouvrir l'accès aux classes et aux élèves du groupe :
+  # c'est au responsable d'en décider.
+  def invite_teacher?
+    show? && user.school_role&.super_teacher? == true
+  end
 end

@@ -144,6 +144,9 @@ GEM
       railties (>= 7.0)
       responders
       warden (~> 1.2.3)
+    devise_invitable (2.0.12)
+      actionmailer (>= 5.0)
+      devise (>= 4.6)
     devise_last_seen (0.3.0)
       devise
     diff-lcs (1.6.2)
@@ -563,6 +566,7 @@ DEPENDENCIES
   cloudinary (~> 1.16.0)
   debug
   devise
+  devise_invitable
   devise_last_seen
   dotenv-rails
   erb-formatter

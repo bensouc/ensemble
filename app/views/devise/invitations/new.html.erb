@@ -1,0 +1,25 @@
+<div class="container w-50">
+	<h2>Inviter un enseignant</h2>
+	<p class="teacher-email">
+		Son compte sera rattaché au groupe <strong><%= @inviting_school.name.capitalize %></strong>.
+		Il choisira lui-même son mot de passe depuis le lien reçu par mail.
+	</p>
+
+	<%= simple_form_for(resource, as: resource_name, url: invitation_path(resource_name),
+	                    html: { method: :post, novalidate: false }) do |f| %>
+		<%= f.error_notification %>
+		<%= f.error_notification message: f.object.errors[:email].to_sentence if f.object.errors[:email].any? %>
+
+		<div class="form-inputs">
+			<%= f.input :email, required: true, autofocus: true,
+			            label: "Adresse email de votre collègue",
+			            input_html: { autocomplete: "email" } %>
+		</div>
+
+		<div class="form-actions">
+			<%= f.button :submit, "Envoyer l'invitation", class: "add-skill-btn" %>
+		</div>
+	<% end %>
+
+	<%= link_to "Retour au groupe", school_path(@inviting_school), class: "back-link" %>
+</div>

@@ -1,0 +1,55 @@
+<%# Le mail nomme l'école : sans elle, l'invité ne sait pas qui l'attend ni
+    pourquoi. `school` existe forcément, School#invite_teacher rattache avant
+    de faire partir l'envoi. %>
+<% school = @resource.school %>
+<% inviter = @resource.invited_by %>
+
+<div style='text-align: center; color:#F24150 !important'>
+	<%= link_to "https://www.app-ensemble.fr" do %>
+		<%= image_tag 'https://res.cloudinary.com/bensoucdev/image/upload/v1678871863/ensemble/logos/ensemble_icone_umdhbk.png', height: '100px' %>
+	<% end %>
+</div>
+<h1 style='text-align: center; color:#F24150 !important; text-decoration:none !important'>ENSEMBLE</h1>
+
+<div style='color: black'>
+	<p>Bonjour,</p>
+
+	<p>
+		<% if inviter&.first_name.present? %>
+			<strong><%= inviter.first_name.strip.capitalize %></strong> vous invite
+		<% else %>
+			Vous êtes invité(e)
+		<% end %>
+		à rejoindre le groupe
+		<strong><%= school&.name.to_s.capitalize %></strong>
+		sur Ensemble.
+	</p>
+
+	<p>Il vous reste à choisir votre mot de passe : votre compte est déjà rattaché au groupe.</p>
+
+	<p style="text-align: center; margin: 28px 0;">
+		<%= link_to "Créer mon compte",
+		            accept_invitation_url(@resource, invitation_token: @token),
+		            style: "display: inline-block; padding: 12px 24px; background-color: #198754; " \
+		                   "color: white; text-decoration: none; border-radius: 6px; font-weight: bold;" %>
+	</p>
+
+	<%# La durée vient de `config.invite_for` : la modifier dans l'initializer
+	    suffit, le mail suit. %>
+	<% expire_le = ((@resource.invitation_created_at || Time.current) + User.invite_for).to_date %>
+	<p style="color: #666; font-size: 14px;">
+		Ce lien est valable <%= distance_of_time_in_words(User.invite_for) %> :
+		il expire le <%= l(expire_le, format: :long) %>. Passé ce délai, demandez une
+		nouvelle invitation<%= " à #{inviter.first_name.strip.capitalize}" if inviter&.first_name.present? %>.
+	</p>
+
+	<p style="color: #666; font-size: 14px;">
+		Si vous n'attendiez pas cette invitation, ignorez simplement ce message :
+		aucun compte ne sera créé tant que vous n'aurez pas choisi de mot de passe.
+	</p>
+
+	<p>
+		Cordialement,<br>
+		L'équipe d'Ensemble
+	</p>
+</div>

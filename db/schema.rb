@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_20_100000) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_25_100000) do
   create_schema "_heroku"
   create_schema "heroku_ext"
 
@@ -170,6 +170,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_20_100000) do
     t.string "email"
     t.boolean "special_domains", default: false
     t.string "code"
+    t.index ["code"], name: "index_schools_on_code", unique: true
   end
 
   create_table "shared_classrooms", force: :cascade do |t|
@@ -379,7 +380,18 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_20_100000) do
     t.boolean "demo", default: false
     t.string "discovery_method"
     t.datetime "last_seen"
+    t.string "invitation_token"
+    t.datetime "invitation_created_at"
+    t.datetime "invitation_sent_at"
+    t.datetime "invitation_accepted_at"
+    t.integer "invitation_limit"
+    t.string "invited_by_type"
+    t.bigint "invited_by_id"
+    t.integer "invitations_count", default: 0
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
+    t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
+    t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 

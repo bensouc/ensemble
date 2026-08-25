@@ -15,7 +15,7 @@ class User < ApplicationRecord
   before_destroy :transmit_all_challenges
 
   # associations
-  devise :database_authenticatable, :registerable,
+  devise :invitable, :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable, :lastseenable
 
   # belongs_to :school
