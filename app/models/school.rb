@@ -23,8 +23,16 @@ class School < ApplicationRecord
 
   # Instance Methods
 
+  # Les comptes admin (support Vroad) créent des classes de test dans les écoles
+  # qu'ils accompagnent : elles ne consomment pas le quota payé. `admin` est
+  # nullable, d'où le `[false, nil]` — un `where.not(admin: true)` écarterait
+  # aussi les NULL, que Postgres ne compare jamais à `true`.
+  def teacher_classrooms
+    classrooms.where(users: { admin: [false, nil] })
+  end
+
   def classrooms_total
-    classrooms.count { |classroom| !classroom.user.admin? }
+    teacher_classrooms.count
   end
 
   def add_teacher(teacher, super_teacher = false)
