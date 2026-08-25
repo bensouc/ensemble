@@ -42,3 +42,36 @@
   font-weight: 300;
 
 }
+
+.school-code {
+  p {
+    margin-bottom: 4px;
+  }
+}
+
+.school-code-value {
+  text-align: center;
+  letter-spacing: 0.2em;
+}
+
+// Le renouvellement coupe l'accès à ceux qui ont l'ancien code : le bouton se
+// tient discret, on ne clique pas dessus par réflexe.
+.school-code-renew {
+  display: block;
+  margin: 0 auto;
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: smaller;
+  text-decoration: underline;
+  color: inherit;
+  opacity: 0.7;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  i {
+    margin-right: 6px;
+  }
+}

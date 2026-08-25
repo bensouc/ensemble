@@ -82,8 +82,18 @@
 				<p><i class="fa-solid fa-calendar-xmark"></i>
 					<%= @subscription.current_period_end %></p>
 				<div class="grey-line-full"></div>
-				Code pour intégrer des utilisateurs Demo :
-				<h4 style='text-align: center;'><%= @school.code %></h4>
+				<div class="school-code">
+					<p>Code pour intégrer un enseignant à votre groupe :</p>
+					<h4 class="school-code-value"><%= @school.code %></h4>
+					<% if policy(@school).renew_code? %>
+						<%= button_to renew_code_school_path(@school),
+						              method: :patch,
+						              class: "school-code-renew",
+						              form: { data: { turbo_confirm: "Un nouveau code sera tiré : l'ancien ne permettra plus de vous rejoindre. Continuer ?" } } do %>
+							<i class="fa-solid fa-rotate"></i> Renouveler le code
+						<% end %>
+					<% end %>
+				</div>
 			<% end %>
 		</div>
 	</div>

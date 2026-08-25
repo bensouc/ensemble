@@ -14,10 +14,13 @@ class ClassroomsController < ApplicationController
     end
   end
 
+  # `skip_authorization` laissait le plafond de l'abonnement à l'état d'habillage :
+  # la policy masquait le formulaire, mais un POST direct créait la classe.
+  # `user` doit être posé avant `authorize`, la policy s'appuie dessus.
   def create
     @classroom = Classroom.new(set_classroom_params)
-    skip_authorization
     @classroom.user = current_user
+    authorize @classroom
     @classroom.name = nil if @classroom.name == ""
     @classroom.save!
     redirect_to classrooms_path

@@ -159,7 +159,11 @@ Rails.application.routes.draw do
   # ###############routes for SCHOOL/SCHOOL_ROLES###############
   get "schools/join", to: "schools#join", as: :join_school
   post "schools/create_sub_with_code", to: "school_roles#create"
-  resources :schools, only: %w[show new create]
+  resources :schools, only: %w[show new create] do
+    member do
+      patch :renew_code
+    end
+  end
 
   # ###############    routes for GRADES /DOMAINS        ###############
   resources :grades, only: [:show, :destroy, :index, :new, :create] do

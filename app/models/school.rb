@@ -8,9 +8,34 @@ class School < ApplicationRecord
   has_many :grades, dependent: :destroy
   has_one :subscription, dependent: :destroy
 
+  # Le code que le responsable diffuse pour qu'un collègue rejoigne l'école.
+  # L'alphabet écarte ce qui se lit de travers (0/O, 1/I/L) : ce code est recopié
+  # à la main, souvent depuis un écran projeté ou un message.
+  CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"
+  CODE_LENGTH = 6
+
   # Validations
   validates :name, presence: true
   validates :email, presence: true, uniqueness: true
+  validates :code, presence: true, uniqueness: true
+
+  # Le code est stocké en majuscules, et la saisie est normalisée de la même
+  # façon : un responsable qui dicte son code n'a pas à se soucier de la casse.
+  before_validation :normalize_code
+  before_validation :assign_code, on: :create
+
+  def self.normalize_code(value)
+    value.to_s.strip.upcase.presence
+  end
+
+  # Tire un code libre. La boucle couvre la collision : l'index unique en base
+  # reste le dernier mot, mais on préfère ne pas y arriver.
+  def self.generate_code
+    loop do
+      candidate = Array.new(CODE_LENGTH) { CODE_ALPHABET.chars.sample }.join
+      return candidate unless exists?(code: candidate)
+    end
+  end
 
   # TO PROCEED POST CREATION
   # STRIPE SWITCH OFF
@@ -23,8 +48,16 @@ class School < ApplicationRecord
 
   # Instance Methods
 
+  # Les comptes admin (support Vroad) créent des classes de test dans les écoles
+  # qu'ils accompagnent : elles ne consomment pas le quota payé. `admin` est
+  # nullable, d'où le `[false, nil]` — un `where.not(admin: true)` écarterait
+  # aussi les NULL, que Postgres ne compare jamais à `true`.
+  def teacher_classrooms
+    classrooms.where(users: { admin: [false, nil] })
+  end
+
   def classrooms_total
-    classrooms.count { |classroom| !classroom.user.admin? }
+    teacher_classrooms.count
   end
 
   # `school_role` peut manquer (inscription abandonnée avant la création de
@@ -60,13 +93,30 @@ class School < ApplicationRecord
     users.where(school_roles: { super_teacher: true })
   end
 
-  def super_teachers_first_name
-    super_teachers.map do |teacher|
-      teacher.first_name.capitalize
-    end.join(super_teachers.count > 1 ? ", " : "")
+  # `strip` avant `capitalize` : les espaces saisis à l'inscription se voyaient
+  # dans les messages, « (Benoît ) ». La mise en phrase revient à la vue, elle
+  # seule sait s'il faut « ou » ou « et ».
+  def super_teachers_first_names
+    super_teachers.filter_map { |teacher| teacher.first_name&.strip.presence&.capitalize }
   end
 
   def all_students_list
     classrooms.map { |classroom| classroom.students }.flatten
+  end
+
+  # Coupe l'accès à l'ancien code : un collègue parti, un code lu par-dessus une
+  # épaule, et le responsable reprend la main sans passer par nous.
+  def renew_code!
+    update!(code: self.class.generate_code)
+  end
+
+  private
+
+  def normalize_code
+    self.code = self.class.normalize_code(code)
+  end
+
+  def assign_code
+    self.code ||= self.class.generate_code
   end
 end

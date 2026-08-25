@@ -201,3 +201,24 @@
     margin-bottom: 15px;
   }
 }
+
+// Le refus de créer une classe : la cause d'abord, l'action ensuite. Reprend le
+// gris discret de .teacher-email pour ne pas crier plus fort que la liste.
+.classroom-creation-blocked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+
+  .classroom-blocked-reason {
+    margin: 0;
+    font-size: smaller;
+    font-style: italic;
+    font-weight: 300;
+  }
+
+  form {
+    margin: 0;
+  }
+}
