@@ -18,8 +18,19 @@ module ClassroomsHelper
     school = user.school
     return :no_subscription if school.nil? || school.subscription.nil?
     return :inactive_subscription unless school.valid_subscription?
+    # Baisser la quantité chez Stripe ne supprime aucune classe : un groupe peut
+    # donc se retrouver AU-DESSUS de son plafond. Les deux situations appellent
+    # des gestes différents, la distinction se fait donc ici — le gabarit reçoit
+    # un symbole, comme pour les quatre autres cas.
+    return :quota_exceeded if school.classrooms_surplus.positive?
 
     :quota_reached
+  end
+
+  # `pluralize` ne fléchit pas en français : aucune inflexion n'est définie pour
+  # cette locale, « 2 classe » en sortait.
+  def classes_label(nombre)
+    "#{nombre} classe#{"s" if nombre > 1}"
   end
 
   # Une école peut se retrouver sans responsable : mieux vaut une tournure vague

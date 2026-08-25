@@ -61,7 +61,7 @@ class ClassroomPolicy < ApplicationPolicy
     school = user.school
     return false if school.nil? || !school.valid_subscription?
 
-    school.classrooms_total < school.subscription.quantity.to_i
+    school.classrooms_surplus.negative?
   end
 
   def user_is_owner_or_admin?

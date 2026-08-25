@@ -26,13 +26,7 @@
 			<p class="classroom-blocked-reason">
 				La création de classe est suspendue : votre abonnement est <%= etat %>.
 			</p>
-			<% if stripe_portal_reachable?(@school) %>
-				<form method="GET" action="/create-customer-portal-session" data-turbo="false">
-					<button type="submit" class="btn-flat">Reprendre mon abonnement</button>
-				</form>
-			<% else %>
-				<%= link_to "Souscrire un abonnement", new_subscription_path, class: "btn-flat" %>
-			<% end %>
+			<%= render "classrooms/portail_abonnement", libelle: "Reprendre mon abonnement", repli: true %>
 		<% else %>
 			<p class="classroom-blocked-reason">
 				La création de classe est suspendue : l'abonnement du groupe est <%= etat %>.
@@ -40,25 +34,36 @@
 			</p>
 		<% end %>
 
+	<% when :quota_exceeded %>
+		<%# Baisser la quantité chez Stripe ne supprime aucune classe : le groupe
+		    peut se retrouver au-dessus de son plafond. Dire l'écart, et de combien
+		    il faut descendre. %>
+		<% if responsable %>
+			<p class="classroom-blocked-reason">
+				Votre groupe a <%= classes_label(@school.classrooms_total) %> pour
+				<%= classes_label(@school.subscription.quantity.to_i) %> à l'abonnement.
+				Supprimez-en <%= @school.classrooms_surplus %>, ou ajoutez-les à votre abonnement.
+			</p>
+			<%= render "classrooms/portail_abonnement", libelle: "Ajouter une classe à mon abonnement" %>
+		<% else %>
+			<p class="classroom-blocked-reason">
+				Le groupe a <%= classes_label(@school.classrooms_total) %> pour
+				<%= classes_label(@school.subscription.quantity.to_i) %> à l'abonnement.
+				Demandez à <%= super_teachers_label(@school) %> d'ajuster l'abonnement.
+			</p>
+		<% end %>
+
 	<% else %>
-		<%# `Les <n> classes … sont toutes utilisées` donnait « Les 1 classes ». %>
 		<% payees = @school.subscription.quantity.to_i %>
-		<%# `pluralize` ne fléchit pas en fr : aucune inflexion n'est définie pour
-		    cette locale, « 2 classe » en sortait. %>
-		<% classes = "#{payees} classe#{"s" if payees > 1}" %>
 		<% accord = payees > 1 ? "toutes utilisées" : "déjà utilisée" %>
 		<% if responsable %>
 			<p class="classroom-blocked-reason">
-				Votre abonnement couvre <%= classes %>, <%= accord %>.
+				Votre abonnement couvre <%= classes_label(payees) %>, <%= accord %>.
 			</p>
-			<% if stripe_portal_reachable?(@school) %>
-				<form method="GET" action="/create-customer-portal-session" data-turbo="false">
-					<button type="submit" class="btn-flat">Ajouter une classe à mon abonnement</button>
-				</form>
-			<% end %>
+			<%= render "classrooms/portail_abonnement", libelle: "Ajouter une classe à mon abonnement" %>
 		<% else %>
 			<p class="classroom-blocked-reason">
-				L'abonnement du groupe couvre <%= classes %>, <%= accord %>.
+				L'abonnement du groupe couvre <%= classes_label(payees) %>, <%= accord %>.
 				Demandez à <%= super_teachers_label(@school) %> d'en ajouter une.
 			</p>
 		<% end %>

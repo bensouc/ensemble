@@ -56,8 +56,21 @@ class School < ApplicationRecord
     classrooms.where(users: { admin: [false, nil] })
   end
 
+  # Mémoïsé : la policy le compte pour décider, puis la vue le recompte pour
+  # l'afficher — deux fois la même jointure schools → school_roles → users →
+  # classrooms sur chaque rendu d'un groupe au plafond.
+  #
+  # Le compte est donc figé pour la durée de vie de l'instance : si un jour on
+  # crée une classe puis qu'on relit ce compte sur le MÊME objet, il faudra
+  # recharger l'école. Aucun chemin ne le fait aujourd'hui — la création
+  # redirige.
   def classrooms_total
-    teacher_classrooms.count
+    @classrooms_total ||= teacher_classrooms.count
+  end
+
+  # Combien de classes au-delà de ce qui est payé. Négatif s'il reste de la place.
+  def classrooms_surplus
+    classrooms_total - subscription&.quantity.to_i
   end
 
   # `school_role` peut manquer (inscription abandonnée avant la création de

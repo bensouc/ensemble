@@ -16,17 +16,23 @@ export default class extends Controller {
     // console.log(this.tarifsValue)
     // const url = '../subscriptions/on_boarding';
     const tarifs = this.tarifsValue
-    const rythm = this.rythmTarget.value;
-    let quantity = this.quantityTarget.value || 0;
-    if (quantity >= 9) { quantity = 9 }
-    if (rythm === 'Mensuel'){
-      this.totalCostTarget.value = `${tarifs.monthly * quantity} €`
-      this.monthlyCostTarget.value = `${tarifs.monthly * quantity} €`
+    const rythm = this.rythmTarget.value
+    const quantity = Number(this.quantityTarget.value) || 0
+    // Seul l'INDICE du barème se plafonne : `TARIFS[:annualy]` s'arrête à 9, et
+    // au-delà le tarif unitaire ne bouge plus (46 €). La quantité réelle reste
+    // le multiplicateur — la branche mensuelle utilisait l'indice plafonné, et
+    // annonçait 45 € pour 12 classes là où Stripe en facture 60.
+    const palier = Math.min(quantity, tarifs.annualy.length - 1)
+
+    if (rythm === 'Mensuel') {
+      const cout = tarifs.monthly * quantity
+      this.totalCostTarget.value = `${cout} €`
+      this.monthlyCostTarget.value = `${cout} €`
       this.renewDateTarget.value = this.#define_renew_date('Mensuel')
     }
     else
     {
-      const annual_cost = tarifs.annualy[quantity] * this.quantityTarget.value
+      const annual_cost = tarifs.annualy[palier] * quantity
       this.totalCostTarget.value = `${annual_cost} €`
       this.monthlyCostTarget.value = `${(annual_cost / 12).toFixed(2)} €`
       this.renewDateTarget.value = this.#define_renew_date()

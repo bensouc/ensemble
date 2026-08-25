@@ -26,12 +26,17 @@
 
         </div>
 			</div>
-			<stripe-pricing-table pricing-table-id=<%=ENV["STRIPE_SCHOOL_PRICING_ID"]%>
-customer-email= <%=@customer.email%>
-publishable-key= <%=ENV["STRIPE_API_KEY"]%>
-client-reference-id= <%= @customer.id %>
-class='stripe-subscription-cards'  >
-</stripe-pricing-table>
+			<%# `publishable-key` recevait la clé SECRÈTE — celle que StripeHelper pose comme
+			    `Stripe.api_key` — au lieu de la clé publiable. Elle partait donc en clair dans
+			    le HTML, lisible par n'importe quel utilisateur connecté. Les attributs étaient
+			    par ailleurs non quotés, valeur collée après une espace. %>
+			<stripe-pricing-table
+				pricing-table-id="<%= ENV.fetch("STRIPE_SCHOOL_PRICING_ID", nil) %>"
+				customer-email="<%= @customer.email %>"
+				publishable-key="<%= ENV.fetch("STRIPE_PUBLISHABLE_KEY", nil) %>"
+				client-reference-id="<%= @customer.id %>"
+				class="stripe-subscription-cards">
+			</stripe-pricing-table>
 		</div>
 		<%# <%= button_to "demarrer un abonnement annuel", subscriptions_path(type: "annualy"), data:{turbo:"false"} %>
 		<%# <%= button_to "demarrer un abonnement mensuel", subscriptions_path(type: "monthly"), data:{turbo:"false"} %>
