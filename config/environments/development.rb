@@ -3,7 +3,9 @@ require "active_support/core_ext/integer/time"
 Rails.application.configure do
   # SMTP settings for gmail
   config.action_mailer.delivery_method = :smtp
-  config.action_mailer.default_url_options = { host: "http://localhost:3000/" }
+  # Le port doit être à part : Rails ne lit que le nom d'hôte dans `host` et
+  # jetait le `:3000`, d'où des liens de mail vers http://localhost/ — injoignable.
+  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
   config.action_mailer.smtp_settings = {
     address: "mail.gandi.net",
     port: 587,

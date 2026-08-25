@@ -7,9 +7,21 @@
 # de son collègue et le recevait en clair par mail.
 module Users
   class InvitationsController < Devise::InvitationsController
+    # La gem renvoie sur la page vitrine avec « Le jeton d'invitation fourni n'est
+    # pas valide ! », sans dire quoi faire. Deux causes courantes, et le jeton
+    # effacé à l'acceptation ne permet pas de les distinguer : le compte a déjà
+    # été créé, ou une invitation plus récente a remplacé ce lien. L'écran de
+    # connexion sert les deux.
+    LIEN_PERIME = "Ce lien d'invitation n'est plus valide. Si vous avez déjà créé votre compte, " \
+                  "connectez-vous ci-dessous. Sinon, demandez une nouvelle invitation au " \
+                  "responsable de votre groupe."
+
     # `edit` et `update` sont l'écran d'acceptation : l'invité n'est évidemment
-    # pas connecté quand il clique dans son mail.
+    # pas connecté quand il clique dans son mail. Les deux actions viennent de
+    # Devise::InvitationsController, que le cop ne remonte pas.
+    # rubocop:disable Rails/LexicallyScopedActionFilter
     skip_before_action :authenticate_user!, only: [:edit, :update]
+    # rubocop:enable Rails/LexicallyScopedActionFilter
 
     def new
       inviting_school
@@ -28,6 +40,13 @@ module Users
     end
 
     private
+
+    def resource_from_invitation_token
+      return if params[:invitation_token].present? &&
+                (self.resource = resource_class.find_by_invitation_token(params[:invitation_token], true))
+
+      redirect_to new_user_session_path, alert: LIEN_PERIME
+    end
 
     # `authorize(nil)` lèverait une Pundit::NotDefinedError, donc une 500 : un
     # compte sans école n'a personne à inviter, c'est un refus, pas une panne.

@@ -3,6 +3,8 @@
 require "rails_helper"
 
 RSpec.describe Users::InvitationsController, type: :controller do
+  render_views
+
   before { @request.env["devise.mapping"] = Devise.mappings[:user] }
 
   let(:school) { create(:school, name: "École du Centre") }
@@ -99,6 +101,35 @@ RSpec.describe Users::InvitationsController, type: :controller do
       expect(invited.first_name).to eq("Léa")
       expect(invited.school).to eq(school)
       expect(invited.valid_password?("motdepasse1")).to be true
+    end
+
+    # Le champ caché doit porter le jeton brut, pas le digest stocké en base :
+    # les tests passant le jeton en direct n'exerçaient pas le formulaire.
+    it "le formulaire renvoie le jeton reçu par mail, pas celui de la base" do
+      get :edit, params: { invitation_token: token }
+      champ = Nokogiri::HTML(response.body).css("input[name='user[invitation_token]']").first
+      expect(champ["value"]).to eq(token)
+      expect(champ["value"]).not_to eq(User.find_by(email: "collegue@ecole.fr").invitation_token)
+    end
+
+    # Une deuxième invitation à la même adresse régénère le jeton : le premier
+    # lien meurt, et c'est le cas le plus courant en usage réel.
+    it "explique quoi faire quand une invitation plus récente a remplacé le lien" do
+      ancien = token
+      school.invite_teacher("collegue@ecole.fr", responsable)
+
+      get :edit, params: { invitation_token: ancien }
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash[:alert]).to include("n'est plus valide")
+      expect(flash[:alert]).to include("connectez-vous")
+    end
+
+    it "renvoie vers la connexion quand le lien a déjà servi" do
+      accept(first_name: "Léa", last_name: "Martin", password: "motdepasse1", password_confirmation: "motdepasse1")
+
+      get :edit, params: { invitation_token: token }
+      expect(response).to redirect_to(new_user_session_path)
+      expect(flash[:alert]).to include("déjà créé votre compte")
     end
 
     it "refuse un jeton inconnu" do
