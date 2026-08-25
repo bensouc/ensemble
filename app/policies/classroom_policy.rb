@@ -37,12 +37,31 @@ class ClassroomPolicy < ApplicationPolicy
 
   private
 
+  # `user.admin? || user.demo ? … : true` se lisait `(admin? || demo) ? … : true` :
+  # l'admin tombait dans la branche démo et restait plafonné à une seule classe.
   def create_classroom_demo?
-    user.admin? || user.demo ? user.classrooms.count < 1 : true
+    return true if user.admin?
+    return true unless user.demo?
+
+    user.classrooms.count < User::DEMO_CLASSROOM_LIMIT
   end
 
+  # Deux corrections ici :
+  # - le quota se compare au nombre de classes DÉJÀ créées, donc en `<` : avec
+  #   `quantity >= count`, une école qui payait 3 classes en obtenait 4 ;
+  # - le statut compte autant que le nombre. `subscription.nil?` laissait passer
+  #   une ligne `canceled` ou `unpaid` : seule la suppression de l'abonnement
+  #   fermait l'accès, jamais sa résiliation.
+  #
+  # Le décompte est celui qu'affiche la page École (`classrooms_total`), donc
+  # hors classes des admins : les deux chiffres ne coïncidaient pas.
   def sub_limit?
-    user.admin? || user.demo || (!user.school.subscription.nil? && user.school.subscription.quantity >= user.school.classrooms.count)
+    return true if user.admin? || user.demo?
+
+    school = user.school
+    return false if school.nil? || !school.valid_subscription?
+
+    school.classrooms_total < school.subscription.quantity.to_i
   end
 
   def user_is_owner_or_admin?

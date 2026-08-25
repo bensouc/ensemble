@@ -23,8 +23,16 @@ class School < ApplicationRecord
 
   # Instance Methods
 
+  # Les comptes admin (support Vroad) créent des classes de test dans les écoles
+  # qu'ils accompagnent : elles ne consomment pas le quota payé. `admin` est
+  # nullable, d'où le `[false, nil]` — un `where.not(admin: true)` écarterait
+  # aussi les NULL, que Postgres ne compare jamais à `true`.
+  def teacher_classrooms
+    classrooms.where(users: { admin: [false, nil] })
+  end
+
   def classrooms_total
-    classrooms.count { |classroom| !classroom.user.admin? }
+    teacher_classrooms.count
   end
 
   def add_teacher(teacher, super_teacher = false)
@@ -46,10 +54,11 @@ class School < ApplicationRecord
     users.where(school_roles: { super_teacher: true })
   end
 
-  def super_teachers_first_name
-    super_teachers.map do |teacher|
-      teacher.first_name.capitalize
-    end.join(super_teachers.count > 1 ? ", " : "")
+  # `strip` avant `capitalize` : les espaces saisis à l'inscription se voyaient
+  # dans les messages, « (Benoît ) ». La mise en phrase revient à la vue, elle
+  # seule sait s'il faut « ou » ou « et ».
+  def super_teachers_first_names
+    super_teachers.filter_map { |teacher| teacher.first_name&.strip.presence&.capitalize }
   end
 
   def all_students_list
