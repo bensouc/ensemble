@@ -1,19 +1,5 @@
-<html>
-	<head>
-		<meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
-	</head>
-	<body>
-<div style="text-align: center;">
-			<%= image_tag 'https://res.cloudinary.com/bensoucdev/image/upload/v1678871863/ensemble/logos/ensemble_icone_umdhbk.png', width: '100px' %>
-</div>
+<h1 style="<%= mail_style(:titre) %>">Nouveau compte de démonstration</h1>
 
-		<h1>Hello Ensemble Team</h1>
-		<p>
-			Un nouveau DEMO user:<br>
-		</p>
-		<p><strong>Nom :</strong> <%= @contact[:last_name] %></p>
-		<p><strong>Prénom :</strong> <%= @contact[:first_name] %></p>
-		<p><strong>Email :</strong> <%= @contact[:email] %></p>
-		<p>Thanks for joining and have a great day!</p>
-	</body>
-</html>
+<%= mail_field("Nom", "#{@contact[:first_name]} #{@contact[:last_name]}".strip) %>
+<%= mail_field("Email", @contact[:email]) %>
+<%= mail_field("Découvert par", @contact[:discovery_method]) %>

@@ -9,11 +9,6 @@ class ContactMailer < ApplicationMailer
     mail(to: "bensoucdev@gmail.com", subject: "Nouveau Compte Démo")
   end
 
-  def add_user_to_school(user)
-    @contact = user
-    mail(to: @contact.email, subject: "Ensemble!  Bienvenue sur notre plateforme")
-  end
-
   def new_request(user_request)
     @user_request = user_request
     mail(to: "bensoucdev@gmail.com", subject: "Nouvelle demande")

@@ -9,10 +9,10 @@ RSpec.describe "Mail d'invitation" do
   let(:responsable) { create(:user, admin: false, demo: false, first_name: "claire ") }
 
   # Le corps part en quoted-printable : sans décodage, les accents et les
-  # retours à la ligne cassent chaque assertion.
+  # retours à la ligne cassent chaque assertion. `decoded` s'en charge — le
+  # décodeur écrit à la main mélangeait ASCII-8BIT et UTF-8.
   def corps_decode(mail)
-    mail.body.encoded.gsub("=\r\n", "").
-      gsub(/=([0-9A-F]{2})/) { [Regexp.last_match(1)].pack("H*") }.force_encoding("UTF-8")
+    mail.body.decoded.dup.force_encoding("UTF-8")
   end
 
   before do

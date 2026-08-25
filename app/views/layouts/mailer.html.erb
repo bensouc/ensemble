@@ -5,11 +5,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<style>
 			/* Les clients mail ignorent la plupart des feuilles de style : tout ce qui
-			   compte est répété en attribut `style` dans les gabarits. Ce bloc ne sert
-			   qu'à ce qui ne peut pas l'être — la marge du body, et le rendu des liens
-			   sur les clients qui les recolorent d'office. */
+			   compte voyage en attribut `style` (voir MailStylesHelper). Ce bloc ne
+			   sert qu'à ce qui ne peut pas l'être. */
 			body { margin: 0 !important; padding: 0 !important; background-color: #f5f5f7; }
-			a { color: #f24150; }
 			@media only screen and (max-width: 620px) {
 				.mail-card { width: 100% !important; }
 				.mail-pad { padding-left: 24px !important; padding-right: 24px !important; }
@@ -18,6 +16,43 @@
 	</head>
 
 	<body style="margin:0; padding:0; background-color:#f5f5f7;">
-		<%= yield %>
+		<%# La coquille est ici, une fois pour toutes : chaque gabarit ne fournit
+		    que son contenu, et tous les envois se ressemblent. %>
+		<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%"
+		       style="background-color:#f5f5f7; margin:0; padding:0;">
+			<tr>
+				<td align="center" style="padding:32px 12px;">
+
+					<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" class="mail-card"
+					       style="width:600px; max-width:600px; background-color:#ffffff; border:1px solid #e8e8ed;
+					              border-radius:14px; overflow:hidden;">
+						<tr>
+							<td align="center" class="mail-pad" style="padding:36px 40px 22px 40px;">
+								<a href="https://www.app-ensemble.fr" style="text-decoration:none;">
+									<img src="https://res.cloudinary.com/bensoucdev/image/upload/v1678871863/ensemble/logos/ensemble_icone_umdhbk.png"
+									     width="54" height="54" alt="Ensemble"
+									     style="display:block; border:0; width:54px; height:54px; margin:0 auto 10px auto;" />
+									<div style="font-family:<%= MailStylesHelper::POLICE %>; font-size:15px; font-weight:700;
+									            letter-spacing:0.22em; color:#f24150; text-transform:uppercase;">Ensemble</div>
+								</a>
+							</td>
+						</tr>
+						<tr>
+							<td class="mail-pad" style="padding:0 40px;"><%= mail_divider %></td>
+						</tr>
+						<tr>
+							<td class="mail-pad" style="padding:28px 40px 32px 40px;">
+								<%= yield %>
+							</td>
+						</tr>
+					</table>
+
+					<p style="margin:20px 0 0 0; font-family:<%= MailStylesHelper::POLICE %>; font-size:12px; color:#a1a1a6;">
+						Ensemble — la préparation et le partage des plans de travail
+					</p>
+
+				</td>
+			</tr>
+		</table>
 	</body>
 </html>
