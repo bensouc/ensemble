@@ -1,5 +1,5 @@
 class SchoolsController < ApplicationController
-  before_action :set_school, only: %w[show]
+  before_action :set_school, only: %w[show renew_code]
 
   def show
     authorize @school
@@ -31,6 +31,13 @@ class SchoolsController < ApplicationController
   def join
     authorize School
     @sequence = 2
+  end
+
+  def renew_code
+    authorize @school
+    @school.renew_code!
+    redirect_to school_path(@school),
+                notice: "Nouveau code école : #{@school.code}. L'ancien ne permet plus de vous rejoindre."
   end
 
   private

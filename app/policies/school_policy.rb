@@ -21,4 +21,10 @@ class SchoolPolicy < ApplicationPolicy
   def show?
     record.users.any? { |school_user| school_user == user }
   end
+
+  # Renouveler le code coupe l'accès de tous ceux qui détiennent l'ancien :
+  # c'est au responsable du groupe d'en décider, pas à n'importe quel membre.
+  def renew_code?
+    show? && user.school_role&.super_teacher? == true
+  end
 end
