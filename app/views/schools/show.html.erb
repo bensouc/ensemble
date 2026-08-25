@@ -28,7 +28,9 @@
 			<ul>
 				<% @teachers.each do |teacher| %>
 					<li class='teacher-detail-school-card'>
-						<%= teacher.first_name.capitalize %>
+						<%# Un invité n'a ni prénom ni nom tant qu'il n'a pas accepté :
+						    `first_name.capitalize` levait un NoMethodError sur cette ligne. %>
+						<%= teacher.invitation_pending? ? "Invitation en attente" : teacher.display_name %>
 						<div class="teacher-admin">
 							<% if teacher.school_role.super_teacher %>
 								<i
@@ -41,7 +43,9 @@
 							<% end %>
 						</div>
 						<div class="teacher-email">
-							(<%= cacher_email(teacher.email) %>)
+							<%# L'adresse en clair pour une invitation en attente : le responsable
+							    vient de la saisir, et doit savoir qui il attend. %>
+							(<%= teacher.invitation_pending? ? teacher.email : cacher_email(teacher.email) %>)
 						</div>
 					</li>
 				<% end %>
