@@ -41,10 +41,15 @@
 		<% end %>
 
 	<% else %>
+		<%# `Les <n> classes … sont toutes utilisées` donnait « Les 1 classes ». %>
 		<% payees = @school.subscription.quantity.to_i %>
+		<%# `pluralize` ne fléchit pas en fr : aucune inflexion n'est définie pour
+		    cette locale, « 2 classe » en sortait. %>
+		<% classes = "#{payees} classe#{"s" if payees > 1}" %>
+		<% accord = payees > 1 ? "toutes utilisées" : "déjà utilisée" %>
 		<% if responsable %>
 			<p class="classroom-blocked-reason">
-				Les <%= payees %> classes de votre abonnement sont toutes utilisées.
+				Votre abonnement couvre <%= classes %>, <%= accord %>.
 			</p>
 			<% if stripe_portal_reachable?(@school) %>
 				<form method="GET" action="/create-customer-portal-session" data-turbo="false">
@@ -53,7 +58,7 @@
 			<% end %>
 		<% else %>
 			<p class="classroom-blocked-reason">
-				Les <%= payees %> classes de l'abonnement sont toutes utilisées.
+				L'abonnement du groupe couvre <%= classes %>, <%= accord %>.
 				Demandez à <%= super_teachers_label(@school) %> d'en ajouter une.
 			</p>
 		<% end %>

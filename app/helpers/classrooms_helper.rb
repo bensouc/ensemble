@@ -25,7 +25,11 @@ module ClassroomsHelper
   # Une école peut se retrouver sans responsable : mieux vaut une tournure vague
   # qu'une parenthèse vide.
   def super_teachers_label(school)
-    school&.super_teachers_first_name.presence || "votre responsable de groupe"
+    names = school&.super_teachers_first_names
+    return "votre responsable de groupe" if names.blank?
+
+    # « Claire ou Marc », pas « Claire, Marc » : il suffit que l'un d'eux agisse.
+    names.to_sentence(two_words_connector: " ou ", last_word_connector: " ou ")
   end
 
   # Le portail Stripe exige un client : sans lui, l'action lève une erreur au

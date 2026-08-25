@@ -36,15 +36,22 @@ RSpec.describe ClassroomsController, type: :controller do
 
     it "donne au responsable l'action qu'il peut faire lui-même" do
       zone = zone_for(responsable)
-      expect(zone).to include("Les 2 classes de votre abonnement sont toutes utilisées")
+      expect(zone).to include("Votre abonnement couvre 2 classes, toutes utilisées")
       expect(zone).to include("Ajouter une classe à mon abonnement")
       expect(zone).not_to include("Demandez à")
     end
 
     it "donne au collègue le nom de la personne à qui s'adresser" do
       zone = zone_for(collegue)
+      expect(zone).to include("L'abonnement du groupe couvre 2 classes, toutes utilisées")
       expect(zone).to include("Demandez à Claire d'en ajouter une")
       expect(zone).not_to include("Ajouter une classe à mon abonnement")
+    end
+
+    # « Les <n> classes … sont toutes utilisées » donnait « Les 1 classes ».
+    it "accorde le message quand l'abonnement ne couvre qu'une classe" do
+      school.subscription.update!(quantity: 1)
+      expect(zone_for(collegue)).to include("couvre 1 classe, déjà utilisée")
     end
   end
 
@@ -73,6 +80,34 @@ RSpec.describe ClassroomsController, type: :controller do
 
     it "renvoie le collègue vers le responsable" do
       expect(zone_for(collegue)).to include("Demandez à Claire d'en souscrire un")
+    end
+  end
+
+  describe "plusieurs responsables" do
+    # N'importe lequel peut agir : « ou », pas une énumération sèche.
+    it "les relie par « ou »" do
+      marc = create(:user, admin: false, demo: false, first_name: "Marc")
+      school.add_teacher(marc, true)
+      subscribe(quantity: 1)
+      create(:classroom, user: collegue)
+      expect(zone_for(collegue)).to include("Demandez à Claire ou Marc d'en ajouter une")
+    end
+
+    it "n'énumère qu'au dernier rang au-delà de deux" do
+      %w[Marc Sophie].each { |prenom| school.add_teacher(create(:user, admin: false, first_name: prenom), true) }
+      subscribe(quantity: 1)
+      create(:classroom, user: collegue)
+      expect(zone_for(collegue)).to include("Claire, Marc ou Sophie")
+    end
+
+    it "donne l'action à chacun d'eux, pas le nom des autres" do
+      marc = create(:user, admin: false, demo: false, first_name: "Marc")
+      school.add_teacher(marc, true)
+      subscribe(quantity: 1)
+      create(:classroom, user: collegue)
+      zone = zone_for(marc)
+      expect(zone).to include("Ajouter une classe à mon abonnement")
+      expect(zone).not_to include("Demandez à")
     end
   end
 
