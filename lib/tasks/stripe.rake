@@ -18,6 +18,62 @@ namespace :stripe do
   # Trace l'objet d'origine, pour que la tâche soit rejouable sans doublon.
   def marqueur = "clone_depuis"
 
+  # Auto-entrepreneur en franchise de TVA : rien ne doit ajouter de taxe. Cette
+  # tâche ne modifie rien, elle constate.
+  #
+  #   STRIPE_AUDIT_API_KEY=sk_live_… bin/rails stripe:audit_tva
+  desc "Vérifie qu'aucune TVA n'est appliquée (lecture seule)"
+  task audit_tva: :environment do
+    cle = ENV.fetch("STRIPE_AUDIT_API_KEY", nil) || ENV.fetch("STRIPE_API_KEY", nil)
+    abort "Aucune clé." if cle.blank?
+    Stripe.api_key = cle
+    puts "Mode : #{cle.include?('_live_') ? 'LIVE' : 'test'}\n\n"
+    auditer_compte
+    auditer_prix
+    auditer_abonnements
+    auditer_factures
+  end
+
+  # Sans immatriculation fiscale, Stripe Tax ne prélève rien même s'il est actif.
+  # C'est ce qui protège aujourd'hui : en ajouter une déclencherait la TVA sur
+  # tous les abonnements portant `automatic_tax`.
+  def auditer_compte
+    reglages = Stripe::Tax::Settings.retrieve
+    puts "Stripe Tax (compte) : statut=#{reglages.status}"
+    immat = Stripe::Tax::Registration.list(status: "active", limit: 100).data
+    puts "Immatriculations fiscales actives : #{immat.size}#{alerte(immat.any?)}"
+    immat.each { |r| puts "  #{r.country} #{r.type} depuis #{Time.at(r.active_from).to_date}" }
+  rescue Stripe::StripeError => e
+    puts "Stripe Tax : non consultable (#{e.class})"
+  end
+
+  def auditer_prix
+    puts "\nPrix avec un comportement fiscal explicite :"
+    fautifs = Stripe::Price.list(active: true, limit: 100).data
+                           .reject { |p| p.tax_behavior == "unspecified" }
+    puts fautifs.empty? ? "  aucun — tous en `unspecified`" : fautifs.map { |p| "  #{p.id} #{p.tax_behavior}" }
+  end
+
+  def auditer_abonnements
+    puts "\nAbonnements avec taxe automatique :"
+    avec = Stripe::Subscription.list(limit: 100).data.select { |s| s.automatic_tax&.enabled }
+    puts avec.empty? ? "  aucun" : avec.map { |s| "  #{s.id} (#{s.status})#{alerte(true)}" }
+  end
+
+  def auditer_factures
+    puts "\nFactures récentes portant une taxe :"
+    avec = Stripe::Invoice.list(limit: 50).data.filter_map do |f|
+      taxe = f.total_taxes.to_a.sum { |t| t.respond_to?(:amount) ? t.amount.to_i : 0 }
+      next unless taxe.positive?
+
+      format("  %<id>-28s total=%<t>8.2f taxe=%<x>6.2f",
+             id: f.id, t: f.total.to_i / 100.0, x: taxe / 100.0)
+    end
+    puts avec.empty? ? "  aucune — 0 € de taxe partout" : avec
+  end
+
+  def alerte(condition) = condition ? "  <-- À VÉRIFIER" : ""
+
   desc "Clone le produit et les prix Stripe du live vers le test mode"
   task clone_to_test: :environment do
     live = ENV.fetch("STRIPE_API_KEY", nil)
