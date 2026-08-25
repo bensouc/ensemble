@@ -38,13 +38,16 @@ namespace :stripe do
   # C'est ce qui protège aujourd'hui : en ajouter une déclencherait la TVA sur
   # tous les abonnements portant `automatic_tax`.
   def auditer_compte
-    reglages = Stripe::Tax::Settings.retrieve
-    puts "Stripe Tax (compte) : statut=#{reglages.status}"
+    puts "Stripe Tax (compte) : statut=#{Stripe::Tax::Settings.retrieve.status}"
     immat = Stripe::Tax::Registration.list(status: "active", limit: 100).data
     puts "Immatriculations fiscales actives : #{immat.size}#{alerte(immat.any?)}"
-    immat.each { |r| puts "  #{r.country} #{r.type} depuis #{Time.at(r.active_from).to_date}" }
+    immat.each { |r| puts immatriculation(r) }
   rescue Stripe::StripeError => e
     puts "Stripe Tax : non consultable (#{e.class})"
+  end
+
+  def immatriculation(reg)
+    "  #{reg.country} #{reg.type} depuis #{Time.zone.at(reg.active_from).to_date}"
   end
 
   def auditer_prix
@@ -64,14 +67,16 @@ namespace :stripe do
 
   def auditer_factures
     puts "\nFactures récentes portant une taxe :"
-    avec = Stripe::Invoice.list(limit: 100).data.filter_map do |f|
-      taxe = f.total_taxes.to_a.sum { |t| t.respond_to?(:amount) ? t.amount.to_i : 0 }
-      next unless taxe.positive?
-
-      format("  %<id>-28s total=%<t>8.2f taxe=%<x>6.2f",
-             id: f.id, t: f.total.to_i / 100.0, x: taxe / 100.0)
-    end
+    avec = Stripe::Invoice.list(limit: 100).data.filter_map { |f| ligne_de_taxe(f) }
     puts avec.empty? ? "  aucune — 0 € de taxe partout" : avec
+  end
+
+  def ligne_de_taxe(facture)
+    taxe = facture.total_taxes.to_a.sum { |t| t.respond_to?(:amount) ? t.amount.to_i : 0 }
+    return nil unless taxe.positive?
+
+    format("  %<id>-28s total=%<t>8.2f taxe=%<x>6.2f",
+           id: facture.id, t: facture.total.to_i / 100.0, x: taxe / 100.0)
   end
 
   def alerte(condition) = condition ? "  <-- À VÉRIFIER" : ""
