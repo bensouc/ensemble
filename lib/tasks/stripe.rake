@@ -27,6 +27,7 @@ namespace :stripe do
     abort "STRIPE_TEST_API_KEY manquante (clé cible)." if test.blank?
     # Sans ce garde-fou, une clé live en cible dupliquerait le produit en production.
     abort "STRIPE_TEST_API_KEY n'est pas une clé de test." unless test.include?("_test_")
+    abort "Les deux clés sont identiques : la source doit être la clé live." if live == test
 
     source = lire_source(live)
     puts "Source : #{source[:produit].name.inspect} — #{source[:prix].size} prix actif(s)"
@@ -48,9 +49,20 @@ namespace :stripe do
   end
 
   # Les paliers ne reviennent que sur demande explicite.
+  # Se lance AVANT de basculer STRIPE_API_KEY en test : c'est elle qui sert de source.
+  # Une fois la bascule faite, le produit live devient introuvable — d'où ce message
+  # plutôt qu'une erreur Stripe brute.
   def lire_source(cle)
     Stripe.api_key = cle
-    produit = Stripe::Product.retrieve(produit_live)
+    produit = begin
+      Stripe::Product.retrieve(produit_live)
+    rescue Stripe::AuthenticationError
+      abort "STRIPE_API_KEY refusée par Stripe."
+    rescue Stripe::InvalidRequestError
+      abort "Produit #{produit_live} introuvable avec STRIPE_API_KEY.\n" \
+            "Cette tâche doit tourner AVANT de basculer STRIPE_API_KEY en test : " \
+            "c'est cette clé qui lit le produit live."
+    end
     prix = Stripe::Price.list(product: produit.id, active: true, limit: 100).data.map do |p|
       Stripe::Price.retrieve({ id: p.id, expand: ["tiers"] })
     end
