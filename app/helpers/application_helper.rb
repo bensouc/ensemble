@@ -26,6 +26,15 @@ module ApplicationHelper
                      "#{TUTO_SOMMAIRE}/Ensemble-Les-Tutos-1bb72deab51d43898dd2bdcec25ec098")
   end
 
+  # Pages destinées à quelqu'un qui n'est pas connecté : le menu de gauche et le
+  # bandeau ne lui montreraient que des impasses. L'acceptation d'invitation en
+  # fait partie — l'invité arrive de sa boîte mail, sans compte encore ouvert.
+  def chrome_free_page?
+    return true if %w[devise/registrations devise/sessions devise/passwords].include?(params[:controller])
+
+    params[:controller] == "users/invitations" && %w[edit update].include?(params[:action])
+  end
+
   def cacher_email(email)
     username, domain = email.split("@")
     censored_username = username[0] + "****" + username[0]

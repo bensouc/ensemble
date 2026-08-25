@@ -54,3 +54,45 @@
     border-top: thin solid $grisC;
   }
 }
+
+// Acceptation d'invitation : page autonome, sans le chrome de l'app. La carte
+// tient au centre de l'écran, en hauteur comme en largeur.
+.invitation-accept {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px 0;
+}
+
+.invitation-accept-card {
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+
+  h2 {
+    text-align: center;
+  }
+
+  .teacher-email {
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: center;
+    margin-top: 1rem;
+  }
+
+  // Le champ figé ne doit pas se lire comme un champ à remplir.
+  input:disabled {
+    background-color: $light-gray;
+    cursor: not-allowed;
+  }
+}
+
+.invitation-accept-logo {
+  text-align: center;
+  margin-bottom: 12px;
+}

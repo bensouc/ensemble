@@ -63,6 +63,21 @@ module Users
       params.require(:user).permit(:email)
     end
 
+    # L'adresse est la seule chose que le responsable ait vérifiée : c'est là
+    # qu'il a envoyé l'invitation. La laisser changer ici, c'est permettre à qui
+    # détient le lien d'inscrire l'adresse de son choix dans le groupe.
+    #
+    # Le champ figé du formulaire n'y suffisait pas : `Devise::BaseSanitizer`
+    # n'existant plus en Devise 5, devise_invitable retombe sur une branche qui
+    # AJOUTE ses clés aux défauts au lieu de les remplacer, et `email` s'y
+    # retrouvait — un POST direct passait.
+    #
+    # L'invité change son adresse juste après, depuis « Mon compte », où Devise
+    # exige son mot de passe.
+    def update_resource_params
+      super.except(:email)
+    end
+
     # L'invité vient de choisir son mot de passe : il est connecté, autant
     # l'amener là où il a quelque chose à faire.
     def after_accept_path_for(_resource)

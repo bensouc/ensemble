@@ -23,7 +23,7 @@
 			<%= render "shared/flashes" %>
 		</div>
     <%= render "modals/general_modal"%>
-		<% if ["devise/registrations", "devise/sessions", "devise/passwords"].include?(params[:controller]) %>
+		<% if chrome_free_page? %>
 			<%= yield %>
 		<% elsif ["pages"].include?(params[:controller])%>
 			<%= yield %>

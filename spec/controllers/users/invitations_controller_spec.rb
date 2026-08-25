@@ -132,6 +132,36 @@ RSpec.describe Users::InvitationsController, type: :controller do
       expect(flash[:alert]).to include("déjà créé votre compte")
     end
 
+    describe "l'écran présenté à l'invité" do
+      before { get :edit, params: { invitation_token: token } }
+
+      # L'invité n'a pas encore de compte : le menu de gauche ne mènerait nulle part.
+      it "se rend sans le chrome de l'application" do
+        expect(response.body).not_to include("navgauche")
+        expect(response.body).not_to include("pastouche")
+      end
+
+      it "montre l'adresse invitée, figée" do
+        champ = Nokogiri::HTML(response.body).css("input[name='user[email]']").first
+        expect(champ["value"]).to eq("collegue@ecole.fr")
+        expect(champ["disabled"]).to be_present
+      end
+
+      it "nomme l'école qu'il rejoint" do
+        expect(response.body).to include("École du centre")
+      end
+    end
+
+    # Un champ désactivé n'est pas soumis, mais un POST direct passait : Devise 5
+    # laissait `email` dans les clés autorisées de `accept_invitation`.
+    it "ne laisse pas l'invité substituer une autre adresse" do
+      accept(email: "autre@ailleurs.fr", first_name: "Léa", last_name: "Martin",
+             password: "motdepasse1", password_confirmation: "motdepasse1")
+
+      expect(User.find_by(email: "autre@ailleurs.fr")).to be_nil
+      expect(User.find_by(email: "collegue@ecole.fr")).to be_invitation_accepted
+    end
+
     it "refuse un jeton inconnu" do
       token # l'invitation existe, c'est le jeton présenté qui ne correspond pas
       put :update, params: { user: { invitation_token: "faux", first_name: "Léa", last_name: "Martin",
