@@ -49,20 +49,22 @@ namespace :stripe do
 
   def auditer_prix
     puts "\nPrix avec un comportement fiscal explicite :"
-    fautifs = Stripe::Price.list(active: true, limit: 100).data
-                           .reject { |p| p.tax_behavior == "unspecified" }
+    fautifs = []
+    prix = Stripe::Price.list(active: true, limit: 100)
+    prix.auto_paging_each { |p| fautifs << p unless p.tax_behavior == "unspecified" }
     puts fautifs.empty? ? "  aucun — tous en `unspecified`" : fautifs.map { |p| "  #{p.id} #{p.tax_behavior}" }
   end
 
   def auditer_abonnements
     puts "\nAbonnements avec taxe automatique :"
-    avec = Stripe::Subscription.list(limit: 100).data.select { |s| s.automatic_tax&.enabled }
+    avec = []
+    Stripe::Subscription.list(limit: 100).auto_paging_each { |s| avec << s if s.automatic_tax&.enabled }
     puts avec.empty? ? "  aucun" : avec.map { |s| "  #{s.id} (#{s.status})#{alerte(true)}" }
   end
 
   def auditer_factures
     puts "\nFactures récentes portant une taxe :"
-    avec = Stripe::Invoice.list(limit: 50).data.filter_map do |f|
+    avec = Stripe::Invoice.list(limit: 100).data.filter_map do |f|
       taxe = f.total_taxes.to_a.sum { |t| t.respond_to?(:amount) ? t.amount.to_i : 0 }
       next unless taxe.positive?
 
@@ -73,6 +75,82 @@ namespace :stripe do
   end
 
   def alerte(condition) = condition ? "  <-- À VÉRIFIER" : ""
+
+  # Franchise en base de TVA : aucune taxe ne doit être calculée, et la mention
+  # légale doit figurer sur chaque facture.
+  #
+  # PORTÉE : tout le compte, pas seulement le produit Ensemble. L'exonération
+  # vaut pour l'entreprise entière, pas pour un produit — restreindre serait
+  # laisser une taxe possible ailleurs.
+  #
+  #   STRIPE_AUDIT_API_KEY=sk_live_… bin/rails stripe:desactiver_tva          # constate
+  #   STRIPE_AUDIT_API_KEY=sk_live_… APPLIQUER=1 bin/rails stripe:desactiver_tva
+  def mention_tva = "TVA non applicable, art. 293 B du CGI"
+
+  desc "Coupe la taxe automatique et pose la mention de franchise (APPLIQUER=1 pour écrire)"
+  task desactiver_tva: :environment do
+    cle = ENV.fetch("STRIPE_AUDIT_API_KEY", nil) || ENV.fetch("STRIPE_API_KEY", nil)
+    abort "Aucune clé." if cle.blank?
+    Stripe.api_key = cle
+    ecrire = ENV["APPLIQUER"] == "1"
+    puts "Mode #{cle.include?('_live_') ? 'LIVE' : 'test'} — #{ecrire ? 'ÉCRITURE' : 'constat seul'}\n\n"
+
+    couper_taxe_abonnements(ecrire)
+    poser_mention_brouillons(ecrire)
+    # Un pied de page posé client par client ne couvre pas les futurs clients, et
+    # celui du compte prime de toute façon. D'où l'opt-in.
+    poser_mention_clients(ecrire) if ENV["MENTION_CLIENTS"] == "1"
+
+    puts "\nÀ faire dans le Dashboard — l'API ne l'expose pas, et c'est le bon levier :"
+    puts "  Réglages → Facturation → Modèle de facture → pied de page :"
+    puts "    #{mention_tva}"
+    puts "  Il couvre toutes les factures, y compris des clients à venir."
+    puts "\nAussi : la taxe automatique de la table tarifaire, à décocher là-bas."
+    puts "\nRelancez sans APPLIQUER pour vérifier." if ecrire
+  end
+
+  def couper_taxe_abonnements(ecrire)
+    vises = []
+    Stripe::Subscription.list(limit: 100).auto_paging_each { |s| vises << s if s.automatic_tax&.enabled }
+    puts "Abonnements avec taxe automatique : #{vises.size}"
+    vises.each do |s|
+      puts "  #{s.id} (#{s.status})#{' -> coupée' if ecrire}"
+      Stripe::Subscription.update(s.id, automatic_tax: { enabled: false }) if ecrire
+    end
+  end
+
+  def poser_mention_clients(ecrire)
+    vises, total = clients_sans_mention
+    puts "\nClients sans la mention : #{vises.size} sur #{total}"
+    puts "  (une écriture par client — préférez le pied de page du compte)" if vises.size > 50
+    vises.each do |c|
+      puts "  #{c.id} #{c.email}#{' -> mention posée' if ecrire}"
+      Stripe::Customer.update(c.id, invoice_settings: { footer: mention_tva }) if ecrire
+    end
+  end
+
+  def clients_sans_mention
+    vises = []
+    total = 0
+    Stripe::Customer.list(limit: 100).auto_paging_each do |c|
+      total += 1
+      vises << c unless c.invoice_settings&.footer.to_s.include?("293 B")
+    end
+    [vises, total]
+  end
+
+  # Le pied de page d'une facture est figé à sa finalisation : seules les
+  # brouillons peuvent encore le recevoir.
+  def poser_mention_brouillons(ecrire)
+    vises = []
+    brouillons = Stripe::Invoice.list(status: "draft", limit: 100)
+    brouillons.auto_paging_each { |f| vises << f unless f.footer.to_s.include?("293 B") }
+    puts "\nFactures brouillon sans la mention : #{vises.size}"
+    vises.each do |f|
+      puts "  #{f.id}#{' -> mention posée' if ecrire}"
+      Stripe::Invoice.update(f.id, footer: mention_tva) if ecrire
+    end
+  end
 
   desc "Clone le produit et les prix Stripe du live vers le test mode"
   task clone_to_test: :environment do
