@@ -47,9 +47,19 @@
 		    cette locale, « 2 classe » en sortait. %>
 		<% classes = "#{payees} classe#{"s" if payees > 1}" %>
 		<% accord = payees > 1 ? "toutes utilisées" : "déjà utilisée" %>
+		<%# Baisser la quantité chez Stripe ne supprime aucune classe : le groupe
+		    peut donc se retrouver AU-DESSUS de son quota. « Toutes utilisées »
+		    était alors faux, et ne disait pas de combien il fallait descendre. %>
+		<% utilisees = @school.classrooms_total %>
+		<% surplus = utilisees - payees %>
 		<% if responsable %>
 			<p class="classroom-blocked-reason">
-				Votre abonnement couvre <%= classes %>, <%= accord %>.
+				<% if surplus.positive? %>
+					Votre groupe a <%= utilisees %> classes pour <%= classes %> à l'abonnement.
+					Supprimez-en <%= surplus %>, ou ajoutez-les à votre abonnement.
+				<% else %>
+					Votre abonnement couvre <%= classes %>, <%= accord %>.
+				<% end %>
 			</p>
 			<% if stripe_portal_reachable?(@school) %>
 				<form method="GET" action="/create-customer-portal-session" data-turbo="false">
@@ -58,8 +68,13 @@
 			<% end %>
 		<% else %>
 			<p class="classroom-blocked-reason">
-				L'abonnement du groupe couvre <%= classes %>, <%= accord %>.
-				Demandez à <%= super_teachers_label(@school) %> d'en ajouter une.
+				<% if surplus.positive? %>
+					Le groupe a <%= utilisees %> classes pour <%= classes %> à l'abonnement.
+					Demandez à <%= super_teachers_label(@school) %> d'ajuster l'abonnement.
+				<% else %>
+					L'abonnement du groupe couvre <%= classes %>, <%= accord %>.
+					Demandez à <%= super_teachers_label(@school) %> d'en ajouter une.
+				<% end %>
 			</p>
 		<% end %>
 	<% end %>

@@ -49,7 +49,10 @@ RSpec.describe ClassroomsController, type: :controller do
     end
 
     # « Les <n> classes … sont toutes utilisées » donnait « Les 1 classes ».
+    # Le quota doit être exactement atteint : à 2 classes pour 1 payée, c'est un
+    # dépassement, et le message est celui de l'autre branche.
     it "accorde le message quand l'abonnement ne couvre qu'une classe" do
+      Classroom.where(user: collegue).first.destroy
       school.subscription.update!(quantity: 1)
       expect(zone_for(collegue)).to include("couvre 1 classe, déjà utilisée")
     end
@@ -80,6 +83,35 @@ RSpec.describe ClassroomsController, type: :controller do
 
     it "renvoie le collègue vers le responsable" do
       expect(zone_for(collegue)).to include("Demandez à Claire d'en souscrire un")
+    end
+  end
+
+  # Baisser la quantité chez Stripe ne supprime aucune classe : le groupe se
+  # retrouve alors au-dessus de son quota. « Toutes utilisées » était faux, et ne
+  # disait pas de combien il fallait descendre.
+  describe "au-dessus du quota" do
+    before do
+      subscribe(quantity: 8)
+      8.times { create(:classroom, user: collegue) }
+      school.subscription.update!(quantity: 5)
+    end
+
+    it "dit au responsable l'écart et le geste à faire" do
+      zone = zone_for(responsable)
+      expect(zone).to include("Votre groupe a 8 classes pour 5 classes à l'abonnement")
+      expect(zone).to include("Supprimez-en 3")
+      expect(zone).not_to include("toutes utilisées")
+    end
+
+    it "dit au collègue l'écart, et à qui s'adresser" do
+      zone = zone_for(collegue)
+      expect(zone).to include("Le groupe a 8 classes pour 5 classes à l'abonnement")
+      expect(zone).to include("Demandez à Claire d'ajuster l'abonnement")
+    end
+
+    it "garde le message habituel quand le quota est simplement atteint" do
+      school.subscription.update!(quantity: 8)
+      expect(zone_for(responsable)).to include("Votre abonnement couvre 8 classes, toutes utilisées")
     end
   end
 
