@@ -1,6 +1,11 @@
 class Subscription < ApplicationRecord
   belongs_to :school
 
+  # Les huit premiers sont ceux que Stripe émet. `incomplete_expired` et `paused`
+  # manquaient : un enum lève ArgumentError sur une valeur inconnue, donc le
+  # webhook répondait 500 et l'abonnement cessait d'être synchronisé.
+  # `pause` et `ended` n'existent pas chez Stripe ; des lignes anciennes peuvent
+  # les porter, on les garde sans jamais les alimenter.
   enum :status, {
     trialing: "trialing",
     active: "active",
@@ -8,6 +13,8 @@ class Subscription < ApplicationRecord
     canceled: "canceled",
     unpaid: "unpaid",
     incomplete: "incomplete",
+    incomplete_expired: "incomplete_expired",
+    paused: "paused",
     pause: "pause",
     ended: "ended"
   }

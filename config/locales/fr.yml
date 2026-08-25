@@ -46,6 +46,8 @@ fr:
     canceled: "Annulé"
     unpaid: "Non payé"
     incomplete: "Non finalisé"
+    incomplete_expired: "Non finalisé, expiré"
+    paused: "Suspendu"
     pause: "En pause"
     ended: "Terminé"
   activerecord:
