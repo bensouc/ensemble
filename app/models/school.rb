@@ -54,10 +54,10 @@ class School < ApplicationRecord
     users.where(school_roles: { super_teacher: true })
   end
 
+  # `capitalize` sans `strip` laissait passer les espaces saisis à l'inscription :
+  # le message affichait « (Benoît ) ».
   def super_teachers_first_name
-    super_teachers.map do |teacher|
-      teacher.first_name.capitalize
-    end.join(super_teachers.count > 1 ? ", " : "")
+    super_teachers.filter_map { |teacher| teacher.first_name&.strip.presence&.capitalize }.join(", ")
   end
 
   def all_students_list

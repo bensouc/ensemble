@@ -1,0 +1,61 @@
+<%# Chaque cause a sa consigne : le responsable reçoit l'action qu'il peut faire
+    lui-même, les autres le nom de la personne à qui s'adresser. %>
+<% responsable = current_user.super_teacher? %>
+<div class="classroom-creation-blocked">
+	<% case classroom_creation_block_reason(current_user) %>
+	<% when :demo %>
+		<p class="classroom-blocked-reason">
+			Compte de démonstration : vous êtes limité à <%= User::DEMO_CLASSROOM_LIMIT %> classe.
+		</p>
+		<%= link_to "Abonnez-vous pour en créer d'autres", subscriptions_on_boarding_path, class: "btn-flat" %>
+
+	<% when :no_subscription %>
+		<% if responsable %>
+			<p class="classroom-blocked-reason">Votre groupe n'a pas encore d'abonnement.</p>
+			<%= link_to "Souscrire un abonnement", new_subscription_path, class: "btn-flat" %>
+		<% else %>
+			<p class="classroom-blocked-reason">
+				Votre groupe n'a pas encore d'abonnement.
+				Demandez à <%= super_teachers_label(@school) %> d'en souscrire un.
+			</p>
+		<% end %>
+
+	<% when :inactive_subscription %>
+		<% etat = t("etats_facturation.#{@school.subscription.status}").downcase %>
+		<% if responsable %>
+			<p class="classroom-blocked-reason">
+				La création de classe est suspendue : votre abonnement est <%= etat %>.
+			</p>
+			<% if stripe_portal_reachable?(@school) %>
+				<form method="GET" action="/create-customer-portal-session" data-turbo="false">
+					<button type="submit" class="btn-flat">Reprendre mon abonnement</button>
+				</form>
+			<% else %>
+				<%= link_to "Souscrire un abonnement", new_subscription_path, class: "btn-flat" %>
+			<% end %>
+		<% else %>
+			<p class="classroom-blocked-reason">
+				La création de classe est suspendue : l'abonnement du groupe est <%= etat %>.
+				Prévenez <%= super_teachers_label(@school) %>.
+			</p>
+		<% end %>
+
+	<% else %>
+		<% payees = @school.subscription.quantity.to_i %>
+		<% if responsable %>
+			<p class="classroom-blocked-reason">
+				Les <%= payees %> classes de votre abonnement sont toutes utilisées.
+			</p>
+			<% if stripe_portal_reachable?(@school) %>
+				<form method="GET" action="/create-customer-portal-session" data-turbo="false">
+					<button type="submit" class="btn-flat">Ajouter une classe à mon abonnement</button>
+				</form>
+			<% end %>
+		<% else %>
+			<p class="classroom-blocked-reason">
+				Les <%= payees %> classes de l'abonnement sont toutes utilisées.
+				Demandez à <%= super_teachers_label(@school) %> d'en ajouter une.
+			</p>
+		<% end %>
+	<% end %>
+</div>
