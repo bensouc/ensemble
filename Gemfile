@@ -124,6 +124,9 @@ end
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
 
+  # Lit les mails produits par l'app sur /letter_opener, sans rien envoyer.
+  gem "letter_opener_web"
+
   gem "bullet"
   gem "web-console", ">= 3.3.0"
   gem "listen", "~> 3.2"

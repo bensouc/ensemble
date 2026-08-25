@@ -10,6 +10,9 @@ Rails.application.routes.draw do
   authenticate :user, lambda { |u| u.admin? } do
     mount Sidekiq::Web => "/sidekiq"
   end
+  # Boîte de réception locale : tous les mails produits par l'app, sans envoi.
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
+
   devise_for :users,
     controllers: { registrations: "registrations", invitations: "users/invitations" }
   devise_scope :user do

@@ -1,8 +1,10 @@
 require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
-  # SMTP settings for gmail
-  config.action_mailer.delivery_method = :smtp
+  # Les mails s'ouvrent sur http://localhost:3000/letter_opener au lieu de partir
+  # pour de bon. `MAIL_REEL=true bin/rails s` repasse par le SMTP Gandi, pour le
+  # jour où l'on veut vérifier un envoi réel.
+  config.action_mailer.delivery_method = ENV["MAIL_REEL"] == "true" ? :smtp : :letter_opener_web
   # Le port doit être à part : Rails ne lit que le nom d'hôte dans `host` et
   # jetait le `:3000`, d'où des liens de mail vers http://localhost/ — injoignable.
   config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
