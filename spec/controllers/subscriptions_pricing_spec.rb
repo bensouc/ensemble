@@ -62,7 +62,11 @@ RSpec.describe "Secrets côté client" do
   end
 
   it "n'apparaissent dans aucun gabarit ni script servi au navigateur" do
-    fichiers = Rails.root.glob("app/{views,javascript,assets}/**/*").select(&:file?)
+    # Restreint aux fichiers texte : `app/assets` est surtout des images, des
+    # polices et des bundles générés — 21 Mo de binaire relus à chaque passage,
+    # pour zéro couverture supplémentaire.
+    fichiers = Rails.root.glob("app/{views,javascript}/**/*.{erb,html,js,jsx,ts,vue,json}") +
+               Rails.root.glob("app/assets/stylesheets/**/*.{scss,css}")
     fautifs = fichiers.filter_map do |f|
       contenu = File.read(f, encoding: "UTF-8", invalid: :replace)
       trouves = secrets.select { |cle| contenu.include?(cle) }

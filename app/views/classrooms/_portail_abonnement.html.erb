@@ -1,0 +1,10 @@
+<%# Le portail Stripe lève une erreur sans client : on ne l'offre qu'aux écoles
+    qui en ont un. `repli` propose la souscription à la place, pour les cas où
+    ne rien montrer laisserait le responsable sans issue. %>
+<% if stripe_portal_reachable?(@school) %>
+	<form method="GET" action="/create-customer-portal-session" data-turbo="false">
+		<button type="submit" class="btn-flat"><%= libelle %></button>
+	</form>
+<% elsif local_assigns[:repli] %>
+	<%= link_to "Souscrire un abonnement", new_subscription_path, class: "btn-flat" %>
+<% end %>

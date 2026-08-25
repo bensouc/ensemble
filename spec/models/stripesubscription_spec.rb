@@ -6,10 +6,7 @@ require "rails_helper"
 # "send_invoice", sans période d'essai. C'est le cas qui faisait tomber le module :
 # `Time.at(nil)` sur `trial_end`.
 RSpec.describe Stripesubscription do
-  let(:charge_utile) do
-    JSON.parse(Rails.root.join("spec/fixtures/stripe/customer_subscription_created.json").read)
-  end
-  let(:event) { Stripe::Event.construct_from(charge_utile.deep_symbolize_keys) }
+  let(:event) { evenement_stripe("customer_subscription_created") }
   let(:objet) { event.data.object }
   let(:school) { create(:school, stripe_customer_id: objet.customer) }
 

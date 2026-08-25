@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_25_120000) do
+ActiveRecord::Schema[7.1].define(version: 2026_08_25_140000) do
   create_schema "_heroku"
   create_schema "heroku_ext"
 
@@ -171,6 +171,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_25_120000) do
     t.boolean "special_domains", default: false
     t.string "code"
     t.index ["code"], name: "index_schools_on_code", unique: true
+    t.index ["stripe_customer_id"], name: "index_schools_on_stripe_customer_id"
   end
 
   create_table "shared_classrooms", force: :cascade do |t|
@@ -341,6 +342,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_25_120000) do
     t.date "trial_end"
     t.string "rythm", default: "Annuel"
     t.index ["school_id"], name: "index_subscriptions_on_school_id"
+    t.index ["stripe_subscription_id"], name: "index_subscriptions_on_stripe_subscription_id"
   end
 
   create_table "tables", force: :cascade do |t|

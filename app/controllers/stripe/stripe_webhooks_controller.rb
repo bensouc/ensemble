@@ -12,32 +12,33 @@ module Stripe
     # InvalidAuthenticityToken, la panne serait silencieuse.
     skip_before_action :verify_authenticity_token, raise: false
 
+    # `status 400` puis `return` ne rendait pas de 400 : `status` a une arité de
+    # zéro sur un contrôleur, et l'absence de rendu finissait en 500 — que Stripe
+    # rejoue trois jours durant, sans espoir d'aboutir.
+    rescue_from JSON::ParserError, Stripe::SignatureVerificationError do |e|
+      Rails.logger.warn("[stripe] charge utile refusée — #{e.class}")
+      head :bad_request
+    end
+
+    # Les pannes réellement PASSAGÈRES sont nommées et remontent, pour que Stripe
+    # rejoue. `ActiveRecordError` ne convenait pas : `RecordInvalid` en hérite,
+    # donc une validation qui échoue — définitif — déclenchait trois jours de
+    # rejeux et d'alertes.
+    PASSAGERES = [ActiveRecord::ConnectionNotEstablished, ActiveRecord::StatementInvalid,
+                  Stripe::APIConnectionError, Stripe::RateLimitError].freeze
+
     def create
       skip_authorization
-      event = evenement_signe
-      return if performed?
-
-      traiter(event)
+      traiter(Stripe::Webhook.construct_event(request.body.read,
+                                              request.env["HTTP_STRIPE_SIGNATURE"],
+                                              ENV.fetch("STRIPE_WEBHOOK_SECRET_KEY", nil)))
       render json: { message: "success" }
     end
 
     private
 
-    def evenement_signe
-      Stripe::Webhook.construct_event(request.body.read, request.env["HTTP_STRIPE_SIGNATURE"],
-                                      ENV.fetch("STRIPE_WEBHOOK_SECRET_KEY", nil))
-    rescue JSON::ParserError, Stripe::SignatureVerificationError => e
-      # `status 400` puis `return` ne rendait pas de 400 : `status` a une arité de
-      # zéro sur ce contrôleur, et l'absence de rendu finissait en 500 — que Stripe
-      # rejoue trois jours durant, sans espoir.
-      Rails.logger.warn("[stripe] charge utile refusée — #{e.class}")
-      head :bad_request
-      nil
-    end
-
     # Une charge utile qu'on ne sait pas traiter ne doit pas déclencher trois jours
-    # de rejeux : on journalise et on acquitte. Les erreurs transitoires, elles,
-    # doivent remonter — d'où le `raise` sur les erreurs de base de données.
+    # de rejeux : on journalise et on acquitte.
     def traiter(event)
       case event.type
       when "customer.updated"      then Stripecustomer.update_stripe_customer(event)
@@ -48,7 +49,7 @@ module Stripe
         Stripesubscription.delete(event.data.object.id)
       end
       Rails.logger.info("[stripe] #{event.type} traité — #{event.id}")
-    rescue ActiveRecord::ActiveRecordError
+    rescue *PASSAGERES
       raise
     rescue StandardError => e
       Rails.logger.error("[stripe] #{event.type} (#{event.id}) — #{e.class}: #{e.message}")

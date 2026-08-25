@@ -7,10 +7,7 @@ require "rails_helper"
 # et on neutralise la vérification de signature, comme le fait déjà
 # spec/controllers/impersonations_controller_spec.rb pour le portail Stripe.
 RSpec.describe "Webhook Stripe", type: :request do
-  let(:charge_utile) do
-    JSON.parse(Rails.root.join("spec/fixtures/stripe/customer_subscription_created.json").read)
-  end
-  let(:event) { Stripe::Event.construct_from(charge_utile.deep_symbolize_keys) }
+  let(:event) { evenement_stripe("customer_subscription_created") }
 
   def poster(corps = "{}")
     post "/stripe-webhooks", params: corps, headers: { "HTTP_STRIPE_SIGNATURE" => "t=1,v1=peu_importe" }
@@ -59,6 +56,37 @@ RSpec.describe "Webhook Stripe", type: :request do
     it "acquitte sans rien faire" do
       expect { poster }.not_to change(Subscription, :count)
       expect(response).to have_http_status(:ok)
+    end
+  end
+
+  # `ActiveRecordError` ne distinguait pas : `RecordInvalid` en hérite, donc une
+  # validation qui échoue — définitive — déclenchait trois jours de rejeux.
+  context "quand la panne est définitive" do
+    let!(:school) { create(:school, stripe_customer_id: event.data.object.customer) }
+
+    before do
+      allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
+      allow(Stripesubscription).to receive(:update_or_create)
+        .and_raise(ActiveRecord::RecordInvalid.new(Subscription.new))
+    end
+
+    it "acquitte au lieu de faire rejouer Stripe" do
+      poster
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
+  context "quand la panne est passagère" do
+    let!(:school) { create(:school, stripe_customer_id: event.data.object.customer) }
+
+    before do
+      allow(Stripe::Webhook).to receive(:construct_event).and_return(event)
+      allow(Stripesubscription).to receive(:update_or_create).and_raise(Stripe::APIConnectionError)
+    end
+
+    # Elle doit remonter : Stripe rejouera, et cette fois ça peut aboutir.
+    it "laisse l'erreur remonter" do
+      expect { poster }.to raise_error(Stripe::APIConnectionError)
     end
   end
 
