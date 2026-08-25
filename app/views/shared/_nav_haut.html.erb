@@ -56,6 +56,13 @@
 							<%if current_user.admin%>
 								<%= link_to 'DATA-ADMIN', '/admin', class: "dropdown-item", target: '_blank' %>
 							<% end %>
+							<%# Boîte de réception locale : la route n'est montée qu'en développement. %>
+							<% if Rails.env.development? %>
+								<%= link_to letter_opener_web_path, class: "dropdown-item", target: '_blank' do %>
+									<i class="fa-solid fa-envelope-open-text me-2"></i>
+									Mails (dev)
+								<% end %>
+							<% end %>
 							<%=link_to "Déconnexion", destroy_user_session_path, method: :delete,class: "dropdown-item"%>
 						</div>
 					</li>
