@@ -1,113 +1,219 @@
-
+// L'écran d'évaluation : le geste central du mobile.
+//
+// L'en-tête était `position: fixed`, haut de 100px et large de 90%, tandis que
+// le contenu ne se décalait que de 80px — vingt pixels de compétences passaient
+// donc sous l'en-tête, et le reste défilait dans les 10% laissés à découvert.
+// Un en-tête `sticky` se réserve sa place tout seul : plus de nombres magiques
+// à tenir accordés.
 .mobile-eval-header {
-  position: fixed;
-  top: 0rem;
-  background-color: white;
-  height: 100px;
-  width: 90%;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: $espace-sm 0;
+  padding-top: marge-sure(top, $espace-sm);
+  background-color: $blanc;
+  border-bottom: thin solid $grisC;
 }
+
 .mobile-eval-header-details {
   display: flex;
   align-items: center;
+  gap: $espace-md;
+
   .first-name {
-    padding: 2vh 0 0 0;
     width: 30%;
-    text-align: left;
     color: $rose;
+    font-size: $texte-lg;
+    text-align: left;
+
     .mobile-wp-dates {
       text-align: left;
     }
   }
+
   .title {
-    padding: 1vh 2vh 0 0;
     width: 70%;
     align-items: flex-end !important;
     justify-content: space-between !important;
-    font-size: 15px;
     font-family: $titres-font !important;
+    font-size: $texte-md;
     font-weight: 400 !important;
   }
 }
 
-// WP
 .mobile-eval-wp {
-  padding-top: 80px;
+  padding-top: $espace-md;
 }
-// DOMAIN
+
 .mobile-domain-level {
   display: flex;
   flex-direction: row;
   align-items: baseline;
   justify-content: flex-start;
-  gap: 20px;
+  gap: $espace-md;
+
   .bd-maison {
-    padding: 5px !important;
+    padding: $espace-xs !important;
   }
+
   h3 {
+    font-size: $texte-lg;
     font-weight: 800;
   }
 }
+
 .mobile-belt {
-  font-size: 2ch;
+  font-size: $texte-md;
 }
 
-// mobile skill card
 .mobile-skill-card {
-  // border: solid $grisC;
-  // border-radius: 16px;
-  margin-bottom: 15px;
-  // padding: 5px;
+  margin-bottom: $espace-md;
+
   .title-mobile-skill-card {
-    background-color: $menuOff;
-        border-radius: 14px 14px 0 0;
     display: flex;
-    border-bottom: thin solid white;
+    align-items: center;
+    gap: $espace-sm;
+    padding: $espace-sm $espace-md;
+    background-color: $menuOff;
+    border-bottom: thin solid $blanc;
+    border-radius: $rayon-lg $rayon-lg 0 0;
+
     h3 {
+      margin: 0;
+      font-size: $texte-lg;
       text-align: left;
-      padding:  0 15px 0 15px;
+    }
+
+    h6 {
+      margin: 0;
+      font-size: $texte-sm;
+      text-align: left;
     }
   }
+
+  // Les trois évaluations précédentes. La gouttière bordée vient du bureau, qui
+  // la fixe à 15ch pour que toutes les lignes s'alignent — 151px, soit plus du
+  // tiers d'un écran de téléphone. On la resserre sur la place qu'occupent
+  // réellement trois pastilles, sans toucher au bureau.
   .previous_eval {
-    width: 9ch !important;
-    background-color: white;
+    flex: 0 0 auto;
+    gap: $espace-xs;
+    width: 6rem;
+    height: auto;
+    min-height: $cible-tactile;
+    padding: 0 $espace-xs;
+    background-color: $blanc;
+
+    .eval_bull {
+      flex: 0 0 auto;
+      width: 1.5rem !important;
+      height: 1.5rem !important;
+    }
   }
 }
+
 .mobile-eval-display {
-   border-bottom: solid $grisC;
-   border-left: solid $grisC;
-   border-right: solid $grisC;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $espace-sm;
+  padding: $espace-sm $espace-md;
+  border-right: solid $grisC;
+  border-bottom: solid $grisC;
+  border-left: solid $grisC;
+  border-bottom-right-radius: $rayon-lg;
+  border-bottom-left-radius: $rayon-lg;
+
+  // Le bouton qui ouvre l'évaluation : c'est LA cible du doigt sur cet écran.
+  button {
     display: flex;
-    align-items: flex-end;
-    align-content: center;
-    justify-content: space-evenly;
-    padding: 9px;
+    align-items: center;
+    justify-content: center;
+    min-width: $cible-tactile;
+    min-height: $cible-tactile;
+    border: 0;
+  }
 }
 
 .mobile-last-eval {
-  height: 40px;
-  width: 40px;
   display: flex;
-  justify-content: space-around;
   align-items: center;
-  // background-color: $roseL;
+  justify-content: center;
+  min-width: $cible-tactile;
+  min-height: $cible-tactile;
+
   .eval_bull {
-    width: 2ch !important;
-    height: 2ch !important;
-    font-size: 3ch;
-    margin-left: 3px;
-    margin-right: 3px;
+    width: 2rem !important;
+    height: 2rem !important;
+    font-size: $texte-md;
   }
 }
 
-// mobil eval mangt
+// La modale d'évaluation : une grille de cartes, icône au-dessus, mot dessous.
+//
+// Elle n'affichait que des icônes, dont trois flèches de rotation que seule la
+// couleur distinguait : il fallait avoir appris le code pour évaluer un élève.
+//
+// Deux colonnes fixes, et non `auto-fit` : à trois colonnes, « OK, mais à
+// refaire » se hache sur quatre lignes. La largeur du libellé commande la
+// grille, pas l'inverse.
 .mobile-eval-mngt {
   display: grid;
-grid-template-columns: 1fr 1fr;
-justify-items: start;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $espace-sm;
 
-  i {
-    font-size: 8ch;
+  // Un nombre impair de statuts laissait une carte seule, calée à gauche. Elle
+  // prend toute la largeur : l'orpheline disparaît, et l'action terminale —
+  // valider la ceinture — se trouve être celle qu'on met en avant.
+  .mobile-eval-choix:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
   }
+}
+
+.mobile-eval-choix {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: $espace-sm;
+  min-height: 6rem;
+  padding: $espace-md $espace-sm;
+  // `!important` parce qu'un `<a>` reçoit la couleur de lien de Bootstrap : les
+  // libellés sortaient en bleu, ce qui les faisait tous se ressembler et
+  // contredisait la couleur de leur propre icône.
+  color: $grisF !important;
+  text-align: center;
+  text-decoration: none;
+  background-color: $blanc;
+  // $grisC seul se distinguait à peine du fond blanc de la modale.
+  border: 1px solid rgba($grisF, 0.22);
+  border-radius: $rayon;
+
+  .eval-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+  }
+
+  &:active {
+    background-color: $light-gray;
+  }
+
+  // Là où en est la compétence aujourd'hui. On voyait ce qu'on pouvait choisir,
+  // jamais ce qui était déjà enregistré.
+  &.--courant {
+    background-color: $menuOff;
+    border-color: $rose;
+    border-width: 2px;
+  }
+}
+
+// Le libellé est ce qui lève l'ambiguïté entre trois flèches identiques : il ne
+// peut pas être le plus discret de la carte. 14px et un demi-gras, dans la
+// police du reste de l'application.
+.mobile-eval-libelle {
+  font-family: $body-font;
+  font-size: $texte-sm;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
 }

@@ -128,6 +128,13 @@ def etape_revirement(harness, page)
   stockee = file_stockee(page)
   harness.check("la file ne garde qu'un geste par compétence", stockee.is_a?(Array) && stockee.size == 1)
   harness.check("et c'est le dernier choix", stockee&.first&.fetch("statut", nil) == "redo")
+
+  # La modale n'est rendue qu'au chargement : sans suivi côté client, rouvrir
+  # la modale montrerait le statut d'avant l'évaluation.
+  courant = page.evaluate(%{document.querySelector(".mobile-eval-choix.--courant")?.id})
+  harness.check("le statut marqué suit le dernier choix", courant == "a-refaire")
+  harness.check("un seul statut est marqué",
+                page.evaluate(%{document.querySelectorAll(".mobile-eval-choix.--courant").length}) == 1)
 end
 
 def etape_session_expiree(harness, page)
@@ -193,10 +200,16 @@ harness.page("index",
                  <div class="mobile-last-eval" data-ajax-work-plan-target="lastEval">
                    <div class="eval_bull new"><i class="fa-solid fa-c"></i></div>
                  </div>
-                 <a id="reussi" href="#{URL_EVAL}?status=completed"
-                    data-action="click->ajax-work-plan#toggle">réussi</a>
-                 <a id="a-refaire" href="#{URL_EVAL}?status=redo"
-                    data-action="click->ajax-work-plan#toggle">à refaire</a>
+                 <div class="mobile-eval-mngt">
+                   <a id="reussi" href="#{URL_EVAL}?status=completed" class="mobile-eval-choix --courant"
+                      aria-current="true" data-action="click->ajax-work-plan#toggle">
+                     <span class="mobile-eval-libelle">Validé</span>
+                   </a>
+                   <a id="a-refaire" href="#{URL_EVAL}?status=redo" class="mobile-eval-choix"
+                      data-action="click->ajax-work-plan#toggle">
+                     <span class="mobile-eval-libelle">À refaire</span>
+                   </a>
+                 </div>
                </div>
 
                <script src="./application.js"></script>

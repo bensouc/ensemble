@@ -42,6 +42,14 @@ RSpec.describe "Mobile::WorkPlans", type: :request do
       expect(response).to render_template(layout: "layouts/mobile")
     end
 
+    it "dit à quoi sert l'écran" do
+      sign_in teacher
+
+      get mobile_work_plans_path
+
+      expect(response.body).to include("Renseignez ici les évaluations des plans de travail")
+    end
+
     # Sans classe, l'écran explique quoi faire au lieu d'afficher une liste vide.
     it "guide l'enseignant qui n'a pas encore de classe" do
       sans_classe = create(:user, admin: false, demo: false)

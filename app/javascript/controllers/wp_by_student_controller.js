@@ -80,13 +80,10 @@ export default class extends Controller {
   updateNbWp() {
     const count = this.wpLineTargets.length
     // console.log(this.countTarget.innerHTML)
-    if (count > 2) {
-      // console.log(this.countTarget.innerHTML)
-      this.countTarget.innerHTML = `( ${count - 1} Plans de travail )`
-      // index - wp - count
-    } else {
-      this.countTarget.innerHTML = `( ${count - 1} Plan de travail )`
-    }
+    // Même format que `Mobile::WorkPlansHelper#plans_label`, sinon le compte
+    // change de forme dès qu'on supprime un plan.
+    const restants = count - 1
+    this.countTarget.innerHTML = `${restants} plan${restants > 1 ? "s" : ""}`
   }
 
 }

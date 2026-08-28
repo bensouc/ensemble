@@ -15,6 +15,8 @@
     </div>
     <%# <div class="greyline-mobile"></div> %>
   </nav>
+  <%= render "shared/mobile_intro",
+             texte: "Touchez une compétence pour enregistrer son évaluation." %>
   <div class="mobile-eval-wp" data-controller="display-right-anchor">
     <%= render "eval_mobile_work_plan_domains", work_plan: @work_plan, domains: @domains %>
   </div>

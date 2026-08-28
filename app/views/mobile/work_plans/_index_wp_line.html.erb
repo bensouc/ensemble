@@ -1,16 +1,9 @@
-    <%= link_to mobile_evaluation_path(wp)do %>
-  <div class="mobile-index-wp-card ">
-    <div class="mobile-student-wp">
-      <div class="mobile-namept">
-        <%= wp.name %>
-      </div>
-      <div class='rmv-wp'>
-
-      </div>
-    </div>
-    <div class="mobile-wp-dates">
-      <%= wp.start_date.nil? ? "" : l(wp.start_date, format: "%d/%m/%Y") %>
-      <%= wp.end_date.nil? ? "" : l(wp.end_date, format: "au %d/%m/%Y") %>
-    </div>
-  </div>
+<%# Un plan de travail : son nom et sa période. La carte entière ouvre
+    l'évaluation. %>
+<%= link_to mobile_evaluation_path(wp), class: "mobile-index-wp-card" do %>
+  <span class="mobile-namept"><%= wp.name %></span>
+  <span class="mobile-wp-dates">
+    <%= wp.start_date.nil? ? "" : l(wp.start_date, format: "%d/%m/%Y") %>
+    <%= wp.end_date.nil? ? "" : l(wp.end_date, format: "au %d/%m/%Y") %>
+  </span>
 <% end %>

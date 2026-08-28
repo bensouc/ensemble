@@ -41,6 +41,46 @@ RSpec.describe "Mobile::Classrooms", type: :request do
       expect(response).to render_template(layout: "layouts/mobile")
     end
 
+    # Les écrans du mobile s'ouvraient sur une liste sans un mot : rien ne disait
+    # ce qu'on pouvait y faire.
+    it "dit à quoi sert l'écran" do
+      sign_in teacher
+
+      get mobile_classrooms_path
+
+      expect(response.body).to include("consulter les ceintures de vos élèves")
+    end
+
+    # La carte situe la classe : son niveau et son effectif, pas seulement un nom.
+    it "situe chaque classe par son niveau et son effectif" do
+      create(:student, classroom:)
+      sign_in teacher
+
+      get mobile_classrooms_path
+
+      expect(response.body).to include(grade.grade_level.upcase)
+      expect(response.body).to include("1 élève")
+    end
+
+    it "accorde l'effectif au pluriel" do
+      create_list(:student, 2, classroom:)
+      sign_in teacher
+
+      get mobile_classrooms_path
+
+      expect(response.body).to include("2 élèves")
+    end
+
+    # Cinq icônes de la même couleur ne disaient pas où l'on se trouvait.
+    it "allume l'onglet courant dans la barre du bas" do
+      sign_in teacher
+
+      get mobile_classrooms_path
+
+      expect(response.body).to include('class="mobile-user-menu --actif"')
+      expect(response.body).to include('aria-current="page"')
+    end
+
     it "ne montre pas la classe d'un autre enseignant" do
       autre = create(:user, admin: false, demo: false)
       create(:classroom, user: autre, grade:, name: "CE2 SECRETE")

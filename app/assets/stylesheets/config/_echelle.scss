@@ -1,0 +1,47 @@
+// Échelle d'espacement, de rayon et de typographie.
+//
+// Rien n'est inventé ici : ce sont les valeurs déjà MAJORITAIRES dans la
+// feuille du bureau, relevées puis nommées. L'espacement suit les rem les plus
+// employés (1rem 47 fois, .5rem 37, .25rem 34, 1.5rem 19, 3rem 19) et le rayon
+// reprend les 12px qui reviennent 38 fois. Le mobile s'y aligne au lieu de
+// poser ses propres px au jugé.
+
+// Espacements
+$espace-xs: 0.25rem;
+$espace-sm: 0.5rem;
+$espace-md: 1rem;
+$espace-lg: 1.5rem;
+$espace-xl: 3rem;
+
+// Rayons
+$rayon: 12px;
+$rayon-lg: 16px;
+
+// Typographie — en rem, jamais en vh.
+//
+// Le mobile dimensionnait son texte en `vh` : 3vh donne 20px sur un iPhone SE
+// et 28px sur un 15 Pro Max, et s'effondre en paysage. Une taille de texte doit
+// dépendre de la lisibilité, pas de la hauteur de la fenêtre.
+$texte-xs: 0.75rem;
+$texte-sm: 0.875rem;
+$texte-md: 1rem;
+$texte-lg: 1.125rem;
+$texte-xl: 1.375rem;
+$texte-2xl: 1.75rem;
+
+// La plus petite surface qu'un doigt atteint sans viser : 44px, le seuil des
+// recommandations d'Apple comme de Material. Les pastilles d'évaluation
+// faisaient 40px — on tape à côté, et en classe on tape vite.
+$cible-tactile: 2.75rem;
+
+// Encoche et barre d'accueil. Depuis que l'application s'installe en
+// `display: fullscreen`, plus aucune barre système ne protège le contenu : sans
+// ces marges, l'en-tête passe sous l'encoche et le pied sous l'indicateur.
+@function marge-sure($cote, $plancher: 0px) {
+  @return calc(#{$plancher} + env(safe-area-inset-#{$cote}, 0px));
+}
+
+// Points de rupture. Le « front mobile » n'en avait aucun : c'était une mise en
+// page fixe qui se trouvait être étroite.
+$grand-telephone: 26rem; // ~416px
+$tablette: 48rem; // ~768px

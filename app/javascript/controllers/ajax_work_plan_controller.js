@@ -37,6 +37,7 @@ export default class extends Controller {
     if (!id || !statut) return;
 
     this.peindre(statut);
+    this.marquerChoix(lien);
     this.marquerEnAttente(true);
     file.ajouter({ id, url, statut });
   }
@@ -54,6 +55,24 @@ export default class extends Controller {
 
     const attendu = statut === "not_done" ? "new" : statut;
     pastille.className = `eval_bull ${attendu}`;
+  }
+
+  // La modale est rendue une seule fois, au chargement de la page : sans cela,
+  // le statut marqué comme courant resterait celui d'avant l'évaluation, et
+  // rouvrir la modale montrerait un choix périmé.
+  marquerChoix(lien) {
+    const choix = this.element.querySelectorAll(".mobile-eval-choix");
+    if (choix.length === 0) return;
+
+    choix.forEach((autre) => {
+      autre.classList.remove("--courant");
+      autre.removeAttribute("aria-current");
+    });
+    const choisi = lien.closest(".mobile-eval-choix");
+    if (!choisi) return;
+
+    choisi.classList.add("--courant");
+    choisi.setAttribute("aria-current", "true");
   }
 
   // Le serveur a le dernier mot : sa réponse remplace la pastille peinte.

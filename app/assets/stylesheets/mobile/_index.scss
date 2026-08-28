@@ -1,92 +1,309 @@
 @import "eval_mobile";
 @import "home";
+
+// Écrans du front mobile.
+//
+// Reprend les couleurs, les polices et le rayon du bureau ; s'en écarte là où
+// le téléphone impose ses propres règles : cibles tactiles atteignables,
+// marges d'encoche, et surtout des tailles de texte en rem — elles étaient en
+// `vh`, donc dépendantes de la hauteur de la fenêtre plutôt que de la
+// lisibilité.
+
 .mobile_index {
-  margin-bottom: 80px;
-  width: 100vw !important;
-  min-height: calc(100vh - 50px);
-  padding: 5vw 5vw 5vw 5vw !important;
-  text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  // `100vw` débordait horizontalement dès qu'une barre de défilement
+  // apparaissait ; `100dvh` suit la fenêtre réelle, quand la barre d'adresse du
+  // navigateur se rétracte.
+  width: 100%;
+  min-height: calc(100dvh - 50px);
+  padding: $espace-md;
+  padding-left: marge-sure(left, $espace-md);
+  padding-right: marge-sure(right, $espace-md);
+  // De la place pour le pied de page fixe, indicateur d'accueil compris.
+  margin-bottom: marge-sure(bottom, 5rem);
+  text-align: center;
+
   .title {
     font-family: $headers-font;
+    font-size: $texte-xl;
     font-weight: 700;
   }
+
+  @media (min-width: $tablette) {
+    max-width: 44rem;
+    margin-inline: auto;
+    padding: $espace-lg;
+  }
 }
+
 .mobile-message {
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 100% !important;
   justify-content: space-evenly;
+  gap: $espace-lg;
 }
+
 .mobile_wp_one_classroom {
-  // width: 100%;
   display: flex;
   flex-direction: column;
   align-content: space-around;
   align-items: flex-start;
+
   h1 {
-    font-size: 3vh;
-    font-weight: 700;
     font-family: $titres-font;
+    font-size: $texte-xl;
+    font-weight: 700;
   }
 }
+
 .w100 {
   width: 100%;
 }
+
 .greyline-mobile {
-  height: 0px;
-  // padding: 0 10px;
+  height: 0;
+  margin: $espace-sm 0;
   border-top: solid thin $grisF;
-  margin: 1ch 0;
 }
+
 .mobile-index-folder {
   color: $roseL;
-  font-size: 3vh;
+  font-size: $texte-xl;
 }
 
 .mobile-wp-firstname {
-  font-size: 3vh;
+  font-size: $texte-lg;
 }
+
 .mobile-index-wp-count {
+  font-size: $texte-sm;
   font-style: italic;
-  opacity: 0.33;
-  font-size: 3vh;
+  opacity: 0.55; // 0.33 passait sous le seuil de contraste lisible
 }
+
+// Un plan de travail : son nom, puis sa période. La carte entière ouvre
+// l'évaluation.
+//
+// C'était un aplat rose pleine largeur. Répété pour chaque plan, il écrasait
+// l'écran et mettait au même niveau sonore une liste et l'action principale.
+// Le rose se réduit à un liseré : la marque reste, le bruit part.
 .mobile-index-wp-card {
+  display: flex;
+  flex-direction: column;
+  gap: $espace-xs;
   width: 100%;
-  background-color: $rose;
-  color: white !important;
-  margin: 10px 0;
-  border-radius: 15px;
-  padding: 10px;
+  margin: $espace-xs 0;
+  padding: $espace-sm $espace-md;
+  color: $grisF !important;
+  text-decoration: none;
+  background-color: $blanc;
+  border: 1px solid rgba($grisF, 0.18);
+  border-left: 3px solid $rose;
+  border-radius: $rayon;
+
+  &:active {
+    background-color: $light-gray;
+  }
 }
+
 .mobile-student-wp {
   display: flex;
   justify-content: space-between;
   width: 100%;
+  // La ligne entière devient une cible : on ouvre un plan de travail en visant
+  // large, pas en cherchant le mot.
+  min-height: $cible-tactile;
+  align-items: center;
 }
+
 .mobile-index-wp-name {
   display: flex;
-  width: 100%;
   flex-wrap: wrap;
+  width: 100%;
 }
+
 .mobile-namept {
-  color: white !important;
+  color: $grisF !important;
+  font-size: $texte-md;
+  font-weight: 600;
   text-align: left;
-  padding: 5px 10px;
-  margin-bottom: 10px;
-  font-size: 3vh;
+  overflow-wrap: anywhere;
 }
+
 .mobile-wp-dates {
+  // $grisC sur fond blanc ne se lisait plus du tout une fois l'aplat retiré.
+  color: rgba($grisF, 0.7);
+  font-size: $texte-xs;
   text-align: right;
-  font-size: 2vh;
-  color: $grisC;
 }
+
 .mobile-rmv-skill-btn {
-  color: #dddddd;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: $cible-tactile;
+  min-height: $cible-tactile;
+  color: $grisC;
+  font-size: $texte-lg;
   cursor: pointer;
-  font-size: 3vh;
+}
+
+// La phrase qui dit à quoi sert l'écran. Discrète — elle informe une fois, elle
+// ne doit pas concurrencer le contenu qu'on vient consulter.
+.mobile-intro {
+  margin: 0 0 $espace-sm;
+  color: rgba($grisF, 0.75);
+  font-size: $texte-sm;
+  line-height: 1.35;
+  text-align: center;
+}
+
+// Une classe dans la liste : niveau, nom, effectif — et, une fois ouverte, ses
+// élèves DANS la carte. La liste flottait auparavant en dessous, sans rien qui
+// la rattache à la classe qu'on venait de déplier.
+.mobile-classe-carte {
+  margin-bottom: $espace-sm;
+  background-color: $blanc;
+  border: 1px solid rgba($grisF, 0.18);
+  border-radius: $rayon;
+  // Les coins arrondis doivent rogner l'en-tête coloré, sinon il déborde du cadre.
+  overflow: hidden;
+
+  &.--ouverte {
+    border-color: $roseL;
+  }
+}
+
+// La ligne cliquable : ouvre la classe, ou la referme une fois ouverte. Toute
+// la ligne est la cible — on visait son titre.
+.mobile-classe-entete {
+  display: flex;
+  align-items: center;
+  gap: $espace-md;
+  min-height: $cible-tactile;
+  padding: $espace-sm $espace-md;
+  color: $grisF !important;
+  text-decoration: none;
+
+  .--ouverte & {
+    background-color: $menuOff;
+  }
+
+  &:active {
+    background-color: $light-gray;
+  }
+}
+
+// Le niveau tient dans une pastille : c'est l'information qui trie les classes.
+.mobile-classe-niveau {
+  flex: 0 0 auto;
+  min-width: 3.25rem;
+  padding: $espace-xs $espace-sm;
+  color: $blanc;
+  font-size: $texte-xs;
+  font-weight: 700;
+  text-align: center;
+  background-color: $rose;
+  border-radius: $rayon;
+}
+
+.mobile-classe-corps {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mobile-classe-nom {
+  font-size: $texte-md;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.mobile-classe-effectif {
+  color: rgba($grisF, 0.7);
+  font-size: $texte-xs;
+}
+
+.mobile-classe-eleves {
+  padding: $espace-xs 0;
+}
+
+// Un élève : une ligne pleine largeur, séparée de sa voisine. Le prénom seul
+// laissait au doigt une cible de la taille du mot.
+.mobile-eleve-ligne {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: $cible-tactile;
+  padding: $espace-xs $espace-md;
+  color: $grisF !important;
+  font-size: $texte-md;
+  text-decoration: none;
+
+  &:active {
+    background-color: $light-gray;
+  }
+}
+
+turbo-frame:not(:last-child) > .mobile-eleve-ligne {
+  border-bottom: 1px solid rgba($grisF, 0.08);
+}
+
+// L'élève déplié : la même ligne, teintée pour montrer ce qui est ouvert.
+.mobile-eleve-ligne.--ouverte {
+  font-weight: 600;
+  background-color: rgba($menuOff, 0.5);
+  border-bottom: 1px solid rgba($grisF, 0.08);
+}
+
+.mobile-eleve-detail {
+  padding: $espace-sm $espace-md $espace-md;
+}
+
+// Les ceintures par domaine. `justify-content: center` laissait la dernière
+// rangée flotter au milieu, décalée par rapport aux précédentes.
+.mobile-ceintures {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+  gap: $espace-sm;
+  justify-items: stretch;
+}
+
+.mobile-eleve-vide {
+  margin: 0;
+  padding: $espace-sm $espace-md;
+  color: rgba($grisF, 0.7);
+  font-size: $texte-sm;
+  font-style: italic;
+}
+
+// Le nombre de plans d'un élève, à côté de son prénom. Il flottait entre
+// parenthèses italiques, sans lien visuel avec la ligne.
+.mobile-eleve-compte {
+  flex: 0 0 auto;
+  margin-left: auto;
+  margin-right: $espace-sm;
+  padding: 0 $espace-sm;
+  color: rgba($grisF, 0.7);
+  font-size: $texte-xs;
+  font-weight: 600;
+  white-space: nowrap;
+  background-color: $light-gray;
+  border-radius: $rayon;
+}
+
+// L'en-tête d'une classe qui n'est pas cliquable : elle intitule, elle n'ouvre
+// rien. Même dessin, sans le retour au toucher.
+.mobile-classe-entete.--titre {
+  background-color: $menuOff;
+  cursor: default;
+}
+
+// Les plans d'un élève, en retrait sous son prénom.
+.mobile-eleve-plans {
+  padding: 0 $espace-md $espace-sm calc(#{$espace-md} + #{$espace-sm});
 }
