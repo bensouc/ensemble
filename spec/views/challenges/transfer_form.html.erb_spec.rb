@@ -36,7 +36,28 @@ RSpec.describe "challenges/transfer_form" do
     rendre([])
 
     Belt::BELT_COLORS.each { |couleur| expect(rendered).to include(couleur.capitalize) }
-    expect(rendered).to match(/<option selected="selected" value="3">/)
+    expect(rendered).to match(/<option[^>]*selected="selected"[^>]*value="3"/)
+  end
+
+  # On reconnaît le niveau à la teinte avant d'avoir lu le mot.
+  it "colore chaque ceinture de sa couleur" do
+    rendre([])
+
+    expect(rendered).to include('class="--bgc-jaune" value="2"')
+    expect(rendered).to include('class="--bgc-noir --blanc" value="7"')
+  end
+
+  it "colore le champ lui-même de la ceinture en cours" do
+    rendre([])
+
+    expect(rendered).to match(/<select[^>]*class="[^"]*--bgc-orange/)
+  end
+
+  # Les ceintures foncées passent le texte en blanc, sinon il disparaît dessus.
+  it "éclaircit le texte sur les ceintures foncées" do
+    rendre([])
+
+    expect(rendered).to include("--bgc-vert --blanc")
   end
 
   it "offre un bouton par compétence d'arrivée" do

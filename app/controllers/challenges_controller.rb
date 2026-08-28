@@ -163,7 +163,9 @@ class ChallengesController < ApplicationController
   def transfer_form
     authorize @challenge, :transferable?
     @domain = @challenge.skill.domain
-    @level = (params[:level].presence || @challenge.skill.level).to_i
+    # Ramené dans les bornes : un `level` forgé laisserait la modale sans
+    # ceinture sélectionnée et sans compétence à proposer.
+    @level = (params[:level].presence || @challenge.skill.level).to_i.clamp(1, Belt::BELT_COLORS.size)
     @skills = Skill.where(domain: @domain, level: @level).where.not(id: @challenge.skill_id).sort
   end
 
