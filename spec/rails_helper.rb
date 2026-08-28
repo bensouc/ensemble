@@ -69,6 +69,9 @@ RSpec.configure do |config|
     config.include FactoryBot::Syntax::Methods
 
   config.include Devise::Test::ControllerHelpers, type: :controller
+  # `sign_in` dans les specs de requête : les helpers de contrôleur ne
+  # fonctionnent pas là, ils manipulent un warden qui n'existe pas.
+  config.include Devise::Test::IntegrationHelpers, type: :request
 end
 
 Shoulda::Matchers.configure do |config|

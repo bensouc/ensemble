@@ -1,0 +1,10 @@
+<%# Le bouton d'appel de la page d'accueil mobile.
+
+    Il annonçait « S'incrire » — avec la coquille — et menait à la liste des
+    plans de travail, qui n'est pas une inscription. Un enseignant déjà connecté
+    le voyait deux fois, alors qu'il a un compte. %>
+<% if user_signed_in? %>
+	<%= link_to "Voir mes plans de travail", mobile_work_plans_path, class: "btn btn-flat mobile-begin" %>
+<% else %>
+	<%= link_to "S'inscrire", new_user_registration_path, class: "btn btn-flat mobile-begin" %>
+<% end %>

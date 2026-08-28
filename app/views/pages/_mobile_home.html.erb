@@ -14,13 +14,14 @@
 		<h2>Qu'est-ce qu'Ensemble !?</h2>
 		<p>Ensemble ! est une application en ligne à destination des professeurs des écoles et  conçue pour créer, éditer et corriger des plans de travail adaptés. Elle simplifie la génération et la personnalisation des plans de travail, offrant ainsi une progression individualisée pour chaque élève.</p>
 		<p>Vous vous trouvez actuellement sur le compagnon mobile de l'application, qui permet d'enregistrer les progrès de vos élèves sans avoir besoin d'un ordinateur.</p>
-		<p>Nous vous encourageons à vous connecter depuis votre ordinateur pour profiter pleinement de l'expérience offerte par Ensemble !</p>
+		<p>Il s'installe sur votre écran d'accueil comme une application, et fonctionne <strong>même sans réseau</strong> : les évaluations que vous saisissez en classe sont conservées sur votre téléphone, puis envoyées dès que la connexion revient. Vous pouvez aussi consulter vos classes hors connexion.</p>
+		<p>Nous vous encourageons à vous connecter depuis votre ordinateur pour créer vos plans de travail et profiter pleinement de l'expérience offerte par Ensemble !</p>
 	</div>
-	<%= link_to "S'incrire",mobile_work_plans_path, class: "btn btn-flat mobile-begin" %>
+	<%= render "pages/mobile_cta" %>
 	<div class="grey-line"></div>
 	<div class="mobile-detail-box">
 		<h2 >CRÉER</h2>
-		<p>Des Plans de Travail, des excercices, vos classes en collaboration avec vos collègues</p>
+		<p>Des Plans de Travail, des exercices, vos classes en collaboration avec vos collègues</p>
 		<%= render 'creation_captures', mobile: true %>
 	</div>
 	<div class="grey-line"></div>
@@ -44,7 +45,7 @@
 	<div class="grey-line"></div>
 	<div class="mobile-detail-box">
 		<h2>ÉVALUER</h2>
-		<p>Pouvoir évaluer, sur mobile et ordinateur, le travail accompli par chaque élève et créer facilement vos plans de travail à la progression de chaque élèves.</p>
+		<p>Pouvoir évaluer, sur mobile et ordinateur, le travail accompli par chaque élève et créer facilement vos plans de travail à la progression de chaque élève.</p>
 		<%= render 'evaluation_captures', mobile: true %>
 	</div>
 	<div class="grey-line"></div>
@@ -57,5 +58,5 @@
 	<div class="grey-line"></div>
   <%= render "pages/hosting_banner" %>
 	<div class="grey-line"></div>
-	<%= link_to "S'incrire",mobile_work_plans_path, class: "btn btn-flat mobile-begin" %>
+	<%= render "pages/mobile_cta" %>
 </div>
