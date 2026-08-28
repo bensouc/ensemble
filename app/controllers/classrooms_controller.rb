@@ -76,7 +76,7 @@ class ClassroomsController < ApplicationController
     @skills = if @domain.special?
                 Skill.where(domain: @domain).order(Arel.sql("COALESCE(sub_domain, '') ASC"))
               else
-                Skill.where(domain: @domain).sort
+                Skill.where(domain: @domain).ordered
               end
     set_up_results(@domain)
     @results = @classroom.completed_results_by_domain(@domain)

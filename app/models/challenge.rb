@@ -5,6 +5,7 @@ class Challenge < ApplicationRecord
   # affichées séparément : sans `for_belt` dans le scope, un exercice de ceinture
   # intercalé ferait qu'un clic sur ⬆️ échange avec une ligne invisible.
   acts_as_list scope: [:skill_id, :for_belt]
+  include Positionable
 
   belongs_to :skill
   # Un exercice survit au départ de son auteur : c'est son grade, via la
@@ -26,7 +27,6 @@ class Challenge < ApplicationRecord
 
   scope :for_belt, -> { where(for_belt: true) }
   scope :classic, -> { where(for_belt: false) }
-  scope :ordered, -> { order(:position) }
 
   def for_belt?
     for_belt == true
