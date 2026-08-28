@@ -38,9 +38,10 @@ Rails.application.routes.draw do
       resources :students, only: [:show, :index]
     end
     get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
-  # Page d'attente : elle s'affiche instantanément dans l'onglet, le temps que le PDF
-  # se génère (cf. WorkPlansController#export)
-  get "work_plans/:id/export", to: "work_plans#export", as: :export_work_plan
+    # `get "work_plans/:id/export"` a été retiré : il visait
+    # `Mobile::WorkPlansController#export`, une action qui n'a jamais existé, et
+    # personne ne construisait ce chemin. L'export PDF passe par la route
+    # non-mobile `export_work_plan`, servie par `WorkPlansController#export`.
   end
   # ############### CONTACTROUTES ###############
   post "", to: "contact#create", as: :contact_create

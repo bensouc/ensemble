@@ -66,19 +66,35 @@ RSpec.describe "Mobile::Students", type: :request do
   end
 
   describe "GET /mobile/classrooms/:classroom_id/students" do
-    # `Mobile::StudentsController#index` appelle `policy_scope(Student)`, mais
-    # `StudentPolicy::Scope` est commentée dans la policy. Pundit se rabat donc
-    # sur `ApplicationPolicy::Scope`, dont `resolve` lève NotImplementedError :
-    # l'action renvoie une 500 depuis toujours. Elle ne pose de surcroît pas
-    # `@classroom`, que son gabarit attend.
-    it "devrait lister les élèves de la classe" do
-      pending "StudentPolicy::Scope commentée -> ApplicationPolicy::Scope#resolve lève NotImplementedError"
+    it "liste les élèves de la classe" do
       sign_in teacher
 
       get mobile_classroom_students_path(classroom)
 
       expect(response).to be_successful
       expect(response.body).to include("Leo")
+    end
+
+    # La route est imbriquée : on veut les élèves de CETTE classe, pas tous ceux
+    # que l'enseignant peut voir.
+    it "ne montre pas les élèves d'une autre de ses classes" do
+      autre = create(:classroom, user: teacher, grade:)
+      create(:student, classroom: autre, first_name: "ailleurs")
+      sign_in teacher
+
+      get mobile_classroom_students_path(classroom)
+
+      expect(response.body).to include("Leo")
+      expect(response.body).not_to include("Ailleurs")
+    end
+
+    it "refuse la classe d'une autre école" do
+      etrangere = create(:classroom, grade: create(:grade, school: create(:school)))
+      sign_in teacher
+
+      get mobile_classroom_students_path(etrangere)
+
+      expect(response).to redirect_to(dashboard_path)
     end
   end
 end

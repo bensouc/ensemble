@@ -14,6 +14,53 @@ RSpec.describe StudentPolicy do
     teacher.reload
   end
 
+  # La Scope était commentée : `policy_scope(Student)` retombait sur celle
+  # d'`ApplicationPolicy`, dont `resolve` lève. Elle suit la même règle que
+  # `show?` — les élèves des classes qu'on peut voir.
+  describe "Scope" do
+    subject(:resolved) { described_class::Scope.new(acteur, Student).resolve }
+
+    let!(:sien) { create(:student, classroom:) }
+    let!(:etranger) { create(:student, classroom: create(:classroom, grade: create(:grade, school: create(:school)))) }
+
+    context "pour l'enseignant de la classe" do
+      let(:acteur) { teacher }
+
+      it "ne rend que ses élèves" do
+        expect(resolved).to contain_exactly(sien)
+      end
+    end
+
+    context "pour un collègue avec qui la classe est partagée" do
+      let(:acteur) do
+        collegue = create(:user, admin: false, demo: false)
+        school.add_teacher(collegue)
+        create(:shared_classroom, user: collegue, classroom:)
+        collegue.reload
+      end
+
+      it "rend les élèves de la classe partagée" do
+        expect(resolved).to contain_exactly(sien)
+      end
+    end
+
+    context "pour un enseignant sans lien avec la classe" do
+      let(:acteur) { create(:user, admin: false, demo: false) }
+
+      it "ne rend rien" do
+        expect(resolved).to be_empty
+      end
+    end
+
+    context "pour un admin" do
+      let(:acteur) { create(:user, admin: true) }
+
+      it "rend tous les élèves" do
+        expect(resolved).to include(sien, etranger)
+      end
+    end
+  end
+
   # `show?` renvoyait `true` sans condition : la fiche d'un élève — nom,
   # ceintures, progression — était ouverte à tout enseignant connecté, y compris
   # d'une autre école. La règle est maintenant celle de la classe.

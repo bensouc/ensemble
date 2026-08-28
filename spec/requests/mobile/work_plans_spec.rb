@@ -85,17 +85,13 @@ RSpec.describe "Mobile::WorkPlans", type: :request do
     end
   end
 
-  describe "GET /mobile/work_plans/:id/export" do
-    # La route existe (`mobile_export_work_plan`) mais `Mobile::WorkPlansController`
-    # n'a pas d'action `export` : elle ne peut que lever. Le lien d'export du
-    # mobile pointe en réalité sur la route non-mobile.
-    it "devrait exporter le plan en PDF" do
-      pending "Mobile::WorkPlansController n'a pas d'action #export"
-      sign_in teacher
-
-      get mobile_export_work_plan_path(work_plan)
-
-      expect(response).to be_successful
+  # La route `mobile_export_work_plan` a été retirée : elle visait une action
+  # `#export` qui n'a jamais existé dans `Mobile::WorkPlansController`, et
+  # personne ne la construisait. L'export PDF passe par la route non-mobile,
+  # couverte dans `work_plans_controller_spec`.
+  describe "l'export PDF" do
+    it "n'a plus de route dans le namespace mobile" do
+      expect(Rails.application.routes.routes.map(&:name)).not_to include("mobile_export_work_plan")
     end
   end
 end
