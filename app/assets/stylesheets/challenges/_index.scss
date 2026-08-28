@@ -239,6 +239,12 @@
 
 .transfer-skill-btn {
   @include pill-cta;
+  // Dans une colonne flex à hauteur bornée, les enfants RÉTRÉCISSENT par défaut
+  // pour tenir dans le cadre : les cartes s'écrasaient à leur hauteur minimale
+  // et leur texte débordait sur la voisine. `flex-shrink: 0` leur rend leur
+  // hauteur, et c'est le conteneur qui défile.
+  flex-shrink: 0;
+  align-items: flex-start;
   justify-content: space-between;
   width: 100%;
   height: auto;
@@ -251,10 +257,25 @@
   &:hover {
     background-color: rgba($rose, 0.16);
   }
+
+  i {
+    // La flèche reste sur la première ligne du nom, quel que soit le nombre de
+    // lignes qu'il occupe.
+    flex: 0 0 auto;
+    margin-top: 0.2rem;
+  }
 }
 
+// Le nom d'une compétence va de 10 à 206 caractères dans la base. Passé trois
+// lignes, une seule carte remplirait la modale : on coupe, et le nom entier
+// reste accessible au survol.
 .transfer-skill-nom {
+  display: -webkit-box;
   flex: 1 1 auto;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-height: 1.3;
 }
 
 .transfer-vide,
