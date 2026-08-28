@@ -133,4 +133,17 @@ RSpec.describe Challenge, type: :model do
       expect(Challenge.where(skill:).ordered.to_a).to eq([second, first])
     end
   end
+
+  # Un exercice tient à son grade, via la compétence, pas à la personne qui l'a
+  # écrit : il doit survivre au départ de son auteur.
+  describe "sans auteur" do
+    it "reste valide et enregistrable" do
+      challenge = create(:challenge)
+      challenge.user = nil
+
+      expect(challenge).to be_valid
+      expect(challenge.save).to be true
+    end
+  end
+
 end

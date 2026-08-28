@@ -27,17 +27,25 @@ Rails.application.routes.draw do
   get "/dashboard", to: "dashboard#show"
   post "add_discovery", to: "dashboard#add_discovery_method"
   get "mentions_legales", to: "pages#mentions_legales"
+  # Le service worker doit être servi depuis la RACINE : il ne pilote que les
+  # pages situées sous son propre chemin. Depuis /assets/, il ne verrait jamais
+  # /mobile/...
+  get "service-worker.js", to: "pwa#service_worker", as: :service_worker
   # ############### MOBILE ROUTES###############
   namespace "mobile" do
     resources :work_plans, only: [:index]
-    resources :students, only: [:results]
+    # `resources :students, only: [:results]` a été retiré : `:results` n'est pas
+    # une action REST et n'était déclarée ni en `member` ni en `collection`, la
+    # ligne ne générait donc aucune route. Les élèves sont servis par la
+    # ressource imbriquée ci-dessous.
     resources :classrooms, only: [:index, :show] do
       resources :students, only: [:show, :index]
     end
     get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
-  # Page d'attente : elle s'affiche instantanément dans l'onglet, le temps que le PDF
-  # se génère (cf. WorkPlansController#export)
-  get "work_plans/:id/export", to: "work_plans#export", as: :export_work_plan
+    # `get "work_plans/:id/export"` a été retiré : il visait
+    # `Mobile::WorkPlansController#export`, une action qui n'a jamais existé, et
+    # personne ne construisait ce chemin. L'export PDF passe par la route
+    # non-mobile `export_work_plan`, servie par `WorkPlansController#export`.
   end
   # ############### CONTACTROUTES ###############
   post "", to: "contact#create", as: :contact_create

@@ -1,14 +1,14 @@
-<%= turbo_frame_tag("classroom_#{classroom.id}_list") do%>
-	<% if students.nil? %>
-		<h4 class='--grisF ms-2'>Pas d'élèves</h4>
+<%= turbo_frame_tag("classroom_#{classroom.id}_list") do %>
+	<%# `students.nil?` laissait une classe vide s'afficher sans un mot : une
+	    collection vide n'est pas nil. %>
+	<% if students.blank? %>
+		<p class="mobile-eleve-vide">Cette classe n'a pas encore d'élève.</p>
 	<% else %>
 		<% students.each do |student| %>
-			<%= turbo_frame_tag(student) do%>
-				<%= link_to mobile_classroom_student_path(classroom,student) do%>
-					<h4 class='--grisF ms-2'>
-						<%= student.first_name.capitalize %>
-						<i class="fa-solid fa-chevron-right --roseL"></i>
-					</h4>
+			<%= turbo_frame_tag(student) do %>
+				<%= link_to mobile_classroom_student_path(classroom, student), class: "mobile-eleve-ligne" do %>
+					<span class="mobile-eleve-prenom"><%= student.first_name.capitalize %></span>
+					<i class="fa-solid fa-chevron-right --roseL"></i>
 				<% end %>
 			<% end %>
 		<% end %>

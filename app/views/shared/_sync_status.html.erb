@@ -1,0 +1,23 @@
+<%# Bandeau des évaluations en attente d'envoi.
+
+    Il reste muet tant que tout est enregistré — un bandeau permanent devient du
+    bruit qu'on n'attribue plus — et n'apparaît que pour dire quelque chose :
+    hors connexion, envoi en cours, refus du serveur, session expirée, puis un
+    mot de la fin quand la file se vide.
+
+    `role="status"` et `aria-live="polite"` : un lecteur d'écran l'annonce sans
+    couper ce que l'enseignant est en train de faire.
+
+    La logique vit dans app/javascript/eval_queue.js. %>
+<div class="sync-status"
+     data-controller="sync-status"
+     role="status"
+     aria-live="polite"
+     hidden>
+  <span class="sync-status-message" data-sync-status-target="message"></span>
+  <button type="button"
+          class="sync-status-retry"
+          data-action="click->sync-status#reessayer"
+          data-sync-status-target="reessayer"
+          hidden>Réessayer</button>
+</div>

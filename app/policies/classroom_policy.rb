@@ -19,8 +19,13 @@ class ClassroomPolicy < ApplicationPolicy
     user_is_owner_or_admin?
   end
 
+  # Se séparer de la classe — donc, si elle est partagée, la céder à un collègue —
+  # est la décision du propriétaire. `user_is_owner_or_admin?` acceptait aussi les
+  # profs du partage : un DELETE direct sur /classrooms/:id leur en donnait la
+  # propriété, et le propriétaire la perdait. Pour quitter une classe partagée, un
+  # collègue supprime son lien de partage.
   def destroy?
-    user_is_owner_or_admin?
+    user.admin? || record.user == user
   end
 
   def show?

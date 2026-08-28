@@ -1,5 +1,13 @@
 <div class="mobile_index ">
   <nav class='mobile-eval-header'>
+    <%# Retour à la liste, avec l'élève désigné : on ne quittait cet écran qu'en
+        revenant en arrière dans le navigateur, ce qui n'existe pas dans une PWA
+        installée — il n'y a plus de barre. %>
+    <%= link_to mobile_work_plans_path(eleve: @work_plan.student_id),
+                class: "mobile-retour", "aria-label": "Retour aux plans de travail" do %>
+      <i class="fa-solid fa-chevron-left"></i>
+      <span>Plans de travail</span>
+    <% end %>
     <div class=' mobile-eval-header-details'>
       <div class= 'first-name'>
         <h6 class="mobile-wp-dates">
@@ -15,6 +23,8 @@
     </div>
     <%# <div class="greyline-mobile"></div> %>
   </nav>
+  <%= render "shared/mobile_intro",
+             texte: "Touchez une compétence pour enregistrer son évaluation." %>
   <div class="mobile-eval-wp" data-controller="display-right-anchor">
     <%= render "eval_mobile_work_plan_domains", work_plan: @work_plan, domains: @domains %>
   </div>

@@ -35,6 +35,16 @@ import "./plugins/stimulus_scroll_progress"
 // pas (Turbo attend data-turbo-method). Sans ça, ces liens partent en GET → erreur.
 Rails.start()
 
+// Service worker : lecture hors ligne du front mobile. Enregistré seulement sur
+// un contexte sécurisé — https en production, localhost en développement — car
+// un service worker y est refusé partout ailleurs. Son échec ne doit rien
+// casser : sans lui on perd la consultation hors réseau, pas l'application.
+if ("serviceWorker" in navigator && window.isSecureContext) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+  });
+}
+
 // Initialize on Turbo load
 document.addEventListener('turbo:load', () => {
   initFlatpickr();

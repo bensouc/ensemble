@@ -38,7 +38,11 @@
 <% infos = capture do %>
   <% if in_index %>
     <div class="challenge-infos-box">
-      <p class="ms-5 --grisC --italic"> <i class='fas fa-pen fa-xs'></i> <%= challenge.user.first_name %></p>
+      <%# Un exercice dont l'auteur a quitté l'école n'en a plus : on tait la
+          ligne au lieu de planter sur `nil.first_name`. %>
+      <% if challenge.user %>
+        <p class="ms-5 --grisC --italic"> <i class='fas fa-pen fa-xs'></i> <%= challenge.user.first_name %></p>
+      <% end %>
       <%if !challenge.work_plan_skills.empty?  %>
         <p class=" --grisC --italic">Utilisé sur d'autres plans de travail</p>
       <% end %>

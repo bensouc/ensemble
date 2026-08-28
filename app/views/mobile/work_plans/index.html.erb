@@ -1,5 +1,7 @@
 <div class="mobile_index">
 	<h1 class="title">Evaluation des Plans de Travail</h1>
+	<%= render "shared/mobile_intro",
+	           texte: "Renseignez ici les évaluations des plans de travail de vos élèves, en classe, au fil de leur travail." %>
 	<div class="greyline-mobile"></div>
 	<% if @my_classrooms.empty? %>
 		<div class="mobile-message">
@@ -18,27 +20,30 @@
 		</div>
 	<% else %>
 		<% @my_classrooms.each do |classroom| %>
-			<div class="mobile_wp_one_classroom">
-				<h1>
-					<%= classroom.grade.grade_level %>
-					-
-					<%= classroom.name %>
-				</h1>
-				<%# WP assigned %>
-				<% classroom.students.order(:first_name).each do |student| %>
-					<div class="w100 mt-1 mb-1" data-controller='wp-by-student'>
-						<%# START of folder + student name + student wp count %>
-						<%= render "index_wp_student_name", student: student %>
-						<%# END of folder + student name + student wp count %>
-						<div data-wp-by-student-target="wplist" class='d-none'>
-							<% @my_work_plans.select { |a| a.student_id == student.id }.each do |wp| %>
-								<%= render "index_wp_line", wp: wp %>
-							<% end %>
+			<%# La même carte que sur l'écran des classes : la classe contient ses
+			    élèves, et chaque élève ses plans de travail. %>
+			<div class="mobile-classe-carte">
+				<div class="mobile-classe-entete --titre">
+					<span class="mobile-classe-niveau"><%= classroom.grade.grade_level.upcase %></span>
+					<span class="mobile-classe-corps">
+						<span class="mobile-classe-nom"><%= classroom.safe_name %></span>
+						<span class="mobile-classe-effectif"><%= eleves_label(classroom.students.size) %></span>
+					</span>
+				</div>
+				<div class="mobile-classe-eleves">
+					<% classroom.students.order(:first_name).each do |student| %>
+						<%# `eleve` vient du retour depuis une évaluation : on rouvre sa liste. %>
+						<div data-controller="wp-by-student"
+						     data-wp-by-student-ouvert-value="<%= params[:eleve].to_s == student.id.to_s %>">
+							<%= render "index_wp_student_name", student: student %>
+							<div data-wp-by-student-target="wplist" class="d-none mobile-eleve-plans">
+								<% @my_work_plans.select { |plan| plan.student_id == student.id }.each do |wp| %>
+									<%= render "index_wp_line", wp: wp %>
+								<% end %>
+							</div>
 						</div>
-					</div>
-				<% end %>
-			</div>
-			<div class="greyline-mobile">
+					<% end %>
+				</div>
 			</div>
 		<% end %>
 	<% end %>

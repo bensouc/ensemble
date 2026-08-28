@@ -53,8 +53,11 @@ class ChallengePolicy < ApplicationPolicy
     user.admin || record.skill.school == user.school
   end
 
+  # `record.user&.admin?` : un exercice dont l'auteur a quitté l'école n'a plus
+  # d'auteur, et `record.user.admin?` levait alors un NoMethodError. Le
+  # rattachement qui compte est `record.skill.school`, juste au-dessus.
   def user_can_destroy?
-    record.skill.school == user.school || user.admin? || record.user.admin?
+    record.skill.school == user.school || user.admin? || record.user&.admin?
   end
 
   def challenge_not_used?

@@ -1,8 +1,17 @@
-<%= turbo_frame_tag(classroom) do%>
-	<%= link_to mobile_classrooms_path  do %>
-		<h2 class='--grisF'>
-      <%= classroom.name.empty? ?  classroom.grade.name : classroom.name %> <i class="fas fa-folder-open --roseL"></i>
-		</h2>
-	<% end %>
-	<%= render 'mobile/students/list', classroom: classroom, students: students %>
+<%= turbo_frame_tag(classroom) do %>
+	<%# Dépliée, la carte CONTIENT ses élèves. La liste flottait auparavant sous
+	    la carte, sans rien qui la rattache à la classe qu'on venait d'ouvrir. %>
+	<div class="mobile-classe-carte --ouverte">
+		<%= link_to mobile_classrooms_path, class: "mobile-classe-entete" do %>
+			<span class="mobile-classe-niveau"><%= classroom.grade.grade_level.upcase %></span>
+			<span class="mobile-classe-corps">
+				<span class="mobile-classe-nom"><%= classroom.safe_name %></span>
+				<span class="mobile-classe-effectif"><%= eleves_label(students.size) %></span>
+			</span>
+			<i class="fa-solid fa-chevron-down --roseL"></i>
+		<% end %>
+		<div class="mobile-classe-eleves">
+			<%= render "mobile/students/list", classroom: classroom, students: students %>
+		</div>
+	</div>
 <% end %>
