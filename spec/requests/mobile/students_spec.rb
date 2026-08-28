@@ -30,19 +30,38 @@ RSpec.describe "Mobile::Students", type: :request do
       expect(response.body).to include("Leo")
     end
 
-    # `StudentPolicy#show?` renvoie `true` sans condition : n'importe quel
-    # enseignant connecté peut consulter n'importe quel élève, même d'une autre
-    # école. La spec décrit le comportement ATTENDU et reste `pending` : le jour
-    # où la policy est corrigée, elle passera au vert et signalera qu'il faut la
-    # dé-marquer.
-    it "devrait refuser l'élève d'une autre école" do
-      pending "StudentPolicy#show? renvoie true sans condition"
+    it "refuse l'élève d'une autre école" do
       ailleurs = create(:student, classroom: create(:classroom, grade: create(:grade, school: create(:school))))
       sign_in teacher
 
       get mobile_classroom_student_path(classroom, ailleurs)
 
       expect(response).to redirect_to(dashboard_path)
+    end
+
+    it "refuse l'élève de la classe d'un collègue, même dans son école" do
+      collegue = create(:user, admin: false, demo: false)
+      school.add_teacher(collegue)
+      voisin = create(:student, classroom: create(:classroom, user: collegue, grade:))
+      sign_in teacher
+
+      get mobile_classroom_student_path(classroom, voisin)
+
+      expect(response).to redirect_to(dashboard_path)
+    end
+
+    it "accepte l'élève d'une classe partagée avec soi" do
+      collegue = create(:user, admin: false, demo: false)
+      school.add_teacher(collegue)
+      partagee = create(:classroom, user: collegue, grade:)
+      create(:shared_classroom, user: teacher, classroom: partagee)
+      confie = create(:student, classroom: partagee, first_name: "mia")
+      sign_in teacher
+
+      get mobile_classroom_student_path(partagee, confie)
+
+      expect(response).to be_successful
+      expect(response.body).to include("Mia")
     end
   end
 
