@@ -18,6 +18,21 @@ RSpec.describe "L'hébergement annoncé", type: :request do
     expect(response.body).not_to include("Scalingo", "SCALINGO", "OUTSCALE")
   end
 
+  # La gamme VPS d'OVHcloud est hors du périmètre certifié ISO 27001 : la
+  # mention héritée de Scalingo ne peut pas être reportée. Cette spec est le
+  # garde-fou — on ne la remet pas par inadvertance.
+  it "ne revendique pas une certification de sécurité qu'on n'a pas" do
+    get mentions_legales_path
+
+    expect(response.body).not_to include("27001")
+  end
+
+  it "nomme la certification qualité pour ce qu'elle est" do
+    get mentions_legales_path
+
+    expect(response.body).to include("ISO 9001", "management de la qualité")
+  end
+
   it "l'annonce aussi sur la page d'accueil" do
     get root_path
 
