@@ -27,6 +27,10 @@ Rails.application.routes.draw do
   get "/dashboard", to: "dashboard#show"
   post "add_discovery", to: "dashboard#add_discovery_method"
   get "mentions_legales", to: "pages#mentions_legales"
+  # Le service worker doit être servi depuis la RACINE : il ne pilote que les
+  # pages situées sous son propre chemin. Depuis /assets/, il ne verrait jamais
+  # /mobile/...
+  get "service-worker.js", to: "pwa#service_worker", as: :service_worker
   # ############### MOBILE ROUTES###############
   namespace "mobile" do
     resources :work_plans, only: [:index]

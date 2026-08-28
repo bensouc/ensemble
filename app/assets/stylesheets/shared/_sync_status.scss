@@ -67,3 +67,16 @@
     }
   }
 }
+
+// « Vous consultez des données du … » : posé sous le bandeau de synchronisation,
+// plus discret que lui — il informe, il n'appelle pas à agir.
+.stale-notice {
+  padding: 0.35rem 1rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  text-align: center;
+  color: $grisF;
+  background-color: $bleuC;
+
+  &[hidden] { display: none; }
+}

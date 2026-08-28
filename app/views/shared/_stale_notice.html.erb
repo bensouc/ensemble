@@ -1,0 +1,6 @@
+<%# « Vous consultez des données du … ». Le service worker estampille les pages
+    qu'il sert depuis son cache ; sans cette ligne, un enseignant évaluerait sur
+    une classe périmée sans le savoir. Voir app/views/pwa/service_worker.js.erb. %>
+<div class="stale-notice" data-controller="stale-notice" role="status" aria-live="polite" hidden>
+  <span data-stale-notice-target="message"></span>
+</div>
