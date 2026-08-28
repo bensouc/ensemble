@@ -32,7 +32,9 @@
 				</div>
 				<div class="mobile-classe-eleves">
 					<% classroom.students.order(:first_name).each do |student| %>
-						<div data-controller="wp-by-student">
+						<%# `eleve` vient du retour depuis une évaluation : on rouvre sa liste. %>
+						<div data-controller="wp-by-student"
+						     data-wp-by-student-ouvert-value="<%= params[:eleve].to_s == student.id.to_s %>">
 							<%= render "index_wp_student_name", student: student %>
 							<div data-wp-by-student-target="wplist" class="d-none mobile-eleve-plans">
 								<% @my_work_plans.select { |plan| plan.student_id == student.id }.each do |wp| %>

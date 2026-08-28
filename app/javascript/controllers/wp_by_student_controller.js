@@ -2,8 +2,16 @@ import { Controller } from "@hotwired/stimulus";
 import Swal from 'sweetalert2'
 export default class extends Controller {
   static targets = ['count', 'wplist', 'folderopen', 'folderclosed', 'wpLine'];
+  static values = { ouvert: Boolean };
+
+  // Revenir d'une évaluation doit ramener là où on était : la liste de l'élève
+  // se rouvre, et l'écran redescend dessus. Sans cela on retombait en haut
+  // d'une page toute repliée, à chercher l'élève qu'on venait de quitter.
   connect() {
-    // console.log('wp-by-student');
+    if (!this.ouvertValue) return;
+
+    this.displayList();
+    this.element.scrollIntoView({ block: 'center' });
   }
 
   displayList() {

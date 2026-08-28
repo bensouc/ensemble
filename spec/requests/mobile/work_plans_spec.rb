@@ -51,6 +51,24 @@ RSpec.describe "Mobile::WorkPlans", type: :request do
     end
 
     # Sans classe, l'écran explique quoi faire au lieu d'afficher une liste vide.
+    # Au retour d'une évaluation, la liste de l'élève doit se rouvrir : on
+    # retombait sinon en haut d'une page toute repliée.
+    it "rouvre la liste de l'élève désigné par l'URL" do
+      sign_in teacher
+
+      get mobile_work_plans_path(eleve: student.id)
+
+      expect(response.body).to include(%(data-wp-by-student-ouvert-value="true"))
+    end
+
+    it "n'ouvre rien quand aucun élève n'est désigné" do
+      sign_in teacher
+
+      get mobile_work_plans_path
+
+      expect(response.body).not_to include(%(data-wp-by-student-ouvert-value="true"))
+    end
+
     it "guide l'enseignant qui n'a pas encore de classe" do
       sans_classe = create(:user, admin: false, demo: false)
       school.add_teacher(sans_classe)

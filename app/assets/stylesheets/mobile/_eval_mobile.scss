@@ -15,6 +15,24 @@
   border-bottom: thin solid $grisC;
 }
 
+// Le retour vers la liste. Dans une PWA installée il n'y a plus de barre de
+// navigateur : sans ce lien, on ne sort plus de l'écran d'évaluation.
+.mobile-retour {
+  display: inline-flex;
+  align-items: center;
+  gap: $espace-xs;
+  min-height: $cible-tactile;
+  padding-right: $espace-sm;
+  color: $rose !important;
+  font-size: $texte-sm;
+  font-weight: 600;
+  text-decoration: none;
+
+  &:active {
+    opacity: 0.6;
+  }
+}
+
 .mobile-eval-header-details {
   display: flex;
   align-items: center;
