@@ -427,6 +427,35 @@ RSpec.describe ChallengesController, type: :controller do
       expect(exercice.reload.user).to eq(user)
     end
 
+    # Le compteur d'exercices de la compétence quittée doit tomber, sinon il
+    # annonce un exercice qui n'y est plus.
+    it "rafraîchit la compétence quittée" do
+      autre = create(:challenge, user:, skill: depart)
+
+      patch :transfer, params: { id: exercice.id, skill_id: arrivee.id }, format: :turbo_stream
+
+      frame = assigns(:frames).find { |f| f[:liste_id].include?("skill_#{depart.id}_") }
+      expect(frame[:compte]).to eq(1)
+      expect(frame[:challenges]).to contain_exactly(autre)
+    end
+
+    # L'arrivée n'est à l'écran que si elle porte la MÊME ceinture : le filtre de
+    # l'index porte dessus. Son compteur restait sinon figé sur l'ancien nombre.
+    it "rafraîchit aussi la compétence d'arrivée quand elle est à l'écran" do
+      patch :transfer, params: { id: exercice.id, skill_id: arrivee.id }, format: :turbo_stream
+
+      cibles = assigns(:frames).map { |f| f[:liste_id] }
+      expect(cibles).to include("skill_#{depart.id}_challenges_list", "skill_#{arrivee.id}_challenges_list")
+    end
+
+    it "ne rafraîchit que la compétence quittée quand l'arrivée est sur une autre ceinture" do
+      ailleurs = create(:skill, domain:, school: user.school, level: 6)
+
+      patch :transfer, params: { id: exercice.id, skill_id: ailleurs.id }, format: :turbo_stream
+
+      expect(assigns(:frames).map { |f| f[:liste_id] }).to eq(["skill_#{depart.id}_challenges_list"])
+    end
+
     # Le domaine ne se choisit pas dans la modale : une compétence d'ailleurs ne
     # peut arriver que par un paramètre forgé.
     it "refuse une compétence d'un autre domaine" do
@@ -466,6 +495,19 @@ RSpec.describe ChallengesController, type: :controller do
       get :transfer_form, params: { id: exercice.id, level: 5 }
 
       expect(assigns(:skills)).to contain_exactly(voisine)
+    end
+
+    # `.sort` triait par ID — ActiveRecord compare les clés primaires — donc dans
+    # l'ordre de création. Ce doit être celui de la progression.
+    it "les range dans l'ordre de leur position, pas de leur création" do
+      derniere = create(:skill, domain:, school: user.school, level: 3, name: "en dernier")
+      premiere = create(:skill, domain:, school: user.school, level: 3, name: "en premier")
+      derniere.update_column(:position, 9)
+      premiere.update_column(:position, 1)
+
+      get :transfer_form, params: { id: exercice.id, level: 3 }
+
+      expect(assigns(:skills).map(&:name)).to eq(["en premier", "en dernier"])
     end
 
     # Se déplacer vers là où l'on est déjà n'a pas de sens : on ne le propose pas.

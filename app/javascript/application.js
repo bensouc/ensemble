@@ -22,6 +22,7 @@ import "./plugins/trix-config"
 import "@rails/actiontext"
 
 // Stimulus controllers
+import "./stream_actions"
 import "./controllers"
 
 // Plugins
