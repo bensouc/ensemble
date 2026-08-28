@@ -7,7 +7,11 @@ class Challenge < ApplicationRecord
   acts_as_list scope: [:skill_id, :for_belt]
 
   belongs_to :skill
-  belongs_to :user
+  # Un exercice survit au départ de son auteur : c'est son grade, via la
+  # compétence, qui le rattache à l'école. Sans `optional`, la nullification à la
+  # suppression du compte passerait (elle écrit en `update_all`) mais le moindre
+  # enregistrement ultérieur de l'exercice échouerait sur « User must exist ».
+  belongs_to :user, optional: true
   has_rich_text :content
   has_many_attached :photos, dependent: :destroy
   has_one :school, through: :skill

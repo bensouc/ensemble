@@ -17,8 +17,6 @@ class SharedClassroomsController < ApplicationController
                   alert: "Un partage a échoué, cette classe est déjà partagée avec #{teacher.first_name.capitalize}"
       return
     end
-    classroom.shared = true
-    classroom.save
     message = current_user.first_name + " a partagé avec vous la classe " + classroom.name.to_s
     teachers.each do |teacher|
       SharingMessages.send_ensemble_message_to_user(teacher, message)
@@ -26,14 +24,15 @@ class SharedClassroomsController < ApplicationController
     redirect_to classrooms_path, notice: "Partage réussi"
   end
 
+  # Défaire un partage : le collègue quitte la classe, ou le propriétaire la
+  # reprend. La classe et ses élèves ne sont pas touchés.
+  #
+  # On autorise le PARTAGE et non la classe : sur la classe, n'importe quel
+  # collègue passait, et pouvait donc retirer le partage d'un autre collègue.
   def destroy
     shared_classroom = SharedClassroom.find(params[:id])
-    # get original classroom
-    classroom = shared_classroom.classroom
-    authorize classroom
+    authorize shared_classroom
     shared_classroom.destroy
-    # if sharedclassrooms.count == 0 => classroom.shared = false
-    classroom.shared = false if classroom.shared_classrooms.count
     redirect_to classrooms_path
   end
 
