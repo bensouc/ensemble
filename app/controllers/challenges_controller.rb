@@ -6,7 +6,8 @@
 class ChallengesController < ApplicationController
   before_action :set_work_plan_skill, only: [:clone, :display_challenges] # , :update, :show]
   before_action :set_challenge,
-                only: [:clone, :update, :display_challenges, :show, :edit, :destroy, :move, :duplicate]
+                only: [:clone, :update, :display_challenges, :show, :edit, :destroy, :move, :duplicate,
+                       :transfer_form, :transfer]
   skip_after_action :verify_policy_scoped, only: [:index]
   helper_method :challenges_frame_id, :challenges_list_frame_id
 
@@ -154,6 +155,34 @@ class ChallengesController < ApplicationController
     end
   end
 
+  # La modale de déplacement, rechargée à chaque choix de ceinture : choisir une
+  # ceinture change la liste des compétences proposées.
+  #
+  # On reste dans le domaine de l'exercice — on ne déménage pas un exercice d'un
+  # domaine ni d'un niveau à l'autre, seulement d'une compétence à une autre.
+  def transfer_form
+    authorize @challenge, :transferable?
+    @domain = @challenge.skill.domain
+    @level = (params[:level].presence || @challenge.skill.level).to_i
+    @skills = Skill.where(domain: @domain, level: @level).where.not(id: @challenge.skill_id).sort
+  end
+
+  # Ranger l'exercice sous une autre compétence.
+  #
+  # `for_belt` n'est PAS accepté en paramètre : un exercice de ceinture reste un
+  # exercice de ceinture, un exercice de compétence reste un exercice de
+  # compétence. Les deux listes ne se mélangent jamais.
+  def transfer
+    authorize @challenge, :transferable?
+    depart = @challenge.skill
+    arrivee = Skill.find(params.require(:skill_id))
+
+    return renvoyer_transfert_refuse unless transfert_permis?(depart, arrivee)
+
+    @challenge.transfer_to_skill!(arrivee, auteur: current_user)
+    preparer_retour_transfert(depart, arrivee)
+  end
+
   def display_challenges
     skip_authorization
     # `classic` manquait : les exercices de ceinture apparaissaient dans le
@@ -206,6 +235,48 @@ class ChallengesController < ApplicationController
     else
       Challenge.classic.where(skill: @challenge.skill).count
     end
+  end
+
+  # Le domaine et le niveau ne se choisissent pas : une compétence d'un autre
+  # domaine arriverait par un paramètre forgé, pas par la modale.
+  def transfert_permis?(depart, arrivee)
+    arrivee.domain_id == depart.domain_id && arrivee.id != depart.id
+  end
+
+  def renvoyer_transfert_refuse
+    message = "Déplacement impossible vers cette compétence."
+    @challenges = skill_challenges_list
+    respond_to do |format|
+      format.html { redirect_to challenges_path, alert: message }
+      format.turbo_stream { flash.now[:alert] = message }
+    end
+    nil
+  end
+
+  # La compétence d'arrivée est souvent HORS de l'écran : le filtre de l'index
+  # porte sur une ceinture, et on déplace le plus souvent vers une autre. Sans le
+  # dire, l'exercice semblerait s'être évaporé.
+  def preparer_retour_transfert(depart, arrivee)
+    preparer_frames_de_depart(depart)
+    message = "Exercice déplacé vers « #{arrivee.name} » (ceinture #{Belt::BELT_COLORS[arrivee.level - 1]})."
+
+    respond_to do |format|
+      format.html { redirect_to challenges_path, notice: message }
+      format.turbo_stream { flash.now[:notice] = message }
+    end
+  end
+
+  # Les frames à rafraîchir sont celles de la compétence d'ORIGINE, que
+  # l'exercice vient de quitter. On les nomme explicitement plutôt que de faire
+  # pointer `@challenge` en arrière : il est déjà enregistré ailleurs, le rendre
+  # sale en mémoire égarerait la vue.
+  def preparer_frames_de_depart(depart)
+    prefixe = @challenge.for_belt? ? "for_belt_" : nil
+    @frame_liste = "#{prefixe}skill_#{depart.id}_challenges_list"
+    @frame_compte = "#{prefixe}skill_#{depart.id}_count"
+    @challenges = Challenge.includes([:rich_text_content, :work_plan_skills, :user]).
+      where(skill_id: depart.id, for_belt: @challenge.for_belt).ordered
+    @count = @challenges.size
   end
 
   def set_filters

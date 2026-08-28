@@ -12,31 +12,31 @@ class ChallengePolicy < ApplicationPolicy
   end
 
   def create?
-    user_is_owner_or_admin?
+    same_school_or_admin?
   end
 
   def show?
-    user_is_owner_or_admin?
+    same_school_or_admin?
   end
 
   def update?
-    user_is_owner_or_admin?
+    same_school_or_admin?
   end
 
   def edit?
-    user_is_owner_or_admin?
+    same_school_or_admin?
   end
 
   def clone?
-    user_is_owner_or_admin?
+    same_school_or_admin?
   end
 
   def display_challenges?
-    user_is_owner_or_admin?
+    same_school_or_admin?
   end
 
   def move?
-    user_is_owner_or_admin?
+    same_school_or_admin?
   end
 
   def destroy?
@@ -47,9 +47,21 @@ class ChallengePolicy < ApplicationPolicy
     user_can_destroy? && challenge_not_used?
   end
 
+  # Déplacer un exercice sous une autre compétence n'est possible que tant qu'il
+  # ne sert à personne : dès qu'un plan de travail s'y réfère, le changer de
+  # compétence réécrirait l'historique d'un élève. Même garde-fou que la
+  # suppression, `challenge_not_used?`.
+  def transferable?
+    same_school_or_admin? && challenge_not_used?
+  end
+
   private
 
-  def user_is_owner_or_admin?
+  # Le nom précédent, `same_school_or_admin?`, décrivait une règle que cette
+  # méthode n'applique pas : elle ne regarde pas qui a écrit l'exercice, mais
+  # l'école de sa compétence. TOUS les enseignants d'une école travaillent sur
+  # ses exercices — c'est le principe, et le nom le disait de travers.
+  def same_school_or_admin?
     user.admin || record.skill.school == user.school
   end
 

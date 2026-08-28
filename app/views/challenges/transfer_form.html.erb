@@ -1,0 +1,41 @@
+<%= turbo_frame_tag "transfer_challenge_#{@challenge.id}" do %>
+	<p class="transfer-intro">
+		L'exercice reste dans le domaine <strong><%= @domain.name %></strong> et sera ajouté
+		en fin de liste de la compétence choisie.
+	</p>
+
+	<%# Choisir une ceinture recharge la liste des compétences, sans quitter la
+	    modale : la frame se re-rend, le reste de la page ne bouge pas. %>
+	<%= form_with url: transfer_form_challenge_path(@challenge), method: :get,
+	              data: { controller: "submitonchange", action: "change->submitonchange#submitForm" } do |f| %>
+		<label class="transfer-label" for="transfer_level_<%= @challenge.id %>">Ceinture</label>
+		<%= f.select :level,
+		             options_for_select(Belt::BELT_COLORS.each_with_index.map { |nom, i| [nom.capitalize, i + 1] }, @level),
+		             {},
+		             id: "transfer_level_#{@challenge.id}", class: "area transfer-select" %>
+	<% end %>
+
+	<p class="transfer-label">Compétence d'arrivée</p>
+	<% if @skills.empty? %>
+		<p class="transfer-vide">
+			Aucune autre compétence à cette ceinture dans ce domaine. Choisissez une autre ceinture.
+		</p>
+	<% else %>
+		<div class="transfer-skills">
+			<% @skills.each do |skill| %>
+				<%# `data-bs-dismiss` referme la modale AVANT l'envoi : la liste re-rendue
+				    emporte le nœud de la modale avec elle, et Bootstrap laisserait sinon
+				    son voile noir sur la page. %>
+				<%= button_to transfer_challenge_path(@challenge),
+				              method: :patch,
+				              params: { skill_id: skill.id },
+				              form: { data: { turbo_frame: "_top" } },
+				              class: "transfer-skill-btn",
+				              data: { bs_dismiss: "modal" } do %>
+					<span class="transfer-skill-nom"><%= skill.name %></span>
+					<i class="fa-solid fa-arrow-right"></i>
+				<% end %>
+			<% end %>
+		</div>
+	<% end %>
+<% end %>

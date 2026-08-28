@@ -161,6 +161,12 @@ Rails.application.routes.draw do
     member do
       patch :move
       post :duplicate
+      # `move` désigne le rang DANS la liste (les flèches ⬆️⬇️). Changer de
+      # compétence est autre chose, et « transfer » est déjà le mot de
+      # l'application pour rattacher un enregistrement à un autre parent —
+      # cf. `StudentPolicy#transfer?` et `Student#transferable_classrooms`.
+      get :transfer_form
+      patch :transfer
     end
   end
 

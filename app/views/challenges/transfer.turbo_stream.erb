@@ -1,0 +1,10 @@
+<%= turbo_stream.prepend "flash", partial: "shared/flashes" %>
+<%# L'exercice a quitté cette compétence : on re-rend sa liste entière pour que
+    les positions et les flèches restent justes, et on remet le compte à jour.
+    La compétence d'ARRIVÉE est presque toujours hors de l'écran — le filtre de
+    l'index porte sur une ceinture, et on déplace vers une autre : c'est le
+    message qui dit où l'exercice est parti. %>
+<%= turbo_stream.update @frame_liste do %>
+  <%= render "challenges/challenges_list", challenges: @challenges %>
+<% end %>
+<%= turbo_stream.update @frame_compte, "#{@count} exo#{@count > 1 ? 's' : ''}" %>

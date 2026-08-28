@@ -203,11 +203,11 @@ RSpec.describe ChallengesController, type: :controller do
 
       get :index
 
-      expect(response.body).to include(move_challenge_path(first, direction: "down"))
-      expect(response.body).to include(move_challenge_path(second, direction: "up"))
+      expect(response.body).to include(transfer_challenge_path(first, direction: "down"))
+      expect(response.body).to include(transfer_challenge_path(second, direction: "up"))
       # pas de flèche vers le haut sur le premier, ni vers le bas sur le dernier
-      expect(response.body).not_to include(move_challenge_path(first, direction: "up"))
-      expect(response.body).not_to include(move_challenge_path(second, direction: "down"))
+      expect(response.body).not_to include(transfer_challenge_path(first, direction: "up"))
+      expect(response.body).not_to include(transfer_challenge_path(second, direction: "down"))
       expect(response.body.index(first.name)).to be < response.body.index(second.name)
     end
   end
@@ -395,6 +395,84 @@ RSpec.describe ChallengesController, type: :controller do
       sign_in(user)
       get :display_challenges, params: { id: challenge.id, work_plan_skill_id: work_plan_skill.id }
       expect(response).to render_template("challenges/_challenge")
+    end
+  end
+  # Déplacer un exercice sous une autre compétence du MÊME domaine.
+  describe "#transfer" do
+    let(:domain) { create(:domain) }
+    let(:depart) { create(:skill, domain:, school: user.school, level: 3) }
+    let(:arrivee) { create(:skill, domain:, school: user.school, level: 3) }
+    let!(:exercice) { create(:challenge, user:, skill: depart) }
+
+    before { sign_in user }
+
+    it "range l'exercice sous la compétence choisie" do
+      patch :transfer, params: { id: exercice.id, skill_id: arrivee.id }
+
+      expect(exercice.reload.skill).to eq(arrivee)
+    end
+
+    it "dit où il est parti — la compétence d'arrivée est souvent hors de l'écran" do
+      patch :transfer, params: { id: exercice.id, skill_id: arrivee.id }
+
+      expect(flash[:notice]).to include(arrivee.name)
+    end
+
+    it "donne l'exercice au prof qui le déplace" do
+      autre_auteur = create(:user)
+      exercice.update!(user: autre_auteur)
+
+      patch :transfer, params: { id: exercice.id, skill_id: arrivee.id }
+
+      expect(exercice.reload.user).to eq(user)
+    end
+
+    # Le domaine ne se choisit pas dans la modale : une compétence d'ailleurs ne
+    # peut arriver que par un paramètre forgé.
+    it "refuse une compétence d'un autre domaine" do
+      ailleurs = create(:skill, domain: create(:domain), school: user.school, level: 3)
+
+      patch :transfer, params: { id: exercice.id, skill_id: ailleurs.id }
+
+      expect(exercice.reload.skill).to eq(depart)
+    end
+
+    it "refuse de déplacer vers sa propre compétence" do
+      patch :transfer, params: { id: exercice.id, skill_id: depart.id }
+
+      expect(flash[:alert]).to be_present
+    end
+
+    it "refuse un exercice déjà utilisé dans un plan de travail" do
+      create(:work_plan_skill, challenge: exercice, skill: depart, work_plan_domain:)
+
+      patch :transfer, params: { id: exercice.id, skill_id: arrivee.id }
+
+      expect(exercice.reload.skill).to eq(depart)
+    end
+  end
+
+  describe "#transfer_form" do
+    let(:domain) { create(:domain) }
+    let(:depart) { create(:skill, domain:, school: user.school, level: 3) }
+    let!(:exercice) { create(:challenge, user:, skill: depart) }
+
+    before { sign_in user }
+
+    it "propose les compétences de la ceinture demandée, dans le même domaine" do
+      voisine = create(:skill, domain:, school: user.school, level: 5)
+      create(:skill, domain: create(:domain), school: user.school, level: 5)
+
+      get :transfer_form, params: { id: exercice.id, level: 5 }
+
+      expect(assigns(:skills)).to contain_exactly(voisine)
+    end
+
+    # Se déplacer vers là où l'on est déjà n'a pas de sens : on ne le propose pas.
+    it "n'offre pas la compétence de départ" do
+      get :transfer_form, params: { id: exercice.id, level: 3 }
+
+      expect(assigns(:skills)).not_to include(depart)
     end
   end
 end

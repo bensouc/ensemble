@@ -146,4 +146,114 @@ RSpec.describe Challenge, type: :model do
     end
   end
 
+  # Déplacer un exercice sous une autre compétence.
+  #
+  # `update!(skill:)` seul ne suffit pas : `acts_as_list` (0.7.7) ignore le
+  # changement de liste. Mesuré avant correction — la liste d'origine passait de
+  # 1,2,3,4 à 1,2,4 (un trou), et l'exercice emportait son ancienne position dans
+  # la liste d'arrivée, où elle entrait en collision. Ces specs sont le garde-fou
+  # de l'ordre des exercices, qui est une fonctionnalité à part entière.
+  describe "#transfer_to_skill!" do
+    let(:school) { create(:school) }
+    let(:domain) { create(:domain) }
+    let(:depart) { create(:skill, domain:, school:, level: 3) }
+    let(:arrivee) { create(:skill, domain:, school:, level: 3) }
+    let(:auteur) { create(:user) }
+
+    def exercice(nom, competence, for_belt: false)
+      create(:challenge, name: nom, skill: competence, user: auteur, for_belt:)
+    end
+
+    def positions(competence, for_belt: false)
+      Challenge.where(skill: competence, for_belt:).order(:position).pluck(:name, :position)
+    end
+
+    it "referme le trou laissé dans la compétence d'origine" do
+      premier = exercice("A", depart)
+      exercice("B", depart)
+      exercice("C", depart)
+
+      premier.transfer_to_skill!(arrivee, auteur: auteur)
+
+      expect(positions(depart)).to eq([["B", 1], ["C", 2]])
+    end
+
+    it "ajoute l'exercice en QUEUE de la liste d'arrivée" do
+      voyageur = exercice("A", depart)
+      exercice("B", depart)
+      exercice("déjà là", arrivee)
+      exercice("déjà là aussi", arrivee)
+
+      voyageur.transfer_to_skill!(arrivee, auteur: auteur)
+
+      expect(positions(arrivee)).to eq([["déjà là", 1], ["déjà là aussi", 2], ["A", 3]])
+    end
+
+    # Le cas qui cassait : l'exercice arrivait avec sa position d'origine, déjà
+    # occupée dans la liste d'arrivée.
+    it "ne crée aucune position en double, même en cas de collision" do
+      exercice("A", depart)
+      exercice("B", depart)
+      voyageur = exercice("C", depart) # position 3
+      3.times { |i| exercice("cible #{i}", arrivee) } # occupe 1, 2 et 3
+
+      voyageur.transfer_to_skill!(arrivee, auteur: auteur)
+
+      rangs = Challenge.where(skill: arrivee).pluck(:position)
+      expect(rangs.uniq.size).to eq(rangs.size)
+      expect(rangs.sort).to eq([1, 2, 3, 4])
+    end
+
+    it "laisse les deux listes en suite continue" do
+      voyageur = exercice("A", depart)
+      exercice("B", depart)
+      exercice("C", depart)
+      exercice("X", arrivee)
+
+      voyageur.transfer_to_skill!(arrivee, auteur: auteur)
+
+      expect(positions(depart).map(&:last)).to eq([1, 2])
+      expect(positions(arrivee).map(&:last)).to eq([1, 2])
+    end
+
+    # Un exercice de ceinture reste un exercice de ceinture, un exercice de
+    # compétence reste un exercice de compétence : les deux listes ne se
+    # mélangent JAMAIS.
+    it "conserve la nature de l'exercice" do
+      ceinture = exercice("ceinture", depart, for_belt: true)
+
+      ceinture.transfer_to_skill!(arrivee, auteur: auteur)
+
+      expect(ceinture.reload.for_belt).to be true
+    end
+
+    it "n'entre que dans la liste de sa propre nature" do
+      exercice("classique déjà là", arrivee, for_belt: false)
+      ceinture = exercice("ceinture", depart, for_belt: true)
+
+      ceinture.transfer_to_skill!(arrivee, auteur: auteur)
+
+      expect(positions(arrivee, for_belt: true)).to eq([["ceinture", 1]])
+      expect(positions(arrivee, for_belt: false)).to eq([["classique déjà là", 1]])
+    end
+
+    # Déplacer, c'est reprendre l'exercice à son compte : c'est le prof qui
+    # déplace qui décide désormais de sa place dans la progression.
+    it "donne l'exercice à celui qui le déplace" do
+      repreneur = create(:user)
+      voyageur = exercice("A", depart)
+
+      voyageur.transfer_to_skill!(arrivee, auteur: repreneur)
+
+      expect(voyageur.reload.user).to eq(repreneur)
+    end
+
+    it "change bien de compétence" do
+      voyageur = exercice("A", depart)
+
+      voyageur.transfer_to_skill!(arrivee, auteur: auteur)
+
+      expect(voyageur.reload.skill).to eq(arrivee)
+    end
+  end
 end
