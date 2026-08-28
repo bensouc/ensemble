@@ -78,6 +78,16 @@ RSpec.describe "challenges/transfer_form" do
     expect(rendered).to include("Aucune autre compétence à cette ceinture")
   end
 
+  # `submitonchange` vise en dur le formulaire de l'index et l'envoie hors de
+  # Turbo : la page entière se rechargeait, et la modale se refermait au premier
+  # choix de ceinture.
+  it "recharge la frame sans quitter la modale" do
+    rendre([])
+
+    expect(rendered).to include("submit-frame#submit")
+    expect(rendered).not_to include("submitonchange")
+  end
+
   # La liste re-rendue emporte le nœud de la modale : sans fermeture explicite,
   # Bootstrap laisserait son voile noir sur la page.
   it "referme la modale avant d'envoyer" do

@@ -5,9 +5,13 @@
 	</p>
 
 	<%# Choisir une ceinture recharge la liste des compétences, sans quitter la
-	    modale : la frame se re-rend, le reste de la page ne bouge pas. %>
+	    modale : la frame se re-rend, le reste de la page ne bouge pas.
+
+	    Surtout PAS `submitonchange`, qui vise en dur le formulaire de filtre de
+	    l'index et l'envoie hors de Turbo : la page entière se rechargeait, et la
+	    modale se refermait au premier choix de ceinture. %>
 	<%= form_with url: transfer_form_challenge_path(@challenge), method: :get,
-	              data: { controller: "submitonchange", action: "change->submitonchange#submitForm" } do |f| %>
+	              data: { controller: "submit-frame", action: "change->submit-frame#submit" } do |f| %>
 		<label class="transfer-label" for="transfer_level_<%= @challenge.id %>">Ceinture</label>
 		<%# Le champ prend la couleur de la ceinture choisie, et chaque option la
 		    sienne : on lit le niveau à la teinte. %>
