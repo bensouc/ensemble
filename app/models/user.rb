@@ -10,9 +10,13 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   before_validation :set_defaults
 
-  # before DESTROY
-  # REVERSE CHALLENGE TO sCHOOL SUPERuser IF no super user then teacher on same grade else first teacher of scchool
-  before_destroy :transmit_all_challenges
+  # Les classes partagées que ce prof possède passent à un collègue du partage au
+  # lieu de disparaître avec lui — la même règle que la suppression d'une classe.
+  #
+  # `prepend: true` est indispensable : `has_many :classrooms, dependent: :destroy`
+  # pose son propre `before_destroy`, il faut passer AVANT lui, sinon la classe et
+  # ses élèves sont détruits sous les pieds des collègues.
+  before_destroy :hand_over_shared_classrooms, prepend: true
 
   # associations
   devise :invitable, :database_authenticatable, :registerable,
@@ -24,12 +28,18 @@ class User < ApplicationRecord
   has_one :subscription, through: :school
   has_many :classrooms, dependent: :destroy
   has_many :work_plans, dependent: :destroy
+  # `:nullify` et non `nil` : le plan de travail reste à son propriétaire, il
+  # n'est simplement plus partagé avec le prof qui part. En `nil`, la clé
+  # étrangère `work_plans.shared_user_id` empêchait de supprimer son compte.
   has_many :shared_work_plans, class_name: "WorkPlan", foreign_key: "shared_user_id",
-                               dependent: nil
+                               dependent: :nullify
   has_many :shared_classrooms, dependent: :destroy
   has_many :user_shared_classrooms, through: :shared_classrooms, source: "classroom"
   has_many :students, through: :classrooms, dependent: :destroy
-  has_many :challenges, dependent: nil
+  # Un exercice survit à son auteur : ce qui le rattache à l'école est son grade
+  # (`skill → domain → grade`), pas la personne qui l'a écrit. On coupe donc le
+  # lien. En `nil`, `challenges.user_id` bloquait la suppression du compte.
+  has_many :challenges, dependent: :nullify
   # associations for conversations and messages
   has_many :user_conversations, dependent: :destroy
   has_many :conversations, through: :user_conversations
@@ -168,12 +178,7 @@ class User < ApplicationRecord
     # true
   end
 
-  def transmit_all_challenges
-    # get new user <= superteacher
-    return if challenges.empty?
-
-    new_user = school.super_teachers.first
-    # iterate on challenge and update user
-    challenges.each { |challenge| challenge.update(user: new_user) }
+  def hand_over_shared_classrooms
+    classrooms.joins(:shared_classrooms).distinct.to_a.each(&:destroy_or_hand_over!)
   end
 end

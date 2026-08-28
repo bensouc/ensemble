@@ -44,4 +44,34 @@ RSpec.describe ClassroomsController, type: :controller do
       expect(flash[:alert] || flash.now[:alert]).to be_present
     end
   end
+
+  describe "#destroy" do
+    let!(:classroom) { create(:classroom, user: teacher, grade:) }
+    let(:colleague) { create(:user, admin: false, demo: false) }
+
+    it "détruit une classe qui n'est partagée avec personne" do
+      expect { delete :destroy, params: { id: classroom.id } }.to change(Classroom, :count).by(-1)
+    end
+
+    # Ce n'est pas un bug : une classe partagée passe au collègue. Le prof qui
+    # supprime la voit disparaître de SA liste, d'où l'impression du contraire.
+    it "passe une classe partagée au collègue au lieu de la détruire" do
+      create(:shared_classroom, user: colleague, classroom:)
+
+      expect { delete :destroy, params: { id: classroom.id } }.not_to change(Classroom, :count)
+      expect(classroom.reload.user).to eq colleague
+    end
+
+    # La policy acceptait les collègues du partage : un DELETE direct leur
+    # donnait la classe, et le propriétaire la perdait.
+    it "refuse à un collègue du partage de s'approprier la classe" do
+      create(:shared_classroom, user: colleague, classroom:)
+      sign_in colleague
+
+      delete :destroy, params: { id: classroom.id }
+
+      expect(classroom.reload.user).to eq teacher
+    end
+  end
+
 end

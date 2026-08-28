@@ -34,21 +34,12 @@ class ClassroomsController < ApplicationController
     redirect_to classrooms_path
   end
 
+  # Une classe partagée n'est pas détruite : elle passe à un collègue du partage.
+  # La règle vit dans le modèle, pour valoir aussi quand la classe disparaît par
+  # ricochet — suppression d'un compte, d'un niveau, d'une école.
   def destroy
-    # if sharedclassroom with calssromm id
     authorize @classroom
-    if @classroom.shared?
-      # raise
-      # get first shared calssroom _id
-      shared_classroom = @classroom.shared_classrooms.first
-      # assign the sahred_classroom user to curent classroom
-      @classroom.user = shared_classroom.user
-      @classroom.save
-      shared_classroom.destroy
-      # destroy shared_class
-    else
-      @classroom.destroy
-    end
+    @classroom.destroy_or_hand_over!
     redirect_to classrooms_path
   end
 

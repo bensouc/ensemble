@@ -97,4 +97,30 @@ RSpec.describe ClassroomPolicy do
       expect(described_class.new(demo.reload, Classroom.new(user: demo)).create?).to be false
     end
   end
+
+  # `user_is_owner_or_admin?` acceptait les collègues du partage : un DELETE
+  # direct sur /classrooms/:id leur donnait la propriété de la classe, et le
+  # propriétaire la perdait. Se séparer d'une classe est la décision du seul
+  # propriétaire ; un collègue, lui, supprime son lien de partage.
+  describe "#destroy?" do
+    let(:grade) { create(:grade, school:) }
+    let(:owner) { create(:user, admin: false, demo: false) }
+    let(:colleague) { create(:user, admin: false, demo: false) }
+    let(:classroom) { create(:classroom, user: owner, grade:) }
+
+    before { create(:shared_classroom, user: colleague, classroom:) }
+
+    it "autorise le propriétaire" do
+      expect(described_class.new(owner, classroom).destroy?).to be true
+    end
+
+    it "refuse le collègue du partage" do
+      expect(described_class.new(colleague, classroom).destroy?).to be false
+    end
+
+    it "autorise un admin" do
+      expect(described_class.new(create(:user, admin: true), classroom).destroy?).to be true
+    end
+  end
+
 end
