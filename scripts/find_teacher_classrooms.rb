@@ -3,31 +3,39 @@
 # Inventaire des classes d'un professeur OU d'une école : les classes, leurs
 # profs (propriétaire et partages), le niveau, et les id de classe et de prof.
 #
-#   bin/rails runner scripts/find_teacher_classrooms.rb
+#   SCHOOL_ID=1 bin/rails runner scripts/find_teacher_classrooms.rb
+#   TEACHER_ID=15 bin/rails runner scripts/find_teacher_classrooms.rb
 #   NAME="alain fournier" bin/rails runner scripts/find_teacher_classrooms.rb
-#   NAME="fournier" STUDENTS=1 bin/rails runner scripts/find_teacher_classrooms.rb
+#   SCHOOL_ID=1 STUDENTS=1 bin/rails runner scripts/find_teacher_classrooms.rb
 #   NAME="ofou" VERBOSE=1 bin/rails runner scripts/find_teacher_classrooms.rb
 #
 # Lecture seule : le script n'écrit rien, il peut tourner en production.
 #
-# NAME est cherché DEUX FOIS, parce qu'un nom de personne est souvent aussi un
-# nom d'école (« Alain Fournier ») et qu'on ne sait pas lequel est visé :
-#   - parmi les users, dans first_name, last_name et email ;
-#   - parmi les écoles, dans name.
-# Les deux séries de résultats sont affichées.
+# Deux façons de désigner la cible :
+#   - par id (SCHOOL_ID / TEACHER_ID), sans ambiguïté ;
+#   - par nom (NAME), cherché DEUX FOIS — parmi les users (first_name,
+#     last_name, email) et parmi les écoles (name) — parce qu'un patronyme est
+#     souvent aussi un nom d'école (« Alain Fournier ») et qu'on ne sait pas
+#     lequel est visé. Les deux séries de résultats sont affichées.
 #
-# La recherche est tolérante aux fautes et à la casse : chaque mot de NAME est
+# La recherche par nom est tolérante aux fautes et à la casse : chaque mot est
 # cherché séparément (ILIKE %mot%), et un enregistrement sort s'il matche AU
 # MOINS un mot. Un nom mal orthographié ressort donc quand même, au prix de
 # quelques homonymes — tous affichés, à vous de reconnaître le bon.
 #
 # STUDENTS=1 ajoute la liste des élèves. VERBOSE=1 rend les requêtes SQL.
 
+# SCHOOL_ID / TEACHER_ID court-circuitent la recherche par nom : en production
+# un patronyme courant sort plusieurs homonymes, l'id ne trompe pas.
+SCHOOL_ID = ENV["SCHOOL_ID"]
+TEACHER_ID = ENV["TEACHER_ID"]
 NAME = ENV.fetch("NAME", "alain fournier")
 WITH_STUDENTS = ENV["STUDENTS"] == "1"
 
 # Les logs SQL noient un rapport de 40 lignes ; on les coupe sauf VERBOSE=1.
 ActiveRecord::Base.logger = nil unless ENV["VERBOSE"] == "1"
+
+CLASSROOM_INCLUDES = [:grade, :students, { shared_classrooms: :user }].freeze
 
 def label(user)
   return "(prof supprimé)" if user.nil?
@@ -37,7 +45,7 @@ def label(user)
   "##{user.id} #{name} <#{user.email}>"
 end
 
-# Une classe et ses profs, en 5 lignes. Sert pour les deux recherches.
+# Une classe et ses profs. Sert pour les deux recherches.
 def print_classroom(classroom, indent, with_students: false)
   pad = " " * indent
   grade = classroom.grade
@@ -52,7 +60,7 @@ def print_classroom(classroom, indent, with_students: false)
   if shares.empty?
     puts "#{pad}    (non partagée)"
   else
-    shares.each { |share| puts "#{pad}    partage ##{share.id}  #{label(share.user)}" }
+    shares.sort_by(&:id).each { |share| puts "#{pad}    partage ##{share.id}  #{label(share.user)}" }
   end
 
   if with_students && classroom.students.any?
@@ -64,27 +72,34 @@ def print_classroom(classroom, indent, with_students: false)
   puts
 end
 
-words = NAME.split.map(&:strip).reject(&:empty?)
-abort "NAME est vide : rien à chercher." if words.empty?
-
 def ilike_clause(words, columns)
   clause = words.flat_map { |_w| columns.map { |c| "#{c} ILIKE ?" } }.join(" OR ")
   values = words.flat_map { |w| Array.new(columns.size, "%#{w}%") }
   [clause, *values]
 end
 
-CLASSROOM_INCLUDES = [:grade, :students, { shared_classrooms: :user }].freeze
+if SCHOOL_ID || TEACHER_ID
+  schools = SCHOOL_ID ? School.where(id: SCHOOL_ID.to_i) : School.none
+  teachers = TEACHER_ID ? User.where(id: TEACHER_ID.to_i) : User.none
+  abort "École ##{SCHOOL_ID} introuvable." if SCHOOL_ID && schools.empty?
+  abort "Prof ##{TEACHER_ID} introuvable." if TEACHER_ID && teachers.empty?
+  cible = [SCHOOL_ID && "school ##{SCHOOL_ID}", TEACHER_ID && "user ##{TEACHER_ID}"].compact
+  puts "Recherche par id : #{cible.join(', ')}"
+else
+  words = NAME.split.map(&:strip).reject(&:empty?)
+  abort "NAME est vide : rien à chercher." if words.empty?
 
-teachers = User.where(*ilike_clause(words, %w[first_name last_name email])).
-  sort_by { |u| [u.last_name.to_s, u.first_name.to_s, u.id] }
-schools = School.where(*ilike_clause(words, %w[name])).order(:name)
-
-puts "Recherche : « #{NAME} »"
+  teachers = User.where(*ilike_clause(words, %w[first_name last_name email])).
+    sort_by { |u| [u.last_name.to_s, u.first_name.to_s, u.id] }
+  schools = School.where(*ilike_clause(words, %w[name])).order(:name)
+  puts "Recherche : « #{NAME} »"
+end
 puts "  #{teachers.size} prof(s) et #{schools.size} école(s) trouvé(s)"
 puts
 
 if teachers.empty? && schools.empty?
-  puts "Aucun user ni école ne matche. Essayez un seul mot, ou une partie du nom :"
+  puts "Aucun user ni école ne matche. Essayez un seul mot, une partie du nom, ou un id :"
+  puts %(  SCHOOL_ID=1 bin/rails runner scripts/find_teacher_classrooms.rb)
   puts %(  NAME="ofou" bin/rails runner scripts/find_teacher_classrooms.rb)
   exit
 end
