@@ -23,7 +23,9 @@
   padding-right: marge-sure(right, $espace-md);
   // De la place pour le pied de page fixe, indicateur d'accueil compris.
   margin-bottom: marge-sure(bottom, 5rem);
-  text-align: center;
+  // Aligné à gauche, comme le reste de l'application : tout était centré, titres
+  // compris, ce qui donnait des lignes qui flottaient sans axe commun.
+  text-align: left;
 
   .title {
     font-family: $headers-font;
@@ -38,12 +40,14 @@
   }
 }
 
+// L'écran d'accueil sans classe reste centré : c'est un message, pas une liste.
 .mobile-message {
   display: flex;
   flex: 1;
   flex-direction: column;
   justify-content: space-evenly;
   gap: $espace-lg;
+  text-align: center;
 }
 
 .mobile_wp_one_classroom {
@@ -158,7 +162,6 @@
   color: rgba($grisF, 0.75);
   font-size: $texte-sm;
   line-height: 1.35;
-  text-align: center;
 }
 
 // Une classe dans la liste : niveau, nom, effectif — et, une fois ouverte, ses

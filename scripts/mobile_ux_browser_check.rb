@@ -91,6 +91,32 @@ def etape_largeur_ecran(harness, page)
   end
 end
 
+# Titres et texte flottaient au centre, sans axe commun avec les cartes qui les
+# suivaient.
+def etape_alignement(harness, page)
+  puts "\n— Tout s'aligne sur le même axe"
+  page.resize(width: 390, height: 844)
+  sleep 0.2
+
+  harness.check("le corps de l'écran est aligné à gauche",
+                mesure(page, ".mobile_index", "textAlign") == "left")
+  verifier_bord_commun(harness, page)
+end
+
+def verifier_bord_commun(harness, page)
+  gauches = %w[.title .mobile-intro .mobile-classe-carte].map do |selecteur|
+    boite(page, selecteur)["gauche"].round
+  end
+  harness.check("titre, texte et cartes partagent le même bord gauche (#{gauches.inspect})",
+                gauches.uniq.size == 1)
+
+  # Les plans d'un élève sont en retrait sous son prénom : c'est voulu, la marge
+  # dit à qui ils appartiennent.
+  plan = boite(page, ".mobile-index-wp-card")["gauche"]
+  harness.check("les plans restent en retrait sous leur élève",
+                plan > gauches.first)
+end
+
 def etape_entete(harness, page)
   puts "\n— L'en-tête ne recouvre plus les compétences"
   page.resize(width: 390, height: 844)
@@ -241,6 +267,7 @@ harness.page("index",
              body: <<~HTML)
                <div class="mobile_index">
                  <h1 class="title">Mes classes</h1>
+                 <p class="mobile-intro">Ouvrez une classe pour consulter les ceintures de vos élèves.</p>
                  <div class="greyline-mobile"></div>
                  <div class="mobile-classe-carte --ouverte">
                    <a href="#" class="mobile-classe-entete">
@@ -340,6 +367,7 @@ harness.with_browser do |browser|
   etape_typographie(harness, page)
   etape_cibles_tactiles(harness, page)
   etape_largeur_ecran(harness, page)
+  etape_alignement(harness, page)
   etape_entete(harness, page)
   etape_modale(harness, page)
   etape_carte_classe(harness, page)
