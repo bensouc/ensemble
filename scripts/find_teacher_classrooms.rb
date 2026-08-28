@@ -27,13 +27,13 @@
 
 # SCHOOL_ID / TEACHER_ID court-circuitent la recherche par nom : en production
 # un patronyme courant sort plusieurs homonymes, l'id ne trompe pas.
-SCHOOL_ID = ENV["SCHOOL_ID"]
-TEACHER_ID = ENV["TEACHER_ID"]
+SCHOOL_ID = ENV.fetch("SCHOOL_ID", nil)
+TEACHER_ID = ENV.fetch("TEACHER_ID", nil)
 NAME = ENV.fetch("NAME", "alain fournier")
-WITH_STUDENTS = ENV["STUDENTS"] == "1"
+WITH_STUDENTS = ENV.fetch("STUDENTS", nil) == "1"
 
 # Les logs SQL noient un rapport de 40 lignes ; on les coupe sauf VERBOSE=1.
-ActiveRecord::Base.logger = nil unless ENV["VERBOSE"] == "1"
+ActiveRecord::Base.logger = nil unless ENV.fetch("VERBOSE", nil) == "1"
 
 CLASSROOM_INCLUDES = [:grade, :students, { shared_classrooms: :user }].freeze
 
@@ -45,30 +45,49 @@ def label(user)
   "##{user.id} #{name} <#{user.email}>"
 end
 
+def classroom_name(classroom)
+  classroom.name.to_s.empty? ? "(vide)" : classroom.name.inspect
+end
+
+def grade_label(grade)
+  return "(aucun)" if grade.nil?
+
+  "##{grade.id} #{grade.grade_level} (#{grade.name})"
+end
+
+# Le propriétaire, puis chaque partage. C'est là que se lit qui a accès à quoi.
+def print_teachers(classroom, pad)
+  puts "#{pad}  profs   :"
+  puts "#{pad}    propriétaire  #{label(classroom.user)}"
+  shares = classroom.shared_classrooms.sort_by(&:id)
+  if shares.empty?
+    puts "#{pad}    (non partagée)"
+  else
+    shares.each { |share| puts "#{pad}    partage ##{share.id}  #{label(share.user)}" }
+  end
+end
+
+def print_students(classroom, pad)
+  return if classroom.students.empty?
+
+  # Un élève n'a qu'un prénom en base, pas de nom de famille.
+  puts "#{pad}  liste des élèves :"
+  classroom.students.sort_by { |s| s.first_name.to_s.downcase }.each do |student|
+    puts "#{pad}    ##{student.id} #{student.first_name}"
+  end
+end
+
 # Une classe et ses profs. Sert pour les deux recherches.
 def print_classroom(classroom, indent, with_students: false)
   pad = " " * indent
   grade = classroom.grade
-  shares = classroom.shared_classrooms.to_a
 
-  puts "#{pad}CLASSE ##{classroom.id}  niveau #{grade&.grade_level || '(sans grade)'}" \
-       "  nom #{classroom.name.to_s.empty? ? '(vide)' : classroom.name.inspect}"
-  puts "#{pad}  grade   : #{grade ? "##{grade.id} #{grade.grade_level} (#{grade.name})" : '(aucun)'}"
+  puts "#{pad}CLASSE ##{classroom.id}  niveau #{grade&.grade_level || '(sans grade)'} " \
+       "nom #{classroom_name(classroom)}"
+  puts "#{pad}  grade   : #{grade_label(grade)}"
   puts "#{pad}  élèves  : #{classroom.students.size}"
-  puts "#{pad}  profs   :"
-  puts "#{pad}    propriétaire  #{label(classroom.user)}"
-  if shares.empty?
-    puts "#{pad}    (non partagée)"
-  else
-    shares.sort_by(&:id).each { |share| puts "#{pad}    partage ##{share.id}  #{label(share.user)}" }
-  end
-
-  if with_students && classroom.students.any?
-    puts "#{pad}  liste des élèves :"
-    classroom.students.sort_by { |s| s.first_name.to_s.downcase }.each do |student|
-      puts "#{pad}    ##{student.id} #{student.first_name} #{student.last_name}"
-    end
-  end
+  print_teachers(classroom, pad)
+  print_students(classroom, pad) if with_students
   puts
 end
 
@@ -104,38 +123,69 @@ if teachers.empty? && schools.empty?
   exit
 end
 
-teachers.each do |teacher|
-  school = teacher.school
-  puts "=" * 78
-  puts "PROF #{label(teacher)}"
-  puts "  école  : #{school ? "##{school.id} #{school.name}" : '(aucune école)'}"
-  puts "  compte : #{teacher.admin? ? 'admin' : 'prof'}#{teacher.demo? ? ', démo' : ''}"
-  puts
+def account_kind(teacher)
+  kind = teacher.admin? ? "admin" : "prof"
+  teacher.demo? ? "#{kind}, démo" : kind
+end
 
-  owned = teacher.classrooms.includes(CLASSROOM_INCLUDES).to_a
-  received = teacher.shared_classrooms.includes(classroom: CLASSROOM_INCLUDES).map(&:classroom).compact
-
-  [["CLASSES POSSÉDÉES", owned], ["CLASSES REÇUES EN PARTAGE", received]].each do |title, classrooms|
-    puts "  #{title} : #{classrooms.size}"
-    if classrooms.empty?
-      puts "    (aucune)"
-      puts
-      next
-    end
-    classrooms.sort_by { |c| [c.grade&.grade_level.to_s, c.id] }.
-      each { |c| print_classroom(c, 4, with_students: WITH_STUDENTS) }
+def print_classroom_group(title, classrooms)
+  puts "  #{title} : #{classrooms.size}"
+  if classrooms.empty?
+    puts "    (aucune)"
+    puts
+    return
   end
+  classrooms.sort_by { |c| [c.grade&.grade_level.to_s, c.id] }.
+    each { |c| print_classroom(c, 4, with_students: WITH_STUDENTS) }
+end
 
-  # Le récapitulatif d'ids, à recopier tel quel dans une console ou un ticket.
+def ids_of(records)
+  records.map(&:id).sort.inspect
+end
+
+def teacher_ids_of(classrooms)
+  ids_of(classrooms.flat_map(&:teachers).compact.uniq)
+end
+
+def school_label(school)
+  school ? "##{school.id} #{school.name}" : "(aucune école)"
+end
+
+def owned_classrooms(teacher)
+  teacher.classrooms.includes(CLASSROOM_INCLUDES).to_a
+end
+
+def received_classrooms(teacher)
+  teacher.shared_classrooms.includes(classroom: CLASSROOM_INCLUDES).map(&:classroom).compact
+end
+
+# Le récapitulatif d'ids, à recopier tel quel dans une console ou un ticket.
+def print_teacher_recap(teacher, owned, received)
   all = (owned + received).uniq
   puts "  RÉCAPITULATIF"
   puts "    teacher_id      : #{teacher.id}"
-  puts "    classroom_ids   : #{all.map(&:id).sort.inspect}"
-  puts "    possédées       : #{owned.map(&:id).sort.inspect}"
-  puts "    reçues          : #{received.map(&:id).sort.inspect}"
-  puts "    profs impliqués : #{all.flat_map(&:teachers).compact.uniq.map(&:id).sort.inspect}"
+  puts "    classroom_ids   : #{ids_of(all)}"
+  puts "    possédées       : #{ids_of(owned)}"
+  puts "    reçues          : #{ids_of(received)}"
+  puts "    profs impliqués : #{teacher_ids_of(all)}"
   puts
 end
+
+def print_teacher(teacher)
+  puts "=" * 78
+  puts "PROF #{label(teacher)}"
+  puts "  école  : #{school_label(teacher.school)}"
+  puts "  compte : #{account_kind(teacher)}"
+  puts
+
+  owned = owned_classrooms(teacher)
+  received = received_classrooms(teacher)
+  print_classroom_group("CLASSES POSSÉDÉES", owned)
+  print_classroom_group("CLASSES REÇUES EN PARTAGE", received)
+  print_teacher_recap(teacher, owned, received)
+end
+
+teachers.each { |teacher| print_teacher(teacher) }
 
 schools.each do |school|
   puts "=" * 78
@@ -159,8 +209,8 @@ schools.each do |school|
 
   puts "  RÉCAPITULATIF"
   puts "    school_id     : #{school.id}"
-  puts "    classroom_ids : #{classrooms.map(&:id).sort.inspect}"
-  puts "    teacher_ids   : #{classrooms.flat_map(&:teachers).compact.uniq.map(&:id).sort.inspect}"
+  puts "    classroom_ids : #{ids_of(classrooms)}"
+  puts "    teacher_ids   : #{teacher_ids_of(classrooms)}"
   puts "    partagées     : #{classrooms.count { |c| c.shared_classrooms.any? }} / #{classrooms.size}"
   puts
 end
