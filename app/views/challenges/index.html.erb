@@ -42,9 +42,12 @@
                   # [blanche jaune orange verte bleue marron noire]
                   selected: @level,
                   label: false,
+                  # La liste des couleurs vivait ici en dur, et une seconde fois
+                  # dans les options ci-dessus. `classe_ceinture` la tient
+                  # désormais en un seul endroit, partagé avec la modale de
+                  # déplacement.
                   input_html: {
-                    class:
-                      "area grow m-left --text-center #{["--bgc-blanc", "--bgc-jaune", "--bgc-orange", "--bgc-vert --blanc", "--bgc-bleuC --blanc", "--bgc-marron --blanc", "--bgc-noir --blanc"][@level.to_i - 1]}"
+                    class: "area grow m-left --text-center #{classe_ceinture(@level)}"
                   } %>
 
 				</div>
@@ -57,7 +60,9 @@
 		<div class="challenges-display " id='skills-challenge-list'>
 			<% unless @skills.empty? %>
 				<% @skills.sort_by(&:position).each do |skill| %>
-					<div class="challenges-by-skill mb-2" data-controller='wp-by-student'>
+					<%# L'identifiant sert au transfert d'un exercice : le dossier concerné
+					    est rouvert pour qu'on voie l'arrivée, plutôt que de la deviner. %>
+					<div class="challenges-by-skill mb-2" id="dossier_skill_<%= skill.id %>" data-controller='wp-by-student'>
 						<div class="d-flex challenge-skill-header">
 							<div class='d-flex wp-student-folder'
 	              data-action="click->wp-by-student#displayList"

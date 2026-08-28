@@ -145,6 +145,20 @@
     }
   }
 
+  // Frère du « Cloner » : même pilule, même gabarit. C'est une action de rangement,
+  // pas de création — elle ne cherche pas à attirer l'œil davantage.
+  .transfer-challenge-btn {
+    @include pill-cta($height: 24px);
+    gap: 6px;
+    padding: 0 9px;
+    background-color: transparent;
+    font-size: 12px;
+
+    i {
+      font-size: 12px;
+    }
+  }
+
   .challenge-order-position {
     // Largeur minimale : les flèches restent alignées d'une ligne à l'autre,
     // que la position ait un ou deux chiffres.
@@ -190,4 +204,84 @@
 .challenge-skill-header .add-folder-btn {
   margin-right: 43px;
   margin-left: auto;
+}
+
+// La modale de déplacement d'un exercice vers une autre compétence.
+.transfer-intro {
+  margin-bottom: 1rem;
+  color: rgba($grisF, 0.8);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.transfer-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: $grisF;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.transfer-select {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+// Une compétence par ligne, pleine largeur : le nom d'une compétence est une
+// phrase, il ne tient pas dans une colonne étroite.
+.transfer-skills {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 40vh;
+  overflow-y: auto;
+}
+
+.transfer-skill-btn {
+  @include pill-cta;
+  // Dans une colonne flex à hauteur bornée, les enfants RÉTRÉCISSENT par défaut
+  // pour tenir dans le cadre : les cartes s'écrasaient à leur hauteur minimale
+  // et leur texte débordait sur la voisine. `flex-shrink: 0` leur rend leur
+  // hauteur, et c'est le conteneur qui défile.
+  flex-shrink: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+  min-height: 2.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 12px;
+  text-align: left;
+  white-space: normal;
+
+  &:hover {
+    background-color: rgba($rose, 0.16);
+  }
+
+  i {
+    // La flèche reste sur la première ligne du nom, quel que soit le nombre de
+    // lignes qu'il occupe.
+    flex: 0 0 auto;
+    margin-top: 0.2rem;
+  }
+}
+
+// Le nom d'une compétence va de 10 à 206 caractères dans la base. Passé trois
+// lignes, une seule carte remplirait la modale : on coupe, et le nom entier
+// reste accessible au survol.
+.transfer-skill-nom {
+  display: -webkit-box;
+  flex: 1 1 auto;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-height: 1.3;
+}
+
+.transfer-vide,
+.transfer-chargement {
+  margin: 0;
+  color: rgba($grisF, 0.7);
+  font-size: 0.875rem;
+  font-style: italic;
 }

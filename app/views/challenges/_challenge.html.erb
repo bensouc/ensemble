@@ -63,7 +63,7 @@
         <%# Pas de place réservée pour une flèche absente : en haut et en bas de
             liste, le groupe se resserre. %>
         <% unless challenge_counter.zero? %>
-          <%= button_to move_challenge_path(challenge, direction: "up"),
+          <%= button_to transfer_challenge_path(challenge, direction: "up"),
                 method: :patch,
                 class: "challenge-order-btn",
                 title: "Monter cet exercice" do %>
@@ -71,7 +71,7 @@
           <% end %>
         <% end %>
         <% unless challenge_counter == list_size - 1 %>
-          <%= button_to move_challenge_path(challenge, direction: "down"),
+          <%= button_to transfer_challenge_path(challenge, direction: "down"),
                 method: :patch,
                 class: "challenge-order-btn",
                 title: "Descendre cet exercice" do %>
@@ -86,6 +86,20 @@
                     title: "Cloner cet exercice" do %>
         <i class="fa-regular fa-clone"></i>
         <span>Cloner</span>
+      <% end %>
+      <%# Déplacer n'est possible que tant qu'aucun plan de travail ne s'y réfère :
+          changer la compétence d'un exercice déjà donné réécrirait l'historique
+          d'un élève. Le bouton disparaît alors, plutôt que d'échouer au clic. %>
+      <% if policy(challenge).transferable? %>
+        <button type="button"
+                class="transfer-challenge-btn"
+                data-bs-toggle="modal"
+                data-bs-target="#transferChallengeModal-<%= challenge.id %>"
+                title="Déplacer vers une autre compétence">
+          <i class="fa-solid fa-folder-tree"></i>
+          <span>Déplacer</span>
+        </button>
+        <%= render "challenges/transfer_modal", challenge: challenge %>
       <% end %>
     </div>
     <div class="challenge-row-content">

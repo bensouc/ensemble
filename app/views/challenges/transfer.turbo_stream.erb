@@ -1,0 +1,17 @@
+<%= turbo_stream.prepend "flash", partial: "shared/flashes" %>
+<%# Les deux compétences concernées sont rafraîchies : celle qu'on quitte, et
+    celle d'arrivée quand elle est à l'écran — c'est-à-dire à la même ceinture.
+    On re-rend la liste entière plutôt que d'y retirer une carte : les numéros
+    de position et les flèches de tri doivent rester justes.
+
+    Si l'arrivée est sur une autre ceinture, elle n'est pas affichée : c'est le
+    message qui dit où l'exercice est parti. %>
+<% @frames.each do |frame| %>
+  <%= turbo_stream.update frame[:liste_id] do %>
+    <%= render "challenges/challenges_list", challenges: frame[:challenges] %>
+  <% end %>
+  <%= turbo_stream.update frame[:compte_id], "#{frame[:compte]} exo#{frame[:compte] > 1 ? 's' : ''}" %>
+  <%# Le dossier concerné reste — ou devient — ouvert : sans quoi l'exercice
+      atterrit dans un dossier fermé et on ne voit pas où il est passé. %>
+  <turbo-stream action="ouvrir_dossier" cible="<%= frame[:dossier_id] %>"></turbo-stream>
+<% end %>

@@ -7,6 +7,7 @@ class Skill < ApplicationRecord
   has_many :results, dependent: :destroy
   has_many :challenges, dependent: :destroy
   acts_as_list scope: [:domain_id, :level]
+  include Positionable
 
   validates :level, presence: true, inclusion: { in: [1, 2, 3, 4, 5, 6, 7] }
   validates :name, presence: true

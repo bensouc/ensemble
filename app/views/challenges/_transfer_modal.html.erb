@@ -1,0 +1,26 @@
+<%# La modale de déplacement. Son corps est une frame chargée à l'ouverture :
+    le contenu dépend de la ceinture choisie, il se recharge à chaque changement
+    plutôt que d'embarquer toutes les compétences du domaine d'avance. %>
+<div class="modal fade"
+     id="transferChallengeModal-<%= challenge.id %>"
+     tabindex="-1"
+     aria-labelledby="transferChallengeLabel-<%= challenge.id %>"
+     aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="transferChallengeLabel-<%= challenge.id %>">
+					Déplacer « <%= challenge.name %> »
+				</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+			</div>
+			<div class="modal-body">
+				<%= turbo_frame_tag "transfer_challenge_#{challenge.id}",
+				                    src: transfer_form_challenge_path(challenge),
+				                    loading: "lazy" do %>
+					<p class="transfer-chargement">Chargement des compétences…</p>
+				<% end %>
+			</div>
+		</div>
+	</div>
+</div>

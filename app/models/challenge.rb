@@ -5,6 +5,7 @@ class Challenge < ApplicationRecord
   # affichées séparément : sans `for_belt` dans le scope, un exercice de ceinture
   # intercalé ferait qu'un clic sur ⬆️ échange avec une ligne invisible.
   acts_as_list scope: [:skill_id, :for_belt]
+  include Positionable
 
   belongs_to :skill
   # Un exercice survit au départ de son auteur : c'est son grade, via la
@@ -26,7 +27,6 @@ class Challenge < ApplicationRecord
 
   scope :for_belt, -> { where(for_belt: true) }
   scope :classic, -> { where(for_belt: false) }
-  scope :ordered, -> { order(:position) }
 
   def for_belt?
     for_belt == true
@@ -36,6 +36,34 @@ class Challenge < ApplicationRecord
   # exercice classique, qui changeait donc de liste.
   def new_clone
     Challenge.new(name: clone_name, content: cloned_content, skill_id:, for_belt:)
+  end
+
+  # Ranger l'exercice sous une autre compétence, en queue de sa liste.
+  #
+  # `update!(skill:)` seul ne suffit PAS. `acts_as_list` (0.7.7) ne sait pas
+  # qu'on change de liste : l'exercice quitte l'ancienne en y laissant un TROU —
+  # 1, 2, 4 — et emporte son ancienne position dans la nouvelle, où elle entre
+  # en collision avec celle qui l'occupe déjà. L'ordre des deux compétences s'en
+  # trouve faussé, en silence.
+  #
+  # D'où la séquence : sortir de la liste (ce qui la referme), changer de
+  # compétence, puis entrer en queue de la nouvelle. `add_to_list_bottom` étant
+  # privée dans cette version, on calcule le rang nous-mêmes.
+  #
+  # `for_belt` ne change pas : les listes sont scopées dessus, un exercice de
+  # ceinture reste un exercice de ceinture, un exercice de compétence reste un
+  # exercice de compétence. Les deux listes ne se mélangent jamais.
+  #
+  # L'auteur devient celui qui déplace : c'est lui qui décide désormais de la
+  # place de cet exercice dans la progression — comme au clonage, où la copie
+  # revient à qui l'a demandée.
+  def transfer_to_skill!(nouvelle_competence, auteur:)
+    transaction do
+      remove_from_list
+      update!(skill: nouvelle_competence, user: auteur)
+      insert_at(Challenge.where(skill: nouvelle_competence, for_belt:).maximum(:position).to_i + 1)
+    end
+    self
   end
 
 

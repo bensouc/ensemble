@@ -1,6 +1,8 @@
 class Domain < ApplicationRecord
   belongs_to :grade
   acts_as_list scope: :grade
+  include Positionable
+
   has_many :skills, dependent: :destroy
   has_many :belts, dependent: :destroy
   has_many :work_plan_domains, dependent: :destroy
