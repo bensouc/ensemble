@@ -184,5 +184,56 @@ RSpec.describe WorkPlanSkillsController, type: :controller do
       work_plan_skill.reload
       expect(work_plan_skill.status).to eq(valid_params[:status])
     end
+
+    # `not_done` est le seul statut qui ne se recopie pas tel quel : il ramène la
+    # compétence à l'état neuf.
+    it "ramène la compétence à `new` quand l'évaluation est retirée" do
+      work_plan_skill.update!(status: "completed", completed: true)
+
+      patch :eval_update, params: { status: "not_done", work_plan_skill_id: work_plan_skill.id }
+
+      expect(work_plan_skill.reload.status).to eq("new")
+    end
+
+    it "marque la ceinture acquise quand elle est réussie" do
+      patch :eval_update, params: { status: "completed", work_plan_skill_id: work_plan_skill.id }
+
+      work_plan_skill.reload
+      expect(work_plan_skill.status).to eq("completed")
+      expect(work_plan_skill.completed).to be true
+    end
+
+    # L'action AFFECTE un statut, elle n'incrémente rien : la rejouer donne le
+    # même résultat. C'est ce qui permettra à la file d'attente hors connexion du
+    # mobile de renvoyer une évaluation sans risque de double comptage. Si
+    # quelqu'un rend un jour cette action non idempotente, cette spec doit casser.
+    it "est idempotente : rejouer la même évaluation ne change rien" do
+      eval_params = { status: "completed", work_plan_skill_id: work_plan_skill.id }
+
+      patch :eval_update, params: eval_params
+      premier = work_plan_skill.reload.attributes.except("updated_at")
+
+      patch :eval_update, params: eval_params
+
+      expect(response).to have_http_status(:ok)
+      expect(work_plan_skill.reload.attributes.except("updated_at")).to eq(premier)
+    end
+
+    # La factory `:user` est admin par défaut, et le `let(:user)` de ce fichier
+    # signe donc quelqu'un qui passe partout : il faut un prof ordinaire pour
+    # que l'autorisation soit réellement mise à l'épreuve.
+    it "refuse l'évaluation d'un plan de travail d'une autre école" do
+      ailleurs = create(:work_plan_skill,
+                        work_plan_domain: create(:work_plan_domain,
+                                                 work_plan: create(:work_plan,
+                                                                   user: create(:user, admin: false),
+                                                                   grade: create(:grade, school: create(:school)))))
+      sign_in create(:user, admin: false, demo: false)
+
+      patch :eval_update, params: { status: "completed", work_plan_skill_id: ailleurs.id }
+
+      expect(response).to redirect_to(dashboard_path)
+      expect(ailleurs.reload.status).not_to eq("completed")
+    end
   end
 end

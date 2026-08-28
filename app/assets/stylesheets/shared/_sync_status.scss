@@ -1,0 +1,82 @@
+// Bandeau des évaluations en attente d'envoi, et marque des compétences dont le
+// serveur n'a pas encore confirmé le geste.
+//
+// Il vit dans les deux layouts : le contrôleur d'évaluation sert aussi bien au
+// mobile qu'au bureau, et nulle part un échec ne doit rester silencieux.
+
+.sync-status {
+  position: sticky;
+  top: 0;
+  z-index: 1080; // au-dessus des modales Bootstrap, sinon il disparaît sous
+                 // celle de l'évaluation, là où l'enseignant tape
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+  color: $grisF;
+  background-color: $menuOff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+
+  &[hidden] { display: none; }
+
+  // Le vert de la confirmation, le rose de ce qui demande une action.
+  &[data-etat="ok"] { background-color: rgba($green, 0.18); }
+  &[data-etat="refus"],
+  &[data-etat="session"] { background-color: $roseLight; }
+}
+
+.sync-status-retry {
+  padding: 0.15rem 0.6rem;
+  font-size: 0.85rem;
+  color: $blanc;
+  background-color: $rose;
+  border: 0;
+  border-radius: 0.5rem;
+
+  &[hidden] { display: none; }
+}
+
+// Une compétence dont l'évaluation attend encore : la pastille est peinte, mais
+// on ne laisse pas croire qu'elle est enregistrée. La petite horloge dit
+// laquelle — le compte du bandeau, seul, ne le dirait pas.
+// La marque se pose sur la pastille de l'évaluation en cours — `.mobile-last-eval`
+// au mobile, `.last-eval` au bureau — et non sur toute la ligne, où elle
+// atterrissait dans un coin sans rapport avec ce que l'enseignant vient de taper.
+.eval-en-attente {
+  .mobile-last-eval,
+  .last-eval {
+    position: relative;
+
+    // Une pastille dessinée en CSS plutôt qu'un glyphe Font Awesome : l'échappement
+    // `\f017` se résolvait en chaîne vide, la marque était donc invisible — et
+    // dépendre d'une police chargée depuis un CDN pour signaler « pas encore
+    // enregistré » serait de toute façon fragile, justement hors connexion.
+    &::after {
+      content: "";
+      position: absolute;
+      top: -0.15rem;
+      right: -0.3rem;
+      width: 0.55rem;
+      height: 0.55rem;
+      background-color: $marron;
+      border: 2px solid $blanc;
+      border-radius: 50%;
+    }
+  }
+}
+
+// « Vous consultez des données du … » : posé sous le bandeau de synchronisation,
+// plus discret que lui — il informe, il n'appelle pas à agir.
+.stale-notice {
+  padding: 0.35rem 1rem;
+  font-size: 0.8rem;
+  font-style: italic;
+  text-align: center;
+  color: $grisF;
+  background-color: $bleuC;
+
+  &[hidden] { display: none; }
+}

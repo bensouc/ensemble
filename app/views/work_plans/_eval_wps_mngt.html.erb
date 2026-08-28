@@ -1,79 +1,18 @@
+<%# Les statuts d'évaluation du bureau.
+
+    Libellés et icônes viennent de `EvaluationStatutsHelper`, partagé avec la
+    modale du mobile : la même liste, dans le même ordre, avec les mêmes mots.
+    Auparavant les deux partiels les recopiaient chacun de leur côté — et les
+    exercices de type « jeu » n'avaient d'infobulle sur aucun des deux. %>
 <div class="eval-mngt">
-	<%# raise %>
-	<% # #si plan_skill kind jeux %>
-	<div class=''>
-		<% if plan_skill.kind.downcase == "jeu" %>
-			<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo_OK), data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle"} do %>
-				<i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i>
-			<% end %>
-			<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :completed), data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle"} do %>
-				<i class="fas fa-pen text-primary eval-icon"></i>
-			<% end %>
-		<% end %>
-	</div>
-	<% # #si plan_skill kind exo %>
-	<div class=''>
-		<% if plan_skill.kind.downcase == "exercice" %>
-			<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :not_done), title: "Non fait",
-      data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle",
-                controller:"tooltip",
-                bs_toggle:"tooltip",
-                bs_placement:"top"} do %>
-				<i class="fa-regular fa-circle-xmark --grisF eval-icon"></i>
-			<% end %>
-			<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :failed), title: "Raté, à refaire",
-      data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle",
-                controller:"tooltip",
-                bs_toggle:"tooltip",
-                bs_placement:"top"} do %>
-				<i class="fa-solid fa-arrow-rotate-left text-danger eval-icon"></i>
-			<% end %>
-			<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo), title: "A refaire",
-      data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle",
-                controller:"tooltip",
-                bs_toggle:"tooltip",
-                bs_placement:"top"} do %>
-				<i class="fa-solid fa-arrow-rotate-left orange eval-icon"></i>
-			<% end %>
-			<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo_OK), title: "OK, mais à refaire",
-      data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle",
-                controller:"tooltip",
-                bs_toggle:"tooltip",
-                bs_placement:"top"} do %>
-				<i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i>
-			<% end %>
-			<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :completed), title: "Validé => Ceinture",
-      data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle", controller:"tooltip",
-                bs_toggle:"tooltip",
-                bs_placement:"top"} do %>
-				<i class="fa-solid fa-graduation-cap text-primary eval-icon"></i>
-			<% end %>
-		<% end %>
-	</div>
-	<% # #si plan_skill kind ceinture %>
-	<div class=''>
-		<% if (plan_skill.kind.downcase == "controle") || (plan_skill.kind.downcase == "ceinture") %>
-			<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :not_done),title:"Non Fait",
-      data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle",
-                controller:"tooltip",
-                bs_toggle:"tooltip",
-                bs_placement:"top"} do %>
-				<i class="fa-regular fa-circle-xmark --grisF eval-icon"></i>
-			<% end %>
-			<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo),title:"A refaire",
-      data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle",
-                controller:"tooltip",
-                bs_toggle:"tooltip",
-                bs_placement:"top"} do %>
-				<i class="fa-solid fa-arrow-rotate-left orange eval-icon"></i>
-			<% end %>
-			<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :completed),title:"Ceinture Validée",
-      data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle",
-                controller:"tooltip",
-                bs_toggle:"tooltip",
-                bs_placement:"top"} do %>
-				<i class="fa-solid fa-graduation-cap text-primary eval-icon"></i>
-			<% end %>
-		<% end %>
-	</div>
+  <div>
+    <% statuts_evaluation(plan_skill).each do |statut| %>
+      <%= link_to work_plan_skill_eval_update_path(plan_skill, status: statut.statut),
+                  title: statut.libelle,
+                  data: { turbo_prefetch: false, action: "click->ajax-work-plan#toggle",
+                          controller: "tooltip", bs_toggle: "tooltip", bs_placement: "top" } do %>
+        <i class="<%= statut.icone %> <%= statut.couleur %> eval-icon"></i>
+      <% end %>
+    <% end %>
+  </div>
 </div>

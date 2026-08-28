@@ -1,27 +1,13 @@
-<div
-  class='d-flex wp-student-folder'
-  data-action="click->wp-by-student#displayList"
->
-  <div class="mobile-index-folder">
-    <i
-      class="fa-solid fa-folder-closed me-4 ms-3"
-      data-wp-by-student-target="folderopen"
-    ></i>
-    <i
-      class="fa-solid fa-folder-open me-4 ms-3 d-none"
-      data-wp-by-student-target="folderclosed"
-    ></i>
-  </div>
-  <div class='mobile-index-wp-name'>
-    <div class="mobile-wp-firstname">
-      <%= student.first_name %>
-    </div>
-    <div class='invisible'>
-      --
-    </div>
-    <div class="mobile-index-wp-count">
-      (
-      <%= @my_work_plans.select { |a| a.student_id == student.id }.count %>
-      )</div>
-  </div>
+<%# La ligne d'un élève, identique à celle de l'écran des classes : prénom à
+    gauche, chevron à droite. Deux icônes de dossier y tenaient lieu d'indicateur
+    d'ouverture, sans rapport avec le reste de l'application. %>
+<div class="mobile-eleve-ligne" data-action="click->wp-by-student#displayList">
+  <span class="mobile-eleve-prenom"><%= student.first_name.capitalize %></span>
+  <span class="mobile-eleve-compte" data-wp-by-student-target="count">
+    <%= plans_label(@my_work_plans.count { |plan| plan.student_id == student.id }) %>
+  </span>
+  <%# Les noms de cible viennent du contrôleur Stimulus, qui les bascule : on ne
+      les renomme pas pour ne pas casser le comportement. %>
+  <i class="fa-solid fa-chevron-right --roseL" data-wp-by-student-target="folderopen"></i>
+  <i class="fa-solid fa-chevron-down --roseL d-none" data-wp-by-student-target="folderclosed"></i>
 </div>

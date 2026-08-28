@@ -1,50 +1,21 @@
+<%# La modale d'évaluation : un choix par ligne, avec son libellé.
+
+    Elle n'affichait que des icônes — dont TROIS flèches de rotation que seule la
+    couleur distinguait. Il fallait avoir appris le code pour évaluer un élève.
+    Les mots sont ceux des infobulles du bureau, désormais tenus dans un helper
+    commun aux deux fronts : ils ne peuvent plus diverger.
+
+    Le statut actuel est marqué. On voyait jusqu'ici ce qu'on pouvait choisir,
+    jamais où en était la compétence. %>
 <div class="mobile-eval-mngt" data-bs-dismiss="modal" aria-label="Close">
-	<%# raise %>
-	<% # #si plan_skill kind jeux %>
-	<% if plan_skill.kind.downcase == "jeu" %>
-		<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo_OK),
-                                  data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle"} do %>
-			<i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i>
-		<% end %>
-		<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :completed),
-                                  data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle"} do %>
-			<i class="fas fa-pen text-primary eval-icon"></i>
-		<% end %>
-	<% end %>
-	<% # #si plan_skill kind exo %>
-	<% if plan_skill.kind.downcase == "exercice" %>
-		<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :not_done), data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle"} do %>
-			<i class="fa-regular fa-circle-xmark --grisF eval-icon"></i>
-		<% end %>
-		<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :failed),
-                                  data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle"} do %>
-			<i class="fa-solid fa-arrow-rotate-left text-danger eval-icon"></i>
-		<% end %>
-		<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo),
-                                  data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle"} do %>
-			<i class="fa-solid fa-arrow-rotate-left orange eval-icon"></i>
-		<% end %>
-		<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo_OK),
-                                  data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle"} do %>
-			<i class="fa-solid fa-arrow-rotate-left text-success eval-icon"></i>
-		<% end %>
-		<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :completed),
-                                  data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle"} do %>
-			<i class="fa-solid fa-graduation-cap text-primary eval-icon"></i>
-		<% end %>
-	<% end %>
-	<% # #si plan_skill kind ceinture %>
-	<% if (plan_skill.kind.downcase == "controle") || (plan_skill.kind.downcase == "ceinture") %>
-		<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :not_done), data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle"} do %>
-			<i class="fa-regular fa-circle-xmark --grisF eval-icon"></i>
-		<% end %>
-		<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :redo),
-                                  data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle"} do %>
-			<i class="fa-solid fa-arrow-rotate-left orange eval-icon"></i>
-		<% end %>
-		<%= link_to work_plan_skill_eval_update_path(plan_skill, status: :completed),
-                                  data:{turbo_prefetch: false, action: "click->ajax-work-plan#toggle"} do %>
-			<i class="fa-solid fa-graduation-cap text-primary eval-icon"></i>
-		<% end %>
-	<% end %>
+  <% statuts_evaluation(plan_skill).each do |statut| %>
+    <% courant = statut_courant?(plan_skill, statut.statut) %>
+    <%= link_to work_plan_skill_eval_update_path(plan_skill, status: statut.statut),
+                class: "mobile-eval-choix#{' --courant' if courant}",
+                aria: { current: courant ? "true" : nil },
+                data: { turbo_prefetch: false, action: "click->ajax-work-plan#toggle" } do %>
+      <i class="<%= statut.icone %> <%= statut.couleur %> eval-icon"></i>
+      <span class="mobile-eval-libelle"><%= statut.libelle %></span>
+    <% end %>
+  <% end %>
 </div>

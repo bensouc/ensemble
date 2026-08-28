@@ -21,6 +21,7 @@
 	<body data-current-user-id="<%= current_user ? current_user.id : "" %>">
 		<div id="flash" class="flash">
 			<%= render "shared/flashes" %>
+			<%= render "shared/sync_status" %>
 		</div>
     <%= render "modals/general_modal"%>
 		<% if chrome_free_page? %>

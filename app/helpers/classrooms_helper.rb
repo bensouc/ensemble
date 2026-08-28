@@ -30,7 +30,7 @@ module ClassroomsHelper
   # `pluralize` ne fléchit pas en français : aucune inflexion n'est définie pour
   # cette locale, « 2 classe » en sortait.
   def classes_label(nombre)
-    "#{nombre} classe#{"s" if nombre > 1}"
+    "#{nombre} classe#{'s' if nombre > 1}"
   end
 
   # Une école peut se retrouver sans responsable : mieux vaut une tournure vague

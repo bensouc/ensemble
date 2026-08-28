@@ -1,33 +1,42 @@
+<%# La barre de navigation du bas.
+
+    Ses cinq icônes étaient toutes de la même couleur : rien ne disait où l'on se
+    trouvait. L'onglet courant est maintenant allumé, les autres en retrait.
+
+    Les icônes n'avaient par ailleurs aucun nom accessible — un lecteur d'écran
+    n'annonçait que « lien ». %>
 <footer>
-	<div class=" mobile-footer">
-		<div class="mobile-user-menu">
-			<%= link_to root_path do %>
+	<div class="mobile-footer">
+		<div class="<%= classe_onglet_mobile(root_path) %>">
+			<%= link_to root_path, "aria-label": "Accueil",
+			            "aria-current": ("page" if onglet_mobile_actif?(root_path)) do %>
 				<i class="fa-solid fa-school"></i>
 			<% end %>
-			<%# <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg"> %>
 		</div>
-		<div class="mobile-user-menu">
-			<%= link_to  mobile_work_plans_path do %>
+		<div class="<%= classe_onglet_mobile(mobile_work_plans_path) %>">
+			<%= link_to mobile_work_plans_path, "aria-label": "Plans de travail",
+			            "aria-current": ("page" if onglet_mobile_actif?(mobile_work_plans_path)) do %>
 				<i class="fa-solid fa-list"></i>
 			<% end %>
 		</div>
-		<div class="mobile-user-menu">
-			<%= link_to  mobile_classrooms_path do %>
+		<div class="<%= classe_onglet_mobile(mobile_classrooms_path) %>">
+			<%= link_to mobile_classrooms_path, "aria-label": "Mes classes",
+			            "aria-current": ("page" if onglet_mobile_actif?(mobile_classrooms_path)) do %>
 				<i class="fa-solid fa-graduation-cap"></i>
 			<% end %>
 		</div>
-		<div class="mobile-user-menu">
-			<%= link_to conversations_path do %>
+		<div class="<%= classe_onglet_mobile(conversations_path) %>">
+			<%= link_to conversations_path, "aria-label": "Messages",
+			            "aria-current": ("page" if onglet_mobile_actif?(conversations_path)) do %>
 				<i class="fa-regular fa-comment">
 					<% if @unread_messages %>
 						<div class="bullet-chat"></div>
 					<% end %>
 				</i>
 			<% end %>
-			<%# <img src="https://res.cloudinary.com/dr50qe2fh/image/upload/v1638453284/LOGO_lesptr.svg"> %>
 		</div>
 		<div class="mobile-user-menu">
-			<%= link_to destroy_user_session_path, method: :delete do %>
+			<%= link_to destroy_user_session_path, method: :delete, "aria-label": "Se déconnecter" do %>
 				<i class="fas fa-sign-out-alt"></i>
 			<% end %>
 		</div>

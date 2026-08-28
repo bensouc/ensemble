@@ -1,18 +1,23 @@
-<%= turbo_frame_tag(@student) do%>
-	<%= link_to mobile_classroom_path(@classroom)  do %>
-    <h4 class="--grisF ms-2">
-      <%= @student.first_name.capitalize %>
-    <i class="fa-solid fa-chevron-up --roseL"></i>
-    </h4>
+<%= turbo_frame_tag(@student) do %>
+	<%# Même structure que la ligne repliée dans la liste : sans elle, le chevron
+	    se collait au prénom au lieu de rester à droite, et la ligne dépliée ne
+	    s'alignait plus sur ses voisines. %>
+	<%= link_to mobile_classroom_path(@classroom), class: "mobile-eleve-ligne --ouverte" do %>
+		<span class="mobile-eleve-prenom"><%= @student.first_name.capitalize %></span>
+		<i class="fa-solid fa-chevron-up --roseL"></i>
 	<% end %>
-	<div class="d-flex flex-wrap justify-content-center ">
-		<% @domains.each do  |domain|%>
-			<% belt = @belts.select { |belt| belt.domain == domain }.max_by(&:level) %>
-			<% if belt %>
-				<%= render Belts::BeltComponent.new(belt: belt, domain: domain) %>
-			<% else %>
-				<%= render Belts::NoBeltComponent.new(student: @student, domain: domain) %>
+	<div class="mobile-eleve-detail">
+		<%= render "shared/mobile_intro",
+		           texte: "Les ceintures obtenues par #{@student.first_name.capitalize}, domaine par domaine." %>
+		<div class="mobile-ceintures">
+			<% @domains.each do |domain| %>
+				<% belt = @belts.select { |belt| belt.domain == domain }.max_by(&:level) %>
+				<% if belt %>
+					<%= render Belts::BeltComponent.new(belt: belt, domain: domain) %>
+				<% else %>
+					<%= render Belts::NoBeltComponent.new(student: @student, domain: domain) %>
+				<% end %>
 			<% end %>
-		<% end %>
+		</div>
 	</div>
 <% end %>

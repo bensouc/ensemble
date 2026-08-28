@@ -1,15 +1,22 @@
-require 'rails_helper'
+# frozen_string_literal: true
 
-# Specs in this file have access to a helper object that includes
-# the Mobile::ClassroomsHelper. For example:
-#
-# describe Mobile::ClassroomsHelper do
-#   describe "string concat" do
-#     it "concats two strings with spaces" do
-#       expect(helper.concat_strings("this","that")).to eq("this that")
-#     end
-#   end
-# end
+require "rails_helper"
+
 RSpec.describe Mobile::ClassroomsHelper, type: :helper do
-  pending "add some examples to (or delete) #{__FILE__}"
+  # `pluralize` est sensible à la locale et aucune inflexion n'est définie pour
+  # le français : il renvoyait « 2 élève », sans bruit. Même raison d'être que
+  # `ClassroomsHelper#classes_label`.
+  describe "#eleves_label" do
+    it "reste au singulier pour un élève" do
+      expect(helper.eleves_label(1)).to eq("1 élève")
+    end
+
+    it "accorde au pluriel au-delà" do
+      expect(helper.eleves_label(2)).to eq("2 élèves")
+    end
+
+    it "reste au singulier pour une classe vide" do
+      expect(helper.eleves_label(0)).to eq("0 élève")
+    end
+  end
 end

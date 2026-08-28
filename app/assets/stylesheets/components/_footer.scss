@@ -48,16 +48,21 @@
 // MOBILE FOOTER
 @media (max-width: 1024px) {
   .mobile-footer {
-    width: 100%;
-    height: 80px;
-    // border-top: thin solid $grisF;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background-color: white !important;
     position: fixed;
-  bottom:-1px;
-
+    bottom: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    // La barre de navigation vit tout en bas, là où le pouce arrive. Depuis que
+    // l'application s'installe en plein écran, l'indicateur d'accueil des iPhone
+    // se superpose à cette zone : on lui réserve sa place au lieu de lui laisser
+    // recouvrir les icônes.
+    min-height: 4.5rem;
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background-color: $blanc !important;
+    border-top: thin solid $grisC;
   }
 }
 .logo-home {
@@ -79,9 +84,42 @@
   }
 }
 .mobile-user-menu {
-  font-size: 2.4rem;
+  font-size: 1.75rem;
+
+  // Chaque entrée de la barre est une cible atteignable sans viser : les icônes
+  // seules laissaient au doigt une surface plus petite qu'elles n'en avaient
+  // l'air.
   a {
-    color: $rose !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: $cible-tactile;
+    min-height: $cible-tactile;
+    // Les cinq icônes étaient toutes roses : aucune ne se distinguait, et rien
+    // ne disait où l'on se trouvait. Les onglets au repos passent en retrait.
+    color: rgba($grisF, 0.45) !important;
+  }
+
+  // L'onglet courant s'allume, et porte un trait au-dessus : la couleur seule ne
+  // suffit pas à qui la distingue mal.
+  &.--actif {
+    position: relative;
+
+    a {
+      color: $rose !important;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 1.75rem;
+      height: 3px;
+      background-color: $rose;
+      border-radius: 0 0 3px 3px;
+      transform: translateX(-50%);
+    }
   }
 }
 // END of footer

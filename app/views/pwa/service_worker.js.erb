@@ -1,0 +1,130 @@
+// Service worker d'Ensemble — lecture hors ligne du front mobile.
+//
+// Deux caches, séparés à dessein :
+//   - la COQUE (bundle, feuille de style) : elle ne contient rien de personnel,
+//     on la garde agressivement ;
+//   - les DONNÉES (pages /mobile) : elles portent des noms d'élèves et leur
+//     progression. On les garde pour que l'enseignant puisse consulter sa classe
+//     sans réseau, mais on les EFFACE à la déconnexion — laisser des données
+//     nominatives sur un téléphone après un « se déconnecter » serait un abus.
+//
+// Les écritures ne passent pas par ici : elles sont tenues par la file
+// d'attente (app/javascript/eval_queue.js), qui fonctionne aussi sur iOS où la
+// Background Sync n'existe pas.
+
+const VERSION = "<%= Rails.application.config.assets.version %>-<%= asset_digest_path("application.js") %>";
+const CACHE_COQUE = `ensemble-coque-${VERSION}`;
+const CACHE_DONNEES = `ensemble-donnees-${VERSION}`;
+
+const COQUE = [
+  "<%= asset_path("application.js") %>",
+  "<%= asset_path("application.css") %>",
+];
+
+// --- décisions -------------------------------------------------------------
+// Fonctions pures, sans dépendance au contexte service worker : le banc d'essai
+// les charge comme un script ordinaire pour les éprouver.
+
+function strategiePour({ url, method, mode }) {
+  if (method !== "GET") return "passe";
+
+  const chemin = new URL(url, "https://exemple.test").pathname;
+
+  // Se déconnecter efface les données d'élèves gardées sur l'appareil.
+  if (chemin.startsWith("/users/sign_out")) return "purge";
+  // Un PDF ne se met pas en cache : il est lourd, daté, et se régénère.
+  if (chemin.includes("/export")) return "passe";
+  if (chemin.startsWith("/assets/")) return "coque";
+  if (mode === "navigate" && chemin.startsWith("/mobile")) return "donnees";
+
+  return "passe";
+}
+
+// Une page servie depuis le cache doit le dire : un enseignant ne doit jamais
+// évaluer sur des données périmées sans le savoir.
+function estampiller(html, horodatage) {
+  const balise = `<meta name="servi-depuis-cache" content="${horodatage}">`;
+  return html.includes("</head>") ? html.replace("</head>", `${balise}</head>`) : balise + html;
+}
+
+// --- cycle de vie ----------------------------------------------------------
+
+self.addEventListener("install", (evenement) => {
+  evenement.waitUntil(caches.open(CACHE_COQUE).then((cache) => cache.addAll(COQUE)));
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (evenement) => {
+  evenement.waitUntil(
+    caches
+      .keys()
+      .then((noms) =>
+        Promise.all(
+          noms
+            .filter((nom) => nom.startsWith("ensemble-") && !nom.endsWith(VERSION))
+            .map((nom) => caches.delete(nom))
+        )
+      )
+      .then(() => self.clients.claim())
+  );
+});
+
+// --- interception ----------------------------------------------------------
+
+self.addEventListener("fetch", (evenement) => {
+  const requete = evenement.request;
+  const strategie = strategiePour({
+    url: requete.url,
+    method: requete.method,
+    mode: requete.mode,
+  });
+
+  if (strategie === "passe") return;
+
+  if (strategie === "purge") {
+    evenement.waitUntil(caches.delete(CACHE_DONNEES));
+    return;
+  }
+
+  if (strategie === "coque") {
+    evenement.respondWith(depuisLeCacheDabord(requete));
+    return;
+  }
+
+  evenement.respondWith(depuisLeReseauDabord(requete));
+});
+
+// La coque ne change qu'au déploiement, et son nom porte l'empreinte du bundle :
+// on peut la servir depuis le cache sans jamais interroger le réseau.
+async function depuisLeCacheDabord(requete) {
+  const enCache = await caches.match(requete);
+  if (enCache) return enCache;
+
+  const reponse = await fetch(requete);
+  if (reponse.ok) (await caches.open(CACHE_COQUE)).put(requete, reponse.clone());
+  return reponse;
+}
+
+// Les données, elles, doivent être fraîches quand le réseau répond. Le cache
+// n'est qu'un filet : il sert la dernière version consultée, en le disant.
+async function depuisLeReseauDabord(requete) {
+  try {
+    const reponse = await fetch(requete);
+    if (reponse.ok) {
+      const copie = reponse.clone();
+      const cache = await caches.open(CACHE_DONNEES);
+      const entetes = new Headers(copie.headers);
+      entetes.set("x-mis-en-cache-le", new Date().toISOString());
+      cache.put(requete, new Response(await copie.text(), { status: 200, headers: entetes }));
+    }
+    return reponse;
+  } catch (erreur) {
+    const enCache = await caches.match(requete);
+    if (!enCache) throw erreur;
+
+    const horodatage = enCache.headers.get("x-mis-en-cache-le") || "";
+    const entetes = new Headers(enCache.headers);
+    entetes.set("content-type", "text/html; charset=utf-8");
+    return new Response(estampiller(await enCache.text(), horodatage), { status: 200, headers: entetes });
+  }
+}

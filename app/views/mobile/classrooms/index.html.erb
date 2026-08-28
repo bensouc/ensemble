@@ -1,15 +1,22 @@
 <div class="mobile_index">
-	<h1 class="title">M<%= (@classrooms.count > 1) ? "es" : "a" %> classe<%=  "s" if (@classrooms.count > 1) %>
+	<h1 class="title">M<%= @classrooms.count > 1 ? "es" : "a" %> classe<%= "s" if @classrooms.count > 1 %>
 	</h1>
+	<%= render "shared/mobile_intro",
+	           texte: "Ouvrez une classe pour consulter les ceintures de vos élèves, domaine par domaine." %>
 	<div class="greyline-mobile"></div>
 	<div class="text-start">
-		<%=  turbo_frame_tag("classroom_list") do%>
+		<%= turbo_frame_tag("classroom_list") do %>
 			<% @classrooms.each do |classroom| %>
-				<%=  turbo_frame_tag(classroom) do%>
-					<%= link_to  mobile_classroom_path(classroom) do%>
-						<h2 class='--grisF'>
-							<%= classroom.name.empty? ?  classroom.grade.name : classroom.name %> <i class="fas fa-folder --roseL"></i>
-						</h2>
+				<%= turbo_frame_tag(classroom) do %>
+					<%# Repliée, la carte est elle-même la cible : on ouvrait la classe en
+					    visant son titre. Le niveau et l'effectif la situent d'un coup d'œil. %>
+					<%= link_to mobile_classroom_path(classroom), class: "mobile-classe-carte mobile-classe-entete" do %>
+						<span class="mobile-classe-niveau"><%= classroom.grade.grade_level.upcase %></span>
+						<span class="mobile-classe-corps">
+							<span class="mobile-classe-nom"><%= classroom.safe_name %></span>
+							<span class="mobile-classe-effectif"><%= eleves_label(classroom.students.size) %></span>
+						</span>
+						<i class="fa-solid fa-chevron-right --roseL"></i>
 					<% end %>
 				<% end %>
 			<% end %>
