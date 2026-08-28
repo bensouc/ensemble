@@ -30,7 +30,10 @@ Rails.application.routes.draw do
   # ############### MOBILE ROUTES###############
   namespace "mobile" do
     resources :work_plans, only: [:index]
-    resources :students, only: [:results]
+    # `resources :students, only: [:results]` a été retiré : `:results` n'est pas
+    # une action REST et n'était déclarée ni en `member` ni en `collection`, la
+    # ligne ne générait donc aucune route. Les élèves sont servis par la
+    # ressource imbriquée ci-dessous.
     resources :classrooms, only: [:index, :show] do
       resources :students, only: [:show, :index]
     end
