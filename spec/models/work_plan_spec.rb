@@ -2,12 +2,7 @@
 
 require "rails_helper"
 RSpec.describe WorkPlan, type: :model do
-  before(:all) do
-    WorkPlan.destroy_all
-    WorkPlanDomain.destroy_all
-    Challenge.destroy_all
-    SchoolRole.destroy_all
-    User.destroy_all
+  before do
     @user1 = create(:user)
     @work_plan1 = create(:work_plan)
   end

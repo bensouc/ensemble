@@ -2,12 +2,7 @@
 
 require "rails_helper"
 RSpec.describe Belt, type: :model do
-  before(:all) do
-    WorkPlan.destroy_all
-    WorkPlanDomain.destroy_all
-    Challenge.destroy_all
-    SchoolRole.destroy_all
-    User.destroy_all
+  before do
     @belt1 = create(:belt)
   end
 

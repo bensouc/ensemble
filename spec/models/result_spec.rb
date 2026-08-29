@@ -1,8 +1,7 @@
 require "rails_helper"
 
 RSpec.describe Result, type: :model do
-  before(:all) do
-    Result.destroy_all
+  before do
     # @result1 = create(:result)
     # @result = create(:result, status: "completed", kind: "ceinture")
     @domain = create(:domain)

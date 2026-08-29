@@ -7,12 +7,7 @@ RSpec.describe User, type: :model do
   it { is_expected.to have_many(:conversations).through(:user_conversations) }
   it { is_expected.to have_many(:messages).dependent(:destroy) }
 
-  before(:all) do
-    WorkPlan.destroy_all
-    WorkPlanDomain.destroy_all
-    Challenge.destroy_all
-    SchoolRole.destroy_all
-    User.destroy_all
+  before do
     @user1 = create(:user)
   end
 
