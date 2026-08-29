@@ -28,6 +28,26 @@ RSpec.describe ChallengesHelper, type: :helper do
     end
   end
 
+  # Même forme pour `simple_form` (le filtre de l'index) et pour
+  # `options_for_select` (la modale de déplacement) : tous deux en portent la
+  # classe. C'est ce qui permet de n'avoir qu'une seule liste.
+  describe "#collection_ceintures" do
+    it "donne les sept ceintures, avec leur valeur et leur couleur" do
+      expect(helper.collection_ceintures.size).to eq(7)
+      expect(helper.collection_ceintures.first).to eq(["Blanche", 1, { class: "--bgc-blanc" }])
+    end
+
+    # Une ceinture est verte et bleue. Le filtre de l'index écrivait « Vert » et
+    # « Bleu » au masculin, alors que la modale s'accordait : les deux écrans se
+    # contredisaient.
+    it "accorde les libellés au féminin" do
+      libelles = helper.collection_ceintures.map(&:first)
+
+      expect(libelles).to include("Verte", "Bleue")
+      expect(libelles).not_to include("Vert", "Bleu")
+    end
+  end
+
   describe "#options_ceintures" do
     it "porte la couleur sur chaque option" do
       expect(helper.options_ceintures(1)).to include('class="--bgc-jaune"')

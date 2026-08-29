@@ -189,6 +189,33 @@ RSpec.describe ChallengesController, type: :controller do
     end
   end
 
+  describe "#index, filtre des ceintures" do
+    render_views
+
+    before do
+      grade = create(:grade, school: user.school)
+      create(:classroom, user:, grade:)
+      domain = create(:domain, grade:)
+      create(:skill, school: user.school, domain:, level: 1)
+      sign_in(user)
+    end
+
+    # Le filtre portait sa propre liste de ceintures, au masculin, quand la
+    # modale de déplacement s'accordait : les deux écrans se contredisaient.
+    it "accorde les ceintures au féminin, comme la modale" do
+      get :index
+
+      expect(response.body).to include(">Verte<", ">Bleue<")
+      expect(response.body).not_to include(">Vert<", ">Bleu<")
+    end
+
+    it "garde la couleur de chaque ceinture" do
+      get :index
+
+      expect(response.body).to include('class="--bgc-noir --blanc"', 'class="--bgc-orange"')
+    end
+  end
+
   describe "#index, ordre des exercices" do
     render_views
 

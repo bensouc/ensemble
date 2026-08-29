@@ -30,14 +30,19 @@ module ChallengesHelper
     CLASSES_CEINTURE[rang - 1]
   end
 
-  # Les sept ceintures pour un `select`, chacune sur son fond.
+  # Les sept ceintures, chacune sur son fond. Les libellés viennent de
+  # `Belt::BELT_COLORS`, donc accordés au féminin — une ceinture est verte, pas
+  # « Vert » comme l'écrivait le filtre de l'index.
   #
-  # Les libellés viennent de `Belt::BELT_COLORS`, donc accordés au féminin —
-  # « ceinture verte », et non « Vert » comme l'écrivait le filtre de l'index.
+  # Cette forme — `[libellé, valeur, attributs]` — convient à `simple_form`
+  # comme à `options_for_select`, qui en portent tous deux la classe.
+  def collection_ceintures
+    Belt::BELT_COLORS.each_with_index.map do |nom, index|
+      [nom.capitalize, index + 1, { class: classe_ceinture(index + 1) }]
+    end
+  end
+
   def options_ceintures(selectionnee)
-    options_for_select(
-      Belt::BELT_COLORS.each_with_index.map { |nom, i| [nom.capitalize, i + 1, { class: classe_ceinture(i + 1) }] },
-      selectionnee
-    )
+    options_for_select(collection_ceintures, selectionnee)
   end
 end
