@@ -38,11 +38,16 @@ RSpec.describe Classroom, type: :model do
         expect(Student.exists?(student.id)).to be false
       end
 
+      # Les niveaux sont explicites et DIFFÉRENTS : enregistrer un `Result` crée
+      # déjà une ceinture pour (élève, domaine, niveau de la compétence), et
+      # `Belt` valide l'unicité sur ce trio. La factory tirant son niveau au
+      # hasard — un hasard que `Kernel.srand config.seed` rend dépendant de la
+      # graine — la spec échouait sur quatre graines sur six.
       it "n'y laisse ni result, ni ceinture, ni plan de travail orphelin" do
         student = create(:student, classroom:)
-        skill = create(:skill, school:)
+        skill = create(:skill, school:, level: 3)
         create(:result, student:, skill:)
-        create(:belt, student:, domain: skill.domain)
+        create(:belt, student:, domain: skill.domain, level: 5)
         create(:work_plan, user: owner, grade:, student:)
 
         classroom.destroy_or_hand_over!
