@@ -102,8 +102,12 @@ class School < ApplicationRecord
     invited
   end
 
+  # Ordonnés par prénom : sans `ORDER BY`, Postgres rend les lignes dans leur
+  # ordre physique, qui change avec l'historique de la table. Le message
+  # « Demandez à Claire ou Marc » devenait « Marc ou Claire » d'une fois sur
+  # l'autre — désordre visible pour l'utilisateur, et spec instable.
   def super_teachers
-    users.where(school_roles: { super_teacher: true })
+    users.where(school_roles: { super_teacher: true }).order(:first_name, :id)
   end
 
   # `strip` avant `capitalize` : les espaces saisis à l'inscription se voyaient
