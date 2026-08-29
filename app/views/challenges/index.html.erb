@@ -30,16 +30,10 @@
         <p class= 'pt-1 m-left'>Niveau de Ceinture</p>
 
 					<%= f.input :level,
-                  collection: [
-                    ["Blanche", 1, { class: "--bgc-blanc" }],
-                    ["Jaune", 2, { class: "--bgc-jaune " }],
-                    ["Orange", 3, { class: "--bgc-orange" }],
-                    ["Vert", 4, { class: "--bgc-vert --blanc" }],
-                    ["Bleu", 5, { class: "--bgc-bleuC --blanc" }],
-                    ["Marron", 6, { class: "--bgc-marron --blanc" }],
-                    ["Noire", 7, { class: "--bgc-noir --blanc" }]
-                  ],
-                  # [blanche jaune orange verte bleue marron noire]
+                  # Dernière copie en dur des ceintures : elle écrivait « Vert »
+                  # et « Bleu » au masculin, alors qu'une ceinture est verte et
+                  # bleue — et que la modale de déplacement, elle, s'accordait.
+                  collection: collection_ceintures,
                   selected: @level,
                   label: false,
                   # La liste des couleurs vivait ici en dur, et une seconde fois
