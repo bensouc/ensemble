@@ -2,10 +2,7 @@
 
 require "rails_helper"
 RSpec.describe Challenge, type: :model do
-  before(:all) do
-    Challenge.destroy_all
-    SchoolRole.destroy_all
-    User.destroy_all
+  before do
     @challenge1 = create(:challenge)
   end
 

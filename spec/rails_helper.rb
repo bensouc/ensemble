@@ -42,6 +42,14 @@ RSpec.configure do |config|
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
+  # Chaque EXEMPLE tourne dans une transaction annulée à la fin. Un bloc
+  # `before(:all)`, lui, s'exécute EN DEHORS : ses enregistrements survivent au
+  # passage, et le suivant démarre sur un état différent. La suite échouait
+  # ainsi une fois sur deux, sur une spec différente à chaque fois, et l'échec
+  # ne se reproduisait pas en relançant — il dépendait du passage précédent.
+  #
+  # Ne pas réintroduire `before(:all)` pour créer des enregistrements : `before`
+  # ou `let` coûtent quelques dixièmes de seconde et laissent la base propre.
   config.use_transactional_fixtures = true
 
   # You can uncomment this line to turn off ActiveRecord support entirely.
