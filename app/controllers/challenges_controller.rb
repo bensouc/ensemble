@@ -254,12 +254,17 @@ class ChallengesController < ApplicationController
     arrivee.domain_id == depart.domain_id && arrivee.id != depart.id
   end
 
+  # Le refus ne rend RIEN d'autre que le message : il n'a pas de liste à
+  # rafraîchir. Sans `render` explicite, Rails rendait le gabarit par défaut de
+  # l'action — celui du succès, qui itère sur `@frames` et levait sur `nil`.
   def renvoyer_transfert_refuse
     message = "Déplacement impossible vers cette compétence."
-    @challenges = skill_challenges_list
     respond_to do |format|
       format.html { redirect_to challenges_path, alert: message }
-      format.turbo_stream { flash.now[:alert] = message }
+      format.turbo_stream do
+        flash.now[:alert] = message
+        render turbo_stream: turbo_stream.prepend("flash", partial: "shared/flashes")
+      end
     end
     nil
   end

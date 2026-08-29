@@ -203,11 +203,16 @@ RSpec.describe ChallengesController, type: :controller do
 
       get :index
 
-      expect(response.body).to include(transfer_challenge_path(first, direction: "down"))
-      expect(response.body).to include(transfer_challenge_path(second, direction: "up"))
+      # `move` = le rang DANS la liste, `transfer` = changer de compétence. Un
+      # renommage global a un jour redirigé ces flèches vers le transfert, en
+      # modifiant du même geste la spec qui devait l'attraper : les ⬆️⬇️
+      # envoyaient alors un PATCH sur /transfer, sans `skill_id`.
+      expect(response.body).to include(move_challenge_path(first, direction: "down"))
+      expect(response.body).not_to include(transfer_challenge_path(first, direction: "down"))
+      expect(response.body).to include(move_challenge_path(second, direction: "up"))
       # pas de flèche vers le haut sur le premier, ni vers le bas sur le dernier
-      expect(response.body).not_to include(transfer_challenge_path(first, direction: "up"))
-      expect(response.body).not_to include(transfer_challenge_path(second, direction: "down"))
+      expect(response.body).not_to include(move_challenge_path(first, direction: "up"))
+      expect(response.body).not_to include(move_challenge_path(second, direction: "down"))
       expect(response.body.index(first.name)).to be < response.body.index(second.name)
     end
   end
@@ -454,6 +459,40 @@ RSpec.describe ChallengesController, type: :controller do
       patch :transfer, params: { id: exercice.id, skill_id: ailleurs.id }, format: :turbo_stream
 
       expect(assigns(:frames).map { |f| f[:liste_id] }).to eq(["skill_#{depart.id}_challenges_list"])
+    end
+
+    # Un refus n'a aucune liste à rafraîchir. Sans `render` explicite, Rails
+    # rendait le gabarit par défaut de l'action — celui du succès, qui itère sur
+    # `@frames` : « undefined method `each` for nil », en production.
+    #
+    # Ces specs passaient toutes en HTML, où le refus redirige : le chemin
+    # turbo_stream, le seul qu'emprunte la modale, n'était jamais exercé.
+    it "répond sans lever quand le déplacement est refusé, en turbo_stream" do
+      ailleurs = create(:skill, domain: create(:domain), school: user.school, level: 3)
+
+      expect do
+        patch :transfer, params: { id: exercice.id, skill_id: ailleurs.id }, format: :turbo_stream
+      end.not_to raise_error
+
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "y dit pourquoi, sans toucher aux listes" do
+      patch :transfer, params: { id: exercice.id, skill_id: depart.id }, format: :turbo_stream
+
+      expect(flash.now[:alert]).to be_present
+      expect(response.body).to include("flash")
+      expect(response.body).not_to include("challenges_list")
+    end
+
+    # Le cas de la modale restée ouverte pendant qu'un autre déplacement a eu
+    # lieu : elle propose alors la compétence où l'exercice se trouve déjà.
+    it "refuse proprement une modale périmée" do
+      exercice.update!(skill: arrivee)
+
+      expect do
+        patch :transfer, params: { id: exercice.id, skill_id: arrivee.id }, format: :turbo_stream
+      end.not_to raise_error
     end
 
     # Le domaine ne se choisit pas dans la modale : une compétence d'ailleurs ne

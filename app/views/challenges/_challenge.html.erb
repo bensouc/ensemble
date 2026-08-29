@@ -63,7 +63,7 @@
         <%# Pas de place réservée pour une flèche absente : en haut et en bas de
             liste, le groupe se resserre. %>
         <% unless challenge_counter.zero? %>
-          <%= button_to transfer_challenge_path(challenge, direction: "up"),
+          <%= button_to move_challenge_path(challenge, direction: "up"),
                 method: :patch,
                 class: "challenge-order-btn",
                 title: "Monter cet exercice" do %>
@@ -71,7 +71,7 @@
           <% end %>
         <% end %>
         <% unless challenge_counter == list_size - 1 %>
-          <%= button_to transfer_challenge_path(challenge, direction: "down"),
+          <%= button_to move_challenge_path(challenge, direction: "down"),
                 method: :patch,
                 class: "challenge-order-btn",
                 title: "Descendre cet exercice" do %>
