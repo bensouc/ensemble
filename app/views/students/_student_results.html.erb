@@ -25,7 +25,10 @@
 				</button>
 				<%# end modal select domain %>
 			</div>
-			<div class="print-date">
+			<%# La légende partage la ligne de l'impression : c'est la seule bande
+			    libre de l'en-tête, et une légende se consulte au passage — elle n'a
+			    pas à réclamer sa propre ligne. %>
+			<div class="print-date ligne-impression">
 				<h4>
 					<%= link_to student_path(student, format: :pdf) do %>
 						<i class="fa-solid fa-print printer-logo"></i>
@@ -33,6 +36,7 @@
 					Le
 					<%= I18n.l(Date.today, format: :long) %>
 				</h4>
+				<%= render "shared/legende_eval" %>
 			</div>
 		</div>
 		<div class="top">

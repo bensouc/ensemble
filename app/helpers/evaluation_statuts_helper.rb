@@ -94,6 +94,23 @@ module EvaluationStatutsHelper
     LIBELLES.fetch(statut, "")
   end
 
+  # La légende de la grille de progression : les cinq états, du moins avancé au
+  # plus avancé, avec le mot de chacun.
+  #
+  # Sans nature, `libelle_evaluation` rend le mot générique — « Validé », là où
+  # un exercice dirait « Validé ⇒ ceinture ». C'est ce que veut une légende, qui
+  # parle de toutes les natures à la fois.
+  def legende_evaluation
+    ORDRE.map { |statut| [classe_pastille(statut), libelle_evaluation(classe_pastille(statut), nil)] }
+  end
+
+  # Ce que dit la lettre d'une pastille. « Contrôle » partage le C de
+  # « ceinture » : la légende ne le répète pas, les deux disent la même chose à
+  # l'élève. Les lettres viennent de `lettre_nature`, pas d'une copie.
+  def legende_natures
+    %w[jeu exercice ceinture].map { |nature| [lettre_nature(nature), nature.capitalize] }
+  end
+
   def lettre_nature(kind)
     nature = kind.to_s.downcase
     LETTRES.fetch(nature) { nature[0].to_s.upcase }

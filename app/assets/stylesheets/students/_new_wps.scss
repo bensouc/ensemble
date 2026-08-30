@@ -155,4 +155,28 @@
     font-size: $texte-sm;
     font-weight: 500;
   }
+
+  // Seul dans la rangée, « Fermer » est l'action principale : il reprend le
+  // poids que « Annuler » cède à « Valider ».
+  .cancel-btn.--seul {
+    color: $blanc !important;
+    background-color: $grisF;
+    border-color: $grisF;
+
+    &:hover {
+      color: $grisF !important;
+      background-color: $light-gray;
+      border-color: $grisC;
+    }
+  }
+}
+
+// Rien à valider : on le dit plutôt que de laisser une boîte vide et un bouton
+// qui ne fait rien.
+.modale-vide {
+  margin: 0;
+  padding: $espace-lg 0;
+  color: $grisF;
+  font-size: $texte-md;
+  text-align: center;
 }
