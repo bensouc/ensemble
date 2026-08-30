@@ -51,19 +51,110 @@ RSpec.describe EvaluationStatutsHelper, type: :helper do
       expect(validation.call("jeu")).to eq("Fait")
     end
 
-    # Garde-fou : ces icônes sont celles que les deux fronts affichaient déjà.
-    # Les changer ici les change des deux côtés — ce qui est le but, mais doit
-    # rester un geste délibéré.
-    it "conserve les icônes des deux fronts" do
-      icones = helper.statuts_evaluation(wps("exercice")).map { |s| [s.icone, s.couleur] }
+    # Garde-fou : ce que chaque statut donne à dessiner, sur les deux fronts. Le
+    # changer ici le change des deux côtés — ce qui est le but, mais doit rester
+    # un geste délibéré.
+    #
+    # Les trois « à refaire » n'ont plus d'icône : ils portent l'anneau de la
+    # pastille, dont la longueur dit combien il reste. C'étaient trois fois la
+    # même flèche de rotation que seule la couleur distinguait, en face de
+    # pastilles qui, elles, graduent leur arc.
+    it "ne garde d'icône que pour les deux états stables" do
+      dessins = helper.statuts_evaluation(wps("exercice")).map { |s| [s.icone, s.couleur, s.anneau] }
 
-      expect(icones).to eq([
-                             ["fa-regular fa-circle-xmark", "--grisF"],
-                             ["fa-solid fa-arrow-rotate-left", "text-danger"],
-                             ["fa-solid fa-arrow-rotate-left", "orange"],
-                             ["fa-solid fa-arrow-rotate-left", "text-success"],
-                             ["fa-solid fa-graduation-cap", "text-primary"],
+      expect(dessins).to eq([
+                             ["fa-regular fa-circle-xmark", "--grisF", false],
+                             [nil, nil, true],
+                             [nil, nil, true],
+                             [nil, nil, true],
+                             ["fa-solid fa-graduation-cap", "text-primary", false],
                            ])
+    end
+
+    # La vue choisit entre les deux : un statut sans l'un ni l'autre ne
+    # dessinerait rien, et un bouton vide ne se clique pas.
+    it "donne à chaque statut un dessin, et un seul" do
+      %w[exercice ceinture controle jeu].each do |nature|
+        helper.statuts_evaluation(wps(nature)).each do |statut|
+          expect(statut.anneau ^ statut.icone.present?).to be(true), "#{nature}/#{statut.statut}"
+        end
+      end
+    end
+  end
+
+  # La lettre d'une pastille. Les six vues qui en affichaient une prenaient
+  # `kind[0]` : juste, mais par chance, et cela levait dès que la nature
+  # manquait — ce qui arrive à un `Result`.
+  describe "#lettre_nature" do
+    it "donne son initiale à chaque nature" do
+      expect(helper.lettre_nature("jeu")).to eq("J")
+      expect(helper.lettre_nature("exercice")).to eq("E")
+      expect(helper.lettre_nature("ceinture")).to eq("C")
+    end
+
+    it "marque un contrôle comme une ceinture" do
+      expect(helper.lettre_nature("controle")).to eq(helper.lettre_nature("ceinture"))
+    end
+
+    it "ne se laisse pas troubler par la casse" do
+      expect(helper.lettre_nature("Exercice")).to eq("E")
+    end
+
+    it "se rabat sur l'initiale d'une nature inconnue plutôt que de lever" do
+      expect(helper.lettre_nature("atelier")).to eq("A")
+    end
+
+    it "rend une pastille muette plutôt que de lever quand la nature manque" do
+      expect(helper.lettre_nature(nil)).to eq("")
+    end
+  end
+
+  # Le contrôle du bureau montre toujours les cinq colonnes, y compris celles
+  # qu'une nature n'autorise pas. C'est ce qui permet de balayer une colonne du
+  # regard sur tout un plan de travail au lieu de relire chaque ligne : « validé »
+  # se trouve toujours au même endroit.
+  describe "#cases_evaluation" do
+    it "rend toujours cinq cases, dans l'ordre de la progression" do
+      cases = helper.cases_evaluation(wps("exercice"))
+
+      expect(cases.size).to eq(5)
+      expect(cases.map(&:statut)).to eq(%w[not_done failed redo redo_OK completed])
+    end
+
+    it "laisse vides les colonnes qu'une ceinture n'autorise pas, sans décaler les autres" do
+      cases = helper.cases_evaluation(wps("ceinture"))
+
+      expect(cases.size).to eq(5)
+      expect(cases.map { |c| c&.statut }).to eq(["not_done", nil, "redo", nil, "completed"])
+    end
+
+    it "en laisse trois vides pour un jeu" do
+      expect(helper.cases_evaluation(wps("jeu")).map { |c| c&.statut })
+        .to eq([nil, nil, nil, "redo_OK", "completed"])
+    end
+
+    it "n'en remplit aucune pour une nature inconnue plutôt que de lever" do
+      expect(helper.cases_evaluation(wps("autre"))).to eq([nil] * 5)
+    end
+
+    # Le libellé de validation dépend de ce qu'on évalue : les cases doivent le
+    # dire comme le fait la liste des statuts offerts.
+    it "dit ce que valider veut dire selon ce qu'on évalue" do
+      expect(helper.cases_evaluation(wps("exercice")).last.libelle).to eq("Validé ⇒ ceinture")
+      expect(helper.cases_evaluation(wps("ceinture")).last.libelle).to eq("Ceinture validée")
+    end
+  end
+
+  # `not_done` est le nom du choix ; `new` est ce que la base enregistre. La
+  # pastille porte la couleur de l'état, pas celle du chemin qui y mène.
+  describe "#classe_pastille" do
+    it "traduit le choix « non fait » vers l'état neuf" do
+      expect(helper.classe_pastille("not_done")).to eq("new")
+    end
+
+    it "laisse les autres statuts tels quels" do
+      expect(helper.classe_pastille("redo_OK")).to eq("redo_OK")
+      expect(helper.classe_pastille("completed")).to eq("completed")
     end
   end
 

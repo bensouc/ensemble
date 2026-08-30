@@ -1,14 +1,14 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static targets = ['panel','btn'];
-  connect() {
-    console.log('toogle panel controller connected');
-  }
+  static targets = ["panel", "btn"];
 
   displayPanel() {
-    // console.log('display toggle BMO');
-        this.panelTarget.classList.toggle('d-none');
-        this.btnTarget.classList.toggle('d-none')
+    this.panelTarget.classList.toggle("d-none");
+    // `btnTargets` et non `btnTarget` : l'écran d'évaluation en déclare deux —
+    // le chevron fermé et le chevron ouvert — là où la conversation n'en
+    // déclare qu'un. Et `btnTarget` seul levait sur les panneaux qui n'en
+    // avaient aucun, ce qui était le cas des domaines du mobile.
+    this.btnTargets.forEach((btn) => btn.classList.toggle("d-none"));
   }
 }

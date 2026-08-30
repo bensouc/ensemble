@@ -1,4 +1,2 @@
 
-<div class="eval_bull <%= @work_plan_skill.status %>">
-	<i class="fa-solid fa-<%= @work_plan_skill.kind[0] %> "></i>
-</div>
+<%= render "shared/pastille_eval", statut: @work_plan_skill.status, lettre: lettre_nature(@work_plan_skill.kind) %>

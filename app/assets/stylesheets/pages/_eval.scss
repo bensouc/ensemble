@@ -7,84 +7,356 @@
 .eval-domain-belt-level {
   width: 100px;
 }
-.eval-icon {
-  font-size: 25px;
-  padding: 0 10px;
-  width: 32px;
+
+.eval-domain-titre {
+  // `text-align` explicite : le titre tenait son alignement d'un
+  // `justify-content-start` de Bootstrap, qui n'a plus lieu d'être maintenant
+  // qu'il n'est plus une boîte flex logée dans la colonne de la ceinture.
+  font-family: $headers-font;
+  font-size: 40px;
+  font-weight: bold;
+  text-align: left;
 }
-.previous_eval {
-  margin-right: 10px;
-  width: 15ch;
-  height: 40px;
-  border: solid grey;
-  border-radius: 14px;
+.eval-icon {
+  // `width: 32px` pour un glyphe de 25px et 20px de padding ne laissait que
+  // douze pixels au dessin : l'icône débordait de sa boîte, et cinq d'entre
+  // elles réclamaient plus que la largeur du sélecteur. L'espacement est
+  // désormais tenu par le bouton qui l'entoure, le même pour une icône et pour
+  // un anneau.
+  font-size: 25px;
+}
+
+// Le disque et la place que son anneau réclame autour de lui vont ensemble :
+// l'anneau tient dans une boîte 1,75 fois plus large, donc trois huitièmes de
+// diamètre débordent de chaque côté. Les redire séparément, c'est les voir
+// diverger au premier ajustement de taille — et le mobile en donne deux.
+@mixin pastille($diametre) {
+  width: $diametre;
+  height: $diametre;
+  margin: 0 $diametre * 0.375;
+}
+
+// La colonne des compétences de l'écran d'évaluation. Elle empruntait
+// `.skill-display` à la page du plan de travail, et ses 800px en dur : la ligne
+// s'arrêtait bien avant le trait qui ferme le domaine.
+.eval-skills {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+// La ligne d'une compétence, dans l'ordre où on l'évalue : ce que c'est, où
+// l'élève en était, ce qu'on décide. Elle donnait l'inverse — le passé, puis
+// les boutons, puis le libellé tout au bout —, si bien que l'œil partait à
+// droite, revenait au milieu, puis cliquait : trois arrêts par compétence, sur
+// un plan de travail entier.
+.eval-ligne {
+  display: flex;
+  gap: $espace-md;
+  align-items: center;
+  padding: $espace-xs $espace-sm;
+  border-radius: $rayon;
+  transition: background-color 0.12s ease;
+
+  // Le libellé est à gauche, le geste à droite, et entre les deux il n'y a
+  // rien : sur un domaine de dix compétences, l'œil perd la ligne en route. Une
+  // ligne sur deux est teintée, et celle qu'on survole se détache — de quoi
+  // suivre son chemin d'un bout à l'autre sans avoir à viser.
+  &:nth-child(even) {
+    background-color: $light-gray;
+  }
+
+  &:hover {
+    background-color: $menuOff;
+  }
+
+  // Au repos, les choix s'effacent. Cinq pastilles colorées répétées à chaque
+  // ligne font un mur bariolé dès qu'un domaine en compte cinq — et l'œil y
+  // cherche l'information là où il n'y a que des propositions. Ce qui EST se
+  // lit seul : la case encadrée et le rappel, à gauche.
+  //
+  // La couleur revient au survol de la LIGNE, pas de la case : on la retrouve
+  // avant même d'avoir visé, donc sans rien coûter au geste.
+  .eval-case:not(.--courant) .eval_bull {
+    filter: grayscale(1) opacity(0.4);
+    transition: filter 0.12s ease;
+  }
+
+  &:hover .eval-case:not(.--courant) .eval_bull {
+    filter: none;
+  }
+}
+
+// Ce qu'on évalue. Il arrivait en dernier, dans une boîte de 633px en dur, et
+// c'est pourtant la seule chose de la ligne qui se lit vraiment : il passe
+// devant et prend toute la largeur que les deux colonnes fixes lui laissent.
+.eval-libelle {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: $grisF;
+  font-size: $texte-md;
+  line-height: 1.35;
+}
+
+// Où en est la compétence : les évaluations précédentes, puis celle du jour,
+// séparée d'un trait. C'est le rappel qui répond à « où on en est » sans avoir
+// à chercher quelle case du contrôle porte le cadre — et c'est lui qui porte la
+// lettre, ce qui permet aux cases de n'être qu'un choix.
+.eval-etat {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+// Le passé. Largeur fixe pour que les lignes s'alignent, mais sans cadre :
+// encadré, un historique absent dessinait une grande boîte vide là où il n'a
+// rien à dire. En retrait, aussi — c'est un contexte qu'on consulte du coin de
+// l'œil, pas une information qu'on lit.
+.eval-passe {
+  flex: 0 0 8.3rem;
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 3px;
-  padding: 0 0px 0 2px;
+  opacity: 0.55;
+
+  .eval_bull {
+    @include pastille(1.55rem);
+
+    font-size: $texte-sm;
+  }
 }
 
-.last-eval {
-  border-left: solid grey;
-  height: 40px;
-  width: 3ch;
+// L'évaluation du jour. La plus grosse pastille de la ligne : c'est celle
+// qu'on vient de poser, ou celle qu'on s'apprête à changer.
+.eval-courant {
+  position: relative;
+  flex: 0 0 auto;
   display: flex;
-  justify-content: space-around;
   align-items: center;
+  justify-content: center;
+  width: 4.1rem;
+  height: 2.8rem;
+
+  // Un filet, pas une bordure : il sépare l'évaluation du jour de celles qui
+  // l'ont précédée, et n'a pas à peser autant que ce qu'il sépare. Il ne monte
+  // pas jusqu'aux bords non plus — un trait qui touche le haut et le bas d'une
+  // ligne se lit comme le cadre d'un tableau, alors qu'il ne fait que marquer
+  // une frontière.
+  &::before {
+    content: "";
+    position: absolute;
+    top: 18%;
+    bottom: 18%;
+    left: 0;
+    width: 1px;
+    background-color: rgba($grisF, 0.2);
+  }
+
+  .eval_bull {
+    @include pastille(2rem);
+
+    font-size: $texte-md;
+  }
 }
 
-.orange {
-  color: orange;
+// Les cinq états, et le geste pour en changer. Les colonnes ne bougent jamais
+// d'une ligne à l'autre — « validé » est toujours la dernière —, si bien qu'on
+// balaie « laquelle est allumée » sur tout un plan de travail au lieu de relire
+// chaque ligne pour retrouver où se trouve quoi.
+.eval-controle {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: $espace-sm;
 }
 
-.eval-skill-display {
-  width: 700px;
+// Une case EST la pastille que la compétence prendra : on clique celle qu'on
+// veut qu'elle devienne. Le sélecteur parlait jusqu'ici une autre langue — une
+// croix, trois flèches, une toque — qu'il fallait traduire vers les pastilles à
+// chaque geste.
+//
+// Elles restent modestes : ce sont des propositions, pas l'information. Ce que
+// vaut la compétence aujourd'hui se lit à gauche, en grand.
+.eval-case {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // 2,7rem pour 1,25rem de disque : l'anneau réclame 1,75 fois le disque, et le
+  // cadre de la case courante prend 2px de plus de chaque côté. Plus serré, le
+  // trait de l'anneau vient buter contre le cadre.
+  width: 2.7rem;
+  height: 2.7rem;
+  border: 2px solid transparent;
+  border-radius: $rayon;
+  text-decoration: none;
+
+  .eval_bull {
+    // La place que réclame l'anneau vient de la case, pas des marges de la
+    // pastille : sinon les cases s'écarteraient deux fois.
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0;
+  }
+
+  // La lettre appartient au rappel de l'état en cours. Elle est masquée et non
+  // retirée : la pastille garde ainsi exactement la même boîte partout.
+  .eval_bull-lettre { visibility: hidden; }
+
+  &:hover { background-color: rgba($grisF, 0.1); }
+
+  // Fond blanc et non gris : la case encadrée doit se détacher aussi bien sur
+  // une ligne teintée que sur la ligne survolée.
+  &.--courant {
+    background-color: $blanc;
+    border-color: $grisF;
+  }
 }
+
+// La gouttière des évaluations précédentes du MOBILE — le bureau a désormais
+// son `.eval-passe`. Ses dimensions sont posées dans `mobile/_eval_mobile.scss`,
+// seul endroit qui l'affiche encore.
+.previous_eval {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+// Une pastille dit trois choses, et chacune a son signe à elle : la lettre dit
+// ce qu'on évalue, la couleur où on en est, l'anneau qu'il faut y revenir.
+//
+// La couleur portait tout, et mal. Cinq statuts pour quatre apparences —
+// `completed` et `redo_OK` partageaient le même fond vert, seule la lettre
+// changeait de teinte — et deux d'entre eux écrivaient en jaune sur jaune ou en
+// jaune sur vert. Surtout, rien ne disait « à refaire » : trois statuts sur
+// cinq veulent dire « il faut y revenir », et cela reposait entièrement sur un
+// code appris par cœur.
+//
+// La rampe est désormais monotone : chaque cran est plus proche du vert que le
+// précédent, et elle se lit comme une progression. L'anneau la double — présent
+// sur les trois « à refaire », absent sur les deux états stables — et sa
+// longueur dit combien il reste. Un œil qui ne sépare pas le rouge de l'orange
+// lit quand même la progression, à la longueur de l'arc.
+//
+// Les mêmes couleurs habillent les icônes du sélecteur d'évaluation, via les
+// classes ci-dessous : le sélecteur et la pastille disaient jusqu'ici deux
+// choses différentes du même statut — « raté » se choisissait en rouge et
+// s'affichait en orange.
+$eval-rate: $rose;
+$eval-rate-anneau: #a81b27;
+$eval-non-maitrise: $orange;
+$eval-non-maitrise-lettre: #4a2e00;
+$eval-non-maitrise-anneau: #a86a00;
+$eval-reussi: #a5d6a7;
+$eval-reussi-lettre: #14401a;
+$eval-reussi-anneau: #2e7d32;
+$eval-valide: $green;
+
+.--eval-rate { color: $eval-rate !important; }
+.--eval-non-maitrise { color: $eval-non-maitrise-anneau !important; }
+.--eval-reussi { color: $eval-reussi-anneau !important; }
 
 .eval_bull {
-  width: 2.5ch;
-  height: 2.5ch;
-  border: solid grey;
-  border-radius: 50%;
+  // En `rem` et non en `ch` : le `ch` dépend de la police chargée, si bien que
+  // la pastille changeait de taille selon la fonte servie — et se retrouvait
+  // trop petite pour qu'on lise son anneau.
+  @include pastille(1.9rem);
+
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+  font-size: $texte-sm;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 50%;
+
+  // Le contour est une ombre intérieure et non une bordure. Les pourcentages de
+  // `inset`, qui donnent à l'anneau sa boîte, se calculent sur la boîte de
+  // padding — dont une bordure retranche son épaisseur. L'anneau se retrouvait
+  // donc trop petit, collé au disque, et d'autant plus que le disque était
+  // petit : au contrôle, il finissait par mordre dessus.
+  //
+  // Aucun statut n'en avait besoin sauf `new` : les quatre autres donnaient à
+  // leur bordure la couleur de leur fond.
+  &.new {
+    color: $grisF;
+    background-color: $blanc;
+    box-shadow: inset 0 0 0 1.5px $grisC;
+  }
+
+  &.failed {
+    color: $blanc;
+    background-color: $eval-rate;
+
+    .eval-anneau { color: $eval-rate-anneau; }
+
+    .eval-anneau-long { display: block; }
+  }
+
+  &.redo {
+    color: $eval-non-maitrise-lettre;
+    background-color: $eval-non-maitrise;
+
+    .eval-anneau { color: $eval-non-maitrise-anneau; }
+
+    .eval-anneau-moyen { display: block; }
+  }
+
+  &.redo_OK {
+    color: $eval-reussi-lettre;
+    background-color: $eval-reussi;
+
+    .eval-anneau { color: $eval-reussi-anneau; }
+
+    .eval-anneau-court { display: block; }
+  }
+
+  &.completed {
+    color: $blanc;
+    background-color: $eval-valide;
+  }
 }
 
-.eval-mngt {
-  width: 258px;
-  display: flex;
-  align-items: baseline;
-  margin-right: 18px;
-  padding-top: 10px;
+// L'anneau déborde du disque, et le suit à toutes ses tailles : sa boîte est
+// posée en pourcentage, pas en pixels. Les trois arcs sont rendus tous les
+// trois et c'est le statut qui choisit lequel montrer — ainsi la peinture
+// optimiste de `ajax-work-plan` continue de n'avoir qu'une classe à échanger,
+// sans avoir à redessiner la géométrie en JavaScript.
+.eval-anneau {
+  position: absolute;
+  inset: -37.5%;
+  overflow: visible;
+  pointer-events: none;
+
+  path {
+    display: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 3.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
 }
 
-.failed {
-  background-color: orange !important;
-  color: white !important;
-  border-color: orange !important;
-}
+// Le même anneau, seul cette fois : il est le bouton, pas la parure d'un
+// disque. Il se pose donc dans le flux et se donne sa propre taille, là où
+// autour d'une pastille il se calait en pourcentage sur le disque.
+//
+// Les deux sélecteurs sont nommés ici plutôt que laissés au global : `.failed`
+// et `.redo` sont des mots trop communs pour qu'on les lâche dans toute la
+// feuille.
+.mobile-eval-mngt {
+  .eval-anneau {
+    position: static;
+    flex: 0 0 auto;
+  }
 
-.redo {
-  background-color: yellow !important;
-  border-color: yellow !important;
-  color: rgb(255, 154, 1) !important;
-}
+  .failed .eval-anneau { color: $eval-rate-anneau; }
+  .redo .eval-anneau { color: $eval-non-maitrise-anneau; }
+  .redo_OK .eval-anneau { color: $eval-reussi-anneau; }
 
-.completed {
-  background-color: green !important;
-  border-color: green !important;
-  color: antiquewhite !important;
-}
-
-.new {
-  background-color: white !important;
-  color: black !important;
-}
-
-.redo_OK {
-  background-color: green !important;
-  color: yellow !important;
-  border-color: yellow;
+  .failed .eval-anneau-long,
+  .redo .eval-anneau-moyen,
+  .redo_OK .eval-anneau-court { display: block; }
 }

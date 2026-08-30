@@ -1,0 +1,34 @@
+<%# Les cinq états d'une compétence, et le geste pour en changer.
+
+    Un clic, une case. Les cases ne bougent jamais : « validé » est toujours la
+    dernière, quelle que soit la compétence — même quand sa nature n'autorise
+    pas les cinq états, auquel cas la colonne reste vide plutôt que de décaler
+    ses voisines. On balaie donc une colonne sur tout un plan de travail au lieu
+    de relire chaque ligne.
+
+    Chaque case EST la pastille que la compétence prendra : on clique celle
+    qu'on veut qu'elle devienne. Le sélecteur parlait jusqu'ici une autre
+    langue — une croix, trois flèches, une toque — qu'il fallait traduire vers
+    les pastilles à chaque geste.
+
+    Les cases ne portent pas la lettre : c'est le rappel de l'état en cours, à
+    gauche, qui la donne. Une case n'a donc à dire qu'une chose — la couleur et
+    l'arc qu'on obtiendra —, et le cadre marque celle qui est enregistrée. %>
+<div class="eval-controle">
+  <% cases_evaluation(plan_skill).each do |statut| %>
+    <% if statut.nil? %>
+      <span class="eval-case --vide" aria-hidden="true"></span>
+    <% else %>
+      <% courant = statut_courant?(plan_skill, statut.statut) %>
+      <%= link_to work_plan_skill_eval_update_path(plan_skill, status: statut.statut),
+                  class: "eval-case#{' --courant' if courant}",
+                  title: statut.libelle,
+                  aria: { label: statut.libelle, current: courant ? "true" : nil },
+                  data: { turbo_prefetch: false, action: "click->ajax-work-plan#toggle",
+                          controller: "tooltip", bs_toggle: "tooltip", bs_placement: "top",
+                          libelle: statut.libelle } do %>
+        <%= render "shared/pastille_eval", statut: classe_pastille(statut.statut), lettre: nil %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
