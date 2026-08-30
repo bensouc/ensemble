@@ -78,6 +78,13 @@
     font-size: $texte-lg;
     font-weight: 800;
   }
+
+  // Poussé au bout de l'en-tête : un indicateur d'ouverture se cherche là où
+  // il se trouve sur les autres écrans, pas à côté du titre.
+  .mobile-domain-chevron {
+    margin-left: auto;
+    font-size: $texte-md;
+  }
 }
 
 .mobile-belt {
@@ -110,22 +117,45 @@
   }
 
   // Les trois évaluations précédentes. La gouttière bordée vient du bureau, qui
-  // la fixe à 15ch pour que toutes les lignes s'alignent — 151px, soit plus du
-  // tiers d'un écran de téléphone. On la resserre sur la place qu'occupent
+  // la fixe à 17ch pour que toutes les lignes s'alignent — 171px, soit près de
+  // la moitié d'un écran de téléphone. On la resserre sur la place qu'occupent
   // réellement trois pastilles, sans toucher au bureau.
+  //
+  // Une pastille réclame 1,6 fois son disque depuis qu'elle porte un anneau :
+  // le disque descend donc à 1,25rem pour que trois d'entre elles tiennent
+  // encore dans une gouttière de cette largeur. L'espacement vient de leurs
+  // marges, plus d'un `gap` qui viendrait s'y ajouter.
   .previous_eval {
+    position: relative;
     flex: 0 0 auto;
-    gap: $espace-xs;
-    width: 6rem;
+    gap: 0;
+    // Trois pastilles au plus, et leur anneau : la gouttière est donc bornée,
+    // ce qui permet de clore l'historique par un trait à un endroit fixe plutôt
+    // que de le coller à l'évaluation du jour, à l'autre bout de la carte.
+    width: 8rem;
     height: auto;
     min-height: $cible-tactile;
     padding: 0 $espace-xs;
     background-color: $blanc;
 
     .eval_bull {
+      @include pastille(1.4rem);
+
       flex: 0 0 auto;
-      width: 1.5rem !important;
-      height: 1.5rem !important;
+    }
+
+    // Un filet, pas une bordure : il ferme le passé, et n'a pas à peser autant
+    // que ce qu'il sépare. Il ne monte pas jusqu'aux bords non plus — un trait
+    // qui touche le haut et le bas se lit comme le cadre d'un tableau, alors
+    // qu'il ne fait que marquer une frontière.
+    &::after {
+      content: "";
+      position: absolute;
+      top: 22%;
+      right: 0;
+      bottom: 22%;
+      width: 1px;
+      background-color: rgba($grisF, 0.2);
     }
   }
 }
@@ -161,8 +191,8 @@
   min-height: $cible-tactile;
 
   .eval_bull {
-    width: 2rem !important;
-    height: 2rem !important;
+    @include pastille(2rem);
+
     font-size: $texte-md;
   }
 }
@@ -210,6 +240,11 @@
   .eval-icon {
     font-size: 1.6rem;
     line-height: 1;
+  }
+
+  .eval-anneau {
+    width: 2.4rem;
+    height: 2.4rem;
   }
 
   &:active {

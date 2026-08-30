@@ -12,9 +12,7 @@
         <% # last_wps = WorlPlanSkill %>
         <%last_3_wps.each do |wps|%>
           <% unless wps.id == plan_skill.id %>
-            <div class="eval_bull <%= wps.status %> ">
-              <i class="fa-solid fa-<%= wps.kind[0] %>"></i>
-            </div>
+            <%= render "shared/pastille_eval", statut: wps.status, lettre: lettre_nature(wps.kind) %>
           <% end %>
         <% end %>
       <% end %>
@@ -23,9 +21,7 @@
     <%# start of eval modal %>
     <button type="button" class="bg-white" data-bs-toggle="modal" data-bs-target="#evalModal-<%= plan_skill.id%>" >
       <div class= 'mobile-last-eval' data-ajax-work-plan-target='lastEval'>
-        <div class="eval_bull <%= plan_skill.status %>">
-          <i class="fa-solid fa-<%= plan_skill.kind[0] %> "></i>
-        </div>
+        <%= render "shared/pastille_eval", statut: plan_skill.status, lettre: lettre_nature(plan_skill.kind) %>
       </div>
     </button>
     <%# MODAL  %>

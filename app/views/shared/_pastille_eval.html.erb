@@ -1,0 +1,25 @@
+<%# Une pastille d'évaluation.
+
+    Elle dit trois choses, et chacune a son signe à elle :
+
+      la lettre  — ce qu'on évalue : J jeu, E exercice, C ceinture ou contrôle ;
+      la couleur — où on en est, du blanc « pas fait » au vert « validé » ;
+      l'anneau   — qu'il faut y revenir, et par sa longueur, combien il reste.
+
+    Elle prend un statut et une lettre plutôt qu'une compétence : le contrôle
+    d'évaluation en affiche cinq d'affilée pour une même compétence, une par
+    état possible, et aucune d'elles n'est l'état enregistré. %>
+<% attrs = local_assigns.fetch(:attrs, {}) %>
+<%# La couleur et l'anneau se lisent d'un coup d'œil, mais ils s'apprennent : le
+    mot reste le recours quand on hésite. Le sélecteur a le sien depuis
+    toujours ; l'évaluation en cours, celle qu'on regarde le plus, n'en avait
+    pas. %>
+<% if local_assigns[:titre].present? %>
+  <% attrs = attrs.deep_merge(title: local_assigns[:titre],
+                              data: { controller: "tooltip", bs_toggle: "tooltip",
+                                      bs_placement: "top" }) %>
+<% end %>
+<%= tag.div class: "eval_bull #{statut}", **attrs do %>
+  <span class="eval_bull-lettre"><%= lettre %></span>
+  <%= render "shared/anneau_eval" %>
+<% end %>

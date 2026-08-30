@@ -11,10 +11,14 @@
   <% statuts_evaluation(plan_skill).each do |statut| %>
     <% courant = statut_courant?(plan_skill, statut.statut) %>
     <%= link_to work_plan_skill_eval_update_path(plan_skill, status: statut.statut),
-                class: "mobile-eval-choix#{' --courant' if courant}",
+                class: "mobile-eval-choix #{statut.statut}#{' --courant' if courant}",
                 aria: { current: courant ? "true" : nil },
                 data: { turbo_prefetch: false, action: "click->ajax-work-plan#toggle" } do %>
-      <i class="<%= statut.icone %> <%= statut.couleur %> eval-icon"></i>
+      <% if statut.anneau %>
+        <%= render "shared/anneau_eval" %>
+      <% else %>
+        <i class="<%= statut.icone %> <%= statut.couleur %> eval-icon"></i>
+      <% end %>
       <span class="mobile-eval-libelle"><%= statut.libelle %></span>
     <% end %>
   <% end %>

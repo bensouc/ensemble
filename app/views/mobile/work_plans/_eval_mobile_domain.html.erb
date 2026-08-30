@@ -10,6 +10,15 @@
         </div>
       </div>
       <h3><%= work_plan_domain.domain.name %></h3>
+      <%# Rien ne disait que le domaine s'ouvrait : on tapait dessus pour voir.
+          Le chevron est celui de la liste des plans de travail et de celle des
+          classes — pointé à droite quand c'est fermé, vers le bas quand c'est
+          ouvert. Les noms de cible viennent du contrôleur Stimulus, qui les
+          bascule tous les deux. %>
+      <i class="fa-solid fa-chevron-right --roseL mobile-domain-chevron"
+         data-toggle-panel-target="btn" aria-hidden="true"></i>
+      <i class="fa-solid fa-chevron-down --roseL mobile-domain-chevron d-none"
+         data-toggle-panel-target="btn" aria-hidden="true"></i>
     </div>
   </div>
   <% # SKILLS DISPLAY %>

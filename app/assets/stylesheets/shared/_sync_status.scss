@@ -42,12 +42,12 @@
 // Une compétence dont l'évaluation attend encore : la pastille est peinte, mais
 // on ne laisse pas croire qu'elle est enregistrée. La petite horloge dit
 // laquelle — le compte du bandeau, seul, ne le dirait pas.
-// La marque se pose sur la pastille de l'évaluation en cours — `.mobile-last-eval`
-// au mobile, `.last-eval` au bureau — et non sur toute la ligne, où elle
+// La marque se pose sur la pastille de l'évaluation en cours — `.eval-courant`
+// au bureau, `.mobile-last-eval` au mobile — et non sur toute la ligne, où elle
 // atterrissait dans un coin sans rapport avec ce que l'enseignant vient de taper.
 .eval-en-attente {
   .mobile-last-eval,
-  .last-eval {
+  .eval-courant {
     position: relative;
 
     // Une pastille dessinée en CSS plutôt qu'un glyphe Font Awesome : l'échappement

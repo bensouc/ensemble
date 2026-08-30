@@ -1,10 +1,13 @@
 <div class='domain  ' id="<%= dom_id(work_plan_domain) %>">
-	<% # DOMAIN + BELT DISPLAY %>
+	<%# Le nom du domaine logeait dans la colonne de la ceinture, large de 100px,
+	    en se donnant une largeur propre de 700px : il en débordait par la
+	    droite, au-dessus des compétences. Les 46px de marge haute de la colonne
+	    voisine lui dégageaient une bande — un contournement qui cédait dès que
+	    la ligne d'une compétence grandissait. Il a maintenant sa propre ligne. %>
+	<div class='eval-domain-titre'><%= work_plan_domain.domain.name %></div>
+	<% # BELT DISPLAY %>
 	<div class='p-1 d-flex'>
 		<div class='eval-domain-belt-level'>
-			<div class='domain-display d-flex justify-content-start eval-skill-display'>
-				<%= work_plan_domain.domain.name %>
-			</div>
 			<div >
 				<div class='d-flex justify-content-around belt-display'>
 					<div class='bd-maison' >
@@ -17,7 +20,7 @@
 			</div>
 		</div>
 		<% # SKILLS DISPLAY %>
-		<div class='p-2 skill-display '>
+		<div class='p-2 eval-skills'>
 			<% work_plan_domain.work_plan_skills.sort_by{|wps| wps.position}.each do |plan_skill| %>
 				<%= render "eval_skill_display", plan_skill: plan_skill %>
 			<% end %>

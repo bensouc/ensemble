@@ -1,4 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
+import { Tooltip } from "bootstrap";
 import { file } from "../eval_queue";
 
 // Un appui sur un statut d'évaluation.
@@ -36,7 +37,7 @@ export default class extends Controller {
     const statut = new URL(url, window.location.origin).searchParams.get("status");
     if (!id || !statut) return;
 
-    this.peindre(statut);
+    this.peindre(statut, lien.dataset.libelle);
     this.marquerChoix(lien);
     this.marquerEnAttente(true);
     file.ajouter({ id, url, statut });
@@ -44,31 +45,48 @@ export default class extends Controller {
 
   // --- rendu ------------------------------------------------------------
 
-  // Peinture optimiste : la pastille prend le nouveau statut sans attendre le
-  // réseau. `not_done` ramène la compétence à l'état neuf — c'est la seule
-  // correspondance que le serveur ne recopie pas telle quelle.
-  peindre(statut) {
-    if (!this.hasLastEvalTarget) return;
-
-    const pastille = this.lastEvalTarget.querySelector(".eval_bull");
+  // Peinture optimiste de la pastille isolée du mobile : elle prend le nouveau
+  // statut sans attendre le réseau. `not_done` ramène la compétence à l'état
+  // neuf — c'est la seule correspondance que le serveur ne recopie pas telle
+  // quelle.
+  //
+  // Les deux rappels sont visés nommément plutôt que par un `querySelector` sur
+  // `lastEvalTarget` : les cinq cases du contrôle sont elles aussi des
+  // pastilles, et la première serait repeinte à tort.
+  peindre(statut, libelle) {
+    const pastille = this.element.querySelector(".eval-courant .eval_bull, .mobile-last-eval .eval_bull");
     if (!pastille) return;
 
     const attendu = statut === "not_done" ? "new" : statut;
     pastille.className = `eval_bull ${attendu}`;
+    if (libelle) this.reetiqueter(pastille, libelle);
   }
 
-  // La modale est rendue une seule fois, au chargement de la page : sans cela,
-  // le statut marqué comme courant resterait celui d'avant l'évaluation, et
-  // rouvrir la modale montrerait un choix périmé.
+  // Une infobulle Bootstrap retient le texte qu'elle avait à sa construction :
+  // changer l'attribut `title` ne suffit pas, il faut le lui dire. Sans quoi la
+  // pastille annoncerait encore le statut d'avant jusqu'à la réponse du
+  // serveur — et, hors ligne, jusqu'à la synchronisation.
+  //
+  // Le mot vient de la case cliquée, qui le porte déjà : le recopier en
+  // JavaScript le ferait diverger de la table des libellés.
+  reetiqueter(pastille, libelle) {
+    pastille.setAttribute("title", libelle);
+    Tooltip.getInstance(pastille)?.setContent({ ".tooltip-inner": libelle });
+  }
+
+  // Déplace la marque du statut courant. Au bureau c'est la peinture optimiste
+  // elle-même : le contrôle EST l'affichage de l'état, une case encadrée parmi
+  // cinq. Au mobile, c'est la modale qui se tient à jour — rendue une seule
+  // fois au chargement, elle montrerait sinon un choix périmé à la réouverture.
   marquerChoix(lien) {
-    const choix = this.element.querySelectorAll(".mobile-eval-choix");
+    const choix = this.element.querySelectorAll(".eval-case, .mobile-eval-choix");
     if (choix.length === 0) return;
 
     choix.forEach((autre) => {
       autre.classList.remove("--courant");
       autre.removeAttribute("aria-current");
     });
-    const choisi = lien.closest(".mobile-eval-choix");
+    const choisi = lien.closest(".eval-case, .mobile-eval-choix");
     if (!choisi) return;
 
     choisi.classList.add("--courant");

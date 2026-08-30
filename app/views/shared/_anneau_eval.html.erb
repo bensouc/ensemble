@@ -1,0 +1,45 @@
+<%# L'anneau d'un statut « à refaire ».
+
+    Il sert à deux endroits, et c'est tout l'intérêt de l'avoir sorti ici :
+    autour du disque d'une pastille, et seul, comme bouton du sélecteur. Le
+    bouton montre ainsi exactement l'arc que la pastille prendra si on clique.
+
+    Repère : cercle de rayon 16,5 centré en (21, 21) dans une boîte de 42, qui
+    vaut 1,6 fois le diamètre du disque d'une pastille — c'est le rapport que
+    `@mixin pastille` tient de son côté. Les trois arcs se parcourent dans le
+    sens anti-horaire et finissent tous au même point, en bas à droite : la
+    pointe n'est donc dessinée qu'une fois, seule la queue s'allonge.
+
+    315°, 215°, 120° — assez écartés pour se distinguer d'un coup d'œil, et
+    tous assez longs pour rester des arcs de cercle. Une pastille du bureau fait
+    une trentaine de pixels : à ce format, des écarts serrés ne se lisent plus,
+    et l'anneau cesse de doubler la couleur au moment précis où on comptait sur
+    lui pour ça. Mais descendu à 75°, le plus court ne disait plus la rotation :
+    il passait pour une virgule.
+
+    La pointe est tracée, pas remplie : c'est un chevron accroché au bout de
+    l'arc, dans le même `<path>`. Un triangle plein gardait sa taille pendant
+    que le trait s'épaississait — impossible alors de donner plus de corps à
+    l'anneau, qui paraissait maigre. Ici `stroke-width` commande la flèche
+    entière.
+
+    Une pointe s'écarte forcément du rayon de son arc : ses barbes tombent de
+    part et d'autre de la tangente, donc l'une passe à l'intérieur du cercle et
+    l'autre à l'extérieur. Celle du dehors atteint le rayon 19,2 — d'où le
+    rayon d'arc ramené à 16,5, faute de quoi la flèche sortait de la boîte par
+    le bas-droite et l'anneau entier paraissait décalé sur son disque.
+
+    Les trois arcs sont tous rendus, et la feuille de style choisit lequel
+    montrer d'après la classe de statut portée par un ancêtre. C'est ce qui
+    laisse intacte la peinture optimiste de `ajax-work-plan`, qui repeint la
+    pastille en échangeant sa seule classe : si l'arc était choisi ici, il
+    faudrait redessiner la géométrie en JavaScript, et les deux copies
+    finiraient par diverger. %>
+<svg class="eval-anneau" viewBox="0 0 42 42" aria-hidden="true" focusable="false">
+  <path class="eval-anneau-long"
+        d="M36.94 16.73A16.5 16.5 0 1 0 35.29 29.25M31.39 31.5L35.29 29.25L35.29 33.75" />
+  <path class="eval-anneau-moyen"
+        d="M14.03 6.05A16.5 16.5 0 1 0 35.29 29.25M31.39 31.5L35.29 29.25L35.29 33.75" />
+  <path class="eval-anneau-court"
+        d="M6.71 29.25A16.5 16.5 0 0 0 35.29 29.25M31.39 31.5L35.29 29.25L35.29 33.75" />
+</svg>
