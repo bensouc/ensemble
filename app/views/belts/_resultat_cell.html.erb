@@ -7,7 +7,7 @@
 				<% index = (level - display_level - 1 ) %>
 				<% skill_to_hide_nb =  Belt::SCORES_TO_VALIDATES[domain.grade.grade_level.to_sym][domain.name.to_sym][level - 1] %>
 			<% end %>
-			<% skills.sort_by(&:position).each do |skill| %>
+			<% skills.sort.each do |skill| %>
 				<% wps = results.find { |f| f.skill == skill && f.belt_validated?} %>
 				<% wps = last_wps.select { |f| f.skill == skill }.sort_by{|f| f.updated_at }.last if wps.nil? %>
 				<% if skill_to_hide_nb < 1 || wps.class == WorkPlanSkill %>
@@ -32,7 +32,11 @@
 	</div>
 <% else %>
 	<div class="display-last-wps">
-		<% skills.sort_by(&:id).each do |skill| %>
+		<%# `.sort` : les compétences portent une `position` que l'enseignant range,
+		    et `Positionable` la donne à `<=>`. Trier par `id`, c'était les afficher
+		    dans leur ordre de création — et la branche voisine, elle, triait déjà
+		    par position : les deux moitiés du même partiel se contredisaient. %>
+		<% skills.sort.each do |skill| %>
 			<% wps = results.select { |result| result.skill == skill }.first %>
 			<% wps = last_wps.select { |f| f.skill == skill }.sort_by{|f| f.updated_at }.last if wps.nil? %>
 			<% unless wps.nil? %>
