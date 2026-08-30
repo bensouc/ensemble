@@ -25,6 +25,23 @@ $roseL: #e72c3ca4;
 $roseLight: #f79ea5ba;
 $marron: rgb(196, 64, 3);
 
+// La rampe des évaluations : blanc « pas fait » → rouge → orange → vert clair →
+// vert « validé ». Monotone, elle se lit comme une progression.
+//
+// Elle vit dans la palette et non dans `pages/_eval.scss` parce que la feuille
+// du PDF, qui est une feuille à part, en a besoin elle aussi : le tableau de
+// progression d'un élève y peignait ses pastilles avec des verts et des oranges
+// de Bootstrap, sans rapport avec ce que l'enseignant voit à l'écran.
+$eval-rate: $rose;
+$eval-rate-anneau: #a81b27;
+$eval-non-maitrise: $orange;
+$eval-non-maitrise-lettre: #4a2e00;
+$eval-non-maitrise-anneau: #a86a00;
+$eval-reussi: #a5d6a7;
+$eval-reussi-lettre: #14401a;
+$eval-reussi-anneau: #2e7d32;
+$eval-valide: $green;
+
 // class color
 .--orange { color:$orange !important}
 .--grisF { color:$grisF !important}

@@ -241,17 +241,8 @@
 // Les mêmes couleurs habillent les icônes du sélecteur d'évaluation, via les
 // classes ci-dessous : le sélecteur et la pastille disaient jusqu'ici deux
 // choses différentes du même statut — « raté » se choisissait en rouge et
-// s'affichait en orange.
-$eval-rate: $rose;
-$eval-rate-anneau: #a81b27;
-$eval-non-maitrise: $orange;
-$eval-non-maitrise-lettre: #4a2e00;
-$eval-non-maitrise-anneau: #a86a00;
-$eval-reussi: #a5d6a7;
-$eval-reussi-lettre: #14401a;
-$eval-reussi-anneau: #2e7d32;
-$eval-valide: $green;
-
+// s'affichait en orange. La rampe elle-même vit dans `config/_colors.scss`,
+// avec le reste de la palette : la feuille du PDF y puise aussi.
 .--eval-rate { color: $eval-rate !important; }
 .--eval-non-maitrise { color: $eval-non-maitrise-anneau !important; }
 .--eval-reussi { color: $eval-reussi-anneau !important; }
