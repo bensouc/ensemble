@@ -2,7 +2,7 @@
   <div class="d-flex align-items-center gap-2 mb-1">
     <h1 class="">Progression de <%= student.first_name.capitalize %>
     </h1>
-    <h3 class=""><%= I18n.l(Date.today, format: :long) %></h3>
+    <h3 class="pdf-entete-date"><%= I18n.l(Date.today, format: :long) %></h3>
   </div>
   <% domains.sort_by(&:position).each do |domain| %>
     <!-- DOMAIN LOOP-->
@@ -12,7 +12,10 @@
         <tr>
           <th class="col-belt">Ceinture</th>
           <th class="col-skill text-center">Compétence</th>
-          <th class="col-date">Date de Validation</th>
+          <%# « Dernière évaluation » et non « Date de Validation » : la colonne
+              porte désormais une date sur chaque compétence évaluée, pas
+              seulement sur celles qui ont donné la ceinture. %>
+          <th class="col-date">Dernière évaluation</th>
         </tr>
         <% skills_by_domain = skills.select { |skill| skill.domain == domain } %>
         <% for level in (1..7) %>
@@ -26,12 +29,8 @@
               <td class="col-date" style="text-align: left;">
                 <% result = results[skills_level.first.id] %>
                 <% if result %>
-                  <% if result.belt_validated? %>
-                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #198754;"></span>
-                    <%= result.updated_at.strftime("%d/%m/%Y") %>
-                  <% else %>
-                    <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #ffc107;"></span>
-                  <% end %>
+                  <span class="pdf-etat pdf-etat--<%= result.belt_validated? ? "valide" : "en-cours" %>"></span>
+                  <%= result.updated_at.strftime("%d/%m/%Y") %>
                 <% end %>
               </td>
             </tr>
@@ -40,13 +39,12 @@
                 <td class="col-skill"><%= skill.name %></td>
                 <td class="col-date" style="text-align: left;">
                   <% result = results[skill.id] %>
+                  <%# La date s'affichait pour les seules ceintures validées : une
+                      compétence en cours n'avait qu'une pastille, sans dire quand
+                      elle avait été évaluée pour la dernière fois. %>
                   <% if result %>
-                    <% if result.belt_validated? %>
-                      <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #198754;"></span>
-                      <%= result.updated_at.strftime("%d/%m/%Y") %>
-                    <% else %>
-                      <span style="display: inline-block; width: 12px; height: 12px; border-radius: 50%; background-color: #ffc107;"></span>
-                    <% end %>
+                    <span class="pdf-etat pdf-etat--<%= result.belt_validated? ? "valide" : "en-cours" %>"></span>
+                    <%= result.updated_at.strftime("%d/%m/%Y") %>
                   <% end %>
                 </td>
               </tr>

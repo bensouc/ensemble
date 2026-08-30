@@ -476,3 +476,30 @@ th:not([align]) {
 .cont-challenge .trix-content {
   font-size: 20px;
 }
+
+// Les pastilles du tableau de progression. Elles étaient peintes en dur avec le
+// vert et l'orange de Bootstrap — sans rapport avec la rampe que l'enseignant a
+// sous les yeux à l'écran. Elles prennent maintenant les mêmes couleurs, tirées
+// de la palette.
+.pdf-etat {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+  vertical-align: -1px;
+  border-radius: 50%;
+}
+
+.pdf-etat--valide {
+  background-color: $eval-valide;
+}
+
+.pdf-etat--en-cours {
+  background-color: $eval-non-maitrise;
+}
+
+// Le titre et la date : `gap-2` n'existe pas dans le Bootstrap embarqué pour le
+// PDF, les deux se touchaient.
+.pdf-entete-date {
+  margin-left: 12px;
+}
