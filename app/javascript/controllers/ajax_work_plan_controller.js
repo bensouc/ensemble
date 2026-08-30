@@ -40,7 +40,26 @@ export default class extends Controller {
     this.peindre(statut, lien.dataset.libelle);
     this.marquerChoix(lien);
     this.marquerEnAttente(true);
+    this.masquerInfobulles(lien);
     file.ajouter({ id, url, statut });
+  }
+
+  // Les infobulles du contrôle restaient à l'écran une fois le statut choisi,
+  // et s'y empilaient d'une compétence à l'autre.
+  //
+  // Bootstrap déclenche une infobulle au survol ET au focus. Un `<a>` cliqué
+  // garde le focus, donc la sienne n'avait aucune raison de partir : sortir la
+  // souris ne suffisait pas, seul un clic ailleurs l'aurait fait. On la ferme
+  // donc à la main, et on rend le focus — sans quoi elle reparaîtrait aussitôt.
+  //
+  // Toutes celles de la ligne, et pas seulement celle du lien cliqué : deux
+  // cases voisines font 43px de large, on passe de l'une à l'autre plus vite
+  // que le délai de fermeture, et il en restait une ouverte derrière soi.
+  masquerInfobulles(lien) {
+    lien.blur();
+    this.element
+      .querySelectorAll('[data-bs-toggle="tooltip"]')
+      .forEach((cible) => Tooltip.getInstance(cible)?.hide());
   }
 
   // --- rendu ------------------------------------------------------------
