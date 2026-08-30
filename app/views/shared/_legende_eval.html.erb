@@ -1,0 +1,27 @@
+<%# La légende de la grille de progression.
+
+    La grille ne montre que des lettres et des couleurs : sans légende, il faut
+    survoler une pastille pour apprendre ce que dit chacune, et rien n'annonce
+    qu'un vert clair n'est pas un vert.
+
+    Les pastilles affichées ici sont les vraies, rendues par le même partial que
+    la grille : une légende dessinée à part finirait par expliquer autre chose
+    que ce qu'elle accompagne. %>
+<div class="legende-eval">
+  <span class="legende-groupe">
+    <% legende_natures.each do |lettre, nom| %>
+      <span class="legende-item">
+        <%= render "shared/pastille_eval", statut: "new", lettre: lettre %>
+        <%= nom %>
+      </span>
+    <% end %>
+  </span>
+  <span class="legende-groupe">
+    <% legende_evaluation.each do |statut, mot| %>
+      <span class="legende-item">
+        <%= render "shared/pastille_eval", statut: statut, lettre: nil %>
+        <%= mot %>
+      </span>
+    <% end %>
+  </span>
+</div>

@@ -14,6 +14,16 @@
 						<button type="button" class="modale-fermer" aria-label="Fermer"
 						        data-action="click->reset-frame#resetFrame">&times;</button>
 					</div>
+					<%# Quand il ne reste rien à valider, le contrôleur rend quand même cette
+					    vue : la modale s'ouvrait alors sur une liste vide et un bouton
+					    « Valider » qui n'avait rien à valider. On le dit, et on n'offre que
+					    la sortie. %>
+					<% if @no_validated_skills.blank? %>
+						<p class="modale-vide">
+							Toutes les compétences de ce domaine sont déjà validées pour
+							<%= @student.first_name.capitalize %>.
+						</p>
+					<% else %>
 					<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
 						<div class="student-checkbox" >
 							<% if @sub_domains.nil? || @sub_domains.empty?  %>
@@ -49,14 +59,21 @@
 							<% end %>
 						</div>
 					</div>
+					<% end %>
 				</div>
 				<%# « Annuler » plutôt qu'un X : à côté de « Valider », une croix seule ne
 				    dit pas ce qu'elle annule, et se lisait comme un bouton inachevé. %>
 				<div class="modale-actions">
-					<div class="cancel-btn" data-action="click->reset-frame#resetFrame">
-						Annuler
-					</div>
-					<%= form.submit 'Valider', class: 'validate-challenge-btn' %>
+					<% if @no_validated_skills.blank? %>
+						<div class="cancel-btn --seul" data-action="click->reset-frame#resetFrame">
+							Fermer
+						</div>
+					<% else %>
+						<div class="cancel-btn" data-action="click->reset-frame#resetFrame">
+							Annuler
+						</div>
+						<%= form.submit 'Valider', class: 'validate-challenge-btn' %>
+					<% end %>
 				</div>
 			<% end %>
 		</div>

@@ -28,6 +28,65 @@
   }
 }
 
+// La ligne de l'impression accueille aussi la légende : c'est la seule bande
+// libre de l'en-tête, et une légende se consulte au passage.
+.ligne-impression {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espace-sm $espace-lg;
+  align-items: center;
+
+  h4 {
+    margin: 0;
+  }
+}
+
+// La légende de la grille. La grille ne montre que des lettres et des couleurs :
+// sans elle, il faut survoler une pastille pour apprendre ce que dit chacune, et
+// rien n'annonce qu'un vert clair n'est pas un vert.
+.legende-eval {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espace-xs $espace-md;
+  align-items: center;
+  color: $grisF;
+  font-size: $texte-xs;
+}
+
+.legende-groupe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $espace-xs $espace-sm;
+  align-items: center;
+}
+
+// Les deux groupes se lisent séparément — la lettre dit quoi, la couleur dit où
+// on en est. Sans ce trait, les huit pastilles n'en font qu'une seule suite.
+.legende-groupe + .legende-groupe {
+  padding-left: $espace-md;
+  border-left: thin solid $grisC;
+}
+
+.legende-item {
+  display: inline-flex;
+  gap: $espace-xs;
+  align-items: center;
+  white-space: nowrap;
+
+  // La grille est trop serrée pour montrer l'anneau ; la légende explique ce
+  // qu'on voit, elle ne le montre donc pas non plus.
+  .eval-anneau {
+    display: none;
+  }
+
+  .eval_bull {
+    width: 1.35rem;
+    height: 1.35rem;
+    margin: 0;
+    font-size: $texte-xs;
+  }
+}
+
 .autogene-details {
   position: relative;
   top: -69px;

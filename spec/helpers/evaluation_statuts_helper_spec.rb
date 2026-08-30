@@ -183,6 +183,33 @@ RSpec.describe EvaluationStatutsHelper, type: :helper do
     end
   end
 
+  # La légende de la grille de progression. Elle vaut pour toutes les natures à
+  # la fois : c'est pourquoi elle emploie le mot générique de validation, là où
+  # un exercice dirait « Validé ⇒ ceinture ».
+  describe "#legende_evaluation" do
+    it "donne les cinq états, du moins avancé au plus avancé" do
+      expect(helper.legende_evaluation.map(&:first)).to eq(%w[new failed redo redo_OK completed])
+    end
+
+    it "emploie le mot générique de validation" do
+      expect(helper.legende_evaluation.last.last).to eq("Validé")
+    end
+
+    # Une légende qui répéterait un mot n'expliquerait plus rien.
+    it "donne à chaque état un mot, et un mot qui lui est propre" do
+      mots = helper.legende_evaluation.map(&:last)
+
+      expect(mots).to all(be_present)
+      expect(mots.uniq.size).to eq(mots.size)
+    end
+  end
+
+  describe "#legende_natures" do
+    it "explique les trois lettres" do
+      expect(helper.legende_natures).to eq([%w[J Jeu], %w[E Exercice], %w[C Ceinture]])
+    end
+  end
+
   describe "#statut_courant?" do
     it "reconnaît le statut enregistré" do
       expect(helper.statut_courant?(wps("exercice", "redo"), "redo")).to be true
