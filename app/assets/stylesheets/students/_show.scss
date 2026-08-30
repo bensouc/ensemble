@@ -204,23 +204,69 @@
   flex-direction: column-reverse;
 }
 
+// Une compétence dans la grille de progression. Pas d'anneau ici : la cellule
+// d'un domaine fait 100 × 134px et doit tenir une dizaine de compétences, alors
+// qu'un anneau réclame 1,75 fois son disque — la cellule n'en tiendrait plus que
+// trois, et les pastilles se chevauchaient. Sur une vue d'ensemble, la couleur
+// dit déjà où en est l'élève ; l'anneau est la nuance de l'écran d'évaluation,
+// où l'on regarde une compétence à la fois.
+//
+// La pastille est recalée sur sa cellule plutôt que laissée à sa taille par
+// défaut : elle vaut 1,9rem depuis la refonte, soit cinq pixels de plus que la
+// case qui l'accueille.
 .a-wps {
+  position: relative;
   height: 25px;
   max-width: 25px;
   margin: 2px 3px;
+
+  .eval-anneau {
+    display: none;
+  }
+
+  .eval_bull {
+    width: 25px;
+    height: 25px;
+    margin: 0;
+    font-size: $texte-xs;
+  }
 }
 
+// L'étiquette qui nomme la compétence au survol.
+//
+// Elle était `position: relative`, donc DANS le flux : l'afficher poussait les
+// pastilles voisines de la cellule, qui se réorganisaient sous le curseur au
+// moment même où l'on cherchait à en viser une. Et sans `z-index`, la colonne
+// du domaine suivant la peignait par-dessus — d'où l'étiquette coupée net au
+// bord de la cellule.
+//
+// Elle sort du flux et se pose au-dessus de sa pastille, centrée : le décalage
+// se répartit ainsi de part et d'autre, là où un ancrage à droite la faisait
+// sortir de la page sur la dernière colonne de domaines.
+//
+// `width: max-content` plutôt que 300px : une étiquette large de trois cents
+// pixels pour deux mots laissait un grand rectangle vide, et le même rectangle
+// tronquait les libellés longs.
 .skill-name {
-  position: relative;
-  top: -25px;
-  right: -30px;
-  width: 300px;
-  font-size: smaller;
-  font-weight: bolder;
-  color: white;
-  background-color: #f24150d0;
-  padding: 5px;
-  border-radius: 5px;
+  position: absolute;
+  z-index: 20;
+  bottom: calc(100% + 0.4rem);
+  left: 50%;
+  width: max-content;
+  max-width: 15rem;
+  padding: $espace-sm $espace-md;
+  color: $blanc;
+  font-size: $texte-sm;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: left;
+  background-color: rgba($grisF, 0.95);
+  border-radius: $rayon;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  transform: translateX(-50%);
+  // Le libellé est du texte : il n'a rien à intercepter, et s'il prenait la
+  // souris il masquerait la pastille qui l'a fait apparaître.
+  pointer-events: none;
 }
 
 .belt-name {
