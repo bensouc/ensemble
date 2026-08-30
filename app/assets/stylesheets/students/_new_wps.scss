@@ -63,10 +63,17 @@
     display: block;
   }
 
-  // Les étiquettes se suivent et passent à la ligne, séparées par un `gap`
-  // plutôt que par des marges droites de 2rem — qui creusaient des trous en fin
-  // de ligne et laissaient la dernière étiquette seule dans son coin.
+  // Les groupes de sous-domaines s'empilent ; à l'intérieur de chacun, les
+  // étiquettes se suivent et passent à la ligne, séparées par un `gap` plutôt
+  // que par des marges droites de 2rem — qui creusaient des trous en fin de
+  // ligne et laissaient la dernière étiquette seule dans son coin.
   .student-checkbox {
+    display: flex;
+    flex-direction: column;
+    gap: $espace-xs;
+  }
+
+  .groupe-competences {
     display: flex;
     flex-wrap: wrap;
     gap: $espace-sm;

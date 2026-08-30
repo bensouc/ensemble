@@ -25,37 +25,36 @@
 						</p>
 					<% else %>
 					<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-						<div class="student-checkbox" >
-							<% if @sub_domains.nil? || @sub_domains.empty?  %>
-								<%=form.input_field :skills,
+						<%# Un seul chemin, groupé par sous-domaine, celles qui n'en ont pas
+						    en tête et sans titre.
 
-                collection:@no_validated_skills.sort_by(&:name),
-                label_method: lambda {|skill| skill.name},
-                value_method: lambda {|skill| skill.id},
-                multiple: true,
-                as: :check_boxes,
-                boolean_style: :inline,
-                data: {checkboxes_target: 'boxes',action:"click->checkboxes#add"},
-                class: "tag-selector",
-                item_wrapper_class: 'tag-item'
-                %>
-							<% else %>
-								<%# <%raise%>
-								<%@sub_domains.each do |sub_domain|%>
-									<h6><%= sub_domain.capitalize %></h6>
-									<%=form.input_field :skills,
+						    Il y avait deux branches, et la groupée ne s'exécutait jamais : la
+						    vue lisait `@sub_domains` quand le contrôleur posait `@subdomain`.
+						    Une fois les noms accordés, elle aurait perdu les compétences sans
+						    sous-domaine — elle bouclait sur les sous-domaines trouvés, et ce
+						    qui n'en a pas n'appartient à aucun. Le niveau 1 du domaine 52 en
+						    compte justement une, sur vingt.
 
-                collection:@no_validated_skills.select{|skill| skill.sub_domain == sub_domain}.sort_by(&:name),
-                label_method: lambda {|skill| skill.name},
-                value_method: lambda {|skill| skill.id},
-                multiple: true,
-                as: :check_boxes,
-                boolean_style: :inline,
-                data: {checkboxes_target: 'boxes'},
-                class: "tag-selector",
-                item_wrapper_class: 'tag-item'
-                %>
+						    Grouper plutôt que brancher, c'est aussi n'écrire qu'une fois les
+						    attributs du champ : les deux branches avaient déjà divergé sur le
+						    `data-action`. %>
+						<div class="student-checkbox">
+							<% competences_par_sous_domaine(@no_validated_skills).each do |sous_domaine, competences| %>
+								<% if sous_domaine %>
+									<h6><%= sous_domaine.capitalize %></h6>
 								<% end %>
+								<div class="groupe-competences">
+									<%= form.input_field :skills,
+									                     collection: competences,
+									                     label_method: ->(skill) { skill.name },
+									                     value_method: ->(skill) { skill.id },
+									                     multiple: true,
+									                     as: :check_boxes,
+									                     boolean_style: :inline,
+									                     data: { checkboxes_target: "boxes", action: "click->checkboxes#add" },
+									                     class: "tag-selector",
+									                     item_wrapper_class: "tag-item" %>
+								</div>
 							<% end %>
 						</div>
 					</div>
