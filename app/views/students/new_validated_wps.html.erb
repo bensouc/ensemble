@@ -1,13 +1,18 @@
 <%= turbo_frame_tag "general_modal"  do%>
 	<div id= "myModal" data-controller='reset-frame' data-reset-frame-name-value='general_modal'>
-		<div class="modal-content --width-90">
+		<%# `--width-90` faisait une boîte large de 90% de l'écran pour une liste de
+		    cinq compétences : le titre se perdait à un bout, le bouton à l'autre. La
+		    largeur suit maintenant le contenu, avec un plafond. %>
+		<div class="modal-content modale-validation">
 			<%= simple_form_for :new_wps, html: {novalidate: false} do |form|%>
 				<div class="new-wps-card" >
 					<div class="modal-header">
 						<h3>Sélectionner les compétences à valider pour <%= @student.first_name.capitalize %></h3>
-						<div class="cancel-btn me-1" data-action="click->reset-frame#resetFrame">
-							X
-						</div>
+						<%# Une croix discrète dans le coin, et non un second bouton gris de la
+						    taille du principal : la modale en offrait deux, celui de l'en-tête
+						    posé juste après le titre, donc au milieu de la ligne. %>
+						<button type="button" class="modale-fermer" aria-label="Fermer"
+						        data-action="click->reset-frame#resetFrame">&times;</button>
 					</div>
 					<div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
 						<div class="student-checkbox" >
@@ -45,12 +50,13 @@
 						</div>
 					</div>
 				</div>
-				<div class="d-flex justify-content-center height-validate-challenge
-">
-					<div class="cancel-btn me-4" data-action="click->reset-frame#resetFrame">
-						X
+				<%# « Annuler » plutôt qu'un X : à côté de « Valider », une croix seule ne
+				    dit pas ce qu'elle annule, et se lisait comme un bouton inachevé. %>
+				<div class="modale-actions">
+					<div class="cancel-btn" data-action="click->reset-frame#resetFrame">
+						Annuler
 					</div>
-					<%= form.submit 'Valider',class: 'validate-challenge-btn'%>
+					<%= form.submit 'Valider', class: 'validate-challenge-btn' %>
 				</div>
 			<% end %>
 		</div>

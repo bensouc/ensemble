@@ -158,6 +158,31 @@ RSpec.describe EvaluationStatutsHelper, type: :helper do
     end
   end
 
+  # Le mot d'une pastille et celui du choix qui y mène viennent des mêmes tables.
+  # La grille de progression en tenait une quatrième copie, qui avait dérivé —
+  # « Raté » contre « Raté, à refaire », « A revoir » contre « À refaire » : selon
+  # l'écran, l'enseignant lisait deux choses d'un même statut. Ce garde-fou lie
+  # les deux plutôt que de recopier les chaînes une fois de plus.
+  describe "#libelle_evaluation" do
+    it "donne à un statut enregistré le mot du choix qui y mène" do
+      choix = helper.statuts_evaluation(wps("exercice")).to_h { |s| [s.statut, s.libelle] }
+
+      expect(helper.libelle_evaluation("new", "exercice")).to eq(choix["not_done"])
+      %w[failed redo redo_OK completed].each do |statut|
+        expect(helper.libelle_evaluation(statut, "exercice")).to eq(choix[statut]), statut
+      end
+    end
+
+    it "dit ce que « validé » veut dire selon ce qu'on évalue" do
+      expect(helper.libelle_evaluation("completed", "ceinture")).to eq("Ceinture validée")
+      expect(helper.libelle_evaluation("completed", "jeu")).to eq("Fait")
+    end
+
+    it "se tait plutôt que de lever sur un statut inconnu" do
+      expect(helper.libelle_evaluation("autre", "exercice")).to eq("")
+    end
+  end
+
   describe "#statut_courant?" do
     it "reconnaît le statut enregistré" do
       expect(helper.statut_courant?(wps("exercice", "redo"), "redo")).to be true

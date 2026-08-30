@@ -1,37 +1,158 @@
+// La modale « Sélectionner les compétences à valider ».
+//
+// Son titre était peint en `$grisC`, le gris des bordures : il se lisait comme
+// un champ désactivé. Sa boîte prenait 90% de l'écran pour cinq compétences, le
+// titre à un bout et le bouton à l'autre. Et elle offrait DEUX annulations, deux
+// pavés gris de la taille du bouton principal, dont l'un posé juste après le
+// titre — donc au milieu de la ligne.
+.modale-validation {
+  // Une largeur ferme, et non `fit-content` : la boîte se calait sur la longueur
+  // du titre, si bien que le `space-between` de l'en-tête n'avait plus rien à
+  // répartir et que la croix de fermeture venait se coller au titre au lieu de
+  // tenir son coin.
+  //
+  // Pas de `min(40rem, 92vw)` non plus : sassc prend le `min()` CSS pour sa
+  // propre fonction Sass et refuse d'y mêler des `vw` et des `rem`. Le point de
+  // rupture du projet fait le même travail, et se lit.
+  width: 40rem;
+  margin: 8vh auto;
+
+  @media (max-width: $tablette) {
+    width: 92vw;
+  }
+
+  padding: $espace-lg;
+  background-color: $blanc;
+  border: 0;
+  border-radius: $rayon-lg;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
+}
+
 .new-wps-card {
+  .modal-header {
+    display: flex;
+    gap: $espace-md;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 0 0 $espace-md;
+    margin-bottom: $espace-md;
+    border-bottom: thin solid $grisC;
+  }
+
   h3 {
-    color: $grisC;
+    margin: 0;
+    color: $grisF;
+    font-size: $texte-xl;
+    font-weight: 700;
   }
+
+  // Le nom d'un sous-domaine : un intertitre, pas une citation en italique.
   h6 {
-    font-style: italic;
+    margin: $espace-md 0 $espace-sm;
+    color: $grisF;
+    font-size: $texte-xs;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
   }
+
+  // `.btn-group` de Bootstrap est un `inline-flex` qui met tout sur une seule
+  // ligne : ce n'est pas un groupe de boutons, c'est une liste de choix.
+  .btn-group {
+    display: block;
+  }
+
+  // Les étiquettes se suivent et passent à la ligne, séparées par un `gap`
+  // plutôt que par des marges droites de 2rem — qui creusaient des trous en fin
+  // de ligne et laissaient la dernière étiquette seule dans son coin.
+  .student-checkbox {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $espace-sm;
+  }
+
   .tag-selector {
     position: absolute;
     transform: scale(0);
   }
 
   .tag-selector + label {
-    cursor: pointer;
     display: inline-block;
-    font-size: 1rem;
-    border-radius: 9px;
-    padding: 11px 12px;
-    background-color: #ffeaed78;
+    margin: 0;
+    padding: $espace-sm $espace-md;
     color: $rose;
-    // border: 3px solid $rose;
-    margin-right: 2rem;
-    margin-bottom: 1rem;
-  }
+    font-size: $texte-sm;
+    background-color: rgba($rose, 0.08);
+    border: thin solid rgba($rose, 0.35);
+    border-radius: $rayon;
+    cursor: pointer;
+    transition: 0.15s ease;
 
-  .tag-selector + label {
     &:hover {
-      color: white;
-      background-color: #f24150;
+      color: $blanc;
+      background-color: $rose;
+      border-color: $rose;
     }
   }
 
   .tag-selector:checked + label {
+    color: $blanc;
     background-color: $rose;
-    color: white;
+    border-color: $rose;
+  }
+}
+
+// La fermeture : une croix discrète dans le coin. Elle n'a pas à peser autant
+// que « Valider » — on ne ferme pas une modale aussi souvent qu'on la valide.
+.modale-fermer {
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  color: $grisF;
+  font-size: 1.6rem;
+  line-height: 1;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: 0.15s ease;
+
+  &:hover {
+    color: $rose;
+    background-color: $light-gray;
+  }
+}
+
+.modale-actions {
+  display: flex;
+  gap: $espace-sm;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: $espace-lg;
+
+  // Les deux à la même échelle, et « Annuler » en retrait : c'est « Valider »
+  // qu'on vient chercher. Le pavé gris plein pesait plus lourd que l'action
+  // principale, et l'œil se posait sur le mauvais bouton.
+  .cancel-btn {
+    padding: 0.45rem 1.1rem;
+    color: $grisF !important;
+    font-size: $texte-sm;
+    font-weight: 500;
+    background-color: transparent;
+    border-color: transparent;
+
+    &:hover {
+      color: $grisF !important;
+      background-color: $light-gray;
+    }
+  }
+
+  .validate-challenge-btn {
+    margin-left: 0;
+    padding: 0.45rem 1.1rem;
+    font-size: $texte-sm;
+    font-weight: 500;
   }
 }

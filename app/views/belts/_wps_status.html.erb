@@ -1,12 +1,14 @@
-<%case wps.status%>
-<%when 'new'  %>
-  Pas d'évaluation
-<%when 'failed'  %>
-  Raté
-<%when 'redo'  %>
-  A revoir
-<%when 'redo_OK'  %>
-  Réussi mais à revoir
-<%when 'completed'  %>
-  VALIDE le <%= wps.updated_at.strftime("%d/%m/%y") %>
-<% end %>
+<%# Le mot qui dit où en est une compétence, dans l'étiquette de survol de la
+    grille de progression.
+
+    Il venait d'un `case` tenu ici, quatrième copie des libellés après le helper,
+    le sélecteur et la modale du mobile — et elle avait déjà dérivé : « Raté »
+    contre « Raté, à refaire », « A revoir » contre « À refaire », « Réussi mais
+    à revoir » contre « OK, mais à refaire ». L'enseignant lisait donc deux mots
+    différents pour un même statut selon l'écran.
+
+    La date reste propre à cette vue : c'est la seule qui la montre, et elle
+    répond à une question que l'écran d'évaluation ne pose pas — quand la
+    ceinture a-t-elle été décrochée. %>
+<%= libelle_evaluation(wps.status, wps.kind) %>
+<%= "(#{wps.updated_at.strftime('%d/%m/%y')})" if wps.status == "completed" %>
