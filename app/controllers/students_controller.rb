@@ -67,7 +67,11 @@ class StudentsController < ApplicationController
     @no_validated_skills = skills.reject do |skill|
       Result.find_by(skill:, student: @student, kind: "ceinture", status: "completed")
     end
-    @subdomain = @no_validated_skills.map { |skill| skill.sub_domain }.compact.uniq
+    # La liste des sous-domaines a disparu d'ici. Le contrôleur posait
+    # `@subdomain`, la vue lisait `@sub_domains` : le groupement ne s'est donc
+    # jamais exécuté. Plutôt que d'accorder les deux noms, la vue groupe
+    # elle-même, par `competences_par_sous_domaine` — il n'y a plus deux endroits
+    # à tenir d'accord.
     # binding.pry
     return if @no_validated_skills.nil? || @no_validated_skills.empty?
 
