@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_08_28_100100) do
+ActiveRecord::Schema[7.1].define(version: 2026_09_03_120000) do
   create_schema "_heroku"
   create_schema "heroku_ext"
 
@@ -78,6 +78,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_28_100100) do
     t.boolean "for_belt", default: false
     t.integer "position"
     t.index ["skill_id", "for_belt", "position"], name: "index_challenges_on_skill_id_and_for_belt_and_position"
+    t.index ["skill_id", "name"], name: "index_challenges_on_skill_id_and_name", unique: true
     t.index ["skill_id"], name: "index_challenges_on_skill_id"
     t.index ["user_id"], name: "index_challenges_on_user_id"
   end
@@ -106,6 +107,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_28_100100) do
     t.datetime "updated_at", null: false
     t.boolean "special"
     t.integer "position"
+    t.index ["grade_id", "name"], name: "index_domains_on_grade_id_and_name", unique: true
     t.index ["grade_id"], name: "index_domains_on_grade_id"
   end
 
@@ -115,6 +117,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_08_28_100100) do
     t.bigint "school_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["school_id", "name"], name: "index_grades_on_school_id_and_name", unique: true
     t.index ["school_id"], name: "index_grades_on_school_id"
   end
 
