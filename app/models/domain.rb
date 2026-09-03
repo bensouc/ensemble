@@ -8,7 +8,7 @@ class Domain < ApplicationRecord
   has_many :work_plan_domains, dependent: :destroy
 
   validates :name, presence: true,
-                   uniqueness: { message: "Le nom de cet domain éxiste déja", scope: :grade }
+                   uniqueness: { message: "est déjà utilisé pour ce niveau", scope: :grade }
 
   # METHODS
   delegate :grade_level, to: :grade

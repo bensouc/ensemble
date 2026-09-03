@@ -51,6 +51,9 @@ fr:
     pause: "En pause"
     ended: "Terminé"
   activerecord:
+    attributes:
+      domain:
+        name: Nom
     errors:
       messages:
         record_invalid: 'La validation a échoué : %{errors}'
