@@ -19,7 +19,8 @@ class Challenge < ApplicationRecord
 
   has_many :work_plan_skills, dependent: nil
 
-  validates :name, presence: true, uniqueness: { message: "Le nom de cet exercice éxiste déja", scope: :skill }
+  validates :name, presence: true,
+                   uniqueness: { message: "est déjà utilisé pour cette compétence", scope: :skill }
   # `presence` rejette `false` autant que `nil` : la validation précédente
   # rendait donc impossible de dé-partager un exercice. Sans effet aujourd'hui
   # (les 2911 exercices sont à `true`), mais c'était un piège armé.
