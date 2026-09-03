@@ -62,7 +62,11 @@ class ChallengesController < ApplicationController
         format.turbo_stream { flash.now[:notice] = "Excercice Sauvegardé" }
       end
     else
-      redirect_to new_challenge_path, notice: "Sauvegarde échouée ", status: :unprocessable_content
+      # L'ancienne branche faisait `redirect_to new_challenge_path, status:
+      # :unprocessable_content` : un 422 au corps vide, que Turbo ne suit pas et
+      # dans lequel il ne trouve rien à rendre. Le clic ne produisait donc rien,
+      # sans le moindre message — et le nom saisi était perdu.
+      render :new, status: :unprocessable_content, formats: [:html]
     end
   end
 
@@ -79,7 +83,9 @@ class ChallengesController < ApplicationController
         format.turbo_stream { flash.now[:notice] = "Excercice Sauvegardé" }
       end
     else
-      redirect_to edit_challenge_path(@challenge), notice: "Sauvegarde échouée "
+      # Rediriger vers `edit` rechargeait l'exercice depuis la base : l'erreur
+      # et le nom saisi disparaissaient tous les deux.
+      render :edit, status: :unprocessable_content, formats: [:html]
     end
     # html_update
   end

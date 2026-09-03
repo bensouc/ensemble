@@ -8,7 +8,7 @@ class Grade < ApplicationRecord
 
   validates :grade_level, presence: true, inclusion: Classroom::GRADE
   validates :name,  presence: true,
-                    uniqueness: { message: "Le nom de cet niveau éxiste déja", scope: :school },
+                    uniqueness: { message: "est déjà utilisé dans votre école", scope: :school },
                     length: { maximum: 15, message: "est trop long (pas plus de 15 caractères)" }
 
   before_validation :set_default

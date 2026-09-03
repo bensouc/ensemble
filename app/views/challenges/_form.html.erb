@@ -8,7 +8,14 @@
           <%= form.hidden_field :for_belt%>
 						<div class="field rt-field pt-2 pb-2" data-controller="rich-text-table table-editor edit-challenge">
 							<div>
-								<%= form.text_field :name, class: "challenge-title", placeholder: "Nom de l'exercice", aria: { label: "Nom de l'exercice" } %>
+								<%# `form_for` n'affiche aucune erreur de lui-même : sans ce bloc, le
+								    formulaire réaffiché après un échec de validation ne dirait pas pourquoi. %>
+								<% name_errors = challenge.errors.full_messages_for(:name) %>
+								<%= form.text_field :name, class: "challenge-title#{' is-invalid' if name_errors.any?}",
+								    placeholder: "Nom de l'exercice", aria: { label: "Nom de l'exercice" } %>
+								<% if name_errors.any? %>
+									<div class="invalid-feedback d-block"><%= name_errors.to_sentence %></div>
+								<% end %>
 							</div>
 							<%= form.rich_text_area :content, placeholder: "Écrivez votre énoncé ici…" %>
 						</div>

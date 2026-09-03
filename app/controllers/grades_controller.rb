@@ -15,7 +15,9 @@ class GradesController < ApplicationController
     authorize @grade
     return if @grade.save
 
-    render :new, status: :unprocessable_content
+    # `formats: [:html]` : le formulaire est soumis depuis le turbo-frame
+    # `new_grade`, c'est la page HTML que Turbo vient y découper — pas un flux.
+    render :new, status: :unprocessable_content, formats: [:html]
   end
 
   def destroy

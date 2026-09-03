@@ -52,7 +52,11 @@ fr:
     ended: "Terminé"
   activerecord:
     attributes:
+      challenge:
+        name: Nom
       domain:
+        name: Nom
+      grade:
         name: Nom
     errors:
       messages:
