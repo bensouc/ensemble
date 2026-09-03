@@ -32,12 +32,16 @@ RSpec.describe "Challenges", type: :request do
       create(:challenge, skill:, user:, name: "Dictée 1")
 
       post challenges_path,
-           params: { challenge: { name: "Dictée 1", content: "Écrivez", skill_id: skill.id, for_belt: false } },
+           params: { challenge: { name: "Dictée 1", content: "<div>Le <strong>hérisson</strong></div>",
+                                  skill_id: skill.id, for_belt: false } },
            headers: turbo_headers
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("Nom est déjà utilisé pour cette compétence")
       expect(response.body).to include("Dictée 1")
+      # L'énoncé saisi doit revenir dans le formulaire : le perdre à chaque
+      # échec de validation ferait retaper l'exercice entier à l'enseignant.
+      expect(response.body).to include("hérisson")
       expect(skill.challenges.count).to eq(1)
     end
   end
@@ -56,11 +60,15 @@ RSpec.describe "Challenges", type: :request do
     it "réaffiche le formulaire avec l'erreur quand le nouveau nom est déjà pris" do
       create(:challenge, skill:, user:, name: "Dictée 1")
 
-      patch challenge_path(challenge), params: { challenge: { name: "Dictée 1" } }, headers: turbo_headers
+      patch challenge_path(challenge),
+            params: { challenge: { name: "Dictée 1", content: "<div>Nouvel énoncé</div>" } },
+            headers: turbo_headers
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("Nom est déjà utilisé pour cette compétence")
+      expect(response.body).to include("Nouvel énoncé")
       expect(challenge.reload.name).to eq("Dictée 2")
+      expect(challenge.content.to_plain_text).not_to include("Nouvel")
     end
   end
 end
