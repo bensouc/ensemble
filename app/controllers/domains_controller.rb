@@ -29,7 +29,14 @@ class DomainsController < ApplicationController
     @domain = Domain.new(set_params)
     @grade = @domain.grade
     authorize(@domain)
-    @domain.save
+    # Sans ce garde-fou, `create.turbo_stream.erb` rendait `_domain` avec un
+    # enregistrement sans `id` : `edit_domain_path(domain)` levait alors une
+    # ActionView::Template::Error, et l'enseignant voyait un 500 au lieu du
+    # message « ce nom de domaine existe déjà ».
+    # `formats: [:html]` : le formulaire est toujours soumis depuis un turbo-frame,
+    # c'est bien la page HTML que Turbo vient y découper — pas un flux.
+    return render :new, status: :unprocessable_content, formats: [:html] unless @domain.save
+
     respond_to do |format|
       format.html { redirect_to grade_domains_path(@grade), notice: "Domaine Sauvegardé" }
       format.turbo_stream
@@ -38,13 +45,15 @@ class DomainsController < ApplicationController
 
   def update
     authorize @domain
-    if @domain.update(set_params)
-      respond_to do |format|
-        format.html { redirect_to domain_path(@domain), notice: "Domaine Sauvegardé" }
-        format.turbo_stream
-      end
-    else
-      redirect_to redirect_to grade_domains_path(@domain.grade), notice: "Sauvegarde échouée "
+    @grade = @domain.grade
+    # Même règle qu'à la création : on réaffiche le formulaire avec l'erreur.
+    # (L'ancienne branche d'échec appelait `redirect_to redirect_to`, ce qui
+    # levait un AbstractController::DoubleRenderError.)
+    return render :edit, status: :unprocessable_content, formats: [:html] unless @domain.update(set_params)
+
+    respond_to do |format|
+      format.html { redirect_to domain_path(@domain), notice: "Domaine Sauvegardé" }
+      format.turbo_stream
     end
   end
 
