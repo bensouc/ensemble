@@ -74,6 +74,13 @@
 					<%= "(fin le #{@subscription.trial_end})" if @subscription.status == "trialing" %>
 				</p>
         <p><i class="fa-solid fa-people-roof"></i> <%= @school.classrooms_total%> / <%= @subscription.quantity %> classe(s) </p>
+				<%# Sans ce lien, une école sur facture n'a aucune porte pour ajuster sa
+				    quantité tant qu'elle n'est pas bloquée en création — et aucune du tout
+				    pour la RÉDUIRE, le blocage n'arrivant jamais dans ce sens. %>
+				<%= render "subscriptions/demande_modification",
+				           subscription: @subscription,
+				           libelle: "Nous demander de modifier le nombre de classes",
+				           classe: "btn-flat mt-2" %>
 				<div class="grey-line-full"></div>
         <h5>Renouvellement</h5>
         <p><i class="fa-solid fa-repeat"></i>

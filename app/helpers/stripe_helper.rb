@@ -44,6 +44,11 @@ module StripeHelper
   def self.create_customer(client)
     attributs = { email: client.email, name: client.try(:name) }.compact
     attributs[:metadata] = { client.class.name.underscore => client.id }
+    # Sans lui, Stripe envoie les mails de facture, les PDF de facture, les reçus
+    # et les avoirs en anglais — la page hébergée, elle, se localise sur le
+    # navigateur, ce qui masque le problème jusqu'à ce qu'une école reçoive son
+    # mail. Toutes les écoles d'Ensemble sont francophones.
+    attributs[:preferred_locales] = ["fr"]
     customer = Stripe::Customer.create(attributs)
     # Écrit sans repasser par les validations : une école dont la ligne est par
     # ailleurs invalide — deux écoles qui partagent un email, un email ancien

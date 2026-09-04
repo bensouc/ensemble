@@ -1,0 +1,78 @@
+<div class="container3">
+	<h1 class="sub-title">Modifier votre abonnement</h1>
+
+	<%# Le portail Stripe ne sait pas modifier un abonnement facturé : le dire, pour
+	    que le responsable ne cherche pas un bouton qui n'existe pas.
+	    Pas de `.speech` ici : cette classe est en texte blanc, faite pour l'image de
+	    fond de la page tarifaire — sur fond clair elle est invisible. %>
+	<div class="subscription-details --border-10px">
+		<p>
+			Votre abonnement est réglé sur facture : le nombre de classes ne se change pas
+			depuis le portail de facturation. Choisissez ce qu'il vous faut, nous l'ajustons.
+		</p>
+		<p>
+			Vous avez aujourd'hui <strong><%= classes_label(@school.classrooms_total) %></strong>
+			pour <strong><%= classes_label(@subscription.quantity.to_i) %></strong> à l'abonnement.
+		</p>
+	</div>
+
+	<%# Le barème vit dans `Subscription::TARIFS`, et `calculate-subscription` le
+	    recalcule à chaque changement de quantité — le même contrôleur que le
+	    formulaire de souscription, pour ne pas avoir deux fois la règle des paliers. %>
+	<%= simple_form_for :subscription_change, url: create_subscription_change_request_path,
+	                    html: { method: :post, novalidate: false,
+	                            data: { turbo: false,
+	                                    controller: "calculate-subscription",
+	                                    calculate_subscription_target: "form",
+	                                    calculate_subscription_tarifs_value: raw(Subscription::TARIFS.to_json) } } do |f| %>
+		<div class="sub-global-form">
+			<div class="sub-right-form">
+				<div class="sub-input">
+					<p>Renouvellement</p>
+					<p>Nb de classe</p>
+				</div>
+				<div class="sub-input">
+					<%# Le rythme ne se change pas ici : il sert de lecture au calcul du coût. %>
+					<%= text_field_tag :rythm, @subscription.rythm, readonly: true, class: "display-sub",
+					                   data: { calculate_subscription_target: "rythm" } %>
+					<%= f.input :classes, label: false, collection: (1..20), selected: @classes_souhaitees,
+					            required: true,
+					            input_html: { class: "display-sub",
+					                          data: { action: "change->calculate-subscription#calculate",
+					                                  calculate_subscription_target: "quantity" } } %>
+				</div>
+			</div>
+			<div class="vertical-bar"></div>
+			<div class="sub-right-form">
+				<div class="sub-input">
+					<p>Tarif actuel</p>
+					<p>Nouveau tarif</p>
+				</div>
+				<div class="sub-input">
+					<%= text_field_tag :tarif_actuel, "#{Subscription.cout_annonce(@subscription.rythm, @subscription.quantity)} €",
+					                   readonly: true, class: "display-sub" %>
+					<%= text_field_tag :nouveau_tarif, "#{Subscription.cout_annonce(@subscription.rythm, @classes_souhaitees)} €",
+					                   readonly: true, class: "display-sub",
+					                   data: { calculate_subscription_target: "totalCost" } %>
+					<%# `calculate()` écrit aussi ces deux valeurs : sans leurs cibles, il lève
+					    et le nouveau tarif cesse de se mettre à jour. %>
+					<%= text_field_tag :cout_mensuel, nil, class: "d-none",
+					                   data: { calculate_subscription_target: "monthlyCost" } %>
+					<%= text_field_tag :date_renouvellement, nil, class: "d-none",
+					                   data: { calculate_subscription_target: "renewDate" } %>
+				</div>
+			</div>
+		</div>
+
+		<%# `required: false` explicite : sans modèle, simple_form marque tout champ
+		    obligatoire, et l'astérisque démentait le « facultatif ». %>
+		<%= f.input :message, label: "Précisions", as: :text, required: false,
+		            input_html: { rows: 3,
+		                          placeholder: "À partir de quand, une contrainte de calendrier, une question de facturation…" } %>
+
+		<%= f.submit "Confirmer votre demande", class: "add-skill-btn" %>
+		<p class="mt-2"><small>Cette demande sera effectuée par les équipes d'Ensemble.</small></p>
+	<% end %>
+
+	<%= link_to "Annuler", school_path(@school), class: "back-link" %>
+</div>

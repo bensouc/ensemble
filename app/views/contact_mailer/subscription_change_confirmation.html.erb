@@ -1,0 +1,41 @@
+<h1 style="<%= mail_style(:titre) %>">Votre demande a bien été reçue</h1>
+
+<p style="<%= mail_style(:texte) %>">
+	Bonjour,<br>
+	nous avons bien reçu votre demande de modification pour l'abonnement du groupe
+	<strong><%= @demande[:school].name %></strong>.
+</p>
+
+<%= mail_divider %>
+
+<%= mail_field("Classes à l'abonnement aujourd'hui", classes_label(@demande[:quantite_avant])) %>
+<%= mail_field("Classes demandées", classes_label(@demande[:quantite_apres])) %>
+
+<%= mail_divider %>
+
+<%# Une hausse fait émettre une facture de prorata, une baisse un avoir : annoncer
+    « une facture » dans les deux sens était faux pour une école qui réduit. %>
+<% if @document == :aucun %>
+	<p style="<%= mail_style(:texte) %>">
+		Votre abonnement couvre déjà ce nombre de classes : il n'y a donc rien à
+		modifier ni à facturer. Si votre message appelle une réponse, nous y revenons.
+	</p>
+<% else %>
+	<p style="<%= mail_style(:texte) %>">
+		Nous ajustons votre abonnement selon cette demande.
+		<% if @document == :facture %>
+			Une <strong>facture de modification</strong> vous sera envoyée à
+		<% else %>
+			Comme il couvrira moins de classes, un <strong>avoir</strong> vous sera adressé à
+		<% end %>
+		<strong><%= @demande[:facturation_email] %></strong>.
+	</p>
+
+	<%# L'adresse de facturation est souvent celle de la direction, alors que le
+	    document est attendu par le service comptable. Le dire ici évite un mandat
+	    qui traîne parce que la facture est arrivée au mauvais endroit. %>
+	<p style="<%= mail_style(:note) %>">
+		Si cette adresse n'est pas celle à laquelle vos documents de facturation
+		doivent parvenir, répondez à ce message : nous la corrigeons avant l'émission.
+	</p>
+<% end %>

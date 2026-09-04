@@ -14,6 +14,9 @@ module StripeTaches
   # Le repère de détection dérive de la mention : changer l'une changeait
   # l'écriture sans changer la reconnaissance.
   REPERE_MENTION = "293 B"
+  # `preferred_locales` gouverne la langue des mails de facture, des PDF, des
+  # reçus et des avoirs. Toutes les écoles d'Ensemble sont francophones.
+  LANGUE = "fr"
 
   def alerte(condition) = condition ? "  <-- À VÉRIFIER" : ""
 
@@ -186,6 +189,36 @@ module StripeTaches
         { up_to: t.up_to || "inf", unit_amount: t.unit_amount, flat_amount: t.flat_amount }.compact
       end }
   end
+
+  # Le mode de recouvrement de l'abonnement d'une école, lu chez Stripe. Nul si
+  # l'abonnement n'y existe pas : une ligne saisie à la main dans `/admin` porte
+  # un `stripe_subscription_id` vide.
+  def collection_method_chez_stripe(abonnement)
+    return nil if abonnement.stripe_subscription_id.blank?
+
+    Stripe::Subscription.retrieve(abonnement.stripe_subscription_id).collection_method
+  rescue Stripe::InvalidRequestError => e
+    puts "  #{abonnement.stripe_subscription_id} introuvable — #{e.message}"
+    nil
+  end
+
+  # Vide, Stripe écrit ses mails et ses PDF en anglais. La page hébergée, elle,
+  # se localise sur le navigateur : le problème reste invisible jusqu'à ce qu'une
+  # école reçoive son mail de facture.
+  #
+  # `[]` plutôt que l'accesseur, comme partout où l'on lit du Stripe ici.
+  def poser_langue_clients(ecrire)
+    total = 0
+    vises = tout(Stripe::Customer.list(limit: 100)) do |c|
+      total += 1
+      c[:preferred_locales].blank? || c[:preferred_locales].first != LANGUE
+    end
+    puts "\nClients sans le français en première langue : #{vises.size} sur #{total}"
+    vises.each do |c|
+      puts "  #{c.id} #{c.email} #{c[:preferred_locales].inspect}#{" -> #{LANGUE}" if ecrire}"
+      Stripe::Customer.update(c.id, preferred_locales: [LANGUE]) if ecrire
+    end
+  end
 end
 
 namespace :stripe do
@@ -264,5 +297,39 @@ namespace :stripe do
     puts "  STRIPE_SCHOOL_PRICING_ID  — l'API ne crée pas de table tarifaire"
     puts "  STRIPE_PUBLISHABLE_KEY    — la clé publiable du test mode"
     puts "  STRIPE_WEBHOOK_SECRET_KEY — celui que donne `stripe listen`"
+  end
+  desc "Renseigne subscriptions.collection_method depuis Stripe (APPLIQUER=1 pour écrire)"
+  task backfill_collection_method: :environment do
+    # Le portail Stripe ne sait pas modifier un abonnement sur facture. Sans cette
+    # colonne, l'app propose « Ajouter une classe à mon abonnement » à une école
+    # dont le portail ne sait que résilier. Le webhook la renseigne désormais, mais
+    # un abonnement annuel peut n'émettre aucun événement avant des mois : cette
+    # tâche rattrape les lignes existantes.
+    Stripe.api_key = ENV.fetch("STRIPE_API_KEY", nil)
+    ecrire = ENV["APPLIQUER"] == "1"
+    puts ecrire ? "Écriture activée." : "Lecture seule — relancez avec APPLIQUER=1 pour écrire.\n"
+
+    Subscription.includes(:school).find_each do |abonnement|
+      mode = StripeTaches.collection_method_chez_stripe(abonnement)
+      next puts "#{abonnement.school&.name} — rien à lire" if mode.nil?
+      next puts "#{abonnement.school&.name} — déjà #{mode}" if abonnement.collection_method == mode
+
+      puts "#{abonnement.school&.name} — #{abonnement.collection_method.inspect} -> #{mode}"
+      # `update_column` : la ligne peut violer par ailleurs ses propres
+      # validations, et ce serait perdre le mode en silence.
+      # rubocop:disable Rails/SkipsModelValidations
+      abonnement.update_column(:collection_method, mode) if ecrire
+      # rubocop:enable Rails/SkipsModelValidations
+    end
+  end
+  desc "Pose le français sur les clients Stripe qui n'ont pas de langue (APPLIQUER=1 pour écrire)"
+  task poser_langue_clients: :environment do
+    # Sans langue déclarée, une école reçoit sa facture et son reçu en anglais.
+    # `StripeHelper` la pose désormais à la création ; cette tâche rattrape les
+    # clients créés avant.
+    Stripe.api_key = ENV.fetch("STRIPE_API_KEY", nil)
+    ecrire = ENV["APPLIQUER"] == "1"
+    puts ecrire ? "Écriture activée." : "Lecture seule — relancez avec APPLIQUER=1 pour écrire.\n"
+    StripeTaches.poser_langue_clients(ecrire)
   end
 end

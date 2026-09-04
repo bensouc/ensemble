@@ -1,0 +1,30 @@
+<h1 style="<%= mail_style(:titre) %>">Demande de modification d'abonnement</h1>
+
+<p style="<%= mail_style(:texte) %>">
+	Abonnement sur facture : le portail Stripe ne permet pas à l'école de le modifier
+	elle-même. À porter dans le Dashboard, en changeant la quantité de l'abonnement.
+</p>
+
+<%= mail_divider %>
+
+<%= mail_field("École", "#{@demande[:school].name} (##{@demande[:school].id})") %>
+<%= mail_field("Ville", @demande[:school].city) %>
+<%= mail_field("Demandeur", "#{@demande[:demandeur].display_name} — #{@demande[:demandeur].email}") %>
+
+<%= mail_divider %>
+
+<%= mail_field("Classes à l'abonnement — avant", classes_label(@demande[:quantite_avant])) %>
+<%= mail_field("Classes à l'abonnement — après", classes_label(@demande[:quantite_apres])) %>
+<%# Le nombre payé et le nombre créé divergent : c'est justement ce qui bloque la
+    création quand le second dépasse le premier. %>
+<%= mail_field("Classes réellement créées", classes_label(@demande[:classes_creees])) %>
+<%= mail_field("Rythme", @demande[:rythm]) %>
+<%= mail_field("Tarif du barème, indicatif",
+               "#{Subscription.cout_annonce(@demande[:rythm], @demande[:quantite_apres])} € " \
+               "(avant : #{Subscription.cout_annonce(@demande[:rythm], @demande[:quantite_avant])} €)") %>
+
+<%= mail_divider %>
+
+<%= mail_field("Message", @demande[:message]) %>
+<%= mail_field("Client Stripe", @demande[:stripe_customer_id]) %>
+<%= mail_field("Abonnement Stripe", @demande[:stripe_subscription_id]) %>
