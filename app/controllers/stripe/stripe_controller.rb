@@ -18,16 +18,16 @@ class Stripe::StripeController < ApplicationController
   # autorisé faisait travailler l'API avant de se voir refuser.
   def create_portal_session
     authorize Stripe::BillingPortal::Session.new
+    # Posée ici en plus de l'initializer : `Stripe.api_key` est global au
+    # processus, et ce fichier d'initializer a déjà été entièrement commenté par
+    # le passé. Sans elle, un worker Puma neuf — où aucun appel n'est encore
+    # passé par `StripeHelper` — part sans clé et lève un AuthenticationError.
+    Stripe.api_key = ENV.fetch("STRIPE_API_KEY", nil)
 
     school = current_user.school
     return orienter(school, "aucun client Stripe en base") if school.stripe_customer_id.blank?
 
-    session = Stripe::BillingPortal::Session.create({
-                                                      customer: school.stripe_customer_id,
-                                                      locale: "fr",
-                                                      return_url: "#{ApplicationHelper.default_url_options[:host]}/dashboard"
-                                                    })
-    redirect_to session.url, allow_other_host: true
+    redirect_to ouvrir_portail(school.stripe_customer_id).url, allow_other_host: true
   rescue Stripe::InvalidRequestError => e
     # `resource_missing` ne peut désigner que le client : c'est la seule ressource
     # que cet appel nomme. Tout autre échec — le portail non configuré dans le
@@ -39,6 +39,14 @@ class Stripe::StripeController < ApplicationController
   end
 
   private
+
+  def ouvrir_portail(customer)
+    Stripe::BillingPortal::Session.create({
+                                            customer:,
+                                            locale: "fr",
+                                            return_url: "#{ApplicationHelper.default_url_options[:host]}/dashboard"
+                                          })
+  end
 
   # Répare l'id au passage : c'est lui qui permet de rattacher l'abonnement
   # depuis le Dashboard, sans une intervention en console de plus. Le client neuf

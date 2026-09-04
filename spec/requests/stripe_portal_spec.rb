@@ -131,6 +131,35 @@ RSpec.describe "Portail de facturation Stripe", type: :request do
     end
   end
 
+  # `Stripe.api_key` est global au processus, et rien ne l'y posait avant que
+  # l'initializer ne s'en charge : chaque appelant la réglait en première ligne.
+  # Une réécriture qui oublie cette ligne ne casse donc que sur un worker Puma
+  # neuf, où aucun appel n'est encore passé par `StripeHelper` — c'est arrivé.
+  context "sur un processus où la clé n'a jamais été posée" do
+    let(:id_en_base) { "cus_valide" }
+
+    around do |exemple|
+      ancienne = Stripe.api_key
+      Stripe.api_key = nil
+      exemple.run
+      Stripe.api_key = ancienne
+    end
+
+    before do
+      allow(ENV).to receive(:fetch).and_call_original
+      allow(ENV).to receive(:fetch).with("STRIPE_API_KEY", nil).and_return("sk_test_posee_par_laction")
+      get "/create-customer-portal-session"
+    end
+
+    it "pose la clé avant d'appeler Stripe" do
+      expect(Stripe.api_key).to eq("sk_test_posee_par_laction")
+    end
+
+    it "ouvre le portail malgré tout" do
+      expect(response).to redirect_to("https://billing.stripe.com/session")
+    end
+  end
+
   # Le portail non configuré dans le Dashboard lève la même classe d'erreur avec
   # un autre code. L'avaler en message d'interface ferait disparaître la
   # notification d'exception, seule alerte sur une panne de configuration.
