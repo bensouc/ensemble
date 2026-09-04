@@ -1,0 +1,43 @@
+<div class="container w-50">
+	<h2>Modifier votre abonnement</h2>
+
+	<%# Le portail Stripe ne sait pas modifier un abonnement facturé : le dire, pour
+	    que le responsable ne cherche pas un bouton qui n'existe pas. %>
+	<p>
+		Votre abonnement est réglé sur facture : le nombre de classes ne se change pas
+		depuis le portail de facturation. Indiquez-nous ce qu'il vous faut, nous
+		l'ajustons et la facture correspondante vous sera envoyée.
+	</p>
+
+	<p>
+		Aujourd'hui, votre abonnement couvre
+		<strong><%= classes_label(@subscription.quantity.to_i) %></strong>,
+		et vous en avez créé <strong><%= classes_label(@school.classrooms_total) %></strong>.
+	</p>
+
+	<%= simple_form_for :subscription_change, url: create_subscription_change_request_path,
+	                    html: { method: :post, novalidate: false } do |f| %>
+		<div class="form-inputs">
+			<%= f.input :classes,
+			            label: "Nombre de classes souhaité",
+			            as: :integer,
+			            required: true,
+			            autofocus: true,
+			            input_html: { value: @classes_souhaitees, min: 1 } %>
+			<%# `required: false` explicite : sans modèle, simple_form marque tout
+			    champ obligatoire, et l'astérisque démentait le « facultatif ». %>
+			<%= f.input :message,
+			            label: "Précisions",
+			            as: :text,
+			            required: false,
+			            input_html: { rows: 4,
+			                          placeholder: "À partir de quand, une contrainte de calendrier, une question de facturation…" } %>
+		</div>
+
+		<div class="form-actions">
+			<%= f.button :submit, "Envoyer ma demande", class: "add-skill-btn" %>
+		</div>
+	<% end %>
+
+	<%= link_to "Annuler", school_path(@school), class: "back-link" %>
+</div>

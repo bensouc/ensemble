@@ -62,6 +62,10 @@ module Stripesubscription
       quantity: lire(item, objet, :quantity),
       cancel_at_period_end: objet[:cancel_at_period_end],
       plan_id: prix&.[](:id),
+      # Toujours à la racine de l'objet, quelle que soit la version d'API. C'est
+      # lui qui dit si l'école peut modifier son abonnement depuis le portail
+      # Stripe : sur `send_invoice`, elle ne peut qu'y résilier.
+      collection_method: objet[:collection_method],
       rythm: rythme(prix, objet) }.merge(dates(item, objet))
   end
 

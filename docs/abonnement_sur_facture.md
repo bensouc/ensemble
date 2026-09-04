@@ -108,6 +108,72 @@ attend son virement.
 
 ---
 
+## Quand l'école veut changer son nombre de classes
+
+**Elle ne peut pas le faire elle-même chez Stripe.** Le portail client refuse de
+modifier un abonnement en `send_invoice` : le client peut y consulter et régler
+ses factures, mettre à jour ses informations… et **résilier**, mais ni changer sa
+quantité ni changer d'offre. C'est une limitation documentée du portail, liée au
+`collection_method` — payer la facture ne la lève pas.
+
+> Si un abonnement utilise […] l'envoi de factures pour recouvrement, le client
+> peut l'annuler dans le portail, mais ne peut pas le modifier.
+> — [docs.stripe.com/customer-management](https://docs.stripe.com/customer-management)
+
+L'app le sait, depuis `subscriptions.collection_method`, et remplace donc les
+boutons qui menaient au portail par un lien **« Nous demander de modifier votre
+abonnement »**. Deux endroits :
+
+- la page **École**, à côté du compteur de classes — la seule porte pour
+  *réduire* une quantité, le blocage de création n'arrivant jamais dans ce sens
+- la zone de **création de classe bloquée**, à la place des trois anciens CTA
+
+Le responsable saisit le nombre de classes souhaité. Deux mails partent :
+
+| Destinataire | Contenu |
+|---|---|
+| `bensoucdev@gmail.com` | l'école, le demandeur, **avant → après**, les classes réellement créées, le tarif du barème, et les deux identifiants Stripe pour agir sans rien chercher |
+| le demandeur **et** `schools.email` | l'accusé de réception, qui **nomme l'adresse de facturation** et invite à la corriger si le service comptable est ailleurs |
+
+À toi ensuite de changer la quantité **dans le Dashboard** : rien dans l'app
+n'écrit chez Stripe, c'est toujours le webhook qui redescend la vérité.
+
+**Attention au calendrier.** Une hausse en cours de période émet une facture de
+prorata — un second document pour le service comptable de l'école. Sur la
+**première** facture d'un abonnement, tu as en revanche **une heure** avant que
+Stripe la finalise et l'envoie : pendant ce temps elle est en `draft` et se
+recalcule toute seule quand tu changes la quantité. Pour t'en donner plus,
+suspends-la :
+
+```ruby
+inv = Stripe::Invoice.list(subscription: "sub_…", limit: 1).data.first
+Stripe::Invoice.update(inv.id, auto_advance: false)   # ne finalise plus, n'envoie plus
+# … puis, quand c'est réglé
+Stripe::Invoice.update(inv.id, auto_advance: true)
+```
+
+---
+
+## Renseigner le mode de recouvrement des abonnements existants
+
+`collection_method` est nul pour toute ligne antérieure à la colonne, et nul se
+comporte comme avant : le portail reste proposé. Le webhook le renseigne
+désormais, mais **un abonnement annuel peut n'émettre aucun événement pendant des
+mois** : jusque-là, une école sur facture continuerait de voir un bouton qui ne
+sait que résilier.
+
+À lancer **une fois après déploiement**, en lecture seule d'abord :
+
+```bash
+bin/rails stripe:backfill_collection_method              # affiche ce qui changerait
+APPLIQUER=1 bin/rails stripe:backfill_collection_method  # écrit
+```
+
+Une ligne saisie à la main dans `/admin`, `stripe_subscription_id` vide, n'a rien
+à lire chez Stripe : la tâche le dit et passe.
+
+---
+
 ## Ce qu'il ne faut pas faire
 
 **Ne créez plus de ligne `Subscription` dans `/admin`.** Une ligne créée à la
@@ -130,6 +196,8 @@ l'adopte. La détruire perd l'historique et recrée le problème.
 | `stripe_subscription_id` reste vide | l'événement n'est pas arrivé — voir Developers → Events |
 | « client Stripe inconnu en base » dans les logs | `schools.stripe_customer_id` ne correspond à aucune école |
 | `No such customer` sur le portail | le client a été supprimé chez Stripe — voir l'étape 1 |
+| Le portail ne propose pas de changer la quantité | c'est normal sur `send_invoice` — l'école doit passer par le formulaire de demande |
+| L'école voit encore le bouton du portail au lieu du formulaire | `collection_method` est nul : lancer `stripe:backfill_collection_method` |
 | L'école ne peut pas créer de classe | statut hors `active` / `trialing` / `past_due`, ou `classrooms_total >= quantity` |
 | La page École n'affiche pas l'abonnement | la ligne n'existe pas — l'événement n'a jamais été traité |
 

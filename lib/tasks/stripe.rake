@@ -186,6 +186,18 @@ module StripeTaches
         { up_to: t.up_to || "inf", unit_amount: t.unit_amount, flat_amount: t.flat_amount }.compact
       end }
   end
+
+  # Le mode de recouvrement de l'abonnement d'une école, lu chez Stripe. Nul si
+  # l'abonnement n'y existe pas : une ligne saisie à la main dans `/admin` porte
+  # un `stripe_subscription_id` vide.
+  def collection_method_chez_stripe(abonnement)
+    return nil if abonnement.stripe_subscription_id.blank?
+
+    Stripe::Subscription.retrieve(abonnement.stripe_subscription_id).collection_method
+  rescue Stripe::InvalidRequestError => e
+    puts "  #{abonnement.stripe_subscription_id} introuvable — #{e.message}"
+    nil
+  end
 end
 
 namespace :stripe do
@@ -264,5 +276,29 @@ namespace :stripe do
     puts "  STRIPE_SCHOOL_PRICING_ID  — l'API ne crée pas de table tarifaire"
     puts "  STRIPE_PUBLISHABLE_KEY    — la clé publiable du test mode"
     puts "  STRIPE_WEBHOOK_SECRET_KEY — celui que donne `stripe listen`"
+  end
+  desc "Renseigne subscriptions.collection_method depuis Stripe (APPLIQUER=1 pour écrire)"
+  task backfill_collection_method: :environment do
+    # Le portail Stripe ne sait pas modifier un abonnement sur facture. Sans cette
+    # colonne, l'app propose « Ajouter une classe à mon abonnement » à une école
+    # dont le portail ne sait que résilier. Le webhook la renseigne désormais, mais
+    # un abonnement annuel peut n'émettre aucun événement avant des mois : cette
+    # tâche rattrape les lignes existantes.
+    Stripe.api_key = ENV.fetch("STRIPE_API_KEY", nil)
+    ecrire = ENV["APPLIQUER"] == "1"
+    puts ecrire ? "Écriture activée." : "Lecture seule — relancez avec APPLIQUER=1 pour écrire.\n"
+
+    Subscription.includes(:school).find_each do |abonnement|
+      mode = StripeTaches.collection_method_chez_stripe(abonnement)
+      next puts "#{abonnement.school&.name} — rien à lire" if mode.nil?
+      next puts "#{abonnement.school&.name} — déjà #{mode}" if abonnement.collection_method == mode
+
+      puts "#{abonnement.school&.name} — #{abonnement.collection_method.inspect} -> #{mode}"
+      # `update_column` : la ligne peut violer par ailleurs ses propres
+      # validations, et ce serait perdre le mode en silence.
+      # rubocop:disable Rails/SkipsModelValidations
+      abonnement.update_column(:collection_method, mode) if ecrire
+      # rubocop:enable Rails/SkipsModelValidations
+    end
   end
 end

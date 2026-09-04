@@ -1,0 +1,10 @@
+<%# Un abonnement sur facture ne se modifie pas depuis le portail Stripe : le
+    responsable ne pourrait qu'y résilier. C'est une limitation documentée du
+    portail, liée au `collection_method`, que payer la facture ne lève pas.
+    On lui donne donc la seule porte qui marche — une demande qui nous arrive.
+
+    La policy est vérifiée ici : la facturation du groupe est l'affaire du
+    responsable, et ce partial est rendu depuis deux endroits. %>
+<% if subscription&.sur_facture? && policy(Subscription).change_request? %>
+	<%= link_to libelle, subscription_change_request_path, class: local_assigns.fetch(:classe, "btn-flat") %>
+<% end %>

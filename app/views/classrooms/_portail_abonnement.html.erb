@@ -1,7 +1,16 @@
 <%# Le portail Stripe lève une erreur sans client : on ne l'offre qu'aux écoles
     qui en ont un. `repli` propose la souscription à la place, pour les cas où
-    ne rien montrer laisserait le responsable sans issue. %>
-<% if stripe_portal_reachable?(@school) %>
+    ne rien montrer laisserait le responsable sans issue.
+
+    Un abonnement sur facture passe avant tout le reste : le portail s'y ouvre
+    bien, mais n'y propose aucune modification — seulement la résiliation. Lui
+    envoyer le responsable sous un libellé « ajouter une classe » serait le
+    contraire du service rendu. %>
+<% if @school.subscription&.sur_facture? %>
+	<%= render "subscriptions/demande_modification",
+	           subscription: @school.subscription,
+	           libelle: "Nous demander de modifier votre abonnement" %>
+<% elsif stripe_portal_reachable?(@school) %>
 	<form method="GET" action="/create-customer-portal-session" data-turbo="false">
 		<button type="submit" class="btn-flat"><%= libelle %></button>
 	</form>

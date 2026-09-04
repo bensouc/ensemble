@@ -142,6 +142,13 @@ Rails.application.routes.draw do
   get "subscriptions/success", to: "subscriptions#success"
   get "subscriptions/cancel", to: "subscriptions#cancel"
   get "subscriptions/school_pricing", to: "subscriptions#school_pricing"
+  # Les écoles sur facture ne peuvent pas modifier leur abonnement depuis le
+  # portail Stripe : leur demande nous arrive par mail, et nous la portons
+  # dans le Dashboard.
+  get "subscriptions/change_request", to: "subscriptions#change_request",
+      as: :subscription_change_request
+  post "subscriptions/change_request", to: "subscriptions#create_change_request",
+       as: :create_subscription_change_request
   # ###############END OF Subscriptions ROUTES############
 
   # ###############routes for SKILLS###############

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_09_03_120000) do
+ActiveRecord::Schema[7.1].define(version: 2026_09_04_100000) do
   create_schema "_heroku"
   create_schema "heroku_ext"
 
@@ -343,6 +343,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_09_03_120000) do
     t.date "start_date"
     t.date "trial_end"
     t.string "rythm", default: "Annuel"
+    t.string "collection_method"
     t.index ["school_id"], name: "index_subscriptions_on_school_id"
     t.index ["stripe_subscription_id"], name: "index_subscriptions_on_stripe_subscription_id"
   end

@@ -1,0 +1,27 @@
+<h1 style="<%= mail_style(:titre) %>">Votre demande a bien été reçue</h1>
+
+<p style="<%= mail_style(:texte) %>">
+	Bonjour,<br>
+	nous avons bien reçu votre demande de modification pour l'abonnement du groupe
+	<strong><%= @demande[:school].name %></strong>.
+</p>
+
+<%= mail_divider %>
+
+<%= mail_field("Classes à l'abonnement aujourd'hui", classes_label(@demande[:quantite_avant])) %>
+<%= mail_field("Classes demandées", classes_label(@demande[:quantite_apres])) %>
+
+<%= mail_divider %>
+
+<p style="<%= mail_style(:texte) %>">
+	Nous ajustons votre abonnement selon cette demande. Une facture de modification
+	vous sera envoyée à <strong><%= @demande[:facturation_email] %></strong>.
+</p>
+
+<%# L'adresse de facturation est souvent celle de la direction, alors que la
+    facture est attendue par le service comptable. Le dire ici évite un mandat qui
+    traîne parce que la facture est arrivée au mauvais endroit. %>
+<p style="<%= mail_style(:note) %>">
+	Si cette adresse n'est pas celle à laquelle vos factures doivent parvenir,
+	répondez à ce message : nous la corrigeons avant l'émission.
+</p>

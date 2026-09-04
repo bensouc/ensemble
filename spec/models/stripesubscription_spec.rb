@@ -39,6 +39,17 @@ RSpec.describe Stripesubscription do
         expect(school.reload.subscription.trial_end).to be_nil
       end
 
+      # Le portail Stripe ne sait pas modifier un abonnement sur facture : sans ce
+      # champ, l'app proposait « Ajouter une classe à mon abonnement » à une école
+      # dont le portail ne sait que résilier.
+      it "retient le mode de recouvrement" do
+        described_class.update_or_create(event)
+        abo = school.reload.subscription
+
+        expect(abo.collection_method).to eq("send_invoice")
+        expect(abo).to be_sur_facture
+      end
+
       # `rythm` n'était jamais renseigné, et le défaut de la base viole sa validation.
       it "déduit le rythme de l'intervalle du prix" do
         described_class.update_or_create(event)
