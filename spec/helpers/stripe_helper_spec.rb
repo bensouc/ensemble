@@ -24,6 +24,14 @@ RSpec.describe StripeHelper do
                                name: "École Alain-Fournier",
                                metadata: { "school" => school.id }))
       end
+
+      # Sans la langue, Stripe envoie mails de facture, PDF, reçus et avoirs en
+      # anglais. La page hébergée se localise sur le navigateur, ce qui masque le
+      # problème jusqu'à ce qu'une école reçoive son mail.
+      it "déclare la langue de l'école" do
+        expect(Stripe::Customer).to have_received(:create)
+          .with(hash_including(preferred_locales: ["fr"]))
+      end
     end
 
     context "avec un id que Stripe connaît" do

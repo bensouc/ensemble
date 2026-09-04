@@ -174,6 +174,34 @@ Une ligne saisie à la main dans `/admin`, `stripe_subscription_id` vide, n'a ri
 
 ---
 
+## La langue des factures
+
+Stripe n'a **pas** de réglage de langue au niveau du compte : tout tient dans
+`customer.preferred_locales`. Vide, les **mails de facture, les PDF, les reçus et
+les avoirs partent en anglais** — mais la page de paiement hébergée, elle, se
+localise sur le navigateur du visiteur. Le trou reste donc invisible depuis le
+Dashboard, jusqu'à ce qu'une école reçoive son mail.
+
+`StripeHelper.create_customer` déclare désormais `preferred_locales: ["fr"]`.
+Pour les clients créés avant, ou créés à la main dans le Dashboard :
+
+```bash
+bin/rails stripe:poser_langue_clients              # liste ceux sans langue
+APPLIQUER=1 bin/rails stripe:poser_langue_clients  # écrit
+```
+
+Elle est idempotente — un client déjà en français est ignoré — donc reprenable
+si elle casse en route. Regardez le compte affiché en lecture seule avant
+d'écrire : c'est un appel API par client.
+
+**Une facture finalisée ne changera plus de langue.** La documentation Stripe est
+explicite : les informations du client se modifient « jusqu'à ce qu'une facture
+soit finalisée », et toute modification ne s'applique qu'à la période suivante,
+dont la facture est générée « en utilisant l'état le plus récent du client ». La
+renvoyer ne la traduit pas. Posez donc la langue **avant** de créer l'abonnement.
+
+---
+
 ## Ce qu'il ne faut pas faire
 
 **Ne créez plus de ligne `Subscription` dans `/admin`.** Une ligne créée à la
@@ -198,6 +226,7 @@ l'adopte. La détruire perd l'historique et recrée le problème.
 | `No such customer` sur le portail | le client a été supprimé chez Stripe — voir l'étape 1 |
 | Le portail ne propose pas de changer la quantité | c'est normal sur `send_invoice` — l'école doit passer par le formulaire de demande |
 | L'école voit encore le bouton du portail au lieu du formulaire | `collection_method` est nul : lancer `stripe:backfill_collection_method` |
+| La facture arrive en anglais | `customer.preferred_locales` est vide : lancer `stripe:poser_langue_clients` |
 | L'école ne peut pas créer de classe | statut hors `active` / `trialing` / `past_due`, ou `classrooms_total >= quantity` |
 | La page École n'affiche pas l'abonnement | la ligne n'existe pas — l'événement n'a jamais été traité |
 

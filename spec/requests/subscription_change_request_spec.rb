@@ -30,8 +30,19 @@ RSpec.describe "Demande de modification d'abonnement", type: :request do
       get subscription_change_request_path
 
       expect(response).to have_http_status(:ok)
-      champ = Nokogiri::HTML(response.body).css("#subscription_change_classes").first
-      expect(champ["value"]).to eq("8")
+      choisi = Nokogiri::HTML(response.body).css("#subscription_change_classes option[selected]").first
+      expect(choisi["value"]).to eq("8")
+    end
+
+    # Le responsable décide en euros, pas en nombre de classes : sans les deux
+    # tarifs il valide un changement dont il ne connaît pas le prix.
+    it "affiche le tarif actuel et le nouveau" do
+      sign_in responsable.reload
+      get subscription_change_request_path
+      page = Nokogiri::HTML(response.body)
+
+      expect(page.css("#tarif_actuel").first["value"]).to eq("376 €")
+      expect(page.css("#nouveau_tarif").first["value"]).to eq("376 €")
     end
 
     # La facturation du groupe est l'affaire du responsable : sans ça, n'importe
@@ -64,6 +75,13 @@ RSpec.describe "Demande de modification d'abonnement", type: :request do
            params: { subscription_change: { classes:, message: } }
     end
 
+    # Les phrases des gabarits sont coupées par des retours à la ligne : sans
+    # aplatir les espaces, une assertion sur une phrase entière échoue toujours.
+    def corps_de(objet)
+      mail = ActionMailer::Base.deliveries.find { |m| m.subject.include?(objet) }
+      mail.body.encoded.gsub(/\s+/, " ")
+    end
+
     it "confirme au responsable et le ramène sur sa page École" do
       demander(9)
 
@@ -83,7 +101,7 @@ RSpec.describe "Demande de modification d'abonnement", type: :request do
 
       expect(interne.to).to eq(["bensoucdev@gmail.com"])
       expect(interne.subject).to include("Groupe Alain-Fournier")
-      corps = interne.body.encoded
+      corps = corps_de("Modification d'abonnement")
       expect(corps).to include("8 classes")
       expect(corps).to include("9 classes")
       expect(corps).to include("sub_test")
@@ -98,7 +116,35 @@ RSpec.describe "Demande de modification d'abonnement", type: :request do
       accuse = ActionMailer::Base.deliveries.find { |m| m.subject.include?("Votre demande") }
 
       expect(accuse.to).to contain_exactly("directrice@exemple.fr", "compta@exemple.fr")
-      expect(accuse.body.encoded).to include("compta@exemple.fr")
+      expect(corps_de("Votre demande")).to include("compta@exemple.fr")
+    end
+
+    # Stripe émet une facture de prorata sur une hausse, un avoir sur une baisse :
+    # promettre « une facture » dans les deux sens était faux pour une école qui
+    # réduit son nombre de classes.
+    describe "ce que l'accusé annonce" do
+      def annonce(classes)
+        demander(classes)
+        corps_de("Votre demande")
+      end
+
+      it "annonce une facture sur une hausse" do
+        expect(annonce(9)).to include("facture de modification")
+      end
+
+      it "annonce un avoir sur une baisse" do
+        corps = annonce(6)
+        expect(corps).to include("avoir")
+        expect(corps).not_to include("facture de modification")
+      end
+
+      # Le responsable peut renvoyer sa quantité actuelle pour poser une question
+      # dans le champ libre : il n'y a alors ni facture ni avoir à annoncer.
+      it "n'annonce rien à quantité égale" do
+        corps = annonce(8)
+        expect(corps).to include("rien à modifier ni à facturer")
+        expect(corps).not_to include("avoir")
+      end
     end
 
     it "refuse une quantité nulle sans rien envoyer" do
