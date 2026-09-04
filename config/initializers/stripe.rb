@@ -1,3 +1,17 @@
+# frozen_string_literal: true
+
+# La clé API, posée une fois au démarrage.
+#
+# Elle ne l'était nulle part : chaque appelant la réglait en première ligne —
+# `StripeHelper`, le helper de Checkout, les services de webhook. Tout chemin qui
+# l'oubliait partait donc avec celle du dernier passant, ou sans clé du tout. Une
+# console `rails c` n'en avait aucune : le moindre `Stripe::Customer.create`
+# tapé à la main levait un AuthenticationError.
+#
+# `Stripe.api_key` est global au processus ; les réglages en ligne qui subsistent
+# ne font que réécrire la même valeur.
+Stripe.api_key = ENV.fetch("STRIPE_API_KEY", nil)
+
 # require "#{Rails.root}/app/services/stripe_subscription_created_service.rb"
 # require "#{Rails.root}/app/services/stripe_customer_created_service.rb"
 # require "#{Rails.root}/app/services/stripe_subscription_deleted_service.rb"

@@ -32,8 +32,25 @@ Dans le Dashboard Stripe, **en mode Live**.
    School.find_by(name: "…").stripe_customer_id
    ```
 
-   S'il est vide, l'école n'a pas encore de client Stripe. Ouvrez une fois la
-   page d'abonnement depuis un compte de cette école : `StripeHelper` le crée.
+   **Un id rempli ne prouve rien.** Vérifiez-le, et laissez `StripeHelper` le
+   réparer si besoin — vide, périmé ou valide, cette ligne fait ce qu'il faut et
+   renvoie le client sur lequel travailler :
+
+   ```ruby
+   school = School.find_by(name: "…")
+   StripeHelper.get_or_create_customer(school)
+   school.reload.stripe_customer_id
+   ```
+
+   Un id peut ne plus désigner personne : un client **supprimé** depuis le
+   Dashboard garde son id réservé chez Stripe, mais l'objet n'est plus servi et
+   **ne se restaure pas**. C'est arrivé à Alain Fournier — le client avait été
+   nettoyé quand l'école est passée au virement, et le portail de facturation
+   répondait 500 (`No such customer`) au responsable qui cliquait dessus.
+
+   Conséquence à connaître avant de répondre à l'école : les factures de
+   l'ancien client ne réapparaîtront jamais dans le portail. Elles restent
+   lisibles côté Dashboard, pas côté école.
 
 2. **Create subscription** :
    - produit **Ensemble !!**, prix **annuel** (paliers : ≤2 → 50 €, ≤4 → 49 €,
@@ -112,6 +129,7 @@ l'adopte. La détruire perd l'historique et recrée le problème.
 |---|---|
 | `stripe_subscription_id` reste vide | l'événement n'est pas arrivé — voir Developers → Events |
 | « client Stripe inconnu en base » dans les logs | `schools.stripe_customer_id` ne correspond à aucune école |
+| `No such customer` sur le portail | le client a été supprimé chez Stripe — voir l'étape 1 |
 | L'école ne peut pas créer de classe | statut hors `active` / `trialing` / `past_due`, ou `classrooms_total >= quantity` |
 | La page École n'affiche pas l'abonnement | la ligne n'existe pas — l'événement n'a jamais été traité |
 
