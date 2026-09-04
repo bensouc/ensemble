@@ -21,9 +21,12 @@ class ApplicationController < ActionController::Base
   #
   # L'abonnement, lui, est ouvert — souscription comme portail de facturation :
   # accompagner une école jusqu'au paiement, ou aller lire l'état réel de sa
-  # facturation, fait partie du travail d'un admin. Le portail Stripe permet
-  # aussi de résilier : le bandeau de personnification est là pour rappeler
-  # sous quelle identité on agit.
+  # facturation, fait partie du travail d'un admin. Le bandeau de
+  # personnification est là pour rappeler sous quelle identité on agit.
+  #
+  # Le portail Stripe permet de résilier : sa policy exige désormais d'être
+  # responsable du groupe. Un admin qui veut l'ouvrir doit donc personnifier un
+  # responsable, pas n'importe quel enseignant.
   FORBIDDEN_WHILE_IMPERSONATING = {
     "registrations" => %w[edit update destroy]
   }.freeze

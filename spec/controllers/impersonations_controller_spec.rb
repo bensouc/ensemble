@@ -168,15 +168,33 @@ RSpec.describe Stripe::StripeController, type: :controller do
     Stripe::BillingPortal::Session.construct_from(url: "https://billing.stripe.test/session")
   end
 
-  it "ouvre le portail de facturation de l'école incarnée" do
-    teacher.school.update_column(:stripe_customer_id, "cus_incarne")
+  # Le portail permet de résilier : sa policy exige d'être responsable du groupe.
+  # Un admin qui accompagne une école doit donc personnifier un responsable, et
+  # non n'importe quel enseignant.
+  it "ouvre le portail de facturation quand le compte incarné est responsable" do
+    school = teacher.school
+    school.update_column(:stripe_customer_id, "cus_incarne")
+    school.add_teacher(teacher, true)
     expect(Stripe::BillingPortal::Session).to receive(:create).
       with(hash_including(customer: "cus_incarne")).and_return(portal_session)
 
     sign_in(admin)
-    session[:impersonated_user_id] = teacher.id
+    session[:impersonated_user_id] = teacher.reload.id
     get :create_portal_session
     expect(response).to redirect_to(portal_session.url)
+  end
+
+  # La personnification ne contourne pas la règle : incarner un enseignant
+  # ordinaire ne donne pas accès à la résiliation de son école.
+  it "refuse le portail quand le compte incarné n'est pas responsable" do
+    teacher.school.update_column(:stripe_customer_id, "cus_incarne")
+    expect(Stripe::BillingPortal::Session).not_to receive(:create)
+
+    sign_in(admin)
+    session[:impersonated_user_id] = teacher.id
+    get :create_portal_session
+    expect(response).to have_http_status(:redirect)
+    expect(flash[:alert]).to be_present
   end
 end
 
