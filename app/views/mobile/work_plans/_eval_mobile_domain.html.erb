@@ -1,4 +1,11 @@
-<div data-controller='toggle-panel'>
+<%# Le domaine est amené en haut de l'écran quand on l'ouvre : ses compétences
+    apparaissaient sous le pli dès qu'on dépliait un domaine situé en bas de la
+    liste, et il fallait faire défiler soi-même avant de pouvoir évaluer. La
+    hauteur de l'en-tête collant se mesure à l'ouverture — elle dépend de la
+    marge d'encoche du téléphone. %>
+<div data-controller="toggle-panel"
+     data-toggle-panel-recentrer-value="true"
+     data-toggle-panel-entete-value=".mobile-eval-header">
   <div class='domain  ' >
     <% # DOMAIN + BELT DISPLAY %>
     <div class="mobile-domain-level" data-action="click->toggle-panel#displayPanel">

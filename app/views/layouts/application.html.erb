@@ -14,7 +14,15 @@
 		<!--Script & Style -->
 		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 		<%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
-		<script src="https://kit.fontawesome.com/aa9dc78317.js" crossorigin="anonymous"></script>
+		<%# Font Awesome vient de `font-awesome-sass`, importé dans `application.scss`.
+		    Le kit distant (kit.fontawesome.com) chargeait une SECONDE fois la même
+		    version 6.7.2, en mode webfont : deux jeux de `@font-face` déclaraient
+		    alors les mêmes familles — « Font Awesome 6 Free » en 400 et en 900 —, et
+		    les moteurs ne résolvent pas ce doublon de la même façon. Sur iPhone, les
+		    icônes pleines sortaient dessinées au trait, c'est-à-dire servies par la
+		    fonte « Regular » à la place de la « Solid ». Un seul Font Awesome, servi
+		    depuis notre domaine : les icônes sont aussi disponibles hors connexion,
+		    ce que réclame une application qui s'installe. %>
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>

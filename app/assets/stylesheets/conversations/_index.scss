@@ -51,17 +51,16 @@
       margin-bottom: 0.5rem;
     }
   }
-  .bullet-chat {
-    position: relative;
-    width: 0.75rem;
-    height: 0.75rem;
-    background-color: #0dc416;
-    border-radius: 50%;
-    font-size: 0px;
-    font-size: 0px;
-    top: -49px;
-    left: 35px;
-  }
+  // Il y avait ici un second jeu de coordonnées pour `.bullet-chat` — le point
+  // « messages non lus » —, posé au premier niveau de cette requête de média et
+  // non sous `.conversations-container` : il s'appliquait donc à toute
+  // l'application en dessous de 1024px, c'est-à-dire à tous les téléphones, et
+  // écrasait la règle générale puisqu'il vient après elle à spécificité égale.
+  // Le point de la barre du bas était ainsi poussé de 49px vers le haut et de
+  // 35px vers la droite, hors de son icône. La liste des conversations, elle,
+  // n'a jamais porté cette classe : elle marque ses fils non lus avec
+  // `.bullet-chat-2`. Le point s'ancre maintenant sur son icône, une fois pour
+  // toutes, dans `components/_nav_haut.scss`.
 }
 // DESKTOP
 @media (min-width: 1024px) {

@@ -316,7 +316,22 @@
 // sans avoir à redessiner la géométrie en JavaScript.
 .eval-anneau {
   position: absolute;
-  inset: -37.5%;
+  // Sa boîte est donnée en position ET en taille, jamais par les quatre côtés à
+  // la fois. Un `<svg>` est un élément remplacé : posé en absolu avec `inset`
+  // seul, il n'a que sa taille intrinsèque à opposer aux quatre décalages, et
+  // les moteurs ne tranchent pas cette contradiction de la même façon. Blink
+  // l'étire jusqu'aux bords, WebKit lui rend sa taille propre et l'accroche en
+  // haut à gauche — l'anneau, sa flèche comprise, se retrouve alors posé de
+  // travers sur son disque, ce qu'on ne voit que sur iPhone. `inset` en un seul
+  // mot manque par ailleurs à Safari avant 14.1, où il ne s'applique pas du
+  // tout. Deux décalages et deux dimensions : plus rien à arbitrer.
+  //
+  // 175 % du disque, soit trois huitièmes de diamètre qui débordent de chaque
+  // côté — le rapport que `@mixin pastille` tient de son côté.
+  top: -37.5%;
+  left: -37.5%;
+  width: 175%;
+  height: 175%;
   overflow: visible;
   pointer-events: none;
 
