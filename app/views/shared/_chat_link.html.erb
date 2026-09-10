@@ -1,3 +1,11 @@
+<%# Le lien vers les conversations, et son point « des messages non lus ».
+
+    Le point était un `<div>` posé DANS le `<i>` de l'icône, puis remonté par un
+    `position: relative; top: -25px; left: 17px`. Sa place dépendait donc de la
+    boîte de ligne de l'icône — c'est-à-dire de la police effectivement servie —
+    et deux nombres en pixels ne peuvent pas suivre une icône qui change de
+    taille d'un écran à l'autre. Il est maintenant ancré sur l'icône elle-même,
+    en `em`. %>
 <%= link_to conversations_path,
                 class:'top-link-no-bcg-btn',
                 data:{
@@ -5,9 +13,9 @@
                       bs_toggle:"tooltip",
                       bs_placement:"bottom"},
                 title:"Conversations" do %>
-	<i class="fa-regular fa-comment">
+	<i class="fa-regular fa-comment icone-messages">
     <% if @unread_messages %>
-	    <div class="bullet-chat"></div>
+	    <span class="bullet-chat"></span>
     <% end %>
   </i>
 <% end %>

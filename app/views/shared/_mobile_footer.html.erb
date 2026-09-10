@@ -28,9 +28,9 @@
 		<div class="<%= classe_onglet_mobile(conversations_path) %>">
 			<%= link_to conversations_path, "aria-label": "Messages",
 			            "aria-current": ("page" if onglet_mobile_actif?(conversations_path)) do %>
-				<i class="fa-regular fa-comment">
+				<i class="fa-regular fa-comment icone-messages">
 					<% if @unread_messages %>
-						<div class="bullet-chat"></div>
+						<span class="bullet-chat"></span>
 					<% end %>
 				</i>
 			<% end %>

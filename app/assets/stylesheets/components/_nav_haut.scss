@@ -21,16 +21,37 @@
   justify-content: space-between;
   align-items: baseline;
 }
-.bullet-chat {
+// Le point « des messages non lus », et l'icône qui le porte.
+//
+// C'était un bloc posé DANS le `<i>` de l'icône, donc rejeté à la ligne
+// suivante, puis rattrapé par `position: relative; top: -25px; left: 17px`. Sa
+// place se calculait ainsi depuis la boîte de ligne de l'icône — laquelle
+// dépend de la police effectivement servie. Sur iPhone, où Font Awesome ne se
+// résout pas comme ailleurs, le point partait complètement hors de l'icône ; et
+// même là où il tombait juste, deux nombres en pixels ne pouvaient pas suivre
+// une icône qui passe de 1,5rem sur le bureau à 1,75rem dans la barre du bas.
+//
+// Il est maintenant ancré sur l'icône, en `em` : il en suit la taille partout,
+// et ne dépend plus d'aucune métrique de fonte.
+.icone-messages {
   position: relative;
-  width: 0.5rem;
-  height: 0.5rem;
+  display: inline-block;
+}
+
+.bullet-chat {
+  position: absolute;
+  top: 0;
+  right: -0.1em;
+  // 0,28em, soit les 8px qu'il faisait en dur sur l'icône de 1,75rem de la barre
+  // du bas, et 7px sur celle de 1,5rem du bureau. C'est un signal : il n'a pas à
+  // peser autant que le dessin qu'il marque.
+  width: 0.28em;
+  height: 0.28em;
   background-color: $belt-4;
+  // Un liseré blanc : sans lui, le point se confond avec le trait de l'icône
+  // qu'il chevauche.
+  border: 0.05em solid $blanc;
   border-radius: 50%;
-  font-size: 0px;
-  font-size: 0px;
-  top: -25px;
-  left: 17px;
 }
 
 .bullet-chat-2 {
