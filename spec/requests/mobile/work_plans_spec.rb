@@ -12,10 +12,18 @@ RSpec.describe "Mobile::WorkPlans", type: :request do
   let(:classroom) { create(:classroom, user: teacher, grade:) }
   let(:student) { create(:student, classroom:, first_name: "leo") }
   let!(:work_plan) { create(:work_plan, user: teacher, grade:, student:, name: "Semaine 12") }
+  let(:domain) { create(:domain, grade:, name: "Conjugaison", special: false) }
 
   before do
     school.add_teacher(teacher)
     teacher.reload
+  end
+
+  # Le contenu des balises d'état, et rien d'autre : les mêmes mots servent de
+  # libellés aux choix de la modale, si bien qu'un `include` sur la page entière
+  # passerait alors même que la carte n'afficherait rien.
+  def mots_d_etat(corps)
+    corps.scan(%r{<span class="mobile-eval-etat"[^>]*>([^<]*)</span>}).flatten.map(&:strip)
   end
 
   describe "GET /mobile/work_plans" do
@@ -108,6 +116,38 @@ RSpec.describe "Mobile::WorkPlans", type: :request do
       get mobile_evaluation_path(ailleurs)
 
       expect(response).to redirect_to(dashboard_path)
+    end
+  end
+
+  describe "le mot qui dit l'état d'une compétence" do
+    # La pastille ne disait l'état qu'en couleur et par son anneau — un code qui
+    # s'apprend. Le bureau le double d'une infobulle depuis toujours ; le
+    # téléphone, qui n'a pas de survol, n'avait rien. Le mot vient de
+    # `EvaluationStatutsHelper`, partagé par les deux fronts : cette spec
+    # vérifie qu'il arrive bien jusqu'à la carte, et qu'il dit le bon état.
+    it "écrit l'état de chaque compétence en toutes lettres" do
+      skill = create(:skill, domain:, school:)
+      wpd = create(:work_plan_domain, work_plan:, domain:)
+      create(:work_plan_skill, work_plan_domain: wpd, skill:, kind: "exercice", status: "redo")
+      sign_in teacher
+
+      get mobile_evaluation_path(work_plan)
+
+      expect(mots_d_etat(response.body)).to eq(["À refaire"])
+    end
+
+    # `completed` ne veut pas dire la même chose selon la nature : une ceinture
+    # est validée, un jeu est simplement fait. Le mot de la carte suit la
+    # nature, il n'est pas figé.
+    it "dit « Fait » pour un jeu validé, non « Ceinture validée »" do
+      skill = create(:skill, domain:, school:)
+      wpd = create(:work_plan_domain, work_plan:, domain:)
+      create(:work_plan_skill, work_plan_domain: wpd, skill:, kind: "jeu", status: "completed")
+      sign_in teacher
+
+      get mobile_evaluation_path(work_plan)
+
+      expect(mots_d_etat(response.body)).to eq(["Fait"])
     end
   end
 

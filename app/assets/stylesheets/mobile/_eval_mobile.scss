@@ -160,6 +160,33 @@
   }
 }
 
+// Où en est la compétence, en toutes lettres, juste à gauche de sa pastille.
+//
+// La pastille ne le disait qu'en couleur et par son anneau. Le code se lit vite
+// une fois appris, mais il s'apprend : le bureau le double d'une infobulle
+// depuis toujours, et le téléphone, qui n'a pas de survol, n'avait rien. Le mot
+// prend la place restée vide entre la gouttière du passé et l'évaluation du
+// jour, sans rien coûter à ni l'une ni l'autre.
+//
+// En gris, et non dans la teinte du statut : deux des cinq couleurs de la rampe
+// sont trop claires pour porter du texte sur blanc — c'est le défaut même que la
+// refonte des pastilles avait corrigé. La couleur reste à la pastille, le mot
+// dit ce qu'elle vaut.
+.mobile-eval-etat {
+  flex: 1 1 auto;
+  // Sans `min-width: 0`, une boîte flex refuse de descendre sous la largeur de
+  // son contenu : « OK, mais à refaire » aurait poussé la pastille hors carte
+  // plutôt que de passer à la ligne.
+  min-width: 0;
+  color: rgba($grisF, 0.85);
+  font-size: $texte-sm;
+  font-weight: 600;
+  line-height: 1.2;
+  // Aligné à droite : le mot se lit contre la pastille qu'il qualifie, et non
+  // séparé d'elle par un blanc qui le rattacherait au passé.
+  text-align: right;
+}
+
 .mobile-eval-display {
   display: flex;
   align-items: center;
@@ -173,7 +200,14 @@
   border-bottom-left-radius: $rayon-lg;
 
   // Le bouton qui ouvre l'évaluation : c'est LA cible du doigt sur cet écran.
+  //
+  // `flex: 0 0 auto` : une boîte flex se laisse comprimer sous sa largeur par
+  // défaut, et `min-width` ne protège que le bouton, pas la pastille qui vit
+  // dedans. Depuis que le mot d'état partage la rangée, elle se retrouvait
+  // pincée à une vingtaine de pixels de large pour trente-deux de haut — un
+  // œuf, et un anneau qui n'entourait plus rien.
   button {
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -184,6 +218,7 @@
 }
 
 .mobile-last-eval {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -193,6 +228,10 @@
   .eval_bull {
     @include pastille(2rem);
 
+    // Un disque ne se comprime pas : pincé, il devient un œuf, et son anneau
+    // cesse d'en épouser le bord. La gouttière du passé prend la même
+    // précaution pour la même raison.
+    flex: 0 0 auto;
     font-size: $texte-md;
   }
 }

@@ -17,11 +17,21 @@
 #   — l'anneau d'une pastille est centré sur son disque et tient dans sa boîte.
 #     Il se dimensionnait par `inset` sur les quatre côtés, ce qu'un `<svg>` —
 #     élément remplacé — n'arbitre pas de la même façon d'un moteur à l'autre ;
+#   — le mot qui dit l'état se range entre le passé et l'évaluation du jour,
+#     sans prendre sa place à la pastille — une boîte flex se laisse comprimer
+#     sous sa largeur, et le disque devenait un œuf ;
+#   — fermer la modale d'évaluation rend le focus avant que Bootstrap ne la
+#     déclare cachée, faute de quoi le navigateur REFUSE `aria-hidden` et un
+#     lecteur d'écran continue de circuler dans ce qu'on croit masqué ;
 #   — ouvrir un domaine amène ses compétences dans l'écran. Ouvert depuis le bas
 #     de la liste, il les faisait apparaître sous le pli.
 require_relative "support/browser_harness"
 
 IPHONE_12_MINI = { width: 375, height: 812 }.freeze
+
+def mesure(page, selecteur, propriete)
+  page.evaluate(%(getComputedStyle(document.querySelector("#{selecteur}")).#{propriete}))
+end
 
 def boite(page, selecteur)
   page.evaluate(<<~JS)
@@ -143,6 +153,101 @@ def verifier_fleche(harness, page)
                 debords.all? { |d| d["min"] >= -0.01 && d["max"] <= 42.01 })
 end
 
+# Le mot qui dit l'état, à gauche de la pastille. Deux choses à tenir : qu'il se
+# range entre la gouttière du passé et l'évaluation du jour, et qu'il ne prenne
+# pas cette place à la pastille — une boîte flex se laisse comprimer sous sa
+# largeur, et le disque devenait un œuf.
+def etape_mot_etat(harness, page)
+  puts "\n— Le mot qui dit l'état se range à gauche de la pastille"
+  mot = boite(page, ".mobile-skill-display:not(.d-none) .mobile-eval-etat")
+  passe = boite(page, ".mobile-skill-display:not(.d-none) .previous_eval")
+  bouton = boite(page, ".mobile-skill-display:not(.d-none) .mobile-eval-display button")
+
+  harness.check("il est entre le passé et l'évaluation du jour",
+                entre?(mot, passe, bouton))
+  harness.check("il se serre contre la pastille qu'il qualifie",
+                mesure(page, ".mobile-eval-etat", "textAlign") == "right")
+  verifier_pastille_ronde(harness, page)
+  verifier_mot_suit(harness, page)
+end
+
+def entre?(mot, passe, bouton)
+  mot["l"] >= passe["l"] + passe["w"] - 1 && mot["l"] + mot["w"] <= bouton["l"] + 1
+end
+
+# Le disque ne doit pas se laisser pincer par le mot qui partage sa rangée.
+def verifier_pastille_ronde(harness, page)
+  ecarts = page.evaluate(<<~JS)
+    Array.from(document.querySelectorAll(".mobile-last-eval .eval_bull"))
+      .map((b) => b.getBoundingClientRect())
+      .filter((r) => r.width > 0)
+      .map((r) => Math.abs(r.width - r.height))
+  JS
+  harness.check("la pastille reste ronde (écarts #{ecarts.uniq.inspect})",
+                !ecarts.empty? && ecarts.all? { |e| e < 0.5 })
+end
+
+# Le mot suit la peinture optimiste : sans quoi il annoncerait le statut d'avant
+# jusqu'à la réponse du serveur — et, hors ligne, jusqu'à la synchronisation.
+def verifier_mot_suit(harness, page)
+  page.evaluate(<<~JS)
+    document.querySelector(".mobile-skill-display:not(.d-none) .mobile-eval-choix:not(.--courant)").click()
+  JS
+  sleep 0.4
+  apres = page.evaluate(<<~JS)
+    (() => {
+      const carte = document.querySelector(".mobile-skill-display:not(.d-none) .mobile-eval-display");
+      return { mot: carte.querySelector(".mobile-eval-etat").textContent.trim(),
+               classe: carte.querySelector(".mobile-last-eval .eval_bull").className };
+    })()
+  JS
+  harness.check("choisir un statut réécrit le mot (#{apres['mot'].inspect})",
+                apres["mot"] == "Validé ⇒ ceinture")
+  harness.check("et repeint la pastille du même coup (#{apres['classe'].inspect})",
+                apres["classe"].include?("completed"))
+end
+
+# Bootstrap pose `aria-hidden="true"` sur la modale qu'il ferme. Si le focus est
+# encore dedans — et il l'est quand on ferme par la croix, qui le prend en étant
+# cliquée —, le navigateur REFUSE l'attribut et journalise « Blocked aria-hidden
+# on an element because its descendant retained focus ». Le refus se constate :
+# l'attribut reste absent, et la touche Tab continue de circuler dans un
+# sous-arbre que l'application déclare caché.
+def etape_modale(harness, page)
+  puts "\n— Fermer la modale rend le focus avant de la cacher"
+  carte = ".mobile-skill-display:not(.d-none) .mobile-eval-display"
+  page.evaluate(%(document.querySelector("#{carte} button[data-bs-toggle='modal']").click()))
+  sleep 0.7
+  harness.check("elle s'ouvre",
+                page.evaluate(%(document.querySelector("#{carte} .modal").classList.contains("show"))))
+
+  page.evaluate(<<~JS)
+    (() => {
+      const croix = document.querySelector("#{carte} .modal .btn-close");
+      croix.focus();
+      croix.click();
+    })()
+  JS
+  sleep 1.0
+  verifier_focus_rendu(harness, page, carte)
+end
+
+def verifier_focus_rendu(harness, page, carte)
+  etat = page.evaluate(<<~JS)
+    (() => {
+      const modale = document.querySelector("#{carte} .modal");
+      return { cachee: modale.getAttribute("aria-hidden"),
+               dedans: modale.contains(document.activeElement),
+               focus: document.activeElement.tagName };
+    })()
+  JS
+  harness.check("le focus en est sorti (#{etat['focus']})", etat["dedans"] == false)
+  # `null` veut dire que le navigateur a REFUSÉ l'attribut : c'est le symptôme,
+  # pas son absence.
+  harness.check("le navigateur accepte de la cacher (aria-hidden=#{etat['cachee'].inspect})",
+                etat["cachee"] == "true")
+end
+
 # Ouvrir un domaine placé en bas de la liste faisait apparaître ses compétences
 # sous le pli : il fallait faire défiler soi-même avant de pouvoir évaluer.
 def ouvrir_premier_domaine(page)
@@ -205,26 +310,67 @@ def etat_du_domaine(page, rang)
   JS
 end
 
+# Une carte de compétence, avec ce qui s'y joue : le passé, le mot qui dit
+# l'état, la pastille du jour, et les choix qui la changent. Les choix portent
+# `data-libelle` — c'est de là que `ajax-work-plan` tire le mot, plutôt que de
+# recopier la table des libellés en JavaScript.
+#
+# Le mot de départ est le PLUS LONG des cinq. C'est lui qui met la rangée sous
+# tension : avec « À refaire », la place suffit à tout le monde et le banc ne
+# verrait jamais la pastille se faire pincer.
+def competence(nom, pastilles, rang)
+  <<~HTML
+    <div class="mobile-skill-card">
+      <div class="title-mobile-skill-card"><h3>&#9632;</h3><h6>#{nom}</h6></div>
+      <div class="mobile-eval-display" data-controller="ajax-work-plan"
+           data-ajax-work-plan-id-value="#{rang}">
+        <div class="previous_eval mt-2">#{pastilles}</div>
+        <span class="mobile-eval-etat" data-ajax-work-plan-target="motEtat">OK, mais à refaire</span>
+        <button type="button" class="bg-white" aria-label="Évaluer #{nom}"
+                data-bs-toggle="modal" data-bs-target="#evalModal-#{rang}">
+          <div class="mobile-last-eval" data-ajax-work-plan-target="lastEval">
+            #{ApplicationController.render(partial: 'shared/pastille_eval',
+                                           locals: { statut: 'redo_OK', lettre: 'E' })}
+          </div>
+        </button>
+        #{modale(nom, rang)}
+      </div>
+    </div>
+  HTML
+end
+
+# La modale, reproduite telle qu'elle est en production : hors flux — Bootstrap
+# la pose en `position: fixed` —, sinon elle deviendrait un troisième élément de
+# la rangée et le banc mesurerait une mise en page qui n'existe pas. Le conteneur
+# des choix porte `data-bs-dismiss`, comme la vraie : c'est ce qui ferme la
+# modale quand on choisit un statut.
+def modale(nom, rang)
+  <<~HTML
+    <div class="modal fade" id="evalModal-#{rang}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+        <div class="modal-header"><h5 class="modal-title">#{nom}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mobile-eval-mngt" data-bs-dismiss="modal" aria-label="Close">
+            <a class="mobile-eval-choix redo_OK --courant" href="/work_plan_skills/#{rang}/eval_update?status=redo_OK"
+               data-libelle="OK, mais à refaire" data-action="click->ajax-work-plan#toggle">
+              <span class="mobile-eval-libelle">OK, mais à refaire</span></a>
+            <a class="mobile-eval-choix" href="/work_plan_skills/#{rang}/eval_update?status=completed"
+               data-libelle="Validé ⇒ ceinture" data-action="click->ajax-work-plan#toggle">
+              <span class="mobile-eval-libelle">Validé ⇒ ceinture</span></a>
+          </div>
+        </div>
+      </div></div>
+    </div>
+  HTML
+end
+
 def domaine(nom, niveau, compteur)
   pastilles = %w[failed redo redo_OK].map do |statut|
     ApplicationController.render(partial: "shared/pastille_eval", locals: { statut:, lettre: "E" })
   end.join
-  competences = (1..4).map do |i|
-    <<~HTML
-      <div class="mobile-skill-card">
-        <div class="title-mobile-skill-card"><h3>&#9632;</h3><h6>#{nom} — compétence #{i}</h6></div>
-        <div class="mobile-eval-display">
-          <div class="previous_eval mt-2">#{pastilles}</div>
-          <button type="button" class="bg-white">
-            <div class="mobile-last-eval">
-              #{ApplicationController.render(partial: 'shared/pastille_eval',
-                                             locals: { statut: 'redo', lettre: 'E' })}
-            </div>
-          </button>
-        </div>
-      </div>
-    HTML
-  end.join
+  competences = (1..4).map { |i| competence("#{nom} — compétence #{i}", pastilles, (compteur * 10) + i) }.join
   <<~HTML
     <div data-controller="toggle-panel"
          data-toggle-panel-recentrer-value="true"
@@ -335,6 +481,8 @@ harness.with_browser do |browser|
   # un écran vide.
   ouvrir_premier_domaine(page)
   etape_anneau(harness, page)
+  etape_mot_etat(harness, page)
+  etape_modale(harness, page)
   page.screenshot(path: harness.dir.join("pastilles.png").to_s, full: true)
   etape_recentrage(harness, page)
   page.screenshot(path: harness.dir.join("apres_ouverture.png").to_s, full: true)

@@ -30,6 +30,7 @@ import "./plugins/confirm_dialog"
 import "./plugins/quote"
 import "./plugins/trix-editor-overrides"
 import "./plugins/stimulus_scroll_progress"
+import "./plugins/modal_focus"
 
 // Rails UJS : gère les liens `method: :delete/:put/:patch` (déconnexion, suppressions…).
 // L'app utilise massivement cette syntaxe (data-method) que Turbo seul n'intercepte
