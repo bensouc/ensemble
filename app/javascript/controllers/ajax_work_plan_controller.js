@@ -10,7 +10,7 @@ import { file } from "../eval_queue";
 // peint tout de suite, confié à la file, et marqué « en attente » tant que le
 // serveur ne l'a pas confirmé.
 export default class extends Controller {
-  static targets = ["lastEval"];
+  static targets = ["lastEval", "motEtat"];
   static values = { id: Number };
 
   connect() {
@@ -78,7 +78,18 @@ export default class extends Controller {
 
     const attendu = statut === "not_done" ? "new" : statut;
     pastille.className = `eval_bull ${attendu}`;
-    if (libelle) this.reetiqueter(pastille, libelle);
+    if (!libelle) return;
+
+    this.reetiqueter(pastille, libelle);
+    this.redire(libelle);
+  }
+
+  // Le mot qui dit l'état, à gauche de la pastille du mobile. Il vient de la
+  // case cliquée, qui le porte déjà : le recopier en JavaScript le ferait
+  // diverger de la table des libellés. Le bureau n'a pas ce mot — il l'a en
+  // infobulle —, d'où la garde.
+  redire(libelle) {
+    if (this.hasMotEtatTarget) this.motEtatTarget.textContent = libelle;
   }
 
   // Une infobulle Bootstrap retient le texte qu'elle avait à sa construction :

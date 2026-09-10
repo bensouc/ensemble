@@ -13,7 +13,8 @@
     <%= link_to work_plan_skill_eval_update_path(plan_skill, status: statut.statut),
                 class: "mobile-eval-choix #{statut.statut}#{' --courant' if courant}",
                 aria: { current: courant ? "true" : nil },
-                data: { turbo_prefetch: false, action: "click->ajax-work-plan#toggle" } do %>
+                data: { turbo_prefetch: false, action: "click->ajax-work-plan#toggle",
+                        libelle: statut.libelle } do %>
       <% if statut.anneau %>
         <%= render "shared/anneau_eval" %>
       <% else %>

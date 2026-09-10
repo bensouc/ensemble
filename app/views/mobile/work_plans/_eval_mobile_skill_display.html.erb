@@ -17,9 +17,25 @@
         <% end %>
       <% end %>
     </div>
+    <%# Où en est la compétence, en toutes lettres, juste à gauche de sa pastille.
+
+        La pastille ne le disait qu'en couleur et par son anneau. Le code se lit
+        vite une fois appris, mais il s'apprend : le bureau le double d'une
+        infobulle depuis toujours, et le téléphone, qui n'a pas de survol,
+        n'avait rien. Le mot prend la place restée vide au milieu de la carte.
+
+        `motEtat` est une cible de `ajax-work-plan` : le mot suit la peinture
+        optimiste de la pastille, sans quoi il annoncerait le statut d'avant
+        jusqu'à la réponse du serveur — et, hors ligne, jusqu'à la
+        synchronisation. %>
+    <span class="mobile-eval-etat" data-ajax-work-plan-target="motEtat"><%=
+      libelle_evaluation(plan_skill.status, plan_skill.kind) %></span>
     <% # current wps %>
     <%# start of eval modal %>
-    <button type="button" class="bg-white" data-bs-toggle="modal" data-bs-target="#evalModal-<%= plan_skill.id%>" >
+    <%# Le bouton n'a pour tout contenu qu'un disque coloré : sans nom, un
+        lecteur d'écran n'annonçait que « bouton ». %>
+    <button type="button" class="bg-white" data-bs-toggle="modal" data-bs-target="#evalModal-<%= plan_skill.id%>"
+            aria-label="Évaluer <%= plan_skill.skill.name %>">
       <div class= 'mobile-last-eval' data-ajax-work-plan-target='lastEval'>
         <%= render "shared/pastille_eval", statut: plan_skill.status, lettre: lettre_nature(plan_skill.kind) %>
       </div>
