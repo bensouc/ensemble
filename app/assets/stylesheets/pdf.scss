@@ -494,8 +494,14 @@ th:not([align]) {
   background-color: $eval-valide;
 }
 
+// Le liseré n'existe qu'ici. À l'écran, l'anneau donne son bord au disque jaune
+// et la carte l'encadre ; sur le papier, ce disque de 12px est seul sur du blanc,
+// et le jaune n'en fait que 1,37 de contraste. Une ombre intérieure plutôt qu'une
+// bordure : elle ne prend pas sur la taille du disque, quel que soit le
+// `box-sizing` de la feuille embarquée.
 .pdf-etat--en-cours {
   background-color: $eval-non-maitrise;
+  box-shadow: inset 0 0 0 1px $eval-non-maitrise-anneau;
 }
 
 // Le titre et la date : `gap-2` n'existe pas dans le Bootstrap embarqué pour le
