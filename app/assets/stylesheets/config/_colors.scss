@@ -25,18 +25,34 @@ $roseL: #e72c3ca4;
 $roseLight: #f79ea5ba;
 $marron: rgb(196, 64, 3);
 
-// La rampe des évaluations : blanc « pas fait » → rouge → orange → vert clair →
-// vert « validé ». Monotone, elle se lit comme une progression.
+// La rampe des évaluations : blanc « pas fait » → terre cuite → jaune → vert
+// clair → vert « validé ». Monotone, elle se lit comme une progression.
 //
 // Elle vit dans la palette et non dans `pages/_eval.scss` parce que la feuille
 // du PDF, qui est une feuille à part, en a besoin elle aussi : le tableau de
 // progression d'un élève y peignait ses pastilles avec des verts et des oranges
 // de Bootstrap, sans rapport avec ce que l'enseignant voit à l'écran.
-$eval-rate: $rose;
-$eval-rate-anneau: #a81b27;
-$eval-non-maitrise: $orange;
-$eval-non-maitrise-lettre: #4a2e00;
-$eval-non-maitrise-anneau: #a86a00;
+//
+// « Raté » et « à refaire » ont leurs couleurs à eux depuis le 11/09/2026, là où
+// ils empruntaient le rose et l'orange de la marque. Deux raisons :
+//
+//   — le rose de « raté » était CELUI du reste de l'écran — le lien de retour,
+//     l'onglet actif, le cadre du choix courant. La pastille se confondait avec
+//     des repères qui ne parlent pas d'évaluation. Elle vire au terre cuite ;
+//   — l'orange de « à refaire » vire au jaune : la rampe rouge → jaune → vert
+//     clair → vert écarte mieux ses teintes que rouge → orange → vert, où les
+//     deux premiers crans se ressemblaient de loin.
+//
+// Les trois anneaux se distinguent d'abord par leur CLARTÉ, pas par leur teinte :
+// terre cuite sombre (L* 30), or clair (L* 69), vert moyen (L* 46). C'est ce qui
+// les sépare le mieux les uns des autres, et c'est ce qu'on perd en assombrissant
+// l'or pour gagner du contraste sur le blanc — un arbitrage tranché en regardant,
+// pas en lisant des ratios.
+$eval-rate: #CE3E1B;
+$eval-rate-anneau: #8A2409;
+$eval-non-maitrise: #FFDB00;
+$eval-non-maitrise-lettre: #4A3600;
+$eval-non-maitrise-anneau: #C9A600;
 $eval-reussi: #a5d6a7;
 $eval-reussi-lettre: #14401a;
 $eval-reussi-anneau: #2e7d32;
