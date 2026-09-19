@@ -151,13 +151,24 @@ class WorkPlanSkill < ApplicationRecord
       last
   end
 
+  # `find_or_initialize_by` et non `find_or_create_by` : la version précédente
+  # insérait une ligne vide, puis la remplissait aussitôt. Deux écritures, donc
+  # deux passages dans `Result#belt_update_by_domain_and_level`, qui recompte
+  # tout le domaine et décroche ou repose la ceinture à chaque fois. Le premier
+  # de ces deux passages voyait un résultat sans nature ni statut : un état qui
+  # n'a jamais existé pour l'enseignant.
+  #
+  # Une ceinture déjà validée n'est pas redescendue — c'est le seul acquis que
+  # l'état d'un plan de travail ne peut pas défaire. Le test tombe forcément à
+  # faux sur un résultat qui vient d'être initialisé, dont la nature est `nil` :
+  # celui-là est donc bien écrit.
   def update_result
     return if work_plan_domain.student.nil?
 
-    # find_or_create results
-    result = Result.find_or_create_by(student:, skill:)
-    # update results UNLESS the result is already completed and of kind ceinture
-    result.update!(status:, kind:) unless result.status == "completed" && result.kind == "ceinture"
+    result = Result.find_or_initialize_by(student:, skill:)
+    return if result.status == "completed" && result.kind == "ceinture"
+
+    result.update!(status:, kind:)
   end
 
   def reset_result

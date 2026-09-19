@@ -102,6 +102,20 @@ RSpec.describe WorkPlanSkill, type: :model do
         to change { Result.where(student:, skill:).count }.from(0).to(1)
     end
 
+    # La ligne était insérée vide puis remplie aussitôt : deux écritures, donc
+    # deux recomptages de ceinture, dont un sur un résultat sans nature.
+    it "n'écrit la ligne qu'une fois quand elle n'existait pas" do
+      ecritures = 0
+      abonnement = ActiveSupport::Notifications.subscribe("sql.active_record") do |*, payload|
+        ecritures += 1 if payload[:sql].to_s.match?(/\A(INSERT INTO "results"|UPDATE "results")/)
+      end
+
+      WorkPlanSkill.create!(skill:, work_plan_domain:, kind: "exercice", status: "new")
+
+      ActiveSupport::Notifications.unsubscribe(abonnement)
+      expect(ecritures).to eq(1)
+    end
+
     it "demander si un WPS est valide n'écrit rien" do
       wps = WorkPlanSkill.create!(skill:, work_plan_domain:, kind: "exercice", status: "new")
       Result.find_by(student:, skill:).update!(status: "completed", kind: "exercice")
