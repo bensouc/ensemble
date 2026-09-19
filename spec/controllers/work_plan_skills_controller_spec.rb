@@ -219,6 +219,39 @@ RSpec.describe WorkPlanSkillsController, type: :controller do
       expect(work_plan_skill.reload.attributes.except("updated_at")).to eq(premier)
     end
 
+    # L'évaluation est le seul écran où l'enseignant tranche : elle doit pouvoir
+    # revenir sur ce qu'elle a elle-même posé. Corriger un « réussi » saisi par
+    # erreur restait sans effet — le résultat et la ceinture tenaient bon.
+    #
+    # Le monde est reconstruit ici de bout en bout dans une seule école : les
+    # `let` du fichier donnent à l'élève un niveau, donc une école, différent de
+    # celui de la compétence, et le recalcul de ceinture n'y trouve plus ses
+    # petits.
+    context "quand l'enseignant corrige une ceinture déjà acquise" do
+      let(:school) { user.school }
+      let(:grade) { create(:grade, school:, name: "CM1", grade_level: "CM1") }
+      let(:classroom) { create(:classroom, user:, grade:) }
+      let(:work_plan) { create(:work_plan, user:, student:, grade:) }
+      let(:domain) { create(:domain, grade:, name: "Calcul", special: false) }
+      let(:work_plan_domain) { create(:work_plan_domain, work_plan:, domain:, level: 1) }
+      let(:skill) { create(:skill, domain:, level: 1, school:) }
+
+      def ceinture
+        Belt.find_by(student:, domain:, level: 1)
+      end
+
+      it "fait retomber le résultat et la ceinture" do
+        patch :eval_update, params: { status: "completed", work_plan_skill_id: work_plan_skill.id }
+        expect(Result.find_by(student:, skill:)).to have_attributes(kind: "ceinture", status: "completed")
+        expect(ceinture.completed).to be true
+
+        patch :eval_update, params: { status: "failed", work_plan_skill_id: work_plan_skill.id }
+
+        expect(Result.find_by(student:, skill:)).to have_attributes(kind: "ceinture", status: "failed")
+        expect(ceinture.completed).to be false
+      end
+    end
+
     # La factory `:user` est admin par défaut, et le `let(:user)` de ce fichier
     # signe donc quelqu'un qui passe partout : il faut un prof ordinaire pour
     # que l'autorisation soit réellement mise à l'épreuve.

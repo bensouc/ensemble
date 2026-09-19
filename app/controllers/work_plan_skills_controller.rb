@@ -107,8 +107,11 @@ class WorkPlanSkillsController < ApplicationController
         end
       end
     end
+    # C'est ici, et nulle part ailleurs, que l'enseignant tranche : la mise à jour
+    # du résultat peut donc défaire une ceinture acquise — typiquement quand il
+    # corrige un « réussi » saisi par erreur.
+    @work_plan_skill.evaluating = true
     @work_plan_skill.save!
-    # @work_plan_skill.update_result #Maj du result
     render partial: "work_plans/eval_last_wps_ajax"
   end
 
