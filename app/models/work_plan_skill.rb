@@ -31,13 +31,21 @@ class WorkPlanSkill < ApplicationRecord
     work_plan_domain.work_plan.special_wps?
   end
 
+  # `save!` et non `save` : une copie refusée par les validations disparaissait
+  # sans bruit, et l'enseignant récupérait un plan de travail amputé d'une
+  # compétence sans rien pour le lui dire. Le reste du clonage lève déjà
+  # (`WorkPlan.create!` puis `new_wp.save!` dans `WorkPlansController#clone`).
+  #
+  # La position n'est pas recopiée : acts_as_list l'écrase en `before_create`
+  # puisque le domaine — donc le scope de la liste — change. C'est l'ordre
+  # d'itération de l'appelant qui fait l'ordre du clone.
   def clone(_current_wp, new_wp_domain)
     new_wps = dup
     new_wps.work_plan_domain_id = new_wp_domain.id
     # new_wps.student = student
     new_wps.status = "new"
     new_wps.completed = false
-    new_wps.save
+    new_wps.save!
   end
 
   # Exercice à attacher à ce WPS : le premier de la compétence que l'élève n'a pas

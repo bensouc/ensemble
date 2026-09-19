@@ -18,6 +18,36 @@ RSpec.describe WorkPlanSkill, type: :model do
     WorkPlanSkill.create!(skill:, work_plan_domain:, kind: "exercice", status:, challenge:)
   end
 
+  describe "#clone" do
+    # Un plan de travail sans élève : `update_result` se retire alors dès sa
+    # première ligne, et ce qui est vérifié ici reste `#clone` seul.
+    let(:orphan_work_plan) { create(:work_plan, user:) }
+    let(:source_domain) { create(:work_plan_domain, work_plan: orphan_work_plan) }
+    let(:target_domain) { create(:work_plan_domain, work_plan: orphan_work_plan) }
+
+    it "recopie la compétence et son exercice, et repart d'une ardoise propre" do
+      challenge = create(:challenge, user:, skill:)
+      source = WorkPlanSkill.create!(skill:, work_plan_domain: source_domain, kind: "exercice",
+                                     status: "completed", challenge:, completed: true)
+
+      source.clone(orphan_work_plan, target_domain)
+
+      copy = target_domain.work_plan_skills.sole
+      expect(copy).to have_attributes(skill:, challenge:, kind: "exercice", status: "new", completed: false)
+    end
+
+    # `update_column` fabrique ici ce qu'une vieille ligne de la base pourrait
+    # être : un `kind` hors de la liste admise.
+    it "lève au lieu de laisser une copie refusée disparaître sans bruit" do
+      source = WorkPlanSkill.create!(skill:, work_plan_domain: source_domain, kind: "exercice", status: "new")
+      source.update_column(:kind, "atelier")
+
+      expect { source.reload.clone(orphan_work_plan, target_domain) }.
+        to raise_error(ActiveRecord::RecordInvalid)
+      expect(target_domain.work_plan_skills).to be_empty
+    end
+  end
+
   describe "#get_challenge_4_wps" do
     it "prend le premier exercice de la compétence dans l'ordre des positions" do
       first_created = create(:challenge, user:, skill:)
