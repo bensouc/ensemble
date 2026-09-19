@@ -60,7 +60,7 @@ class WorkPlanSkill < ApplicationRecord
     # new_wps.student = student
     new_wps.status = "new"
     new_wps.completed = false
-    new_wps.skip_result_update = true
+    new_wps.skip_result_update = result_deja_pose?(new_wp_domain)
     new_wps.save!
   end
 
@@ -124,6 +124,21 @@ class WorkPlanSkill < ApplicationRecord
   end
 
   private
+
+  # Le clone pose le `Result` quand l'élève n'en a aucun sur la compétence, et
+  # ne touche à rien sinon.
+  #
+  # `Result#kind` n'est pas un drapeau de ceinture : c'est l'étage de l'élève —
+  # jeu, exercice ou ceinture — et `attach_next_skills` le lit pour décider quoi
+  # donner ensuite. Écrire par-dessus un résultat existant effaçait donc ce que
+  # l'élève avait acquis ; ne jamais écrire perdait l'étage d'un WPS « jeu »
+  # posé à la main, et la génération suivante repartait sur « exercice ».
+  def result_deja_pose?(new_wp_domain)
+    eleve = new_wp_domain.student
+    return true if eleve.nil?
+
+    Result.exists?(student: eleve, skill_id:)
+  end
 
   # Dernier exercice de cet élève sur cette compétence. Le filtre élève se faisait
   # en Ruby après avoir chargé TOUS les WPS de la compétence, tous élèves

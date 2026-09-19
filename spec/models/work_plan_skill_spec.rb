@@ -60,6 +60,19 @@ RSpec.describe WorkPlanSkill, type: :model do
         to have_attributes(status: "completed", kind: "exercice")
     end
 
+    # `Result#kind` est l'étage de l'élève — jeu, exercice ou ceinture — et
+    # `attach_next_skills` le lit pour décider quoi donner ensuite. Un « jeu »
+    # posé à la main par l'enseignant n'existe nulle part ailleurs : sans ce
+    # Result, la génération suivante repartirait sur « exercice ».
+    it "pose le Result de l'élève qui n'en a pas encore sur la compétence" do
+      source = WorkPlanSkill.create!(skill:, work_plan_domain: source_domain, kind: "jeu", status: "new")
+      cible = create(:work_plan_domain, work_plan:, domain:, level: 1)
+
+      source.clone(work_plan, cible)
+
+      expect(Result.find_by(student:, skill:)).to have_attributes(kind: "jeu", status: "new")
+    end
+
     # `update_column` fabrique ici ce qu'une vieille ligne de la base pourrait
     # être : un `kind` hors de la liste admise.
     it "lève au lieu de laisser une copie refusée disparaître sans bruit" do
