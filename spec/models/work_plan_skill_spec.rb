@@ -3,12 +3,25 @@
 require "rails_helper"
 
 RSpec.describe WorkPlanSkill, type: :model do
-  let(:user) { create(:user) }
-  let(:classroom) { create(:classroom, user:) }
+  # Une école cohérente de bout en bout — enseignant, niveau, classe, domaine et
+  # compétence. Les factories, laissées à elles-mêmes, donnent à l'élève un
+  # niveau (donc une école, via `Student#school`) différent de celui de la
+  # compétence : `Belt#belt_update_by_domain_and_level` ne trouve alors AUCUNE
+  # compétence pour l'école de l'élève, en conclut que la ceinture est complète
+  # et promeut tous ses Result en « ceinture validée ».
+  #
+  # Le domaine est nommé en dur pour la même raison : tiré au hasard, il tombe
+  # parfois sur un domaine « spécial », dont les ceintures suivent une tout
+  # autre règle (`Belt.update_special_belts_on_domain`).
+  let(:school) { create(:school) }
+  let(:user) { create(:user, school:) }
+  let(:grade) { create(:grade, school:, name: "CM1", grade_level: "CM1") }
+  let(:classroom) { create(:classroom, user:, grade:) }
   let(:student) { create(:student, classroom:) }
-  let(:work_plan) { create(:work_plan, user:, student:) }
-  let(:work_plan_domain) { create(:work_plan_domain, work_plan:) }
-  let(:skill) { create(:skill, school: user.school) }
+  let(:work_plan) { create(:work_plan, user:, student:, grade:) }
+  let(:domain) { create(:domain, grade:, name: "Calcul", special: false) }
+  let(:work_plan_domain) { create(:work_plan_domain, work_plan:, domain:, level: 1) }
+  let(:skill) { create(:skill, domain:, level: 1, school:) }
 
   def new_exercice_wps
     WorkPlanSkill.new(skill:, work_plan_domain:, kind: "exercice", status: "new")
@@ -36,6 +49,17 @@ RSpec.describe WorkPlanSkill, type: :model do
       expect(copy).to have_attributes(skill:, challenge:, kind: "exercice", status: "new", completed: false)
     end
 
+    it "ne réécrit pas la progression de l'élève à qui on donne la copie" do
+      Result.create!(student:, skill:, status: "completed", kind: "exercice")
+      source = WorkPlanSkill.create!(skill:, work_plan_domain: source_domain, kind: "exercice", status: "new")
+      cible = create(:work_plan_domain, work_plan:) # ce plan de travail-ci a un élève
+
+      source.clone(work_plan, cible)
+
+      expect(Result.find_by(student:, skill:)).
+        to have_attributes(status: "completed", kind: "exercice")
+    end
+
     # `update_column` fabrique ici ce qu'une vieille ligne de la base pourrait
     # être : un `kind` hors de la liste admise.
     it "lève au lieu de laisser une copie refusée disparaître sans bruit" do
@@ -45,6 +69,34 @@ RSpec.describe WorkPlanSkill, type: :model do
       expect { source.reload.clone(orphan_work_plan, target_domain) }.
         to raise_error(ActiveRecord::RecordInvalid)
       expect(target_domain.work_plan_skills).to be_empty
+    end
+  end
+
+  # Le `Result` suit l'état du WPS, mais il ne s'écrit que sur une sauvegarde :
+  # l'écriture était accrochée à `after_validation`, donc à `valid?`.
+  describe "la mise à jour du Result" do
+    it "une évaluation met la progression de l'élève à jour" do
+      wps = WorkPlanSkill.create!(skill:, work_plan_domain:, kind: "ceinture", status: "new")
+
+      wps.update!(status: "completed")
+
+      expect(Result.find_by(student:, skill:)).
+        to have_attributes(status: "completed", kind: "ceinture")
+    end
+
+    it "poser une compétence dans un plan de travail pose son Result" do
+      expect { WorkPlanSkill.create!(skill:, work_plan_domain:, kind: "exercice", status: "new") }.
+        to change { Result.where(student:, skill:).count }.from(0).to(1)
+    end
+
+    it "demander si un WPS est valide n'écrit rien" do
+      wps = WorkPlanSkill.create!(skill:, work_plan_domain:, kind: "exercice", status: "new")
+      Result.find_by(student:, skill:).update!(status: "completed", kind: "exercice")
+
+      wps.valid?
+
+      expect(Result.find_by(student:, skill:)).
+        to have_attributes(status: "completed", kind: "exercice")
     end
   end
 
