@@ -1,4 +1,5 @@
 <div class="result-cell" data-controller='classroom-add-wps' data-classroom-add-wps-target='wpsBox'>
+	<% if result.deletable? %>
 		<div class='--cursor-pointer' data-controller='display-special-wps-mngt' data-action='mouseover->display-special-wps-mngt#displayWps mouseout->display-special-wps-mngt#hideWps'>
 			<div class ='d-flex' data-display-special-wps-mngt-target='show'>
 				<i class="fa-solid fa-circle-check --vert"></i>
@@ -9,4 +10,16 @@
                                             class: '--roseL'%>
 			</div>
 		</div>
+	<% else %>
+		<%# Ceinture décrochée par l'élève sur un exercice de ceinture : elle se
+		    défait en corrigeant l'évaluation, pas d'un clic ici — sans quoi le plan
+		    de travail et le résultat se contredisent sans rien pour les rapprocher.
+		    Le survol ne propose donc pas le « − », et la politique le refuse aussi
+		    côté serveur. %>
+		<div class='d-flex'
+		     data-controller="tooltip" data-bs-toggle="tooltip" data-bs-placement="top"
+		     title="Validée à l'évaluation : se corrige depuis le plan de travail">
+			<i class="fa-solid fa-circle-check --vert"></i>
+		</div>
+	<% end %>
 </div>
