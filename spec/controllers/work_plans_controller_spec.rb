@@ -91,6 +91,63 @@ RSpec.describe WorkPlansController, type: :controller do
         expect(response).to redirect_to(work_plans_path)
       end
     end
+
+    # L'ordre des compétences d'un domaine est celui que l'enseignant a posé à la
+    # main (`WorkPlanSkill#position`, liste scopée au `work_plan_domain`). Il se
+    # perdait au clonage : la boucle de copie lisait les compétences sans
+    # `ORDER BY`, donc dans leur ordre de création, et acts_as_list renumérotait
+    # dans cet ordre-là.
+    context "quand l'enseignant a réordonné les compétences d'un domaine" do
+      # Niveau et domaine nommés en dur : la factory :grade tire son nom parmi
+      # cinq et `Grade#name` est unique par école, et un domaine « spécial »
+      # emprunterait un autre chemin d'affichage.
+      let(:grade)  { create(:grade, school: user.school, name: "CM1", grade_level: "CM1") }
+      let(:domain) { create(:domain, grade:, name: "Calcul", special: false) }
+      let(:source) { create(:work_plan, user:, grade:) }
+      let(:source_domain) { create(:work_plan_domain, work_plan: source, domain:, level: 1) }
+
+      # Les compétences naissent dans l'ordre 1, 2, 3, 4 : sans réordonnancement,
+      # ordre de création et ordre voulu coïncident et le bug reste invisible.
+      let!(:work_plan_skills) do
+        (1..4).map do |rank|
+          skill = create(:skill, domain:, level: 1, school: user.school, name: "compétence #{rank}")
+          create(:work_plan_skill, work_plan_domain: source_domain, skill:, kind: "exercice")
+        end
+      end
+
+      # Les compétences du clone, dans l'ordre où l'enseignant les verra.
+      def cloned_work_plan_skills
+        clone = WorkPlan.where(user:).where.not(id: source.id).order(:created_at, :id).last
+        WorkPlanSkill.
+          joins(:work_plan_domain).
+          where(work_plan_domains: { work_plan_id: clone.id }).
+          ordered
+      end
+
+      it "le clone garde l'ordre voulu, pas l'ordre de création" do
+        work_plan_skills.last.insert_at(1)
+
+        post :clone, params: { work_plan_id: source.id }
+
+        expect(cloned_work_plan_skills.map { |wps| wps.skill.name }).
+          to eq(["compétence 4", "compétence 1", "compétence 2", "compétence 3"])
+      end
+
+      # L'ordre voulu ne suppose pas une liste bien numérotée : le plan d'origine
+      # a ici les positions 1, 2, 3 puis 9. acts_as_list renumérote à l'arrivée,
+      # le clone repart donc d'une liste propre — sans changer l'ordre.
+      it "le clone referme les trous de position sans changer l'ordre" do
+        work_plan_skills.last.insert_at(1)
+        source_domain.work_plan_skills.ordered.last.update_column(:position, 9)
+
+        post :clone, params: { work_plan_id: source.id }
+
+        cloned = cloned_work_plan_skills
+        expect(cloned.map { |wps| wps.skill.name }).
+          to eq(["compétence 4", "compétence 1", "compétence 2", "compétence 3"])
+        expect(cloned.map(&:position)).to eq([1, 2, 3, 4])
+      end
+    end
   end
 
   # L'écran réel visé par la feature : l'éditeur du plan de travail, avec un WPS

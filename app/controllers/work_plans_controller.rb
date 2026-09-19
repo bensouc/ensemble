@@ -334,12 +334,24 @@ class WorkPlansController < ApplicationController
   # end
 
   ###################### Subfonctions ##################
+  # L'ordre d'itération EST l'ordre du clone, d'où le `ordered` : `dup` emporte
+  # bien la position, mais acts_as_list 0.7.7 l'écrase en `before_create`
+  # (`add_to_list_bottom`) dès que le scope change — et changer de domaine, c'est
+  # changer de scope. Chaque compétence arrive donc en fin de liste, dans l'ordre
+  # où la boucle la rencontre.
+  #
+  # Sans `ordered`, cet ordre était celui que Postgres voulait bien rendre pour un
+  # `where` sans `ORDER BY` : l'ordre de création. Le clone tombait juste tant que
+  # personne n'avait réordonné les compétences du plan, et les mélangeait ensuite.
+  #
+  # Effet de bord recherché : la renumérotation d'acts_as_list referme au passage
+  # les trous de position hérités du plan d'origine.
   def copy_domain(domain, work_plan, new_wp)
     new_wp_domain = domain.dup
     # new_wp_domain.student = new_wp.student
     new_wp_domain.work_plan = new_wp
     new_wp_domain.save
-    work_plan_skills = WorkPlanSkill.where(work_plan_domain_id: domain)
+    work_plan_skills = WorkPlanSkill.where(work_plan_domain_id: domain).ordered
     work_plan_skills.each do |wps|
       wps.clone(work_plan, new_wp_domain)
     end
