@@ -34,7 +34,11 @@ Devise.setup do |config|
   # Configure the e-mail address which will be shown in Devise::Mailer,
   # note that it will be overwritten if you use your own mailer class
   # with default "from" parameter.
-  config.mailer_sender = "ne_pas_repondre@vroadstudio.fr"
+  # `vroadstudio.fr` n'est plus déposé : les courriels Devise partaient d'un
+  # expéditeur dont plus aucun enregistrement DNS ne répondait. `app-ensemble.fr`
+  # est le domaine de l'application — celui des mentions légales et de
+  # `default_url_options`.
+  config.mailer_sender = "ne_pas_repondre@app-ensemble.fr"
 
   # Configure the class responsible to send e-mails.
   # InvitationMailer hérite de Devise::Mailer : seul l'objet du mail d'invitation
