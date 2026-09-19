@@ -1,8 +1,23 @@
 # frozen_string_literal: true
 
 class WorkPlanSkill < ApplicationRecord
-  after_validation :update_result, only: %w[update]
+  # Le `Result` d'un élève sur une compétence suit l'état de son WPS. C'était un
+  # `after_validation` : la simple question « ce WPS est-il valide ? » écrivait
+  # donc en base, et un `valid?` sans intention de sauvegarder remettait à « new »
+  # une compétence acquise. `after_save` demande une sauvegarde pour écrire.
+  #
+  # (L'option `only:` qui accompagnait l'`after_validation` n'existe pas —
+  # `after_validation` connaît `on:`. Elle était donc avalée sans bruit, et le
+  # callback tournait de toute façon à chaque validation, création comprise.
+  # Le comportement est conservé tel quel ici : `after_save` sans condition.)
+  after_save :update_result, unless: :skip_result_update
   # after_destroy :reset_result
+
+  # Cloner un plan de travail, c'est donner du travail à faire — pas évaluer
+  # l'élève. Sans ce garde-fou, chaque copie réécrivait le `Result` de l'élève
+  # cible : tout ce qu'il avait acquis à l'exercice repassait à « pas fait »,
+  # et une compétence coûtait vingt requêtes au lieu de deux.
+  attr_accessor :skip_result_update
 
   belongs_to :work_plan_domain
   acts_as_list scope: :work_plan_domain
@@ -45,6 +60,7 @@ class WorkPlanSkill < ApplicationRecord
     # new_wps.student = student
     new_wps.status = "new"
     new_wps.completed = false
+    new_wps.skip_result_update = true
     new_wps.save!
   end
 
