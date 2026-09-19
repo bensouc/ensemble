@@ -116,6 +116,18 @@ RSpec.describe WorkPlanSkill, type: :model do
       expect(ecritures).to eq(1)
     end
 
+    # Le pendant du garde-fou : hors évaluation, un acquis de ceinture ne bouge
+    # pas. C'est ce qui protège l'élève quand on repose une compétence dans un
+    # plan de travail, qu'on change son exercice ou qu'on copie un plan.
+    it "poser une compétence dans un plan ne défait pas une ceinture acquise" do
+      Result.create!(student:, skill:, kind: "ceinture", status: "completed")
+
+      WorkPlanSkill.create!(skill:, work_plan_domain:, kind: "exercice", status: "new")
+
+      expect(Result.find_by(student:, skill:)).
+        to have_attributes(kind: "ceinture", status: "completed")
+    end
+
     it "demander si un WPS est valide n'écrit rien" do
       wps = WorkPlanSkill.create!(skill:, work_plan_domain:, kind: "exercice", status: "new")
       Result.find_by(student:, skill:).update!(status: "completed", kind: "exercice")

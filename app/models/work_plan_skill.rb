@@ -19,6 +19,16 @@ class WorkPlanSkill < ApplicationRecord
   # et une compétence coûtait vingt requêtes au lieu de deux.
   attr_accessor :skip_result_update
 
+  # Un acquis de ceinture ne se défait pas par accident : poser une compétence
+  # dans un plan de travail, changer son exercice ou copier un plan ne doivent
+  # pas y toucher. Seule l'évaluation fait autorité — c'est l'enseignant qui
+  # revient sur ce qu'il a lui-même saisi, et le corriger de « réussi » à
+  # « raté » restait sans effet : le résultat et la ceinture tenaient bon.
+  #
+  # Posé par `WorkPlanSkillsController#eval_update`, le seul écran dont c'est
+  # le propos.
+  attr_accessor :evaluating
+
   belongs_to :work_plan_domain
   acts_as_list scope: :work_plan_domain
   include Positionable
@@ -166,7 +176,7 @@ class WorkPlanSkill < ApplicationRecord
     return if work_plan_domain.student.nil?
 
     result = Result.find_or_initialize_by(student:, skill:)
-    return if result.status == "completed" && result.kind == "ceinture"
+    return if result.belt_validated? && !evaluating
 
     result.update!(status:, kind:)
   end
