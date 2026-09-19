@@ -42,6 +42,40 @@ RSpec.describe Result, type: :model do
     end
   end
 
+  # Une ceinture décrochée à l'évaluation se corrige depuis le plan de travail ;
+  # ce qui a été posé à la main se retire à la main.
+  describe "#deletable?" do
+    it "refuse une ceinture validée née d'une évaluation" do
+      result = create(:result, status: "completed", kind: "ceinture", origin: Result::EVALUATION)
+
+      expect(result.deletable?).to be false
+    end
+
+    it "accepte une ceinture validée posée à la main" do
+      result = create(:result, status: "completed", kind: "ceinture", origin: Result::DIRECT)
+
+      expect(result.deletable?).to be true
+    end
+
+    it "accepte tout ce qui n'est pas une ceinture validée" do
+      en_cours = create(:result, status: "failed", kind: "ceinture", origin: Result::EVALUATION)
+      exercice = create(:result, status: "completed", kind: "exercice", origin: Result::EVALUATION)
+
+      expect(en_cours.deletable?).to be true
+      expect(exercice.deletable?).to be true
+    end
+  end
+
+  describe "#validate!" do
+    it "marque le résultat comme posé à la main" do
+      result = create(:result, kind: "exercice", status: "new", origin: Result::EVALUATION)
+
+      result.validate!
+
+      expect(result.reload.origin).to eq(Result::DIRECT)
+    end
+  end
+
   describe "#self.update_with_new_belt(belt)" do
   it "creates a new result for each skill in the belt domain" do
       Result.destroy_all

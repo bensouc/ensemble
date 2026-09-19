@@ -178,7 +178,7 @@ class WorkPlanSkill < ApplicationRecord
     result = Result.find_or_initialize_by(student:, skill:)
     return if result.belt_validated? && !evaluating
 
-    result.update!(status:, kind:)
+    result.update!(status:, kind:, origin: Result::EVALUATION)
   end
 
   def reset_result

@@ -1,4 +1,10 @@
 class Result < ApplicationRecord
+  # D'où vient le résultat : d'une évaluation de plan de travail, ou posé à la
+  # main depuis la grille de classe ou l'écran des ceintures.
+  EVALUATION = "evaluation".freeze
+  DIRECT = "direct".freeze
+  ORIGINS = [EVALUATION, DIRECT].freeze
+
   belongs_to :student
   belongs_to :skill
   validates :student,
@@ -18,7 +24,17 @@ class Result < ApplicationRecord
   end
 
   def validate!
-    update!(kind: "ceinture", status: "completed")
+    update!(kind: "ceinture", status: "completed", origin: DIRECT)
+  end
+
+  # Une ceinture décrochée par l'élève sur un exercice de ceinture se défait en
+  # corrigeant l'évaluation, pas d'un clic dans la grille de classe : la
+  # suppression y laissait le plan de travail dire une chose et le résultat une
+  # autre, sans que rien ne les rapproche.
+  #
+  # Ce qui a été posé à la main se retire à la main, en revanche.
+  def deletable?
+    !(belt_validated? && origin == EVALUATION)
   end
 
   def completed?
@@ -29,7 +45,7 @@ class Result < ApplicationRecord
     skills = belt.domain.skills.select { |skill| skill.level == belt.level }
     skills.each do |skill|
       result = Result.find_or_create_by(student: belt.student, skill: skill)
-      result.update_columns(status: "completed", kind: "ceinture") unless result.belt_validated?
+      result.update_columns(status: "completed", kind: "ceinture", origin: DIRECT) unless result.belt_validated?
     end
   end
 
