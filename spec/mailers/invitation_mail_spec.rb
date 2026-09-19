@@ -33,6 +33,14 @@ RSpec.describe "Mail d'invitation" do
     expect(mail.subject).to eq("Ensemble : vous êtes invité(e) à rejoindre École du centre")
   end
 
+  # `Devise::Mailer` n'hérite pas d'`ApplicationMailer` — `config.parent_mailer`
+  # est resté sur `ActionMailer::Base` — donc son `default from:` ne s'applique
+  # pas ici : l'expéditeur de tous les courriels Devise est `mailer_sender`, et
+  # rien d'autre ne le dit.
+  it "part du domaine de l'application" do
+    expect(mail.from).to eq(["ne_pas_repondre@app-ensemble.fr"])
+  end
+
   it "nomme l'école et l'invitant, sans traîner l'espace de son prénom" do
     expect(texte).to include("Claire vous invite à rejoindre École du centre")
     expect(texte).not_to include("Claire  ")
