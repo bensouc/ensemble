@@ -2,7 +2,7 @@
 
 A Rails application for managing student work plans, skills progression tracking, and competency-based learning in primary schools. Currently in production and used by teachers in France.
 
-Developed by [VRoad Studio](https://www.vroadstudio.fr)
+Developed by [VRoad Studio](https://bensouc.github.io/vrpwebsite/)
 
 ## Tech Stack
 
