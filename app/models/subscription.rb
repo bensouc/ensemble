@@ -20,6 +20,11 @@ class Subscription < ApplicationRecord
   }
 
   ACCESS_GRANTING_STATUSES = %w[trialing active past_due]
+
+  # La durée d'essai annoncée aux enseignants. Elle est ici pour que le mail de
+  # bienvenue n'invente pas son propre chiffre — l'essai réel est celui que règle
+  # Stripe sur le produit, et c'est lui qui fait foi : ce nombre doit le suivre.
+  JOURS_ESSAI = 28
   # validates :external_id, presence: true
   validates :rythm, inclusion: { in: %w[Annuel Mensuel] }
   scope :active_or_trialing, -> { where(status: ACCESS_GRANTING_STATUSES) }

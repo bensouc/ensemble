@@ -22,7 +22,7 @@ class RegistrationsController < Devise::RegistrationsController
     @user.demo = true
 
     if verify_recaptcha && @user.save
-      ContactMailer.new_demo_user(@user).deliver
+      envoyer_les_courriels(@user)
       sign_in(@user)
       redirect_to dashboard_path, notice: "Utilisateur créé avec succès."
     else
@@ -36,6 +36,22 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   private
+
+  # Deux envois pour une inscription : `ContactMailer` prévient l'équipe,
+  # `DemoMailer` accueille l'enseignant. Aucun des deux ne doit coûter le compte —
+  # il est déjà enregistré, et une panne SMTP renverrait l'enseignant sur la page
+  # d'erreur alors qu'il peut se connecter. Chacun est tenté de son côté, pour que
+  # la panne de l'un ne prive pas l'autre.
+  def envoyer_les_courriels(user)
+    sans_faire_echouer(user) { ContactMailer.new_demo_user(user).deliver }
+    sans_faire_echouer(user) { DemoMailer.bienvenue(user).deliver }
+  end
+
+  def sans_faire_echouer(user)
+    yield
+  rescue StandardError => e
+    Rails.logger.error("Courriel d'inscription non envoyé à #{user.email} : #{e.class} #{e.message}")
+  end
 
   def param_user
     params.required(:user).permit(:first_name, :last_name, :password, :email, :discovery_method)

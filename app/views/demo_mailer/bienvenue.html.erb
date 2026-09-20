@@ -1,0 +1,91 @@
+<%# Les chiffres de la démo viennent des constantes qui les font respecter, et
+    les liens de tutoriel de la table qui sert déjà au bouton d'aide : le mail ne
+    peut pas annoncer une limite ou une adresse que l'application ne tient pas. %>
+<% tutos = ApplicationHelper::TUTO_LINKS %>
+<% lien_tuto = ->(libelle, cle) { link_to(libelle, tutos.fetch(cle), style: "color:#f24150; text-decoration:none; font-weight:600;") } %>
+
+<h1 style="<%= mail_style(:titre) %>">
+	Bienvenue<%= " #{@prenom}" if @prenom %> !
+</h1>
+
+<p style="<%= mail_style(:texte) %>">
+	Votre compte de démonstration est ouvert : vous pouvez vous connecter dès maintenant avec
+	l'adresse <strong style="color:#1d1d1f;"><%= @user.email %></strong> et le mot de passe que
+	vous venez de choisir.
+</p>
+
+<p style="<%= mail_style(:texte) %>">
+	Ensemble sert à préparer les plans de travail de vos élèves, à les générer automatiquement
+	selon là où chacun en est, à suivre les résultats et les ceintures — et à partager tout cela
+	avec vos collègues.
+</p>
+
+<div style="text-align:center; padding:14px 0 24px 0;">
+	<%= mail_button("Ouvrir mon espace", dashboard_url) %>
+</div>
+
+<%= mail_divider %>
+
+<h2 style="<%= mail_style(:sous_titre) %> margin-top:26px;">Par où commencer</h2>
+
+<p style="<%= mail_style(:texte) %>">
+	Quatre écrans suffisent pour un premier plan de travail. Chaque étape ouvre son tutoriel :
+</p>
+
+<%= mail_puce(safe_join(["Créez votre classe et vos élèves — ", lien_tuto.call("le tutoriel des classes", "classrooms")])) %>
+<%= mail_puce(safe_join(["Parcourez le catalogue de compétences et ses exercices — ", lien_tuto.call("les compétences", "skills"), " et ", lien_tuto.call("les exercices", "challenges")])) %>
+<%= mail_puce(safe_join(["Composez, ou faites générer, un plan de travail — ", lien_tuto.call("les plans de travail", "work_plans")])) %>
+<%= mail_puce(safe_join(["Saisissez les résultats et validez les ceintures — ", lien_tuto.call("les résultats", "results")])) %>
+
+<div style="text-align:center; padding:18px 0 22px 0;">
+	<%= mail_button("Accéder à tous les tutos", ApplicationHelper::TUTO_SOMMAIRE) %>
+</div>
+
+<%= mail_divider %>
+
+<h2 style="<%= mail_style(:sous_titre) %> margin-top:26px;">Ce que la démo permet</h2>
+
+<p style="<%= mail_style(:texte) %>">
+	La démonstration est un espace d'essai partagé : tout y fonctionne, mais en petit.
+</p>
+
+<%= mail_puce("#{User::DEMO_CLASSROOM_LIMIT} classe") %>
+<%= mail_puce("Jusqu'à #{User::DEMO_STUDENT_LIMIT} élèves dans cette classe") %>
+<%= mail_puce("Le catalogue de compétences est celui de la démonstration, commun à tous les comptes d'essai : vous pouvez le parcourir et travailler avec, mais l'import de votre propre liste de compétences n'y est pas disponible") %>
+
+<p style="<%= mail_style(:note) %> margin-top:14px;">
+	De quoi faire le tour de l'application avec un petit groupe, sans engagement et sans
+	carte bancaire.
+</p>
+
+<%= mail_divider %>
+
+<h2 style="<%= mail_style(:sous_titre) %> margin-top:26px;">Et pour votre classe entière : l'abonnement</h2>
+
+<p style="<%= mail_style(:texte) %>">
+	L'abonnement ouvre à votre école son propre espace : votre catalogue de compétences, vos
+	exercices, vos collègues. Il commence par
+	<strong style="color:#1d1d1f;"><%= Subscription::JOURS_ESSAI %> jours d'essai gratuit</strong>,
+	quelle que soit la formule — vous n'êtes prélevé qu'à la fin de cette période.
+</p>
+
+<%= mail_puce("Vos classes et vos élèves, selon la formule choisie") %>
+<%= mail_puce("Plans de travail et exercices illimités") %>
+<%= mail_puce("Génération automatique du plan de travail, adaptée à chaque élève") %>
+<%= mail_puce("Évaluation individuelle et suivi des ceintures") %>
+<%= mail_puce("Autant d'enseignants que nécessaire dans l'école, avec partage des classes") %>
+
+<div style="text-align:center; padding:18px 0 10px 0;">
+	<%= mail_button("Voir les formules", subscriptions_on_boarding_url) %>
+</div>
+
+<%= mail_divider %>
+
+<p style="<%= mail_style(:note) %> margin-top:20px;">
+	Une question, une hésitation, une classe qui ne rentre pas dans les cases ?
+	<%= link_to "Écrivez-nous", new_contact_url, style: "color:#f24150; text-decoration:none; font-weight:600;" %>,
+	nous vous répondrons.
+</p>
+<p style="<%= mail_style(:note) %> margin-bottom:0;">
+	Ce message est envoyé depuis une adresse qui ne reçoit pas les réponses.
+</p>

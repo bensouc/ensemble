@@ -9,7 +9,9 @@ module MailStylesHelper
 
   REGLES = {
     titre: "margin:0 0 10px 0; font-size:21px; line-height:1.35; font-weight:700; color:#1d1d1f;",
+    sous_titre: "margin:0 0 8px 0; font-size:16px; line-height:1.4; font-weight:700; color:#1d1d1f;",
     texte: "margin:0 0 14px 0; font-size:15px; line-height:1.65; color:#515154;",
+    puce: "margin:0 0 8px 0; font-size:15px; line-height:1.6; color:#515154;",
     note: "margin:0 0 10px 0; font-size:13px; line-height:1.6; color:#86868b;",
     petit: "margin:0; font-size:12px; line-height:1.6; color:#a1a1a6; word-break:break-all;",
     etiquette: "margin:0 0 2px 0; font-size:11px; line-height:1.5; color:#a1a1a6; " \
@@ -39,6 +41,15 @@ module MailStylesHelper
   def mail_button_fallback(url)
     tag.p(style: mail_style(:petit)) do
       safe_join(["Ou copiez ce lien : ", tag.span(url, style: "color:#86868b;")])
+    end
+  end
+
+  # Une liste à puces : `<ul>` et `<li>` n'ont ni marge ni retrait fiables d'un
+  # client à l'autre, et Outlook en perd le style. Une suite de paragraphes, avec
+  # la puce écrite à la main, s'affiche partout pareil.
+  def mail_puce(contenu)
+    tag.p(style: mail_style(:puce)) do
+      safe_join([tag.span("\u2022 ", style: "color:#{ROSE}; font-weight:700;"), contenu])
     end
   end
 
