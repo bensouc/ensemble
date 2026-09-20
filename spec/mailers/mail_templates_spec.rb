@@ -28,6 +28,7 @@ RSpec.describe "Gabarits de mail" do
       "résultats de classe" => TeacherMailer.send_classroom_results_email(teacher, classroom, "https://x.fr/r.zip"),
       "nouveau contact" => ContactMailer.new_contact(contact),
       "nouveau compte démo" => ContactMailer.new_demo_user(contact),
+      "bienvenue démo" => DemoMailer.bienvenue(create(:user, admin: false, demo: true)),
       "nouvelle demande" => ContactMailer.new_request(contact)
     }
   end
