@@ -17,6 +17,14 @@ class DemoMailer < ApplicationMailer
   def bienvenue(user)
     @user = user
     @prenom = user.first_name&.strip.presence&.capitalize
+    # « le mot de passe que vous venez de choisir » ne vaut que le jour de
+    # l'inscription. `demo:bienvenue` sert aussi à rattraper des comptes ouverts
+    # depuis des semaines : leur demander de se souvenir d'un mot de passe choisi
+    # il y a longtemps, sans rien leur proposer d'autre, est une impasse.
+    #
+    # `created_at` est nul sur un utilisateur non enregistré — l'aperçu du
+    # gabarit — et c'est bien le mail d'inscription qu'il faut y montrer.
+    @inscription_du_jour = user.created_at.nil? || user.created_at > 1.day.ago
     mail(to: user.email, subject: "Bienvenue sur Ensemble — votre compte de démonstration est ouvert")
   end
 end
