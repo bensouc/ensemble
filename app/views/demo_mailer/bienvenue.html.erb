@@ -9,9 +9,15 @@
 </h1>
 
 <p style="<%= mail_style(:texte) %>">
-	Votre compte de démonstration est ouvert : vous pouvez vous connecter dès maintenant avec
-	l'adresse <strong style="color:#1d1d1f;"><%= @user.email %></strong> et le mot de passe que
-	vous venez de choisir.
+	<% if @inscription_du_jour %>
+		Votre compte de démonstration est ouvert : vous pouvez vous connecter dès maintenant avec
+		l'adresse <strong style="color:#1d1d1f;"><%= @user.email %></strong> et le mot de passe que
+		vous venez de choisir.
+	<% else %>
+		Votre compte de démonstration vous attend : il est ouvert à l'adresse
+		<strong style="color:#1d1d1f;"><%= @user.email %></strong>. Si le mot de passe vous
+		échappe, <%= link_to "demandez-en un nouveau", new_user_password_url, style: "color:#f24150; text-decoration:none; font-weight:600;" %>.
+	<% end %>
 </p>
 
 <p style="<%= mail_style(:texte) %>">

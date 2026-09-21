@@ -39,6 +39,23 @@ RSpec.describe DemoMailer do
     expect(texte).to include("#{User::DEMO_STUDENT_LIMIT} élèves")
   end
 
+  # `demo:bienvenue` rattrape les comptes ouverts avant que l'envoi automatique
+  # n'existe : leur parler du mot de passe « que vous venez de choisir » les
+  # renverrait à un choix fait des semaines plus tôt, sans porte de sortie.
+  describe "selon l'âge du compte" do
+    it "parle du mot de passe tout juste choisi le jour de l'inscription" do
+      expect(texte).to include("le mot de passe que vous venez de choisir")
+      expect(corps).not_to include(Rails.application.routes.url_helpers.new_user_password_path)
+    end
+
+    it "propose d'en redemander un sur un compte plus ancien" do
+      user.update_column(:created_at, 3.weeks.ago)
+      expect(texte).not_to include("que vous venez de choisir")
+      expect(texte).to include("Si le mot de passe vous échappe")
+      expect(corps).to include(Rails.application.routes.url_helpers.new_user_password_path)
+    end
+  end
+
   it "annonce la durée d'essai de l'abonnement" do
     expect(texte).to include("#{Subscription::JOURS_ESSAI} jours d'essai gratuit")
   end
