@@ -6,16 +6,19 @@ class WorkPlanDomainsController < ApplicationController
     authorize @work_plan_domain
   end
 
+  # Ajouter un domaine, c'est modifier le plan. `authorize @work_plan` appliquait
+  # la règle de CRÉATION, qui accepte tout plan sans élève : un enseignant de
+  # n'importe quelle école garnissait le plan d'un autre.
   def new
     @work_plan = WorkPlan.find(params_wp_id)
-    authorize @work_plan
+    authorize @work_plan, :update?
     @domains = @work_plan.grade.domains.sort_by(&:position)
     @special = @domains.any? { |domain| domain.special? }
   end
 
   def create
     @work_plan = WorkPlan.find(params_wp_id)
-    authorize @work_plan
+    authorize @work_plan, :update?
     @domain = Domain.find(work_plan_domain_params[:domain])
     @work_plan_domain = WorkPlanDomain.new(domain: @domain, level: work_plan_domain_params[:level].to_i) # remove, student: @work_plan.student
     kind = params.require(:kind)
