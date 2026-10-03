@@ -37,3 +37,10 @@ pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" } unless ENV["RAILS_ENV"] =
 
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart
+
+# Solid Queue dans Puma : le superviseur des jobs démarre avec le serveur web,
+# sans conteneur worker à maintenir. Actif par défaut en production ;
+# SOLID_QUEUE_IN_PUMA=false le coupe (si un conteneur lance `bin/jobs` à part),
+# SOLID_QUEUE_IN_PUMA=true l'allume ailleurs. En développement : `bin/jobs`.
+solid_queue_in_puma = ENV.fetch("SOLID_QUEUE_IN_PUMA") { ENV["RAILS_ENV"] == "production" ? "true" : "false" }
+plugin :solid_queue if solid_queue_in_puma == "true"

@@ -10,7 +10,7 @@ Developed by [VRoad Studio](https://bensouc.github.io/vrpwebsite/)
 - **Frontend**: Hotwire (Turbo + Stimulus), Bootstrap 5
 - **JavaScript**: esbuild
 - **Database**: PostgreSQL
-- **Background Jobs**: Sidekiq + Redis
+- **Background Jobs**: Solid Queue (PostgreSQL), running inside Puma in production; dashboard at `/jobs` (Mission Control, admins only)
 - **PDF Generation**: Ferrum, connected over CDP to a browserless Chrome service
 - **File Storage**: Cloudinary (Active Storage)
 - **Payments**: Stripe
@@ -22,7 +22,7 @@ Developed by [VRoad Studio](https://bensouc.github.io/vrpwebsite/)
 ### Prerequisites
 - Ruby 3.3.12 (see `.ruby-version`)
 - PostgreSQL
-- Redis
+- Redis (Action Cable and Rack::Attack only, until Solid Cable and Solid Cache replace it)
 - Node.js 24 LTS (see `engines` in `package.json`)
 - Yarn 1.22.19+
 - Chrome or Chromium (PDF generation, screenshots)
@@ -121,7 +121,7 @@ each side.
 | Process | Command | Role |
 | --- | --- | --- |
 | `web` | `puma -C config/puma.rb -p 3000` | Serves HTTP |
-| `sidekiq` | `sidekiq -C config/sidekiq.yml` | Background jobs |
+| `jobs` | `bin/jobs` | Background jobs (Solid Queue) |
 | `js` | `yarn build:watch` | Rebuilds the esbuild bundle on save |
 
 The `js` process matters more than it looks: without it, `app/assets/builds/application.js`
@@ -134,12 +134,13 @@ Coolify has **no "Start Command" for Dockerfile apps**, so a single image serves
 both roles and `bin/docker-entrypoint` picks one from the `PROCESS_TYPE`
 environment variable:
 
-- `PROCESS_TYPE=worker` → `bundle exec sidekiq -C config/sidekiq.yml`
+- `PROCESS_TYPE=worker` → `bin/jobs` (a dedicated Solid Queue container — not needed)
 - anything else → the Dockerfile `CMD`, i.e. `bundle exec puma -C config/puma.rb`
 
-Concretely there are two Coolify applications built from the same repository and
-the same image, sharing the same environment except that the worker adds
-`PROCESS_TYPE=worker`, exposes no domain, and has its healthcheck disabled.
+Jobs run **inside Puma**: `config/puma.rb` loads the Solid Queue plugin in
+production, so a single Coolify application serves HTTP and runs the jobs. Set
+`SOLID_QUEUE_IN_PUMA=false` on it only if a separate `PROCESS_TYPE=worker`
+container takes the jobs over.
 
 The entrypoint sits behind `tini` (PID 1) so orphaned Chrome children get reaped
 instead of piling up as zombies.
@@ -153,8 +154,9 @@ the same database on every deploy.
 Puma declares no `workers`, so it runs in **single mode**: one process, threads
 only. `RAILS_MAX_THREADS` (default 5) sets the thread count *and* the
 ActiveRecord pool size — `config/database.yml` reads the same variable, which is
-what keeps them from drifting apart. Sidekiq runs a concurrency of 5 on a single
-`default` queue.
+what keeps them from drifting apart. Solid Queue (`config/queue.yml`) runs two
+worker processes, each with its own pool: one thread on the `pdf` queue, three on
+`default` and `mailers`.
 
 Chrome is not a Rails process: in production it is a separate browserless
 container reached over CDP at `CHROME_URL`.
@@ -229,6 +231,24 @@ real pupil names.
 ## Features History
 
 ### 2026
+
+<details>
+<summary><strong>October 2026 - Security & stack upgrade, first batch</strong></summary>
+
+- CSRF tokens are finally verified: they were emitted but never checked, since
+  `config.load_defaults` is not called
+- libvips untrusted loaders blocked (GHSA-xr9x-r78c-5hrm, critical), pending
+  Rails 7.2
+- Gem advisories down from 60 to 13 (the rest is listed with what will clear it
+  in `config/bundler-audit.yml`); twelve unused gems removed
+- Local CI: `bin/ci` (RuboCop, bundler-audit, Brakeman, RSpec, browser benches)
+  signs the pushed commit with `gh signoff`
+- Ruby 3.3.12, Node 24, YJIT in production
+- Sidekiq replaced by Solid Queue running inside Puma: one Coolify application
+  instead of two, jobs dashboard at `/jobs`
+- Development no longer deletes files from the Cloudinary account it shares
+  with production
+</details>
 
 <details>
 <summary><strong>August 2026 - Editor rework & exercise management</strong></summary>

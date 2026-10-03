@@ -1,0 +1,33 @@
+# Solid Queue — les jobs vivent dans les tables solid_queue_* de la base
+# principale. En production, le superviseur tourne dans Puma (plugin de
+# config/puma.rb) ; en développement, `bin/jobs` (Procfile.dev).
+#
+# Chaque worker est un processus à part, avec son propre pool de connexions
+# (RAILS_MAX_THREADS, 5 par défaut) : ses threads doivent rester en dessous.
+default: &default
+  dispatchers:
+    - polling_interval: 1
+      batch_size: 500
+  workers:
+    # Les PDF un par un, comme la capsule Sidekiq le faisait : chaque élève
+    # ouvre une session dans le Chrome partagé (browserless), autant ne pas
+    # les empiler.
+    - queues: pdf
+      threads: 1
+      processes: 1
+      polling_interval: 1
+    # Tout le reste : mails, analyse et purge des pièces jointes. Pas de "*" :
+    # ce worker prendrait aussi la file pdf.
+    - queues: [default, mailers]
+      threads: 3
+      processes: 1
+      polling_interval: 1
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

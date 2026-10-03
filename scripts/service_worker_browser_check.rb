@@ -35,6 +35,8 @@ CAS = [
   ["une page mobile se garde pour le hors réseau", "/mobile/work_plans", {}, "donnees"],
   ["une fiche élève aussi", "/mobile/classrooms/1/students/2", {}, "donnees"],
   ["le bundle et la feuille se gardent à part", "/assets/application-abc.js", { mode: "no-cors" }, "coque"],
+  ["le tableau des jobs ne passe pas par la coque", "/assets/mission_control/jobs/bulma.min-abc.css",
+   { mode: "no-cors" }, "passe"],
   ["une écriture ne se met JAMAIS en cache", "/work_plan_skills/42/eval_update",
    { methode: "PATCH", mode: "cors" }, "passe"],
   ["la déconnexion efface les données d'élèves", "/users/sign_out", {}, "purge"],
