@@ -163,6 +163,8 @@ class WorkPlanSkillsController < ApplicationController
   # n'importe où.
   def add_validated_wps
     skills_and_student = get_all_skills_to_add_completed_wps # call private method to get all the needed skills to be completed
+    return aucune_competence_cochee unless skills_and_student
+
     skills = skills_and_student[:skills]
     @student = authorize skills_and_student[:student], :update?
     @domain = skills.first.domain # get domain to work on
@@ -188,6 +190,20 @@ class WorkPlanSkillsController < ApplicationController
   end
 
   private
+
+  # Valider sans rien cocher n'envoie que le champ vide de simple_form : il n'y
+  # a rien à faire, on le dit au lieu de tomber en 500.
+  def aucune_competence_cochee
+    student = authorize Student.find(params[:student_id]), :update?
+    message = "Cochez au moins une compétence à valider."
+    respond_to do |format|
+      format.turbo_stream do
+        flash.now[:alert] = message
+        render turbo_stream: turbo_stream.prepend("flash", partial: "shared/flashes")
+      end
+      format.html { redirect_to student_path(student), alert: message }
+    end
+  end
 
   # PARAMS METHOD
   def set_data_show
