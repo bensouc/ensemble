@@ -6,6 +6,14 @@ class SkillPolicy < ApplicationPolicy
     end
   end
 
+  # Une compétence appartient à son école par deux chemins, `school` et son
+  # domaine (`domain.grade.school`) : les deux doivent désigner l'école de
+  # l'enseignant. Le domaine venait du formulaire sans contrôle, et une
+  # compétence créée sous le domaine d'une autre école s'affichait chez elle.
+  def create?
+    user.admin? || (user_is_owner_or_admin? && record.domain&.grade&.school == user.school)
+  end
+
   def show?
     user_is_owner_or_admin?
   end
