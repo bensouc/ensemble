@@ -20,9 +20,6 @@ module Ensemble
     # 30 belongs_to n'ont pas `optional: true` et n'ont jamais été validés
     # comme obligatoires : à passer en revue avant de l'imposer.
     config.active_record.belongs_to_required_by_default = false
-    # Un jeton par formulaire casse les formulaires dont le JS change l'action
-    # (addstudenttoautogen_controller.js réécrit `form.action`).
-    config.action_controller.per_form_csrf_tokens = false
     # L'inversion automatique des associations change les objets en mémoire
     # (autosave, validations) : à éprouver à part.
     config.active_record.has_many_inversing = false

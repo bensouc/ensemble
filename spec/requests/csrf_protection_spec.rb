@@ -79,6 +79,48 @@ RSpec.describe "Protection CSRF", type: :request do
     end
   end
 
+  # Le jeton que Rails pose dans un formulaire ne vaut que pour son `action`. La
+  # modale de création rapide envoie son second bouton ailleurs (`formaction`) :
+  # elle porte le jeton de session, que Rails accepte partout.
+  describe "modale de création rapide d'un plan de travail" do
+    let(:user) { create(:user) }
+    let(:classroom) { create(:classroom, user:) }
+    let(:student) { create(:student, classroom:) }
+    let(:plan) do
+      { work_plan: { name: "Semaine 41", start_date: "05/10/2026", end_date: "09/10/2026",
+                     student_id: student.id, grade_id: classroom.grade_id } }
+    end
+
+    before do
+      create(:domain, grade: classroom.grade, position: 1, name: "Numération")
+      sign_in user
+    end
+
+    def jeton_du_formulaire
+      get student_new_work_plan_modal_path(student)
+      Nokogiri::HTML(response.body).at_css('form.wp-edit-form input[name="authenticity_token"]')["value"]
+    end
+
+    it "tourne avec un jeton par formulaire" do
+      expect(ActionController::Base.per_form_csrf_tokens).to be(true)
+    end
+
+    it "accepte le bouton « Auto », qui part ailleurs que l'action du formulaire" do
+      jeton = jeton_du_formulaire
+
+      expect { post student_auto_new_wp_path(student), params: plan.merge(authenticity_token: jeton) }.
+        to change(WorkPlan, :count).by(1)
+      expect(response).to redirect_to(work_plan_path(WorkPlan.last))
+    end
+
+    it "accepte le bouton « Plan vierge »" do
+      jeton = jeton_du_formulaire
+
+      expect { post work_plans_path, params: plan.merge(authenticity_token: jeton) }.
+        to change(WorkPlan, :count).by(1)
+    end
+  end
+
   # Stripe n'a pas de jeton à présenter : c'est la signature qui l'authentifie.
   it "laisse passer le webhook Stripe sans jeton" do
     allow(Stripe::Webhook).to receive(:construct_event).and_raise(JSON::ParserError)
