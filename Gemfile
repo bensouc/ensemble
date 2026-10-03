@@ -32,8 +32,10 @@ gem "redis", "~> 4.0"
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
-# action cable with sidekiq
-gem "sidekiq"
+# Jobs en base (Postgres) : Solid Queue tourne dans Puma, sans worker à part.
+gem "solid_queue"
+# Tableau de bord des jobs, réservé aux admins (/jobs)
+gem "mission_control-jobs"
 # gem "actioncable-enhanced-postgresql-adapter" back to Redis for Action Cable
 
 # Admin

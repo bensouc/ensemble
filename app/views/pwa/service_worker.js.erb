@@ -34,6 +34,10 @@ function strategiePour({ url, method, mode }) {
   if (chemin.startsWith("/users/sign_out")) return "purge";
   // Un PDF ne se met pas en cache : il est lourd, daté, et se régénère.
   if (chemin.includes("/export")) return "passe";
+  // Le tableau de bord des jobs (/jobs, admins seulement) n'a rien à faire hors
+  // ligne. Servis par la coque, ses assets ne chargeaient pas : la page sortait
+  // sans style ni JavaScript, alors qu'ils se chargent sans le service worker.
+  if (chemin.startsWith("/assets/mission_control/")) return "passe";
   if (chemin.startsWith("/assets/")) return "coque";
   if (mode === "navigate" && chemin.startsWith("/mobile")) return "donnees";
 

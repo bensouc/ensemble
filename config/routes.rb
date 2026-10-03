@@ -1,14 +1,13 @@
 # rubocop:disable all
-require "sidekiq/web"
 Rails.application.routes.draw do
   # Healthcheck pour Coolify / Traefik (renvoie 200 si l'app est debout).
   # Équivaut au rails/health par défaut de Rails 7.1.
   get "up" => "rails/health#show", as: :rails_health_check
 
   mount RailsAdmin::Engine => "/admin", as: "rails_admin"
-  # routes for sidekiq dashboard
+  # Tableau de bord des jobs (Solid Queue), réservé aux admins
   authenticate :user, lambda { |u| u.admin? } do
-    mount Sidekiq::Web => "/sidekiq"
+    mount MissionControl::Jobs::Engine, at: "/jobs"
   end
   # Boîte de réception locale : tous les mails produits par l'app, sans envoi.
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?

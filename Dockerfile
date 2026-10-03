@@ -10,7 +10,8 @@
 #   2. build  : installe gems + JS + compile les assets  (JETÉ à la fin)
 #   3. final  : base + Chromium + le résultat copié depuis "build"
 #
-# La même image sert pour le web (Puma) ET pour le worker (Sidekiq) : seule la
+# La même image sert pour le web (Puma, qui porte aussi les jobs Solid Queue)
+# et pour un éventuel conteneur de jobs dédié (bin/jobs) : seule la
 # commande de démarrage change (gérée côté Coolify).
 # -----------------------------------------------------------------------------
 
@@ -135,7 +136,7 @@ FROM base
 #  - chromium          : navigateur headless pour la génération de PDF (Ferrum/Grover)
 #  - fonts-*           : polices, sinon les PDF rendent mal les accents/emojis
 #  - tini              : init minimal (PID 1) qui moissonne les process enfants.
-#                        Puma/Sidekiq ne reap pas les zombies ; sans tini les
+#                        Puma et les jobs ne reap pas les zombies ; sans tini les
 #                        Chromium enfants s'accumulent en <defunct> et finissent
 #                        par bloquer les lancements (timeouts intermittents).
 RUN apt-get update -qq && \
@@ -181,5 +182,5 @@ ENTRYPOINT ["/usr/bin/tini", "--", "/rails/bin/docker-entrypoint"]
 EXPOSE 3000
 
 # Commande par défaut = serveur web Puma (identique au Procfile actuel).
-# Le conteneur worker Sidekiq surchargera cette commande côté Coolify.
+# Les jobs Solid Queue démarrent avec Puma (plugin de config/puma.rb).
 CMD ["bundle", "exec", "puma", "-C", "config/puma.rb"]

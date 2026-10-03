@@ -33,6 +33,10 @@ routes.default_url_options[:host] = 'localhost:3000'
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
 
+  # Les jobs restent en mémoire : une spec vérifie qu'ils sont mis en file, sans
+  # dépendre des tables de Solid Queue ni d'un worker.
+  config.active_job.queue_adapter = :test
+
   # Store uploaded files on the local file system in a temporary directory.
   config.active_storage.service = :test
 
