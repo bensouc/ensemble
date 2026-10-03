@@ -19,7 +19,9 @@ class WorkPlanDomainsController < ApplicationController
   def create
     @work_plan = WorkPlan.find(params_wp_id)
     authorize @work_plan, :update?
-    @domain = Domain.find(work_plan_domain_params[:domain])
+    # Le domaine vient du formulaire : celui de son école seulement, sans quoi le
+    # plan se garnissait des compétences et des exercices d'une autre.
+    @domain = authorize Domain.find(work_plan_domain_params[:domain]), :show?
     @work_plan_domain = WorkPlanDomain.new(domain: @domain, level: work_plan_domain_params[:level].to_i) # remove, student: @work_plan.student
     kind = params.require(:kind)
     @work_plan_domain.work_plan = @work_plan
