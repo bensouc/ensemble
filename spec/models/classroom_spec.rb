@@ -104,4 +104,22 @@ RSpec.describe Classroom, type: :model do
       end
     end
   end
+
+  # La page des résultats d'une classe passe par cette méthode. Elle filtrait
+  # avec `students:`, que Rails 7.2 ne ramène plus à l'association `student` :
+  # PG::UndefinedColumn sur `results.students`, et une page 500 en production.
+  describe "#completed_results_by_domain" do
+    let(:classroom) { create(:classroom) }
+    let(:domaine) { create(:domain, grade: classroom.grade) }
+    let(:competence) { create(:skill, domain: domaine) }
+    let!(:eleve) { create(:student, classroom:) }
+    let!(:autre_classe) { create(:student) }
+
+    it "donne, élève par élève, ses ceintures acquises dans le domaine" do
+      acquise = create(:result, student: eleve, skill: competence, status: "completed", kind: "ceinture")
+      create(:result, student: autre_classe, skill: competence, status: "completed", kind: "ceinture")
+
+      expect(classroom.completed_results_by_domain(domaine)).to eq(eleve => [acquise])
+    end
+  end
 end

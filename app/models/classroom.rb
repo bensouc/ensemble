@@ -77,7 +77,10 @@ class Classroom < ApplicationRecord
   def completed_results_by_domain(domain)
     # {student_id: Result.where(skills: domain.skills, student: student)}
     results = {}
-    temp_results = Result.includes([:student, :skill]).where(skill: domain.skills, students: students)
+    # `student:` et non `students:` : Rails 7.2 ne rattrape plus le pluriel d'une
+    # association `belongs_to`. La requête cherchait une colonne
+    # `results.students` et la page des résultats tombait en 500.
+    temp_results = Result.includes([:student, :skill]).where(skill: domain.skills, student: students)
     students.each do |student|
       results[student] = temp_results.select do |result|
         result.student == student && result.status == "completed" && result.kind == "ceinture"
