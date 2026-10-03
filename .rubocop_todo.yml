@@ -98,12 +98,6 @@ Layout/TrailingEmptyLines:
   Exclude:
     - 'config/initializers/rack_attack.rb'
 
-# Offense count: 1
-# Configuration parameters: DebuggerMethods, DebuggerRequires.
-Lint/Debugger:
-  Exclude:
-    - 'app/controllers/skills_controller.rb'
-
 # Offense count: 3
 # Configuration parameters: MaximumRangeSize.
 Lint/MissingCopEnableDirective:
