@@ -91,4 +91,19 @@ RSpec.describe User, type: :model do
     end
   end
 
+  # Sans prénom (un invité qui n'a pas encore accepté), `first_name.capitalize`
+  # levait NoMethodError : tableau de bord, cartes de classes partagées, plans.
+  describe "#short_name" do
+    it "donne le prénom seul, sans les espaces de saisie" do
+      expect(build(:user, first_name: " léa ", last_name: "martin").short_name).to eq("Léa")
+    end
+
+    it "se rabat sur le nom quand le prénom manque" do
+      expect(build(:user, first_name: nil, last_name: "martin").short_name).to eq("Martin")
+    end
+
+    it "puis sur l'email, quand l'identité manque encore" do
+      expect(build(:user, first_name: " ", last_name: nil, email: "invite@ecole.fr").short_name).to eq("invite@ecole.fr")
+    end
+  end
 end

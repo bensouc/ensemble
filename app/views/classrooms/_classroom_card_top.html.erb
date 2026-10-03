@@ -33,7 +33,7 @@
 	</div>
 	<div class="sharing-details">
 		<% if classroom.user != current_user%>
-			<h6>Classe Partagée par <%= classroom.user.first_name.capitalize  %>  </h6>
+			<h6>Classe Partagée par <%= classroom.user.short_name %>  </h6>
 		<% end %>
 		<% if classroom.user == current_user && classroom.shared?%>
 			<h6>Classe Partagée  </h6>

@@ -17,7 +17,7 @@ class ImpersonationsController < ApplicationController
     impersonate_user(user)
     log_impersonation("début", user)
     redirect_to dashboard_path,
-                notice: "Vous naviguez maintenant en tant que #{user.first_name} #{user.last_name}."
+                notice: "Vous naviguez maintenant en tant que #{user.display_name}."
   end
 
   def destroy
