@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 class Skill < ApplicationRecord
-  belongs_to :school
-  belongs_to :domain
+  # `optional` : les colonnes acceptent NULL en base. À resserrer (NOT NULL, puis
+  # `optional` retiré) une fois les lignes vides comptées en production.
+  belongs_to :school, optional: true
+  belongs_to :domain, optional: true
   has_many :work_plan_skills, dependent: :destroy
   has_many :results, dependent: :destroy
   has_many :challenges, dependent: :destroy

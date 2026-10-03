@@ -1,5 +1,7 @@
 class Grade < ApplicationRecord
-  belongs_to :school
+  # `optional` : la colonne accepte NULL en base. À resserrer (NOT NULL, puis
+  # `optional` retiré) une fois les lignes vides comptées en production.
+  belongs_to :school, optional: true
   has_many :classrooms, dependent: :destroy
   has_many :work_plans, dependent: :destroy
   has_many :domains, dependent: :destroy

@@ -33,7 +33,9 @@ class Belt < ApplicationRecord
   # =================================================
   # ASSOCIATIONS
   belongs_to :student
-  belongs_to :domain
+  # `optional` : la colonne accepte NULL en base. À resserrer (NOT NULL, puis
+  # `optional` retiré) une fois les lignes vides comptées en production.
+  belongs_to :domain, optional: true
   scope :completed, -> { where(completed: true) }
   # =================================================
   # VALIDATIONS

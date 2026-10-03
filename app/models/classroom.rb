@@ -3,7 +3,9 @@
 class Classroom < ApplicationRecord
   GRADE = %w[CP CE1 CE2 CM1 CM2].freeze
   belongs_to :user
-  belongs_to :grade # to remove for first migration Of Grade MODEL
+  # `optional` : la colonne accepte NULL en base. À resserrer (NOT NULL, puis
+  # `optional` retiré) une fois les lignes vides comptées en production.
+  belongs_to :grade, optional: true
 
   has_many :students, dependent: :destroy
   # `dependent: nil` face à une clé étrangère en RESTRICT : détruire une classe

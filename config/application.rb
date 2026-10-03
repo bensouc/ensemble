@@ -17,9 +17,6 @@ module Ensemble
     # --- Réglages tenus à l'ancien comportement, chacun pour une raison. Les
     # retirer un à un, dans leur propre PR, une fois la raison levée.
 
-    # 30 belongs_to n'ont pas `optional: true` et n'ont jamais été validés
-    # comme obligatoires : à passer en revue avant de l'imposer.
-    config.active_record.belongs_to_required_by_default = false
     # Suivre les variantes en base les recalculerait toutes à la première
     # visite, depuis des originaux dont certains ont disparu de Cloudinary.
     config.active_storage.track_variants = false

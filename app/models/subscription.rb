@@ -1,5 +1,7 @@
 class Subscription < ApplicationRecord
-  belongs_to :school
+  # `optional` : la colonne accepte NULL en base. À resserrer (NOT NULL, puis
+  # `optional` retiré) une fois les lignes vides comptées en production.
+  belongs_to :school, optional: true
 
   # Les huit premiers sont ceux que Stripe émet. `incomplete_expired` et `paused`
   # manquaient : un enum lève ArgumentError sur une valeur inconnue, donc le
