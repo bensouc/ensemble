@@ -192,8 +192,6 @@ GEM
       sassc (~> 2.0)
     globalid (1.3.0)
       activesupport (>= 6.1)
-    grover (1.2.6)
-      nokogiri (~> 1)
     htmlbeautifier (1.4.3)
     htmlentities (4.4.2)
     http-accept (1.7.0)
@@ -209,9 +207,6 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    jbuilder (2.14.1)
-      actionview (>= 7.0.0)
-      activesupport (>= 7.0.0)
     jsbundling-rails (1.3.1)
       railties (>= 6.0.0)
     json (2.19.9)
@@ -271,18 +266,6 @@ GEM
     mini_mime (1.1.5)
     minitest (6.0.1)
       prism (~> 1.5)
-    mobile (0.0.1)
-      activesupport
-      rails
-    monetize (1.13.0)
-      money (~> 6.12)
-    money (6.19.0)
-      i18n (>= 0.6.4, <= 2)
-    money-rails (1.15.0)
-      activesupport (>= 3.0)
-      monetize (~> 1.9)
-      money (~> 6.13)
-      railties (>= 3.0)
     msgpack (1.8.5)
     mutex_m (0.3.0)
     nested_form (0.3.2)
@@ -410,8 +393,6 @@ GEM
       io-console (~> 0.5)
     request_store (1.7.0)
       rack (>= 1.4)
-    requestjs-rails (0.0.12)
-      railties (>= 6.1.0)
     responders (3.2.0)
       actionpack (>= 7.0)
       railties (>= 7.0)
@@ -421,9 +402,6 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.4.4)
-    roo (2.10.1)
-      nokogiri (~> 1)
-      rubyzip (>= 1.3.0, < 3.0.0)
     rspec-core (3.13.6)
       rspec-support (~> 3.13.0)
     rspec-expectations (3.13.5)
@@ -483,8 +461,6 @@ GEM
       logger
       rack (>= 2.2.4, < 3.3)
       redis-client (>= 0.23.0, < 1)
-    simple_calendar (2.4.3)
-      rails (>= 3.0)
     simple_form (5.4.1)
       actionpack (>= 7.0)
       activemodel (>= 7.0)
@@ -498,10 +474,6 @@ GEM
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
     slack-notifier (2.4.0)
-    spring (2.1.1)
-    spring-watcher-listen (2.0.1)
-      listen (>= 2.7, < 4.0)
-      spring (>= 1.2, < 3.0)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -515,8 +487,6 @@ GEM
     stripe_event (2.14.0)
       activesupport (>= 3.1)
       stripe (>= 2.8, < 19)
-    sweetalert2 (7.25.6)
-      railties (>= 3.1.0)
     syntax_tree (6.3.0)
       prettier_print (>= 1.2.0)
     thor (1.5.0)
@@ -570,7 +540,6 @@ DEPENDENCIES
   browser
   bullet
   bundler-audit
-  byebug
   capybara (>= 2.15)
   caxlsx
   caxlsx_rails
@@ -586,16 +555,12 @@ DEPENDENCIES
   faker
   ferrum
   font-awesome-sass
-  grover
   htmlbeautifier
   image_processing (~> 1.2)
-  jbuilder (~> 2.7)
   jsbundling-rails
   letter_opener_web
   listen (~> 3.2)
   lograge
-  mobile
-  money-rails (~> 1.12)
   pg (>= 0.18, < 2.0)
   pretender
   pry-byebug
@@ -609,23 +574,17 @@ DEPENDENCIES
   rails_admin (~> 3.0)
   recaptcha
   redis (~> 4.0)
-  requestjs-rails
-  roo (~> 2.10.0)
   rspec-rails
   rubocop-rails
   sassc-rails
   shoulda-matchers (~> 4.0)
   sidekiq
-  simple_calendar (~> 2.4)
   simple_form
   simple_xlsx_reader (~> 1.0, >= 1.0.4)
   simplecov
   slack-notifier
-  spring
-  spring-watcher-listen (~> 2.0.0)
   stripe
   stripe_event
-  sweetalert2
   turbo-rails
   tzinfo-data
   unread

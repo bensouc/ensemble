@@ -36,11 +36,11 @@
 			<%= yield %>
 		<% elsif ["pages"].include?(params[:controller])%>
 			<%= yield %>
-			<% unless is_mobile_device? %>
+			<% unless mobile_device? %>
 				<%= render "shared/home_footer" %>
 			<% end %>
 		<% else %>
-			<% unless is_mobile_device? %>
+			<% unless mobile_device? %>
 				<div class="navgauche" >
 					<%= render "shared/nav_gauche" %>
 				</div>

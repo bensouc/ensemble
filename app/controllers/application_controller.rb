@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
   before_action :set_unread_messages, if: :user_signed_in?
   before_action :forbid_sensitive_action_while_impersonating
   include Pundit::Authorization
+  include MobileDevice
 
   helper_method :impersonating?
 
