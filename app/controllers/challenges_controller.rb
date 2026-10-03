@@ -13,7 +13,8 @@ class ChallengesController < ApplicationController
 
   def index
     # binding.pry
-    redirect_to classrooms_path if current_user.classrooms.empty? && current_user.shared_classrooms.empty?
+    return redirect_to classrooms_path if current_user.classrooms.empty? && current_user.shared_classrooms.empty?
+
     # "/challenges"=>{"grade"=>"CE2", "domain"=>"26", "level"=>"1", "skills"=>"11067"}
     set_filters
     challenges = Challenge.includes([:rich_text_content, :work_plan_skills, :skill,
@@ -33,7 +34,7 @@ class ChallengesController < ApplicationController
   end
 
   def show
-    skip_authorization
+    authorize @challenge
   end
 
   def new
@@ -45,7 +46,7 @@ class ChallengesController < ApplicationController
   end
 
   def edit
-    skip_authorization
+    authorize @challenge
   end
 
   def create
@@ -71,9 +72,7 @@ class ChallengesController < ApplicationController
   end
 
   def update
-    # @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
-    # authorize @challenge
-    skip_authorization
+    authorize @challenge
     if @challenge.update(challenge_params)
       respond_to do |format|
         format.html do
@@ -104,9 +103,11 @@ class ChallengesController < ApplicationController
     end
   end
 
+  # La copie garde la compétence de l'original, et prend la place de l'exercice
+  # dans le plan : on autorise les deux, l'exercice copié et le plan modifié.
   def clone
-    # authorize @challenge
-    skip_authorization
+    authorize @challenge, :clone?
+    authorize @work_plan_skill, :change_challenge?
     new_challenge = @challenge.new_clone
     new_challenge.user = current_user
     new_challenge.save!
@@ -201,7 +202,8 @@ class ChallengesController < ApplicationController
   end
 
   def display_challenges
-    skip_authorization
+    authorize @challenge
+    authorize @work_plan_skill, :show?
     # `classic` manquait : les exercices de ceinture apparaissaient dans le
     # carrousel de remplacement, alors que le bouton qui l'ouvre ne compte que
     # les exercices classiques.
@@ -319,10 +321,12 @@ class ChallengesController < ApplicationController
       @level = 1
       @domain = @domains.first unless @domains.nil?
     else
-      @grade = Grade.find(params.require("/challenges").permit(:grade)[:grade])
+      # Le niveau et le domaine viennent de la requête : sans contrôle, l'index
+      # listait les exercices de n'importe quelle école à qui en donnait les ids.
+      @grade = authorize Grade.find(params.require("/challenges").permit(:grade)[:grade]), :show?
       @domains = @grade.domains
       @level = params.require("/challenges").permit(:grade, :level, :domain)[:level]
-      @domain = Domain.find(params.require("/challenges").permit(:grade, :level, :domain)[:domain])
+      @domain = authorize Domain.find(params.require("/challenges").permit(:grade, :level, :domain)[:domain]), :show?
       # @skill = Skill.find(params.require("/challenges").permit(:skills)[:skills])
       # skill_id = params.require("/challenges").permit(:grade, :level, :domain)[:skills].to_i
     end
@@ -342,7 +346,12 @@ class ChallengesController < ApplicationController
     @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
   end
 
+  # Ni `skill_id` ni `for_belt` : changer un exercice de compétence passe par
+  # `transfer`, qui garde le domaine et refuse un exercice déjà utilisé. Les
+  # accepter ici contournait ces règles, jusqu'à ranger l'exercice sous la
+  # compétence d'une autre école. Le formulaire, partagé avec la création, les
+  # envoie toujours en champs cachés : ils sont simplement ignorés.
   def challenge_params
-    params.require(:challenge).permit(:content, :name, :skill_id, :for_belt)
+    params.require(:challenge).permit(:content, :name)
   end
 end
