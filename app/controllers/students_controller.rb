@@ -4,7 +4,7 @@ class StudentsController < ApplicationController
   before_action :set_student, only: %i[show]
 
   def show
-    skip_authorization
+    authorize @student
     respond_to do |format|
       format.html do
         @belt = Belt::BELT_COLORS
@@ -21,40 +21,38 @@ class StudentsController < ApplicationController
   end
 
   def new
-    skip_authorization
     @classroom = Classroom.find(classroom_params_id)
-    @student = Student.new(classroom_id: @classroom.id)
+    @student = Student.new(classroom: @classroom)
+    authorize @student, :create?
   end
 
   def create
-    skip_authorization
-    student = {
-      first_name: params_student[:first_name],
-      classroom_id: params_student[:classroom].to_i
-    }
-    @student = Student.create!(student)
+    classroom = Classroom.find(params_student[:classroom])
+    @student = Student.new(first_name: params_student[:first_name], classroom:)
+    authorize @student
+    @student.save!
     redirect_to classrooms_path
   end
 
   def update
-    skip_authorization
     @student = Student.find(params[:id])
+    authorize @student
     @student.first_name = params_student_edit_name[:first_name]
     @student.save
     redirect_to classrooms_path
   end
 
   def destroy
-    skip_authorization
     @student = Student.find(params[:id])
+    authorize @student
     @student.destroy
     redirect_to classrooms_path
   end
 
   def new_validated_wps
     # create the view for add validated skills on student
-    skip_authorization
     @student = Student.includes(:classroom).find(params_add_validated_wps[:student_id])
+    authorize @student, :update?
     student_grade = @student.grade
     @special_work_plan = WorkPlan.find_or_create_by(student: @student, grade: student_grade, special_wps: true)
     domain = Domain.find(params_add_validated_wps[:domain])

@@ -25,6 +25,21 @@ class StudentPolicy < ApplicationPolicy
     ClassroomPolicy.new(user, record.classroom).show?
   end
 
+  # Ajouter, renommer, supprimer un élève, lui valider des compétences : qui voit
+  # la classe y gère ses élèves. Le contrôleur sautait l'autorisation, et un
+  # enseignant d'une autre école pouvait supprimer un élève en donnant son id.
+  def create?
+    show?
+  end
+
+  def update?
+    show?
+  end
+
+  def destroy?
+    show?
+  end
+
   # Transférer un élève reste interne à son école.
   def transfer?
     user.admin? || record.school == user.school
