@@ -38,10 +38,10 @@ class ContactController < ApplicationController
   private
 
   def contact_params
-    params.require(:contact).permit(:first_name, :last_name, :email, :school, :city, :message, :discovery_method)
+    params.expect(contact: [:first_name, :last_name, :email, :school, :city, :message, :discovery_method])
   end
 
   def contact_request_params
-    params.require(:contact).permit(:first_name, :last_name, :email, :school, :city, :message, :type, :current_url)
+    params.expect(contact: [:first_name, :last_name, :email, :school, :city, :message, :type, :current_url])
   end
 end

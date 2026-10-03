@@ -259,17 +259,17 @@ class WorkPlansController < ApplicationController
   def sharing_params
     return if params[:work_plan].nil?
 
-    params.require(:work_plan).permit(:shared_user_id)
+    params.expect(work_plan: [:shared_user_id])
   end
 
   def work_plan_params
-    params.require(:work_plan).permit(:name, :student_id, :grade_id, :start_date, :end_date)
+    params.expect(work_plan: [:name, :student_id, :grade_id, :start_date, :end_date])
     # work_plan_domains_attributes: %i[domain level],
     # work_plan_skills_attributes: :name)
   end
 
   def true_wp_params
-    params.require(:work_plan).permit(:name, :student_id, :start_date, :end_date, :id)
+    params.expect(work_plan: [:name, :student_id, :start_date, :end_date, :id])
   end
 
   def wp_id
@@ -303,7 +303,7 @@ class WorkPlansController < ApplicationController
   def submitted_work_plan
     return {} if params[:work_plan].blank?
 
-    params.require(:work_plan).permit(:name, :start_date, :end_date).to_h.compact_blank.symbolize_keys
+    params.expect(work_plan: [:name, :start_date, :end_date]).to_h.compact_blank.symbolize_keys
   end
 
   # Sans aucun domaine transmis — la modale de création rapide ne les demande pas —

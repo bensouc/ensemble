@@ -219,13 +219,13 @@ class WorkPlanSkillsController < ApplicationController
   end
 
   def set_params_wpskill_challenge
-    params.require(:work_plan_skill).permit(:challenge_id)[:challenge_id]
+    params.expect(work_plan_skill: [:challenge_id])[:challenge_id]
   end
 
   def get_add_validated_wps_skill_student
     {
       student_id: params.permit(:student_id)[:student_id],
-      skill_ids: params.require(:new_wps).permit(skills: [])[:skills][1..-1]
+      skill_ids: params.expect(new_wps: [skills: []])[:skills][1..-1]
     }
   end
 

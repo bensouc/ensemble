@@ -138,11 +138,11 @@ class SkillsController < ApplicationController
   end
 
   def set_grade
-    params.require(:skill).permit(:grade)
+    params.expect(skill: [:grade])
   end
 
   def skill_params
-    params.require(:skill).permit(:name, :symbol, :level, :domain_id)
+    params.expect(skill: [:name, :symbol, :level, :domain_id])
   end
 
   # Ni domaine ni niveau : le formulaire, partagé avec la création, les renvoie en
@@ -150,7 +150,7 @@ class SkillsController < ApplicationController
   # renommée. Les accepter rangeait la compétence sous le domaine d'une autre
   # école à qui forgeait la requête.
   def skill_update_params
-    params.require(:skill).permit(:name, :symbol)
+    params.expect(skill: [:name, :symbol])
   end
 
   # get xlsx url for upload_skills

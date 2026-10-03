@@ -323,10 +323,10 @@ class ChallengesController < ApplicationController
     else
       # Le niveau et le domaine viennent de la requête : sans contrôle, l'index
       # listait les exercices de n'importe quelle école à qui en donnait les ids.
-      @grade = authorize Grade.find(params.require("/challenges").permit(:grade)[:grade]), :show?
+      @grade = authorize Grade.find(params.expect("/challenges": [:grade])[:grade]), :show?
       @domains = @grade.domains
-      @level = params.require("/challenges").permit(:grade, :level, :domain)[:level]
-      @domain = authorize Domain.find(params.require("/challenges").permit(:grade, :level, :domain)[:domain]), :show?
+      @level = params.expect("/challenges": [:grade, :level, :domain])[:level]
+      @domain = authorize Domain.find(params.expect("/challenges": [:grade, :level, :domain])[:domain]), :show?
       # @skill = Skill.find(params.require("/challenges").permit(:skills)[:skills])
       # skill_id = params.require("/challenges").permit(:grade, :level, :domain)[:skills].to_i
     end
@@ -334,7 +334,7 @@ class ChallengesController < ApplicationController
   end
 
   def set_challenge_params
-    params.require(:challenge).permit(:skill_id, :content, :name, :for_belt)
+    params.expect(challenge: [:skill_id, :content, :name, :for_belt])
   end
 
   def set_challenge
@@ -352,6 +352,6 @@ class ChallengesController < ApplicationController
   # compétence d'une autre école. Le formulaire, partagé avec la création, les
   # envoie toujours en champs cachés : ils sont simplement ignorés.
   def challenge_params
-    params.require(:challenge).permit(:content, :name)
+    params.expect(challenge: [:content, :name])
   end
 end

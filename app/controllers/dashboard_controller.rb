@@ -21,6 +21,6 @@ class DashboardController < ApplicationController
   private
 
   def discovery_params
-    params.require(:discovery_method).permit(:discovery_method)
+    params.expect(discovery_method: [:discovery_method])
   end
 end

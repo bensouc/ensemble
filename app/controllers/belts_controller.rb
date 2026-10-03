@@ -102,6 +102,6 @@ class BeltsController < ApplicationController
 
   def new_belt_params
     # binding.pry
-    params.require(:belt).permit(:domain_id, :level, :validated_date)
+    params.expect(belt: [:domain_id, :level, :validated_date])
   end
 end

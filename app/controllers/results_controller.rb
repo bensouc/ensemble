@@ -38,6 +38,6 @@ class ResultsController < ApplicationController
   end
 
   def result_params
-    params.require(:result).permit(:student_id, :skill_id, :status, :kind)
+    params.expect(result: [:student_id, :skill_id, :status, :kind])
   end
 end

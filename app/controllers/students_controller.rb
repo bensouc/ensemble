@@ -94,7 +94,7 @@ class StudentsController < ApplicationController
   end
 
   def params_student_edit_name
-    params.require(:student).permit(:first_name)
+    params.expect(student: [:first_name])
   end
 
   def classroom_params_id
