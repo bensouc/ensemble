@@ -6,15 +6,14 @@ class SharedClassroomsController < ApplicationController
     classroom = Classroom.find(set_classroom)
     authorize SharedClassroom.new(classroom: classroom)
     teachers = @teachers_ids.map { |t| User.find(t) }
-    teachers.each do |teacher|
-      shared_classroom = SharedClassroom.new(
-        user_id: teacher.id,
-        classroom: classroom
-      )
+    # Chaque destinataire est vérifié avant le premier partage : un refus au
+    # milieu laisserait la classe partagée à moitié.
+    shared_classrooms = teachers.map { |teacher| authorize SharedClassroom.new(user: teacher, classroom:) }
+    shared_classrooms.each do |shared_classroom|
       next if shared_classroom.save
 
       redirect_to classrooms_path,
-                  alert: "Un partage a échoué, cette classe est déjà partagée avec #{teacher.short_name}"
+                  alert: "Un partage a échoué, cette classe est déjà partagée avec #{shared_classroom.user.short_name}"
       return
     end
     message = current_user.first_name + " a partagé avec vous la classe " + classroom.name.to_s

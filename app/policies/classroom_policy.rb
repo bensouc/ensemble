@@ -8,7 +8,7 @@ class ClassroomPolicy < ApplicationPolicy
 
   def create?
     # test demo, return true if authorize
-    user_is_owner_or_admin? && create_classroom_demo? && sub_limit?
+    user_is_owner_or_admin? && niveau_de_l_ecole? && create_classroom_demo? && sub_limit?
   end
 
   def results?
@@ -32,6 +32,13 @@ class ClassroomPolicy < ApplicationPolicy
     user_is_owner_or_admin?
   end
 
+  # Renommer la classe : qui la voit dans sa liste, partage compris. Le
+  # contrôleur sautait l'autorisation, n'importe quel enseignant renommait la
+  # classe d'une autre école en donnant son id.
+  def update?
+    user_is_owner_or_admin?
+  end
+
   def generate_pdfs?
     user_is_owner_or_admin?
   end
@@ -41,6 +48,12 @@ class ClassroomPolicy < ApplicationPolicy
   end
 
   private
+
+  # Le niveau vient du formulaire : une classe ouverte sur le niveau d'une autre
+  # école en donnait les compétences et les exercices.
+  def niveau_de_l_ecole?
+    user.admin? || record.grade.nil? || record.grade.school == user.school
+  end
 
   # `user.admin? || user.demo ? … : true` se lisait `(admin? || demo) ? … : true` :
   # l'admin tombait dans la branche démo et restait plafonné à une seule classe.

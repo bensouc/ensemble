@@ -6,8 +6,10 @@ class SharedClassroomPolicy < ApplicationPolicy
     end
   end
 
+  # Partager sa classe, c'est ouvrir ses élèves : à un collègue de l'école, pas
+  # à n'importe quel compte désigné par son id.
   def create?
-    user_is_owner_or_admin?
+    user_is_owner_or_admin? && (record.user.nil? || user.admin? || user.collegues.include?(record.user))
   end
 
   # Deux personnes peuvent défaire un partage : celle qui le subit, pour quitter
