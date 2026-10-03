@@ -10,7 +10,10 @@ class ConversationsController < ApplicationController
     skip_policy_scope
     # @user = User.includes([:avatar_attachment]).find(current_user.id)
     if params[:conversation_id].present?
-      @conversation = Conversation.includes(messages: [:user, :rich_text_content]).find(params[:conversation_id])
+      # Désignée par la requête : sans contrôle, n'importe quelle conversation
+      # s'affichait — et se marquait lue — chez qui en donnait l'id.
+      @conversation = authorize Conversation.includes(messages: [:user, :rich_text_content]).
+        find(params[:conversation_id]), :show?
       @collegue_not_in_conversation = @collegues_with_avatars.reject do |collegue|
         @conversation.users.include?(collegue)
       end
@@ -22,9 +25,8 @@ class ConversationsController < ApplicationController
   end
 
   def contact_user
-    @contact = User.find(params[:contact_id])
+    @contact = authorize User.find(params[:contact_id]), :contact?
     # la creation d'un conversation doit se faire avec comme paramas le conversation_type ()
-    skip_authorization
     @conversation = Conversation.find_or_create_classic_conversation(current_user, @contact)
     @collegue_not_in_conversation = current_user.collegues_with_avatars.reject do |collegue|
       @conversation.users.include?(collegue)
@@ -45,7 +47,7 @@ class ConversationsController < ApplicationController
   end
 
   def add_user
-    @new_user = User.find(params[:new_user_id])
+    @new_user = authorize User.find(params[:new_user_id]), :contact?
     @conversation.add_user!(@new_user)
     @collegue_not_in_conversation = current_user.collegues_with_avatars.reject do |collegue|
       @conversation.users.include?(collegue)
