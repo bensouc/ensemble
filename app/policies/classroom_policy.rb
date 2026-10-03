@@ -32,6 +32,13 @@ class ClassroomPolicy < ApplicationPolicy
     user_is_owner_or_admin?
   end
 
+  # Renommer la classe : qui la voit dans sa liste, partage compris. Le
+  # contrôleur sautait l'autorisation, n'importe quel enseignant renommait la
+  # classe d'une autre école en donnant son id.
+  def update?
+    user_is_owner_or_admin?
+  end
+
   def generate_pdfs?
     user_is_owner_or_admin?
   end

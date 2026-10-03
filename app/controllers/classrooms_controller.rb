@@ -27,7 +27,7 @@ class ClassroomsController < ApplicationController
   end
 
   def update
-    skip_authorization
+    authorize @classroom
     @classroom.name = set_classroom_params[:name]
     @classroom.name = nil if @classroom.name == ""
     @classroom.save!
