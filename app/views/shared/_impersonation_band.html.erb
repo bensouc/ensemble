@@ -6,7 +6,7 @@
 	<div class="impersonation-band">
 		<div class="impersonation-band-text">
 			<i class="fa-solid fa-user-secret me-2"></i>
-			Vous naviguez en tant que <strong><%= current_user.first_name %> <%= current_user.last_name %></strong>
+			Vous naviguez en tant que <strong><%= current_user.display_name %></strong>
 			<span class="impersonation-band-warning">— vos modifications portent sur son compte</span>
 		</div>
 		<%= button_to stop_impersonation_path, method: :delete, class: "impersonation-band-exit" do %>

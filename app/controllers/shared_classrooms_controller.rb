@@ -14,7 +14,7 @@ class SharedClassroomsController < ApplicationController
       next if shared_classroom.save
 
       redirect_to classrooms_path,
-                  alert: "Un partage a échoué, cette classe est déjà partagée avec #{teacher.first_name.capitalize}"
+                  alert: "Un partage a échoué, cette classe est déjà partagée avec #{teacher.short_name}"
       return
     end
     message = current_user.first_name + " a partagé avec vous la classe " + classroom.name.to_s

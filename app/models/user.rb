@@ -94,6 +94,13 @@ class User < ApplicationRecord
     [first_name, last_name].filter_map { |part| part&.strip.presence&.capitalize }.join(" ").presence || email
   end
 
+  # Le prénom seul, pour saluer quelqu'un ou désigner un collègue en passant.
+  # Même repli que `display_name` quand il manque : un invité qu'un admin
+  # personnifie, ou avec qui une classe est partagée avant qu'il ait accepté.
+  def short_name
+    first_name&.strip.presence&.capitalize || display_name
+  end
+
   # `school_role` peut manquer (inscription abandonnée avant la création de
   # l'école) : la barre de navigation appelle cette méthode à chaque page, un nil
   # y rendait l'app entière inutilisable pour ce compte.

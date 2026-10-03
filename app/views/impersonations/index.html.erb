@@ -46,7 +46,7 @@
 						    autant la rendre volontaire. %>
 						<%= button_to impersonation_path(user_id: user),
 						              class: "impersonation-btn",
-						              data: { turbo_confirm: "Naviguer en tant que #{user.first_name} #{user.last_name} ?" } do %>
+						              data: { turbo_confirm: "Naviguer en tant que #{user.display_name} ?" } do %>
 							<i class="fa-solid fa-user-secret"></i>
 							<span>Prendre le contrôle</span>
 						<% end %>
