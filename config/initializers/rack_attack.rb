@@ -29,6 +29,24 @@ class Rack::Attack
     %r{^/(phpmyadmin|pma|adminer|cgi-bin|vendor)\b}i
   )
 
+  # Fail2ban applicatif : une IP qui touche 3 mauvais chemins en 1 min est
+  # bannie 1 h (toutes ses requêtes -> 403, y compris légitimes).
+  #
+  # EN PREMIER : Rack::Attack s'arrête à la première liste de blocage qui répond
+  # (`blocklisted?` fait un `any?`). Déclaré après les deux suivantes, ce filtre
+  # n'était jamais atteint sur les chemins qu'elles bloquent déjà, et le
+  # bannissement n'avait jamais lieu. Il bloque lui-même chaque mauvaise
+  # requête (403) en la comptant ; les deux suivantes restent en filet.
+  #
+  # `req.ip` est bien l'adresse du client derrière Traefik : Rack tient les
+  # adresses privées du proxy pour fiables et lit X-Forwarded-For. Sans quoi un
+  # seul scanner ferait bannir tout le monde.
+  blocklist("fail2ban: scanners") do |req|
+    Rack::Attack::Fail2Ban.filter("scan-#{req.ip}", maxretry: 3, findtime: 60, bantime: 3600) do
+      BAD_PATHS.match?(req.path) || req.get_header("HTTP_NEXT_ACTION").present?
+    end
+  end
+
   blocklist("bots: chemins de scan") { |req| BAD_PATHS.match?(req.path) }
 
   # Sondes Next.js Server Actions : l'en-tête "Next-Action" (env HTTP_NEXT_ACTION)
@@ -36,14 +54,6 @@ class Rack::Attack
   # planter exception_notification -> 403 silencieux.
   blocklist("bots: sondes Next-Action") do |req|
     req.get_header("HTTP_NEXT_ACTION").present?
-  end
-
-  # Fail2ban applicatif : une IP qui touche 3 mauvais chemins en 1 min est
-  # bannie 1 h (toutes ses requêtes -> 403, y compris légitimes).
-  blocklist("fail2ban: scanners") do |req|
-    Rack::Attack::Fail2Ban.filter("scan-#{req.ip}", maxretry: 3, findtime: 60, bantime: 3600) do
-      BAD_PATHS.match?(req.path) || req.get_header("HTTP_NEXT_ACTION").present?
-    end
   end
 
   # Anti brute-force login Devise — par IP et par email visé.
