@@ -7,7 +7,7 @@ class WorkPlansController < ApplicationController
   # And sharing
   def clone
     wp = WorkPlan.find(wp_id)
-    skip_authorization
+    authorize wp, :clone?
     # binding.pry
     # //crer des copie des WorkPlanDomain et de workplan skill
     # binding.pry
@@ -15,6 +15,7 @@ class WorkPlansController < ApplicationController
 
     # test if multiconing or simple clone/sharing
     if students.nil? || !sharing_params.nil?
+      authorize_sharing unless sharing_params.nil?
       new_wp = WorkPlan.create(
         {
           # work_plan_domain_ids: wp.work_plan_domain_ids,
@@ -50,7 +51,13 @@ class WorkPlansController < ApplicationController
       students = students.reject(&:blank?)
       students = students.reject { |n| n.to_i.negative? }
       students.delete("0")
-      students.each do |clone_student_id|
+      # Distribuer le plan, c'est en créer un par élève : la règle de la création,
+      # vérifiée pour tous AVANT la première copie — un refus au milieu laisserait
+      # la distribution à moitié faite.
+      students = students.map do |clone_student_id|
+        authorize(WorkPlan.new(student: Student.find(clone_student_id)), :create?).student
+      end
+      students.each do |student|
         new_wp = WorkPlan.create!(
           {
             # work_plan_domain_ids: wp.work_plan_domain_ids,
@@ -59,7 +66,7 @@ class WorkPlansController < ApplicationController
             user_id: current_user.id,
             start_date: wp.start_date,
             end_date: wp.end_date,
-            student_id: Student.find(clone_student_id).id
+            student_id: student.id
           }
         )
 
@@ -238,6 +245,13 @@ class WorkPlansController < ApplicationController
   end
 
   private
+
+  # Partager dépose une copie du plan chez un autre enseignant, avec un message :
+  # le destinataire désigné par la requête doit être un collègue de l'école.
+  def authorize_sharing
+    destinataire = User.find(sharing_params[:shared_user_id])
+    authorize WorkPlan.new(user: destinataire, shared_user: current_user), :share?
+  end
 
   def sharing_params
     return if params[:work_plan].nil?

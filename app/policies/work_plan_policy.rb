@@ -35,6 +35,17 @@ class WorkPlanPolicy < ApplicationPolicy
     create?
   end
 
+  # Copier un plan, c'est le lire.
+  def clone?
+    show?
+  end
+
+  # `record` est la copie partagée : elle part chez un collègue de l'école, pas
+  # chez n'importe quel compte désigné par son id.
+  def share?
+    user.admin? || user.collegues.include?(record.user)
+  end
+
   private
 
   def user_is_owner_or_admin?
