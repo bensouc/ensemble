@@ -1,5 +1,7 @@
 class Domain < ApplicationRecord
-  belongs_to :grade
+  # `optional` : la colonne accepte NULL en base. À resserrer (NOT NULL, puis
+  # `optional` retiré) une fois les lignes vides comptées en production.
+  belongs_to :grade, optional: true
   acts_as_list scope: :grade
   include Positionable
 

@@ -6,8 +6,9 @@ RSpec.describe Message, type: :model do
   let(:message) { create(:message, user: user, conversation: conversation) }
 
   describe "associations" do
-    it { is_expected.to belong_to(:user) }
-    it { is_expected.to belong_to(:conversation) }
+    # Facultatives tant que les colonnes acceptent NULL en base : voir le modèle.
+    it { is_expected.to belong_to(:user).optional }
+    it { is_expected.to belong_to(:conversation).optional }
   end
 
   describe "validations" do

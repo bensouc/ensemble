@@ -2,7 +2,9 @@
 
 class WorkPlan < ApplicationRecord
   belongs_to :user
-  belongs_to :grade # to remove for first migration Of Grade MODEL
+  # `optional` : la colonne accepte NULL en base. À resserrer (NOT NULL, puis
+  # `optional` retiré) une fois les lignes vides comptées en production.
+  belongs_to :grade, optional: true
   belongs_to :shared_user, class_name: "User", optional: true
   belongs_to :student, optional: true
 

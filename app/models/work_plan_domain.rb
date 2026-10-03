@@ -21,7 +21,9 @@ class WorkPlanDomain < ApplicationRecord
   # ASSOCIATIONS
   belongs_to :work_plan
   # belongs_to :student, optional: true
-  belongs_to :domain
+  # `optional` : la colonne accepte NULL en base. À resserrer (NOT NULL, puis
+  # `optional` retiré) une fois les lignes vides comptées en production.
+  belongs_to :domain, optional: true
   has_one :student, through: :work_plan
 
   # VALIDATIONS

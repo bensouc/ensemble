@@ -5,8 +5,11 @@ class Result < ApplicationRecord
   DIRECT = "direct".freeze
   ORIGINS = [EVALUATION, DIRECT].freeze
 
-  belongs_to :student
-  belongs_to :skill
+  # `optional` : les colonnes acceptent NULL en base, et des résultats n'ont plus
+  # d'élève (239 dans la copie locale). À resserrer une fois les lignes vides
+  # comptées en production.
+  belongs_to :student, optional: true
+  belongs_to :skill, optional: true
   validates :student,
             uniqueness: { scope: :skill, message: "Il y déjà un résultat pour cette compétnce et pour cet élève" }
   scope :completed, -> { where(status: "completed", kind: "ceinture") }

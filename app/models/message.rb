@@ -1,6 +1,8 @@
 class Message < ApplicationRecord
-  belongs_to :user
-  belongs_to :conversation
+  # `optional` : les colonnes acceptent NULL en base. À resserrer (NOT NULL, puis
+  # `optional` retiré) une fois les lignes vides comptées en production.
+  belongs_to :user, optional: true
+  belongs_to :conversation, optional: true
   has_rich_text :content
 
   acts_as_readable on: :created_at
