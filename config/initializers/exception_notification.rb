@@ -1,6 +1,12 @@
 require "exception_notification/rails"
 
 ExceptionNotification.configure do |config|
+  # Seule la production prévient. `.env` donne le webhook Slack au serveur de
+  # développement comme à la suite de tests : leurs erreurs arrivaient sur
+  # #ensemble, mêlées à celles des enseignants. Un serveur de staging tourne
+  # en RAILS_ENV=production et reste donc couvert.
+  config.ignore_if { |_exception, _options| !Rails.env.production? }
+
   # Ignore additional exception types.
   # ActiveRecord::RecordNotFound, Mongoid::Errors::DocumentNotFound, AbstractController::ActionNotFound and ActionController::RoutingError are already added.
   #
