@@ -4,7 +4,7 @@
 			<div class="content --grisC w-100">
 				<p class="m-0">Commencez une conversation</p>
 			</div>
-			<% if is_mobile_device? %>
+			<% if mobile_device? %>
 				<div class="message-date w-100">
 					<div class="conversation-name w-100 text-end">
 						<%= conversation.name %>
@@ -24,7 +24,7 @@
 						<%= message.created_at.strftime("%-d %b %H:%M") %>
 					<% end %>
 				</div>
-				<% if is_mobile_device? %>
+				<% if mobile_device? %>
 					<div class="conversation-name">
 						<%= message.conversation.name %>
 					</div>

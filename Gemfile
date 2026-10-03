@@ -15,7 +15,6 @@ gem "turbo-rails"
 
 # STRIPE setup
 # STRIPE SWITCH OFF
-gem "money-rails", "~> 1.12"
 gem "stripe"
 gem "stripe_event"
 # gem "recaptcha"
@@ -28,8 +27,6 @@ gem "puma", "~> 6.0"
 gem "sassc-rails"
 # Transpile app-like JavaScript with esbuild
 gem "jsbundling-rails"
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem "jbuilder", "~> 2.7"
 # Use Redis adapter to run Action Cable in production
 gem "redis", "~> 4.0"
 # Use Active Model has_secure_password
@@ -50,7 +47,6 @@ gem "bootsnap", ">= 1.4.2", require: false
 # Notification erroer email + slack
 gem "exception_notification"
 gem "slack-notifier"
-# add sweet alert
 gem "devise"
 # Invitation d'un collègue par email : le responsable ne choisit plus le mot de
 # passe à sa place. `invite_for` fixe la durée de validité du lien.
@@ -59,7 +55,6 @@ gem "devise_invitable"
 gem "devise_last_seen"
 # usurpation d'identité par un admin (« naviguer en tant que »)
 gem "pretender"
-gem "sweetalert2"
 gem "pundit"
 gem "autoprefixer-rails", "10.2.5"
 gem "font-awesome-sass"
@@ -72,13 +67,11 @@ gem "unread"
 
 # act_as_list help manage list
 gem "acts_as_list", "~> 0.7.2"
-gem "requestjs-rails" # help for simple JS http resquest
 # xlsx spreadsheet generation
 gem "caxlsx"
 gem "caxlsx_rails"
 # xlsx spreadsheet upload and read
 gem "simple_xlsx_reader", "~> 1.0", ">= 1.0.4"
-gem "roo", "~> 2.10.0"
 
 # reduce log size with lograge
 gem "lograge"
@@ -86,15 +79,10 @@ gem "lograge"
 # Protection bots / brute-force (throttle, blocklist, fail2ban applicatif)
 gem "rack-attack"
 
-# gem de navbar
-gem "simple_calendar", "~> 2.4"
-
-# gem for pdf-output
-gem "grover"
+# PDF : Chrome headless piloté par Ferrum
 gem "ferrum"
 
-# Mobile device detection
-gem "mobile"
+# Détection du navigateur (PagesController)
 gem "browser"
 
 # view_component — la 4.x change d'API : elle viendra avec les autres montées majeures.
@@ -112,13 +100,11 @@ group :development, :test do
   gem "dotenv-rails"
   # autoindent erb file
 
-  gem "debug", platforms: %i[mri mingw x64_mingw]
+  gem "debug", platforms: %i[mri windows]
   gem "rspec-rails"
   gem "factory_bot_rails"
   gem "shoulda-matchers", "~> 4.0"
   gem "faker"
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem "byebug", platforms: [:mri, :mingw, :x64_mingw]
 end
 
 group :development do
@@ -130,9 +116,6 @@ group :development do
   gem "bullet"
   gem "web-console", ">= 3.3.0"
   gem "listen", "~> 3.2"
-  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem "spring"
-  gem "spring-watcher-listen", "~> 2.0.0"
   gem "rubocop-rails", require: false
   # Audits de sécurité lancés par bin/ci : le code (Brakeman) et les gems
   # (avis publiés contre les versions du Gemfile.lock).
@@ -146,7 +129,7 @@ group :test do
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem "tzinfo-data", platforms: %i[windows jruby]
 
 # add cloudinary
 gem "cloudinary", "~> 1.16.0"

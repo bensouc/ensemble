@@ -8,7 +8,7 @@
               active_conversation: @conversation, ensemble_conversation: @ensemble_conversation,
               user_conversations: @user_conversations %>
 	<%# conversation = @school_conversation # Only for front dev%>
-	<% unless is_mobile_device? %>
+	<% unless mobile_device? %>
 		<%= render 'conversations/conversation', conversation: @conversation,
   collegue_not_in_conversation: @collegue_not_in_conversation %>
 	<% end %>

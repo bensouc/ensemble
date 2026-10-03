@@ -2,7 +2,6 @@ import { Controller } from "@hotwired/stimulus";
 import swal from 'sweetalert';
 import Trix from "trix"
 import Rails from "@rails/ujs"
-import { type } from "jquery";
 
 export default class extends Controller {
   static targets = ['content', 'challengeDisplay']
