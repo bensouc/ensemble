@@ -1,0 +1,16 @@
+# Solid Cache : Rails.cache en production, table solid_cache_entries de la base
+# principale. Il sert aujourd'hui aux compteurs de Rack::Attack (throttle,
+# fail2ban), qui survivent ainsi aux redéploiements.
+default: &default
+  store_options:
+    max_size: <%= 256.megabytes %>
+    namespace: <%= Rails.env %>
+
+development:
+  <<: *default
+
+test:
+  <<: *default
+
+production:
+  <<: *default

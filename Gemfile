@@ -25,8 +25,9 @@ gem "puma", "~> 6.0"
 gem "sassc-rails"
 # Transpile app-like JavaScript with esbuild
 gem "jsbundling-rails"
-# Use Redis adapter to run Action Cable in production
-gem "redis", "~> 4.0"
+# Temps réel (Action Cable) et cache (Rack::Attack) en base, sans Redis
+gem "solid_cable"
+gem "solid_cache"
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

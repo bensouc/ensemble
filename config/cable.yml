@@ -1,13 +1,19 @@
+# Action Cable : la diffusion en temps réel des messages de conversation
+# (Message#broadcast_message, en Turbo Streams). Solid Cable range les messages
+# dans la table solid_cable_messages de la base principale, que chaque serveur
+# consulte toutes les 0,1 s : plus besoin de Redis.
+#
+# En développement aussi : l'adaptateur async ne relaie que dans le processus
+# qui diffuse, et les jobs Solid Queue tournent dans des processus à part.
 development:
-  adapter: redis
-  url: redis://localhost:6379/1
-  channel_prefix: your_app_development
+  adapter: solid_cable
+  polling_interval: 0.1.seconds
+  message_retention: 1.day
 
 test:
-  adapter: async
-  channel_prefix: your_app_test
+  adapter: test
 
 production:
-  adapter: redis
-  url: <%= ENV['REDIS_URL'] %>
-  channel_prefix: your_app_production
+  adapter: solid_cable
+  polling_interval: 0.1.seconds
+  message_retention: 1.day

@@ -12,18 +12,11 @@
 Rack::Attack.enabled = Rails.env.production?
 
 class Rack::Attack
-  # Compteurs throttle/fail2ban dans Redis (cohérents entre workers Puma).
-  # Le blocklist par chemin ci-dessous ne dépend PAS du cache : il fonctionne
-  # même si Redis est indisponible (degradation gracieuse).
-  if ENV["REDIS_URL"].present?
-    self.cache.store = ActiveSupport::Cache::RedisCacheStore.new(
-      url: ENV["REDIS_URL"],
-      namespace: "rack_attack",
-      error_handler: ->(method:, returning:, exception:) do
-        Rails.logger.warn("[rack-attack] cache indisponible: #{exception.class}")
-      end
-    )
-  end
+  # Compteurs throttle/fail2ban dans Rails.cache, soit Solid Cache en production
+  # (config/cache.yml) : en base, partagés par tous les processus, et conservés
+  # d'un redéploiement à l'autre. Ils vivaient dans Redis, qui n'est plus là.
+  # Le blocklist par chemin ci-dessous ne dépend PAS du cache.
+  self.cache.store = Rails.cache
 
   # Chemins de scanners : n'existent jamais dans une app Rails -> 403 silencieux.
   BAD_PATHS = Regexp.union(
