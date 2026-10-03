@@ -28,7 +28,10 @@
               } %>
 		</div>
 		<div class="d-none">
-			<%= f.association :domain, label: false, required: :true %>
+			<%# Un champ caché et non `f.association` : simple_form y aurait mis
+			    `Domain.all`, les domaines de toutes les écoles, dans chaque
+			    formulaire de la page. %>
+			<%= f.hidden_field :domain_id %>
 			<%= f.input :level, label: false, required: :true %>
 		</div>
 		<div>
