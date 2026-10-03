@@ -10,6 +10,9 @@ class WorkPlanSkillsController < ApplicationController
   def create
     @work_plan_skill = WorkPlanSkill.new(set_params_wpskill)
     authorize @work_plan_skill
+    # La compétence vient de la requête : celle de son école seulement — son
+    # exercice serait sinon tiré de chez une autre et affiché dans le plan.
+    authorize @work_plan_skill.skill, :show?
     @work_plan_skill.challenge = @work_plan_skill.get_challenge_4_wps if @work_plan_skill.kind.downcase == "exercice"
     if @work_plan_skill.save!
       @work_plan_domain = @work_plan_skill.work_plan_domain
@@ -41,7 +44,9 @@ class WorkPlanSkillsController < ApplicationController
     @work_plan_skill = WorkPlanSkill.find(params[:id])
     # binding.pry
     authorize @work_plan_skill
-    @work_plan_skill.challenge = Challenge.find(set_params_wpskill_challenge)
+    # L'exercice choisi dans le carrousel : un exercice qu'on a le droit de lire.
+    # Un id pris tel quel affichait dans le plan l'énoncé d'une autre école.
+    @work_plan_skill.challenge = authorize Challenge.find(set_params_wpskill_challenge), :show?
 
     if @work_plan_skill.save!
       respond_to do |format|
@@ -120,7 +125,7 @@ class WorkPlanSkillsController < ApplicationController
     @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
     authorize @work_plan_skill
     @work_plan = @work_plan_skill.work_plan_domain.work_plan
-    @challenge = Challenge.find(params[:challenge])
+    @challenge = authorize Challenge.find(params[:challenge]), :show?
     @work_plan_skill.challenge = @challenge
     @work_plan_skill.save!
     render partial: "/challenges/full_challenge_display"

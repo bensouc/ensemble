@@ -315,8 +315,10 @@ RSpec.describe WorkPlansController, type: :controller do
     before { sign_in user }
     context "with valid params" do
       let(:student) { create(:student, classroom:) }
-        let(:domain1) {create(:domain, grade_id: work_plan.grade.id)}
-        let(:domain2) {create(:domain, grade_id: work_plan.grade.id)}
+        # Les domaines du niveau de l'élève : la modale ne propose qu'eux, et la
+        # génération écarte tout autre id.
+        let(:domain1) {create(:domain, grade_id: classroom.grade.id)}
+        let(:domain2) {create(:domain, grade_id: classroom.grade.id)}
       let(:params) do
         {
           "/students/#{student.id}" => {
@@ -328,7 +330,7 @@ RSpec.describe WorkPlansController, type: :controller do
         count = WorkPlan.count
         expect do
           post :auto_new_wp, params: params.merge(student_id: student.id)
-        end.to change { WorkPlan.count }.by(2)  # the creation of the work plan initial
+        end.to change { WorkPlan.count }.by(1)
         # expect(response).to redirect_to(work_plan_path(WorkPlan.last))
       end
       it "redirects to the Auto Generated WorkPlan " do

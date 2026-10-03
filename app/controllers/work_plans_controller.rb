@@ -300,7 +300,10 @@ class WorkPlansController < ApplicationController
     submitted = params[:student] || params[:"/students/#{@student.id}"]
     return @student.classroom.grade.domains.sort_by(&:position) if submitted.blank?
 
-    Domain.where(id: submitted[:domains].to_a.compact_blank).sort_by(&:position)
+    # Parmi les domaines du niveau de l'élève seulement : un id pris tel quel
+    # générait le plan sur le domaine d'une autre école, ses compétences et ses
+    # exercices.
+    @student.classroom.grade.domains.where(id: submitted[:domains].to_a.compact_blank).sort_by(&:position)
   end
 
   def multiplecloning_params(id)

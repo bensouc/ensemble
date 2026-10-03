@@ -20,8 +20,15 @@ class WorkPlanPolicy < ApplicationPolicy
   # et des classes qu'un collègue partage, comme la modale de création rapide.
   # `true` laissait n'importe quel enseignant créer un plan pour l'élève d'une
   # autre école, en donnant son id.
+  #
+  # Le niveau du plan, lui, doit être de son école ou de ses classes : `grade_id`
+  # venait du formulaire, et un plan bâti sur le niveau d'une autre école en
+  # tirait les domaines, les compétences et les exercices.
   def create?
-    user.admin? || record.student.nil? || user.all_students.include?(record.student)
+    return true if user.admin?
+    return false unless niveau_de_l_enseignant?
+
+    record.student.nil? || user.all_students.include?(record.student)
   end
 
   def update?
@@ -41,6 +48,10 @@ class WorkPlanPolicy < ApplicationPolicy
   end
 
   private
+
+  def niveau_de_l_enseignant?
+    record.grade.nil? || record.grade.school == user.school || user.classroom_grades.include?(record.grade)
+  end
 
   # Modifier, supprimer, évaluer un plan — y ajouter ou en retirer des
   # compétences : qui suit l'élève, soit les profs de sa classe, ceux du partage
