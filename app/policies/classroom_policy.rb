@@ -8,7 +8,7 @@ class ClassroomPolicy < ApplicationPolicy
 
   def create?
     # test demo, return true if authorize
-    user_is_owner_or_admin? && create_classroom_demo? && sub_limit?
+    user_is_owner_or_admin? && niveau_de_l_ecole? && create_classroom_demo? && sub_limit?
   end
 
   def results?
@@ -48,6 +48,12 @@ class ClassroomPolicy < ApplicationPolicy
   end
 
   private
+
+  # Le niveau vient du formulaire : une classe ouverte sur le niveau d'une autre
+  # école en donnait les compétences et les exercices.
+  def niveau_de_l_ecole?
+    user.admin? || record.grade.nil? || record.grade.school == user.school
+  end
 
   # `user.admin? || user.demo ? … : true` se lisait `(admin? || demo) ? … : true` :
   # l'admin tombait dans la branche démo et restait plafonné à une seule classe.

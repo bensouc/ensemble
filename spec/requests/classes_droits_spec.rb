@@ -41,4 +41,49 @@ RSpec.describe "Droits sur les classes", type: :request do
 
     expect(renommer("CE1 Les loutres")).to eq("CE1 Les loutres")
   end
+
+  # Le niveau vient du formulaire. Une classe ouverte sur le niveau d'une autre
+  # école en donnait les compétences et les exercices, par l'index des exercices
+  # qui part des niveaux de ses classes.
+  describe "création" do
+    # Un compte démo échappe au plafond de l'abonnement : seul le niveau décide.
+    before do
+      enseignant.update!(demo: true)
+      sign_in enseignant
+    end
+
+    def creer_sur(niveau)
+      post classrooms_path, params: { classroom: { grade_id: niveau.id, name: "CE1 B" } }
+    end
+
+    it "refuse le niveau d'une autre école" do
+      expect { creer_sur(create(:grade)) }.not_to change(Classroom, :count)
+    end
+
+    it "accepte un niveau de son école" do
+      expect { creer_sur(create(:grade, school: ecole)) }.to change(Classroom, :count).by(1)
+    end
+  end
+
+  # Partager sa classe, c'est ouvrir ses élèves : à un collègue de l'école, pas à
+  # n'importe quel compte désigné par son id.
+  describe "partage" do
+    before do
+      create(:user, admin: true) # signe le message qui annonce le partage
+      sign_in enseignant
+    end
+
+    def partager_avec(enseignants)
+      post classroom_shared_classrooms_path(classe),
+           params: { classe.id.to_s => { teachers: [""] + enseignants.map { |e| e.id.to_s } } }
+    end
+
+    it "refuse un enseignant d'une autre école" do
+      expect { partager_avec([create(:user, admin: false)]) }.not_to change(SharedClassroom, :count)
+    end
+
+    it "partage avec un collègue de l'école" do
+      expect { partager_avec([create(:user, school: ecole, admin: false)]) }.to change(SharedClassroom, :count).by(1)
+    end
+  end
 end
