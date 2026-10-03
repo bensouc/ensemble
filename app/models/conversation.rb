@@ -6,6 +6,9 @@ class Conversation < ApplicationRecord
   has_many :users, through: :user_conversations
 
   validates :conversation_type, presence: true, inclusion: { in: %w[ensemble group school classic] }
+  # Le formulaire de renommage exige le nom, et toute conversation naît avec un
+  # nom : rien côté serveur n'empêchait pourtant de le vider.
+  validates :name, presence: true
   validate :unique_ensemble_conversation_per_user, if: -> { conversation_type == "ensemble" }
   scope :classic, -> { where(conversation_type: "classic") }
   scope :school, -> { where(conversation_type: "school") }
