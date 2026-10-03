@@ -56,6 +56,11 @@ Rails.application.configure do
   # END GEM BULLET SETTINGS
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :cloudinary
+  # Pas de suivi des variantes en développement : le compte Cloudinary est celui
+  # de la production (voir cloudinary_dev_sans_suppression.rb), et la base de dev
+  # n'en connaît pas les variantes. Chaque image affichée en local en déposerait
+  # une nouvelle copie, sous une clé neuve, dans le stockage de production.
+  config.active_storage.track_variants = false
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false

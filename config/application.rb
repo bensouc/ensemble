@@ -14,13 +14,8 @@ module Ensemble
     # changé en lien mort au lieu d'une erreur.
     config.load_defaults 7.2
 
-    # --- Réglages tenus à l'ancien comportement, chacun pour une raison. Les
-    # retirer un à un, dans leur propre PR, une fois la raison levée.
-
-    # Suivre les variantes en base les recalculerait toutes à la première
-    # visite, depuis des originaux dont certains ont disparu de Cloudinary.
-    config.active_storage.track_variants = false
-    # Changer la clé de dérivation casserait tout ce qui est signé : sgid des
+    # Le seul réglage tenu à l'ancien comportement, et pour de bon. Changer la
+    # clé de dérivation casserait tout ce qui est signé : sgid des
     # tableaux et images des exercices, URL Active Storage écrites dans les
     # textes, cookies. Comme une rotation de SECRET_KEY_BASE, il faudrait d'abord
     # re-signer les pièces jointes des textes.
