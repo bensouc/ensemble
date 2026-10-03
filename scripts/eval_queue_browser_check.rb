@@ -158,6 +158,20 @@ def etape_refus(harness, page)
   harness.check("et propose de réessayer", b["reessayer"])
 end
 
+# Le jeton CSRF de la page n'est plus celui de la session : retenter avec le
+# même jeton échouerait sans fin, seul un rechargement de la page y remédie.
+def etape_jeton_perime(harness, page)
+  puts "\n— Jeton CSRF périmé (422)"
+  rejouer(page, reponse_js(succes: false, status: 422, url: URL_EVAL))
+  attendre_etat(page, "session")
+
+  b = bandeau(page)
+  harness.check("le bandeau renvoie à la session, pas à un refus",
+                b["texte"].include?("session a expiré"))
+  harness.check("il ne propose pas de réessayer en vain", b["reessayer"] == false)
+  harness.check("le geste est conservé", file_stockee(page)&.size == 1)
+end
+
 def etape_retour_du_reseau(harness, page)
   puts "\n— Le réseau revient"
   html = '<div class="eval_bull redo"><i class="fa-solid fa-c"></i></div>'
@@ -227,6 +241,7 @@ harness.with_browser do |browser|
   etape_revirement(harness, page)
   etape_session_expiree(harness, page)
   etape_refus(harness, page)
+  etape_jeton_perime(harness, page)
   etape_retour_du_reseau(harness, page)
 end
 

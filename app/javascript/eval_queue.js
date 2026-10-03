@@ -137,6 +137,11 @@ export class EvalQueue {
       return { etat: ETATS.SESSION };
     }
     if (reponse.status === 401) return { etat: ETATS.SESSION };
+    // 422 : Rails refuse le jeton CSRF, celui d'une page plus vieille que la
+    // session — page servie par le cache hors ligne, session renouvelée depuis.
+    // Retenter avec le même jeton n'y changera rien, recharger la page si :
+    // c'est le cas de la session expirée, et le geste reste en file.
+    if (reponse.status === 422) return { etat: ETATS.SESSION };
     if (!reponse.ok) return { etat: ETATS.REFUS };
 
     return { etat: "ok", html: await reponse.text() };

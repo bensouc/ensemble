@@ -5,12 +5,12 @@
 module Stripe
   class StripeWebhooksController < ApplicationController
     skip_before_action :authenticate_user!
-    # `raise: false` parce que le rappel n'existe pas encore : `config.load_defaults`
-    # n'est jamais appelé, donc `protect_from_forgery` n'est pas installé et
-    # `skip_before_action` lèverait. Le jour où il le sera, tous les webhooks
-    # tomberaient — et exception_notification ignore justement
-    # InvalidAuthenticityToken, la panne serait silencieuse.
-    skip_before_action :verify_authenticity_token, raise: false
+    # Stripe n'a pas de jeton CSRF à présenter : sans ce saut, tous les webhooks
+    # tomberaient en 422 — et exception_notification ignore justement
+    # InvalidAuthenticityToken, la panne serait silencieuse. Plus de
+    # `raise: false` : si la vérification disparaissait d'ApplicationController,
+    # mieux vaut que l'app refuse de démarrer que de le cacher.
+    skip_before_action :verify_authenticity_token
 
     # `status 400` puis `return` ne rendait pas de 400 : `status` a une arité de
     # zéro sur un contrôleur, et l'absence de rendu finissait en 500 — que Stripe
