@@ -20,11 +20,6 @@ class SkillsController < ApplicationController
     authorize @skill
   end
 
-  def new
-    @grades = current_user.classroom_grades
-    @skill = Skill.new
-  end
-
   def edit
     authorize @skill
   end
