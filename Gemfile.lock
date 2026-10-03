@@ -400,7 +400,6 @@ GEM
       rbs (>= 4.0.0)
       tsort
     recaptcha (5.21.1)
-    redis (4.8.1)
     regexp_parser (2.11.3)
     reline (0.7.0)
       io-console (~> 0.5)
@@ -481,6 +480,15 @@ GEM
     simplecov-html (0.13.2)
     simplecov_json_formatter (0.1.4)
     slack-notifier (2.4.0)
+    solid_cable (4.1.0)
+      actioncable (>= 7.2)
+      activejob (>= 7.2)
+      activerecord (>= 7.2)
+      railties (>= 7.2)
+    solid_cache (1.0.10)
+      activejob (>= 7.2)
+      activerecord (>= 7.2)
+      railties (>= 7.2)
     solid_queue (1.7.0)
       activejob (>= 7.1)
       activerecord (>= 7.1)
@@ -590,7 +598,6 @@ DEPENDENCIES
   rails-i18n
   rails_admin (~> 3.0)
   recaptcha
-  redis (~> 4.0)
   rspec-rails
   rubocop-rails
   sassc-rails
@@ -599,6 +606,8 @@ DEPENDENCIES
   simple_xlsx_reader (~> 1.0, >= 1.0.4)
   simplecov
   slack-notifier
+  solid_cable
+  solid_cache
   solid_queue
   stripe
   stripe_event

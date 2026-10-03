@@ -11,6 +11,7 @@ Developed by [VRoad Studio](https://bensouc.github.io/vrpwebsite/)
 - **JavaScript**: esbuild
 - **Database**: PostgreSQL
 - **Background Jobs**: Solid Queue (PostgreSQL), running inside Puma in production; dashboard at `/jobs` (Mission Control, admins only)
+- **Real-time & cache**: Solid Cable (Action Cable) and Solid Cache (`Rails.cache`, Rack::Attack counters), both in PostgreSQL — no Redis
 - **PDF Generation**: Ferrum, connected over CDP to a browserless Chrome service
 - **File Storage**: Cloudinary (Active Storage)
 - **Payments**: Stripe
@@ -22,7 +23,6 @@ Developed by [VRoad Studio](https://bensouc.github.io/vrpwebsite/)
 ### Prerequisites
 - Ruby 3.3.12 (see `.ruby-version`)
 - PostgreSQL
-- Redis (Action Cable and Rack::Attack only, until Solid Cable and Solid Cache replace it)
 - Node.js 24 LTS (see `engines` in `package.json`)
 - Yarn 1.22.19+
 - Chrome or Chromium (PDF generation, screenshots)
@@ -49,7 +49,6 @@ Create a `.env` file with:
 ```
 DOMAIN=...
 CLOUDINARY_URL=...
-REDIS_URL=...
 
 # Stripe — the price and pricing-table ids belong to ONE mode. A live `price_…`
 # is unknown in test mode, and Checkout breaks. See `rake stripe:clone_to_test`.
