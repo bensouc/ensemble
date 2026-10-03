@@ -1,0 +1,47 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Path Traversal",
+      "warning_code": 125,
+      "fingerprint": "cbe442de7c7974a430b2117da7b9217d54fc44680e8e0ebd1187efb3672328c6",
+      "check_name": "Pathname",
+      "message": "Absolute paths in `Pathname#join` cause the entire path to be relative to the absolute path, ignoring any prior values",
+      "file": "app/controllers/skills_controller.rb",
+      "line": 95,
+      "link": "https://brakemanscanner.org/docs/warning_types/path_traversal/",
+      "code": "Rails.root.join(\"tmp\", params[:liste][:excel_file].original_filename)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "SkillsController",
+        "method": "upload_skills_xlsx"
+      },
+      "user_input": "params[:liste][:excel_file].original_filename",
+      "confidence": "High",
+      "cwe_id": [
+        22
+      ],
+      "note": "Rack 3 réduit original_filename à son seul nom, sans dossier : « ../../x.xlsx » et « /etc/x.xlsx » arrivent en « x.xlsx » (vérifié sur Rack 3.2.6). Reste fragile — deux imports simultanés du même nom s'écrasent : nom aléatoire à prévoir."
+    },
+    {
+      "warning_type": "Unmaintained Dependency",
+      "warning_code": 120,
+      "fingerprint": "d84924377155b41e094acae7404ec2e521629d86f97b0ff628e3d1b263f8101c",
+      "check_name": "EOLRails",
+      "message": "Support for Rails 7.1.6 ended on 2025-10-01",
+      "file": "Gemfile.lock",
+      "line": 350,
+      "link": "https://brakemanscanner.org/docs/warning_types/unmaintained_dependency/",
+      "code": null,
+      "render_path": null,
+      "location": null,
+      "user_input": null,
+      "confidence": "High",
+      "cwe_id": [
+        1104
+      ],
+      "note": "Rails 7.1 n'a plus de correctifs depuis le 01/10/2025. Levé par la montée en Rails 7.2, puis 8.1 — voir config/bundler-audit.yml."
+    }
+  ],
+  "brakeman_version": "8.1.0"
+}
