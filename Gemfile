@@ -97,8 +97,8 @@ gem "ferrum"
 gem "mobile"
 gem "browser"
 
-# view_component
-gem "view_component"
+# view_component — la 4.x change d'API : elle viendra avec les autres montées majeures.
+gem "view_component", "~> 3.25"
 
 # Simple cov test
 gem "simplecov", require: false, group: :test
@@ -139,9 +139,6 @@ end
 group :test do
   # Adds support for Capybara system testing and selenium driver
   gem "capybara", ">= 2.15"
-  gem "selenium-webdriver"
-  # Easy installation and use of web drivers to run system tests with browsers
-  gem "webdrivers"
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
