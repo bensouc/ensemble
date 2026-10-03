@@ -126,10 +126,12 @@ RSpec.describe ConversationsController, type: :controller do
     end
 
     context "with invalid attributes" do
+      # Un champ vidé arrive en chaîne vide : `nil` n'existe que dans les tests,
+      # et Rails 7.2 le changeait en "" — la spec passait sans rien prouver.
       it "does not update the conversation" do
-        patch :update, params: { id: new_conversation.id, conversation: { name: nil } }
-        new_conversation.reload
-        expect(new_conversation.name).not_to eq(nil)
+        nom = new_conversation.name
+        patch :update, params: { id: new_conversation.id, conversation: { name: "" } }
+        expect(new_conversation.reload.name).to eq(nom)
       end
 
       it "re-renders the edit template" do
