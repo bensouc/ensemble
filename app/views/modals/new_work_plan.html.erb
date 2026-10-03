@@ -4,10 +4,14 @@
 		    d'un plan vierge, l'autre vers la génération automatique. Le nom et la
 		    période saisis servent dans les deux cas.
 		    `turbo: false` : les deux chemins répondent par une redirection vers le plan
-		    créé, qui doit charger la page entière et non le contenu de cette frame. %>
+		    créé, qui doit charger la page entière et non le contenu de cette frame.
+		    `authenticity_token` : le jeton de session, valable partout. Celui que Rails
+		    pose d'office ne vaut que pour l'`action` du formulaire, et `formaction`
+		    envoie le second bouton ailleurs : la génération auto serait refusée. %>
 		<%= simple_form_for @work_plan,
 		                    url: work_plans_path,
 		                    method: :post,
+		                    authenticity_token: form_authenticity_token,
 		                    html: { novalidate: false, class: "wp-edit-form",
 		                            data: { turbo: false } } do |f| %>
 			<div class="modal-ensemble-dialog">
