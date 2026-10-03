@@ -1,6 +1,4 @@
 class GradesController < ApplicationController
-  before_action :set_grade, only: [:show]
-
   def index
     @grades = policy_scope(Grade)
   end
@@ -31,9 +29,5 @@ class GradesController < ApplicationController
   def grade_params
     # "grade"=>{"grade_level"=>"CE1", "name"=>"test", "school
     params.require(:grade).permit(:grade_level, :name, :school_id)
-  end
-
-  def set_grade
-    @grade = Grade.find(params[:id])
   end
 end

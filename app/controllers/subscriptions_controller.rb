@@ -58,9 +58,6 @@ class SubscriptionsController < ApplicationController
     redirect_to school_path(@school), notice: MESSAGE_DEMANDE_ENVOYEE
   end
 
-  def cancel
-  end
-
   def success
     authorize Subscription
     @sequence = 4

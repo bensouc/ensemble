@@ -93,13 +93,15 @@ Rails.application.routes.draw do
   end
 
   # ###############routes for CLASSROOMS###############
-  resources :classrooms, only: [:index, :show, :update, :new, :create, :destroy] do
+  # Ni `show` ni `new` : ClassroomsController ne les définit pas, et rien n'y
+  # mène. Les routes promettaient des pages qui répondaient 404.
+  resources :classrooms, only: [:index, :update, :create, :destroy] do
     member do
       get :results_by_domain
       get :results
       post :generate_pdfs
     end
-    resources :students, only: [:new, :edit] # :create, :destroy
+    resources :students, only: [:new] # StudentsController n'a pas d'action `edit`
     resources :shared_classrooms, only: [:create, :destroy]
   end
   # get "classrooms/:id/results_by_domain", to: "classrooms#results_by_domain", as: :results_by_domain
@@ -137,7 +139,8 @@ Rails.application.routes.draw do
   get "subscriptions/on_boarding", to: "subscriptions#on_boarding"
   resources :subscriptions, only: [:create, :new]
   get "subscriptions/success", to: "subscriptions#success"
-  get "subscriptions/cancel", to: "subscriptions#cancel"
+  # Pas de `subscriptions/cancel` : Stripe ramène l'enseignant qui renonce sur
+  # `subscriptions/new`, et la page, qui n'affichait que « CANCEL », plantait.
   get "subscriptions/school_pricing", to: "subscriptions#school_pricing"
   # Les écoles sur facture ne peuvent pas modifier leur abonnement depuis le
   # portail Stripe : leur demande nous arrive par mail, et nous la portons
@@ -150,7 +153,9 @@ Rails.application.routes.draw do
 
   # ###############routes for SKILLS###############
   get "skills/add_skills_from_xls", to: "skills#add_skills_from_xls", as: :add_skills_from_xls
-  resources :skills do
+  # Pas de `new` : une compétence s'ajoute depuis la liste (_add_a_skill), et la
+  # page à part, que rien n'ouvrait, plantait sur une compétence sans domaine.
+  resources :skills, except: [:new] do
     member do
       patch :move
     end
@@ -184,7 +189,8 @@ Rails.application.routes.draw do
   end
 
   # ###############    routes for GRADES /DOMAINS        ###############
-  resources :grades, only: [:show, :destroy, :index, :new, :create] do
+  # Pas de `show` : rien n'y menait, et la page plantait faute d'autorisation.
+  resources :grades, only: [:destroy, :index, :new, :create] do
     resources :domains, only: [:new, :index]
   end
   # ###############    routes for DOMAINS         ###############
