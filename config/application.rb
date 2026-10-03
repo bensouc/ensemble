@@ -20,10 +20,6 @@ module Ensemble
     # 30 belongs_to n'ont pas `optional: true` et n'ont jamais été validés
     # comme obligatoires : à passer en revue avant de l'imposer.
     config.active_record.belongs_to_required_by_default = false
-    # L'inversion automatique des associations change les objets en mémoire
-    # (autosave, validations) : à éprouver à part.
-    config.active_record.has_many_inversing = false
-    config.active_record.automatic_scope_inversing = false
     # Suivre les variantes en base les recalculerait toutes à la première
     # visite, depuis des originaux dont certains ont disparu de Cloudinary.
     config.active_storage.track_variants = false
