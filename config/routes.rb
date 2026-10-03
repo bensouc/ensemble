@@ -83,7 +83,6 @@ Rails.application.routes.draw do
     end
     resources :challenges, only: [:create, :update]
     post "/challenges/:id", to: "challenges#clone", as: :clone
-    get "remove_special_wps", to: "work_plan_skills#remove_special_wps", as: :remove_special_wps
     patch "eval_update", to: "work_plan_skills#eval_update", as: :eval_update
     # completed / failed / redo
     patch "change_challenge", to: "work_plan_skills#change_challenge", as: :change_challenge
@@ -116,7 +115,6 @@ Rails.application.routes.draw do
     get "domains/:id/:level", to: "belts#show", as: :show
     get "new_validated_wps", to: "students#new_validated_wps", as: :new_validated_wps
     post "new_validated_wps", to: "work_plan_skills#add_validated_wps", as: :add_validated_wps
-    get "add_completed_wps", to: "students#add_completed_wps", as: :add_completed_wps
   end
 
   # ###############routes for BELTS###############
