@@ -38,22 +38,39 @@ RSpec.describe "Rack::Attack sur Solid Cache", type: :request do
     expect(response).to have_http_status(:forbidden)
   end
 
-  # Rack::Attack s'arrête à la première liste de blocage qui répond : la règle
-  # « bots: chemins de scan », déclarée avant, renvoie déjà 403 sur ces chemins,
-  # si bien que le compteur de « fail2ban: scanners » n'est jamais incrémenté.
-  # Le bannissement promis n'a jamais eu lieu, Redis ou pas. Signalé, à
-  # corriger à part ; ce `pending` cassera dès que ce sera fait.
-  it "bannit une heure l'adresse qui sonde trois chemins de scanner" do
-    pending "fail2ban jamais atteint : la blocklist des chemins répond avant lui"
+  def sonder(chemins, headers)
+    chemins.each { |chemin| get chemin, headers: }
+  end
 
-    %w[/wp-login.php /.env /xmlrpc.php].each do |chemin|
-      get chemin, headers: { "REMOTE_ADDR" => "203.0.113.8" }
-    end
+  let(:scans) { %w[/wp-login.php /.env /xmlrpc.php] }
+
+  it "bannit une heure l'adresse qui sonde trois chemins de scanner" do
+    sonder(scans, { "REMOTE_ADDR" => "203.0.113.8" })
 
     get "/", headers: { "REMOTE_ADDR" => "203.0.113.8" }
     expect(response).to have_http_status(:forbidden)
 
     get "/", headers: { "REMOTE_ADDR" => "203.0.113.9" }
+    expect(response).to have_http_status(:ok)
+  end
+
+  it "ne bannit pas avant la troisième sonde" do
+    sonder(scans.first(2), { "REMOTE_ADDR" => "203.0.113.10" })
+
+    get "/", headers: { "REMOTE_ADDR" => "203.0.113.10" }
+    expect(response).to have_http_status(:ok)
+  end
+
+  # En production, toutes les requêtes arrivent de Traefik, sur une adresse
+  # privée du réseau Docker : bannir celle-là couperait l'app à tout le monde.
+  it "derrière le proxy, ne bannit que le client qui sonde" do
+    traefik = "172.18.0.5"
+    sonder(scans, { "REMOTE_ADDR" => traefik, "HTTP_X_FORWARDED_FOR" => "198.51.100.20" })
+
+    get "/", headers: { "REMOTE_ADDR" => traefik, "HTTP_X_FORWARDED_FOR" => "198.51.100.20" }
+    expect(response).to have_http_status(:forbidden)
+
+    get "/", headers: { "REMOTE_ADDR" => traefik, "HTTP_X_FORWARDED_FOR" => "198.51.100.21" }
     expect(response).to have_http_status(:ok)
   end
 end
