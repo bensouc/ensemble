@@ -63,13 +63,18 @@ class ApplicationController < ActionController::Base
 
   # `flash.now` ne survit pas à une redirection : la branche HTML renvoyait
   # l'utilisateur en arrière sans lui dire pourquoi.
+  #
+  # Tout autre format — un export Excel, le JSON de l'éditeur de tableaux —
+  # reçoit un 403 : sans `any`, le refus levait lui-même UnknownFormat.
   def user_not_authorized
+    message = t("not_authorized")
     respond_to do |format|
       format.turbo_stream do
-        flash.now[:alert] = t("not_authorized")
+        flash.now[:alert] = message
         render turbo_stream: turbo_stream.prepend("flash", partial: "shared/flashes")
       end
-      format.html { redirect_to(request.referer || dashboard_path, alert: t("not_authorized")) }
+      format.html { redirect_to(request.referer || dashboard_path, alert: message) }
+      format.any { head :forbidden }
     end
   end
 

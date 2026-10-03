@@ -25,10 +25,10 @@ class SkillsController < ApplicationController
   end
 
   def create
-    skip_authorization
     @skill = Skill.new(skill_params)
     # @skill.grade = Grade.find(set_grade)
     @skill.school = current_user.school
+    authorize @skill
     @skill.save!
     # redirect_to skill_path(@skill)
     @skills = Skill.includes([:school]).where(domain: @skill.domain, level: @skill.level)
@@ -43,7 +43,7 @@ class SkillsController < ApplicationController
 
   def update
     authorize @skill
-    @skill.update!(skill_params)
+    @skill.update!(skill_update_params)
     redirect_to skill_path(@skill)
   end
 
@@ -64,6 +64,7 @@ class SkillsController < ApplicationController
   def add_skills_from_xls
     # Code de la méthode parse_xlsx_file
     authorize Skill
+    authorize @grade, :show?
     # Ajoutez ici le code pour traiter le fichier Excel
     sheets = Xlsx.parse_xlsx_file(@uploaded_file_path)
     # add test if file is OK
@@ -86,6 +87,8 @@ class SkillsController < ApplicationController
 
   def upload_skills_xlsx
     authorize Skill
+    # Le niveau où importer vient du formulaire : celui de son école seulement.
+    authorize Grade.find(params[:liste][:level]), :show?
     if @xls_file_path
       # Nom aléatoire : celui de l'enseignant ferait se télescoper deux imports
       # du même fichier, et n'a pas à décider d'un chemin sur le disque.
@@ -117,11 +120,13 @@ class SkillsController < ApplicationController
     grade_query = params[:grade]
     domain_query = params[:domain]
     @school = current_user.school
-    @grade = grade_query.nil? ? @grades.first : Grade.find(grade_query)
+    # Le niveau et le domaine viennent de la requête : sans contrôle, l'index
+    # listait les compétences de n'importe quelle école à qui en donnait les ids.
+    @grade = grade_query.nil? ? @grades.first : authorize(Grade.find(grade_query), :show?)
     unless @grade.nil?
       @domains = @grade.domains.nil? ? nil : @grade.domains.sort_by(&:position)
       # binding.pry
-      @domain = domain_query.nil? ? @domains.first : Domain.find(domain_query)
+      @domain = domain_query.nil? ? @domains.first : authorize(Domain.find(domain_query), :show?)
     end
     # @skills = policy_scope(Skill)
     # @are_special_domains = current_user.school.special_domains?
@@ -140,6 +145,14 @@ class SkillsController < ApplicationController
     params.require(:skill).permit(:name, :symbol, :level, :domain_id)
   end
 
+  # Ni domaine ni niveau : le formulaire, partagé avec la création, les renvoie en
+  # champs cachés, mais une compétence ne change pas de domaine en étant
+  # renommée. Les accepter rangeait la compétence sous le domaine d'une autre
+  # école à qui forgeait la requête.
+  def skill_update_params
+    params.require(:skill).permit(:name, :symbol)
+  end
+
   # get xlsx url for upload_skills
   def set_uploaded_file_path
     @uploaded_file_path = session[:uploaded_file_path]
@@ -153,7 +166,7 @@ class SkillsController < ApplicationController
 
   # XLSX GENERATION and send
   def generate_and_send_xlsx
-    grade = Grade.includes([:domains, :skills]).find(params[:grade])
+    grade = authorize Grade.includes([:domains, :skills]).find(params[:grade]), :show?
     skills = grade.skills
     domains = grade.domains.sort_by(&:position)
     school = current_user.school
