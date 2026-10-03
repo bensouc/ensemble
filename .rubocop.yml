@@ -94,3 +94,10 @@ Layout/LineLength:
 #   Enabled: false
 # Bundler/OrderedGems:
 #   Enabled: false
+
+# Règle activée par Rails 8 : `params.expect` répond 400 à des paramètres mal
+# formés, là où `require(...).permit(...)` peut finir en 500. À adopter dans sa
+# propre PR, avec des specs : 30 appels, et une correction que rubocop juge
+# lui-même non sûre.
+Rails/StrongParametersExpect:
+  Enabled: false
