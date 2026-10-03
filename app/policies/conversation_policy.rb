@@ -10,10 +10,6 @@ class ConversationPolicy < ApplicationPolicy
     user_is_participant?
   end
 
-  def contact_user?
-    true
-  end
-
   def add_user?
     user_is_participant?
   end
