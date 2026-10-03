@@ -74,12 +74,12 @@ class SkillsController < ApplicationController
     # add test if file is OK
     temp_skills = Skill.sheets_to_temp_skills_creation(sheets, @grade, current_user, @grade.domains)
     # create new set of skills
-    new_skills = Skill.create_loaded_skills(temp_skills[:skills])
+    Skill.create_loaded_skills(temp_skills[:skills])
     # Supprimez le fichier après le traitement
     File.delete(@uploaded_file_path) if File.exist?(@uploaded_file_path)
-    # puts "SKILL XLS UPLOAD REUSSI"
-    binding.pry
-    if temp_skills[:errors].empty?
+    # `errors` est un hash { domains: [], skills: [] }, jamais vide en soi : ce
+    # sont ses listes qu'il faut regarder.
+    if temp_skills[:errors].values.all?(&:empty?)
       flash[:success] = "#{temp_skills[:skills].count} Compétences ajoutées"
       redirect_to skills_path
     else
@@ -92,7 +92,11 @@ class SkillsController < ApplicationController
   def upload_skills_xlsx
     authorize Skill
     if @xls_file_path
-      file_path = Rails.root.join("tmp", @xls_file_path.original_filename)
+      # Nom aléatoire : celui de l'enseignant ferait se télescoper deux imports
+      # du même fichier, et n'a pas à décider d'un chemin sur le disque.
+      # L'extension reste, Xlsx.parse_xlsx_file choisit son lecteur dessus.
+      extension = File.extname(@xls_file_path.original_filename).downcase.gsub(/[^.a-z0-9]/, "")
+      file_path = Rails.root.join("tmp", "import_competences_#{SecureRandom.uuid}#{extension}")
       File.binwrite(file_path, @xls_file_path.read)
       # Stockez le chemin du fichier dans la session
       session[:uploaded_file_path] = file_path.to_s
