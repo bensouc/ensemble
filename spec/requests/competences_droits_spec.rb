@@ -54,6 +54,12 @@ RSpec.describe "Droits sur les compétences", type: :request do
       expect(response).to have_http_status(:forbidden)
     end
 
+    it "ne liste pas les domaines de son niveau" do
+      get grade_domains_path(niveau)
+
+      expect(response).to have_http_status(:redirect)
+    end
+
     it "n'importe pas de compétences dans son niveau" do
       post upload_skills_path, params: { liste: { excel_file: classeur(domaine.name, "Intruse"), level: niveau.id } }
       follow_redirect! if response.location&.include?(add_skills_from_xls_path)
@@ -73,6 +79,9 @@ RSpec.describe "Droits sur les compétences", type: :request do
     end
 
     it "parcourt et exporte ses compétences" do
+      get grade_domains_path(niveau)
+      expect(response).to have_http_status(:ok)
+
       get skills_path, params: { grade: niveau.id, domain: domaine.id }
       expect(response.body).to include("Compter les dizaines")
 

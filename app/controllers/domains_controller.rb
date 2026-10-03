@@ -4,8 +4,10 @@ class DomainsController < ApplicationController
   skip_after_action :verify_policy_scoped, only: [:index]
   before_action :set_domain, only: [:show, :edit, :destroy, :update, :move]
 
+  # Le niveau vient de l'URL : sans contrôle, on listait les domaines de
+  # n'importe quelle école.
   def index
-    @grade = Grade.find(params[:grade_id])
+    @grade = authorize Grade.find(params[:grade_id]), :show?
     @domains = @grade.domains
   end
 
