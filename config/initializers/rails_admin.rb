@@ -57,3 +57,11 @@ RailsAdmin.config do |config|
     end
   end
 end
+
+# rails_admin liste les exercices avec leur contenu ActionText. ActionText y rend
+# la partial d'un tableau dans le contexte du contrôleur de rails_admin, qui
+# n'a pas les helpers de l'application : sans celui-ci, `table_cell_classes`
+# manquait et la liste tombait en 500 dès qu'un exercice contenait un tableau.
+Rails.application.config.to_prepare do
+  RailsAdmin::ApplicationController.helper TablesHelper
+end
