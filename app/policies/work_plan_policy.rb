@@ -11,8 +11,12 @@ class WorkPlanPolicy < ApplicationPolicy
     user_is_owner_or_admin?
   end
 
+  # Un plan, fait main ou généré, pour un élève qu'on suit : ceux de ses classes
+  # et des classes qu'un collègue partage, comme la modale de création rapide.
+  # `true` laissait n'importe quel enseignant créer un plan pour l'élève d'une
+  # autre école, en donnant son id.
   def create?
-    true
+    user.admin? || record.student.nil? || user.all_students.include?(record.student)
   end
 
   def update?
@@ -28,7 +32,7 @@ class WorkPlanPolicy < ApplicationPolicy
   end
 
   def auto_new_wp?
-    true
+    create?
   end
 
   private
