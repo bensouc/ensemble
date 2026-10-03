@@ -7,13 +7,18 @@
 		    créé, qui doit charger la page entière et non le contenu de cette frame.
 		    `authenticity_token` : le jeton de session, valable partout. Celui que Rails
 		    pose d'office ne vaut que pour l'`action` du formulaire, et `formaction`
-		    envoie le second bouton ailleurs : la génération auto serait refusée. %>
+		    envoie le second bouton ailleurs : la génération auto serait refusée.
+		    Le rouage tourne dans le bouton choisi le temps que le serveur crée le
+		    plan — quelques secondes pour la génération auto. Des `button` et non des
+		    `input` : un `input` ne peut rien contenir, pas même un rouage. %>
 		<%= simple_form_for @work_plan,
 		                    url: work_plans_path,
 		                    method: :post,
 		                    authenticity_token: form_authenticity_token,
 		                    html: { novalidate: false, class: "wp-edit-form",
-		                            data: { turbo: false } } do |f| %>
+		                            data: { turbo: false, controller: "loadingspinnermgnt",
+		                                    action: "submit->loadingspinnermgnt#tournerPendantEnvoi " \
+		                                            "pageshow@window->loadingspinnermgnt#reinitialiserAuRetour" } } do |f| %>
 			<div class="modal-ensemble-dialog">
 				<div class="modal-ensemble-content">
 					<div class="modal-ensemble-header">
@@ -45,8 +50,8 @@
 								<%= @student.first_name.capitalize %>.</em>
 						</p>
 						<div class="d-flex">
-							<%= f.submit "Plan vierge", class: "utility-wp-btn" %>
-							<%= f.submit "Auto, selon son niveau",
+							<%= f.button :button, "Plan vierge", class: "utility-wp-btn" %>
+							<%= f.button :button, "Auto, selon son niveau",
 							             class: "utility-wp-btn utility-wp-btn--primary",
 							             formaction: student_auto_new_wp_path(@student) %>
 						</div>
