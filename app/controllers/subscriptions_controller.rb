@@ -66,7 +66,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def subscription_params
-    params.require(:subscription).permit(:rythm, :quantity, :trial_end, :current_period_start, :current_period_end)
+    params.expect(subscription: [:rythm, :quantity, :trial_end, :current_period_start, :current_period_end])
   end
 
   private
@@ -77,7 +77,7 @@ class SubscriptionsController < ApplicationController
   end
 
   def change_request_params
-    params.require(:subscription_change).permit(:classes, :message)
+    params.expect(subscription_change: [:classes, :message])
   end
 
   # La notification interne d'abord : c'est elle qui déclenche le travail. Un

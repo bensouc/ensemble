@@ -37,6 +37,6 @@ class StudentTransfersController < ApplicationController
   end
 
   def transfer_params
-    params.require(:student).permit(:classroom_id)
+    params.expect(student: [:classroom_id])
   end
 end

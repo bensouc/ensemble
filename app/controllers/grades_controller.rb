@@ -28,6 +28,6 @@ class GradesController < ApplicationController
 
   def grade_params
     # "grade"=>{"grade_level"=>"CE1", "name"=>"test", "school
-    params.require(:grade).permit(:grade_level, :name, :school_id)
+    params.expect(grade: [:grade_level, :name, :school_id])
   end
 end

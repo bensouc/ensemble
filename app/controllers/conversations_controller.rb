@@ -92,7 +92,7 @@ class ConversationsController < ApplicationController
   end
 
   def update_params
-    params.require(:conversation).permit(:name)
+    params.expect(conversation: [:name])
   end
 
   def set_index_conversations
@@ -109,6 +109,6 @@ class ConversationsController < ApplicationController
   end
 
   def conversation_params
-    params.require(:conversation).permit(:conversation_type, :user_id)
+    params.expect(conversation: [:conversation_type, :user_id])
   end
 end

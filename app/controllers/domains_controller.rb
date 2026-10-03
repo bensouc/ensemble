@@ -92,7 +92,7 @@ class DomainsController < ApplicationController
   end
 
   def set_params
-    params.require(:domain).permit(:grade_id, :name)
+    params.expect(domain: [:grade_id, :name])
   end
 
   # def set_position

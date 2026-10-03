@@ -118,7 +118,7 @@ class ClassroomsController < ApplicationController
   end
 
   def set_classroom_params
-    params.require(:classroom).permit(:grade_id, :name)
+    params.expect(classroom: [:grade_id, :name])
   end
 
   # COntroller Method

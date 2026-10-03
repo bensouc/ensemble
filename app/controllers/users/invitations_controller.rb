@@ -60,7 +60,7 @@ module Users
     end
 
     def invite_params
-      params.require(:user).permit(:email)
+      params.expect(user: [:email])
     end
 
     # L'adresse est la seule chose que le responsable ait vérifiée : c'est là
