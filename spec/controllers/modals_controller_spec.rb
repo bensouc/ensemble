@@ -41,12 +41,16 @@ RSpec.describe ModalsController, type: :controller do
         expect(response.body).to include(monday.strftime("%d/%m/%Y"))
       end
 
+      # Un enseignant, pas un admin : la règle commune (`StudentPolicy`) ouvre
+      # tous les élèves aux admins.
       it "refuse un élève qui n'est pas dans les classes de l'enseignant" do
+        user.update!(admin: false)
         other_student = create(:student, classroom: create(:classroom))
 
         get :new_work_plan, params: { id: other_student.id }
 
-        expect(response).to have_http_status(:forbidden)
+        expect(response).to have_http_status(:redirect)
+        expect(flash[:alert]).to be_present
       end
     end
   end
