@@ -46,4 +46,38 @@ export default class extends Controller {
       </div>
       `
   };
+
+  // Posé sur un formulaire, en `submit` et non en `click` : un formulaire que le
+  // navigateur refuse (champ requis vide) ne part pas, et le rouage ne doit pas
+  // tourner pour rien. Le bouton qui l'envoie (`event.submitter`) prend le
+  // rouage. Un second envoi pendant que le serveur travaille est ignoré : il
+  // créerait un second plan.
+  tournerPendantEnvoi(event) {
+    if (this.element.dataset.envoiEnCours) {
+      event.preventDefault()
+      return
+    }
+    this.element.dataset.envoiEnCours = "true"
+
+    const bouton = event.submitter
+    if (!bouton) return
+    bouton.dataset.contenuInitial = bouton.innerHTML
+    bouton.style.width = `${bouton.offsetWidth}px`
+    bouton.style.height = `${bouton.offsetHeight}px`
+    bouton.innerHTML = `<div class="rotating"><i class="fa-solid fa-gear"></i></div>`
+  }
+
+  // Le retour arrière ressert la page depuis le cache du navigateur, rouage
+  // compris : sans ça, le bouton tournerait encore et n'enverrait plus rien.
+  reinitialiserAuRetour(event) {
+    if (!event.persisted) return
+
+    delete this.element.dataset.envoiEnCours
+    this.element.querySelectorAll("[data-contenu-initial]").forEach((bouton) => {
+      bouton.innerHTML = bouton.dataset.contenuInitial
+      bouton.style.width = ""
+      bouton.style.height = ""
+      delete bouton.dataset.contenuInitial
+    })
+  }
 }
