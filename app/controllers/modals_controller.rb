@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class ModalsController < ApplicationController
+  # Les trois modales montrent ou préparent le travail d'un élève : réservées à
+  # qui voit sa classe, comme sa fiche (`StudentPolicy#show?`).
   def auto_gen
-    @student = Student.includes(:classroom).find(params[:id])
-    skip_authorization
+    @student = authorize Student.includes(:classroom).find(params[:id]), :show?
     @domains = @student.classroom.grade.domains.sort_by(&:position)
   end
 
@@ -12,15 +13,12 @@ class ModalsController < ApplicationController
   # niveau de l'élève. Les deux réutilisent les mécaniques existantes
   # (`work_plans#create` et `work_plans#auto_new_wp`).
   def new_work_plan
-    @student = Student.includes(classroom: :grade).find(params[:id])
-    skip_authorization
-    return head :forbidden unless current_user.all_students.include?(@student)
-
+    @student = authorize Student.includes(classroom: :grade).find(params[:id]), :show?
     @work_plan = new_work_plan_for(@student)
   end
 
   def display_skills_modal
-    @student = Student.find(params[:student_id])
+    @student = authorize Student.find(params[:student_id]), :show?
     @domain = Domain.find(params[:id])
     @skills = @domain.skills
     # `skill:` et non `skills:` : Rails 7.2 ne rattrape plus le pluriel d'une
@@ -30,7 +28,6 @@ class ModalsController < ApplicationController
       skill: @skills,
       student: @student
     ).sort_by { |result| [result.skill.symbol, result.skill.name] }
-    skip_authorization
   end
 
   private

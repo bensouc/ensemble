@@ -4,7 +4,6 @@ class BeltsController < ApplicationController
   before_action :set_belt, only: [:edit, :update, :destroy]
 
   def show
-    skip_authorization
     # Handle both nested route (student_id, domain_id, level) and direct belt route (id)
     if params[:student_id]
       # Nested route: /students/:student_id/domains/:id/:level
@@ -18,6 +17,9 @@ class BeltsController < ApplicationController
       @domain = belt.domain
       @level = belt.level
     end
+    # Les ceintures d'un élève se lisent comme sa fiche : réservées à qui voit sa
+    # classe.
+    authorize @student, :show?
     set_data_show
   end
 
@@ -26,8 +28,10 @@ class BeltsController < ApplicationController
     @skills = @belt.all_skills(current_user)
   end
 
+  # Valider une ceinture, c'est évaluer l'élève : `BeltPolicy` le réserve à qui
+  # voit sa classe. L'autorisation passe AVANT `find_or_create_by`, qui écrit.
   def create
-    skip_authorization
+    authorize Belt.new(student: Student.find(params[:student_id]))
     args = new_belt_params
     args[:student_id] = params[:student_id]
     # args[:grade] = Grade.find(new_belt_params[:grade_id])

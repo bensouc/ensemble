@@ -152,12 +152,15 @@ class WorkPlanSkillsController < ApplicationController
   end
 
   # to add a validated wps on a student on special_wps=true Workplan
+  #
+  # Valider des compétences, c'est évaluer l'élève : réservé à qui voit sa classe.
+  # Les compétences étaient cherchées dans l'école de l'enseignant, mais l'élève
+  # n'importe où.
   def add_validated_wps
-    skip_authorization
     skills_and_student = get_all_skills_to_add_completed_wps # call private method to get all the needed skills to be completed
     skills = skills_and_student[:skills]
+    @student = authorize skills_and_student[:student], :update?
     @domain = skills.first.domain # get domain to work on
-    @student = skills_and_student[:student]
     @level = @domain.special? ? 1 : skills.first.level
     skills.each do |skill|
       result = Result.find_or_create_by(skill: skill, student: @student)

@@ -24,9 +24,11 @@ class BeltPolicy < ApplicationPolicy
 
   private
 
+  # Les ceintures d'un élève se gèrent comme l'élève lui-même : son enseignant,
+  # les collègues du partage, les admins. La règle cherchait le partage sur
+  # `student.shared_classrooms`, une association qui n'existe pas — le collègue
+  # du partage tombait sur une erreur 500 au lieu d'accéder à la ceinture.
   def user_is_owner_or_admin?
-    user.admin ||
-      record.student.classroom.user == user ||
-      record.student.shared_classrooms.any? { |shared_classroom| shared_classroom.user == user }
+    StudentPolicy.new(user, record.student).update?
   end
 end
