@@ -8,12 +8,35 @@ Bundler.require(*Rails.groups)
 
 module Ensemble
   class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
-    config.active_support.cache_format_version = 7.1
-    config.i18n.default_locale = :fr
-    # Configuration for the application, engines, and railties goes here.
+    # Les réglages par défaut de Rails 7.2. L'app n'en chargeait AUCUN : elle
+    # tournait avec ceux d'avant Rails 5 — cookies chiffrés en CBC et sans
+    # SameSite, origine des requêtes jamais comparée, un asset introuvable
+    # changé en lien mort au lieu d'une erreur.
+    config.load_defaults 7.2
+
+    # --- Réglages tenus à l'ancien comportement, chacun pour une raison. Les
+    # retirer un à un, dans leur propre PR, une fois la raison levée.
+
+    # 30 belongs_to n'ont pas `optional: true` et n'ont jamais été validés
+    # comme obligatoires : à passer en revue avant de l'imposer.
+    config.active_record.belongs_to_required_by_default = false
+    # Un jeton par formulaire casse les formulaires dont le JS change l'action
+    # (addstudenttoautogen_controller.js réécrit `form.action`).
+    config.action_controller.per_form_csrf_tokens = false
+    # L'inversion automatique des associations change les objets en mémoire
+    # (autosave, validations) : à éprouver à part.
+    config.active_record.has_many_inversing = false
+    config.active_record.automatic_scope_inversing = false
+    # Suivre les variantes en base les recalculerait toutes à la première
+    # visite, depuis des originaux dont certains ont disparu de Cloudinary.
+    config.active_storage.track_variants = false
+    # Changer la clé de dérivation casserait tout ce qui est signé : sgid des
+    # tableaux et images des exercices, URL Active Storage écrites dans les
+    # textes, cookies. Comme une rotation de SECRET_KEY_BASE, il faudrait d'abord
+    # re-signer les pièces jointes des textes.
     config.active_support.key_generator_hash_digest_class = OpenSSL::Digest::SHA1
-    Rails.application.config.active_storage.variant_processor = :vips
+
+    config.i18n.default_locale = :fr
     # Jobs en base : tables solid_queue_* de la base principale (config/queue.yml).
     config.active_job.queue_adapter = :solid_queue
     # Tableau de bord des jobs (/jobs) : l'accès passe par Devise et la route
