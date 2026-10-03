@@ -71,8 +71,11 @@ class TablesController < ApplicationController
     )
   end
 
+  # `Table.from_attachable_sgid` et non celui d'ActionText : le sgid d'une image
+  # de l'énoncé est signé pour le même usage, et passait pour un tableau
+  # (NoMethodError, donc une 500, au lieu d'une 404).
   def get_table_from_sgid
-    @table = ActionText::Attachable.from_attachable_sgid params[:id]
+    @table = Table.from_attachable_sgid(params[:id])
   rescue ActiveRecord::RecordNotFound
     skip_authorization
     render json: { error: "table not found" }, status: :not_found

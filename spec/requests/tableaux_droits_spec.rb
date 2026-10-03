@@ -28,4 +28,16 @@ RSpec.describe "Droits sur les tableaux", type: :request do
     expect(response).to have_http_status(:ok)
     expect(Table.last.cell(0, 0)).to eq("Mot")
   end
+
+  # Le sgid d'une image collée dans l'énoncé est signé pour le même usage
+  # (« attachable ») : l'éditeur ne doit accepter que celui d'un tableau.
+  it "répond 404 au sgid d'une image" do
+    image = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("png"), filename: "photo.png",
+                                                   content_type: "image/png")
+
+    patch "/tables/#{CGI.escape(image.attachable_sgid)}",
+          params: { method: "replace", table: { rows: 2, columns: 2 } }, as: :json
+
+    expect(response).to have_http_status(:not_found)
+  end
 end
