@@ -8,10 +8,8 @@ ruby "3.3.12"
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails', branch: 'main'
 
-# 7.1.0 UPGRADE
-gem "rails", "~> 7.1.0"
+gem "rails", "~> 7.2.4"
 gem "turbo-rails"
-# end of 7.1.0 UPGRADE
 
 # STRIPE setup
 # STRIPE SWITCH OFF

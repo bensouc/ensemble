@@ -2,7 +2,8 @@
 
 require "rails_helper"
 
-# config/initializers/active_storage_vips.rb — GHSA-xr9x-r78c-5hrm.
+# GHSA-xr9x-r78c-5hrm : le blocage vient de Rails (7.2.3.2+), le retrait des
+# types à variantes de config/initializers/active_storage_vips.rb.
 RSpec.describe "libvips face aux images envoyées" do
   # Netpbm : un format que libvips lit sans dépendance extérieure, donc présent
   # partout, et qu'il classe parmi les non fiables.
