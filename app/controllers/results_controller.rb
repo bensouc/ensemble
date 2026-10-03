@@ -6,8 +6,11 @@ class ResultsController < ApplicationController
     manage_belt_and_render
   end
 
+  # `find_or_initialize_by` et non `find_or_create_by` : l'autorisation doit
+  # passer AVANT toute écriture. Le refus arrivait sinon une fois le résultat
+  # déjà créé chez l'élève d'une autre école.
   def create
-    @result = Result.find_or_create_by(student_id: result_params[:student_id], skill_id: result_params[:skill_id])
+    @result = Result.find_or_initialize_by(student_id: result_params[:student_id], skill_id: result_params[:skill_id])
     authorize @result
     @result.update!(result_params.merge(origin: Result::DIRECT))
     manage_belt_and_render

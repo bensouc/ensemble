@@ -72,6 +72,19 @@ RSpec.describe "Droits sur le suivi d'un élève", type: :request do
     end
   end
 
+  # `find_or_create_by` passait AVANT `authorize` : le refus arrivait une fois
+  # le résultat déjà écrit chez l'élève d'une autre école.
+  it "n'écrit pas de résultat chez l'élève d'une autre école" do
+    competence
+    sign_in create(:user, admin: false)
+
+    expect do
+      post results_path, params: { result: { student_id: eleve.id, skill_id: competence.id,
+                                             status: "completed", kind: "ceinture" } },
+                         headers: { "Accept" => "text/vnd.turbo-stream.html" }
+    end.not_to change(Result, :count)
+  end
+
   context "pour un collègue de l'école à qui la classe n'est pas partagée" do
     before { sign_in create(:user, school: ecole, admin: false) }
 
