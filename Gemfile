@@ -134,6 +134,10 @@ group :development do
   gem "spring"
   gem "spring-watcher-listen", "~> 2.0.0"
   gem "rubocop-rails", require: false
+  # Audits de sécurité lancés par bin/ci : le code (Brakeman) et les gems
+  # (avis publiés contre les versions du Gemfile.lock).
+  gem "brakeman", require: false
+  gem "bundler-audit", require: false
 end
 
 group :test do

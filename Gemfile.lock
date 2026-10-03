@@ -101,11 +101,16 @@ GEM
       msgpack (~> 1.2)
     bootstrap (5.3.8)
       popper_js (>= 2.11.8, < 3)
+    brakeman (8.1.0)
+      racc
     browser (6.2.0)
     builder (3.3.0)
     bullet (8.1.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
+    bundler-audit (0.9.3)
+      bundler (>= 1.2.0)
+      thor (~> 1.0)
     byebug (13.0.0)
       reline (>= 0.6.0)
     capybara (3.40.0)
@@ -561,8 +566,10 @@ DEPENDENCIES
   autoprefixer-rails (= 10.2.5)
   bootsnap (>= 1.4.2)
   bootstrap (~> 5.2)
+  brakeman
   browser
   bullet
+  bundler-audit
   byebug
   capybara (>= 2.15)
   caxlsx
