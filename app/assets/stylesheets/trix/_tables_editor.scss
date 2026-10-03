@@ -27,6 +27,24 @@
   user-select: text;
 }
 
+// trix.css efface aussi la SURBRILLANCE de la sélection (`::selection {
+// background: none }`) dans toute pièce jointe « mutable », ce que devient le
+// tableau dès qu'on y clique : le texte se sélectionnait, sans que rien ne se
+// voie. Trix la rétablit lui-même pour la légende des images ; on la rétablit
+// pour les cellules. Deux classes pour passer devant sa règle
+// (`trix-editor [data-trix-mutable] ::selection`). Les deux pseudo-éléments
+// restent dans des règles séparées : un navigateur qui ignore l'un des deux
+// abandonnerait toute la règle.
+trix-editor .rt-table--editor .rt-cell::selection,
+trix-editor .rt-table--editor .rt-cell ::selection {
+  background: highlight;
+}
+
+trix-editor .rt-table--editor .rt-cell::-moz-selection,
+trix-editor .rt-table--editor .rt-cell ::-moz-selection {
+  background: highlight;
+}
+
 // --- Cellules en édition ---------------------------------------------------
 .rt-table--editor .rt-cell {
   cursor: text;
@@ -69,18 +87,25 @@
   gap: 4px 8px;
 }
 
-// Les options de cellule n'ont de sens qu'avec une cellule active : elles ne
-// se montrent que lorsque le focus est dans le tableau. `:focus-within` suffit,
+// Les options de cellule n'ont de sens qu'avec une cellule active : grisées et
+// inertes sinon. Pas masquées : elles apparaissaient au premier clic dans une
+// cellule et poussaient le tableau de 38 px vers le bas — sous le pointeur, au
+// milieu du glisser qui devait sélectionner du texte. `:focus-within` suffit,
 // sans état à tenir en JS — et le focus reste dans la cellule au clic sur un
 // bouton de cette barre, puisque leur mousedown est neutralisé.
 .rt-table__bar--cell,
 .rt-table__bar-label--cell {
-  display: none;
+  opacity: 0.35;
+  pointer-events: none;
+  transition: opacity 0.12s ease;
 }
 
 .rt-table--editor:focus-within {
-  .rt-table__bar--cell { display: flex; }
-  .rt-table__bar-label--cell { display: block; }
+  .rt-table__bar--cell,
+  .rt-table__bar-label--cell {
+    opacity: 1;
+    pointer-events: auto;
+  }
 }
 
 .rt-table__group {

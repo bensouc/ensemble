@@ -56,20 +56,45 @@ harness.with_browser do |browser|
   harness.check "toolbar complète", browser.evaluate("document.querySelectorAll('.rt-table__toolbar button').length") >= 12
 
   puts "\n3. édition d'une cellule"
-  cell_bar_hidden = browser.evaluate("getComputedStyle(document.querySelector('.rt-table__bar--cell')).display") == "none"
+  cell_bar_inert = browser.evaluate("getComputedStyle(document.querySelector('.rt-table__bar--cell')).pointerEvents") == "none"
+  cell_bar_shown = browser.evaluate("getComputedStyle(document.querySelector('.rt-table__bar--cell')).display") != "none"
+  top_before = browser.evaluate("document.querySelector('.rt-table--editor .rt-cell').getBoundingClientRect().top")
   browser.at_css(".rt-table--editor .rt-cell").click
   sleep 0.4
+  top_after = browser.evaluate("document.querySelector('.rt-table--editor .rt-cell').getBoundingClientRect().top")
+  # Le tableau ne doit pas bouger quand une cellule prend le focus : sinon le
+  # texte part sous le pointeur au milieu d'un glisser.
+  harness.check "le tableau ne bouge pas quand une cellule prend le focus (#{(top_after - top_before).round(1)} px)",
+                (top_after - top_before).abs < 1
   harness.check "la cellule cliquée prend le focus",
                 browser.evaluate("document.activeElement.classList.contains('rt-cell')")
   browser.keyboard.type("X")
   sleep 0.4
   harness.check "la saisie s'inscrit",
                 browser.evaluate("document.querySelector('.rt-table--editor .rt-cell').textContent").include?("X")
+  # trix.css efface la surbrillance (`::selection`) dans une pièce jointe
+  # « mutable », ce que devient le tableau dès qu'on y clique : le texte se
+  # sélectionnait sans que rien ne se voie.
+  surbrillance = browser.evaluate(<<~JS)
+    (() => {
+      const cell = document.querySelector('.rt-table--editor .rt-cell')
+      const range = document.createRange()
+      range.selectNodeContents(cell)
+      const sel = window.getSelection()
+      sel.removeAllRanges()
+      sel.addRange(range)
+      const fond = getComputedStyle(cell, '::selection').backgroundColor
+      sel.collapseToEnd()
+      return fond
+    })()
+  JS
+  harness.check "le texte sélectionné dans une cellule est surligné (#{surbrillance})",
+                ["rgba(0, 0, 0, 0)", "transparent"].exclude?(surbrillance)
 
   puts "\n4. le bloc « Cellule » suit-il le focus ?"
-  harness.check "masqué tant qu'aucune cellule n'a le focus", cell_bar_hidden
-  harness.check "visible une fois la cellule active",
-                browser.evaluate("getComputedStyle(document.querySelector('.rt-table__bar--cell')).display") != "none"
+  harness.check "affiché mais inerte tant qu'aucune cellule n'a le focus", cell_bar_shown && cell_bar_inert
+  harness.check "actif une fois la cellule active",
+                browser.evaluate("getComputedStyle(document.querySelector('.rt-table__bar--cell')).pointerEvents") != "none"
   # Les deux rangées doivent démarrer au même endroit : c'est la raison d'être
   # de la grille à deux colonnes de la barre (les libellés partagent la 1re).
   left = JSON.parse(browser.evaluate(<<~JS))
