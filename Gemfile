@@ -2,7 +2,7 @@ source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # ruby '2.7.4'
-ruby "3.3.10"
+ruby "3.3.12"
 
 # gem  'nokogiri', '1.12.5'
 

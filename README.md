@@ -20,11 +20,10 @@ Developed by [VRoad Studio](https://bensouc.github.io/vrpwebsite/)
 ## Installation
 
 ### Prerequisites
-- Ruby 3.3.10 (see `.ruby-version`)
+- Ruby 3.3.12 (see `.ruby-version`)
 - PostgreSQL
 - Redis
-- Node.js **v20.17.0** — `package.json` pins the exact version, so another patch
-  release makes `yarn` refuse to run. Use `yarn --ignore-engines <cmd>` to bypass.
+- Node.js 24 LTS (see `engines` in `package.json`)
 - Yarn 1.22.19+
 - Chrome or Chromium (PDF generation, screenshots)
 

@@ -16,17 +16,18 @@
 
 # Versions épinglées (= reproductibilité). Elles correspondent à .ruby-version
 # et au champ "engines" de package.json.
-ARG RUBY_VERSION=3.3.10
-ARG NODE_VERSION=20.17.0
+ARG RUBY_VERSION=3.3.12
+ARG NODE_VERSION=24.21.0
 ARG YARN_VERSION=1.22.22
 
 
 # -----------------------------------------------------------------------------
 # Étape 0 — Image Node officielle, utilisée UNIQUEMENT comme source à copier.
 # Plus simple et plus rapide que de compiler Node nous-mêmes. Même base Debian
-# (bookworm) que l'image Ruby ci-dessous, donc les binaires sont compatibles.
+# (trixie) que l'image Ruby ci-dessous, donc les binaires sont compatibles :
+# ruby:X-slim suit la Debian stable, à épingler ici quand elle changera.
 # -----------------------------------------------------------------------------
-FROM node:${NODE_VERSION}-bookworm-slim AS node
+FROM node:${NODE_VERSION}-trixie-slim AS node
 
 
 # -----------------------------------------------------------------------------
@@ -44,7 +45,10 @@ WORKDIR /rails
 RUN printf 'precedence ::ffff:0:0/96 100\n' >> /etc/gai.conf
 
 # Variables d'environnement valables pour la construction ET l'exécution.
+# RUBY_YJIT_ENABLE : le compilateur à la volée de Ruby, que Rails n'active
+# lui-même qu'à partir de 7.2. Plus rapide, pour quelques dizaines de Mo.
 ENV RAILS_ENV="production" \
+    RUBY_YJIT_ENABLE="1" \
     BUNDLE_DEPLOYMENT="1" \
     BUNDLE_PATH="/usr/local/bundle" \
     BUNDLE_RETRY="5" \

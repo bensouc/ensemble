@@ -13,8 +13,9 @@ CI.run "Intégration continue", "Style, sécurité, tests et bancs navigateur" d
   step "Sécurité : gems", "bundle exec bundler-audit check --update --config config/bundler-audit.yml"
   step "Sécurité : code", "bundle exec brakeman --quiet --no-pager --exit-on-warn --exit-on-error"
 
-  # Directement esbuild : `yarn build` refuse de tourner hors du Node exact
-  # inscrit dans package.json.
+  # Directement esbuild plutôt que `yarn build` : yarn refuse de tourner sous un
+  # autre Node que celui de package.json, et le terminal peut être resté sur la
+  # version par défaut de nvm. Le bundle, lui, n'en dépend pas.
   step "Build : JavaScript", "node esbuild.config.js"
 
   step "Tests : RSpec", "bundle exec rspec"
