@@ -6,21 +6,16 @@ class WorkPlanDomainPolicy < ApplicationPolicy
     # end
   end
 
-  def show?
-    user_is_owner_or_admin?
-  end
+  # Un domaine du plan se lit et se gère comme le plan (`WorkPlanPolicy`).
+  delegate :show?, :update?, to: :plan_policy
 
   def destroy?
-    user_is_owner_or_admin?
-  end
-
-  def update?
-    user_is_owner_or_admin?
+    update?
   end
 
   private
 
-  def user_is_owner_or_admin?
-    user.admin || record.work_plan.user.school == user.school
+  def plan_policy
+    WorkPlanPolicy.new(user, record.work_plan)
   end
 end

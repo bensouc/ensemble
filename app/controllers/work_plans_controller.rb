@@ -192,6 +192,9 @@ class WorkPlansController < ApplicationController
     @work_plan.start_date = temp_wp.start_date
     @work_plan.end_date = temp_wp.end_date
     @work_plan.student = temp_wp.student
+    # Réattribuer le plan, c'est le donner à un autre élève : un élève qu'on suit,
+    # comme à la création.
+    authorize @work_plan, :create?
     if @work_plan.save!
       redirect_to work_plan_path(@work_plan)
     else

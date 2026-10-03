@@ -7,8 +7,13 @@ class WorkPlanPolicy < ApplicationPolicy
     end
   end
 
+  # Le plan d'un élève se lit comme sa fiche : les profs de sa classe, ceux du
+  # partage, les admins. Un plan sans élève — un modèle, à cloner — se lit dans
+  # toute l'école.
   def show?
-    user_is_owner_or_admin?
+    return StudentPolicy.new(user, record.student).show? if record.student
+
+    user.admin? || record.user.school == user.school
   end
 
   # Un plan, fait main ou généré, pour un élève qu'on suit : ceux de ses classes
@@ -48,7 +53,14 @@ class WorkPlanPolicy < ApplicationPolicy
 
   private
 
+  # Modifier, supprimer, évaluer un plan — y ajouter ou en retirer des
+  # compétences : qui suit l'élève, soit les profs de sa classe, ceux du partage
+  # et les admins. « Même école que l'auteur du plan » laissait n'importe quel
+  # collègue intervenir sur les élèves d'une classe qu'il n'a pas. Un plan sans
+  # élève reste à son auteur.
   def user_is_owner_or_admin?
-    user.admin || record.user.school == user.school
+    return StudentPolicy.new(user, record.student).update? if record.student
+
+    user.admin? || record.user == user
   end
 end

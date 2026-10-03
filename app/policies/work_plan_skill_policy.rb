@@ -10,9 +10,7 @@ class WorkPlanSkillPolicy < ApplicationPolicy
     user_is_owner_or_admin?
   end
 
-  def show?
-    user_is_owner_or_admin?
-  end
+  delegate :show?, to: :plan_policy
 
   def update?
     user_is_owner_or_admin?
@@ -23,7 +21,7 @@ class WorkPlanSkillPolicy < ApplicationPolicy
   end
 
   def eval_update?
-    user_is_owner_or_admin?
+    plan_policy.evaluation?
   end
 
   def change_challenge?
@@ -48,7 +46,13 @@ class WorkPlanSkillPolicy < ApplicationPolicy
 
   private
 
+  # Une compétence du plan se lit, s'évalue et se gère comme le plan
+  # (`WorkPlanPolicy`) : qui suit l'élève.
   def user_is_owner_or_admin?
-    user.admin || record.work_plan_domain.work_plan.user.school == user.school
+    plan_policy.update?
+  end
+
+  def plan_policy
+    WorkPlanPolicy.new(user, record.work_plan_domain.work_plan)
   end
 end
