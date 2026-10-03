@@ -7,6 +7,15 @@ class ApplicationController < ActionController::Base
   # car la gem aliase le `current_user` existant.
   impersonates :user
 
+  # Vérifie le jeton CSRF de toute requête qui modifie quelque chose. Rails
+  # l'installe de lui-même via `config.load_defaults`, que l'app n'appelle pas :
+  # les jetons étaient émis (balise meta, champ caché des formulaires) mais
+  # jamais vérifiés, si bien qu'une page tierce pouvait poster au nom d'un
+  # enseignant connecté. `prepend` le place devant `authenticate_user!`, comme
+  # le demande Devise : une reconnexion par « se souvenir de moi » renouvelle le
+  # jeton, et la vérifier après refuserait à tort une requête légitime.
+  protect_from_forgery with: :exception, prepend: true
+
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_unread_messages, if: :user_signed_in?
