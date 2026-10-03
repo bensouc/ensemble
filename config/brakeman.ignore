@@ -17,7 +17,7 @@
       "cwe_id": [
         1104
       ],
-      "note": "Rails 7.1 n'a plus de correctifs depuis le 01/10/2025. Levé par la montée en Rails 7.2, puis 8.1 — voir config/bundler-audit.yml."
+      "note": "Rails 7.2 n'a plus de correctifs depuis le 09/08/2026 ; 7.2.4 porte les derniers. Levé par la montée en Rails 8.1."
     }
   ],
   "brakeman_version": "8.1.0"

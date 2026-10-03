@@ -3,24 +3,12 @@
 # et n'en ajouter qu'avec la même justification. Un avis nouveau, lui, fait
 # échouer la CI.
 ignore:
-  # --- Rails 7.1 : corrigés seulement à partir de 7.2.3.1 (lot « Rails 7.2 »)
-  - CVE-2026-33168 # actionview — XSS dans les helpers de balises
-  - CVE-2026-33173 # activestorage — type de contenu contourné par les métadonnées d'un envoi direct
-  - CVE-2026-33174 # activestorage — DoS du mode proxy par requêtes Range
-  - CVE-2026-33658 # activestorage — DoS du mode proxy par requêtes multi-plages
-  - CVE-2026-33195 # activestorage — traversée de chemin du DiskService (prod sur Cloudinary)
-  - CVE-2026-33202 # activestorage — injection de motif du DiskService (prod sur Cloudinary)
-  - CVE-2026-33169 # activesupport — ReDoS de number_to_delimited
-  - CVE-2026-33170 # activesupport — XSS de SafeBuffer#%
-  - CVE-2026-33176 # activesupport — DoS des helpers numériques
-  # Critique, neutralisé par config/initializers/active_storage_vips.rb.
-  - CVE-2026-66066 # activestorage — lecture de fichiers via les loaders non fiables de libvips
-
   # --- Puma 6 : correctif en Puma 7. Les deux visent l'analyse du protocole
   # PROXY, que config/puma.rb n'active pas.
   - CVE-2026-47736
   - CVE-2026-47737
 
-  # --- rubyzip 2.4 : correctif en 3.4, que roo bloque (roo n'est plus utilisée).
+  # --- rubyzip 2.4 : correctif en 3.4. Aucune gem ne bloque plus la 3.x, mais
+  # elle retire Zip::File::CREATE, qu'emploie le job des PDF : à adapter avant.
   # La faille vise l'extraction d'archives sur disque, que l'app ne fait pas.
   - CVE-2026-85396
