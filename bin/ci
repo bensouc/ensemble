@@ -2,13 +2,19 @@
 # frozen_string_literal: true
 
 # Intégration continue locale — les étapes sont dans config/ci.rb.
-#
-# En Rails 8.1, remplacer les deux lignes suivantes par :
-#   require "active_support/continuous_integration"
-#   CI = ActiveSupport::ContinuousIntegration
-# puis supprimer lib/continuous_integration.rb.
 require_relative "../config/boot"
-require_relative "../lib/continuous_integration"
+require "active_support/continuous_integration"
 
-CI = ContinuousIntegration
+# Rails 8.1.4 appelle `colorize(:error, texte)` dans le message de Ctrl-C, les
+# arguments à l'envers : une interruption finissait sur un KeyError au lieu de
+# « ❌ … interrupted ». À retirer quand Rails l'aura corrigé.
+class CI < ActiveSupport::ContinuousIntegration
+  private
+
+  def colorize(text, type)
+    text, type = type, text if text.is_a?(Symbol)
+    super
+  end
+end
+
 require_relative "../config/ci"
