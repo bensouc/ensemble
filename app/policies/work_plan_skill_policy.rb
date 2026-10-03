@@ -34,10 +34,6 @@ class WorkPlanSkillPolicy < ApplicationPolicy
     user_is_owner_or_admin?
   end
 
-  def remove_special_wps?
-    user_is_owner_or_admin?
-  end
-
   def move?
     user_is_owner_or_admin?
   end

@@ -170,24 +170,6 @@ class WorkPlanSkillsController < ApplicationController
     end
   end
 
-  def remove_special_wps
-    @wps = WorkPlanSkill.find(params[:work_plan_skill_id])
-    authorize @wps
-    @skill = @wps.skill
-    @student = @wps.student
-
-    # test if special domain
-    unless @skill.special?
-      # binding.pry
-      # exist il une belt pour lestudent le skill
-      belt = Belt.where(domain: @skill.domain, student: @student, level: @skill.level)
-      # belt to be destroy?
-      belt.first.destroy unless belt.empty?
-    end
-    @wps.destroy
-    render partial: "remove_special_wps"
-  end
-
   def move
     @work_plan_skill = WorkPlanSkill.find(params[:id])
     authorize @work_plan_skill
