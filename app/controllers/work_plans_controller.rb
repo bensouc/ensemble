@@ -212,14 +212,17 @@ class WorkPlansController < ApplicationController
     end
   end
 
+  # Le plan n'est enregistré qu'une fois les domaines connus : la modale laisse
+  # tout décocher, et le plan vide restait alors dans la liste. `authorize` vient
+  # avant la redirection, sinon Pundit lève et la page tombe en 500.
   def auto_new_wp
+    authorize @work_plan
     if @domains.empty?
       redirect_to student_path(@student), notice: "Vous n'avez pas sélectionné de domaine"
-
       return
     end
+    return redirect_to student_path(@student), notice: "Génération raté" unless @work_plan.save
 
-    authorize @work_plan
     # Iterate through each domain in the list of domains
     @domains.each do |domain|
       # Create a new WorkPlanDomain object and set its attributes
@@ -231,12 +234,7 @@ class WorkPlansController < ApplicationController
       # Find all the skills for the current domain, level, and grade
       wpd.attach_next_skills(@results)
     end
-    # Save the work plan and redirect to the appropriate page
-    if @work_plan.save
-      redirect_to work_plan_path(@work_plan)
-    else
-      redirect_to student_path(@student), notice: "Génération raté"
-    end
+    redirect_to work_plan_path(@work_plan)
   end
 
   private
@@ -267,7 +265,7 @@ class WorkPlansController < ApplicationController
 
   def auto_new_wp_params
     @student = Student.find(params.require(:student_id))
-    @work_plan = WorkPlan.create(auto_work_plan_attributes)
+    @work_plan = WorkPlan.new(auto_work_plan_attributes)
     @results = Result.includes(:skill).where(student: @student)
     @domains = requested_domains
   end
