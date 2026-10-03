@@ -1,20 +1,22 @@
 # frozen_string_literal: true
 
+# Un tableau n'a pas de propriétaire : il vit dans l'énoncé d'un exercice, et
+# n'est rattaché à rien d'autre. Pas de policy à appeler, donc — c'est le sgid
+# qui en tient lieu.
 class TablesController < ApplicationController
   before_action :get_table_from_sgid, only: [:update]
 
-  def show
-    skip_authorization
-    @table = Table.find params[:id]
-    render json: attachment_json(@table)
-  end
-
+  # Un tableau vierge, que rien ne désigne encore : l'éditeur l'insère dans
+  # l'énoncé en cours de rédaction.
   def create
     skip_authorization
     @table = Table.create(rows: 3, columns: 3)
     render json: attachment_json(@table)
   end
 
+  # Le tableau est désigné par son sgid signé, pas par son id : ne le connaît que
+  # qui a eu l'énoncé de l'exercice sous les yeux, et un exercice ne se lit que
+  # dans son école (`ChallengePolicy`).
   def update
     skip_authorization
 

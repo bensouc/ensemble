@@ -123,7 +123,9 @@ Rails.application.routes.draw do
   resources :belts, only: [:show, :destroy, :edit, :update]
 
   # ###############route for tab editing###############
-  resources :tables, only: [:show, :create, :update]
+  # Pas de `show` : rien ne l'appelait, et il livrait le sgid — donc le droit
+  # d'écrire — de n'importe quel tableau à qui en donnait l'id.
+  resources :tables, only: [:create, :update]
 
   # ###############stripe routes###############
   # namespace :stripe do
