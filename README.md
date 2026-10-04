@@ -121,11 +121,13 @@ each side.
 | --- | --- | --- |
 | `web` | `puma -C config/puma.rb -p 3000` | Serves HTTP |
 | `jobs` | `bin/jobs` | Background jobs (Solid Queue) |
-| `js` | `yarn build:watch` | Rebuilds the esbuild bundle on save |
+| `js` | `yarn build:watch` | Rebuilds the esbuild bundles on save |
+| `css` | `yarn watch:css` | Rebuilds the stylesheets (Dart Sass, then autoprefixer: `bin/build-css`) on save |
 
-The `js` process matters more than it looks: without it, `app/assets/builds/application.js`
-goes stale and the page silently loses every Stimulus controller. Running
-`rails server` alone is not equivalent to `bin/dev`.
+The `js` and `css` processes matter more than they look: Propshaft only serves what
+they build into `app/assets/builds`. Without them, `application.js` and
+`application.css` go stale, and the page silently loses every Stimulus controller
+or every style change. Running `rails server` alone is not equivalent to `bin/dev`.
 
 ### In production
 
@@ -243,6 +245,9 @@ real pupil names.
 - Local CI: `bin/ci` (RuboCop, bundler-audit, Brakeman, RSpec, browser benches)
   signs the pushed commit with `gh signoff`
 - Ruby 3.4.11, Node 24, YJIT in production
+- Assets the Rails 8 way: Propshaft serves what esbuild and Dart Sass build
+  (cssbundling); Sprockets, libsass (`sassc`) and the Bootstrap and Font Awesome
+  gems are gone, both now come from npm
 - Sidekiq replaced by Solid Queue running inside Puma: one Coolify application
   instead of two, jobs dashboard at `/jobs`
 - Development no longer deletes files from the Cloudinary account it shares

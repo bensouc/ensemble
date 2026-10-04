@@ -35,6 +35,7 @@ RSpec.describe "Le service worker", type: :request do
   it "change de version avec le bundle" do
     empreinte = response.body[/const VERSION = "([^"]+)"/, 1]
 
-    expect(empreinte).to include(ActionController::Base.helpers.asset_digest_path("application.js"))
+    expect(empreinte).to include(ActionController::Base.helpers.asset_path("application.js"))
+    expect(empreinte).to match(/application-\h+\.js/)
   end
 end

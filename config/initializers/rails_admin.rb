@@ -1,5 +1,7 @@
 RailsAdmin.config do |config|
-  config.asset_source = :sprockets
+  # Son JS et son CSS sont construits avec ceux de l'app (esbuild, bin/build-css)
+  # dans app/assets/builds, à partir du paquet npm rails_admin.
+  config.asset_source = :webpack
 
   ### Popular gems integration
 

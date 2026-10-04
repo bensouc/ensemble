@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Le service worker, servi depuis la racine.
+# Le service worker et le manifeste de l'application, servis depuis la racine.
 #
 # Il doit venir de `/` et non de `/assets/…` : un service worker ne pilote que
 # les pages situées sous SON chemin. Servi depuis le répertoire d'assets, il ne
@@ -23,5 +23,15 @@ class PwaController < ApplicationController
            formats: :js,
            layout: false,
            content_type: "text/javascript"
+  end
+
+  # Le manifeste vivait dans les assets, où Sprockets interprétait son ERB (les
+  # chemins versionnés des icônes). Propshaft sert les fichiers tels quels : il
+  # passe donc par un gabarit, comme le service worker.
+  def manifest
+    render template: "pwa/manifest",
+           formats: :json,
+           layout: false,
+           content_type: "application/manifest+json"
   end
 end

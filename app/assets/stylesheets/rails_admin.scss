@@ -1,0 +1,6 @@
+// Les styles de rails_admin, tirés de son paquet npm (même version que la gem).
+// Ils étaient servis par Sprockets depuis la gem, et dupliqués sous
+// app/assets/stylesheets/rails_admin pour contourner libsass. Font Awesome est
+// le même que celui de l'app, à la racine des assets.
+$fa-font-path: ".";
+@import "rails_admin/src/rails_admin/styles/base";

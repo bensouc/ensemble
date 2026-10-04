@@ -4,7 +4,7 @@
 		<%= favicon_link_tag %>
 		<title><%= meta_title %></title>
 		<%# PWA %>
-		<link rel="manifest" crossorigin="use-credentials" href="<%= asset_path 'manifest.json' %>">
+		<link rel="manifest" crossorigin="use-credentials" href="<%= pwa_manifest_path %>">
 		<%= render 'shared/social_meta' %>
 		<%= render 'shared/ios_pwa_links' %>
 		<%= csrf_meta_tags %>

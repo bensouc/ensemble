@@ -110,12 +110,13 @@ RUN bundle exec bootsnap precompile app/ lib/
 
 # Bundle JavaScript avec esbuild AVANT la précompilation Sprockets.
 # INDISPENSABLE : app/assets/builds/ est gitignoré → vide dans le clone Git de
-# Coolify. Sans ce build explicite, app/assets/builds/application.js n'existe pas,
-# Sprockets ne le digère pas, et l'app retombe sur /javascripts/application.js (404)
-# → tout le JS (Stimulus/Turbo) casse. On ne se repose donc PAS sur le hook jsbundling.
-RUN yarn build
+# Coolify. Sans ce build explicite, le JS (esbuild) et le CSS (Dart Sass puis
+# autoprefixer, bin/build-css) n'existent pas, et Propshaft n'a rien à servir :
+# tout le JS (Stimulus/Turbo) et toute la mise en page cassent. On ne se repose
+# donc PAS sur les hooks de jsbundling et cssbundling.
+RUN yarn build && yarn build:css
 
-# Compile les assets Sprockets : digère le bundle JS produit ci-dessus + le SCSS.
+# Propshaft versionne les assets (builds, images, polices) dans public/assets.
 # SECRET_KEY_BASE_DUMMY=1 fournit une clé bidon → pas besoin du vrai master.key au build.
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
