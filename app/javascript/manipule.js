@@ -85,16 +85,26 @@ function signalerEcoute(bouton) {
   }).catch(() => {})
 }
 
+// L'énoncé ET la question. Les séparer n'aurait aucun sens : un élève qui ne
+// déchiffre pas entendrait l'histoire sans jamais savoir ce qu'on lui demande.
+function texteALire() {
+  return ["[data-m-enonce]", "[data-m-question]"]
+    .map((selecteur) => document.querySelector(selecteur))
+    .filter(Boolean)
+    .map((element) => element.textContent.trim())
+    .filter((texte) => texte.length)
+    .join(" ")
+}
+
 function brancher() {
   const bouton = document.querySelector("[data-m-ecouter]")
-  const enonce = document.querySelector("[data-m-enonce]")
-  if (!bouton || !enonce) return
+  if (!bouton || !texteALire()) return
 
   bouton.addEventListener("click", () => {
     bouton.disabled = true
     bouton.textContent = "⏸ Lecture…"
     signalerEcoute(bouton)
-    lire(enonce.textContent, () => {
+    lire(texteALire(), () => {
       bouton.disabled = false
       bouton.textContent = "🔊 Écouter"
     })

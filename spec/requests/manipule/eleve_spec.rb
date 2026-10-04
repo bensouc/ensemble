@@ -161,6 +161,14 @@ RSpec.describe "Manipule, côté élève" do
       expect(Manipule::Practice.last.reload).to be_terminee
     end
 
+    # Un élève qui ne déchiffre pas entendrait l'histoire sans jamais savoir ce
+    # qu'on lui demande : la lecture doit attraper les deux.
+    it "donne à lire l'énoncé ET la question" do
+      get manipule_serie_path
+
+      expect(response.body).to include("data-m-enonce", "data-m-question")
+    end
+
     it "compte les réécoutes de l'énoncé" do
       tentative = Manipule::Practice.last.attempts.first
 

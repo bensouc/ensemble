@@ -4,7 +4,7 @@
   <%= hidden_field_tag :attempt_id, @tentative.id %>
 
   <% if @probleme.choix? %>
-    <p class="m-question"><%= @probleme.question %></p>
+    <p class="m-question" data-m-question><%= @probleme.question %></p>
     <div class="m-choix">
       <% @choix.each do |choix| %>
         <%# `button_tag` et non `f.submit` : sur un <input type="submit">, la
@@ -15,7 +15,7 @@
       <% end %>
     </div>
   <% else %>
-    <p class="m-question"><%= @probleme.question %></p>
+    <p class="m-question" data-m-question><%= @probleme.question %></p>
     <div class="m-saisie">
       <%= text_field_tag :saisie, nil, inputmode: "numeric", autocomplete: "off",
                          class: "m-saisie-case", "aria-label": "Ta réponse" %>
