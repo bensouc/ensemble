@@ -29,6 +29,14 @@ module Manipule
 
     delegate :level, to: :skill
 
+    # Ce qu'il y a à lire, dans l'ordre où on le lit : l'énoncé, la question,
+    # puis chaque réponse. Un morceau d'audio par élément, pour que l'élève
+    # puisse revenir sur une réponse seule.
+    def parties_a_lire
+      [[self, "enonce", statement], [self, "question", question]] +
+        choices.map { |choix| [choix, "choix", choix.label] }
+    end
+
     def choix?
       answer_mode == "choix"
     end

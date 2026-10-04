@@ -213,6 +213,48 @@ RSpec.describe "Manipule, côté élève" do
     end
   end
 
+  describe "l'audio pré-généré" do
+    before do
+      designer!
+      banque
+      entrer!
+      get manipule_serie_path
+    end
+
+    def poser_audio
+      probleme = Manipule::Practice.last.attempts.first.problem
+      Manipule::Audio.poser!(readable: probleme, role: "enonce", texte: probleme.statement,
+                             rendu: Manipule::Synthese::Rendu.new(octets: "des octets", content_type: "audio/mp4", voix: "Thomas"))
+    end
+
+    it "donne le morceau à l'élève en séance" do
+      audio = poser_audio
+
+      get manipule_audio_path(audio)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.media_type).to eq("audio/mp4")
+      expect(response.body).to eq("des octets")
+    end
+
+    it "expose son adresse sur l'élément à lire" do
+      audio = poser_audio
+
+      get manipule_serie_path
+
+      expect(response.body).to include(manipule_audio_path(audio))
+    end
+
+    it "ne le donne à personne d'autre" do
+      audio = poser_audio
+      delete manipule_quitter_path
+
+      get manipule_audio_path(audio)
+
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
+
   it "renvoie vers son lien de classe l'élève qui n'est pas entré" do
     get manipule_serie_path
 

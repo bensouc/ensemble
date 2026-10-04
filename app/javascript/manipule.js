@@ -13,6 +13,7 @@ const QUALITE = /(natural|online|enhanced|premium|neural|siri|google)/i
 let voix = null
 let enCours = false
 let relance = null
+let lecteur = null
 
 function choisir() {
   if (!window.speechSynthesis) return
@@ -31,9 +32,12 @@ function note(v) {
   return n
 }
 
+// L'avertissement ne concerne que le repli : si les morceaux sont là, l'absence
+// de voix française sur la machine n'a plus aucune importance.
 function afficher(francaises) {
   const zone = document.querySelector("[data-m-voix]")
   if (!zone) return
+  if (document.querySelector("[data-m-audio]")) { zone.textContent = ""; return }
   if (!window.speechSynthesis) zone.textContent = "Cet ordinateur ne sait pas lire à voix haute."
   else if (!francaises.length && speechSynthesis.getVoices().length) zone.textContent = "Aucune voix française sur cet ordinateur."
   else zone.textContent = ""
@@ -42,8 +46,21 @@ function afficher(francaises) {
 function arreter() {
   enCours = false
   if (relance) { clearInterval(relance); relance = null }
+  if (lecteur) { lecteur.pause(); lecteur = null }
   if (window.speechSynthesis) speechSynthesis.cancel()
   document.querySelectorAll(".m-lu").forEach((element) => element.classList.remove("m-lu"))
+}
+
+// Un morceau pré-généré : la même voix pour tous les élèves, quelle que soit la
+// machine. C'est le chemin normal ; la synthèse du navigateur n'est plus qu'un
+// filet pour les problèmes dont l'audio n'a pas encore été fabriqué.
+function jouerFichier(url, fini) {
+  const son = new window.Audio(url)
+  lecteur = son
+  const finir = () => { if (lecteur === son) lecteur = null; fini() }
+  son.onended = finir
+  son.onerror = finir
+  son.play().catch(finir)
 }
 
 // Une phrase à la fois, avec un silence entre chacune : c'est ce que
@@ -70,7 +87,7 @@ function lireTexte(texte, fini) {
 // Chaque élément est surligné pendant qu'il est lu : un élève qui ne déchiffre
 // pas doit au moins voir OÙ on en est.
 function lireElements(elements, fini) {
-  if (!window.speechSynthesis || !elements.length) { fini(); return }
+  if (!elements.length) { fini(); return }
   arreter()
   enCours = true
   // Chrome coupe la lecture au bout d'une quinzaine de secondes sans ce rappel.
@@ -83,11 +100,14 @@ function lireElements(elements, fini) {
     if (!enCours || i >= elements.length) { arreter(); fini(); return }
     const element = elements[i]
     element.classList.add("m-lu")
-    lireTexte(element.textContent.trim(), () => {
+    const apres = () => {
       element.classList.remove("m-lu")
       i += 1
       setTimeout(suivant, 250)
-    })
+    }
+    const fichier = element.dataset.mAudio
+    if (fichier) jouerFichier(fichier, apres)
+    else lireTexte(element.textContent.trim(), apres)
   }
   suivant()
 }

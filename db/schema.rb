@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_04_190000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_04_210000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -145,6 +145,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_190000) do
     t.index ["choice_id"], name: "index_manipule_attempts_on_choice_id"
     t.index ["practice_id", "position"], name: "index_manipule_attempts_on_practice_id_and_position", unique: true
     t.index ["problem_id"], name: "index_manipule_attempts_on_problem_id"
+  end
+
+  create_table "manipule_audios", force: :cascade do |t|
+    t.string "readable_type", null: false
+    t.bigint "readable_id", null: false
+    t.string "role", null: false
+    t.text "texte_source", null: false
+    t.string "content_type", default: "audio/mp4", null: false
+    t.binary "data", null: false
+    t.string "voix"
+    t.integer "octets"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["readable_type", "readable_id", "role"], name: "index_manipule_audios_sur_lu", unique: true
   end
 
   create_table "manipule_choices", force: :cascade do |t|

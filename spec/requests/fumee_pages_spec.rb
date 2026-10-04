@@ -17,7 +17,8 @@ RSpec.describe "Fumée : chaque page s'ouvre", type: :request do
       "/users/invitation/remove" => "supprime une invitation malgré le GET",
       "/users/cancel" => "efface la session d'inscription en cours",
       "/work_plans/:id/export" => "lance Chrome pour le PDF, trop lent ici",
-      "/skills/add_skills_from_xls" => "lit le classeur déposé juste avant (spec dédiée)"
+      "/skills/add_skills_from_xls" => "lit le classeur déposé juste avant (spec dédiée)",
+      "/manipule/audio/:id" => "sert un binaire, pas une page (spec dédiée)"
     }
   end
 

@@ -13,9 +13,7 @@ module Manipule
       @tentative = @serie.attempts.detect { |tentative| !tentative.repondue? }
       return redirect_to(manipule_fin_path) if @tentative.nil?
 
-      @probleme = @tentative.problem
-      # Mélangées à chaque affichage : la place d'une réponse ne dit rien.
-      @choix = @probleme.choices.shuffle
+      preparer_le_probleme(@tentative)
     end
 
     # On repart en GET plutôt que de rendre la réponse : un enfant qui
@@ -41,6 +39,20 @@ module Manipule
     end
 
     private
+
+    def preparer_le_probleme(tentative)
+      @probleme = tentative.problem
+      # Mélangées à chaque affichage : la place d'une réponse ne dit rien.
+      @choix = @probleme.choices.shuffle
+      charger_audios
+    end
+
+    # Deux requêtes plutôt qu'une : la relation est polymorphe, et un `IN` sur
+    # deux types différents ne se dit pas simplement.
+    def charger_audios
+      @audios_probleme = Audio.where(readable: @probleme).index_by(&:role)
+      @audios_choix = Audio.where(readable: @choix).index_by(&:readable_id)
+    end
 
     def verdict_a_montrer
       return nil if params[:vu].blank?

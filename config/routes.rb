@@ -60,6 +60,7 @@ Rails.application.routes.draw do
     post "serie/repondre", to: "practices#repondre", as: :repondre
     post "serie/ecouter", to: "practices#ecouter", as: :ecouter
     get "serie/fin", to: "practices#fin", as: :fin
+    get "audio/:id", to: "audios#show", as: :audio
 
     # Côté enseignante. Ces pages exigent sa session Devise ; le cookie de
     # l'élève, lui, n'y sert jamais à rien — c'est le code qui décide de le

@@ -1,10 +1,11 @@
-<%= render "manipule/practices/enonce", probleme: @probleme %>
+<%= render "manipule/practices/enonce", probleme: @probleme, audio_enonce: @audios_probleme["enonce"] %>
 
 <%= form_with url: manipule_repondre_path, method: :post, class: "m-reponses" do |f| %>
   <%= hidden_field_tag :attempt_id, @tentative.id %>
 
   <% if @probleme.choix? %>
-    <p class="m-question" data-m-question data-m-lire><%= @probleme.question %></p>
+    <p class="m-question" data-m-question data-m-lire
+       <%= @audios_probleme["question"] ? "data-m-audio=#{manipule_audio_path(@audios_probleme['question'])}" : "" %>><%= @probleme.question %></p>
     <div class="m-choix">
       <% @choix.each do |choix| %>
         <%# Le haut-parleur est À CÔTÉ de la réponse, jamais dedans : un bouton
@@ -16,14 +17,17 @@
               le libellé par l'identifiant. L'élève voyait « 8 » au lieu de
               « 8 pommes ». %>
           <%= button_tag choix.label, type: :submit, name: "choice_id", value: choix.id,
-                         class: "m-choix-bouton", data: { "m-lire": true } %>
+                         class: "m-choix-bouton",
+                         data: { "m-lire": true,
+                                 "m-audio": @audios_choix[choix.id] ? manipule_audio_path(@audios_choix[choix.id]) : nil } %>
           <button type="button" class="m-ecouter-un" data-m-ecouter-un
                   aria-label="Écouter cette réponse">🔊</button>
         </div>
       <% end %>
     </div>
   <% else %>
-    <p class="m-question" data-m-question data-m-lire><%= @probleme.question %></p>
+    <p class="m-question" data-m-question data-m-lire
+       <%= @audios_probleme["question"] ? "data-m-audio=#{manipule_audio_path(@audios_probleme['question'])}" : "" %>><%= @probleme.question %></p>
     <div class="m-saisie">
       <%= text_field_tag :saisie, nil, inputmode: "numeric", autocomplete: "off",
                          class: "m-saisie-case", "aria-label": "Ta réponse" %>
