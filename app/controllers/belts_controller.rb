@@ -65,7 +65,10 @@ class BeltsController < ApplicationController
         format.turbo_stream
       end
     else
-      redirect_to :edit
+      # `redirect_to :edit` se traduisait en `edit_url`, une méthode qui
+      # n'existe pas : l'enseignant tombait sur une erreur 500. On réaffiche le
+      # formulaire, dans sa frame, avec la raison.
+      render :edit, status: :unprocessable_content, formats: [:html]
     end
   end
 
