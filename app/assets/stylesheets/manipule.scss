@@ -258,3 +258,91 @@ $police: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, Verdana, sans-ser
 form.button_to { display: inline-block; margin: 0; }
 
 :focus-visible { outline: 3px solid var(--m-rose); outline-offset: 3px; }
+
+// ───────────────────────────── les jetons ─────────────────────────────
+//
+// Des cases nommées d'après l'énoncé, et un tas à vider dedans. Le compte de
+// chaque case est affiché : c'est lui que l'élève lit pour répondre, et le
+// voir changer pendant qu'il déplace est tout l'intérêt de manipuler.
+//
+// Tailles généreuses : la cible d'un doigt d'enfant de sept ans sur un écran
+// de classe, ce n'est pas la cible d'une souris d'adulte.
+.m-outil {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+}
+
+.m-zone {
+  background: var(--m-carte);
+  border: 2px dashed var(--m-trait);
+  border-radius: 0.9rem;
+  padding: 0.6rem 0.7rem 0.8rem;
+  min-height: 7.5rem;
+}
+
+// La réserve se distingue des cases où l'on dépose : c'est le point de départ,
+// pas une réponse en construction.
+.m-zone-reserve {
+  background: var(--m-bleu-pale);
+  border-style: solid;
+}
+
+.m-zone-titre {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  color: var(--m-bleu);
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.m-zone-compte {
+  font-weight: bold;
+  font-size: 1.25rem;
+  color: var(--m-encre);
+  font-variant-numeric: tabular-nums;
+}
+
+.m-tas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  min-height: 3rem;
+}
+
+.m-jeton {
+  font-size: 1.9rem;
+  line-height: 1;
+  padding: 0.15rem;
+  background: none;
+  border: 2px solid transparent;
+  border-radius: 0.5rem;
+  cursor: grab;
+  // Sans cela, le navigateur fait défiler la page au lieu de laisser glisser.
+  touch-action: none;
+  user-select: none;
+}
+
+.m-jeton-choisi {
+  border-color: var(--m-rose);
+  background: var(--m-rose-pale);
+}
+
+// Pendant le déplacement, le jeton suit le doigt au-dessus de tout le reste,
+// et cesse d'intercepter le pointeur pour qu'on sache sur quelle case on est.
+.m-jeton-vole {
+  position: relative;
+  z-index: 10;
+  cursor: grabbing;
+  pointer-events: none;
+  transform-origin: center;
+}
+
+.m-outil-aide {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--m-encre-douce);
+}

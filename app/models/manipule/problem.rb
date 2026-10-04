@@ -8,6 +8,16 @@ module Manipule
     MODES = %w[choix saisie].freeze
     OUTILS = %w[jetons partage horloge dizaines_unites].freeze
 
+    # Les jetons que l'enseignante peut faire manipuler. Des caractères, pas
+    # des images : rien à téléverser, rien à servir, et ça s'affiche sur la
+    # machine du fond de la classe comme sur un iPad.
+    RESSOURCES = {
+      "pomme" => "🍎", "lapin" => "🐰", "carotte" => "🥕", "biscuit" => "🍪",
+      "bille" => "🔵", "piece" => "🪙", "fleur" => "🌸", "etoile" => "⭐"
+    }.freeze
+
+    RESERVE_MAX = 30
+
     belongs_to :skill
     belongs_to :user, optional: true
 
@@ -40,6 +50,28 @@ module Manipule
     def parties_a_lire
       [[self, "enonce", statement], [self, "question", question]] +
         choices.map { |choix| [choix, "choix", choix.label] }
+    end
+
+    # Les réglages de l'outil, lus depuis la colonne structurée. L'outil aide
+    # l'élève à se représenter le problème ; il ne porte PAS la réponse, qui
+    # reste un choix ou une saisie. C'est ce qui a été tranché au cadrage :
+    # « le prof peut soit demander un QCM soit une valeur à entrer ».
+    def jetons?
+      tool == "jetons"
+    end
+
+    def jeton_caractere
+      RESSOURCES.fetch(tool_data["ressource"], RESSOURCES["pomme"])
+    end
+
+    def jeton_reserve
+      tool_data["reserve"].to_i.clamp(0, RESERVE_MAX)
+    end
+
+    # Des zones nommées d'après l'énoncé — « le panier de Sam », « restées sur
+    # l'arbre ». Un nom vide ne donnerait qu'un rectangle muet.
+    def jeton_zones
+      Array(tool_data["zones"]).map(&:to_s).map(&:strip).reject(&:empty?)
     end
 
     def choix?

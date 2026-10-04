@@ -1,0 +1,26 @@
+<%# L'outil aide l'élève à se représenter le problème ; il ne porte PAS la
+    réponse, qui reste un choix ou une saisie. Rien ici n'est corrigé, et rien
+    n'est envoyé au serveur : c'est un brouillon qu'on manipule avec les mains.
+
+    Les jetons sont des <button type="button"> : ils sont dans le formulaire des
+    réponses, et un bouton sans type y vaudrait envoi. %>
+<div class="m-outil" data-m-jetons>
+  <div class="m-zone m-zone-reserve" data-m-zone="reserve">
+    <p class="m-zone-titre">À placer <span class="m-zone-compte" data-m-compte><%= probleme.jeton_reserve %></span></p>
+    <div class="m-tas" data-m-tas>
+      <% probleme.jeton_reserve.times do |rang| %>
+        <button type="button" class="m-jeton" data-m-jeton
+                aria-label="Jeton <%= rang + 1 %>"><%= probleme.jeton_caractere %></button>
+      <% end %>
+    </div>
+  </div>
+
+  <% probleme.jeton_zones.each_with_index do |nom, rang| %>
+    <div class="m-zone" data-m-zone="<%= rang %>">
+      <p class="m-zone-titre"><%= nom %> <span class="m-zone-compte" data-m-compte>0</span></p>
+      <div class="m-tas" data-m-tas></div>
+    </div>
+  <% end %>
+
+  <p class="m-outil-aide">Fais glisser les jetons. Tu peux aussi en toucher un, puis toucher une case.</p>
+</div>

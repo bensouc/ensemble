@@ -1,4 +1,4 @@
-// Manipule : la lecture à voix haute de l'énoncé.
+// Manipule : la lecture à voix haute de l'énoncé, et les jetons qu'on déplace.
 //
 // Rien d'autre ne nécessite de JavaScript ici — les réponses sont des
 // formulaires. Pas de Stimulus, pas de dépendance : ce bundle doit rester
@@ -204,6 +204,120 @@ function brancher() {
   })
 }
 
-document.addEventListener("DOMContentLoaded", brancher)
-document.addEventListener("turbo:load", brancher)
+
+// ───────────────────────────── les jetons ─────────────────────────────
+//
+// L'élève fait glisser des jetons d'une réserve vers des cases nommées
+// d'après l'énoncé. Rien n'est corrigé et rien n'est envoyé : c'est un
+// brouillon pour se représenter le problème, pas une réponse.
+//
+// Événements « pointer » et non glisser-déposer HTML5 : ce dernier n'existe
+// pas au doigt, et on ne sait pas sur quoi la classe travaillera. Un
+// repli par touches successives — un jeton, puis une case — rattrape
+// l'enfant qui n'arrive pas à maintenir le contact en se déplaçant.
+
+const SEUIL_GLISSE = 6 // pixels avant de considérer que c'est un glissé
+
+let jetonChoisi = null
+
+function compter(outil) {
+  outil.querySelectorAll("[data-m-zone]").forEach((zone) => {
+    const compte = zone.querySelector("[data-m-compte]")
+    if (compte) compte.textContent = zone.querySelectorAll("[data-m-jeton]").length
+  })
+}
+
+function deposer(jeton, zone) {
+  const tas = zone.querySelector("[data-m-tas]")
+  if (!tas) return
+
+  tas.appendChild(jeton)
+  compter(zone.closest("[data-m-jetons]"))
+}
+
+function oublierLeChoix() {
+  if (jetonChoisi) jetonChoisi.classList.remove("m-jeton-choisi")
+  jetonChoisi = null
+}
+
+function zoneSous(x, y) {
+  const sous = document.elementFromPoint(x, y)
+  return sous ? sous.closest("[data-m-zone]") : null
+}
+
+function brancherUnJeton(jeton, outil) {
+  jeton.addEventListener("pointerdown", (e) => {
+    e.preventDefault()
+    const depart = { x: e.clientX, y: e.clientY }
+    let glisse = false
+
+    const bouger = (ev) => {
+      if (!glisse && Math.hypot(ev.clientX - depart.x, ev.clientY - depart.y) < SEUIL_GLISSE) return
+
+      if (!glisse) {
+        glisse = true
+        oublierLeChoix()
+        jeton.classList.add("m-jeton-vole")
+      }
+      jeton.style.transform = `translate(${ev.clientX - depart.x}px, ${ev.clientY - depart.y}px)`
+    }
+
+    const lacher = (ev) => {
+      document.removeEventListener("pointermove", bouger)
+      document.removeEventListener("pointerup", lacher)
+      document.removeEventListener("pointercancel", lacher)
+      jeton.classList.remove("m-jeton-vole")
+      jeton.style.transform = ""
+
+      if (!glisse) {
+        // Un simple appui : on choisit le jeton, la case viendra ensuite.
+        const dejaChoisi = jetonChoisi === jeton
+        oublierLeChoix()
+        if (!dejaChoisi) {
+          jetonChoisi = jeton
+          jeton.classList.add("m-jeton-choisi")
+        }
+        return
+      }
+
+      const cible = zoneSous(ev.clientX, ev.clientY)
+      if (cible && outil.contains(cible)) deposer(jeton, cible)
+    }
+
+    document.addEventListener("pointermove", bouger)
+    document.addEventListener("pointerup", lacher)
+    document.addEventListener("pointercancel", lacher)
+  })
+}
+
+function brancherLesJetons() {
+  document.querySelectorAll("[data-m-jetons]").forEach((outil) => {
+    outil.querySelectorAll("[data-m-jeton]").forEach((jeton) => brancherUnJeton(jeton, outil))
+
+    outil.querySelectorAll("[data-m-zone]").forEach((zone) => {
+      zone.addEventListener("click", (e) => {
+        // Le jeton est DANS sa case : sans ce garde, le clic qui vient de le
+        // choisir remonte jusqu'ici et le repose aussitôt, si bien qu'on ne
+        // peut jamais rien sélectionner. On choisit en touchant un jeton, on
+        // dépose en touchant la case ailleurs que sur un jeton.
+        if (e.target.closest("[data-m-jeton]")) return
+        if (!jetonChoisi) return
+
+        const jeton = jetonChoisi
+        oublierLeChoix()
+        deposer(jeton, zone)
+      })
+    })
+
+    compter(outil)
+  })
+}
+
+function brancherTout() {
+  brancher()
+  brancherLesJetons()
+}
+
+document.addEventListener("DOMContentLoaded", brancherTout)
+document.addEventListener("turbo:load", brancherTout)
 document.addEventListener("turbo:before-cache", arreter)

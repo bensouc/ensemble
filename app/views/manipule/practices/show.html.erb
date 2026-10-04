@@ -7,6 +7,8 @@
     <%= tag.p @probleme.question, class: "m-question",
               data: { "m-question": true, "m-lire": true,
                       "m-audio": chemin_audio(@audios_probleme["question"]) } %>
+    <%= render "manipule/practices/jetons", probleme: @probleme if @probleme.jetons? %>
+
     <div class="m-choix">
       <% @choix.each do |choix| %>
         <%# Le haut-parleur est À CÔTÉ de la réponse, jamais dedans : un bouton
@@ -30,6 +32,8 @@
     <%= tag.p @probleme.question, class: "m-question",
               data: { "m-question": true, "m-lire": true,
                       "m-audio": chemin_audio(@audios_probleme["question"]) } %>
+    <%= render "manipule/practices/jetons", probleme: @probleme if @probleme.jetons? %>
+
     <div class="m-saisie">
       <%= text_field_tag :saisie, nil, inputmode: "numeric", autocomplete: "off",
                          class: "m-saisie-case", "aria-label": "Ta réponse" %>

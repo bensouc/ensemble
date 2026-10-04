@@ -261,4 +261,43 @@ RSpec.describe "Manipule, côté élève" do
     expect(response).to have_http_status(:ok)
     expect(response.body).to include("Tu n'es pas encore entré")
   end
+  describe "l'outil de manipulation" do
+    before do
+      designer!
+      banque
+      Manipule::Problem.find_each do |probleme|
+        probleme.update!(tool: "jetons",
+                         tool_data: { "ressource" => "pomme", "reserve" => 12,
+                                      "zones" => ["Cueillies par Sam", "Sur l'arbre"] })
+      end
+      entrer!
+    end
+
+    it "pose la réserve et les cases nommées d'après l'énoncé" do
+      get manipule_serie_path
+
+      expect(response.body).to include("data-m-jetons")
+      # L'apostrophe du nom de zone est échappée par le gabarit, et c'est ce
+      # qu'on veut : ces noms viennent de l'enseignante.
+      expect(response.body).to include("Cueillies par Sam").and include("Sur l&#39;arbre")
+      expect(response.body.scan(/aria-label="Jeton \d+"/).size).to eq(12)
+    end
+
+    # L'outil aide l'élève à se représenter le problème ; il ne porte pas la
+    # réponse, qui reste un choix. Les deux doivent coexister à l'écran.
+    it "laisse les réponses en place" do
+      get manipule_serie_path
+
+      expect(response.body).to include(">8 pommes<")
+    end
+
+    it "ne pose rien quand aucun outil n'est choisi" do
+      Manipule::Problem.find_each { |probleme| probleme.update!(tool: nil) }
+
+      get manipule_serie_path
+
+      expect(response.body).not_to include("data-m-jetons")
+    end
+  end
+
 end
