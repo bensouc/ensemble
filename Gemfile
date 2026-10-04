@@ -2,7 +2,7 @@ source "https://rubygems.org"
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # ruby '2.7.4'
-ruby "3.3.12"
+ruby "3.4.11"
 
 # gem  'nokogiri', '1.12.5'
 
@@ -45,6 +45,9 @@ gem "image_processing", "~> 1.2"
 
 # Reduces boot times through caching; required errrein config/boot.rb
 gem "bootsnap", ">= 1.4.2", require: false
+# Sort des gems par défaut avec Ruby 4.0. `cloudinary` et `SubscriptionPrice`
+# le chargent : déclaré ici, il ne dépend plus de la bibliothèque standard.
+gem "ostruct"
 # Notification erroer email + slack
 gem "exception_notification"
 gem "slack-notifier"
