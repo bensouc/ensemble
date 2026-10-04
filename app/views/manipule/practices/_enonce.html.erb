@@ -1,7 +1,7 @@
 <%# `data-m-audio` porte le morceau pré-généré quand il existe ; sans lui, le
     navigateur se rabat sur sa propre voix — qu'il n'a pas toujours. %>
-<p class="m-enonce" data-m-enonce data-m-lire
-   <%= audio_enonce ? "data-m-audio=#{manipule_audio_path(audio_enonce)}" : "" %>><%= probleme.statement %></p>
+<%= tag.p probleme.statement, class: "m-enonce",
+          data: { "m-enonce": true, "m-lire": true, "m-audio": chemin_audio(audio_enonce) } %>
 
 <div class="m-ecoute">
   <button type="button" class="m-ecouter" data-m-ecouter
