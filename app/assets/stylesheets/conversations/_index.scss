@@ -1,4 +1,7 @@
-@import "show";
+@use "show";
+@use "../config/colors";
+@use "../config/font_families";
+
 // MOBILE
 @media (max-width: 1024px) {
   .conversations-container {
@@ -34,7 +37,7 @@
     width: 90vw;
 
     .conversation-title {
-      font-family: $titres-font-2;
+      font-family: font_families.$titres-font-2;
       text-align: center;
       padding: 5px;
       display: flex;
@@ -96,10 +99,10 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border: thin solid $bleuF;
+    border: thin solid colors.$bleuF;
     border-radius: 10px;
     .conversation-title {
-      font-family: $titres-font-2;
+      font-family: font_families.$titres-font-2;
       text-align: center;
       padding: 5px;
       display: flex;
@@ -112,11 +115,11 @@
   flex-direction: row;
   flex-wrap: nowrap;
   align-items: center;
-  border: thin solid $bleuC;
+  border: thin solid colors.$bleuC;
   border-radius: 10px;
   &.active {
-    background-color: $bleuF;
-    border: solid $bleuF;
+    background-color: colors.$bleuF;
+    border: solid colors.$bleuF;
   }
   .header {
     display: flex;
@@ -130,8 +133,8 @@
     flex-wrap: nowrap;
   }
   .last-message-box {
-    border-left: thin solid $bleuC;
-    background-color: $blanc;
+    border-left: thin solid colors.$bleuC;
+    background-color: colors.$blanc;
     border-radius: 0 0.5rem 0.5rem 0;
     display: flex;
     justify-content: space-between;
@@ -174,7 +177,7 @@
     display: none; /* Safari and Chrome */
   }
   .message {
-    background-color: $grisC; /* Rouge */
+    background-color: colors.$grisC; /* Rouge */
     color: #fff; /* Couleur du texte en blanc */
     padding: 10px; /* Espacement interne */
     border-radius: 15px 15px 15px 0; /* Coins arrondis */
@@ -185,7 +188,7 @@
     align-self: flex-start; /* Aligne les messages au début de la ligne */
   }
   .message.writer {
-    background-color: $roseLight; /* Change la couleur de fond en rose */
+    background-color: colors.$roseLight; /* Change la couleur de fond en rose */
     align-self: flex-end; /* Aligne les messages à droite */ /* Nécessaire pour la pointe de la bulle */
     border-radius: 15px 15px 0 15px;
   }
@@ -197,10 +200,10 @@
     width: 100%;
   }
   button {
-    border-bottom: 1px solid $grisC;
-    border-top: 1px solid $grisC;
-    border-right: 1px solid $grisC;
+    border-bottom: 1px solid colors.$grisC;
+    border-top: 1px solid colors.$grisC;
+    border-right: 1px solid colors.$grisC;
     border-radius: 0 5px 5px 0;
-    color: $rose;
+    color: colors.$rose;
   }
 }

@@ -1,8 +1,11 @@
+@use "../config/colors";
+@use "../config/echelle";
+
 .footer-homemade {
   z-index: 1;
   margin-left: 200px;
   background: white;
-  border-top: 1px solid $grisC;
+  border-top: 1px solid colors.$grisC;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -61,8 +64,8 @@
     // recouvrir les icônes.
     min-height: 4.5rem;
     padding-bottom: env(safe-area-inset-bottom, 0px);
-    background-color: $blanc !important;
-    border-top: thin solid $grisC;
+    background-color: colors.$blanc !important;
+    border-top: thin solid colors.$grisC;
   }
 }
 .logo-home {
@@ -93,11 +96,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: $cible-tactile;
-    min-height: $cible-tactile;
+    min-width: echelle.$cible-tactile;
+    min-height: echelle.$cible-tactile;
     // Les cinq icônes étaient toutes roses : aucune ne se distinguait, et rien
     // ne disait où l'on se trouvait. Les onglets au repos passent en retrait.
-    color: rgba($grisF, 0.45) !important;
+    color: rgba(colors.$grisF, 0.45) !important;
   }
 
   // L'onglet courant s'allume, et porte un trait au-dessus : la couleur seule ne
@@ -106,7 +109,7 @@
     position: relative;
 
     a {
-      color: $rose !important;
+      color: colors.$rose !important;
     }
 
     &::before {
@@ -116,7 +119,7 @@
       left: 50%;
       width: 1.75rem;
       height: 3px;
-      background-color: $rose;
+      background-color: colors.$rose;
       border-radius: 0 0 3px 3px;
       transform: translateX(-50%);
     }

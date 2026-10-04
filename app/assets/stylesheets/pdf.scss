@@ -1,3 +1,7 @@
+@use "sass:meta";
+@use "config/colors";
+@use "config/font_families";
+
 // Graphical variables
 
 // Fonts locales (plus de dépendance CDN Google Fonts)
@@ -464,11 +468,10 @@ th:not([align]) {
 // aucun appel réseau, contrairement à `config/fonts` que le PDF évite
 // volontairement au profit de ses @font-face locales.
 // ---------------------------------------------------------------------------
-@import "config/colors";
-@import "config/font_families";
-@import "trix/tokens";
-@import "trix/content";
-@import "trix/tables";
+@include meta.load-css("config/color_utilities");
+@include meta.load-css("trix/tokens");
+@include meta.load-css("trix/content");
+@include meta.load-css("trix/tables");
 
 // Seule exception à la parité : le corps de texte. Les plans de travail
 // imprimés sont calibrés sur 20px, et adopter les 17px de l'éditeur
@@ -491,7 +494,7 @@ th:not([align]) {
 }
 
 .pdf-etat--valide {
-  background-color: $eval-valide;
+  background-color: colors.$eval-valide;
 }
 
 // Le liseré n'existe qu'ici. À l'écran, l'anneau donne son bord au disque jaune
@@ -500,8 +503,8 @@ th:not([align]) {
 // bordure : elle ne prend pas sur la taille du disque, quel que soit le
 // `box-sizing` de la feuille embarquée.
 .pdf-etat--en-cours {
-  background-color: $eval-non-maitrise;
-  box-shadow: inset 0 0 0 1px $eval-non-maitrise-anneau;
+  background-color: colors.$eval-non-maitrise;
+  box-shadow: inset 0 0 0 1px colors.$eval-non-maitrise-anneau;
 }
 
 // Le titre et la date : `gap-2` n'existe pas dans le Bootstrap embarqué pour le

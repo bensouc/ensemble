@@ -1,4 +1,6 @@
-@import 'new_wps';
+@use 'new_wps';
+@use "../config/colors";
+@use "../config/echelle";
 
 .student-sticky-header {
   position: sticky;
@@ -19,7 +21,7 @@
   }
   .printer-logo {
     text-decoration: none;
-    color: $rose !important;
+    color: colors.$rose !important;
     margin: 0 15px;
     width: 20px;
     &:hover {
@@ -33,7 +35,7 @@
 .ligne-impression {
   display: flex;
   flex-wrap: wrap;
-  gap: $espace-sm $espace-lg;
+  gap: echelle.$espace-sm echelle.$espace-lg;
   align-items: center;
 
   h4 {
@@ -47,29 +49,29 @@
 .legende-eval {
   display: flex;
   flex-wrap: wrap;
-  gap: $espace-xs $espace-md;
+  gap: echelle.$espace-xs echelle.$espace-md;
   align-items: center;
-  color: $grisF;
-  font-size: $texte-xs;
+  color: colors.$grisF;
+  font-size: echelle.$texte-xs;
 }
 
 .legende-groupe {
   display: flex;
   flex-wrap: wrap;
-  gap: $espace-xs $espace-sm;
+  gap: echelle.$espace-xs echelle.$espace-sm;
   align-items: center;
 }
 
 // Les deux groupes se lisent séparément — la lettre dit quoi, la couleur dit où
 // on en est. Sans ce trait, les huit pastilles n'en font qu'une seule suite.
 .legende-groupe + .legende-groupe {
-  padding-left: $espace-md;
-  border-left: thin solid $grisC;
+  padding-left: echelle.$espace-md;
+  border-left: thin solid colors.$grisC;
 }
 
 .legende-item {
   display: inline-flex;
-  gap: $espace-xs;
+  gap: echelle.$espace-xs;
   align-items: center;
   white-space: nowrap;
 
@@ -83,7 +85,7 @@
     width: 1.35rem;
     height: 1.35rem;
     margin: 0;
-    font-size: $texte-xs;
+    font-size: echelle.$texte-xs;
   }
 }
 
@@ -94,7 +96,7 @@
   // width: 300px;
   font-size: smaller;
   font-weight: bolder;
-  color: $grisF;
+  color: colors.$grisF;
   background-color: #f241507c;
   padding: 10px;
   border-radius: 5px;
@@ -121,7 +123,7 @@
 // }
 
 .domain-main-col {
-  border-right: thin solid $grisC;
+  border-right: thin solid colors.$grisC;
   border-right-width: medium;
 }
 
@@ -140,7 +142,7 @@
   padding: 5px;
   height: 134px;
   width: 100px;
-  border-bottom: thin solid $grisC;
+  border-bottom: thin solid colors.$grisC;
   margin: 0 5px;
   form.button_to {
     display: inline;
@@ -211,7 +213,7 @@
   bottom: 131px;
   right: -37px;
   font-size: 1.5rem;
-  color: $roseL !important;
+  color: colors.$roseL !important;
   i:hover {
     transition: 0.15s;
     transform: scale(3);
@@ -224,7 +226,7 @@
   position: relative;
   top: 13px;
   left: 16px;
-  color: $rose;
+  color: colors.$rose;
   padding: 5px;
   height: 120px;
   width: 113px;
@@ -287,7 +289,7 @@
     width: 25px;
     height: 25px;
     margin: 0;
-    font-size: $texte-xs;
+    font-size: echelle.$texte-xs;
   }
 }
 
@@ -313,14 +315,14 @@
   left: 50%;
   width: max-content;
   max-width: 15rem;
-  padding: $espace-sm $espace-md;
-  color: $blanc;
-  font-size: $texte-sm;
+  padding: echelle.$espace-sm echelle.$espace-md;
+  color: colors.$blanc;
+  font-size: echelle.$texte-sm;
   font-weight: 500;
   line-height: 1.35;
   text-align: left;
-  background-color: rgba($grisF, 0.95);
-  border-radius: $rayon;
+  background-color: rgba(colors.$grisF, 0.95);
+  border-radius: echelle.$rayon;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
   transform: translateX(-50%);
   // Le libellé est du texte : il n'a rien à intercepter, et s'il prenait la
@@ -347,7 +349,7 @@
   // box-shadow: 0px 0px 17px 2px rgba(209, 208, 208, 0.541);
   border-radius: 15px;
   // border-top: thin solid $grisC;
-  color: $gray;
+  color: colors.$gray;
 }
 .mobile-belt-bar{
       display: flex;
@@ -358,7 +360,7 @@
   // box-shadow: 0px 0px 17px 2px rgba(209, 208, 208, 0.541);
   border-radius: 15px;
   // border-top: thin solid $grisC;
-  color: $gray;
+  color: colors.$gray;
 }
 
 .bar-style {

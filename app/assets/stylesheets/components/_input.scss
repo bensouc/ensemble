@@ -1,12 +1,15 @@
+@use "../config/colors";
+@use "../config/font_families";
+
 .input{
-  background-color: $white;
+  background-color: colors.$white;
   border-radius: 12px;
   padding: 10px;
-  font-family: $plan-font;
+  font-family: font_families.$plan-font;
   font-size: 18px;
 }
 .input-fit{
-  background-color: $white;
+  background-color: colors.$white;
   border-radius: 12px;
   padding: 10px;
   font-size: 18px;

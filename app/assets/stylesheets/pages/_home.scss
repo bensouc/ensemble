@@ -1,3 +1,6 @@
+@use "../config/colors";
+@use "../config/font_families";
+
 // Specific CSS for your home-page
 .container2 {
   display: flex;
@@ -16,7 +19,7 @@
     padding: 20px !important;
     font-size: 30px !important;
     font-weight: 700;
-    border: solid $rose;
+    border: solid colors.$rose;
   }
 }
 
@@ -39,8 +42,8 @@
     margin-top: 2rem;
     margin-left: 1.5rem;
     width: 70ch;
-    color: $blanc;
-    font-family: $plan-font;
+    color: colors.$blanc;
+    font-family: font_families.$plan-font;
     font-weight: 100;
   }
 }
@@ -62,13 +65,13 @@
   // width: 100%;
 
   h1 {
-    font-family: $titres-font;
+    font-family: font_families.$titres-font;
     font-weight: 700;
     font-size: 2rem;
   }
 
   p {
-    font-family: $plan-font;
+    font-family: font_families.$plan-font;
     font-weight: 200;
     font-size: 1.5rem;
     text-align: center;
@@ -116,30 +119,30 @@
 // with splide & splide.min.css
 .splide__progress__bar {
   height: 3px;
-  background: $roseLight;
+  background: colors.$roseLight;
 }
 .splide__arrow--prev,
 .splide__arrow--next {
-  background: $rose;
+  background: colors.$rose;
   &:hover {
-    background: $roseLight;
+    background: colors.$roseLight;
   }
 }
 .splide__arrow--prev svg,
 .splide__arrow--next svg {
-  fill: $blanc;
+  fill: colors.$blanc;
 }
 .splide__pagination__page.is-active {
-  background: $rose;
+  background: colors.$rose;
 }
 // END with splide & splide.min.css
 .showcase-banner {
-  background-color: $roseL;
+  background-color: colors.$roseL;
   color: whitesmoke;
   padding: 4rem 4rem 2.5rem 4rem;
   margin: 2.5rem 0 0 0;
   & h2 {
-    font-family: $titres-font;
+    font-family: font_families.$titres-font;
     font-size: 1.5rem;
     text-align: center;
   }

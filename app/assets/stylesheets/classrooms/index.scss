@@ -1,5 +1,8 @@
-@import 'results';
-@import 'no_print';
+@use 'results';
+@use 'no_print';
+@use "../config/colors";
+@use "../config/font_families";
+
 // css for classroom index
 .classrooms-list {
   margin-bottom: 15px;
@@ -15,11 +18,11 @@
     // gap: 10px;
 
   button {
-    background-color: $grisC;
+    background-color: colors.$grisC;
     border: none;
   }
   button:hover {
-    background-color: $grisC;
+    background-color: colors.$grisC;
   }
   img {
     vertical-align: baseline;
@@ -39,12 +42,12 @@
   min-height: 160px;
   margin-bottom: 15px;
   min-width: 550px;
-  border: solid $grisC;
+  border: solid colors.$grisC;
   border-radius: 15px;
 }
 
 .classroom-card-top {
-  background-color: $grisC;
+  background-color: colors.$grisC;
   border-top-left-radius: 11px;
   border-top-right-radius: 11px;
   margin-bottom: 10px;
@@ -52,7 +55,7 @@
 
 .class-grade {
   font-size: 25px;
-  color: $rose;
+  color: colors.$rose;
   font-weight: 900;
   display: flex !important;
   justify-content: space-between;
@@ -63,7 +66,7 @@
   color: rgb(255, 255, 255);
   font-style: italic;
   h6 {
-    font-family: $bandeau-haut-font;
+    font-family: font_families.$bandeau-haut-font;
     font-weight: 300;
   }
 }
@@ -83,7 +86,7 @@
 }
 .classroom-name button {
   background-color: transparent;
-  color: $rose;
+  color: colors.$rose;
   }
 
 .classroom-name button :hover{
@@ -108,7 +111,7 @@
   width: 290px;
   h1 {
     font-size: 20px !important;
-    color: $grisF;
+    color: colors.$grisF;
   }
 }
 // button {
@@ -124,14 +127,14 @@
   width: auto;
   padding: 5px 15px;
 
-  border: 3px solid $rose;
+  border: 3px solid colors.$rose;
   transition: 0.3s;
   color: white;
 
   font-weight: 700;
   background-color: #f24150;
   a {
-    color: $rose;
+    color: colors.$rose;
   }
 
   h6 {
@@ -146,12 +149,12 @@
 .add-student-btn:hover {
   transition: 0.2s;
   background-color: white;
-  border-color: $rose;
-  color: $rose;
+  border-color: colors.$rose;
+  color: colors.$rose;
   cursor: pointer;
   a,
   h6 {
-    color: $white;
+    color: colors.$white;
   }
 }
 
@@ -164,17 +167,17 @@
 .add-grade {
   width: 18ch;
   margin-right: 20px;
-  color: $grisC;
+  color: colors.$grisC;
   font-style: italic;
   option {
-    color: $grisF;
+    color: colors.$grisF;
     font-style: italic;
   }
 }
 
 .classroom-form {
   margin-bottom: 20px;
-  border: solid $grisC;
+  border: solid colors.$grisC;
   border-radius: 15px;
   padding: 15px;
 }

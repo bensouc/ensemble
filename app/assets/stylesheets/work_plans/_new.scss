@@ -1,13 +1,16 @@
+@use "../config/colors";
+@use "../config/font_families";
+
 //** Fonts **
 .font {
-  font-family: $plan-font;
+  font-family: font_families.$plan-font;
   font-size: 18px;
   // font-size: 2rem;
   font-weight: 400;
   // letter-spacing: 1rem;
-  color: $grisF;
+  color: colors.$grisF;
   h1 {
-    font-family: $titres-font;
+    font-family: font_families.$titres-font;
     font-size: 36px;
     // font-size: 4rem;
     font-weight: 700;
@@ -23,7 +26,7 @@
 .fa-desktop,
 .fa-user-circle,
 .fa-calendar-check {
-    color: $rose;
+    color: colors.$rose;
 }
 
 //** Positions **
@@ -62,16 +65,16 @@
 
 //** Button **
 .btn-valid {
-  border: solid $rose ;
+  border: solid colors.$rose ;
   border-radius: 12px;
   color: white;
   font-size: 24px;
-  background-color: $rose;
+  background-color: colors.$rose;
   transition: 0.3s;
   &:hover {
     background-color: white;
-    border-color: $rose;
-    color: $rose;
+    border-color: colors.$rose;
+    color: colors.$rose;
      cursor: pointer;
   }
 }

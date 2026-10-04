@@ -1,3 +1,5 @@
+@use "../config/colors";
+
 .backg-image-sub {
   background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("child_hand-min.jpg");
   background-size: cover;
@@ -6,7 +8,7 @@
   height: 642px;
 }
 .speech {
-  color: $blanc;
+  color: colors.$blanc;
   padding-left: 30px;
 }
 .stripe-card-select-subscription {
@@ -40,8 +42,8 @@
     // text-align: center;
     font-size: 16px;
     cursor: pointer;
-    background-color: $menuOff;
-    color: $blanc;
+    background-color: colors.$menuOff;
+    color: colors.$blanc;
     p {
       margin: 0;
       padding: 0;
@@ -69,14 +71,14 @@
     position: absolute;
     width: 29px;
     height: 100%;
-    background-color: $menuOff;
+    background-color: colors.$menuOff;
     border-top-right-radius: 15px;
     border-bottom-right-radius: 15px;
     z-index: 1;
     transform: translateX(-30%);
   }
   .separator.active {
-    background-color: $rose;
+    background-color: colors.$rose;
   }
 }
 .stripe-card-select-subscription-cards {
@@ -97,7 +99,7 @@
     color: white;
   }
   i {
-    color: $rose;
+    color: colors.$rose;
     margin-right: 10px;
   }
 }
@@ -121,18 +123,18 @@
   /* align-content: center; */
   align-items: center;
   font-weight: 700;
-  background-color: $blanc;
-  color: $roseL;
-  border: thin solid $roseL;
+  background-color: colors.$blanc;
+  color: colors.$roseL;
+  border: thin solid colors.$roseL;
   &.active {
-    background-color: $roseL;
-    color: $blanc;
+    background-color: colors.$roseL;
+    color: colors.$blanc;
     border: none;
   }
 }
 .sequence-line {
   height: 2px;
-  background-color: $roseL;
+  background-color: colors.$roseL;
   width: 100%;
   // width: calc((100% - 8rem) / 4);
 }
@@ -151,22 +153,22 @@
     // border: thin solid $roseL;
     border-radius: 0.5rem;
     padding: 1rem;
-    background-color: $roseL;
+    background-color: colors.$roseL;
     font-weight: 500;
-    color: $blanc;
+    color: colors.$blanc;
     border: thin solid transparent;
     &:hover {
       cursor: pointer;
-      background-color: $blanc;
-      color: $roseL;
-      border: thin solid $roseL;
+      background-color: colors.$blanc;
+      color: colors.$roseL;
+      border: thin solid colors.$roseL;
     }
   }
 }
 .vertical-bar {
   width: 0px;
   // height: 100%;
-  border: 1px solid $roseL;
+  border: 1px solid colors.$roseL;
 }
 
 .subscription-input {
@@ -185,7 +187,7 @@
   }
 }
 .display-sub{
-  border: thin solid $grisC;
+  border: thin solid colors.$grisC;
   padding: 0.5rem;
   border-radius: 0.5rem !important;
   width: 13.1ch;

@@ -1,3 +1,6 @@
+@use "../config/colors";
+@use "../config/font_families";
+
 .sub-title-code {
   margin-top: 5rem;
   text-align: center;
@@ -14,7 +17,7 @@
   align-items: flex-start;
 }
 .add-school-code-label {
-  color: $grisF;
+  color: colors.$grisF;
   margin-right: 2rem;
 }
 .add-school-code-btn {
@@ -23,8 +26,8 @@
   border-top: thin solid transparent;
   border-right: thin solid transparent;
   border-bottom: thin solid transparent;
-  font-family: $bandeau-haut-font !important;
-  color: $blanc;
+  font-family: font_families.$bandeau-haut-font !important;
+  color: colors.$blanc;
   border-top-right-radius: 0.5rem;
   border-bottom-right-radius: 0.5rem;
   font-weight: 600;

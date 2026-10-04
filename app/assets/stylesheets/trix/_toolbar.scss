@@ -1,3 +1,7 @@
+@use "sass:color";
+@use "../config/font_families";
+@use "../config/colors";
+
 // Toolbar de l'éditeur.
 //
 // Les règles de trix/dist/trix.css ont la même spécificité que les nôtres
@@ -111,7 +115,7 @@ trix-toolbar {
   // Glyphes typographiques (B / I / U / S / H1…H3)
   .rt-tb__glyph {
     display: inline-block;
-    font-family: $body-font;
+    font-family: font_families.$body-font;
     font-size: 15px;
     font-weight: 600;
     line-height: 1;
@@ -244,7 +248,7 @@ trix-toolbar {
     background: none;
     border: 0;
     border-radius: 8px;
-    font-family: $body-font;
+    font-family: font_families.$body-font;
     font-size: 13px;
     color: var(--rt-ink);
     text-align: left;
@@ -287,7 +291,7 @@ trix-toolbar {
     display: flex;
     gap: 8px;
     align-items: center;
-    font-family: $body-font;
+    font-family: font_families.$body-font;
     font-size: 12px;
     color: var(--rt-ink-soft);
     cursor: pointer;
@@ -306,7 +310,7 @@ trix-toolbar {
   .rt-tb__clear {
     width: 100%;
     padding: 6px 8px;
-    font-family: $body-font;
+    font-family: font_families.$body-font;
     font-size: 12px;
     color: var(--rt-ink-soft);
     text-align: left;
@@ -340,7 +344,7 @@ trix-toolbar {
 
   .trix-input--dialog {
     padding: 9px 12px;
-    font-family: $body-font;
+    font-family: font_families.$body-font;
     font-size: 14px;
     color: var(--rt-ink);
     border: 1px solid var(--rt-line-strong);
@@ -356,7 +360,7 @@ trix-toolbar {
     width: auto;
     height: auto;
     padding: 9px 14px;
-    font-family: $body-font;
+    font-family: font_families.$body-font;
     font-size: 13px;
     font-weight: 600;
     color: var(--rt-ink-soft);
@@ -364,12 +368,12 @@ trix-toolbar {
     border-radius: var(--rt-radius-sm);
 
     &--primary {
-      color: $blanc;
+      color: colors.$blanc;
       background: var(--rt-accent);
 
       &:hover:not(:disabled) {
-        color: $blanc;
-        background: darken($rose, 6%);
+        color: colors.$blanc;
+        background: color.adjust(colors.$rose, $lightness: -6%);
       }
     }
   }

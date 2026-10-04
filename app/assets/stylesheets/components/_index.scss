@@ -1,26 +1,26 @@
 // Import your components CSS files here.
-@import "actiontext";
-@import "alert";
-@import "area";
-@import "avatar";
+@use "actiontext";
+@use "alert";
+@use "area";
+@use "avatar";
 
 // @import "avatar";
-@import "banner";
-@import "button-home";
-@import "category";
-@import "nav-gauche";
-@import "nav_haut";
-@import 'dashboard';
-@import 'input';
-@import 'modals';
+@use "banner";
+@use "button-home";
+@use "category";
+@use "nav-gauche";
+@use "nav_haut";
+@use 'dashboard';
+@use 'input';
+@use 'modals';
 
 
-@import "belt";
-@import "footer";
-@import "house_btn";
-@import "cursors";
-@import "btn";
-@import "sweet_alert";
-@import "loading_spinner";
-@import "flash";
-@import "impersonation";
+@use "belt";
+@use "footer";
+@use "house_btn";
+@use "cursors";
+@use "btn";
+@use "sweet_alert";
+@use "loading_spinner";
+@use "flash";
+@use "impersonation";

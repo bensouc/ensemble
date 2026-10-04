@@ -1,3 +1,7 @@
+@use "../config/colors";
+@use "../config/echelle";
+@use "../config/font_families";
+
 .eval-btn {
   width: 200px;
 }
@@ -12,7 +16,7 @@
   // `text-align` explicite : le titre tenait son alignement d'un
   // `justify-content-start` de Bootstrap, qui n'a plus lieu d'être maintenant
   // qu'il n'est plus une boîte flex logée dans la colonne de la ceinture.
-  font-family: $headers-font;
+  font-family: font_families.$headers-font;
   font-size: 40px;
   font-weight: bold;
   text-align: left;
@@ -51,10 +55,10 @@
 // un plan de travail entier.
 .eval-ligne {
   display: flex;
-  gap: $espace-md;
+  gap: echelle.$espace-md;
   align-items: center;
-  padding: $espace-xs $espace-sm;
-  border-radius: $rayon;
+  padding: echelle.$espace-xs echelle.$espace-sm;
+  border-radius: echelle.$rayon;
   transition: background-color 0.12s ease;
 
   // Le libellé est à gauche, le geste à droite, et entre les deux il n'y a
@@ -62,11 +66,11 @@
   // ligne sur deux est teintée, et celle qu'on survole se détache — de quoi
   // suivre son chemin d'un bout à l'autre sans avoir à viser.
   &:nth-child(even) {
-    background-color: $light-gray;
+    background-color: colors.$light-gray;
   }
 
   &:hover {
-    background-color: $menuOff;
+    background-color: colors.$menuOff;
   }
 
   // Au repos, les choix s'effacent. Cinq pastilles colorées répétées à chaque
@@ -92,8 +96,8 @@
 .eval-libelle {
   flex: 1 1 auto;
   min-width: 0;
-  color: $grisF;
-  font-size: $texte-md;
+  color: colors.$grisF;
+  font-size: echelle.$texte-md;
   line-height: 1.35;
 }
 
@@ -121,7 +125,7 @@
   .eval_bull {
     @include pastille(1.55rem);
 
-    font-size: $texte-sm;
+    font-size: echelle.$texte-sm;
   }
 }
 
@@ -148,13 +152,13 @@
     bottom: 18%;
     left: 0;
     width: 1px;
-    background-color: rgba($grisF, 0.2);
+    background-color: rgba(colors.$grisF, 0.2);
   }
 
   .eval_bull {
     @include pastille(2rem);
 
-    font-size: $texte-md;
+    font-size: echelle.$texte-md;
   }
 }
 
@@ -167,7 +171,7 @@
   display: flex;
   align-items: center;
   gap: 2px;
-  margin-left: $espace-sm;
+  margin-left: echelle.$espace-sm;
 }
 
 // Une case EST la pastille que la compétence prendra : on clique celle qu'on
@@ -187,7 +191,7 @@
   width: 2.7rem;
   height: 2.7rem;
   border: 2px solid transparent;
-  border-radius: $rayon;
+  border-radius: echelle.$rayon;
   text-decoration: none;
 
   .eval_bull {
@@ -202,13 +206,13 @@
   // retirée : la pastille garde ainsi exactement la même boîte partout.
   .eval_bull-lettre { visibility: hidden; }
 
-  &:hover { background-color: rgba($grisF, 0.1); }
+  &:hover { background-color: rgba(colors.$grisF, 0.1); }
 
   // Fond blanc et non gris : la case encadrée doit se détacher aussi bien sur
   // une ligne teintée que sur la ligne survolée.
   &.--courant {
-    background-color: $blanc;
-    border-color: $grisF;
+    background-color: colors.$blanc;
+    border-color: colors.$grisF;
   }
 }
 
@@ -243,9 +247,9 @@
 // choses différentes du même statut — « raté » se choisissait en rouge et
 // s'affichait en orange. La rampe elle-même vit dans `config/_colors.scss`,
 // avec le reste de la palette : la feuille du PDF y puise aussi.
-.--eval-rate { color: $eval-rate !important; }
-.--eval-non-maitrise { color: $eval-non-maitrise-anneau !important; }
-.--eval-reussi { color: $eval-reussi-anneau !important; }
+.--eval-rate { color: colors.$eval-rate !important; }
+.--eval-non-maitrise { color: colors.$eval-non-maitrise-anneau !important; }
+.--eval-reussi { color: colors.$eval-reussi-anneau !important; }
 
 .eval_bull {
   // En `rem` et non en `ch` : le `ch` dépend de la police chargée, si bien que
@@ -257,7 +261,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: $texte-sm;
+  font-size: echelle.$texte-sm;
   font-weight: 700;
   line-height: 1;
   border-radius: 50%;
@@ -271,41 +275,41 @@
   // Aucun statut n'en avait besoin sauf `new` : les quatre autres donnaient à
   // leur bordure la couleur de leur fond.
   &.new {
-    color: $grisF;
-    background-color: $blanc;
-    box-shadow: inset 0 0 0 1.5px $grisC;
+    color: colors.$grisF;
+    background-color: colors.$blanc;
+    box-shadow: inset 0 0 0 1.5px colors.$grisC;
   }
 
   &.failed {
-    color: $blanc;
-    background-color: $eval-rate;
+    color: colors.$blanc;
+    background-color: colors.$eval-rate;
 
-    .eval-anneau { color: $eval-rate-anneau; }
+    .eval-anneau { color: colors.$eval-rate-anneau; }
 
     .eval-anneau-long { display: block; }
   }
 
   &.redo {
-    color: $eval-non-maitrise-lettre;
-    background-color: $eval-non-maitrise;
+    color: colors.$eval-non-maitrise-lettre;
+    background-color: colors.$eval-non-maitrise;
 
-    .eval-anneau { color: $eval-non-maitrise-anneau; }
+    .eval-anneau { color: colors.$eval-non-maitrise-anneau; }
 
     .eval-anneau-moyen { display: block; }
   }
 
   &.redo_OK {
-    color: $eval-reussi-lettre;
-    background-color: $eval-reussi;
+    color: colors.$eval-reussi-lettre;
+    background-color: colors.$eval-reussi;
 
-    .eval-anneau { color: $eval-reussi-anneau; }
+    .eval-anneau { color: colors.$eval-reussi-anneau; }
 
     .eval-anneau-court { display: block; }
   }
 
   &.completed {
-    color: $blanc;
-    background-color: $eval-valide;
+    color: colors.$blanc;
+    background-color: colors.$eval-valide;
   }
 }
 
@@ -358,9 +362,9 @@
     flex: 0 0 auto;
   }
 
-  .failed .eval-anneau { color: $eval-rate-anneau; }
-  .redo .eval-anneau { color: $eval-non-maitrise-anneau; }
-  .redo_OK .eval-anneau { color: $eval-reussi-anneau; }
+  .failed .eval-anneau { color: colors.$eval-rate-anneau; }
+  .redo .eval-anneau { color: colors.$eval-non-maitrise-anneau; }
+  .redo_OK .eval-anneau { color: colors.$eval-reussi-anneau; }
 
   .failed .eval-anneau-long,
   .redo .eval-anneau-moyen,

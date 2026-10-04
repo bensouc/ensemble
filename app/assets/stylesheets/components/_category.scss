@@ -1,3 +1,5 @@
+@use "../config/colors";
+
 .wrapper {
   display: flex;
   justify-content: space-between;
@@ -25,7 +27,7 @@
   font-size: 24px;
   // font-size: 1rem;
   text-align: center;
-  border: thin solid $grisC;
+  border: thin solid colors.$grisC;
   padding: 1.5rem;
   border-radius: 12px;
   background-color: white;
@@ -40,8 +42,8 @@
 }
 
 .domain-selector:checked + label {
-  background-color: $rose;
-  color: $white;
+  background-color: colors.$rose;
+  color: colors.$white;
   opacity: 1;
 }
 
@@ -71,49 +73,49 @@
 #round-1 {
   width: 3rem;
   height: 3rem;
-  background-color: $belt-1;
+  background-color: colors.$belt-1;
   border-radius: 50%;
   opacity: 0.7;
 }
 #round-2 {
   width: 3rem;
   height: 3rem;
-  background-color: $belt-2;
+  background-color: colors.$belt-2;
   border-radius: 50%;
   opacity: 0.7;
 }
 #round-3 {
   width: 3rem;
   height: 3rem;
-  background-color: $belt-3;
+  background-color: colors.$belt-3;
   border-radius: 50%;
   opacity: 0.7;
 }
 #round-4 {
   width: 3rem;
   height: 3rem;
-  background-color: $belt-4;
+  background-color: colors.$belt-4;
   border-radius: 50%;
   opacity: 0.7;
 }
 #round-5 {
   width: 3rem;
   height: 3rem;
-  background-color: $belt-5;
+  background-color: colors.$belt-5;
   border-radius: 50%;
   opacity: 0.7;
 }
 #round-6 {
   width: 3rem;
   height: 3rem;
-  background-color: $belt-6;
+  background-color: colors.$belt-6;
   border-radius: 50%;
   opacity: 0.7;
 }
 #round-7 {
   width: 3rem;
   height: 3rem;
-  background-color: $belt-7;
+  background-color: colors.$belt-7;
   border-radius: 50%;
   opacity: 0.7;
 }

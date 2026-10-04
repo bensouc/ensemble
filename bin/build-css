@@ -7,10 +7,10 @@
 # directement par bin/ci, car yarn refuse de tourner sous un autre Node que celui
 # de package.json.
 #
-# Les avertissements de dépréciation de Dart Sass sont tus : `@import`, les
-# fonctions globales (`map-get`, `darken`…) et les fonctions de couleur. Ils
-# visent surtout Bootstrap 5.3 et ne changent rien au CSS produit ; passer nos
-# feuilles aux modules `@use` est un chantier à part.
+# Nos feuilles sont des modules (@use). Seules _vendor.scss et rails_admin.scss
+# chargent encore Bootstrap, Font Awesome et rails_admin par `@import`, comme ces
+# bibliothèques l'exigent jusqu'à Bootstrap 6 : on tait cet avertissement-là, et
+# `--quiet-deps` ceux qu'elles émettent elles-mêmes.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -21,7 +21,7 @@ node_modules/.bin/sass \
   --load-path=node_modules \
   --no-source-map \
   --quiet-deps \
-  --silence-deprecation=import,global-builtin,color-functions \
+  --silence-deprecation=import \
   "$@"
 
 node_modules/.bin/postcss \

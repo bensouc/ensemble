@@ -1,10 +1,12 @@
+@use "../config/colors";
+
 .area {
-  border: $grisC solid thin;
+  border: colors.$grisC solid thin;
   // border: $rose solid 0.2rem;
   border-radius: 12px;
   padding: 5px;
   // padding: 1rem;
-  color: $grisF;
+  color: colors.$grisF;
   background-color: white;
   list-style: none;
 }

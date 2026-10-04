@@ -2,16 +2,18 @@
 //   button {
 //      padding: 10px 10px !important;
 // }
-@import "add_discovery_modal";
-@import "join";
-@import "sync_status";
+@use "add_discovery_modal";
+@use "join";
+@use "sync_status";
+@use "../config/colors";
+
 // top NAV BAR
 .top-link-btn i{
-  color: $roseL;
+  color: colors.$roseL;
     // font-family: "Baloo 2", cursive;
     font-size: 1.5rem;
     font-weight: 700;
-    border: 3px solid $blanc;
+    border: 3px solid colors.$blanc;
     // &:hover{
     //   color: $blanc !important;
     //   background-color: $roseL !important;
@@ -20,15 +22,15 @@
     // }
 }
 .top-link-no-bcg-btn i{
-  color: $roseL;
-  background-color: $blanc !important;
+  color: colors.$roseL;
+  background-color: colors.$blanc !important;
     // font-family: "Baloo 2", cursive;
     font-size: 1.5rem;
     font-weight: 700;
 
 }
 .vertical_white_bar{
-  background-color: $blanc;
+  background-color: colors.$blanc;
   width: 1px;
   height: 2rem;
   margin: 0 10px;

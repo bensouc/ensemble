@@ -1,5 +1,8 @@
-@import "eval_mobile";
-@import "home";
+@use "eval_mobile";
+@use "home";
+@use "../config/colors";
+@use "../config/echelle";
+@use "../config/font_families";
 
 // Écrans du front mobile.
 //
@@ -18,25 +21,25 @@
   // navigateur se rétracte.
   width: 100%;
   min-height: calc(100dvh - 50px);
-  padding: $espace-md;
-  padding-left: marge-sure(left, $espace-md);
-  padding-right: marge-sure(right, $espace-md);
+  padding: echelle.$espace-md;
+  padding-left: echelle.marge-sure(left, echelle.$espace-md);
+  padding-right: echelle.marge-sure(right, echelle.$espace-md);
   // De la place pour le pied de page fixe, indicateur d'accueil compris.
-  margin-bottom: marge-sure(bottom, 5rem);
+  margin-bottom: echelle.marge-sure(bottom, 5rem);
   // Aligné à gauche, comme le reste de l'application : tout était centré, titres
   // compris, ce qui donnait des lignes qui flottaient sans axe commun.
   text-align: left;
 
   .title {
-    font-family: $headers-font;
-    font-size: $texte-xl;
+    font-family: font_families.$headers-font;
+    font-size: echelle.$texte-xl;
     font-weight: 700;
   }
 
-  @media (min-width: $tablette) {
+  @media (min-width: echelle.$tablette) {
     max-width: 44rem;
     margin-inline: auto;
-    padding: $espace-lg;
+    padding: echelle.$espace-lg;
   }
 }
 
@@ -46,7 +49,7 @@
   flex: 1;
   flex-direction: column;
   justify-content: space-evenly;
-  gap: $espace-lg;
+  gap: echelle.$espace-lg;
   text-align: center;
 }
 
@@ -57,8 +60,8 @@
   align-items: flex-start;
 
   h1 {
-    font-family: $titres-font;
-    font-size: $texte-xl;
+    font-family: font_families.$titres-font;
+    font-size: echelle.$texte-xl;
     font-weight: 700;
   }
 }
@@ -69,21 +72,21 @@
 
 .greyline-mobile {
   height: 0;
-  margin: $espace-sm 0;
-  border-top: solid thin $grisF;
+  margin: echelle.$espace-sm 0;
+  border-top: solid thin colors.$grisF;
 }
 
 .mobile-index-folder {
-  color: $roseL;
-  font-size: $texte-xl;
+  color: colors.$roseL;
+  font-size: echelle.$texte-xl;
 }
 
 .mobile-wp-firstname {
-  font-size: $texte-lg;
+  font-size: echelle.$texte-lg;
 }
 
 .mobile-index-wp-count {
-  font-size: $texte-sm;
+  font-size: echelle.$texte-sm;
   font-style: italic;
   opacity: 0.55; // 0.33 passait sous le seuil de contraste lisible
 }
@@ -97,19 +100,19 @@
 .mobile-index-wp-card {
   display: flex;
   flex-direction: column;
-  gap: $espace-xs;
+  gap: echelle.$espace-xs;
   width: 100%;
-  margin: $espace-xs 0;
-  padding: $espace-sm $espace-md;
-  color: $grisF !important;
+  margin: echelle.$espace-xs 0;
+  padding: echelle.$espace-sm echelle.$espace-md;
+  color: colors.$grisF !important;
   text-decoration: none;
-  background-color: $blanc;
-  border: 1px solid rgba($grisF, 0.18);
-  border-left: 3px solid $rose;
-  border-radius: $rayon;
+  background-color: colors.$blanc;
+  border: 1px solid rgba(colors.$grisF, 0.18);
+  border-left: 3px solid colors.$rose;
+  border-radius: echelle.$rayon;
 
   &:active {
-    background-color: $light-gray;
+    background-color: colors.$light-gray;
   }
 }
 
@@ -119,7 +122,7 @@
   width: 100%;
   // La ligne entière devient une cible : on ouvre un plan de travail en visant
   // large, pas en cherchant le mot.
-  min-height: $cible-tactile;
+  min-height: echelle.$cible-tactile;
   align-items: center;
 }
 
@@ -130,8 +133,8 @@
 }
 
 .mobile-namept {
-  color: $grisF !important;
-  font-size: $texte-md;
+  color: colors.$grisF !important;
+  font-size: echelle.$texte-md;
   font-weight: 600;
   text-align: left;
   overflow-wrap: anywhere;
@@ -139,8 +142,8 @@
 
 .mobile-wp-dates {
   // $grisC sur fond blanc ne se lisait plus du tout une fois l'aplat retiré.
-  color: rgba($grisF, 0.7);
-  font-size: $texte-xs;
+  color: rgba(colors.$grisF, 0.7);
+  font-size: echelle.$texte-xs;
   text-align: right;
 }
 
@@ -148,19 +151,19 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: $cible-tactile;
-  min-height: $cible-tactile;
-  color: $grisC;
-  font-size: $texte-lg;
+  min-width: echelle.$cible-tactile;
+  min-height: echelle.$cible-tactile;
+  color: colors.$grisC;
+  font-size: echelle.$texte-lg;
   cursor: pointer;
 }
 
 // La phrase qui dit à quoi sert l'écran. Discrète — elle informe une fois, elle
 // ne doit pas concurrencer le contenu qu'on vient consulter.
 .mobile-intro {
-  margin: 0 0 $espace-sm;
-  color: rgba($grisF, 0.75);
-  font-size: $texte-sm;
+  margin: 0 0 echelle.$espace-sm;
+  color: rgba(colors.$grisF, 0.75);
+  font-size: echelle.$texte-sm;
   line-height: 1.35;
 }
 
@@ -168,15 +171,15 @@
 // élèves DANS la carte. La liste flottait auparavant en dessous, sans rien qui
 // la rattache à la classe qu'on venait de déplier.
 .mobile-classe-carte {
-  margin-bottom: $espace-sm;
-  background-color: $blanc;
-  border: 1px solid rgba($grisF, 0.18);
-  border-radius: $rayon;
+  margin-bottom: echelle.$espace-sm;
+  background-color: colors.$blanc;
+  border: 1px solid rgba(colors.$grisF, 0.18);
+  border-radius: echelle.$rayon;
   // Les coins arrondis doivent rogner l'en-tête coloré, sinon il déborde du cadre.
   overflow: hidden;
 
   &.--ouverte {
-    border-color: $roseL;
+    border-color: colors.$roseL;
   }
 }
 
@@ -185,18 +188,18 @@
 .mobile-classe-entete {
   display: flex;
   align-items: center;
-  gap: $espace-md;
-  min-height: $cible-tactile;
-  padding: $espace-sm $espace-md;
-  color: $grisF !important;
+  gap: echelle.$espace-md;
+  min-height: echelle.$cible-tactile;
+  padding: echelle.$espace-sm echelle.$espace-md;
+  color: colors.$grisF !important;
   text-decoration: none;
 
   .--ouverte & {
-    background-color: $menuOff;
+    background-color: colors.$menuOff;
   }
 
   &:active {
-    background-color: $light-gray;
+    background-color: colors.$light-gray;
   }
 }
 
@@ -204,13 +207,13 @@
 .mobile-classe-niveau {
   flex: 0 0 auto;
   min-width: 3.25rem;
-  padding: $espace-xs $espace-sm;
-  color: $blanc;
-  font-size: $texte-xs;
+  padding: echelle.$espace-xs echelle.$espace-sm;
+  color: colors.$blanc;
+  font-size: echelle.$texte-xs;
   font-weight: 700;
   text-align: center;
-  background-color: $rose;
-  border-radius: $rayon;
+  background-color: colors.$rose;
+  border-radius: echelle.$rayon;
 }
 
 .mobile-classe-corps {
@@ -221,18 +224,18 @@
 }
 
 .mobile-classe-nom {
-  font-size: $texte-md;
+  font-size: echelle.$texte-md;
   font-weight: 600;
   overflow-wrap: anywhere;
 }
 
 .mobile-classe-effectif {
-  color: rgba($grisF, 0.7);
-  font-size: $texte-xs;
+  color: rgba(colors.$grisF, 0.7);
+  font-size: echelle.$texte-xs;
 }
 
 .mobile-classe-eleves {
-  padding: $espace-xs 0;
+  padding: echelle.$espace-xs 0;
 }
 
 // Un élève : une ligne pleine largeur, séparée de sa voisine. Le prénom seul
@@ -241,30 +244,30 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: $cible-tactile;
-  padding: $espace-xs $espace-md;
-  color: $grisF !important;
-  font-size: $texte-md;
+  min-height: echelle.$cible-tactile;
+  padding: echelle.$espace-xs echelle.$espace-md;
+  color: colors.$grisF !important;
+  font-size: echelle.$texte-md;
   text-decoration: none;
 
   &:active {
-    background-color: $light-gray;
+    background-color: colors.$light-gray;
   }
 }
 
 turbo-frame:not(:last-child) > .mobile-eleve-ligne {
-  border-bottom: 1px solid rgba($grisF, 0.08);
+  border-bottom: 1px solid rgba(colors.$grisF, 0.08);
 }
 
 // L'élève déplié : la même ligne, teintée pour montrer ce qui est ouvert.
 .mobile-eleve-ligne.--ouverte {
   font-weight: 600;
-  background-color: rgba($menuOff, 0.5);
-  border-bottom: 1px solid rgba($grisF, 0.08);
+  background-color: rgba(colors.$menuOff, 0.5);
+  border-bottom: 1px solid rgba(colors.$grisF, 0.08);
 }
 
 .mobile-eleve-detail {
-  padding: $espace-sm $espace-md $espace-md;
+  padding: echelle.$espace-sm echelle.$espace-md echelle.$espace-md;
 }
 
 // Les ceintures par domaine. `justify-content: center` laissait la dernière
@@ -272,15 +275,15 @@ turbo-frame:not(:last-child) > .mobile-eleve-ligne {
 .mobile-ceintures {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
-  gap: $espace-sm;
+  gap: echelle.$espace-sm;
   justify-items: stretch;
 }
 
 .mobile-eleve-vide {
   margin: 0;
-  padding: $espace-sm $espace-md;
-  color: rgba($grisF, 0.7);
-  font-size: $texte-sm;
+  padding: echelle.$espace-sm echelle.$espace-md;
+  color: rgba(colors.$grisF, 0.7);
+  font-size: echelle.$texte-sm;
   font-style: italic;
 }
 
@@ -289,24 +292,24 @@ turbo-frame:not(:last-child) > .mobile-eleve-ligne {
 .mobile-eleve-compte {
   flex: 0 0 auto;
   margin-left: auto;
-  margin-right: $espace-sm;
-  padding: 0 $espace-sm;
-  color: rgba($grisF, 0.7);
-  font-size: $texte-xs;
+  margin-right: echelle.$espace-sm;
+  padding: 0 echelle.$espace-sm;
+  color: rgba(colors.$grisF, 0.7);
+  font-size: echelle.$texte-xs;
   font-weight: 600;
   white-space: nowrap;
-  background-color: $light-gray;
-  border-radius: $rayon;
+  background-color: colors.$light-gray;
+  border-radius: echelle.$rayon;
 }
 
 // L'en-tête d'une classe qui n'est pas cliquable : elle intitule, elle n'ouvre
 // rien. Même dessin, sans le retour au toucher.
 .mobile-classe-entete.--titre {
-  background-color: $menuOff;
+  background-color: colors.$menuOff;
   cursor: default;
 }
 
 // Les plans d'un élève, en retrait sous son prénom.
 .mobile-eleve-plans {
-  padding: 0 $espace-md $espace-sm calc(#{$espace-md} + #{$espace-sm});
+  padding: 0 echelle.$espace-md echelle.$espace-sm calc(#{echelle.$espace-md} + #{echelle.$espace-sm});
 }

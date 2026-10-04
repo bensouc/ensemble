@@ -1,3 +1,5 @@
+@use "../config/colors";
+
 .flash {
   position: fixed;
   bottom: 2.5rem;
@@ -15,11 +17,11 @@
 
   &__message {
     font-size: var(--font-size-s);
-    color: $roseL;
+    color: colors.$roseL;
     padding: 10px 15px;
-        background-color: $blanc;
+        background-color: colors.$blanc;
     animation: appear-then-fade 8s both;
     border-radius: 10px;
-    border: thin solid $roseL;
+    border: thin solid colors.$roseL;
   }
 }

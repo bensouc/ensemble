@@ -1,16 +1,31 @@
+// Chargé par @import depuis _vendor.scss, juste avant Bootstrap : ses variables
+// sont des globales que Bootstrap lit avant d'appliquer ses `!default`.
+@use "colors";
+@use "font_families";
+
+// Nos couleurs homonymes de celles de Bootstrap les remplaçaient d'elles-mêmes
+// quand toutes les feuilles partageaient leurs globales. Elles lui sont
+// désormais transmises explicitement : sa palette (`--bs-blue`, `.text-bg-*`…)
+// reste la nôtre.
+$red: colors.$red;
+$blue: colors.$blue;
+$yellow: colors.$yellow;
+$orange: colors.$orange;
+$green: colors.$green;
+
 // This is where you override default Bootstrap variables
 // 1. All Bootstrap variables are here => https://github.com/twbs/bootstrap/blob/master/scss/_variables.scss
 // 2. These variables are defined with default value (see https://robots.thoughtbot.com/sass-default)
 // 3. You can override them below!
 
 // General style
-$font-family-sans-serif: $body-font;
-$headings-font-family: $headers-font;
-$body-bg: $blanc;
+$font-family-sans-serif: font_families.$body-font;
+$headings-font-family: font_families.$headers-font;
+$body-bg: colors.$blanc;
 $font-size-base: 1rem;
 
 // Colors
-$body-color: $grisF;
+$body-color: colors.$grisF;
 $primary: $blue;
 $success: $green;
 $info: $yellow;

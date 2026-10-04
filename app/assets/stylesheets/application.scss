@@ -1,80 +1,34 @@
-// reset user agent style sheet
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, button, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
-  // color: inherit;
-  // // border-color: inherit;
-  // // background-color: inherit
-}
-
+@use "reset";
 
 // Graphical variables
-@import "config/index";
+@use "config/index";
 
-// External libraries
-@import "bootstrap/scss/bootstrap";
- //@import "flatpickr";
-@import "flatpickr/dist/flatpickr";
-// @import "../../javascript/stylesheets/rails_admin";
-
-// @import "font-awesome-sprockets";
-@import "flatpickr/dist/themes/light";
-// Font Awesome 6.7.2, paquet npm : le cœur et les trois familles, comme le faisait
-// `@import "font-awesome"` de la gem font-awesome-sass. Ses polices sont servies
-// par Propshaft à la racine des assets (config/initializers/assets.rb), à côté
-// de cette feuille une fois construite : d'où le chemin « . ».
-$fa-font-path: ".";
-@import "@fortawesome/fontawesome-free/scss/fontawesome";
-@import "@fortawesome/fontawesome-free/scss/solid";
-@import "@fortawesome/fontawesome-free/scss/regular";
-@import "@fortawesome/fontawesome-free/scss/brands";
-// @import "trix";
-@import "trix/dist/trix";
-// SPLIDE_Js Default theme
-// Sans l'extension : Dart Sass intègre alors la feuille. Avec, il laisse un
-// `@import` CSS que le navigateur irait chercher à part.
-@import '@splidejs/splide/dist/css/splide.min';
-
+// Bibliothèques externes : Bootstrap, flatpickr, Font Awesome, trix, Splide.
+@use "vendor";
 
 // Your CSS partials
-@import "components/index";
+@use "components/index" as index2;
 // @import "pages/eval";
-@import "pages/index";
-@import "shared/index";
-@import "work_plans/list_wp";
-@import "work_plans/eval";
-@import "work_plans/new";
-@import "work_plans/show";
-@import "work_plans/challenges";
-@import "work_plans/index";
-@import "classrooms/index";
-@import "students/show";
-@import "devise/devise";
-@import "devise/mailer";
-@import "mobile/index" ;
-@import "skills/index" ;
-@import "school/index" ;
-@import "belts/index" ;
-@import "trix/index" ;
-@import "challenges/index" ;
-@import "subscriptions/index" ;
-@import "grades/index" ;
-@import "domains/index" ;
-@import "conversations/index" ;
-@import "messages/index" ;
+@use "pages/index" as index3;
+@use "shared/index" as index4;
+@use "work_plans/list_wp";
+@use "work_plans/eval";
+@use "work_plans/new";
+@use "work_plans/show";
+@use "work_plans/challenges";
+@use "work_plans/index" as index5;
+@use "classrooms/index" as index6;
+@use "students/show" as show2;
+@use "devise/devise";
+@use "devise/mailer";
+@use "mobile/index" as index7;
+@use "skills/index" as index8;
+@use "school/index" as index9;
+@use "belts/index" as index10;
+@use "trix/index" as index11;
+@use "challenges/index" as index12;
+@use "subscriptions/index" as index13;
+@use "grades/index" as index14;
+@use "domains/index" as index15;
+@use "conversations/index" as index16;
+@use "messages/index" as index17;

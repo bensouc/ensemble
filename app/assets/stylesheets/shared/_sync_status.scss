@@ -1,3 +1,5 @@
+@use "../config/colors";
+
 // Bandeau des évaluations en attente d'envoi, et marque des compétences dont le
 // serveur n'a pas encore confirmé le geste.
 //
@@ -16,23 +18,23 @@
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
   text-align: center;
-  color: $grisF;
-  background-color: $menuOff;
+  color: colors.$grisF;
+  background-color: colors.$menuOff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 
   &[hidden] { display: none; }
 
   // Le vert de la confirmation, le rose de ce qui demande une action.
-  &[data-etat="ok"] { background-color: rgba($green, 0.18); }
+  &[data-etat="ok"] { background-color: rgba(colors.$green, 0.18); }
   &[data-etat="refus"],
-  &[data-etat="session"] { background-color: $roseLight; }
+  &[data-etat="session"] { background-color: colors.$roseLight; }
 }
 
 .sync-status-retry {
   padding: 0.15rem 0.6rem;
   font-size: 0.85rem;
-  color: $blanc;
-  background-color: $rose;
+  color: colors.$blanc;
+  background-color: colors.$rose;
   border: 0;
   border-radius: 0.5rem;
 
@@ -61,8 +63,8 @@
       right: -0.3rem;
       width: 0.55rem;
       height: 0.55rem;
-      background-color: $marron;
-      border: 2px solid $blanc;
+      background-color: colors.$marron;
+      border: 2px solid colors.$blanc;
       border-radius: 50%;
     }
   }
@@ -75,8 +77,8 @@
   font-size: 0.8rem;
   font-style: italic;
   text-align: center;
-  color: $grisF;
-  background-color: $bleuC;
+  color: colors.$grisF;
+  background-color: colors.$bleuC;
 
   &[hidden] { display: none; }
 }

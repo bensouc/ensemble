@@ -1,10 +1,12 @@
+@use "../config/font_families";
+
 // Rendu du contenu riche — appliqué à l'identique en édition (trix-editor porte
 // la classe .trix-content) et en affichage, pour un vrai WYSIWYG.
 //
 // trix.css pose `.trix-content * { margin: 0; padding: 0 }` : c'est pourquoi le
 // rythme vertical est reconstruit explicitement ici.
 .trix-content {
-  font-family: $body-font; // avant : Arial, alors que toute l'app est en Poppins
+  font-family: font_families.$body-font; // avant : Arial, alors que toute l'app est en Poppins
   font-size: 1.0625rem; // ~17px, au lieu de 18.5px en dur
   line-height: 1.6;
   color: var(--rt-ink);
@@ -17,7 +19,7 @@
   h1,
   h2,
   h3 {
-    font-family: $body-font;
+    font-family: font_families.$body-font;
     font-weight: 700;
     line-height: 1.25;
     color: var(--rt-ink);
