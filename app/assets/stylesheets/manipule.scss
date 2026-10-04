@@ -73,7 +73,15 @@ $police: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, Verdana, sans-ser
 }
 
 // ---------- l'énoncé et sa lecture
-.m-enonce { font-size: 1.35rem; line-height: 1.55; margin: 0 0 16px; }
+// Un peu d'air autour du texte : sans lui, le cadre de lecture colle aux
+// lettres. La marge négative compense le rembourrage, pour que rien ne bouge
+// à l'écran quand le surlignage apparaît.
+.m-enonce {
+  font-size: 1.35rem;
+  line-height: 1.55;
+  margin: 0 -12px 16px;
+  padding: 10px 12px;
+}
 .m-ecoute { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 26px; }
 
 .m-ecouter {
@@ -94,7 +102,11 @@ $police: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, Verdana, sans-ser
 .m-voix { font-size: .85rem; color: var(--m-encre-douce); }
 
 // ---------- la question et les réponses
-.m-question { font-size: 1.15rem; margin: 0 0 14px; }
+.m-question {
+  font-size: 1.15rem;
+  margin: 0 -12px 14px;
+  padding: 8px 12px;
+}
 .m-choix { display: grid; gap: 12px; }
 
 @media (min-width: 560px) {
