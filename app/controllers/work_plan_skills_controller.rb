@@ -155,7 +155,7 @@ class WorkPlanSkillsController < ApplicationController
     return aucune_competence_cochee unless skills_and_student
 
     skills = skills_and_student[:skills]
-    @student = authorize skills_and_student[:student], :update?
+    @student = skills_and_student[:student]
     @domain = skills.first.domain # get domain to work on
     @level = @domain.special? ? 1 : skills.first.level
     skills.each do |skill|
@@ -228,19 +228,20 @@ class WorkPlanSkillsController < ApplicationController
   end
 
   # cONTROLLER PRIVATE METHOD
+  # L'élève est autorisé AVANT qu'on cherche ses compétences, et elles sont
+  # cherchées dans SON école. Celle de l'enseignant connecté revient au même pour
+  # un enseignant, qui ne suit que des élèves de son école — pas pour un admin,
+  # qui agit dans toutes : il tombait sur un 404.
   def get_all_skills_to_add_completed_wps
-    skills = []
     data = get_add_validated_wps_skill_student
     data[:skill_ids].delete("")
 
     return false if data[:skill_ids].empty?
 
-    data[:skill_ids].map do |skill_id|
-      skills << Skill.for_school(current_user.school).find(skill_id)
-    end
+    student = authorize Student.includes(:classroom).find(data[:student_id]), :update?
     {
-      skills: skills,
-      student: Student.includes(:classroom).find(data[:student_id])
+      skills: data[:skill_ids].map { |skill_id| Skill.for_school(student.school).find(skill_id) },
+      student: student
     }
   end
 end

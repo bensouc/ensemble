@@ -27,7 +27,11 @@ class SkillsController < ApplicationController
   def create
     @skill = Skill.new(skill_params)
     # @skill.grade = Grade.find(set_grade)
-    @skill.school = current_user.school
+    # L'école de la compétence est celle de son domaine. Pour un enseignant, c'est
+    # la sienne (la policy l'exige) ; un admin qui saisit chez une autre école
+    # rangeait la compétence dans la SIENNE, et `school` divergeait de
+    # `domain.grade.school` — l'incohérence d'où venait la fuite inter-écoles.
+    @skill.school = @skill.domain&.grade&.school || current_user.school
     authorize @skill
     @skill.save!
     # redirect_to skill_path(@skill)
