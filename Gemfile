@@ -86,8 +86,9 @@ gem "ferrum"
 # Détection du navigateur (PagesController)
 gem "browser"
 
-# view_component — la 4.x change d'API : elle viendra avec les autres montées majeures.
-gem "view_component", "~> 3.25"
+# view_component 4 ne dérive plus d'ActionView::Base ; les trois composants de
+# l'app (ceintures, bouton de validation) n'utilisent rien de ce qu'elle retire.
+gem "view_component", "~> 4.15"
 
 # Simple cov test
 gem "simplecov", require: false, group: :test
