@@ -1,0 +1,19 @@
+<div class="container py-4">
+  <h1 class="mb-1">Manipule — le suivi</h1>
+  <p class="text-muted">Choisissez une classe pour désigner ce que chaque élève travaille, et voir ce que ça a donné.</p>
+
+  <p><%= link_to "La banque de problèmes", manipule_banque_path, class: "btn btn-outline-primary btn-sm" %></p>
+
+  <% if @classes.empty? %>
+    <p class="text-muted">Vous n'avez aucune classe.</p>
+  <% else %>
+    <div class="list-group">
+      <% @classes.each do |classe| %>
+        <%= link_to manipule_suivi_classe_path(classe), class: "list-group-item list-group-item-action d-flex justify-content-between" do %>
+          <span><%= classe.name %></span>
+          <span class="text-muted"><%= classe.students.size %> élèves</span>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

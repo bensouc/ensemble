@@ -70,6 +70,13 @@ Rails.application.routes.draw do
     post "banque/:skill_id/import", to: "banque#importer", as: :banque_importer
     post "banque/:skill_id/publier", to: "banque#publier", as: :banque_publier
     patch "problemes/:id/circulation", to: "banque#circulation", as: :probleme_circulation
+
+    # Le suivi d'une classe : qui travaille quoi, et ce que ça a donné.
+    # `classe` est déjà pris par l'adresse des élèves, d'où `suivi`.
+    get "suivi", to: "classes#index", as: :suivi
+    get "suivi/:id", to: "classes#show", as: :suivi_classe
+    post "suivi/:id/affecter", to: "classes#affecter", as: :suivi_affecter
+    post "suivi/:id/jeton", to: "classes#jeton", as: :suivi_jeton
   end
 
   # ############### CONTACTROUTES ###############

@@ -93,6 +93,9 @@ RSpec.describe "Fumée : chaque page s'ouvre", type: :request do
       "work_plan_domains" => domaine_du_plan.id, "work_plan_skills" => competence_du_plan.id,
       "work_plans" => plan.id, "classroom_id" => classe.id, "student_id" => eleve.id,
       "grade_id" => niveau.id, "work_plan_id" => plan.id, "level" => 1, "skill_id" => competence.id,
+      # `/manipule/suivi/:id` porte une classe : le segment qui précède `:id`
+      # nomme la clef, et il ne s'appelle pas « classrooms » ici.
+      "suivi" => classe.id,
       # Les écrans de Manipule s'ouvrent par une adresse de classe, pas par un
       # identifiant : la substitution de `:id` ne sait rien en faire.
       "token" => jeton_manipule.token
