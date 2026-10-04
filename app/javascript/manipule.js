@@ -14,6 +14,7 @@ let voix = null
 let enCours = false
 let relance = null
 let lecteur = null
+let enPause = false
 
 function choisir() {
   if (!window.speechSynthesis) return
@@ -45,6 +46,7 @@ function afficher(francaises) {
 
 function arreter() {
   enCours = false
+  enPause = false
   if (relance) { clearInterval(relance); relance = null }
   if (lecteur) { lecteur.pause(); lecteur = null }
   if (window.speechSynthesis) speechSynthesis.cancel()
@@ -92,7 +94,7 @@ function lireElements(elements, fini) {
   enCours = true
   // Chrome coupe la lecture au bout d'une quinzaine de secondes sans ce rappel.
   relance = setInterval(() => {
-    if (enCours) { speechSynthesis.pause(); speechSynthesis.resume() }
+    if (enCours && !enPause) { speechSynthesis.pause(); speechSynthesis.resume() }
   }, 9000)
 
   let i = 0
@@ -124,12 +126,22 @@ function signalerEcoute(bouton) {
   }).catch(() => {})
 }
 
-function tousLesBoutons() {
-  return Array.from(document.querySelectorAll("[data-m-ecouter], [data-m-ecouter-un]"))
+function suspendre() {
+  enPause = true
+  if (lecteur) lecteur.pause()
+  if (window.speechSynthesis) speechSynthesis.pause()
 }
 
-function verrouiller(verrou) {
-  tousLesBoutons().forEach((bouton) => { bouton.disabled = verrou })
+function reprendre() {
+  enPause = false
+  if (lecteur) lecteur.play().catch(() => {})
+  if (window.speechSynthesis) speechSynthesis.resume()
+}
+
+// Pendant une lecture, seuls les petits haut-parleurs se verrouillent : les
+// deux grands boutons, eux, pilotent ce qui est en train de se dire.
+function verrouillerLesPetits(verrou) {
+  document.querySelectorAll("[data-m-ecouter-un]").forEach((bouton) => { bouton.disabled = verrou })
 }
 
 function brancher() {
@@ -137,17 +149,49 @@ function brancher() {
   const aLire = Array.from(document.querySelectorAll("[data-m-lire]"))
   if (!principal || !aLire.length) return
 
-  const demarrer = (elements) => {
-    verrouiller(true)
-    principal.textContent = "⏸ Lecture…"
-    signalerEcoute(principal)
-    lireElements(elements, () => {
-      verrouiller(false)
-      principal.textContent = "🔊 Tout écouter"
-    })
+  const stop = document.querySelector("[data-m-stop]")
+  let enLecture = false
+
+  const revenirAuRepos = () => {
+    enLecture = false
+    verrouillerLesPetits(false)
+    principal.classList.remove("m-en-cours")
+    principal.textContent = "🔊 Tout écouter"
+    if (stop) stop.hidden = true
   }
 
-  principal.addEventListener("click", () => demarrer(aLire))
+  const afficherPause = () => {
+    principal.classList.add("m-en-cours")
+    principal.textContent = "⏸ Pause"
+    if (stop) stop.hidden = false
+  }
+
+  const demarrer = (elements) => {
+    enLecture = true
+    verrouillerLesPetits(true)
+    principal.disabled = false
+    afficherPause()
+    signalerEcoute(principal)
+    lireElements(elements, revenirAuRepos)
+  }
+
+  // Le même bouton mène les trois états : écouter, suspendre, reprendre.
+  // Arrêter est à côté, parce que c'est une autre décision — on ne reprendra
+  // pas, on recommencera depuis le début.
+  principal.addEventListener("click", () => {
+    if (!enLecture) { demarrer(aLire); return }
+    if (enPause) { reprendre(); afficherPause(); return }
+
+    suspendre()
+    principal.textContent = "▶ Reprendre"
+  })
+
+  if (stop) {
+    stop.addEventListener("click", () => {
+      arreter()
+      revenirAuRepos()
+    })
+  }
 
   // Le haut-parleur d'une réponse ne relit que celle-là, autant de fois que
   // l'élève veut : mémoriser trois options entendues d'affilée est hors de

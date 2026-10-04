@@ -97,6 +97,30 @@ $police: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, Verdana, sans-ser
   cursor: pointer;
 
   &[disabled] { opacity: .55; cursor: default; }
+
+  // En lecture, ce n'est plus la même action : l'élève doit voir au premier
+  // coup d'œil qu'appuyer ne relancera pas.
+  &.m-en-cours {
+    background: var(--m-bleu);
+
+    &:hover { filter: brightness(1.1); }
+  }
+}
+
+// Arrêter est une autre décision que suspendre : le bouton est secondaire,
+// et il n'apparaît que pendant une lecture.
+.m-stop {
+  font: inherit;
+  font-size: 1rem;
+  min-height: 54px;
+  padding: 12px 18px;
+  border: 2px solid var(--m-trait);
+  border-radius: 12px;
+  background: var(--m-carte);
+  color: var(--m-encre-douce);
+  cursor: pointer;
+
+  &:hover { border-color: var(--m-encre-douce); color: var(--m-encre); }
 }
 
 .m-voix { font-size: .85rem; color: var(--m-encre-douce); }
