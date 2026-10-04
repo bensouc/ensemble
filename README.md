@@ -21,7 +21,7 @@ Developed by [VRoad Studio](https://bensouc.github.io/vrpwebsite/)
 ## Installation
 
 ### Prerequisites
-- Ruby 3.3.12 (see `.ruby-version`)
+- Ruby 3.4.11 (see `.ruby-version`)
 - PostgreSQL
 - Node.js 24 LTS (see `engines` in `package.json`)
 - Yarn 1.22.19+
@@ -242,7 +242,7 @@ real pupil names.
   in `config/bundler-audit.yml`); twelve unused gems removed
 - Local CI: `bin/ci` (RuboCop, bundler-audit, Brakeman, RSpec, browser benches)
   signs the pushed commit with `gh signoff`
-- Ruby 3.3.12, Node 24, YJIT in production
+- Ruby 3.4.11, Node 24, YJIT in production
 - Sidekiq replaced by Solid Queue running inside Puma: one Coolify application
   instead of two, jobs dashboard at `/jobs`
 - Development no longer deletes files from the Cloudinary account it shares

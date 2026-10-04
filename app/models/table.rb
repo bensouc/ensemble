@@ -146,8 +146,8 @@ class Table < ApplicationRecord
 
   # Réécrit toutes les clés de `data` et `cell_styles` via le bloc fourni.
   # Le bloc reçoit [row, col] et renvoie la nouvelle position, ou nil pour supprimer.
-  def remap!(&block)
-    SPARSE_ATTRIBUTES.each { |name| public_send(:"#{name}=", remap_hash(public_send(name), &block)) }
+  def remap!(&)
+    SPARSE_ATTRIBUTES.each { |name| public_send(:"#{name}=", remap_hash(public_send(name), &)) }
   end
 
   def remap_hash(hash)

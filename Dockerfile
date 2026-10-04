@@ -17,7 +17,7 @@
 
 # Versions épinglées (= reproductibilité). Elles correspondent à .ruby-version
 # et au champ "engines" de package.json.
-ARG RUBY_VERSION=3.3.12
+ARG RUBY_VERSION=3.4.11
 ARG NODE_VERSION=24.21.0
 ARG YARN_VERSION=1.22.22
 

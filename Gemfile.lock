@@ -91,8 +91,8 @@ GEM
     bcrypt (3.1.22)
     bigdecimal (4.1.3)
     bindex (0.8.1)
-    bootsnap (1.21.1)
-      msgpack (~> 1.2)
+    bootsnap (1.26.0)
+      msgpack (~> 1.5)
     bootstrap (5.3.8)
       popper_js (>= 2.11.8, < 3)
     brakeman (8.1.0)
@@ -300,6 +300,7 @@ GEM
     nokogiri (1.19.4-x86_64-linux-gnu)
       racc (~> 1.4)
     orm_adapter (0.5.0)
+    ostruct (0.6.3)
     parallel (1.27.0)
     parser (3.3.10.1)
       ast (~> 2.4.1)
@@ -587,6 +588,7 @@ DEPENDENCIES
   listen (~> 3.2)
   lograge
   mission_control-jobs
+  ostruct
   pg (>= 0.18, < 2.0)
   pretender
   pry-byebug
@@ -619,7 +621,7 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 RUBY VERSION
-  ruby 3.3.12
+  ruby 3.4.11
 
 BUNDLED WITH
   4.0.4
