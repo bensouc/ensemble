@@ -16,9 +16,15 @@ ExceptionNotification.configure do |config|
   # Bonus : sans cette ligne, le mail de notif plante lui-même en essayant de
   # lire les params cassés (Rack::Multipart::EmptyContentError re-levée dans le
   # template _request.text.erb).
+  #
+  # ParameterMissing : `params.expect` répond 400 à un paramètre absent ou mal
+  # formé (une chaîne là où le formulaire envoie un groupe de champs). Les
+  # formulaires de l'appli envoient toujours la bonne forme : ce sont des
+  # robots ou des requêtes bricolées.
   config.ignored_exceptions += %w[
     ActionController::BadRequest
     ActionController::InvalidAuthenticityToken
+    ActionController::ParameterMissing
     Rack::Multipart::EmptyContentError
     Rack::QueryParser::InvalidParameterError
   ]
