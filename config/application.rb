@@ -8,11 +8,18 @@ Bundler.require(*Rails.groups)
 
 module Ensemble
   class Application < Rails::Application
-    # Les réglages par défaut de Rails 7.2. L'app n'en chargeait AUCUN : elle
-    # tournait avec ceux d'avant Rails 5 — cookies chiffrés en CBC et sans
-    # SameSite, origine des requêtes jamais comparée, un asset introuvable
-    # changé en lien mort au lieu d'une erreur.
-    config.load_defaults 7.2
+    # Les réglages par défaut de Rails 8.1. L'app n'en chargeait AUCUN jusqu'au
+    # 03/10/2026 : elle tournait avec ceux d'avant Rails 5 — cookies chiffrés en
+    # CBC et sans SameSite, origine des requêtes jamais comparée, un asset
+    # introuvable changé en lien mort au lieu d'une erreur.
+    #
+    # De 7.2 à 8.1, rien de visible : une redirection vers un chemin relatif
+    # (« dashboard » au lieu de « /dashboard ») lève au lieu d'être suivie, une
+    # regex qui s'emballe s'arrête au bout d'une seconde, les champs cachés
+    # perdent un `autocomplete="off"` invalide, le JSON rendu n'échappe plus
+    # `<` ni `>`, YJIT s'allume en production (il l'était déjà par
+    # RUBY_YJIT_ENABLE).
+    config.load_defaults 8.1
 
     # Le seul réglage tenu à l'ancien comportement, et pour de bon. Changer la
     # clé de dérivation casserait tout ce qui est signé : sgid des
