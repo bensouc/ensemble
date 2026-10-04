@@ -70,4 +70,25 @@ RSpec.describe "Droits sur les conversations", type: :request do
       expect(conversation.reload.users).to include(autre)
     end
   end
+
+  context "pour un admin d'une autre école" do
+    before { sign_in create(:user, admin: true) }
+
+    it "lit la conversation" do
+      get conversations_path, params: { conversation_id: conversation.id }
+
+      expect(response.body).to include("Conseil de cycle jeudi")
+    end
+
+    it "écrit à un enseignant de n'importe quelle école" do
+      expect { post contact_user_conversations_path(contact_id: enseignante.id) }.
+        to change { conversations_avec(enseignante).count }.by(1)
+    end
+
+    it "ajoute n'importe quel compte à une conversation" do
+      post add_user_conversation_path(conversation, new_user_id: intrus.id)
+
+      expect(conversation.reload.users).to include(intrus)
+    end
+  end
 end

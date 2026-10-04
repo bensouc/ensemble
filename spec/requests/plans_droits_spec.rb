@@ -110,4 +110,46 @@ RSpec.describe "Droits sur les plans de travail", type: :request do
         to change(WorkPlanSkill, :count).by(-1)
     end
   end
+
+  context "pour un admin d'une autre école" do
+    before { sign_in create(:user, admin: true) }
+
+    it "consulte, renomme et évalue le plan" do
+      get work_plan_path(plan)
+      expect(response).to have_http_status(:ok)
+
+      get evaluation_path(plan)
+      expect(response).to have_http_status(:ok)
+
+      patch work_plan_path(plan), params: { work_plan: { name: "Semaine 4", student_id: eleve.id } }
+      expect(plan.reload.name).to eq("Semaine 4")
+
+      patch work_plan_skill_eval_update_path(competence_du_plan), params: { status: "completed" }
+      expect(competence_du_plan.reload.status).to eq("completed")
+    end
+
+    it "ajoute et retire compétences et domaines" do
+      expect do
+        post work_plan_domain_work_plan_skills_path(domaine_du_plan),
+             params: { skill: competence.id, kind: "ceinture" }, headers: turbo_headers
+      end.to change(WorkPlanSkill, :count).by(1)
+
+      expect { delete work_plan_skill_path(competence_du_plan), headers: turbo_headers }.
+        to change(WorkPlanSkill, :count).by(-1)
+      expect { delete work_plan_domain_path(domaine_du_plan), headers: turbo_headers }.
+        to change(WorkPlanDomain, :count).by(-1)
+    end
+
+    it "garnit le plan sans élève d'un enseignant et réattribue un plan" do
+      modele = create(:work_plan, user: enseignant, grade: niveau, student: nil)
+      expect do
+        post work_plan_work_plan_domains_path(modele),
+             params: { work_plan: { work_plan_domain: { domain: domaine.id, level: 1 } }, kind: "ceinture" }
+      end.to change(WorkPlanDomain, :count).by(1)
+
+      eleve_ailleurs = create(:student, classroom: create(:classroom, grade: niveau))
+      patch work_plan_path(plan), params: { work_plan: { name: "Semaine 3", student_id: eleve_ailleurs.id } }
+      expect(plan.reload.student).to eq(eleve_ailleurs)
+    end
+  end
 end

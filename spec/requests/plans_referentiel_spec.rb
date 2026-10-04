@@ -80,4 +80,27 @@ RSpec.describe "Référentiel des plans de travail", type: :request do
                                                        headers: turbo_headers
     expect(sa_competence_du_plan.reload.challenge).to eq(autre_exercice)
   end
+
+  # L'admin travaille pour toutes les écoles : il puise dans n'importe quel
+  # référentiel.
+  context "pour un admin" do
+    let(:admin) { create(:user, admin: true) }
+
+    before { sign_in admin }
+
+    it "puise dans le référentiel de n'importe quelle école" do
+      competence
+
+      expect do
+        post work_plans_path, params: { work_plan: { name: "Support", grade_id: niveau.id,
+                                                     start_date: Date.current, end_date: Date.current + 4 } }
+      end.to change(WorkPlan, :count).by(1)
+
+      expect { ajouter_domaine(son_plan, domaine) }.to change(WorkPlanDomain, :count).by(1)
+
+      patch work_plan_skill_path(sa_competence_du_plan), params: { work_plan_skill: { challenge_id: exercice.id } },
+                                                         headers: turbo_headers
+      expect(sa_competence_du_plan.reload.challenge).to eq(exercice)
+    end
+  end
 end

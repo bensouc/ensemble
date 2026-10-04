@@ -149,4 +149,98 @@ RSpec.describe "Droits sur les exercices", type: :request do
       expect(response.body).to include("Dictée du loup")
     end
   end
+
+  # L'admin intervient dans toutes les écoles : chaque règle commence par
+  # `user.admin? ||`. Sans ce contexte, une règle qui l'oublierait ne ferait
+  # rougir aucune spec.
+  context "pour un admin d'une autre école" do
+    let(:admin) { create(:user, admin: true) }
+
+    before { sign_in admin }
+
+    it "ouvre, réécrit et clone l'exercice, et ouvre le carrousel" do
+      get challenge_path(exercice)
+      expect(response).to have_http_status(:ok)
+
+      get edit_challenge_path(exercice)
+      expect(response).to have_http_status(:ok)
+
+      patch challenge_path(exercice), params: { challenge: { name: "Dictée du loup (2)" } }, headers: turbo_headers
+      expect(exercice.reload.name).to eq("Dictée du loup (2)")
+
+      post work_plan_skill_display_challenges_path(wps, exercice), headers: turbo_headers
+      expect(response.body).to include("Dictée du renard")
+
+      expect { post work_plan_skill_clone_path(wps, exercice), headers: turbo_headers }.
+        to change(competence.challenges, :count).by(1)
+    end
+
+    it "parcourt les exercices de l'école depuis l'index" do
+      create(:classroom, user: admin)
+
+      get challenges_path, params: { "/challenges" => { grade: niveau.id, domain: domaine.id, level: 1 } }
+
+      expect(response.body).to include("Dictée du loup")
+    end
+
+    it "supprime un exercice que rien n'utilise" do
+      expect { delete challenge_path(autre_exercice) }.to change(Challenge, :count).by(-1)
+    end
+  end
+
+  # Les exercices d'une école sont à TOUS ses enseignants, pas à leur seul
+  # auteur : c'est le partage au sein du groupe scolaire (`School`). Les
+  # contextes précédents ne faisaient agir que l'auteur.
+  context "pour un collègue de l'école qui n'en est pas l'auteur" do
+    let(:collegue) { create(:user, school: ecole, admin: false) }
+
+    before { sign_in collegue }
+
+    it "ouvre, réécrit, duplique et range l'exercice" do
+      get challenge_path(exercice)
+      expect(response).to have_http_status(:ok)
+
+      get edit_challenge_path(exercice)
+      expect(response).to have_http_status(:ok)
+
+      patch challenge_path(exercice), params: { challenge: { name: "Dictée du loup (2)" } }, headers: turbo_headers
+      expect(exercice.reload.name).to eq("Dictée du loup (2)")
+
+      expect { post duplicate_challenge_path(exercice), headers: turbo_headers }.
+        to change(competence.challenges, :count).by(1)
+
+      patch move_challenge_path(autre_exercice), params: { direction: "up" }, headers: turbo_headers
+      expect(autre_exercice.reload.position).to eq(1)
+    end
+
+    it "parcourt les exercices de l'école depuis l'index" do
+      create(:classroom, user: collegue, grade: niveau)
+
+      get challenges_path, params: { "/challenges" => { grade: niveau.id, domain: domaine.id, level: 1 } }
+
+      expect(response.body).to include("Dictée du loup")
+    end
+
+    it "prend l'exercice d'un autre dans son plan, ouvre le carrousel et le clone" do
+      son_eleve = create(:student, classroom: create(:classroom, user: collegue, grade: niveau))
+      son_plan = create(:work_plan, user: collegue, grade: niveau, student: son_eleve)
+      son_wps = create(:work_plan_skill,
+                       work_plan_domain: create(:work_plan_domain, work_plan: son_plan, domain: domaine, level: 1),
+                       skill: competence, kind: "exercice", challenge: autre_exercice)
+
+      patch work_plan_skill_path(son_wps), params: { work_plan_skill: { challenge_id: exercice.id } },
+                                           headers: turbo_headers
+      expect(son_wps.reload.challenge).to eq(exercice)
+
+      post work_plan_skill_display_challenges_path(son_wps, exercice), headers: turbo_headers
+      expect(response.body).to include("Dictée du renard")
+
+      expect { post work_plan_skill_clone_path(son_wps, exercice), headers: turbo_headers }.
+        to change(competence.challenges, :count).by(1)
+    end
+
+    it "supprime l'exercice d'un autre que rien n'utilise" do
+      expect { delete challenge_path(autre_exercice) }.to change(Challenge, :count).by(-1)
+    end
+  end
 end

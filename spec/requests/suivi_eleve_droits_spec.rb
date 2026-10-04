@@ -153,4 +153,51 @@ RSpec.describe "Droits sur le suivi d'un élève", type: :request do
       expect { delete belt_path(ceinture) }.to change(Belt, :count).by(-1)
     end
   end
+
+  # L'admin suit tous les élèves, de toutes les écoles (`StudentPolicy`).
+  context "pour un admin d'une autre école" do
+    before { sign_in create(:user, admin: true) }
+
+    it "voit ses ceintures et ses compétences acquises" do
+      competence
+
+      get student_show_path(eleve, domaine, 1)
+      expect(response).to have_http_status(:ok)
+
+      get belt_path(ceinture)
+      expect(response).to have_http_status(:ok)
+
+      get student_display_skills_modal_path(eleve, domaine)
+      expect(response).to have_http_status(:ok)
+
+      get student_auto_gen_modal_path(eleve)
+      expect(response).to have_http_status(:ok)
+
+      get student_new_work_plan_modal_path(eleve)
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "lui valide une ceinture, des compétences et un résultat" do
+      competence
+
+      expect { post student_belts_path(eleve), params: { belt: { domain_id: domaine.id, level: 1 } } }.
+        to change { Belt.completed.where(student: eleve).count }.by(1)
+
+      post student_add_validated_wps_path(eleve), params: { new_wps: { skills: ["", competence.id.to_s] } }
+      expect(acquise?(eleve, competence)).to be(true)
+
+      autre = create(:skill, school: ecole, domain: domaine, level: 1)
+      post results_path, params: { result: { student_id: eleve.id, skill_id: autre.id, status: "completed",
+                                             kind: "ceinture" } },
+                         headers: { "Accept" => "text/vnd.turbo-stream.html" }
+      expect(acquise?(eleve, autre)).to be(true)
+    end
+
+    it "modifie et supprime une ceinture" do
+      get edit_belt_path(ceinture)
+      expect(response).to have_http_status(:ok)
+
+      expect { delete belt_path(ceinture) }.to change(Belt, :count).by(-1)
+    end
+  end
 end
