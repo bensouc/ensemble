@@ -110,7 +110,7 @@ avec `origin: "manipule"`, et l'enseignante garde le dernier mot.
 <!-- Ce document recommandait d'abord une application séparée. L'arbitrage a changé
      quand ces deux faits sont apparus. -->
 
-### Branche A — dans Ensemble, isolé *(recommandée aujourd'hui)*
+### Branche A — dans Ensemble, isolé *(retenue le 2026-10-04)*
 
 Un espace de noms `Manipule::` avec ses propres contrôleurs, ses propres gabarits
 et ses propres tables, allumé par un drapeau de fonctionnalité pour la seule école
@@ -130,7 +130,7 @@ touchée.
 | On perd | la propriété « jetable » : en cas d'échec il reste des tables mortes à supprimer |
 | On doit traiter | le confinement de la session élève — voir §4, c'est le vrai travail supplémentaire de cette branche |
 
-### Branche B — application dédiée
+### Branche B — application dédiée *(écartée)*
 
 Même pile technique, base séparée, domaine séparé. Le choix si **la manipulation
 devient le cœur du produit** : jetons déplaçables, échanges, horloge, c'est alors
@@ -148,19 +148,28 @@ dans aucune des deux applications.
 | On perd | les ceintures hors de portée, deux déploiements à tenir, les élèves saisis deux fois |
 | En moins | aucun confinement à construire : domaines séparés, cookies séparés |
 
-### Le critère de bascule
+### Le critère de bascule — tranché
 
-**La réponse à la Q52.** Si la manipulation peut attendre, branche A. Si elle est
-indispensable à la V1, branche B. Rien d'autre ne départage ces deux branches, et
-tant que cette réponse manque, écrire du code engage à l'aveugle.
+Ce document disait que la Q52 départageait les deux branches. **Benoît a retenu
+la branche A le 2026-10-04**, une fois la modernisation de la stack terminée. La
+Q52 ne décide donc plus de l'architecture : elle dimensionne le chantier des
+outils de manipulation, et lui seul.
+
+Le plan de réalisation vit dans `docs/manipule-plan-integration.md`.
 
 ### Ce qui ne change pas d'une branche à l'autre
 
-Ruby 3.3.10, Rails 7.1, PostgreSQL, Hotwire, esbuild et Sass. Pas d'éditeur de
-texte enrichi : les énoncés sont du texte simple. **Aucune ressource distante** —
-polices servies par nous, audio pré-généré et stocké, rien qui dépende du réseau de
-l'école. Et un JavaScript conservateur, parce que personne ne connaît l'âge du
-navigateur sur les postes du fond de la classe.
+**La pile a changé entre le cadrage et la réalisation.** Au 2026-10-04 :
+Ruby 3.4.11, Rails 8.1.4, PostgreSQL, Propshaft, esbuild et Dart Sass, Solid
+Queue, Pundit, ViewComponent 4.15, Turbo 8 sans `rails-ujs`. Les conséquences
+pour Manipule — Pundit obligatoire, spec de fumée qui énumère les routes, CI
+locale signée, points d'entrée multiples déjà en place — sont détaillées dans
+`docs/manipule-plan-integration.md`.
+
+Ce qui ne bouge pas : pas d'éditeur de texte enrichi, les énoncés sont du texte
+simple ; **aucune ressource distante**, polices servies par nous et audio
+pré-généré ; et un JavaScript conservateur, parce que personne ne connaît l'âge
+du navigateur sur les postes du fond de la classe.
 
 ---
 
