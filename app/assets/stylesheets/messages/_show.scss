@@ -1,3 +1,5 @@
+@use "../config/colors";
+
 .last-message-box{
   a{
     width: 100%;
@@ -5,7 +7,7 @@
 }
 .message-date {
   font-size: 0.6rem;
-  color: $blanc;
+  color: colors.$blanc;
   font-style: italic;
   font-weight: bold;
   width: 100%;
@@ -14,7 +16,7 @@
   align-items: baseline;
   .conversation-name{
     font-size: 0.8rem;
-    color: $bleuC;
+    color: colors.$bleuC;
     font-weight: bold;
   }
 }
@@ -24,13 +26,13 @@
   }
   .message-content-user-name{
     font-size: xx-small;
-    color: $blanc;
+    color: colors.$blanc;
     font-style: italic;
   }
 }
 .writer .message-date {
   font-size: 0.6rem;
-  color: $grisC;
+  color: colors.$grisC;
   font-style: italic;
   font-weight: bold;
 }

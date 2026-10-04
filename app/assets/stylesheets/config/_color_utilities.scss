@@ -1,0 +1,46 @@
+@use "colors";
+
+// Classes utilitaires de couleur (texte, fond, bordure), une par couleur de l'app.
+// class color
+.--orange { color:colors.$orange !important}
+.--grisF { color:colors.$grisF !important}
+.--grisC { color:colors.$grisC !important}
+.--violet { color:colors.$violet !important}
+.--jaune { color:colors.$jaune !important}
+.--bleuC { color:colors.$bleuC !important}
+.--menuOff { color:colors.$menuOff !important}
+.--blanc { color:colors.$blanc !important}
+.--rose { color:colors.$rose !important}
+.--roseL { color:colors.$roseL !important}
+.--vert { color: colors.$green !important}
+
+.--bgc-orange { background-color:colors.$orange !important}
+.--bgc-grisF { background-color:colors.$grisF !important}
+.--bgc-grisC { background-color:colors.$grisC !important}
+.--bgc-violet { background-color:colors.$violet !important}
+.--bgc-jaune { background-color:colors.$jaune !important}
+.--bgc-bleuC { background-color:colors.$bleuC !important}
+.--bgc-menuOff { background-color:colors.$menuOff !important}
+.--bgc-blanc { background-color:colors.$blanc}
+.--bgc-rose { background-color:colors.$rose !important}
+.--bgc-roseL { background-color:colors.$roseL !important}
+.--bgc-vert { background-color: colors.$green !important}
+.--bgc-marron { background-color: colors.$marron !important}
+.--bgc-noir { background-color: colors.$gray !important}
+.--bgc-transparent { background-color: transparent !important}
+
+.--borderc-orange { border-color:colors.$orange !important}
+.--borderc-grisF { border-color:colors.$grisF !important}
+.--borderc-grisC { border-color:colors.$grisC !important}
+.--borderc-violet { border-color:colors.$violet !important}
+.--borderc-jaune { border-color:colors.$jaune !important}
+.--borderc-bleuC { border-color:colors.$bleuC !important}
+.--borderc-menuOff { border-color:colors.$menuOff !important}
+.--borderc-blanc { border-color:colors.$blanc}
+.--borderc-rose { border-color:colors.$rose !important}
+.--borderc-roseL { border-color:colors.$roseL !important}
+.--borderc-vert { border-color: colors.$green !important}
+
+
+
+/* _colors.scss */

@@ -1,5 +1,7 @@
+@use "../config/colors";
+
 .mail-logo{
 text-align: center;
-  color: $rose !important;
+  color: colors.$rose !important;
   text-decoration: none;
 }

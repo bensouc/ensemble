@@ -1,5 +1,8 @@
+@use "../config/colors";
+@use "../config/font_families";
+
 .main_nav{
-  font-family: $nav-gauche-font;
+  font-family: font_families.$nav-gauche-font;
   font-size: 14px;
   font-weight: 700;
   display: flex;
@@ -9,14 +12,14 @@
   align-items: center;
   width: 200px;
   height: 100vh;
-  background-color: $blanc;
-  border-right: 1px solid $grisC;
-  border-color: transparent, $grisC, transparent, transparent;
+  background-color: colors.$blanc;
+  border-right: 1px solid colors.$grisC;
+  border-color: transparent, colors.$grisC, transparent, transparent;
   position: fixed;
 }
 
 .logo{
-  border-color: transparent, transparent, $grisC, transparent;
+  border-color: transparent, transparent, colors.$grisC, transparent;
   // padding-bottom: 4em;
   padding-top: 1.5em;
   // margin-right: 40px;
@@ -49,10 +52,10 @@
 
 }
 .active{
-color: $grisF;
+color: colors.$grisF;
 }
 .on{
-  background-color: $rose;
+  background-color: colors.$rose;
    border: thin solid inherit;
   padding: 5px;
   margin-right: -5px;
@@ -62,9 +65,9 @@ color: $grisF;
 }
 
 .dead-icon{
-  background-color: $grisC;
+  background-color: colors.$grisC;
   color: white;
-  border: thin solid $grisC;
+  border: thin solid colors.$grisC;
   padding: 5px;
   margin-right: -5px;
   border-radius: 10px;
@@ -76,7 +79,7 @@ color: $grisF;
 .menug_icone{
   position: relative;
   align-items: center;
-  color: $rose;
+  color: colors.$rose;
   display:flex;
   flex-direction: row;
   justify-content: space-between;
@@ -91,7 +94,7 @@ color: $grisF;
 }
 
 .menug_icone:hover{
-  color: $grisF;
+  color: colors.$grisF;
   background-color: inherit;
   cursor: pointer;
 
@@ -103,15 +106,15 @@ color: $grisF;
       padding-left: 10px;
 }
 .sub-link{
-  color: $roseL;
+  color: colors.$roseL;
   &:hover{
-    color: $grisF;
+    color: colors.$grisF;
   }
 }
 
 .menug_icone-dead{
   align-items: center;
-  color: $grisC;
+  color: colors.$grisC;
   display:flex;
   flex-direction: row;
   justify-content: space-between;
@@ -127,20 +130,20 @@ color: $grisF;
 .calendrier{
   margin-bottom: 1em;
   h3{
-    font-family: $titres-font;
-    color: $grisF;
+    font-family: font_families.$titres-font;
+    color: colors.$grisF;
     font-weight: 700;
     font-size: 16px;
   }
   h4{
-    font-family: $plan-font;
-    color: $rose;
+    font-family: font_families.$plan-font;
+    color: colors.$rose;
     font-weight:400;
     font-size: 16px;
   }
   p{
-    font-family: $plan-font;
-    color: $grisF;
+    font-family: font_families.$plan-font;
+    color: colors.$grisF;
     font-weight:400;
     font-size: 16px;
   }
@@ -152,11 +155,11 @@ color: $grisF;
   background-color: white;
   margin-bottom: 10px;
   .fas{
-    color:$rose;
+    color:colors.$rose;
     padding-right: 5px;
   }
   h6{
-    font-family: $nav-gauche-font;
+    font-family: font_families.$nav-gauche-font;
     font-size: 12px;
     font-weight: 700;
   }

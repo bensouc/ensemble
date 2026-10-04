@@ -1,10 +1,12 @@
+@use "../config/colors";
+
 .swal-modal {
   // background-color: rgba(63,255,106,0.69);
-  border: 3px solid $rose !important;
+  border: 3px solid colors.$rose !important;
   .swal-text, .swal-title {
     color: white !important;
   }
-  background-color: $rose !important;
+  background-color: colors.$rose !important;
   width: 560px;
 }
 

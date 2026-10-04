@@ -1,3 +1,5 @@
+@use "../config/colors";
+
 // Jetons de l'éditeur riche.
 //
 // Ils dérivent de config/_colors.scss et config/_fonts.scss : l'ancien CSS de
@@ -11,19 +13,19 @@ trix-toolbar,
 trix-editor,
 .trix-content,
 .rt-field {
-  --rt-ink: #{$grisF};
+  --rt-ink: #{colors.$grisF};
   --rt-ink-soft: #6f6f76;
   --rt-ink-faint: #a1a1aa;
 
   --rt-line: #e6e6ea;
-  --rt-line-strong: #{$grisC};
+  --rt-line-strong: #{colors.$grisC};
 
-  --rt-surface: #{$blanc};
+  --rt-surface: #{colors.$blanc};
   --rt-surface-soft: #f7f7f9;
 
-  --rt-accent: #{$rose};
-  --rt-accent-soft: #{rgba($rose, 0.1)};
-  --rt-accent-ring: #{rgba($rose, 0.25)};
+  --rt-accent: #{colors.$rose};
+  --rt-accent-soft: #{rgba(colors.$rose, 0.1)};
+  --rt-accent-ring: #{rgba(colors.$rose, 0.25)};
 
   --rt-radius: 10px;
   --rt-radius-sm: 8px;

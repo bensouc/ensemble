@@ -1,3 +1,6 @@
+@use "../config/colors";
+@use "../config/global";
+
 .challenges-container {
   width: 1000px;
   margin-top: 0.25rem;
@@ -39,7 +42,7 @@
 
   left: 819px;
   background-color: transparent;
-  color: $roseL;
+  color: colors.$roseL;
 }
 
 .move-left-btn:hover {
@@ -89,7 +92,7 @@
 // Signalement d'une copie qui vient d'être créée, le temps que l'œil la trouve : la
 // bordure de la carte, pas une ombre.
 .challenge-row.is-revealed .cont-challenge {
-  border-color: $rose;
+  border-color: colors.$rose;
   transition: border-color 0.25s ease;
 }
 
@@ -134,7 +137,7 @@
   // Clonage : discret, il ne doit pas rivaliser avec les flèches d'ordre juste
   // au-dessus.
   .clone-challenge-btn {
-    @include pill-cta($height: 24px);
+    @include global.pill-cta($height: 24px);
     gap: 6px;
     padding: 0 9px;
     background-color: transparent;
@@ -148,7 +151,7 @@
   // Frère du « Cloner » : même pilule, même gabarit. C'est une action de rangement,
   // pas de création — elle ne cherche pas à attirer l'œil davantage.
   .transfer-challenge-btn {
-    @include pill-cta($height: 24px);
+    @include global.pill-cta($height: 24px);
     gap: 6px;
     padding: 0 9px;
     background-color: transparent;
@@ -165,7 +168,7 @@
     min-width: 15px;
     font-size: 15px;
     font-weight: 700;
-    color: $grisF;
+    color: colors.$grisF;
     text-align: left;
   }
 
@@ -173,7 +176,7 @@
     padding: 0;
     border: none;
     background-color: transparent;
-    color: $roseL;
+    color: colors.$roseL;
     font-size: 19px;
     line-height: 1;
     transition: 0.3s;
@@ -209,7 +212,7 @@
 // La modale de déplacement d'un exercice vers une autre compétence.
 .transfer-intro {
   margin-bottom: 1rem;
-  color: rgba($grisF, 0.8);
+  color: rgba(colors.$grisF, 0.8);
   font-size: 0.875rem;
   line-height: 1.4;
 }
@@ -217,7 +220,7 @@
 .transfer-label {
   display: block;
   margin-bottom: 0.25rem;
-  color: $grisF;
+  color: colors.$grisF;
   font-size: 0.8rem;
   font-weight: 700;
 }
@@ -238,7 +241,7 @@
 }
 
 .transfer-skill-btn {
-  @include pill-cta;
+  @include global.pill-cta;
   // Dans une colonne flex à hauteur bornée, les enfants RÉTRÉCISSENT par défaut
   // pour tenir dans le cadre : les cartes s'écrasaient à leur hauteur minimale
   // et leur texte débordait sur la voisine. `flex-shrink: 0` leur rend leur
@@ -255,7 +258,7 @@
   white-space: normal;
 
   &:hover {
-    background-color: rgba($rose, 0.16);
+    background-color: rgba(colors.$rose, 0.16);
   }
 
   i {
@@ -281,7 +284,7 @@
 .transfer-vide,
 .transfer-chargement {
   margin: 0;
-  color: rgba($grisF, 0.7);
+  color: rgba(colors.$grisF, 0.7);
   font-size: 0.875rem;
   font-style: italic;
 }

@@ -1,3 +1,5 @@
+@use "../config/font_families";
+
 
 .banner {
   background-size: cover;
@@ -25,7 +27,7 @@ width: fit-content;
     color: white;
     font-size: 50px;
     font-weight: bold;
-    font-family: $titres-font;
+    font-family: font_families.$titres-font;
   }
 
   h2 {
@@ -33,7 +35,7 @@ width: fit-content;
     color: white;
     font-size: 25px;
     font-weight: lighter;
-    font-family: $plan-font;
+    font-family: font_families.$plan-font;
   }
 }
 
@@ -49,7 +51,7 @@ width: fit-content;
   h1{
     font-size: 4ch;
     color: white;
-    font-family:$titres-font;
+    font-family:font_families.$titres-font;
   }
 }
 .mobile-banner {

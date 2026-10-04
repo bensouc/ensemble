@@ -1,10 +1,12 @@
+@use "../config/colors";
+
 .bottom-floating-btn{
   text-decoration: none;
   display: none;
   position: fixed;
   bottom: 80px;
   right: 20px;
-  color: $rose;
+  color: colors.$rose;
   font-size: 30px;
 
   i {
@@ -17,7 +19,7 @@
 
   a {
     text-decoration: none;
-    color: $rose;
+    color: colors.$rose;
     opacity: 0.6;
     &:hover{
       transition: 0.5;
@@ -35,12 +37,12 @@
   position: fixed;
   top: 80px;
   right: 20px;
-  color: $rose;
+  color: colors.$rose;
   font-size: 30px;
   opacity: 0.6;
   a{
     text-decoration: none;
-    color: $rose;
+    color: colors.$rose;
   }
   &:hover{
     transition: 0.5;

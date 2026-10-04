@@ -1,5 +1,6 @@
-@import "edit";
-@import "show";
+@use "edit";
+@use "show";
+@use "../config/colors";
 
 .classroom-level-selectors {
   display: flex;
@@ -11,19 +12,19 @@
 }
 
 .class-pill {
-  border: thin solid $rose;
+  border: thin solid colors.$rose;
   border-radius: 10px;
   margin: 0 10px 0 0;
   padding: 5px 10px;
   font-weight: 700;
-  color: $rose;
+  color: colors.$rose;
   &.active {
-    background-color: $rose;
-    color: $blanc;
+    background-color: colors.$rose;
+    color: colors.$blanc;
   }
   &:hover {
-    background-color: $rose;
-    color: $blanc;
+    background-color: colors.$rose;
+    color: colors.$blanc;
     cursor: pointer;
   }
 }
@@ -48,35 +49,35 @@
 }
 .domain-tab {
   &.active {
-    background-color: $rose;
-    color: $blanc;
+    background-color: colors.$rose;
+    color: colors.$blanc;
   }
   &:hover {
-    background-color: $rose;
-    color: $blanc;
+    background-color: colors.$rose;
+    color: colors.$blanc;
     cursor: pointer;
   }
 }
 .skill_level-selector {
-  border: thin solid $rose;
+  border: thin solid colors.$rose;
   border-radius: 10px 0 0 10px;
   margin: 0 10px 0 0;
   padding: 5px 10px;
   font-weight: 700;
-  color: $roseL;
+  color: colors.$roseL;
   text-align: center;
   margin-bottom: 2px;
   i {
     font-size: 34px;
   }
   &:hover {
-    background-color: $rose;
-    color: $blanc;
+    background-color: colors.$rose;
+    color: colors.$blanc;
     cursor: pointer;
   }
   &.active {
-    color: $blanc;
-    background-color: $rose;
+    color: colors.$blanc;
+    background-color: colors.$rose;
   }
 }
 .skill-school-name {

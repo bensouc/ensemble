@@ -1,3 +1,6 @@
+@use "../config/colors";
+@use "../config/echelle";
+
 // La modale « Sélectionner les compétences à valider ».
 //
 // Son titre était peint en `$grisC`, le gris des bordures : il se lisait comme
@@ -17,40 +20,40 @@
   width: 40rem;
   margin: 8vh auto;
 
-  @media (max-width: $tablette) {
+  @media (max-width: echelle.$tablette) {
     width: 92vw;
   }
 
-  padding: $espace-lg;
-  background-color: $blanc;
+  padding: echelle.$espace-lg;
+  background-color: colors.$blanc;
   border: 0;
-  border-radius: $rayon-lg;
+  border-radius: echelle.$rayon-lg;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.22);
 }
 
 .new-wps-card {
   .modal-header {
     display: flex;
-    gap: $espace-md;
+    gap: echelle.$espace-md;
     align-items: flex-start;
     justify-content: space-between;
-    padding: 0 0 $espace-md;
-    margin-bottom: $espace-md;
-    border-bottom: thin solid $grisC;
+    padding: 0 0 echelle.$espace-md;
+    margin-bottom: echelle.$espace-md;
+    border-bottom: thin solid colors.$grisC;
   }
 
   h3 {
     margin: 0;
-    color: $grisF;
-    font-size: $texte-xl;
+    color: colors.$grisF;
+    font-size: echelle.$texte-xl;
     font-weight: 700;
   }
 
   // Le nom d'un sous-domaine : un intertitre, pas une citation en italique.
   h6 {
-    margin: $espace-md 0 $espace-sm;
-    color: $grisF;
-    font-size: $texte-xs;
+    margin: echelle.$espace-md 0 echelle.$espace-sm;
+    color: colors.$grisF;
+    font-size: echelle.$texte-xs;
     font-style: normal;
     font-weight: 700;
     letter-spacing: 0.05em;
@@ -70,13 +73,13 @@
   .student-checkbox {
     display: flex;
     flex-direction: column;
-    gap: $espace-xs;
+    gap: echelle.$espace-xs;
   }
 
   .groupe-competences {
     display: flex;
     flex-wrap: wrap;
-    gap: $espace-sm;
+    gap: echelle.$espace-sm;
   }
 
   .tag-selector {
@@ -87,26 +90,26 @@
   .tag-selector + label {
     display: inline-block;
     margin: 0;
-    padding: $espace-sm $espace-md;
-    color: $rose;
-    font-size: $texte-sm;
-    background-color: rgba($rose, 0.08);
-    border: thin solid rgba($rose, 0.35);
-    border-radius: $rayon;
+    padding: echelle.$espace-sm echelle.$espace-md;
+    color: colors.$rose;
+    font-size: echelle.$texte-sm;
+    background-color: rgba(colors.$rose, 0.08);
+    border: thin solid rgba(colors.$rose, 0.35);
+    border-radius: echelle.$rayon;
     cursor: pointer;
     transition: 0.15s ease;
 
     &:hover {
-      color: $blanc;
-      background-color: $rose;
-      border-color: $rose;
+      color: colors.$blanc;
+      background-color: colors.$rose;
+      border-color: colors.$rose;
     }
   }
 
   .tag-selector:checked + label {
-    color: $blanc;
-    background-color: $rose;
-    border-color: $rose;
+    color: colors.$blanc;
+    background-color: colors.$rose;
+    border-color: colors.$rose;
   }
 }
 
@@ -117,7 +120,7 @@
   width: 2rem;
   height: 2rem;
   padding: 0;
-  color: $grisF;
+  color: colors.$grisF;
   font-size: 1.6rem;
   line-height: 1;
   background: none;
@@ -127,53 +130,53 @@
   transition: 0.15s ease;
 
   &:hover {
-    color: $rose;
-    background-color: $light-gray;
+    color: colors.$rose;
+    background-color: colors.$light-gray;
   }
 }
 
 .modale-actions {
   display: flex;
-  gap: $espace-sm;
+  gap: echelle.$espace-sm;
   align-items: center;
   justify-content: flex-end;
-  margin-top: $espace-lg;
+  margin-top: echelle.$espace-lg;
 
   // Les deux à la même échelle, et « Annuler » en retrait : c'est « Valider »
   // qu'on vient chercher. Le pavé gris plein pesait plus lourd que l'action
   // principale, et l'œil se posait sur le mauvais bouton.
   .cancel-btn {
     padding: 0.45rem 1.1rem;
-    color: $grisF !important;
-    font-size: $texte-sm;
+    color: colors.$grisF !important;
+    font-size: echelle.$texte-sm;
     font-weight: 500;
     background-color: transparent;
     border-color: transparent;
 
     &:hover {
-      color: $grisF !important;
-      background-color: $light-gray;
+      color: colors.$grisF !important;
+      background-color: colors.$light-gray;
     }
   }
 
   .validate-challenge-btn {
     margin-left: 0;
     padding: 0.45rem 1.1rem;
-    font-size: $texte-sm;
+    font-size: echelle.$texte-sm;
     font-weight: 500;
   }
 
   // Seul dans la rangée, « Fermer » est l'action principale : il reprend le
   // poids que « Annuler » cède à « Valider ».
   .cancel-btn.--seul {
-    color: $blanc !important;
-    background-color: $grisF;
-    border-color: $grisF;
+    color: colors.$blanc !important;
+    background-color: colors.$grisF;
+    border-color: colors.$grisF;
 
     &:hover {
-      color: $grisF !important;
-      background-color: $light-gray;
-      border-color: $grisC;
+      color: colors.$grisF !important;
+      background-color: colors.$light-gray;
+      border-color: colors.$grisC;
     }
   }
 }
@@ -182,8 +185,8 @@
 // qui ne fait rien.
 .modale-vide {
   margin: 0;
-  padding: $espace-lg 0;
-  color: $grisF;
-  font-size: $texte-md;
+  padding: echelle.$espace-lg 0;
+  color: colors.$grisF;
+  font-size: echelle.$texte-md;
   text-align: center;
 }

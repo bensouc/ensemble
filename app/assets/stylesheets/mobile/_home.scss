@@ -1,3 +1,6 @@
+@use "../config/colors";
+@use "../config/echelle";
+
 .hidden-prompt {
  opacity: 0;
   transform: translateY(-100%);
@@ -5,20 +8,20 @@
   pointer-events: none;
 }
 .mobile-details{
-  margin: $espace-md 0;
+  margin: echelle.$espace-md 0;
   display: flex;
     flex-direction: column;
     justify-content: space-evenly;
     align-items: center;
     flex-wrap: nowrap;
     h2{
-      color: $roseL;
+      color: colors.$roseL;
     }
 }
 .mobile-detail-box{
   // `100vw` ignore la barre de défilement et déborde ; la largeur du parent, non.
   width: 100%;
-  padding: 0 $espace-md;
+  padding: 0 echelle.$espace-md;
   // .splide.home-images{
   // width: 100%;
   // }

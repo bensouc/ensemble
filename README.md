@@ -248,6 +248,9 @@ real pupil names.
 - Assets the Rails 8 way: Propshaft serves what esbuild and Dart Sass build
   (cssbundling); Sprockets, libsass (`sassc`) and the Bootstrap and Font Awesome
   gems are gone, both now come from npm
+- Stylesheets are Sass modules (`@use`); only `_vendor.scss` still `@import`s
+  Bootstrap 5, Font Awesome, flatpickr, trix and Splide, as Bootstrap requires
+  until its version 6
 - Sidekiq replaced by Solid Queue running inside Puma: one Coolify application
   instead of two, jobs dashboard at `/jobs`
 - Development no longer deletes files from the Cloudinary account it shares

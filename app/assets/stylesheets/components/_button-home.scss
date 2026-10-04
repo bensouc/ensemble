@@ -1,3 +1,6 @@
+@use "../config/colors";
+@use "../config/global";
+
 .home-container {
   width: 75%;
   text-align: left;
@@ -31,7 +34,7 @@
 // il y en a une par dossier, un fond teinté ferait une colonne de taches roses.
 // Les marges de placement sont portées par chaque page.
 .add-folder-btn {
-  @include pill-cta($height: 30px);
+  @include global.pill-cta($height: 30px);
   flex: 0 0 auto;
   background-color: transparent;
 
@@ -49,20 +52,20 @@
 // pastille que les CTA des exercices, à la place des pavés de 110px à bordure de
 // 3px. Chacune porte désormais une icône.
 .utility-wp-btn {
-  @include pill-cta($height: 34px);
+  @include global.pill-cta($height: 34px);
   margin: 7px 0 0 12px;
 }
 
 // Action principale d'un plan de travail (la Correction) : déjà remplie au repos,
 // pour qu'elle ressorte des actions secondaires.
 .utility-wp-btn--primary {
-  background-color: $rose;
-  color: $blanc;
+  background-color: colors.$rose;
+  color: colors.$blanc;
 
   i,
   h6,
   span {
-    color: $blanc;
+    color: colors.$blanc;
   }
 }
 
@@ -80,13 +83,13 @@
     border: none;
     border-radius: 50%;
     background-color: transparent;
-    color: $rose;
+    color: colors.$rose;
     font-size: 16px;
     transition: 0.25s;
 
     &:hover,
     &[aria-expanded="true"] {
-      background-color: rgba($rose, 0.08);
+      background-color: rgba(colors.$rose, 0.08);
       cursor: pointer;
     }
   }
@@ -95,16 +98,16 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    color: $grisF;
+    color: colors.$grisF;
 
     i {
       width: 16px;
-      color: $rose;
+      color: colors.$rose;
     }
 
     &:hover {
-      background-color: rgba($rose, 0.08);
-      color: $rose;
+      background-color: rgba(colors.$rose, 0.08);
+      color: colors.$rose;
     }
   }
 }
@@ -113,7 +116,7 @@
   i,
   h6,
   span {
-    color: $white !important;
+    color: colors.$white !important;
   }
 }
 

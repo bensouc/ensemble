@@ -1,3 +1,8 @@
+@use "../config/colors";
+@use "../config/echelle";
+@use "../config/font_families";
+@use "../pages/eval";
+
 // L'écran d'évaluation : le geste central du mobile.
 //
 // L'en-tête était `position: fixed`, haut de 100px et large de 90%, tandis que
@@ -9,10 +14,10 @@
   position: sticky;
   top: 0;
   z-index: 2;
-  padding: $espace-sm 0;
-  padding-top: marge-sure(top, $espace-sm);
-  background-color: $blanc;
-  border-bottom: thin solid $grisC;
+  padding: echelle.$espace-sm 0;
+  padding-top: echelle.marge-sure(top, echelle.$espace-sm);
+  background-color: colors.$blanc;
+  border-bottom: thin solid colors.$grisC;
 }
 
 // Le retour vers la liste. Dans une PWA installée il n'y a plus de barre de
@@ -20,11 +25,11 @@
 .mobile-retour {
   display: inline-flex;
   align-items: center;
-  gap: $espace-xs;
-  min-height: $cible-tactile;
-  padding-right: $espace-sm;
-  color: $rose !important;
-  font-size: $texte-sm;
+  gap: echelle.$espace-xs;
+  min-height: echelle.$cible-tactile;
+  padding-right: echelle.$espace-sm;
+  color: colors.$rose !important;
+  font-size: echelle.$texte-sm;
   font-weight: 600;
   text-decoration: none;
 
@@ -36,12 +41,12 @@
 .mobile-eval-header-details {
   display: flex;
   align-items: center;
-  gap: $espace-md;
+  gap: echelle.$espace-md;
 
   .first-name {
     width: 30%;
-    color: $rose;
-    font-size: $texte-lg;
+    color: colors.$rose;
+    font-size: echelle.$texte-lg;
     text-align: left;
 
     .mobile-wp-dates {
@@ -53,14 +58,14 @@
     width: 70%;
     align-items: flex-end !important;
     justify-content: space-between !important;
-    font-family: $titres-font !important;
-    font-size: $texte-md;
+    font-family: font_families.$titres-font !important;
+    font-size: echelle.$texte-md;
     font-weight: 400 !important;
   }
 }
 
 .mobile-eval-wp {
-  padding-top: $espace-md;
+  padding-top: echelle.$espace-md;
 }
 
 .mobile-domain-level {
@@ -68,14 +73,14 @@
   flex-direction: row;
   align-items: baseline;
   justify-content: flex-start;
-  gap: $espace-md;
+  gap: echelle.$espace-md;
 
   .bd-maison {
-    padding: $espace-xs !important;
+    padding: echelle.$espace-xs !important;
   }
 
   h3 {
-    font-size: $texte-lg;
+    font-size: echelle.$texte-lg;
     font-weight: 800;
   }
 
@@ -83,35 +88,35 @@
   // il se trouve sur les autres écrans, pas à côté du titre.
   .mobile-domain-chevron {
     margin-left: auto;
-    font-size: $texte-md;
+    font-size: echelle.$texte-md;
   }
 }
 
 .mobile-belt {
-  font-size: $texte-md;
+  font-size: echelle.$texte-md;
 }
 
 .mobile-skill-card {
-  margin-bottom: $espace-md;
+  margin-bottom: echelle.$espace-md;
 
   .title-mobile-skill-card {
     display: flex;
     align-items: center;
-    gap: $espace-sm;
-    padding: $espace-sm $espace-md;
-    background-color: $menuOff;
-    border-bottom: thin solid $blanc;
-    border-radius: $rayon-lg $rayon-lg 0 0;
+    gap: echelle.$espace-sm;
+    padding: echelle.$espace-sm echelle.$espace-md;
+    background-color: colors.$menuOff;
+    border-bottom: thin solid colors.$blanc;
+    border-radius: echelle.$rayon-lg echelle.$rayon-lg 0 0;
 
     h3 {
       margin: 0;
-      font-size: $texte-lg;
+      font-size: echelle.$texte-lg;
       text-align: left;
     }
 
     h6 {
       margin: 0;
-      font-size: $texte-sm;
+      font-size: echelle.$texte-sm;
       text-align: left;
     }
   }
@@ -134,12 +139,12 @@
     // que de le coller à l'évaluation du jour, à l'autre bout de la carte.
     width: 8rem;
     height: auto;
-    min-height: $cible-tactile;
-    padding: 0 $espace-xs;
-    background-color: $blanc;
+    min-height: echelle.$cible-tactile;
+    padding: 0 echelle.$espace-xs;
+    background-color: colors.$blanc;
 
     .eval_bull {
-      @include pastille(1.4rem);
+      @include eval.pastille(1.4rem);
 
       flex: 0 0 auto;
     }
@@ -155,7 +160,7 @@
       right: 0;
       bottom: 22%;
       width: 1px;
-      background-color: rgba($grisF, 0.2);
+      background-color: rgba(colors.$grisF, 0.2);
     }
   }
 }
@@ -178,8 +183,8 @@
   // son contenu : « OK, mais à refaire » aurait poussé la pastille hors carte
   // plutôt que de passer à la ligne.
   min-width: 0;
-  color: rgba($grisF, 0.85);
-  font-size: $texte-sm;
+  color: rgba(colors.$grisF, 0.85);
+  font-size: echelle.$texte-sm;
   font-weight: 600;
   line-height: 1.2;
   // Aligné à droite : le mot se lit contre la pastille qu'il qualifie, et non
@@ -191,13 +196,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: $espace-sm;
-  padding: $espace-sm $espace-md;
-  border-right: solid $grisC;
-  border-bottom: solid $grisC;
-  border-left: solid $grisC;
-  border-bottom-right-radius: $rayon-lg;
-  border-bottom-left-radius: $rayon-lg;
+  gap: echelle.$espace-sm;
+  padding: echelle.$espace-sm echelle.$espace-md;
+  border-right: solid colors.$grisC;
+  border-bottom: solid colors.$grisC;
+  border-left: solid colors.$grisC;
+  border-bottom-right-radius: echelle.$rayon-lg;
+  border-bottom-left-radius: echelle.$rayon-lg;
 
   // Le bouton qui ouvre l'évaluation : c'est LA cible du doigt sur cet écran.
   //
@@ -211,8 +216,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: $cible-tactile;
-    min-height: $cible-tactile;
+    min-width: echelle.$cible-tactile;
+    min-height: echelle.$cible-tactile;
     border: 0;
   }
 }
@@ -222,17 +227,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: $cible-tactile;
-  min-height: $cible-tactile;
+  min-width: echelle.$cible-tactile;
+  min-height: echelle.$cible-tactile;
 
   .eval_bull {
-    @include pastille(2rem);
+    @include eval.pastille(2rem);
 
     // Un disque ne se comprime pas : pincé, il devient un œuf, et son anneau
     // cesse d'en épouser le bord. La gouttière du passé prend la même
     // précaution pour la même raison.
     flex: 0 0 auto;
-    font-size: $texte-md;
+    font-size: echelle.$texte-md;
   }
 }
 
@@ -247,7 +252,7 @@
 .mobile-eval-mngt {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: $espace-sm;
+  gap: echelle.$espace-sm;
 
   // Un nombre impair de statuts laissait une carte seule, calée à gauche. Elle
   // prend toute la largeur : l'orpheline disparaît, et l'action terminale —
@@ -262,19 +267,19 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: $espace-sm;
+  gap: echelle.$espace-sm;
   min-height: 6rem;
-  padding: $espace-md $espace-sm;
+  padding: echelle.$espace-md echelle.$espace-sm;
   // `!important` parce qu'un `<a>` reçoit la couleur de lien de Bootstrap : les
   // libellés sortaient en bleu, ce qui les faisait tous se ressembler et
   // contredisait la couleur de leur propre icône.
-  color: $grisF !important;
+  color: colors.$grisF !important;
   text-align: center;
   text-decoration: none;
-  background-color: $blanc;
+  background-color: colors.$blanc;
   // $grisC seul se distinguait à peine du fond blanc de la modale.
-  border: 1px solid rgba($grisF, 0.22);
-  border-radius: $rayon;
+  border: 1px solid rgba(colors.$grisF, 0.22);
+  border-radius: echelle.$rayon;
 
   .eval-icon {
     font-size: 1.6rem;
@@ -287,14 +292,14 @@
   }
 
   &:active {
-    background-color: $light-gray;
+    background-color: colors.$light-gray;
   }
 
   // Là où en est la compétence aujourd'hui. On voyait ce qu'on pouvait choisir,
   // jamais ce qui était déjà enregistré.
   &.--courant {
-    background-color: $menuOff;
-    border-color: $rose;
+    background-color: colors.$menuOff;
+    border-color: colors.$rose;
     border-width: 2px;
   }
 }
@@ -303,8 +308,8 @@
 // peut pas être le plus discret de la carte. 14px et un demi-gras, dans la
 // police du reste de l'application.
 .mobile-eval-libelle {
-  font-family: $body-font;
-  font-size: $texte-sm;
+  font-family: font_families.$body-font;
+  font-size: echelle.$texte-sm;
   font-weight: 600;
   line-height: 1.25;
   letter-spacing: -0.01em;

@@ -1,3 +1,6 @@
+@use "sass:color";
+@use "../config/colors";
+
 // Personnification : le rappel permanent dans la barre du haut, et la liste des
 // comptes.
 
@@ -15,8 +18,8 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.45rem 1.5rem;
-  background-color: $rose;
-  color: $blanc;
+  background-color: colors.$rose;
+  color: colors.$blanc;
   font-size: 0.9rem;
 
   strong { font-weight: 700; }
@@ -32,8 +35,8 @@
   border: none;
   border-radius: 999px;
   padding: 0.2rem 0.9rem;
-  background-color: $blanc;
-  color: $rose;
+  background-color: colors.$blanc;
+  color: colors.$rose;
   font-size: 0.85rem;
   font-weight: 600;
   white-space: nowrap;
@@ -48,7 +51,7 @@
   border: none;
   background: none;
   text-align: left;
-  color: $rose;
+  color: colors.$rose;
   font-weight: 600;
 }
 
@@ -58,7 +61,7 @@
 }
 
 .impersonation-intro {
-  color: $grisF;
+  color: colors.$grisF;
   font-style: italic;
   margin-bottom: 1.5rem;
 }
@@ -72,16 +75,16 @@
   align-items: baseline;
   justify-content: space-between;
   padding: 0.4rem 0.8rem;
-  border-bottom: 2px solid $grisC;
+  border-bottom: 2px solid colors.$grisC;
 }
 
 .impersonation-school-name {
   font-weight: 700;
-  color: $grisF;
+  color: colors.$grisF;
 }
 
 .impersonation-school-meta {
-  color: lighten($grisF, 30%);
+  color: color.adjust(colors.$grisF, $lightness: 30%);
   font-size: 0.85rem;
 }
 
@@ -101,7 +104,7 @@
   align-items: center;
   gap: 1rem;
   padding: 0.6rem 0.8rem;
-  border-bottom: 1px solid $light-gray;
+  border-bottom: 1px solid colors.$light-gray;
 }
 
 .impersonation-user-identity {
@@ -115,7 +118,7 @@
 
 .impersonation-user-email {
   font-size: 0.8rem;
-  color: lighten($grisF, 30%);
+  color: color.adjust(colors.$grisF, $lightness: 30%);
 }
 
 .impersonation-user-tags {
@@ -128,16 +131,16 @@
 .impersonation-tag {
   padding: 0.1rem 0.55rem;
   border-radius: 999px;
-  background-color: $bleuC;
-  color: $grisF;
+  background-color: colors.$bleuC;
+  color: colors.$grisF;
 }
 
 .impersonation-tag-demo {
-  background-color: $menuOff;
+  background-color: colors.$menuOff;
 }
 
 .impersonation-user-seen {
-  color: lighten($grisF, 35%);
+  color: color.adjust(colors.$grisF, $lightness: 35%);
   font-style: italic;
 }
 
@@ -148,10 +151,10 @@
   border: none;
   border-radius: 999px;
   padding: 0.35rem 1rem;
-  background-color: $rose;
-  color: $blanc;
+  background-color: colors.$rose;
+  color: colors.$blanc;
   font-size: 0.85rem;
   white-space: nowrap;
 
-  &:hover { background-color: darken($rose, 8%); }
+  &:hover { background-color: color.adjust(colors.$rose, $lightness: -8%); }
 }

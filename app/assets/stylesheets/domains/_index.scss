@@ -1,3 +1,5 @@
+@use "../config/colors";
+
 #domains_list {
   display: flex;
   flex-direction: row;
@@ -17,7 +19,7 @@
     margin-bottom: 5px;
   a,
   i {
-    color: $roseL;
+    color: colors.$roseL;
   }
   &.form-domain-btn{
     width: 14rem;
@@ -30,13 +32,13 @@
   // s'affiche sous le champ, la boîte doit pouvoir grandir.
   min-height: 44px;
   padding: 5px 10px;
-  border: thin solid $rose;
+  border: thin solid colors.$rose;
   border-radius: 1rem;
-  color: $roseL;
+  color: colors.$roseL;
   margin-bottom: 5px;
   a,
   i {
-    color: $green;
+    color: colors.$green;
     font-size: 1.5rem;
   }
   &.form-domain-btn{

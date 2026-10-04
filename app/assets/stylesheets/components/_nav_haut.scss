@@ -1,9 +1,11 @@
+@use "../config/colors";
+
 .navhaut {
   display: flex;
   justify-content: space-between;
   width: 100%;
   // height: 80px;
-  background-color: $white;
+  background-color: colors.$white;
   padding: 5px 20px 5px 20px;
   // margin-bottom: 30px;
   // align-content: flex-end;
@@ -47,10 +49,10 @@
   // peser autant que le dessin qu'il marque.
   width: 0.28em;
   height: 0.28em;
-  background-color: $belt-4;
+  background-color: colors.$belt-4;
   // Un liseré blanc : sans lui, le point se confond avec le trait de l'icône
   // qu'il chevauche.
-  border: 0.05em solid $blanc;
+  border: 0.05em solid colors.$blanc;
   border-radius: 50%;
 }
 
@@ -80,7 +82,7 @@ img.avatar {
     font-family: "Poppins", sans-serif;
     // font-size: 10px;
     font-weight: lighter;
-    color: $rose;
+    color: colors.$rose;
   }
 }
 
@@ -88,17 +90,17 @@ img.avatar {
   font-family: "Poppins", sans-serif;
   font-size: 10px;
   font-weight: 700;
-  color: $rose;
+  color: colors.$rose;
   padding-top: 20px;
 
   h3 {
     font-size: 1.5em;
     font-weight: 700;
-    color: $grisF;
+    color: colors.$grisF;
     margin-bottom: 0;
   }
   p {
-    color: $rose;
+    color: colors.$rose;
   }
 }
 

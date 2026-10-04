@@ -10,6 +10,10 @@ $green: #4caf50;
 $gray: #0E0000;
 $light-gray: #F4F4F4;
 
+// Valeurs de Bootstrap, que nos feuilles prenaient à ses variables globales.
+$white: #fff;
+$light: #f8f9fa;
+
 // COULEUR ENSEMBLE
 $orange: orange;
 $grisF: #3D3D3D;
@@ -58,49 +62,6 @@ $eval-reussi-lettre: #14401a;
 $eval-reussi-anneau: #2e7d32;
 $eval-valide: $green;
 
-// class color
-.--orange { color:$orange !important}
-.--grisF { color:$grisF !important}
-.--grisC { color:$grisC !important}
-.--violet { color:$violet !important}
-.--jaune { color:$jaune !important}
-.--bleuC { color:$bleuC !important}
-.--menuOff { color:$menuOff !important}
-.--blanc { color:$blanc !important}
-.--rose { color:$rose !important}
-.--roseL { color:$roseL !important}
-.--vert { color: $green !important}
-
-.--bgc-orange { background-color:$orange !important}
-.--bgc-grisF { background-color:$grisF !important}
-.--bgc-grisC { background-color:$grisC !important}
-.--bgc-violet { background-color:$violet !important}
-.--bgc-jaune { background-color:$jaune !important}
-.--bgc-bleuC { background-color:$bleuC !important}
-.--bgc-menuOff { background-color:$menuOff !important}
-.--bgc-blanc { background-color:$blanc}
-.--bgc-rose { background-color:$rose !important}
-.--bgc-roseL { background-color:$roseL !important}
-.--bgc-vert { background-color: $green !important}
-.--bgc-marron { background-color: $marron !important}
-.--bgc-noir { background-color: $gray !important}
-.--bgc-transparent { background-color: transparent !important}
-
-.--borderc-orange { border-color:$orange !important}
-.--borderc-grisF { border-color:$grisF !important}
-.--borderc-grisC { border-color:$grisC !important}
-.--borderc-violet { border-color:$violet !important}
-.--borderc-jaune { border-color:$jaune !important}
-.--borderc-bleuC { border-color:$bleuC !important}
-.--borderc-menuOff { border-color:$menuOff !important}
-.--borderc-blanc { border-color:$blanc}
-.--borderc-rose { border-color:$rose !important}
-.--borderc-roseL { border-color:$roseL !important}
-.--borderc-vert { border-color: $green !important}
-
-
-
-/* _colors.scss */
 $belt-1: rgb(240, 230, 230);
 $belt-2: rgb(248, 244, 6);
 $belt-3: orange;

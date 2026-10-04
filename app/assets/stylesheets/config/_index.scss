@@ -1,7 +1,7 @@
-@import "colors";
-@import "echelle";
-@import "fonts";
-@import "global";
-@import "contact_form";
-@import "bootstrap_variables";
-@import "animations";
+@use "colors";
+@use "color_utilities";
+@use "echelle";
+@use "fonts";
+@use "global";
+@use "contact_form";
+@use "animations";

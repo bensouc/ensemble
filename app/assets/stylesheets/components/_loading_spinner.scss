@@ -1,3 +1,5 @@
+@use "../config/colors";
+
 .lds-background {
   position: fixed;
   top: 50%; left: 50%; /* à 50%/50% du parent référent */
@@ -5,7 +7,7 @@
   width: 144px;
   height: 139px;
   background-color: white;
-  border: thin solid $rose;
+  border: thin solid colors.$rose;
   border-radius: 15px;
   z-index: 2;
   padding: 29px;
@@ -20,7 +22,7 @@
   position: absolute;
   width: 6px;
   height: 6px;
-  background: $rose;
+  background: colors.$rose;
   border-radius: 50%;
   animation: lds-default 1.2s linear infinite;
 }

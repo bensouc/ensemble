@@ -1,3 +1,6 @@
+@use "../config/font_families";
+@use "../config/colors";
+
 // Tableaux ActionText — styles propres à l'ÉDITEUR.
 // Non importés par pdf.scss : toolbar, états de saisie, habillage de la pièce
 // jointe. La partie commune avec le PDF est dans `_tables.scss`.
@@ -121,7 +124,7 @@ trix-editor .rt-table--editor .rt-cell ::-moz-selection {
 // Libellé de bloc : dit ce sur quoi porte la rangée, ce qui dispense de
 // nommer chaque groupe.
 .rt-table__bar-label {
-  font-family: $body-font;
+  font-family: font_families.$body-font;
   font-size: 11px;
   font-weight: 700;
   color: var(--rt-ink-soft);
@@ -160,7 +163,7 @@ trix-editor .rt-table--editor .rt-cell ::-moz-selection {
 
 .rt-table__label {
   padding: 0 6px 0 4px;
-  font-family: $body-font;
+  font-family: font_families.$body-font;
   font-size: 11px;
   font-weight: 600;
   color: var(--rt-ink-faint, #a1a1aa);
@@ -179,7 +182,7 @@ trix-editor .rt-table--editor .rt-cell ::-moz-selection {
   height: 26px;
   padding: 0 6px;
   margin: 0;
-  font-family: $body-font;
+  font-family: font_families.$body-font;
   font-size: 12px;
   font-weight: 600;
   line-height: 1;
@@ -207,7 +210,7 @@ trix-editor .rt-table--editor .rt-cell ::-moz-selection {
 
   &.rt-table__btn--danger:hover {
     color: #fff;
-    background: $rose;
+    background: colors.$rose;
   }
 
   &.rt-table__btn--wide {

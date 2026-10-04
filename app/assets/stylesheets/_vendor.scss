@@ -1,0 +1,22 @@
+// Ce qui n'est pas à nous reste chargé par @import, le temps de Bootstrap 5 :
+// Bootstrap s'importe lui-même ainsi et se configure par des variables
+// globales, posées juste avant lui (config/_bootstrap_variables). Font Awesome
+// de même. Nos feuilles, elles, sont des modules (@use).
+@import "config/bootstrap_variables";
+@import "bootstrap/scss/bootstrap";
+@import "flatpickr/dist/flatpickr";
+@import "flatpickr/dist/themes/light";
+
+// Font Awesome 6.7.2, paquet npm : le cœur et les trois familles. Ses polices
+// sont servies par Propshaft à la racine des assets (config/initializers/
+// assets.rb), à côté de la feuille construite : d'où le chemin « . ».
+$fa-font-path: ".";
+@import "@fortawesome/fontawesome-free/scss/fontawesome";
+@import "@fortawesome/fontawesome-free/scss/solid";
+@import "@fortawesome/fontawesome-free/scss/regular";
+@import "@fortawesome/fontawesome-free/scss/brands";
+
+@import "trix/dist/trix";
+// Sans l'extension : Dart Sass intègre alors la feuille. Avec, il laisse un
+// `@import` CSS que le navigateur irait chercher à part.
+@import "@splidejs/splide/dist/css/splide.min";

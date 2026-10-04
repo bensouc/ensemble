@@ -4,12 +4,12 @@
 // donc à spécificité égale nos règles gagnent. Certaines propriétés sont
 // toutefois injectées par Trix dans le <head> à l'exécution (donc après) : les
 // cas concernés sont signalés dans _editor.scss et _toolbar.scss.
-@import "tokens";
-@import "toolbar";
-@import "editor";
-@import "content";
-@import "tables";
-@import "tables_editor";
+@use "tokens";
+@use "toolbar";
+@use "editor";
+@use "content";
+@use "tables";
+@use "tables_editor";
 
 // ---------------------------------------------------------------------------
 // LEGACY — à ne pas modifier sans audit global.
