@@ -43,25 +43,19 @@ function arreter() {
   enCours = false
   if (relance) { clearInterval(relance); relance = null }
   if (window.speechSynthesis) speechSynthesis.cancel()
+  document.querySelectorAll(".m-lu").forEach((element) => element.classList.remove("m-lu"))
 }
 
 // Une phrase à la fois, avec un silence entre chacune : c'est ce que
 // l'enseignante demande, et ça ne s'obtient pas en baissant le débit.
-function lire(texte, fini) {
+function lireTexte(texte, fini) {
   if (!window.speechSynthesis) { fini(); return }
-  arreter()
   const phrases = (texte.match(/[^.!?…]+[.!?…]*/g) || []).map((p) => p.trim()).filter(Boolean)
   if (!phrases.length) { fini(); return }
 
-  enCours = true
-  // Chrome coupe la lecture au bout d'une quinzaine de secondes sans ce rappel.
-  relance = setInterval(() => {
-    if (enCours) { speechSynthesis.pause(); speechSynthesis.resume() }
-  }, 9000)
-
   let i = 0
   const suivante = () => {
-    if (!enCours || i >= phrases.length) { arreter(); fini(); return }
+    if (!enCours || i >= phrases.length) { fini(); return }
     const u = new SpeechSynthesisUtterance(phrases[i])
     u.lang = "fr-FR"
     if (voix) u.voice = voix
@@ -71,6 +65,31 @@ function lire(texte, fini) {
     speechSynthesis.speak(u)
   }
   suivante()
+}
+
+// Chaque élément est surligné pendant qu'il est lu : un élève qui ne déchiffre
+// pas doit au moins voir OÙ on en est.
+function lireElements(elements, fini) {
+  if (!window.speechSynthesis || !elements.length) { fini(); return }
+  arreter()
+  enCours = true
+  // Chrome coupe la lecture au bout d'une quinzaine de secondes sans ce rappel.
+  relance = setInterval(() => {
+    if (enCours) { speechSynthesis.pause(); speechSynthesis.resume() }
+  }, 9000)
+
+  let i = 0
+  const suivant = () => {
+    if (!enCours || i >= elements.length) { arreter(); fini(); return }
+    const element = elements[i]
+    element.classList.add("m-lu")
+    lireTexte(element.textContent.trim(), () => {
+      element.classList.remove("m-lu")
+      i += 1
+      setTimeout(suivant, 250)
+    })
+  }
+  suivant()
 }
 
 function signalerEcoute(bouton) {
@@ -85,36 +104,40 @@ function signalerEcoute(bouton) {
   }).catch(() => {})
 }
 
-// L'énoncé ET la question. Les séparer n'aurait aucun sens : un élève qui ne
-// déchiffre pas entendrait l'histoire sans jamais savoir ce qu'on lui demande.
-function texteALire() {
-  return ["[data-m-enonce]", "[data-m-question]"]
-    .map((selecteur) => document.querySelector(selecteur))
-    .filter(Boolean)
-    .map((element) => element.textContent.trim())
-    .filter((texte) => texte.length)
-    .join(" ")
+function tousLesBoutons() {
+  return Array.from(document.querySelectorAll("[data-m-ecouter], [data-m-ecouter-un]"))
+}
+
+function verrouiller(verrou) {
+  tousLesBoutons().forEach((bouton) => { bouton.disabled = verrou })
 }
 
 function brancher() {
-  const bouton = document.querySelector("[data-m-ecouter]")
-  if (!bouton || !texteALire()) return
+  const principal = document.querySelector("[data-m-ecouter]")
+  const aLire = Array.from(document.querySelectorAll("[data-m-lire]"))
+  if (!principal || !aLire.length) return
 
-  bouton.addEventListener("click", () => {
-    bouton.disabled = true
-    bouton.textContent = "⏸ Lecture…"
-    signalerEcoute(bouton)
-    lire(texteALire(), () => {
-      bouton.disabled = false
-      bouton.textContent = "🔊 Écouter"
+  const demarrer = (elements) => {
+    verrouiller(true)
+    principal.textContent = "⏸ Lecture…"
+    signalerEcoute(principal)
+    lireElements(elements, () => {
+      verrouiller(false)
+      principal.textContent = "🔊 Tout écouter"
+    })
+  }
+
+  principal.addEventListener("click", () => demarrer(aLire))
+
+  // Le haut-parleur d'une réponse ne relit que celle-là, autant de fois que
+  // l'élève veut : mémoriser trois options entendues d'affilée est hors de
+  // portée de l'enfant à qui la voix s'adresse.
+  document.querySelectorAll("[data-m-ecouter-un]").forEach((bouton) => {
+    bouton.addEventListener("click", () => {
+      const cible = bouton.parentElement.querySelector("[data-m-lire]")
+      if (cible) demarrer([cible])
     })
   })
-}
-
-if (window.speechSynthesis) {
-  choisir()
-  speechSynthesis.onvoiceschanged = choisir
-  setTimeout(choisir, 400)
 }
 
 document.addEventListener("DOMContentLoaded", brancher)

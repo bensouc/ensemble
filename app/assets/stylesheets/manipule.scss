@@ -115,6 +115,34 @@ $police: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, Verdana, sans-ser
   &:hover { border-color: var(--m-rose); background: var(--m-rose-pale); }
 }
 
+// Le haut-parleur d'une réponse : un indice posé dessous, discret au repos,
+// mais avec une cible assez large pour un doigt d'enfant.
+.m-choix-cellule { display: flex; flex-direction: column; gap: 4px; }
+
+.m-ecouter-un {
+  font: inherit;
+  font-size: 1rem;
+  min-height: 40px;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--m-encre-douce);
+  cursor: pointer;
+  opacity: .65;
+
+  &:hover { opacity: 1; background: var(--m-bleu-pale); color: var(--m-bleu); }
+  &[disabled] { opacity: .25; cursor: default; }
+}
+
+// Ce qui est en train d'être lu. Un élève qui ne déchiffre pas doit au moins
+// voir OÙ on en est.
+.m-lu {
+  background: var(--m-bleu-pale) !important;
+  box-shadow: 0 0 0 3px var(--m-bleu);
+  border-radius: 12px;
+}
+
 .m-saisie { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 
 .m-saisie-case {

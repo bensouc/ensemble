@@ -163,10 +163,13 @@ RSpec.describe "Manipule, côté élève" do
 
     # Un élève qui ne déchiffre pas entendrait l'histoire sans jamais savoir ce
     # qu'on lui demande : la lecture doit attraper les deux.
-    it "donne à lire l'énoncé ET la question" do
+    it "donne à lire l'énoncé, la question et chacune des trois réponses" do
       get manipule_serie_path
 
       expect(response.body).to include("data-m-enonce", "data-m-question")
+      # L'énoncé, la question, et les trois réponses : cinq éléments à lire.
+      expect(response.body.scan("data-m-lire").size).to eq(5)
+      expect(response.body.scan("data-m-ecouter-un").size).to eq(3)
     end
 
     it "compte les réécoutes de l'énoncé" do

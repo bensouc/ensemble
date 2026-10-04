@@ -4,18 +4,26 @@
   <%= hidden_field_tag :attempt_id, @tentative.id %>
 
   <% if @probleme.choix? %>
-    <p class="m-question" data-m-question><%= @probleme.question %></p>
+    <p class="m-question" data-m-question data-m-lire><%= @probleme.question %></p>
     <div class="m-choix">
       <% @choix.each do |choix| %>
-        <%# `button_tag` et non `f.submit` : sur un <input type="submit">, la
-            valeur envoyée EST le texte affiché, et préciser `value:` remplace
-            le libellé par l'identifiant. L'élève voyait « 8 » au lieu de
-            « 8 pommes ». %>
-        <%= button_tag choix.label, type: :submit, name: "choice_id", value: choix.id, class: "m-choix-bouton" %>
+        <%# Le haut-parleur est À CÔTÉ de la réponse, jamais dedans : un bouton
+            dans un bouton n'est pas du HTML valide, et le clic sur l'icône
+            vaudrait réponse. %>
+        <div class="m-choix-cellule">
+          <%# `button_tag` et non `f.submit` : sur un <input type="submit">, la
+              valeur envoyée EST le texte affiché, et préciser `value:` remplace
+              le libellé par l'identifiant. L'élève voyait « 8 » au lieu de
+              « 8 pommes ». %>
+          <%= button_tag choix.label, type: :submit, name: "choice_id", value: choix.id,
+                         class: "m-choix-bouton", data: { "m-lire": true } %>
+          <button type="button" class="m-ecouter-un" data-m-ecouter-un
+                  aria-label="Écouter cette réponse">🔊</button>
+        </div>
       <% end %>
     </div>
   <% else %>
-    <p class="m-question" data-m-question><%= @probleme.question %></p>
+    <p class="m-question" data-m-question data-m-lire><%= @probleme.question %></p>
     <div class="m-saisie">
       <%= text_field_tag :saisie, nil, inputmode: "numeric", autocomplete: "off",
                          class: "m-saisie-case", "aria-label": "Ta réponse" %>
