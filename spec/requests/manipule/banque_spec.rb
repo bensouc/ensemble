@@ -6,7 +6,9 @@ require "csv"
 RSpec.describe "Manipule, la banque côté enseignante" do
   # La factory :user fabrique un ADMIN. Un admin voit tout, et les tests de
   # cloisonnement ne testeraient alors rien du tout.
-  let(:enseignante) { create(:user, admin: false) }
+  # `manipule: true` : l'option s'ouvre compte par compte, et sans elle ces
+  # pages redirigent avant même d'être atteintes.
+  let(:enseignante) { create(:user, admin: false, manipule: true) }
   let(:competence) do
     domaine = create(:domain, grade: create(:grade, school: enseignante.school))
     create(:skill, domain: domaine, school: enseignante.school, level: 1, name: "Recherche d'une partie")

@@ -4,7 +4,7 @@ module Manipule
   # Le suivi d'une classe, côté enseignante : ce que chaque élève travaille, et
   # ce que ça a donné. C'est aussi d'ici qu'elle désigne la compétence du jour,
   # sans quoi l'élève tombe sur « Rien à faire pour le moment ».
-  class ClassesController < ApplicationController
+  class ClassesController < ProfController
     before_action :set_classe, except: [:index]
 
     def index

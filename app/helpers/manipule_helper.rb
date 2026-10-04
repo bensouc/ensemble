@@ -18,11 +18,14 @@ module ManipuleHelper
   # viendra en quatrième quand il aura sa page à lui ; pour l'instant le suivi
   # d'une classe les porte.
   def onglets_manipule
-    [
+    onglets = [
       { libelle: "Accueil", chemin: manipule_root_path, controleurs: %w[accueil] },
       { libelle: "La banque", chemin: manipule_banque_path, controleurs: %w[banque] },
       { libelle: "Les classes", chemin: manipule_suivi_path, controleurs: %w[classes] }
     ]
+    return onglets unless current_user&.admin?
+
+    onglets << { libelle: "Les accès", chemin: manipule_acces_path, controleurs: %w[acces] }
   end
 
   def onglet_manipule_actif?(onglet)

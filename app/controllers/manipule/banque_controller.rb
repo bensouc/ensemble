@@ -5,7 +5,7 @@ module Manipule
   #
   # Pas de gabarit à part : ces pages sont Ensemble, elle y arrive connectée,
   # avec la barre et les styles qu'elle connaît.
-  class BanqueController < ApplicationController
+  class BanqueController < ProfController
     before_action :set_competence, except: [:index, :circulation]
     before_action :set_probleme, only: [:circulation]
     before_action :exiger_fichier, only: [:importer]

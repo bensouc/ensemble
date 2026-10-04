@@ -70,6 +70,10 @@ Rails.application.routes.draw do
     # vers sa série par le garde d'ApplicationController, avant d'atteindre
     # Devise.
     root "accueil#index"
+    # L'option s'ouvre compte par compte, et seulement par un admin.
+    get "acces", to: "acces#index", as: :acces
+    patch "acces/:id", to: "acces#update", as: :acces_utilisateur
+
     get "banque", to: "banque#index", as: :banque
     get "banque/:skill_id", to: "banque#show", as: :banque_competence
     get "banque/:skill_id/import", to: "banque#import", as: :banque_import

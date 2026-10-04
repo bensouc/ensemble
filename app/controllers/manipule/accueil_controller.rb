@@ -6,7 +6,7 @@ module Manipule
   # Manipule a cinq écrans qui ne se devinent pas les uns depuis les autres :
   # sans cette page et la barre qu'elle partage, il fallait taper les adresses
   # à la main. Elle ne fait rien d'autre que compter et orienter.
-  class AccueilController < ApplicationController
+  class AccueilController < ProfController
     def index
       problemes = policy_scope(Problem)
       @en_circulation = problemes.published.count

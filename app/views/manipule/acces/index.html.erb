@@ -1,0 +1,65 @@
+<div class="container py-4 m-prof">
+  <%= render "manipule/shared/nav" %>
+
+  <h1 class="mb-1">Les accès</h1>
+  <p class="text-muted">
+    Manipule est une option, ouverte compte par compte le temps de l'essai.
+    <%= pluralize(@ouverts, "compte l'a", "comptes l'ont") %> aujourd'hui.
+  </p>
+
+  <%= form_with url: manipule_acces_path, method: :get, class: "row g-2 align-items-center mb-4" do %>
+    <div class="col-auto">
+      <%= text_field_tag :q, @recherche, class: "form-control",
+                         placeholder: "Chercher par nom ou adresse", "aria-label": "Chercher un compte" %>
+    </div>
+    <div class="col-auto"><%= submit_tag "Chercher", class: "btn btn-outline-primary", name: nil %></div>
+    <% if @recherche.present? %>
+      <div class="col-auto"><%= link_to "Revenir aux comptes ouverts", manipule_acces_path %></div>
+    <% end %>
+  <% end %>
+
+  <% if @utilisateurs.empty? %>
+    <p class="text-muted">
+      <% if @recherche.present? %>
+        Aucun compte ne correspond à « <%= @recherche %> ».
+      <% else %>
+        Aucun compte n'a l'option. Cherchez un nom pour l'ouvrir à quelqu'un.
+      <% end %>
+    </p>
+  <% else %>
+    <table class="table align-middle">
+      <thead>
+        <tr><th>Compte</th><th>École</th><th>Option</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% @utilisateurs.each do |utilisateur| %>
+          <tr>
+            <td>
+              <%= utilisateur.email %>
+              <% if utilisateur.first_name.present? || utilisateur.last_name.present? %>
+                <span class="text-muted">— <%= "#{utilisateur.first_name} #{utilisateur.last_name}".strip %></span>
+              <% end %>
+              <% if utilisateur.admin? %><span class="badge text-bg-secondary ms-1">admin</span><% end %>
+            </td>
+            <td class="text-muted"><%= utilisateur.school&.name || "—" %></td>
+            <td>
+              <% if utilisateur.manipule? %>
+                <span class="badge text-bg-success">ouverte</span>
+              <% elsif utilisateur.admin? %>
+                <span class="text-muted">par son statut d'admin</span>
+              <% else %>
+                <span class="text-muted">fermée</span>
+              <% end %>
+            </td>
+            <td class="text-end">
+              <%= button_to utilisateur.manipule? ? "Fermer" : "Ouvrir",
+                            manipule_acces_utilisateur_path(utilisateur),
+                            method: :patch, params: { manipule: !utilisateur.manipule?, q: @recherche },
+                            class: "btn btn-sm #{utilisateur.manipule? ? 'btn-outline-secondary' : 'btn-outline-primary'}" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

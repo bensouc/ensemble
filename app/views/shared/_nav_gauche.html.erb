@@ -85,6 +85,8 @@
 							<% end %>
 						</div>
 						<% end %>
+					<%# Manipule est une option : sans elle, l'entrée n'existe pas. %>
+					<% if current_user.manipule_ouvert? %>
 					<%= link_to manipule_root_path do %>
 						<div class="menug_icone" data-action="click->left-menu#seechange">
 							<div class="<%= "active" if controller_path.start_with?("manipule") %>"
@@ -96,6 +98,7 @@
 							    téléverser sur Cloudinary, dont le compte est partagé avec la production. %>
 							<i class="fas fa-shapes"></i>
 						</div>
+					<% end %>
 					<% end %>
 					</div>
 				<% end %>
