@@ -136,15 +136,34 @@ dupliquer. Il reste à le brancher sur les modèles et à lui donner ses policie
 Volontairement **après** l'essai : il n'est pas sur le chemin critique, et
 l'essai dira peut-être qu'il faut autre chose.
 
-### Lot 4 — l'audio *(2 jours, dépend du lot 0)*
+### Lot 4 — l'audio ✅ *(fait, sauf le fournisseur de production)*
 
-Pré-généré et stocké, pas synthétisé à la demande : une voix neuronale identique
-sur tous les postes, qui ne dépend ni du réseau de l'école ni des voix installées
-sur la machine. Découpage par phrase pour obtenir la pause qu'elle demande, et
-`playbackRate` pour la vitesse. Génération au moment de l'import.
+Pré-généré et stocké, pas synthétisé à la demande : une voix identique sur tous
+les postes, qui ne dépend ni du réseau de l'école ni des voix installées sur la
+machine. Un morceau par élément lisible — l'énoncé, la question, chaque réponse
+— pour que l'élève puisse revenir sur une seule.
 
-Solid Queue est maintenant là : la génération part en tâche de fond sans qu'on
-ait rien à installer.
+En base plutôt qu'en fichiers : une dizaine de mégaoctets pour une banque
+complète, de la donnée dérivée qu'on refabrique à volonté, qui survit aux
+redéploiements sans stockage objet. Mesuré : 15 morceaux et 0,6 Mo pour trois
+problèmes. La colonne `texte_source` garde ce qui a réellement été dit, pour
+qu'un énoncé corrigé n'entretienne pas un audio devenu faux.
+
+**Fournisseur retenu pour la production : Azure Neural.** Le raisonnement tient
+à une particularité du projet — on n'a pas besoin d'un service de synthèse, mais
+d'une étape de fabrication. La banque est statique, rien n'appelle le
+fournisseur quand l'élève écoute. Ça retire tout son intérêt à Piper, dont
+l'avantage est l'inférence locale en temps réel, et ne laisse que son défaut :
+22 kHz optimisé pour la vitesse, pour un public qui ne peut pas relire ce qu'il
+n'a pas compris. Le coût ne départage rien : 11 000 caractères pour la banque
+entière, contre 500 000 offerts par mois chez Azure.
+
+Et comme on pré-génère, **le choix est réversible** : l'audio déjà en base
+continue de fonctionner quoi qu'il arrive au fournisseur, et en changer ne
+touche qu'un fichier, `app/models/manipule/synthese.rb`.
+
+*Reste à faire : l'adaptateur Azure, qui demande une clé d'abonnement posée
+dans Coolify. L'adaptateur `say` de macOS couvre le développement en attendant.*
 
 ### Lot 5 — les outils de manipulation *(taille inconnue, dépend de la Q52)*
 
