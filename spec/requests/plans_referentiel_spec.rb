@@ -68,9 +68,6 @@ RSpec.describe "Référentiel des plans de travail", type: :request do
     patch work_plan_skill_path(sa_competence_du_plan), params: { work_plan_skill: { challenge_id: exercice.id } },
                                                        headers: turbo_headers
     expect(sa_competence_du_plan.reload.challenge).to eq(son_exercice)
-
-    patch work_plan_skill_change_challenge_path(sa_competence_du_plan), params: { challenge: exercice.id }
-    expect(sa_competence_du_plan.reload.challenge).to eq(son_exercice)
   end
 
   it "puise dans le référentiel de son école" do

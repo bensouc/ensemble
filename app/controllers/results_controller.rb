@@ -1,11 +1,4 @@
 class ResultsController < ApplicationController
-  def validate
-    @result = Refult.find(params[:id])
-    authorize @result
-    @result.validate!
-    manage_belt_and_render
-  end
-
   # `find_or_initialize_by` et non `find_or_create_by` : l'autorisation doit
   # passer AVANT toute écriture. Le refus arrivait sinon une fois le résultat
   # déjà créé chez l'élève d'une autre école.

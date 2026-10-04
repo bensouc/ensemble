@@ -67,12 +67,7 @@ Rails.application.routes.draw do
     resources :work_plan_skills, only: [:create]
   end
   # ############### routes for RESULTS###############
-  resources :results, only: [:destroy,:create] do
-    member do
-      patch :validate
-    end
-
-  end
+  resources :results, only: [:destroy,:create]
   #
   # ############### END routes for RESULTS###############
 
@@ -83,9 +78,8 @@ Rails.application.routes.draw do
     end
     resources :challenges, only: [:create, :update]
     post "/challenges/:id", to: "challenges#clone", as: :clone
-    patch "eval_update", to: "work_plan_skills#eval_update", as: :eval_update
     # completed / failed / redo
-    patch "change_challenge", to: "work_plan_skills#change_challenge", as: :change_challenge
+    patch "eval_update", to: "work_plan_skills#eval_update", as: :eval_update
     post "challenges/:id/display_challenges", to: "challenges#display_challenges", as: :display_challenges
     # WPS de type exercice sans exercice : l'enseignant en reprend un ou en crée un
     post "pick_challenge", to: "work_plan_skills#pick_challenge", as: :pick_challenge

@@ -120,17 +120,6 @@ class WorkPlanSkillsController < ApplicationController
     render partial: "work_plans/eval_last_wps_ajax"
   end
 
-  def change_challenge
-    # binding.pry
-    @work_plan_skill = WorkPlanSkill.find(params[:work_plan_skill_id])
-    authorize @work_plan_skill
-    @work_plan = @work_plan_skill.work_plan_domain.work_plan
-    @challenge = authorize Challenge.find(params[:challenge]), :show?
-    @work_plan_skill.challenge = @challenge
-    @work_plan_skill.save!
-    render partial: "/challenges/full_challenge_display"
-  end
-
   # Un WPS de type exercice peut désormais ne porter aucun exercice : la
   # génération automatique ne fabrique plus d'exercice vide quand l'élève a eu
   # tous ceux de la compétence. L'enseignant tranche depuis l'éditeur, soit en

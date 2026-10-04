@@ -9,10 +9,6 @@ class ResultPolicy < ApplicationPolicy
     user_is_teacher_or_admin?
   end
 
-  def validate?
-    user_is_teacher_or_admin?
-  end
-
   # Le masquage du « − » dans la grille ne protège de rien : la route reste
   # ouverte à qui connaît l'identifiant.
   def destroy?
