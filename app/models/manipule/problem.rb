@@ -25,6 +25,11 @@ module Manipule
     validates :answer, presence: true, if: :saisie?
     validate :exactement_une_bonne_reponse, if: :choix?
 
+    # L'audio se fabrique quand le problème entre en circulation, et se refait
+    # quand son texte change alors qu'il y est déjà. Un brouillon ne coûte rien :
+    # personne ne l'écoute.
+    after_commit :programmer_audio, on: %i[create update]
+
     scope :published, -> { where(published: true) }
 
     delegate :level, to: :skill
@@ -59,6 +64,13 @@ module Manipule
     end
 
     private
+
+    def programmer_audio
+      return unless published?
+      return unless saved_change_to_published? || saved_change_to_statement? || saved_change_to_question?
+
+      GenererAudioJob.perform_later(self)
+    end
 
     def normalise(texte)
       texte.to_s.downcase.gsub(/\s+/, "").delete(".,;:!?")

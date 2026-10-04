@@ -19,9 +19,15 @@ module Manipule
     end
 
     def executer!
-      problemes.find_each do |probleme|
-        probleme.parties_a_lire.each { |element, role, texte| traiter(element, role, texte) }
-      end
+      problemes.find_each { |probleme| traiter_probleme(probleme) }
+      self
+    end
+
+    # Chaque partie séparément — l'énoncé, la question, chaque réponse — et
+    # seulement celles qui ont changé. Corriger un mot d'énoncé ne refait pas
+    # les trois réponses.
+    def traiter_probleme(probleme)
+      probleme.parties_a_lire.each { |element, role, texte| traiter(element, role, texte) }
       self
     end
 
