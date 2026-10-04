@@ -60,6 +60,16 @@ Rails.application.routes.draw do
     post "serie/repondre", to: "practices#repondre", as: :repondre
     post "serie/ecouter", to: "practices#ecouter", as: :ecouter
     get "serie/fin", to: "practices#fin", as: :fin
+
+    # Côté enseignante. Ces pages exigent sa session Devise ; le cookie de
+    # l'élève, lui, n'y sert jamais à rien — c'est le code qui décide de le
+    # lire, et aucun contrôleur d'ici ne le fait.
+    get "banque", to: "banque#index", as: :banque
+    get "banque/:skill_id", to: "banque#show", as: :banque_competence
+    get "banque/:skill_id/import", to: "banque#import", as: :banque_import
+    post "banque/:skill_id/import", to: "banque#importer", as: :banque_importer
+    post "banque/:skill_id/publier", to: "banque#publier", as: :banque_publier
+    patch "problemes/:id/circulation", to: "banque#circulation", as: :probleme_circulation
   end
 
   # ############### CONTACTROUTES ###############

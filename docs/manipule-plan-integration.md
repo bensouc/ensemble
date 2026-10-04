@@ -116,8 +116,10 @@ vraie séance.
   l'enseignante —, gabarit sans aucune sortie, garde inerte.
 - **L'import d'un tableur**, qui remplace l'éditeur pour l'essai. C'est ce
   qu'elle a demandé en Q32 : « je les colle depuis un document que j'ai déjà ».
-  `roo` est déjà au Gemfile et `Skill.sheets_to_temp_skills_creation` montre le
-  motif à suivre.
+  *Corrigé en cours de route : `roo` n'est plus au Gemfile, il a disparu avec la
+  modernisation. On s'en passe — `CSV` de la bibliothèque standard, et
+  `simple_xlsx_reader` dont l'application se sert déjà pour les compétences.
+  Une dépendance de moins à auditer.*
 - **Un écran de résultats minimal** pour elle : qui a travaillé, qui a réussi,
   où ça a coincé.
 - La règle de la spec de fumée pour les routes à jeton.
