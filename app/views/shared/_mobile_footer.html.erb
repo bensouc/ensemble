@@ -36,7 +36,7 @@
 			<% end %>
 		</div>
 		<div class="mobile-user-menu">
-			<%= link_to destroy_user_session_path, method: :delete, "aria-label": "Se déconnecter" do %>
+			<%= link_to destroy_user_session_path, data: { turbo_method: :delete }, "aria-label": "Se déconnecter" do %>
 				<i class="fas fa-sign-out-alt"></i>
 			<% end %>
 		</div>

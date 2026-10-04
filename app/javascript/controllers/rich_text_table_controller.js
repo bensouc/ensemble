@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import Trix from "trix"
-import Rails from "@rails/ujs"
+import { post } from "@rails/request.js"
 
 // Ajoute le bouton « Tableau » au groupe file-tools de la toolbar Trix.
 export default class extends Controller {
@@ -37,12 +37,9 @@ export default class extends Controller {
     `)
   }
 
-  attachTable() {
-    Rails.ajax({
-      url: "/tables",
-      type: "post",
-      success: this.insertTable.bind(this)
-    })
+  async attachTable() {
+    const response = await post("/tables", { responseKind: "json" })
+    if (response.ok) this.insertTable(await response.json)
   }
 
   insertTable(tableAttachment) {
