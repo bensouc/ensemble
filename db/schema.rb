@@ -10,12 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_03_150100) do
-  create_schema "_heroku"
-  create_schema "heroku_ext"
-
+ActiveRecord::Schema[8.1].define(version: 2026_10_04_190000) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension "pg_catalog.plpgsql"
 
   create_table "action_text_rich_texts", force: :cascade do |t|
     t.string "name", null: false
@@ -119,6 +116,84 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_03_150100) do
     t.datetime "updated_at", null: false
     t.index ["school_id", "name"], name: "index_grades_on_school_id_and_name", unique: true
     t.index ["school_id"], name: "index_grades_on_school_id"
+  end
+
+  create_table "manipule_assignments", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.bigint "skill_id", null: false
+    t.bigint "user_id", null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["skill_id"], name: "index_manipule_assignments_on_skill_id"
+    t.index ["student_id", "active"], name: "index_manipule_assignments_on_student_id_and_active"
+    t.index ["user_id"], name: "index_manipule_assignments_on_user_id"
+  end
+
+  create_table "manipule_attempts", force: :cascade do |t|
+    t.bigint "practice_id", null: false
+    t.bigint "problem_id", null: false
+    t.bigint "choice_id"
+    t.string "given"
+    t.string "status", default: "pending", null: false
+    t.integer "listened_count", default: 0, null: false
+    t.integer "elapsed_ms"
+    t.datetime "answered_at"
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["choice_id"], name: "index_manipule_attempts_on_choice_id"
+    t.index ["practice_id", "position"], name: "index_manipule_attempts_on_practice_id_and_position", unique: true
+    t.index ["problem_id"], name: "index_manipule_attempts_on_problem_id"
+  end
+
+  create_table "manipule_choices", force: :cascade do |t|
+    t.bigint "problem_id", null: false
+    t.string "label", null: false
+    t.boolean "correct", default: false, null: false
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["problem_id"], name: "index_manipule_choices_on_problem_id"
+  end
+
+  create_table "manipule_classroom_tokens", force: :cascade do |t|
+    t.bigint "classroom_id", null: false
+    t.string "token", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["classroom_id"], name: "index_manipule_classroom_tokens_on_classroom_id", unique: true
+    t.index ["token"], name: "index_manipule_classroom_tokens_on_token", unique: true
+  end
+
+  create_table "manipule_practices", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.bigint "skill_id", null: false
+    t.integer "size", default: 10, null: false
+    t.datetime "started_at", null: false
+    t.datetime "finished_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["skill_id"], name: "index_manipule_practices_on_skill_id"
+    t.index ["student_id", "created_at"], name: "index_manipule_practices_on_student_id_and_created_at"
+  end
+
+  create_table "manipule_problems", force: :cascade do |t|
+    t.bigint "skill_id", null: false
+    t.bigint "user_id"
+    t.text "statement", null: false
+    t.string "question", null: false
+    t.string "answer_mode", default: "choix", null: false
+    t.string "answer"
+    t.string "unit"
+    t.string "tool"
+    t.jsonb "tool_data", default: {}, null: false
+    t.boolean "published", default: false, null: false
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["skill_id", "published"], name: "index_manipule_problems_on_skill_id_and_published"
+    t.index ["user_id"], name: "index_manipule_problems_on_user_id"
   end
 
   create_table "messages", force: :cascade do |t|
@@ -504,6 +579,18 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_03_150100) do
   add_foreign_key "classrooms", "users"
   add_foreign_key "domains", "grades"
   add_foreign_key "grades", "schools"
+  add_foreign_key "manipule_assignments", "skills"
+  add_foreign_key "manipule_assignments", "students"
+  add_foreign_key "manipule_assignments", "users"
+  add_foreign_key "manipule_attempts", "manipule_choices", column: "choice_id"
+  add_foreign_key "manipule_attempts", "manipule_practices", column: "practice_id"
+  add_foreign_key "manipule_attempts", "manipule_problems", column: "problem_id"
+  add_foreign_key "manipule_choices", "manipule_problems", column: "problem_id"
+  add_foreign_key "manipule_classroom_tokens", "classrooms"
+  add_foreign_key "manipule_practices", "skills"
+  add_foreign_key "manipule_practices", "students"
+  add_foreign_key "manipule_problems", "skills"
+  add_foreign_key "manipule_problems", "users"
   add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users"
   add_foreign_key "results", "skills"
