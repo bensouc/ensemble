@@ -17,7 +17,8 @@ RSpec.describe "Fumée : chaque page s'ouvre", type: :request do
       "/users/invitation/remove" => "supprime une invitation malgré le GET",
       "/users/cancel" => "efface la session d'inscription en cours",
       "/work_plans/:id/export" => "lance Chrome pour le PDF, trop lent ici",
-      "/skills/add_skills_from_xls" => "lit le classeur déposé juste avant (spec dédiée)"
+      "/skills/add_skills_from_xls" => "lit le classeur déposé juste avant (spec dédiée)",
+      "/manipule/audio/:id" => "sert un binaire, pas une page (spec dédiée)"
     }
   end
 
@@ -74,6 +75,7 @@ RSpec.describe "Fumée : chaque page s'ouvre", type: :request do
     # La compétence du plan a déjà créé le résultat de l'élève : on le complète.
     Result.find_or_initialize_by(student: eleve, skill: competence).update!(status: "completed", kind: "ceinture")
     ceinture = Belt.find_by(student: eleve, domain: domaine) || create(:belt, student: eleve, domain: domaine, level: 1)
+    jeton_manipule = Manipule::ClassroomToken.pour!(classe)
     collegue = create(:user, school: ecole)
     conversation = Conversation.create!(conversation_type: "classic", name: "Fumée", users: [enseignant, collegue])
     create(:message, user: collegue, conversation:)
@@ -91,7 +93,13 @@ RSpec.describe "Fumée : chaque page s'ouvre", type: :request do
       "schools" => ecole.id, "skills" => competence.id, "students" => eleve.id,
       "work_plan_domains" => domaine_du_plan.id, "work_plan_skills" => competence_du_plan.id,
       "work_plans" => plan.id, "classroom_id" => classe.id, "student_id" => eleve.id,
-      "grade_id" => niveau.id, "work_plan_id" => plan.id, "level" => 1
+      "grade_id" => niveau.id, "work_plan_id" => plan.id, "level" => 1, "skill_id" => competence.id,
+      # `/manipule/suivi/:id` porte une classe : le segment qui précède `:id`
+      # nomme la clef, et il ne s'appelle pas « classrooms » ici.
+      "suivi" => classe.id,
+      # Les écrans de Manipule s'ouvrent par une adresse de classe, pas par un
+      # identifiant : la substitution de `:id` ne sait rien en faire.
+      "token" => jeton_manipule.token
     }.transform_values(&:to_s)
 
     sign_in enseignant

@@ -47,6 +47,39 @@ Rails.application.routes.draw do
     # personne ne construisait ce chemin. L'export PDF passe par la route
     # non-mobile `export_work_plan`, servie par `WorkPlansController#export`.
   end
+  # ############### MANIPULE ###############
+  # L'atelier d'entraînement autocorrigé de l'élève. Tout vit sous /manipule :
+  # le cookie qui porte son identité y est limité par son `path`, et n'est donc
+  # jamais envoyé au reste d'Ensemble. Le cloisonnement est structurel avant
+  # d'être du code.
+  namespace :manipule do
+    get "classe/:token", to: "sessions#new", as: :classe
+    post "classe/:token", to: "sessions#create", as: :entrer
+    delete "quitter", to: "sessions#destroy", as: :quitter
+    get "serie", to: "practices#show", as: :serie
+    post "serie/repondre", to: "practices#repondre", as: :repondre
+    post "serie/ecouter", to: "practices#ecouter", as: :ecouter
+    get "serie/fin", to: "practices#fin", as: :fin
+    get "audio/:id", to: "audios#show", as: :audio
+
+    # Côté enseignante. Ces pages exigent sa session Devise ; le cookie de
+    # l'élève, lui, n'y sert jamais à rien — c'est le code qui décide de le
+    # lire, et aucun contrôleur d'ici ne le fait.
+    get "banque", to: "banque#index", as: :banque
+    get "banque/:skill_id", to: "banque#show", as: :banque_competence
+    get "banque/:skill_id/import", to: "banque#import", as: :banque_import
+    post "banque/:skill_id/import", to: "banque#importer", as: :banque_importer
+    post "banque/:skill_id/publier", to: "banque#publier", as: :banque_publier
+    patch "problemes/:id/circulation", to: "banque#circulation", as: :probleme_circulation
+
+    # Le suivi d'une classe : qui travaille quoi, et ce que ça a donné.
+    # `classe` est déjà pris par l'adresse des élèves, d'où `suivi`.
+    get "suivi", to: "classes#index", as: :suivi
+    get "suivi/:id", to: "classes#show", as: :suivi_classe
+    post "suivi/:id/affecter", to: "classes#affecter", as: :suivi_affecter
+    post "suivi/:id/jeton", to: "classes#jeton", as: :suivi_jeton
+  end
+
   # ############### CONTACTROUTES ###############
   post "", to: "contact#create", as: :contact_create
   post "contacts/user_request", to: "contact#user_request", as: :user_request

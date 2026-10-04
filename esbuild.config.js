@@ -22,6 +22,9 @@ const configs = [
   // `var top = "top"` de Popper ne peut pas écraser `window.top` — ses menus
   // déroulants tombaient alors sur « placement.split is not a function ».
   { ...base, entryPoints: { rails_admin: 'app/javascript/packs/rails_admin.js' }, format: 'iife' },
+  // Manipule a son propre point d'entrée : son JavaScript n'alourdit pas le
+  // bundle des écoles qui ne s'en servent pas.
+  { ...base, entryPoints: { manipule: 'app/javascript/manipule.js' }, format: 'esm' },
 ]
 
 if (watch) {

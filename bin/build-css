@@ -18,6 +18,7 @@ node_modules/.bin/sass \
   app/assets/stylesheets/application.scss:app/assets/builds/application.css \
   app/assets/stylesheets/rails_admin.scss:app/assets/builds/rails_admin.css \
   app/assets/stylesheets/pdf.scss:app/assets/builds/pdf.css \
+  app/assets/stylesheets/manipule.scss:app/assets/builds/manipule.css \
   --load-path=node_modules \
   --no-source-map \
   --quiet-deps \
@@ -27,4 +28,5 @@ node_modules/.bin/sass \
 node_modules/.bin/postcss \
   app/assets/builds/application.css \
   app/assets/builds/rails_admin.css \
+  app/assets/builds/manipule.css \
   --use autoprefixer --replace --no-map

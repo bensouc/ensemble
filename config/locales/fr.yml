@@ -31,6 +31,12 @@
 
 ---
 fr:
+  manipule:
+    fichier_manquant: "Choisissez un fichier."
+    importes: "%{nombre} problèmes importés, en brouillon. Relisez-les avant de les mettre en circulation."
+    mis_en_circulation: "%{nombre} problèmes mis en circulation."
+    affectes: "%{nombre} élève(s) travaillent maintenant « %{competence} »."
+    jeton_renouvele: "Nouvelle adresse pour la classe. L'ancienne ne fonctionne plus."
   #ENSEMBLE:
   unauthorized: "Vous n'êtes pas autorisé à effectuer cette action"
   name_already_exists: "Le nom choisit est déjà utilisé"

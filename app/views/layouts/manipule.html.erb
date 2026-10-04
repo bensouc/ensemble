@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Manipule</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%# Turbo précharge les liens au survol : ici tout est en POST, mais on
+        garde la même prudence que les autres gabarits. %>
+    <meta name="turbo-prefetch" content="false">
+    <%# Son propre point d'entrée : le JavaScript de Manipule n'alourdit pas le
+        bundle des écoles qui ne s'en servent pas. %>
+    <%= stylesheet_link_tag "manipule", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "manipule", "data-turbo-track": "reload", type: "module" %>
+  </head>
+  <%# Aucune navigation, aucun pied de page, aucun lien vers Ensemble : les
+      seuls boutons de l'écran sont ceux de l'exercice. Un élève ne doit jamais
+      pouvoir sortir d'ici par accident. %>
+  <body class="m-page">
+    <main class="m-carte">
+      <%= yield %>
+    </main>
+  </body>
+</html>

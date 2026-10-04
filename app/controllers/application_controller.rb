@@ -16,6 +16,23 @@ class ApplicationController < ActionController::Base
   # jeton, et la vérifier après refuserait à tort une requête légitime.
   protect_from_forgery with: :exception, prepend: true
 
+  # Un élève égaré dans Ensemble repart vers son écran, au lieu de tomber sur un
+  # formulaire de connexion — une impasse pour un enfant de six ans. Le marqueur
+  # ne porte AUCUNE identité : celle-ci vit dans un cookie limité à /manipule,
+  # que le navigateur n'envoie jamais ici. Et on laisse passer les pages de
+  # Devise, sans quoi l'enseignante ne pourrait plus se reconnecter après qu'un
+  # élève a utilisé la machine.
+  #
+  # Filtre inerte tant qu'aucun élève n'est entré : c'est la seule ligne que
+  # Manipule ajoute à du code partagé.
+  #
+  # Un `before_action` ordinaire, déclaré juste avant `authenticate_user!` pour
+  # le précéder — surtout pas `prepend_before_action`, qui le ferait passer
+  # DEVANT la vérification CSRF que `protect_from_forgery` place en tête.
+  # Interroger Warden avant elle fait rejeter le jeton d'une connexion
+  # pourtant légitime.
+  before_action :renvoyer_les_eleves_vers_manipule
+
   before_action :authenticate_user!
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_unread_messages, if: :user_signed_in?
@@ -105,6 +122,13 @@ class ApplicationController < ActionController::Base
 
   def set_unread_messages
     @unread_messages = current_user.unread_message?
+  end
+
+  def renvoyer_les_eleves_vers_manipule
+    return if user_signed_in? || devise_controller?
+    return if cookies[Manipule::EleveController::COOKIE_MARQUEUR].blank?
+
+    redirect_to manipule_serie_path
   end
 
   def skip_pundit?

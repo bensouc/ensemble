@@ -1,0 +1,25 @@
+<div class="container py-4">
+  <h1 class="mb-1">Manipule — la banque</h1>
+  <p class="text-muted">Les problèmes que vos élèves s'entraînent à résoudre, rangés par compétence.</p>
+
+  <% if @par_competence.empty? %>
+    <p class="text-muted">Aucun problème pour l'instant. Choisissez une compétence dans vos niveaux, puis importez un tableur.</p>
+  <% else %>
+    <table class="table align-middle">
+      <thead>
+        <tr><th>Compétence</th><th>Ceinture</th><th class="text-end">En circulation</th><th class="text-end">Brouillons</th><th></th></tr>
+      </thead>
+      <tbody>
+        <% @par_competence.each do |competence, problemes| %>
+          <tr>
+            <td><%= competence.name %></td>
+            <td><%= Belt::BELT_COLORS[competence.level - 1] %></td>
+            <td class="text-end"><%= problemes.count(&:published) %></td>
+            <td class="text-end"><%= problemes.count { |probleme| !probleme.published } %></td>
+            <td class="text-end"><%= link_to "Ouvrir", manipule_banque_competence_path(competence), class: "btn btn-sm btn-outline-primary" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

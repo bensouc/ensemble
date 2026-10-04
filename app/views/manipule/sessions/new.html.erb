@@ -1,0 +1,14 @@
+<h1 class="m-titre">Qui es-tu ?</h1>
+<p class="m-sous-titre"><%= @classe.name %></p>
+
+<% if @eleves.any? %>
+  <div class="m-prenoms">
+    <% @eleves.each do |eleve| %>
+      <%= button_to eleve.first_name,
+                    manipule_entrer_path(token: params[:token], student_id: eleve.id),
+                    class: "m-prenom" %>
+    <% end %>
+  </div>
+<% else %>
+  <p class="m-vide">Il n'y a encore personne dans cette classe.</p>
+<% end %>

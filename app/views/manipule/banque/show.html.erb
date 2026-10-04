@@ -1,0 +1,45 @@
+<div class="container py-4">
+  <p class="mb-1"><%= link_to "← La banque", manipule_banque_path %></p>
+  <h1 class="mb-1"><%= @competence.name %></h1>
+  <p class="text-muted">
+    Ceinture <%= Belt::BELT_COLORS[@competence.level - 1] %> ·
+    <%= @problemes.count(&:published) %> en circulation,
+    <%= @problemes.count { |probleme| !probleme.published } %> en brouillon
+  </p>
+
+  <div class="d-flex gap-2 mb-4">
+    <%= link_to "Importer un tableur", manipule_banque_import_path(@competence), class: "btn btn-primary" %>
+    <% if @problemes.any? { |probleme| !probleme.published } %>
+      <%= button_to "Tout mettre en circulation", manipule_banque_publier_path(@competence), class: "btn btn-outline-primary" %>
+    <% end %>
+  </div>
+
+  <% if @problemes.empty? %>
+    <p class="text-muted">Aucun problème sur cette compétence.</p>
+  <% else %>
+    <% @problemes.each do |probleme| %>
+      <div class="card mb-2">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start gap-3">
+            <div>
+              <p class="mb-1"><%= probleme.statement %></p>
+              <p class="mb-2 text-muted"><%= probleme.question %></p>
+              <%# Ce que l'élève verra : la relecture avant mise en circulation. %>
+              <% probleme.choices.each do |choix| %>
+                <span class="badge <%= choix.correct? ? "text-bg-success" : "text-bg-light" %> me-1"><%= choix.label %></span>
+              <% end %>
+            </div>
+            <div class="text-end flex-shrink-0">
+              <span class="badge <%= probleme.published ? "text-bg-primary" : "text-bg-secondary" %> mb-2 d-block">
+                <%= probleme.published ? "en circulation" : "brouillon" %>
+              </span>
+              <%= button_to probleme.published ? "Retirer" : "Mettre en circulation",
+                            manipule_probleme_circulation_path(probleme),
+                            method: :patch, class: "btn btn-sm btn-outline-secondary" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+</div>

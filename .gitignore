@@ -60,14 +60,9 @@ vendor
 
 dump.rdb
 
-/.idea/.gitignore
-/.idea/copilot.data.migration.agent.xml
-/.idea/copilot.data.migration.ask.xml
-/.idea/copilot.data.migration.ask2agent.xml
-/.idea/copilot.data.migration.edit.xml
-/.idea/ensemble.iml
-/.idea/misc.xml
-/.idea/vcs.xml
+# RubyMine : rien de ce dossier n'est suivi, et l'énumérer fichier par
+# fichier faisait échouer `gh signoff` à chaque nouveau réglage de l'éditeur.
+/.idea/
 
 /app/assets/builds/*
 !/app/assets/builds/.keep

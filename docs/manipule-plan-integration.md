@@ -116,8 +116,10 @@ vraie séance.
   l'enseignante —, gabarit sans aucune sortie, garde inerte.
 - **L'import d'un tableur**, qui remplace l'éditeur pour l'essai. C'est ce
   qu'elle a demandé en Q32 : « je les colle depuis un document que j'ai déjà ».
-  `roo` est déjà au Gemfile et `Skill.sheets_to_temp_skills_creation` montre le
-  motif à suivre.
+  *Corrigé en cours de route : `roo` n'est plus au Gemfile, il a disparu avec la
+  modernisation. On s'en passe — `CSV` de la bibliothèque standard, et
+  `simple_xlsx_reader` dont l'application se sert déjà pour les compétences.
+  Une dépendance de moins à auditer.*
 - **Un écran de résultats minimal** pour elle : qui a travaillé, qui a réussi,
   où ça a coincé.
 - La règle de la spec de fumée pour les routes à jeton.
@@ -134,15 +136,72 @@ dupliquer. Il reste à le brancher sur les modèles et à lui donner ses policie
 Volontairement **après** l'essai : il n'est pas sur le chemin critique, et
 l'essai dira peut-être qu'il faut autre chose.
 
-### Lot 4 — l'audio *(2 jours, dépend du lot 0)*
+### Lot 4 — l'audio ✅ *(fait, sauf le fournisseur de production)*
 
-Pré-généré et stocké, pas synthétisé à la demande : une voix neuronale identique
-sur tous les postes, qui ne dépend ni du réseau de l'école ni des voix installées
-sur la machine. Découpage par phrase pour obtenir la pause qu'elle demande, et
-`playbackRate` pour la vitesse. Génération au moment de l'import.
+Pré-généré et stocké, pas synthétisé à la demande : une voix identique sur tous
+les postes, qui ne dépend ni du réseau de l'école ni des voix installées sur la
+machine. Un morceau par élément lisible — l'énoncé, la question, chaque réponse
+— pour que l'élève puisse revenir sur une seule.
 
-Solid Queue est maintenant là : la génération part en tâche de fond sans qu'on
-ait rien à installer.
+En base plutôt qu'en fichiers : une dizaine de mégaoctets pour une banque
+complète, de la donnée dérivée qu'on refabrique à volonté, qui survit aux
+redéploiements sans stockage objet. Mesuré : 15 morceaux et 0,6 Mo pour trois
+problèmes. La colonne `texte_source` garde ce qui a réellement été dit, pour
+qu'un énoncé corrigé n'entretienne pas un audio devenu faux.
+
+**Fournisseur retenu pour la production : Azure Neural.** Le raisonnement tient
+à une particularité du projet — on n'a pas besoin d'un service de synthèse, mais
+d'une étape de fabrication. La banque est statique, rien n'appelle le
+fournisseur quand l'élève écoute. Ça retire tout son intérêt à Piper, dont
+l'avantage est l'inférence locale en temps réel, et ne laisse que son défaut :
+22 kHz optimisé pour la vitesse, pour un public qui ne peut pas relire ce qu'il
+n'a pas compris. Le coût ne départage rien : 11 000 caractères pour la banque
+entière, contre 500 000 offerts par mois chez Azure.
+
+Et comme on pré-génère, **le choix est réversible** : l'audio déjà en base
+continue de fonctionner quoi qu'il arrive au fournisseur, et en changer ne
+touche qu'un moteur, sous `app/models/manipule/synthese/`.
+
+**Attention au nom « Text-to-Speech API » sur la Place de marché Azure.** Le
+piège a déjà fonctionné une fois, le 2026-10-04. La Place de marché revend des
+SaaS d'éditeurs tiers, et plusieurs s'appellent exactement comme ça. On en a
+souscrit un en croyant prendre le service de Microsoft : abonnement mensuel
+facturé dès l'activation, clé `ik_live_…` inutilisable ici, et derrière,
+Kokoro — dont la seule voix française, `ff_siwis`, est notée B− et entraînée
+sur moins de onze heures. C'est le corpus de Piper, celui qu'on venait
+d'écarter.
+
+Le vrai service est **Azure AI Speech**, une *ressource* créée depuis « Créer
+une ressource → Speech », au niveau tarifaire F0. Pas d'achat, pas de
+redirection vers un éditeur. Ses clés sont hexadécimales, son hôte est
+`<region>.tts.speech.microsoft.com`, et son allocation de 500 000 caractères
+neuronaux par mois est permanente — c'est un palier tarifaire, pas l'offre de
+douze mois du compte gratuit, qui est autre chose.
+
+**La voix retenue : `fr-FR-Soleil:MAI-Voice-2.1`**, choisie à l'oreille le
+2026-10-04 parmi les trente et une voix françaises de la région. Le détour vaut
+d'être noté : les voix neuronales « classiques » d'Azure — Denise, Henri —
+datent de 2019 et sont exactement celles que lit le « Read Aloud » de Microsoft
+Edge. En les proposant d'abord, on a fait dire au commanditaire « on dirait les
+voix du navigateur », et il avait raison. La génération suivante, « MAI-Voice »
+et « DragonHD », sonne tout autrement et passe aussi bien au niveau F0.
+
+Soleil est la plus posée du lot — dix secondes là où Marc en met six pour la
+même phrase, et le débit compte autant que le timbre pour un enfant qui ne
+décode pas. Elle porte en prime dix-huit styles expressifs, dont `softvoice`,
+si l'on veut un jour adoucir la lecture.
+
+**Les garde-fous de consommation**, puisque les caractères se facturent :
+
+- la régénération reste sélective, et c'est elle qui économise le plus ;
+- le moteur espace ses appels de trois secondes, parce que F0 plafonne à vingt
+  requêtes par minute et que ce quota-là n'est pas ajustable ;
+- `GenerationAudio` compte les caractères avant de les dire et s'arrête à
+  50 000 pour une exécution — de quoi stopper une boucle emballée, pas de quoi
+  gêner une banque réelle ;
+- le moteur Azure refuse de répondre depuis la suite de tests, clé ou pas ;
+- `MANIPULE_TTS=systeme` rend la main à `say` pour itérer sur un énoncé sans
+  rien consommer.
 
 ### Lot 5 — les outils de manipulation *(taille inconnue, dépend de la Q52)*
 
