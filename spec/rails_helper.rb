@@ -80,6 +80,9 @@ RSpec.configure do |config|
   # `sign_in` dans les specs de requête : les helpers de contrôleur ne
   # fonctionnent pas là, ils manipulent un warden qui n'existe pas.
   config.include Devise::Test::IntegrationHelpers, type: :request
+  # `render_inline` dans les specs de composants : sans cette ligne, les specs
+  # `type: :component` ne pouvaient rien rendre, et étaient restées des squelettes.
+  config.include ViewComponent::TestHelpers, type: :component
 end
 
 Shoulda::Matchers.configure do |config|
