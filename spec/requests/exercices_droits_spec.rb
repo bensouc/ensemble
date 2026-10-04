@@ -149,4 +149,42 @@ RSpec.describe "Droits sur les exercices", type: :request do
       expect(response.body).to include("Dictée du loup")
     end
   end
+
+  # L'admin intervient dans toutes les écoles : chaque règle commence par
+  # `user.admin? ||`. Sans ce contexte, une règle qui l'oublierait ne ferait
+  # rougir aucune spec.
+  context "pour un admin d'une autre école" do
+    let(:admin) { create(:user, admin: true) }
+
+    before { sign_in admin }
+
+    it "ouvre, réécrit et clone l'exercice, et ouvre le carrousel" do
+      get challenge_path(exercice)
+      expect(response).to have_http_status(:ok)
+
+      get edit_challenge_path(exercice)
+      expect(response).to have_http_status(:ok)
+
+      patch challenge_path(exercice), params: { challenge: { name: "Dictée du loup (2)" } }, headers: turbo_headers
+      expect(exercice.reload.name).to eq("Dictée du loup (2)")
+
+      post work_plan_skill_display_challenges_path(wps, exercice), headers: turbo_headers
+      expect(response.body).to include("Dictée du renard")
+
+      expect { post work_plan_skill_clone_path(wps, exercice), headers: turbo_headers }.
+        to change(competence.challenges, :count).by(1)
+    end
+
+    it "parcourt les exercices de l'école depuis l'index" do
+      create(:classroom, user: admin)
+
+      get challenges_path, params: { "/challenges" => { grade: niveau.id, domain: domaine.id, level: 1 } }
+
+      expect(response.body).to include("Dictée du loup")
+    end
+
+    it "supprime un exercice que rien n'utilise" do
+      expect { delete challenge_path(autre_exercice) }.to change(Challenge, :count).by(-1)
+    end
+  end
 end

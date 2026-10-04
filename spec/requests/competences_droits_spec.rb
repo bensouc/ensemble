@@ -106,4 +106,36 @@ RSpec.describe "Droits sur les compétences", type: :request do
       expect(competence.reload.name).to eq("Compter par dizaines")
     end
   end
+
+  context "pour un admin d'une autre école" do
+    before do
+      admin = create(:user, admin: true)
+      create(:classroom, user: admin)
+      sign_in admin
+    end
+
+    it "parcourt et exporte les compétences, liste les domaines" do
+      get grade_domains_path(niveau)
+      expect(response).to have_http_status(:ok)
+
+      get skills_path, params: { grade: niveau.id, domain: domaine.id }
+      expect(response.body).to include("Compter les dizaines")
+
+      get skills_path(format: :xlsx), params: { grade: niveau.id }
+      expect(response.media_type).to eq(Mime[:xlsx].to_s)
+    end
+
+    # La compétence appartient à l'école de son domaine, pas à celle de l'admin
+    # qui la saisit : sinon `school` et `domain.grade.school` divergent.
+    it "crée une compétence sous un domaine de l'école" do
+      expect { creer(domaine, "Compter les centaines") }.to change(domaine.skills, :count).by(1)
+      expect(domaine.skills.find_by(name: "Compter les centaines").school).to eq(ecole)
+    end
+
+    it "renomme une compétence" do
+      patch skill_path(competence), params: { skill: { name: "Compter par dizaines" } }
+
+      expect(competence.reload.name).to eq("Compter par dizaines")
+    end
+  end
 end

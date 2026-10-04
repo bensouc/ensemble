@@ -78,4 +78,17 @@ RSpec.describe "Droits sur le clonage des plans de travail", type: :request do
       expect(collegue.work_plans.last.shared_user).to eq(enseignant)
     end
   end
+
+  context "pour un admin d'une autre école" do
+    before { sign_in admin }
+
+    it "copie, partage et distribue le plan" do
+      expect { post work_plan_clone_path(plan) }.to change { WorkPlan.where(user: admin).count }.by(1)
+
+      collegue = create(:user, school: ecole, admin: false)
+      expect { partager(plan, avec: collegue) }.to change(collegue.work_plans, :count).by(1)
+
+      expect { assigner(plan, [eleve]) }.to change(eleve.work_plans, :count).by(1)
+    end
+  end
 end

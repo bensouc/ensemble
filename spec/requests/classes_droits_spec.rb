@@ -86,4 +86,28 @@ RSpec.describe "Droits sur les classes", type: :request do
       expect { partager_avec([create(:user, school: ecole, admin: false)]) }.to change(SharedClassroom, :count).by(1)
     end
   end
+
+  context "pour un admin d'une autre école" do
+    before do
+      create(:user, admin: true) # signe le message qui annonce le partage
+      sign_in create(:user, admin: true)
+    end
+
+    it "renomme la classe" do
+      expect(renommer("CE1 Les loutres")).to eq("CE1 Les loutres")
+    end
+
+    it "ouvre une classe sur le niveau de n'importe quelle école" do
+      expect { post classrooms_path, params: { classroom: { grade_id: create(:grade).id, name: "Support" } } }.
+        to change(Classroom, :count).by(1)
+    end
+
+    it "partage la classe avec un enseignant de son école" do
+      collegue = create(:user, school: ecole, admin: false)
+
+      expect do
+        post classroom_shared_classrooms_path(classe), params: { classe.id.to_s => { teachers: ["", collegue.id.to_s] } }
+      end.to change(SharedClassroom, :count).by(1)
+    end
+  end
 end
