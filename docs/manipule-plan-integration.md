@@ -178,6 +178,19 @@ redirection vers un éditeur. Ses clés sont hexadécimales, son hôte est
 neuronaux par mois est permanente — c'est un palier tarifaire, pas l'offre de
 douze mois du compte gratuit, qui est autre chose.
 
+**La voix retenue : `fr-FR-Soleil:MAI-Voice-2.1`**, choisie à l'oreille le
+2026-10-04 parmi les trente et une voix françaises de la région. Le détour vaut
+d'être noté : les voix neuronales « classiques » d'Azure — Denise, Henri —
+datent de 2019 et sont exactement celles que lit le « Read Aloud » de Microsoft
+Edge. En les proposant d'abord, on a fait dire au commanditaire « on dirait les
+voix du navigateur », et il avait raison. La génération suivante, « MAI-Voice »
+et « DragonHD », sonne tout autrement et passe aussi bien au niveau F0.
+
+Soleil est la plus posée du lot — dix secondes là où Marc en met six pour la
+même phrase, et le débit compte autant que le timbre pour un enfant qui ne
+décode pas. Elle porte en prime dix-huit styles expressifs, dont `softvoice`,
+si l'on veut un jour adoucir la lecture.
+
 **Les garde-fous de consommation**, puisque les caractères se facturent :
 
 - la régénération reste sélective, et c'est elle qui économise le plus ;

@@ -55,14 +55,23 @@ module Manipule
 
     # Les voix françaises que le moteur courant sait produire, pour choisir à
     # l'oreille plutôt que sur le nom.
+    #
+    # Chaque voix annonce son propre nom avant de lire : à l'écoute, une
+    # trentaine de fichiers muets sur leur identité se confondent tous, et on
+    # finit par croire qu'ils sortent de la même bouche.
     def self.echantillons(phrase, dossier)
       FileUtils.mkdir_p(dossier)
-      moteur.voix_disponibles.map do |voix|
-        rendu = new(voix:).generer(phrase)
+      moteur.voix_disponibles.each_with_index.map do |voix, rang|
+        rendu = new(voix:).generer("Voix numéro #{rang + 1}, #{nom_court(voix)}. #{phrase}")
         chemin = Pathname(dossier).join("#{voix.gsub(/\W+/, '_')}#{extension(rendu.content_type)}")
         File.binwrite(chemin, rendu.octets)
         [voix, chemin]
       end
+    end
+
+    # « fr-FR-Soleil:MAI-Voice-2.1 » ne se prononce pas ; « Soleil », si.
+    def self.nom_court(voix)
+      voix.sub(/\Afr-FR-/, "").sub(/Neural\z/, "").sub(/:.*\z/, "")
     end
 
     def self.extension(content_type)

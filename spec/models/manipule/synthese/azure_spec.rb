@@ -9,7 +9,8 @@ RSpec.describe Manipule::Synthese::Azure do
 
   describe "le SSML envoyé" do
     it "nomme la voix et la langue" do
-      expect(ssml("Bonjour")).to include(%(xml:lang="fr-FR")).and include(%(<voice name="fr-FR-DeniseNeural">))
+      expect(ssml("Bonjour")).to include(%(xml:lang="fr-FR")).
+        and include(%(<voice name="#{described_class::VOIX_DEFAUT}">))
     end
 
     it "porte le débit demandé" do
@@ -64,21 +65,6 @@ RSpec.describe Manipule::Synthese::Azure do
 
       expect(described_class).to be_configure
       expect(described_class).not_to be_disponible
-    end
-  end
-
-  # La région en sert 31, dont des paliers HD facturés plus cher et pas tous
-  # servis en F0.
-  describe "le tri des voix" do
-    it "garde les voix neuronales standard" do
-      expect(described_class.send(:classique?, "fr-FR-DeniseNeural")).to be(true)
-    end
-
-    it "écarte les paliers HD, MAI et multilingues" do
-      %w[fr-FR-Remy:DragonHDLatestNeural fr-FR-Soleil:MAI-Voice-2.1
-         fr-FR-VivienneMultilingualNeural].each do |nom|
-        expect(described_class.send(:classique?, nom)).to be(false)
-      end
     end
   end
 

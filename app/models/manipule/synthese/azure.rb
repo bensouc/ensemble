@@ -17,7 +17,15 @@ module Manipule
     # à l'avance et servie depuis notre base. Ce moteur ne tourne donc qu'à la
     # mise en circulation d'un problème, ou à la main.
     class Azure
-      VOIX_DEFAUT = "fr-FR-DeniseNeural"
+      # Choisie à l'oreille parmi les trente et une voix françaises de la
+      # région, le 2026-10-04. Les voix neuronales classiques — Denise, Henri —
+      # datent de 2019 et sont devenues celles qu'on entend dans le navigateur ;
+      # Soleil appartient à la génération suivante. Elle est aussi la plus
+      # posée du lot, dix secondes là où Marc en met six pour la même phrase,
+      # et le débit compte autant que le timbre pour un enfant qui ne décode
+      # pas. Elle porte enfin dix-huit styles expressifs, dont « softvoice », si
+      # l'on veut un jour adoucir la lecture.
+      VOIX_DEFAUT = "fr-FR-Soleil:MAI-Voice-2.1"
       DEBIT_DEFAUT = -10 # en pour cent de la vitesse nominale
       SILENCE_ENTRE_PHRASES_MS = 600
       CONTENT_TYPE = "audio/mpeg"
@@ -71,24 +79,19 @@ module Manipule
           "#{region}.tts.speech.microsoft.com"
         end
 
-        # Les voix françaises de la région. Cet appel-ci ne consomme aucun
+        # Les voix françaises de la région — 31 au dernier comptage, toutes
+        # servies au niveau F0, paliers « MAI-Voice » et « DragonHD » compris.
+        # On ne trie pas : les voix neuronales classiques datent de 2019 et
+        # sont devenues celles qu'on entend dans le navigateur, alors que les
+        # récentes sonnent tout autrement. Les écarter reviendrait à cacher
+        # précisément ce qu'on cherche. Cet appel-ci ne consomme aucun
         # caractère : il ne synthétise rien.
         def voix_disponibles
           corps = demander(Net::HTTP::Get.new("/cognitiveservices/voices/list"))
           JSON.parse(corps).
             select { |voix| voix["Locale"] == LOCALE && voix["VoiceType"].to_s.include?("Neural") }.
             pluck("ShortName").
-            select { |nom| classique?(nom) }.
             sort
-        end
-
-        # La région sert 31 voix françaises, dont 17 relèvent de paliers à part
-        # — « MAI-Voice », « DragonHD », « Multilingual ». Ils se facturent plus
-        # cher que les voix neuronales standard, tous ne sont pas servis en F0,
-        # et aucun n'apporte quoi que ce soit à trois lignes lues à un enfant.
-        # Restent les quatorze classiques, ce qui fait déjà un grand choix.
-        def classique?(nom)
-          nom.end_with?("Neural") && nom.exclude?(":") && nom.exclude?("Multilingual")
         end
 
         def allocation_mensuelle

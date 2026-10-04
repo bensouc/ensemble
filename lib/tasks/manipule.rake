@@ -3,6 +3,11 @@
 namespace :manipule do
   desc "Génère l'audio manquant ou périmé (VOIX= DEBIT= SKILL= PLAFOND= MANIPULE_TTS=azure|systeme)"
   task audio: :environment do
+    # En développement, ActiveRecord écrit chaque requête sur la sortie
+    # standard : quinze morceaux produisent deux cents lignes de SQL, où la
+    # progression et le décompte des caractères deviennent introuvables.
+    ActiveRecord::Base.logger = nil
+
     moteur = Manipule::Synthese.moteur
     abort "Moteur #{moteur.name.demodulize} indisponible ici." unless Manipule::Synthese.disponible?
 
@@ -22,6 +27,7 @@ namespace :manipule do
   # d'une allocation mensuelle.
   desc "Fabrique un échantillon de chaque voix française, pour choisir à l'oreille"
   task echantillons: :environment do
+    ActiveRecord::Base.logger = nil
     abort "Moteur indisponible ici." unless Manipule::Synthese.disponible?
 
     dossier = Rails.root.join("tmp/manipule_voix")
