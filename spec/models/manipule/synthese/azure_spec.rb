@@ -67,6 +67,21 @@ RSpec.describe Manipule::Synthese::Azure do
     end
   end
 
+  # La région en sert 31, dont des paliers HD facturés plus cher et pas tous
+  # servis en F0.
+  describe "le tri des voix" do
+    it "garde les voix neuronales standard" do
+      expect(described_class.send(:classique?, "fr-FR-DeniseNeural")).to be(true)
+    end
+
+    it "écarte les paliers HD, MAI et multilingues" do
+      %w[fr-FR-Remy:DragonHDLatestNeural fr-FR-Soleil:MAI-Voice-2.1
+         fr-FR-VivienneMultilingualNeural].each do |nom|
+        expect(described_class.send(:classique?, nom)).to be(false)
+      end
+    end
+  end
+
   it "dit quoi vérifier quand la clé est refusée" do
     reponse = Net::HTTPUnauthorized.new("1.1", "401", "Unauthorized")
 

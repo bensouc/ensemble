@@ -78,7 +78,17 @@ module Manipule
           JSON.parse(corps).
             select { |voix| voix["Locale"] == LOCALE && voix["VoiceType"].to_s.include?("Neural") }.
             pluck("ShortName").
+            select { |nom| classique?(nom) }.
             sort
+        end
+
+        # La région sert 31 voix françaises, dont 17 relèvent de paliers à part
+        # — « MAI-Voice », « DragonHD », « Multilingual ». Ils se facturent plus
+        # cher que les voix neuronales standard, tous ne sont pas servis en F0,
+        # et aucun n'apporte quoi que ce soit à trois lignes lues à un enfant.
+        # Restent les quatorze classiques, ce qui fait déjà un grand choix.
+        def classique?(nom)
+          nom.end_with?("Neural") && nom.exclude?(":") && nom.exclude?("Multilingual")
         end
 
         def allocation_mensuelle
