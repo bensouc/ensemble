@@ -8,6 +8,10 @@
 		<%= render 'shared/social_meta' %>
 		<%= render 'shared/ios_pwa_links' %>
 		<%= csrf_meta_tags %>
+		<%# Turbo 8 précharge les liens au survol. Certains GET écrivent ou appellent
+		    un service (retirer une invitation, annuler une inscription, ouvrir le
+		    portail Stripe, générer un PDF) : un survol ne doit rien déclencher. %>
+		<meta name="turbo-prefetch" content="false">
 		<%= csp_meta_tag %>
 		<!-- Hide url bar -->
 		<meta name="apple-mobile-web-app-capable" content="yes" />

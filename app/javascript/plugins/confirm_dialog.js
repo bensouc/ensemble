@@ -37,7 +37,8 @@ export function askConfirmation(message) {
   }).then((result) => result.isConfirmed)
 }
 
-Turbo.setConfirmMethod(askConfirmation)
+// `Turbo.setConfirmMethod`, déprécié en Turbo 8, n'était plus qu'un relais vers ce réglage.
+Turbo.config.forms.confirm = askConfirmation
 
 // UJS exige une réponse synchrone : on refuse le clic, puis on le rejoue sans
 // l'attribut si l'utilisateur confirme. L'attribut est aussitôt remis, sinon un
