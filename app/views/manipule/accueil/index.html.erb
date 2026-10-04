@@ -1,0 +1,46 @@
+<div class="container py-4 m-prof">
+  <%= render "manipule/shared/nav" %>
+
+  <p class="text-muted">
+    L'atelier où vos élèves s'entraînent seuls : ils lisent ou écoutent un problème,
+    répondent, et l'application leur dit tout de suite si c'est juste.
+  </p>
+
+  <div class="row g-3 mt-2">
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h2 class="h5 card-title">La banque</h2>
+          <p class="card-text text-muted mb-3">
+            <% if @en_circulation.zero? && @brouillons.zero? %>
+              Aucun problème pour l'instant.
+            <% else %>
+              <%= pluralize(@en_circulation, "problème en circulation", "problèmes en circulation") %>
+              sur <%= pluralize(@competences, "compétence") %><%= ", #{pluralize(@brouillons, 'brouillon')}" if @brouillons.positive? %>.
+            <% end %>
+          </p>
+          <%= link_to "Ouvrir la banque", manipule_banque_path, class: "btn btn-outline-primary" %>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h2 class="h5 card-title">Les classes</h2>
+          <p class="card-text text-muted mb-3">
+            <% if @classes.zero? %>
+              Aucune classe.
+            <% elsif @classes_equipees.zero? %>
+              <%= pluralize(@classes, "classe") %>, aucune n'a encore de compétence désignée —
+              vos élèves tomberaient sur « Rien à faire pour le moment ».
+            <% else %>
+              <%= @classes_equipees %> sur <%= pluralize(@classes, "classe") %> ont une compétence désignée.
+            <% end %>
+          </p>
+          <%= link_to "Ouvrir les classes", manipule_suivi_path, class: "btn btn-outline-primary" %>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

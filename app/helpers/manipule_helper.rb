@@ -13,6 +13,22 @@ module ManipuleHelper
   #
   # Avec l'empreinte, l'adresse change à chaque refabrication et la semaine de
   # cache reste acquise à tout ce qui n'a pas bougé.
+  # Les écrans de l'enseignante, dans l'ordre où elle les parcourt : elle
+  # écrit des problèmes, puis elle désigne qui les travaille. « Les résultats »
+  # viendra en quatrième quand il aura sa page à lui ; pour l'instant le suivi
+  # d'une classe les porte.
+  def onglets_manipule
+    [
+      { libelle: "Accueil", chemin: manipule_root_path, controleurs: %w[accueil] },
+      { libelle: "La banque", chemin: manipule_banque_path, controleurs: %w[banque] },
+      { libelle: "Les classes", chemin: manipule_suivi_path, controleurs: %w[classes] }
+    ]
+  end
+
+  def onglet_manipule_actif?(onglet)
+    onglet[:controleurs].include?(controller_name)
+  end
+
   def chemin_audio(audio)
     return if audio.blank?
 

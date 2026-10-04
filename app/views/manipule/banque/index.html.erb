@@ -1,5 +1,7 @@
-<div class="container py-4">
-  <h1 class="mb-1">Manipule — la banque</h1>
+<div class="container py-4 m-prof">
+  <%= render "manipule/shared/nav" %>
+
+  <h1 class="mb-1">La banque</h1>
   <p class="text-muted">Les problèmes que vos élèves s'entraînent à résoudre, rangés par compétence.</p>
 
   <% if @par_competence.empty? %>

@@ -85,6 +85,18 @@
 							<% end %>
 						</div>
 						<% end %>
+					<%= link_to manipule_root_path do %>
+						<div class="menug_icone" data-action="click->left-menu#seechange">
+							<div class="<%= "active" if controller_path.start_with?("manipule") %>"
+              data-left-menu-target="seetext"
+              style='decoration-text: none'>
+								Manipule
+							</div>
+							<%# Icône de la bibliothèque Font Awesome déjà embarquée : rien à
+							    téléverser sur Cloudinary, dont le compte est partagé avec la production. %>
+							<i class="fas fa-shapes"></i>
+						</div>
+					<% end %>
 					</div>
 				<% end %>
 			</div>

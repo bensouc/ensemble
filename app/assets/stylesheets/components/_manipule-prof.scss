@@ -1,0 +1,44 @@
+@use "../config/colors";
+
+// Les écrans de Manipule côté enseignante.
+//
+// Ils vivent dans le gabarit d'Ensemble, mais leur balisage est du Bootstrap,
+// dont le bleu « primary » jure avec le rose de la marque. Manipule est censé
+// être chez lui ici, pas posé à côté : on reteint, sans toucher aux vues.
+//
+// Cantonné à `.m-prof` : le reste d'Ensemble n'a pas à changer de couleur
+// parce qu'on a ajouté un atelier.
+.m-prof {
+  .nav-link {
+    color: colors.$rose;
+
+    &:hover {
+      color: colors.$grisF;
+    }
+  }
+
+  .nav-link.active {
+    background-color: colors.$rose;
+    color: #fff;
+  }
+
+  .btn-primary {
+    background-color: colors.$rose;
+    border-color: colors.$rose;
+
+    &:hover {
+      background-color: #fff;
+      color: colors.$rose;
+    }
+  }
+
+  .btn-outline-primary {
+    color: colors.$rose;
+    border-color: colors.$rose;
+
+    &:hover {
+      background-color: colors.$rose;
+      color: #fff;
+    }
+  }
+}
