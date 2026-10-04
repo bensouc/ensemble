@@ -3,8 +3,9 @@
   <% classroom.students.order(:first_name).each do |student| %>
     <div class="student-fname d-flex">
       <div class='ms-1'>
-        <%= link_to student_path(student), method: :delete, data: {
-                                                        confirm: "Voulez vous Supprimer Cet élève?",
+        <%= link_to student_path(student), data: {
+                                                        turbo_method: :delete,
+                                                        turbo_confirm: "Voulez vous Supprimer Cet élève?",
                                                       } do %>
           <div class='rmv-skill-btn '>
             <i class="far fa-times-circle"></i>

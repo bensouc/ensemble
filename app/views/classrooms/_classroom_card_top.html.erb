@@ -2,16 +2,18 @@
 	<div class="class-grade ps-3 ">
 		<div class="classroom-card-name">
 			<% if classroom.user == current_user %>
-				<%= link_to classroom_path(classroom), method: :delete, data: {
-        confirm: "Voulez vous Supprimer Cette classe? Vous allez supprimer tous les élèves et les plans de travail associés",
+				<%= link_to classroom_path(classroom), data: {
+        turbo_method: :delete,
+        turbo_confirm: "Voulez vous Supprimer Cette classe? Vous allez supprimer tous les élèves et les plans de travail associés",
         } do %>
 					<div class='rmv-skill-btn white'>
 						<i class="far fa-times-circle"></i>
 					</div>
 				<% end %>
 			<% elsif classroom.user != current_user %>
-				<%= link_to  classroom_shared_classroom_path(classroom,shared_classroom.id), method: :delete, data: {
-        confirm: "Voulez vous vraimment Supprimer Cette classe partagée?",
+				<%= link_to  classroom_shared_classroom_path(classroom,shared_classroom.id), data: {
+        turbo_method: :delete,
+        turbo_confirm: "Voulez vous vraimment Supprimer Cette classe partagée?",
         } do %>
 					<div class='rmv-skill-btn white'>
 						<i class="far fa-times-circle"></i>

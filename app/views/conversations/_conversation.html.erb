@@ -20,7 +20,7 @@
 					</h2>
 					<div class="collegue-list d-none ms-1" data-toggle-panel-target="panel" data-action="click->toggle-panel#displayPanel">
 						<% collegue_not_in_conversation.each do |user| %>
-							<%= link_to add_user_conversation_path(conversation, new_user_id: user.id), method: :post, data:{turbo_frame: "conversation"} do%>
+							<%= link_to add_user_conversation_path(conversation, new_user_id: user.id), data:{turbo_method: :post, turbo_frame: "conversation"} do%>
 								<div class="collegue"
                   data-controller="tooltip"
                   data-bs-toggle="tooltip"

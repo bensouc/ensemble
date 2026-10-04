@@ -46,7 +46,9 @@ class StudentsController < ApplicationController
     @student = Student.find(params[:id])
     authorize @student
     @student.destroy
-    redirect_to classrooms_path
+    # 303 : le lien envoie un vrai DELETE (Turbo), qu'un 302 ferait rejouer
+    # sur la page de destination.
+    redirect_to classrooms_path, status: :see_other
   end
 
   def new_validated_wps

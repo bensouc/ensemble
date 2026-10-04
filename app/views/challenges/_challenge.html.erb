@@ -13,7 +13,7 @@
     <% if policy(challenge).can_show_delete_button? && params[:controller] == "challenges"%>
       <div class="delete-challenge-btn">
         <%= button_to challenge_path(challenge), method: :delete, class: "move-left-btn",
-          data: {confirm: "Souhaitez vous supprimer cet éxercice?"} do %>
+          data: {turbo_confirm: "Souhaitez vous supprimer cet éxercice?"} do %>
           <i class="fa-solid fa-circle-xmark"></i>
         <% end %>
       </div>

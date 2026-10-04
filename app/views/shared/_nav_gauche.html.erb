@@ -100,7 +100,7 @@
 					<%= ((Date.today.at_end_of_week) - 2).strftime("%d/%m/%Y") %></p>
 			</div>
 			<div class="deco ">
-				<%= link_to destroy_user_session_path, method: :delete, class: "dropdown-item d-flex" do %>
+				<%= link_to destroy_user_session_path, data: { turbo_method: :delete }, class: "dropdown-item d-flex" do %>
 					<i class="fas fa-sign-out-alt"></i>
 					<h6>Se déconnecter</h6>
 				<% end %>

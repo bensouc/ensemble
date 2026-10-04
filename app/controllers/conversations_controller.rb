@@ -66,7 +66,9 @@ class ConversationsController < ApplicationController
     conversation #{@conversation.id}\n######################")
     @conversation.users.delete(current_user)
     @conversation.update(conversation_type: "classic") if @conversation.users.count == 1
-    redirect_to conversations_path
+    # 303 : le lien envoie un vrai DELETE (Turbo), qu'un 302 ferait rejouer
+    # sur la page de destination.
+    redirect_to conversations_path, status: :see_other
   end
 
   def edit

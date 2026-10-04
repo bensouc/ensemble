@@ -63,7 +63,7 @@
 									Mails (dev)
 								<% end %>
 							<% end %>
-							<%=link_to "Déconnexion", destroy_user_session_path, method: :delete,class: "dropdown-item"%>
+							<%=link_to "Déconnexion", destroy_user_session_path, data: { turbo_method: :delete }, class: "dropdown-item"%>
 						</div>
 					</li>
 				</ul>

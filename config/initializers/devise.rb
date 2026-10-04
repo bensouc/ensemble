@@ -342,6 +342,11 @@ Devise.setup do |config|
   # The default HTTP method used to sign out a resource. Default is :delete.
   config.sign_out_via = :delete
 
+  # La déconnexion et la suppression du compte partent en vrai DELETE, envoyé
+  # par Turbo (`data-turbo-method`). Après un 302, le navigateur rejouerait ce
+  # DELETE sur la page de destination ; un 303 la fait charger en GET.
+  config.responder.redirect_status = :see_other
+
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.

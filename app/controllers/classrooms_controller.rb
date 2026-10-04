@@ -40,7 +40,9 @@ class ClassroomsController < ApplicationController
   def destroy
     authorize @classroom
     @classroom.destroy_or_hand_over!
-    redirect_to classrooms_path
+    # 303 : le lien envoie un vrai DELETE (Turbo), qu'un 302 ferait rejouer
+    # sur la page de destination.
+    redirect_to classrooms_path, status: :see_other
   end
 
   def results

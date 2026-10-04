@@ -1,7 +1,6 @@
 // Entry point for the build script in your package.json
 
 // Rails imports
-import Rails from "@rails/ujs"
 import "@rails/activestorage"
 import "./channels"
 
@@ -31,11 +30,6 @@ import "./plugins/quote"
 import "./plugins/trix-editor-overrides"
 import "./plugins/stimulus_scroll_progress"
 import "./plugins/modal_focus"
-
-// Rails UJS : gère les liens `method: :delete/:put/:patch` (déconnexion, suppressions…).
-// L'app utilise massivement cette syntaxe (data-method) que Turbo seul n'intercepte
-// pas (Turbo attend data-turbo-method). Sans ça, ces liens partent en GET → erreur.
-Rails.start()
 
 // Service worker : lecture hors ligne du front mobile. Enregistré seulement sur
 // un contexte sécurisé — https en production, localhost en développement — car
