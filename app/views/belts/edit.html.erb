@@ -12,12 +12,15 @@
 						<h2><i class=" fas fa-bacon belt-<%= @belt.level %>"></i><%= " #{@belt.domain.name.capitalize}  "%></h2>
 						<h4><%= "#{@belt.student.first_name.capitalize}" %></h4>
 					</div>
+					<% if @belt.errors.any? %>
+						<div class="invalid-feedback d-block"><%= @belt.errors.full_messages.to_sentence %></div>
+					<% end %>
 					<div class="date-selection">
 						<p>Obtenue le</p>
 						<%= f.input :validated_date, as: :string, label: false,
                                           # required: :true,
                                           input_html: {
-                                            value: @belt.validated_date.strftime("%d/%m/%Y"),
+                                            value: @belt.validated_date&.strftime("%d/%m/%Y"),
                                             class: 'datepicker area',
                                             locale: "fr",
                                             }%>
