@@ -1,0 +1,30 @@
+<%= render "manipule/practices/enonce", probleme: @probleme %>
+
+<%= form_with url: manipule_repondre_path, method: :post, class: "m-reponses" do |f| %>
+  <%= hidden_field_tag :attempt_id, @tentative.id %>
+
+  <% if @probleme.choix? %>
+    <p class="m-question"><%= @probleme.question %></p>
+    <div class="m-choix">
+      <% @choix.each do |choix| %>
+        <%# `button_tag` et non `f.submit` : sur un <input type="submit">, la
+            valeur envoyée EST le texte affiché, et préciser `value:` remplace
+            le libellé par l'identifiant. L'élève voyait « 8 » au lieu de
+            « 8 pommes ». %>
+        <%= button_tag choix.label, type: :submit, name: "choice_id", value: choix.id, class: "m-choix-bouton" %>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="m-question"><%= @probleme.question %></p>
+    <div class="m-saisie">
+      <%= text_field_tag :saisie, nil, inputmode: "numeric", autocomplete: "off",
+                         class: "m-saisie-case", "aria-label": "Ta réponse" %>
+      <% if @probleme.unit.present? %><span class="m-unite"><%= @probleme.unit %></span><% end %>
+      <%= f.submit "Valider", class: "m-valider" %>
+    </div>
+  <% end %>
+
+  <div class="m-passer">
+    <%= button_tag "Je passe", type: :submit, name: "passer", value: "1", class: "m-passer-bouton" %>
+  </div>
+<% end %>

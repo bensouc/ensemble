@@ -47,6 +47,21 @@ Rails.application.routes.draw do
     # personne ne construisait ce chemin. L'export PDF passe par la route
     # non-mobile `export_work_plan`, servie par `WorkPlansController#export`.
   end
+  # ############### MANIPULE ###############
+  # L'atelier d'entraînement autocorrigé de l'élève. Tout vit sous /manipule :
+  # le cookie qui porte son identité y est limité par son `path`, et n'est donc
+  # jamais envoyé au reste d'Ensemble. Le cloisonnement est structurel avant
+  # d'être du code.
+  namespace :manipule do
+    get "classe/:token", to: "sessions#new", as: :classe
+    post "classe/:token", to: "sessions#create", as: :entrer
+    delete "quitter", to: "sessions#destroy", as: :quitter
+    get "serie", to: "practices#show", as: :serie
+    post "serie/repondre", to: "practices#repondre", as: :repondre
+    post "serie/ecouter", to: "practices#ecouter", as: :ecouter
+    get "serie/fin", to: "practices#fin", as: :fin
+  end
+
   # ############### CONTACTROUTES ###############
   post "", to: "contact#create", as: :contact_create
   post "contacts/user_request", to: "contact#user_request", as: :user_request

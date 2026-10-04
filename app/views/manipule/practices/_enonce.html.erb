@@ -1,0 +1,8 @@
+<p class="m-enonce" data-m-enonce><%= probleme.statement %></p>
+
+<div class="m-ecoute">
+  <button type="button" class="m-ecouter" data-m-ecouter
+          data-url="<%= manipule_ecouter_path %>"
+          data-attempt="<%= @tentative&.id %>">🔊 Écouter</button>
+  <span class="m-voix" data-m-voix></span>
+</div>
