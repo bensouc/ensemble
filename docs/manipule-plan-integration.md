@@ -160,10 +160,35 @@ entière, contre 500 000 offerts par mois chez Azure.
 
 Et comme on pré-génère, **le choix est réversible** : l'audio déjà en base
 continue de fonctionner quoi qu'il arrive au fournisseur, et en changer ne
-touche qu'un fichier, `app/models/manipule/synthese.rb`.
+touche qu'un moteur, sous `app/models/manipule/synthese/`.
 
-*Reste à faire : l'adaptateur Azure, qui demande une clé d'abonnement posée
-dans Coolify. L'adaptateur `say` de macOS couvre le développement en attendant.*
+**Attention au nom « Text-to-Speech API » sur la Place de marché Azure.** Le
+piège a déjà fonctionné une fois, le 2026-10-04. La Place de marché revend des
+SaaS d'éditeurs tiers, et plusieurs s'appellent exactement comme ça. On en a
+souscrit un en croyant prendre le service de Microsoft : abonnement mensuel
+facturé dès l'activation, clé `ik_live_…` inutilisable ici, et derrière,
+Kokoro — dont la seule voix française, `ff_siwis`, est notée B− et entraînée
+sur moins de onze heures. C'est le corpus de Piper, celui qu'on venait
+d'écarter.
+
+Le vrai service est **Azure AI Speech**, une *ressource* créée depuis « Créer
+une ressource → Speech », au niveau tarifaire F0. Pas d'achat, pas de
+redirection vers un éditeur. Ses clés sont hexadécimales, son hôte est
+`<region>.tts.speech.microsoft.com`, et son allocation de 500 000 caractères
+neuronaux par mois est permanente — c'est un palier tarifaire, pas l'offre de
+douze mois du compte gratuit, qui est autre chose.
+
+**Les garde-fous de consommation**, puisque les caractères se facturent :
+
+- la régénération reste sélective, et c'est elle qui économise le plus ;
+- le moteur espace ses appels de trois secondes, parce que F0 plafonne à vingt
+  requêtes par minute et que ce quota-là n'est pas ajustable ;
+- `GenerationAudio` compte les caractères avant de les dire et s'arrête à
+  50 000 pour une exécution — de quoi stopper une boucle emballée, pas de quoi
+  gêner une banque réelle ;
+- le moteur Azure refuse de répondre depuis la suite de tests, clé ou pas ;
+- `MANIPULE_TTS=systeme` rend la main à `say` pour itérer sur un énoncé sans
+  rien consommer.
 
 ### Lot 5 — les outils de manipulation *(taille inconnue, dépend de la Q52)*
 

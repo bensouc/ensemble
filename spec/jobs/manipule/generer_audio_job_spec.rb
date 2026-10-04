@@ -66,7 +66,7 @@ RSpec.describe Manipule::GenererAudioJob do
     it "ne refait que les parties dont le texte a changé" do
       allow(Manipule::Synthese).to receive(:disponible?).and_return(true)
       rendu = Manipule::Synthese::Rendu.new(octets: "x", content_type: "audio/mp4",
-                                            voix: Manipule::Synthese::VOIX_DEFAUT)
+                                            voix: Manipule::Synthese.voix_defaut)
       allow_any_instance_of(Manipule::Synthese).to receive(:generer).and_return(rendu)
 
       described_class.perform_now(probleme)

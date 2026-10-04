@@ -9,77 +9,83 @@ module Manipule
   # été vérifié n'en avait aucune. Pré-générer, c'est garantir que tous les
   # élèves entendent la même chose, lisiblement, quel que soit l'ordinateur.
   #
-  # Cet adaptateur-ci s'appuie sur `say`, présent sur macOS : il sert à écouter
-  # et à trancher en développement. Une voix neuronale distante prendra le
-  # relais pour la production, où `say` n'existe pas — seul ce fichier changera.
+  # Cette classe ne synthétise rien elle-même : elle choisit un moteur et lui
+  # passe le texte. `Azure` dès qu'une clé est configurée, `Systeme` sinon —
+  # celui-ci s'appuie sur `say` et ne sert qu'au développement.
   class Synthese
-    VOIX_DEFAUT = "Thomas"
-    DEBIT_DEFAUT = 150 # mots par minute ; la voix du système en fait ~175
-    SILENCE_ENTRE_PHRASES_MS = 600
-    CONTENT_TYPE = "audio/mp4"
-
+    # L'adaptateur ne peut pas travailler, et réessayer n'y changera rien :
+    # le job qui la reçoit la jette au lieu de la relancer cinq fois.
     class Indisponible < StandardError; end
+
+    # L'allocation du fournisseur est consommée, ou on a refusé d'aller plus
+    # loin. Même traitement : on ne relance pas.
+    class Quota < Indisponible; end
+
+    # La phrase qui sert à juger une voix : deux phrases pour entendre le
+    # silence entre elles, une question pour entendre l'intonation, et le
+    # vocabulaire d'un vrai énoncé.
+    PHRASE_TEMOIN = "Il y a quinze pommes sur le pommier. Sam cueille sept pommes. " \
+                    "Combien reste-t-il de pommes sur le pommier ?"
 
     # Ce que rend une synthèse : les octets et de quoi savoir ce qui les a
     # produits. Les faire voyager ensemble évite de les perdre en route.
     Rendu = Struct.new(:octets, :content_type, :voix, keyword_init: true)
 
-    def self.disponible?
-      File.executable?("/usr/bin/say")
+    # `MANIPULE_TTS=systeme` force la voix locale : de quoi itérer sur un
+    # énoncé sans entamer l'allocation distante à chaque reformulation.
+    def self.moteur
+      case ENV["MANIPULE_TTS"].presence
+      when "azure" then Azure
+      when "systeme" then Systeme
+      else Azure.disponible? ? Azure : Systeme
+      end
     end
 
-    # Un échantillon par voix française du système, pour trancher à l'oreille
-    # plutôt que sur le nom.
+    def self.disponible?
+      moteur.disponible?
+    end
+
+    def self.voix_defaut
+      moteur::VOIX_DEFAUT
+    end
+
+    def self.debit_defaut
+      moteur::DEBIT_DEFAUT
+    end
+
+    # Les voix françaises que le moteur courant sait produire, pour choisir à
+    # l'oreille plutôt que sur le nom.
     def self.echantillons(phrase, dossier)
       FileUtils.mkdir_p(dossier)
-      voix_du_systeme.map do |voix|
-        chemin = Pathname(dossier).join("#{voix.gsub(/\W+/, '_')}.m4a")
-        File.binwrite(chemin, new(voix:).generer(phrase).octets)
+      moteur.voix_disponibles.map do |voix|
+        rendu = new(voix:).generer(phrase)
+        chemin = Pathname(dossier).join("#{voix.gsub(/\W+/, '_')}#{extension(rendu.content_type)}")
+        File.binwrite(chemin, rendu.octets)
         [voix, chemin]
       end
     end
 
-    def self.voix_du_systeme
-      `say -v "?"`.lines.grep(/fr_FR/).map { |ligne| ligne.split(/\s{2,}/).first.strip }
+    def self.extension(content_type)
+      { "audio/mpeg" => ".mp3", "audio/mp4" => ".m4a" }.fetch(content_type, ".bin")
     end
 
-    def initialize(voix: VOIX_DEFAUT, debit: DEBIT_DEFAUT)
-      @voix = voix
-      @debit = debit
+    # `voix` est la voix réellement retenue — celle du moteur, pas celle
+    # demandée, qui peut être nulle. `GenerationAudio` s'en sert pour savoir
+    # si un morceau déjà en base a été dit par la même voix.
+    delegate :voix, :generer, to: :moteur
+
+    def initialize(voix: nil, debit: nil, moteur: nil)
+      @moteur = (moteur || self.class.moteur).new(voix:, debit:)
     end
 
-    # Renvoie les octets d'un m4a, que tous les navigateurs savent lire.
-    def generer(texte)
-      raise Indisponible, "`say` n'est pas disponible sur cette machine" unless self.class.disponible?
-
-      sortie = Tempfile.new(["manipule", ".m4a"])
-      begin
-        executer(texte, sortie.path)
-        octets = File.binread(sortie.path)
-        raise Indisponible, "La synthèse n'a rien produit" if octets.empty?
-
-        Rendu.new(octets:, content_type: CONTENT_TYPE, voix: @voix)
-      ensure
-        sortie.close
-        sortie.unlink
-      end
+    # Le nombre de caractères que le fournisseur offre chaque mois, quand il y
+    # en a un. Sert à situer ce qu'une fabrication vient de consommer.
+    def allocation_mensuelle
+      @moteur.class.try(:allocation_mensuelle)
     end
 
     private
 
-    # Forme tableau, jamais une chaîne de shell : le texte vient de
-    # l'enseignante, et il n'a aucune raison de pouvoir exécuter quoi que ce soit.
-    def executer(texte, chemin)
-      ok = system("/usr/bin/say", "-v", @voix, "-r", @debit.to_s,
-                  "-o", chemin, "--data-format=aac", ponctuer(texte),
-                  out: File::NULL, err: File::NULL)
-      raise Indisponible, "`say` a échoué" unless ok
-    end
-
-    # Un silence après chaque phrase : c'est ce que l'enseignante demande, et
-    # ça ne s'obtient pas en baissant le débit.
-    def ponctuer(texte)
-      texte.to_s.gsub(/([.!?…])\s+/, "\\1 [[slnc #{SILENCE_ENTRE_PHRASES_MS}]] ")
-    end
+    attr_reader :moteur
   end
 end

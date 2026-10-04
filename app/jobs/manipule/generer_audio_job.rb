@@ -10,10 +10,12 @@ module Manipule
   class GenererAudioJob < ApplicationJob
     queue_as :default
 
-    # Le serveur de production n'a pas `say` tant que l'adaptateur distant
-    # n'est pas écrit : relancer cinq fois un job qui ne peut pas aboutir ne
-    # ferait qu'encombrer les jobs en échec. Déclaré après le `retry_on`
-    # d'ApplicationJob, il passe avant lui.
+    # Une clé absente, une clé refusée, une allocation consommée : aucune de
+    # ces trois-là ne se répare en réessayant, et les relancer cinq fois ne
+    # ferait qu'encombrer les jobs en échec — ou, pour la dernière, cogner
+    # cinq fois contre un plafond de requêtes. `Quota` hérite d'`Indisponible`
+    # et tombe donc ici aussi. Déclaré après le `retry_on` d'ApplicationJob,
+    # il passe avant lui.
     discard_on Synthese::Indisponible
 
     def perform(probleme)

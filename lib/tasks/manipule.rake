@@ -1,31 +1,32 @@
 # frozen_string_literal: true
 
 namespace :manipule do
-  desc "Génère l'audio manquant ou périmé des problèmes (VOIX=Thomas DEBIT=150 SKILL=id)"
+  desc "Génère l'audio manquant ou périmé (VOIX= DEBIT= SKILL= PLAFOND= MANIPULE_TTS=azure|systeme)"
   task audio: :environment do
-    abort "`say` est introuvable : cet adaptateur ne sert qu'en développement." unless Manipule::Synthese.disponible?
+    moteur = Manipule::Synthese.moteur
+    abort "Moteur #{moteur.name.demodulize} indisponible ici." unless Manipule::Synthese.disponible?
 
-    voix = ENV.fetch("VOIX", Manipule::Synthese::VOIX_DEFAUT)
+    voix = ENV["VOIX"].presence
+    puts "Moteur #{moteur.name.demodulize}, voix #{voix || moteur::VOIX_DEFAUT}."
     generation = Manipule::GenerationAudio.new(
-      voix:, debit: ENV.fetch("DEBIT", Manipule::Synthese::DEBIT_DEFAUT).to_i,
-      skill_id: ENV["SKILL"].presence, trace: -> { print "." }
+      voix:, debit: ENV["DEBIT"].presence&.to_i, skill_id: ENV["SKILL"].presence,
+      plafond: ENV.fetch("PLAFOND", Manipule::GenerationAudio::PLAFOND_CARACTERES).to_i,
+      trace: -> { print "." }
     ).executer!
-
     puts
-    puts "Voix #{voix} — #{generation.faits} morceaux générés, #{generation.sautes} déjà à jour."
-    puts "Total en base : #{generation.total_en_base} morceaux, #{generation.megaoctets_en_base} Mo."
+    puts generation.resume
   end
 
+  # Liste les voix et les fait parler d'un coup : un nom de voix ne dit rien,
+  # et les quelque mille caractères que ça consomme chez Azure pèsent 0,2 %
+  # d'une allocation mensuelle.
   desc "Fabrique un échantillon de chaque voix française, pour choisir à l'oreille"
   task echantillons: :environment do
-    abort "`say` est introuvable." unless Manipule::Synthese.disponible?
+    abort "Moteur indisponible ici." unless Manipule::Synthese.disponible?
 
-    phrase = "Il y a quinze pommes sur le pommier. Sam cueille sept pommes. " \
-             "Combien reste-t-il de pommes sur le pommier ?"
     dossier = Rails.root.join("tmp/manipule_voix")
-    Manipule::Synthese.echantillons(phrase, dossier).each { |voix, chemin| puts "  #{voix.ljust(28)} → #{chemin.basename}" }
-
-    puts
+    Manipule::Synthese.echantillons(Manipule::Synthese::PHRASE_TEMOIN, dossier).
+      each { |voix, chemin| puts "  #{voix.ljust(32)} → #{chemin.basename}" }
     puts "Écoute : open #{dossier}"
   end
 end

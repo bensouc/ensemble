@@ -3,31 +3,51 @@
 require "rails_helper"
 
 RSpec.describe Manipule::Synthese do
-  describe "la ponctuation lue" do
-    # Un silence après chaque phrase : c'est ce que l'enseignante demande, et ça
-    # ne s'obtient pas en baissant le débit.
-    it "glisse un silence après chaque fin de phrase" do
-      texte = described_class.new.send(:ponctuer, "Il y a 15 pommes. Sam en cueille 7.")
+  def avec(tts)
+    ancien = ENV.fetch("MANIPULE_TTS", nil)
+    ENV["MANIPULE_TTS"] = tts
+    yield
+  ensure
+    ENV["MANIPULE_TTS"] = ancien
+  end
 
-      expect(texte).to include("15 pommes. [[slnc 600]] Sam")
+  describe "le choix du moteur" do
+    # En test, Azure se déclare indisponible quoi qu'il arrive : la suite ne
+    # doit dépendre ni du réseau ni de ce qui traîne dans le .env de la machine.
+    it "retombe sur la voix du système quand Azure n'est pas disponible" do
+      expect(described_class.moteur).to eq(described_class::Systeme)
     end
 
-    it "ne touche pas à une phrase unique" do
-      texte = described_class.new.send(:ponctuer, "Combien reste-t-il de pommes ?")
+    it "prend Azure dès qu'il est disponible" do
+      allow(described_class::Azure).to receive(:disponible?).and_return(true)
 
-      expect(texte).not_to include("slnc")
+      expect(described_class.moteur).to eq(described_class::Azure)
     end
 
-    it "traite aussi les questions et les exclamations" do
-      texte = described_class.new.send(:ponctuer, "Combien ? Dis-moi !")
+    it "se laisse forcer sur la voix locale, pour itérer sans consommer" do
+      allow(described_class::Azure).to receive(:disponible?).and_return(true)
 
-      expect(texte.scan("slnc").size).to eq(1)
+      avec("systeme") { expect(described_class.moteur).to eq(described_class::Systeme) }
+    end
+
+    it "se laisse forcer sur Azure" do
+      avec("azure") { expect(described_class.moteur).to eq(described_class::Azure) }
     end
   end
 
-  it "refuse de produire quoi que ce soit là où `say` n'existe pas" do
-    allow(described_class).to receive(:disponible?).and_return(false)
+  describe "ce que le moteur dicte" do
+    it "donne la voix par défaut du moteur courant" do
+      expect(described_class.voix_defaut).to eq(described_class::Systeme::VOIX_DEFAUT)
 
-    expect { described_class.new.generer("Bonjour") }.to raise_error(described_class::Indisponible)
+      avec("azure") { expect(described_class.voix_defaut).to eq(described_class::Azure::VOIX_DEFAUT) }
+    end
+
+    # `GenerationAudio` compare cette voix à celle déjà en base pour savoir
+    # s'il faut refaire un morceau : elle doit être celle réellement retenue,
+    # pas celle qu'on a demandée.
+    it "expose la voix retenue, et non celle demandée" do
+      expect(described_class.new.voix).to eq(described_class::Systeme::VOIX_DEFAUT)
+      expect(described_class.new(voix: "Audrey").voix).to eq("Audrey")
+    end
   end
 end
