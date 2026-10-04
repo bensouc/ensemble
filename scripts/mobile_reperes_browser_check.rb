@@ -392,30 +392,24 @@ def domaine(nom, niveau, compteur)
   HTML
 end
 
-# La feuille compilée désigne ses fontes par `/assets/…`, qu'une page `file://`
-# ne sait pas joindre : sans elles, Font Awesome tombe en carrés vides, et un
-# banc qui mesure une icône mesurerait alors la boîte du carré. On recopie les
-# fichiers à côté de la page et on rend les chemins relatifs.
+# La feuille construite désigne ses fontes par des chemins relatifs
+# (`url("./fa-solid-900.woff2")`), que Propshaft résout quand il la sert. Une
+# page `file://` les cherche à côté d'elle : sans elles, Font Awesome tombe en
+# carrés vides, et un banc qui mesure une icône mesurerait alors la boîte du
+# carré. On les recopie donc à côté de la page.
 def emporter_les_fontes(harness)
-  css = Rails.application.assets["application.css"].to_s
-  FileUtils.mkdir_p(harness.dir.join("fontes"))
-  css.scan(%r{url\((/assets/[^)]+\.(?:woff2?|ttf))\)}).flatten.uniq.each do |chemin|
-    nom = recopier_la_fonte(harness, chemin)
-    css = css.gsub("url(#{chemin})", "url(./fontes/#{nom})") if nom
+  actifs = Rails.application.assets.load_path
+  css = actifs.find("application.css").content(encoding: "UTF-8")
+  css.scan(%r{url\(["']?(?:\./)?([^"')]+\.(?:woff2?|ttf))["']?\)}).flatten.uniq.each do |nom|
+    recopier_la_fonte(harness, actifs.find(nom), nom)
   end
   File.write(harness.dir.join("application.css"), css)
 end
 
-# Le nom empreinté remonte au nom logique par le manifeste ; à défaut, en
-# retirant l'empreinte.
-def recopier_la_fonte(harness, chemin)
-  empreinte = chemin.delete_prefix("/assets/")
-  logique = Rails.application.assets_manifest.assets.key(empreinte) ||
-            empreinte.sub(/-[0-9a-f]{64}(\.\w+)\z/, '\1')
-  actif = Rails.application.assets[logique]
-  return warn("fonte introuvable : #{logique}") unless actif
+def recopier_la_fonte(harness, actif, nom)
+  return warn("fonte introuvable : #{nom}") unless actif
 
-  File.basename(logique).tap { |nom| File.binwrite(harness.dir.join("fontes", nom), actif.to_s) }
+  FileUtils.cp(actif.path, harness.dir.join(File.basename(nom)))
 end
 
 harness = BrowserHarness::Runner.new("mobile_reperes_harness")

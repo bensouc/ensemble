@@ -12,7 +12,8 @@
 // d'attente (app/javascript/eval_queue.js), qui fonctionne aussi sur iOS où la
 // Background Sync n'existe pas.
 
-const VERSION = "<%= Rails.application.config.assets.version %>-<%= asset_digest_path("application.js") %>";
+// `asset_path` donne le chemin versionné du bundle : il change avec lui.
+const VERSION = "<%= Rails.application.config.assets.version %>-<%= asset_path("application.js") %>";
 const CACHE_COQUE = `ensemble-coque-${VERSION}`;
 const CACHE_DONNEES = `ensemble-donnees-${VERSION}`;
 

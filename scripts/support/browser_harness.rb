@@ -40,7 +40,7 @@ module BrowserHarness
     end
 
     def dump_stylesheet(name)
-      write("#{name}.css", Rails.application.assets["#{name}.css"].to_s)
+      write("#{name}.css", Rails.application.assets.load_path.find("#{name}.css").content(encoding: "UTF-8"))
     end
 
     # Le bundle en IIFE : une page file:// ne peut pas charger de module ES.

@@ -30,6 +30,7 @@ Rails.application.routes.draw do
   # pages situées sous son propre chemin. Depuis /assets/, il ne verrait jamais
   # /mobile/...
   get "service-worker.js", to: "pwa#service_worker", as: :service_worker
+  get "manifest.json", to: "pwa#manifest", as: :pwa_manifest
   # ############### MOBILE ROUTES###############
   namespace "mobile" do
     resources :work_plans, only: [:index]

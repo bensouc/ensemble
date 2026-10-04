@@ -4,25 +4,15 @@
 		<meta charset='utf-8' />
 		<!-- Bootstrap CSS (local) -->
 		<style>
-			<%= raw(
-			if Rails.application.assets
-				Rails.application.assets["bootstrap-pdf.min.css"]&.to_s
-			else
-				File.read(Rails.root.join("public", "assets", Rails.application.assets_manifest.assets["bootstrap-pdf.min.css"]))
-			end
-		) %>
+			<%# Lues dans les chemins de Propshaft, en dev comme en production : la
+			    feuille construite (app/assets/builds) est dans l'image. Ses
+			    `url(...woff2)` restent brutes, PdfGenerator les remplace par les
+			    polices en base64. %>
+			<%= raw Rails.application.assets.load_path.find("bootstrap-pdf.min.css").content(encoding: "UTF-8") %>
 		</style>
 		<title><%= @title%></title>
 		<style>
-			<%= raw(
-			if Rails.application.assets
-				# Development: use Sprockets
-				Rails.application.assets["pdf.css"]&.to_s
-			else
-				# Production: read precompiled asset from public/assets/
-				File.read(Rails.root.join("public", "assets", Rails.application.assets_manifest.assets["pdf.css"]))
-			end
-		) %>
+			<%= raw Rails.application.assets.load_path.find("pdf.css").content(encoding: "UTF-8") %>
 		</style>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	</head>

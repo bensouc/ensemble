@@ -17,6 +17,8 @@ CI.run "Intégration continue", "Style, sécurité, tests et bancs navigateur" d
   # autre Node que celui de package.json, et le terminal peut être resté sur la
   # version par défaut de nvm. Le bundle, lui, n'en dépend pas.
   step "Build : JavaScript", "node esbuild.config.js"
+  # Même raison : bin/build-css appelle Dart Sass et PostCSS sans passer par yarn.
+  step "Build : CSS", "bin/build-css"
 
   step "Tests : RSpec", "bundle exec rspec"
 

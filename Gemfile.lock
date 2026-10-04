@@ -84,8 +84,6 @@ GEM
     addressable (2.9.0)
       public_suffix (>= 2.0.2, < 8.0)
     ast (2.4.3)
-    autoprefixer-rails (10.2.5.0)
-      execjs (< 2.8.0)
     aws_cf_signer (0.1.3)
     base64 (0.3.0)
     bcrypt (3.1.22)
@@ -93,8 +91,6 @@ GEM
     bindex (0.8.1)
     bootsnap (1.26.0)
       msgpack (~> 1.5)
-    bootstrap (5.3.8)
-      popper_js (>= 2.11.8, < 3)
     brakeman (8.1.0)
       racc
     browser (6.2.0)
@@ -133,6 +129,8 @@ GEM
     concurrent-ruby (1.3.8)
     connection_pool (3.0.2)
     crass (1.0.7)
+    cssbundling-rails (1.4.3)
+      railties (>= 6.0.0)
     csv (3.3.5)
     date (3.5.1)
     debug (1.11.1)
@@ -166,7 +164,6 @@ GEM
     exception_notification (4.6.0)
       actionmailer (>= 5.2, < 9)
       activesupport (>= 5.2, < 9)
-    execjs (2.7.0)
     factory_bot (6.5.6)
       activesupport (>= 6.1.0)
     factory_bot_rails (6.5.1)
@@ -183,8 +180,6 @@ GEM
     ffi (1.17.3-aarch64-linux-gnu)
     ffi (1.17.3-arm64-darwin)
     ffi (1.17.3-x86_64-linux-gnu)
-    font-awesome-sass (6.7.2)
-      sassc (~> 2.0)
     fugit (1.14.0)
       et-orbi (~> 1.4)
       raabro (~> 1.4)
@@ -308,7 +303,6 @@ GEM
     pg (1.6.3-aarch64-linux)
     pg (1.6.3-arm64-darwin)
     pg (1.6.3-x86_64-linux)
-    popper_js (2.11.8)
     pp (0.6.4)
       prettyprint
     pretender (1.0.0)
@@ -316,6 +310,10 @@ GEM
     prettier_print (1.2.1)
     prettyprint (0.2.0)
     prism (1.9.0)
+    propshaft (1.3.2)
+      actionpack (>= 7.0.0)
+      activesupport (>= 7.0.0)
+      rack
     pry (0.16.0)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -457,14 +455,6 @@ GEM
       ffi (~> 1.12)
       logger
     rubyzip (2.4.1)
-    sassc (2.4.0)
-      ffi (~> 1.9)
-    sassc-rails (2.1.2)
-      railties (>= 4.0.0)
-      sassc (>= 2.0)
-      sprockets (> 3.0)
-      sprockets-rails
-      tilt
     securerandom (0.4.1)
     shoulda-matchers (4.5.1)
       activesupport (>= 4.2.0)
@@ -497,14 +487,6 @@ GEM
       fugit (~> 1.11)
       railties (>= 7.1)
       thor (>= 1.3.1)
-    sprockets (4.2.2)
-      concurrent-ruby (~> 1.0)
-      logger
-      rack (>= 2.2.4, < 4)
-    sprockets-rails (3.5.2)
-      actionpack (>= 6.1)
-      activesupport (>= 6.1)
-      sprockets (>= 3.0.0)
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stripe (18.2.0)
@@ -514,7 +496,6 @@ GEM
     syntax_tree (6.3.0)
       prettier_print (>= 1.2.0)
     thor (1.5.0)
-    tilt (2.7.0)
     timeout (0.6.1)
     tsort (0.2.0)
     turbo-rails (2.0.12)
@@ -559,9 +540,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts_as_list (~> 0.7.2)
-  autoprefixer-rails (= 10.2.5)
   bootsnap (>= 1.4.2)
-  bootstrap (~> 5.2)
   brakeman
   browser
   bullet
@@ -570,6 +549,7 @@ DEPENDENCIES
   caxlsx
   caxlsx_rails
   cloudinary (~> 1.16.0)
+  cssbundling-rails
   debug
   devise
   devise_invitable
@@ -580,7 +560,6 @@ DEPENDENCIES
   factory_bot_rails
   faker
   ferrum
-  font-awesome-sass
   htmlbeautifier
   image_processing (~> 1.2)
   jsbundling-rails
@@ -591,6 +570,7 @@ DEPENDENCIES
   ostruct
   pg (>= 0.18, < 2.0)
   pretender
+  propshaft
   pry-byebug
   pry-rails
   puma (~> 6.0)
@@ -603,7 +583,6 @@ DEPENDENCIES
   recaptcha
   rspec-rails
   rubocop-rails
-  sassc-rails
   shoulda-matchers (~> 4.0)
   simple_form
   simple_xlsx_reader (~> 1.0, >= 1.0.4)

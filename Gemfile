@@ -21,10 +21,12 @@ gem "recaptcha"
 gem "pg", ">= 0.18", "< 2.0"
 # Use Puma as the app server
 gem "puma", "~> 6.0"
-# Use SCSS for stylesheets and  minifies them
-gem "sassc-rails"
-# Transpile app-like JavaScript with esbuild
+# Les assets à la manière de Rails 8 : Propshaft sert et versionne ce que les
+# outils Node construisent dans app/assets/builds — esbuild pour le JS (jsbundling),
+# Dart Sass puis autoprefixer pour le CSS (cssbundling, bin/build-css).
+gem "propshaft"
 gem "jsbundling-rails"
+gem "cssbundling-rails"
 # Temps réel (Action Cable) et cache (Rack::Attack) en base, sans Redis
 gem "solid_cable"
 gem "solid_cache"
@@ -60,11 +62,8 @@ gem "devise_last_seen"
 # usurpation d'identité par un admin (« naviguer en tant que »)
 gem "pretender"
 gem "pundit"
-gem "autoprefixer-rails", "10.2.5"
-gem "font-awesome-sass"
 gem "simple_form"
 gem "rails-i18n"
-gem "bootstrap", "~> 5.2"
 
 #  add red or unred object gem
 gem "unread"

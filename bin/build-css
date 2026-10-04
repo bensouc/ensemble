@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Construit les feuilles de style dans app/assets/builds, d'où Propshaft les sert :
+# Dart Sass compile, puis autoprefixer ajoute les préfixes que .browserslistrc
+# demande (ce que faisait autoprefixer-rails sous Sprockets).
+#
+# Lancé par `yarn build:css` — donc par cssbundling avant assets:precompile — et
+# directement par bin/ci, car yarn refuse de tourner sous un autre Node que celui
+# de package.json.
+#
+# Les avertissements de dépréciation de Dart Sass sont tus : `@import`, les
+# fonctions globales (`map-get`, `darken`…) et les fonctions de couleur. Ils
+# visent surtout Bootstrap 5.3 et ne changent rien au CSS produit ; passer nos
+# feuilles aux modules `@use` est un chantier à part.
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+node_modules/.bin/sass \
+  app/assets/stylesheets/application.scss:app/assets/builds/application.css \
+  app/assets/stylesheets/rails_admin.scss:app/assets/builds/rails_admin.css \
+  app/assets/stylesheets/pdf.scss:app/assets/builds/pdf.css \
+  --load-path=node_modules \
+  --no-source-map \
+  --quiet-deps \
+  --silence-deprecation=import,global-builtin,color-functions \
+  "$@"
+
+node_modules/.bin/postcss \
+  app/assets/builds/application.css \
+  app/assets/builds/rails_admin.css \
+  --use autoprefixer --replace --no-map

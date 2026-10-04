@@ -28,19 +28,28 @@ time, mark, audio, video {
 @import "config/index";
 
 // External libraries
-// @import "bootstrap/scss/bootstrap";
-@import "bootstrap";
+@import "bootstrap/scss/bootstrap";
  //@import "flatpickr";
 @import "flatpickr/dist/flatpickr";
 // @import "../../javascript/stylesheets/rails_admin";
 
 // @import "font-awesome-sprockets";
 @import "flatpickr/dist/themes/light";
-@import "font-awesome";
+// Font Awesome 6.7.2, paquet npm : le cœur et les trois familles, comme le faisait
+// `@import "font-awesome"` de la gem font-awesome-sass. Ses polices sont servies
+// par Propshaft à la racine des assets (config/initializers/assets.rb), à côté
+// de cette feuille une fois construite : d'où le chemin « . ».
+$fa-font-path: ".";
+@import "@fortawesome/fontawesome-free/scss/fontawesome";
+@import "@fortawesome/fontawesome-free/scss/solid";
+@import "@fortawesome/fontawesome-free/scss/regular";
+@import "@fortawesome/fontawesome-free/scss/brands";
 // @import "trix";
 @import "trix/dist/trix";
 // SPLIDE_Js Default theme
-@import '@splidejs/splide/dist/css/splide.min.css';
+// Sans l'extension : Dart Sass intègre alors la feuille. Avec, il laisse un
+// `@import` CSS que le navigateur irait chercher à part.
+@import '@splidejs/splide/dist/css/splide.min';
 
 
 // Your CSS partials
