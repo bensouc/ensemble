@@ -5,7 +5,9 @@
     l'entrée courante par la couleur. Ensemble ne connaît pas les pastilles
     de Bootstrap. %>
 <div class="d-flex align-items-baseline flex-wrap gap-4 mb-4">
-  <%= link_to "Manipule", manipule_root_path, class: "h4 mb-0 text-decoration-none" %>
+  <%= link_to manipule_root_path, class: "h4 mb-0 text-decoration-none d-inline-flex align-items-baseline gap-2" do %>
+    Manipule<span class="m-beta">bêta</span>
+  <% end %>
   <ul class="m-onglets">
     <% onglets_manipule.each do |onglet| %>
       <li>
