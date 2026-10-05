@@ -43,6 +43,17 @@
     background-color: transparent;
   }
 
+  // Ensemble applique `.rmv-skill-btn` à un <div> posé dans un lien : la
+  // classe n'a donc jamais eu à remettre à zéro le fond ni la bordure qu'un
+  // navigateur donne à un <button>. Ici c'en est un vrai, et le pavé gris du
+  // navigateur ressortait derrière la croix.
+  button.rmv-skill-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    line-height: 1;
+  }
+
   // ── la barre d'onglets ───────────────────────────────────────────────
   .m-onglets {
     display: flex;
