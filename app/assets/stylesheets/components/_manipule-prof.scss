@@ -85,6 +85,32 @@
     }
   }
 
+  // ── l'en-tête ────────────────────────────────────────────────────────
+  //
+  // Les trois lignes gardent leur hauteur même vides : d'un écran à l'autre,
+  // le titre et le contenu restent exactement au même endroit.
+  .m-entete {
+    margin-bottom: 1.6rem;
+  }
+
+  .m-entete-retour {
+    min-height: 1.4rem;
+    margin: 0 0 0.2rem;
+    font-size: 14px;
+  }
+
+  .m-entete-titre {
+    margin: 0 0 0.35rem;
+  }
+
+  .m-entete-note {
+    min-height: 1.45rem;
+    margin: 0;
+    font-size: 14px;
+    color: colors.$grisF;
+    opacity: 0.65;
+  }
+
   // ── les listes ───────────────────────────────────────────────────────
   .m-fiche {
     border: colors.$grisC solid thin;

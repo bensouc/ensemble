@@ -1,8 +1,7 @@
 <div class="container py-4 m-prof">
   <%= render "manipule/shared/nav" %>
-
-  <h1>Les problèmes</h1>
-  <p class="m-fiche-note mb-4">Les problèmes que vos élèves s'entraînent à résoudre, rangés par compétence.</p>
+  <%= render "manipule/shared/entete", titre: "Les problèmes",
+             note: "Ce que vos élèves s'entraînent à résoudre, rangé par compétence." %>
 
   <% if @par_competence.empty? %>
     <p class="m-fiche-note">

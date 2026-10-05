@@ -1,13 +1,10 @@
 <div class="container py-4 m-prof">
   <%= render "manipule/shared/nav" %>
-
-  <p class="mb-1"><%= link_to "← Les problèmes", manipule_banque_path %></p>
-  <h1 class="mb-1"><%= @competence.name %></h1>
-  <p class="m-fiche-note">
-    Ceinture <%= Belt::BELT_COLORS[@competence.level - 1] %> ·
-    <%= @problemes.count(&:published) %> visibles,
-    <%= au_pluriel(@problemes.count { |probleme| !probleme.published }, "brouillon") %>
-  </p>
+  <%= render "manipule/shared/entete", titre: @competence.name,
+             retour: { libelle: "Les problèmes", chemin: manipule_banque_path },
+             note: "Ceinture #{Belt::BELT_COLORS[@competence.level - 1]} · " \
+                   "#{@problemes.count(&:published)} visibles, " \
+                   "#{au_pluriel(@problemes.count { |probleme| !probleme.published }, 'brouillon')}" %>
 
   <div class="d-flex flex-wrap gap-2 my-4">
     <%# Vert pour ce qui crée, pastille teintée pour le reste : c'est la

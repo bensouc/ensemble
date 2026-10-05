@@ -1,11 +1,8 @@
 <div class="container py-4 m-prof">
   <%= render "manipule/shared/nav" %>
-
-  <h1>Les accès</h1>
-  <p class="m-fiche-note mb-4">
-    Manipule est une option, ouverte compte par compte le temps de l'essai.
-    <%= @ouverts > 1 ? "#{@ouverts} comptes l'ont" : "#{@ouverts} compte l'a" %> aujourd'hui.
-  </p>
+  <%= render "manipule/shared/entete", titre: "Les accès",
+             note: "Manipule est une option, ouverte compte par compte le temps de l'essai. " \
+                   "#{@ouverts > 1 ? "#{@ouverts} comptes l'ont" : "#{@ouverts} compte l'a"} aujourd'hui." %>
 
   <%= form_with url: manipule_acces_path, method: :get, class: "d-flex flex-wrap align-items-center gap-2 mb-4" do %>
     <%= text_field_tag :q, @recherche, class: "area", style: "width: 20rem;",

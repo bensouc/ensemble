@@ -1,10 +1,8 @@
 <div class="container py-4 m-prof">
   <%= render "manipule/shared/nav" %>
-
-  <h1>Mes classes</h1>
-  <p class="m-fiche-note mb-4">
-    Choisissez une classe pour désigner ce que chaque élève travaille, et voir ce que ça a donné.
-  </p>
+  <%= render "manipule/shared/entete", titre: "Mes classes",
+             note: "Choisissez une classe pour désigner ce que chaque élève travaille, " \
+                   "et voir ce que ça a donné." %>
 
   <% if @classes.empty? %>
     <p class="m-fiche-note">Aucune classe.</p>
