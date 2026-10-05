@@ -154,6 +154,20 @@
     opacity: 0.65;
   }
 
+  // simple_form pose `form-check-inline` sans `form-check`, or c'est ce
+  // dernier qui porte l'écart entre la case et son libellé chez Bootstrap :
+  // les deux se touchaient. La règle vaut aussi pour les boutons radio de la
+  // bonne réponse, écrits à la main et sans aucun emballage.
+  input[type="radio"],
+  input[type="checkbox"] {
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .form-check-inline {
+    margin-right: 1.5rem;
+  }
+
   label,
   .form-label {
     font-size: 14px;
