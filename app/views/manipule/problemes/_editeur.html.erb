@@ -1,0 +1,26 @@
+<div class="container py-4 m-prof">
+  <%= render "manipule/shared/nav" %>
+
+  <p class="mb-1"><%= link_to "← #{competence.name}", manipule_banque_competence_path(competence) %></p>
+  <h1 class="mb-4"><%= titre %></h1>
+
+  <div class="m-editeur">
+    <div>
+      <%= render "manipule/problemes/formulaire",
+                 probleme:, competence:, url:, methode:, bouton: %>
+    </div>
+
+    <%# L'aperçu n'est pas une maquette : c'est la page de l'élève, rendue par
+        les mêmes gabarits, avec sa feuille de style et son JavaScript. D'où le
+        cadre — sans lui il faudrait charger la CSS de l'élève par-dessus celle
+        d'Ensemble, et les deux se marcheraient dessus. Les jetons s'y déplacent
+        pour de vrai. %>
+    <div class="m-apercu">
+      <p class="m-apercu-titre">Ce que l'élève verra</p>
+      <iframe class="m-apercu-cadre" data-m-apercu title="Aperçu de l'écran de l'élève"></iframe>
+      <p class="form-text">Il se met à jour pendant que vous écrivez. Rien n'y est enregistré.</p>
+    </div>
+  </div>
+</div>
+
+<%= javascript_include_tag "manipule_editeur", type: "module", defer: true %>

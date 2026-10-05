@@ -42,3 +42,43 @@
     }
   }
 }
+
+// L'éditeur : le formulaire à gauche, l'aperçu à droite.
+//
+// Une seule colonne en dessous de 992 px — côte à côte, les deux deviendraient
+// illisibles bien avant d'être étroites.
+.m-editeur {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+
+  @media (min-width: 992px) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+// L'aperçu suit le défilement : le formulaire est plus long que lui, et on
+// écrit la question en regardant ce qu'elle donne.
+.m-apercu {
+  @media (min-width: 992px) {
+    position: sticky;
+    top: 1rem;
+  }
+}
+
+.m-apercu-titre {
+  margin-bottom: 0.4rem;
+  font-weight: bold;
+  color: colors.$grisF;
+}
+
+// Un cadre, parce que l'aperçu porte la feuille de style de l'élève : sans
+// isolation, elle et celle d'Ensemble se marcheraient dessus.
+.m-apercu-cadre {
+  width: 100%;
+  height: 34rem;
+  border: 1px solid colors.$grisC;
+  border-radius: 0.6rem;
+  background: #eef2f5;
+}

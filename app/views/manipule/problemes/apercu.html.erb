@@ -1,0 +1,27 @@
+<%# L'aperçu, rendu dans le gabarit de l'élève : mêmes classes, même feuille de
+    style, même JavaScript. Les jetons s'y déplacent pour de vrai.
+
+    Deux différences assumées avec l'écran réel, parce qu'elles n'existent pas
+    encore à ce stade : pas de barre d'écoute — l'audio se fabrique à la mise en
+    circulation, et ce problème n'est pas même enregistré — et les réponses sont
+    inertes, puisqu'il n'y a aucune tentative à corriger. %>
+<p class="m-enonce"><%= @probleme.statement.presence || "L'énoncé apparaîtra ici." %></p>
+
+<p class="m-question"><%= @probleme.question.presence || "Et la question ici." %></p>
+
+<%= render "manipule/practices/jetons", probleme: @probleme if @probleme.jetons? %>
+
+<% if @probleme.choix? %>
+  <div class="m-choix">
+    <% @choix.each do |choix| %>
+      <div class="m-choix-cellule">
+        <button type="button" class="m-choix-bouton" disabled><%= choix.label %></button>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="m-saisie">
+    <input type="text" class="m-saisie-case" disabled aria-label="Ta réponse">
+    <% if @probleme.unit.present? %><span class="m-unite"><%= @probleme.unit %></span><% end %>
+  </div>
+<% end %>

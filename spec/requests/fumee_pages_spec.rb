@@ -76,6 +76,7 @@ RSpec.describe "Fumée : chaque page s'ouvre", type: :request do
     Result.find_or_initialize_by(student: eleve, skill: competence).update!(status: "completed", kind: "ceinture")
     ceinture = Belt.find_by(student: eleve, domain: domaine) || create(:belt, student: eleve, domain: domaine, level: 1)
     jeton_manipule = Manipule::ClassroomToken.pour!(classe)
+    probleme_manipule = create(:manipule_problem, skill: competence)
     collegue = create(:user, school: ecole)
     conversation = Conversation.create!(conversation_type: "classic", name: "Fumée", users: [enseignant, collegue])
     create(:message, user: collegue, conversation:)
@@ -99,7 +100,9 @@ RSpec.describe "Fumée : chaque page s'ouvre", type: :request do
       "suivi" => classe.id,
       # Les écrans de Manipule s'ouvrent par une adresse de classe, pas par un
       # identifiant : la substitution de `:id` ne sait rien en faire.
-      "token" => jeton_manipule.token
+      "token" => jeton_manipule.token,
+      # `/manipule/problemes/:id/edition`, l'éditeur.
+      "problemes" => probleme_manipule.id
     }.transform_values(&:to_s)
 
     sign_in enseignant

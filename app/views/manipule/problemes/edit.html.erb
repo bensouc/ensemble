@@ -1,0 +1,3 @@
+<%= render "manipule/problemes/editeur",
+           probleme: @probleme, competence: @probleme.skill, titre: "Modifier le problème",
+           url: manipule_probleme_path(@probleme), methode: :patch, bouton: "Enregistrer" %>

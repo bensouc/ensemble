@@ -81,6 +81,16 @@ Rails.application.routes.draw do
     post "banque/:skill_id/publier", to: "banque#publier", as: :banque_publier
     patch "problemes/:id/circulation", to: "banque#circulation", as: :probleme_circulation
 
+    # L'éditeur. L'aperçu est un POST : il reçoit le formulaire en cours de
+    # frappe, sans rien enregistrer.
+    get "banque/:skill_id/nouveau", to: "problemes#new", as: :nouveau_probleme
+    post "banque/:skill_id/problemes", to: "problemes#create", as: :problemes
+    post "banque/:skill_id/apercu", to: "problemes#apercu", as: :apercu_probleme
+    get "problemes/:id/edition", to: "problemes#edit", as: :edition_probleme
+    patch "problemes/:id", to: "problemes#update", as: :probleme
+    delete "problemes/:id", to: "problemes#destroy"
+    post "problemes/:id/dupliquer", to: "problemes#dupliquer", as: :dupliquer_probleme
+
     # Le suivi d'une classe : qui travaille quoi, et ce que ça a donné.
     # `classe` est déjà pris par l'adresse des élèves, d'où `suivi`.
     get "suivi", to: "classes#index", as: :suivi
