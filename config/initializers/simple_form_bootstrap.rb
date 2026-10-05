@@ -415,6 +415,45 @@ SimpleForm.setup do |config|
 
   # Custom wrappers for input types. This should be a hash containing an input
   # type as key and the wrapper that will be used for all inputs with specified type.
+  # ── Manipule ────────────────────────────────────────────────────────────
+  #
+  # Mêmes gabarits que `vertical_form` et `vertical_collection_inline`, moins
+  # la classe « valide ». simple_form la pose sur CHAQUE champ dès l'ouverture
+  # d'un formulaire vierge : bordure verte et coche partout, pour dire que rien
+  # n'a encore été vérifié. Sur l'éditeur de Manipule, qui a huit champs, ça
+  # faisait beaucoup de vert pour aucune information.
+  #
+  # On retire la classe plutôt que de la repeindre en CSS : ainsi elle n'est
+  # jamais émise, et rien ne dépend des sélecteurs de Bootstrap. Le reste
+  # d'Ensemble n'est pas touché — ces gabarits ne servent que si on les demande.
+  config.wrappers :manipule, tag: 'div', class: 'form-group',
+                             error_class: 'form-group-invalid' do |b|
+    b.use :html5
+    b.use :placeholder
+    b.optional :maxlength
+    b.optional :minlength
+    b.optional :pattern
+    b.optional :min_max
+    b.optional :readonly
+    b.use :label
+    b.use :input, class: 'form-control', error_class: 'is-invalid'
+    b.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback' }
+    b.use :hint, wrap_with: { tag: 'small', class: 'form-text text-muted' }
+  end
+
+  config.wrappers :manipule_collection, item_wrapper_class: 'form-check form-check-inline',
+                                        item_label_class: 'form-check-label', tag: 'fieldset',
+                                        class: 'form-group', error_class: 'form-group-invalid' do |b|
+    b.use :html5
+    b.optional :readonly
+    b.wrapper :legend_tag, tag: 'legend', class: 'col-form-label pt-0' do |ba|
+      ba.use :label_text
+    end
+    b.use :input, class: 'form-check-input', error_class: 'is-invalid'
+    b.use :full_error, wrap_with: { tag: 'div', class: 'invalid-feedback d-block' }
+    b.use :hint, wrap_with: { tag: 'small', class: 'form-text text-muted' }
+  end
+
   config.wrapper_mappings = {
     boolean:       :vertical_boolean,
     check_boxes:   :vertical_collection,

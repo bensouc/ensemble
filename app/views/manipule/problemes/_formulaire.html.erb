@@ -3,7 +3,12 @@
     parlent français. Les deux moitiés ne se rejoindraient pas, et l'aperçu
     répondrait 422 sans que rien ne le dise à l'écran. Une spec vérifie ces
     noms, justement parce que ça s'est produit. %>
+<%# `wrapper: :manipule` : les gabarits d'Ensemble posent une classe « valide »
+    sur chaque champ dès l'ouverture d'un formulaire vierge, et huit champs
+    bordés de vert ne disent rien à personne. Les nôtres en sont dépourvus. %>
 <%= simple_form_for probleme, as: :probleme, url: url,
+                    wrapper: :manipule,
+                    wrapper_mappings: { radio_buttons: :manipule_collection },
                     html: { method: methode, novalidate: false,
                             data: { "m-editeur": true,
                                     apercu: manipule_apercu_probleme_path(competence) } } do |f| %>
@@ -27,7 +32,7 @@
 
     <%= f.input :answer_mode, label: "Comment l'élève répond", as: :radio_buttons,
                 collection: [["Trois réponses au choix", "choix"], ["Un nombre à écrire", "saisie"]],
-                item_wrapper_class: "form-check-inline", label_method: :first, value_method: :last %>
+                label_method: :first, value_method: :last %>
 
     <%# Les trois réponses, avec un bouton radio pour la bonne : le modèle en
         exige exactement une, et trois cases à cocher permettraient d'en cocher
