@@ -10,7 +10,22 @@
 //
 // Tout est cantonné à `.m-prof` : on n'a pas ajouté un atelier pour reteindre
 // le reste de l'application.
+// `.contenu` est un conteneur flex et `.pastouche` un élément flex : il se
+// dimensionne donc sur SON CONTENU, et le `margin: 0 auto` du gabarit le
+// centre ensuite sur cette largeur-là. Résultat, chaque écran commençait à un
+// endroit différent — l'accueil occupait 1200 px à partir de x=200, la liste
+// des problèmes 548 px à partir de x=526. Le bloc entier sautait d'une page à
+// l'autre.
+//
+// `:has()` vise le conteneur d'Ensemble UNIQUEMENT quand il porte une page de
+// Manipule : tous les autres écrans gardent le centrage qu'ils ont toujours eu.
+.pastouche:has(.m-prof) {
+  width: 100%;
+}
+
 .m-prof {
+  width: 100%;
+
   // ── les actions ──────────────────────────────────────────────────────
   //
   // Une seule famille, trois poids. `i` + `span` à l'intérieur, comme les
