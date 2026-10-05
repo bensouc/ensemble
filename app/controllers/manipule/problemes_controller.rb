@@ -73,7 +73,7 @@ module Manipule
     # style et son JavaScript — les jetons se déplacent pour de vrai.
     def apercu
       authorize @competence, :create?, policy_class: ProblemPolicy
-      @probleme = Problem.new(attributs.merge(skill: @competence))
+      @probleme = Problem.new(sans_identifiants(attributs).merge(skill: @competence))
       @choix = @probleme.choices.reject { |choix| choix.label.blank? }
       render layout: "manipule"
     end
@@ -100,10 +100,25 @@ module Manipule
       manquants.times { |rang| @probleme.choices.build(position: @probleme.choices.size + rang + 1) }
     end
 
+    # L'aperçu fabrique un problème neuf, en mémoire, qui n'est jamais
+    # enregistré. Le formulaire de modification lui transmet pourtant les
+    # identifiants des réponses existantes, et Rails cherche alors des enfants
+    # d'un parent qui n'a pas d'identifiant — il lève. On les retire : ici,
+    # ces réponses ne sont que du texte à afficher.
+    def sans_identifiants(base)
+      copie = base.deep_dup
+      Hash(copie["choices_attributes"]).each_value { |choix| choix.delete("id") }
+      copie
+    end
+
     def attributs
+      # `choices_attributes` arrive indexé par un nombre — « 0 », « 1 », « 2 » —
+      # parce que c'est la forme que produit `fields_for`. Le double tableau
+      # est ce qui le dit à `expect` : sans lui, il rend une collection vide,
+      # sans erreur, et le problème est refusé pour « pas de bonne réponse ».
       base = params.expect(
         probleme: [:statement, :question, :answer_mode, :answer, :unit, :tool,
-                   { choices_attributes: %i[id label position] }]
+                   { choices_attributes: [%i[id label position]] }]
       ).to_h
 
       base["choices_attributes"] = choix_avec_la_bonne(base["choices_attributes"])

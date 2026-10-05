@@ -313,7 +313,14 @@ function brancherLesJetons() {
   })
 }
 
+// `DOMContentLoaded` et `turbo:load` se déclenchent TOUS LES DEUX au premier
+// chargement. Sans ce garde, chaque écouteur serait posé deux fois, et un clic
+// sur « Tout écouter » lancerait deux lectures concurrentes.
 function brancherTout() {
+  const corps = document.querySelector(".m-carte") || document.body
+  if (!corps || corps.dataset.mBranche) return
+
+  corps.dataset.mBranche = "1"
   brancher()
   brancherLesJetons()
 }

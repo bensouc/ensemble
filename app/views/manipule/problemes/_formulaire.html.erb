@@ -1,4 +1,8 @@
-<%= form_with model: probleme, url: url, method: methode, class: "m-editeur-champs",
+<%# `scope: :probleme` : sans lui, `form_with` nomme ses champs d'après le
+    modèle — `manipule_problem[...]` — alors que le reste du formulaire et le
+    contrôleur parlent français. Les deux moitiés ne se rejoignaient pas, et
+    l'aperçu répondait 422 sans que rien ne le dise à l'écran. %>
+<%= form_with model: probleme, scope: :probleme, url: url, method: methode, class: "m-editeur-champs",
               data: { "m-editeur": true, apercu: manipule_apercu_probleme_path(competence) } do |f| %>
   <% if probleme.errors.any? %>
     <div class="alert alert-danger">
@@ -91,15 +95,24 @@
         </div>
       </div>
 
-      <%# Trois cases proposées, les vides sont ignorées : deux suffisent
-          presque toujours, et la troisième ne coûte rien à laisser blanche. %>
+      <%# Deux cases au départ, une de plus si le problème en a déjà, et le
+          bouton pour en ajouter. Les vides sont ignorées à l'enregistrement. %>
       <p class="form-label mb-1">Les cases où il pose les jetons</p>
-      <% 3.times do |rang| %>
-        <%= text_field_tag "probleme[reglages][zones][]", probleme.jeton_zones[rang],
-                           class: "form-control mb-2",
-                           placeholder: ["Le panier de Sam", "Restées sur l'arbre", "(facultatif)"][rang],
-                           "aria-label": "Nom de la case #{rang + 1}" %>
-      <% end %>
+      <div data-m-cases>
+        <% cases = probleme.jeton_zones %>
+        <% [cases.size + 1, 2].max.times do |rang| %>
+          <div class="input-group mb-2" data-m-case>
+            <%= text_field_tag "probleme[reglages][zones][]", cases[rang],
+                               class: "form-control",
+                               placeholder: ["Le panier de Sam", "Restées sur l'arbre"][rang] || "Une autre case",
+                               "aria-label": "Nom de la case #{rang + 1}" %>
+            <button type="button" class="btn btn-outline-secondary" data-m-retirer-case
+                    aria-label="Retirer cette case">×</button>
+          </div>
+        <% end %>
+      </div>
+      <button type="button" class="btn btn-sm btn-outline-secondary" data-m-ajouter-case
+              data-max="<%= Manipule::Problem::ZONES_MAX %>">+ Ajouter une case</button>
       <div class="form-text">Nommez-les d'après l'énoncé : l'élève doit lire où il pose.</div>
     </div>
   </fieldset>

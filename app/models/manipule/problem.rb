@@ -18,6 +18,10 @@ module Manipule
 
     RESERVE_MAX = 30
 
+    # Au-delà, l'écran de l'élève devient illisible et le geste perd son sens :
+    # on ne range pas des pommes dans six endroits à la fois quand on a sept ans.
+    ZONES_MAX = 6
+
     belongs_to :skill
     belongs_to :user, optional: true
 
@@ -25,6 +29,11 @@ module Manipule
     # Un problème déjà passé par un élève ne se supprime pas : son historique
     # ferait mentir le suivi. On le retire de la circulation (`published`).
     has_many :attempts, inverse_of: :problem, dependent: :restrict_with_error
+
+    # L'audio s'accroche par un lien polymorphe, donc sans clef étrangère :
+    # rien, en base, ne l'emporterait avec son porteur. Sans ceci, supprimer
+    # un problème laisserait ses morceaux de voix orphelins pour toujours.
+    has_many :audios, as: :readable, class_name: "Manipule::Audio", dependent: :destroy
 
     accepts_nested_attributes_for :choices, allow_destroy: true
 
@@ -71,7 +80,7 @@ module Manipule
     # Des zones nommées d'après l'énoncé — « le panier de Sam », « restées sur
     # l'arbre ». Un nom vide ne donnerait qu'un rectangle muet.
     def jeton_zones
-      Array(tool_data["zones"]).map(&:to_s).map(&:strip).reject(&:empty?)
+      Array(tool_data["zones"]).map(&:to_s).map(&:strip).reject(&:empty?).first(ZONES_MAX)
     end
 
     def choix?

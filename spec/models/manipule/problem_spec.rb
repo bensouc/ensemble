@@ -117,6 +117,21 @@ RSpec.describe Manipule::Problem do
       expect(probleme.jeton_zones).to eq(["Le panier", "Sur l'arbre"])
     end
 
+    # Six cases, c'est déjà beaucoup : on ne range pas des pommes dans six
+    # endroits à la fois quand on a sept ans. Le plafond vaut aussi contre une
+    # adresse forgée.
+    it "plafonne le nombre de cases" do
+      probleme = avec("zones" => (1..12).map { |rang| "Case #{rang}" })
+
+      expect(probleme.jeton_zones.size).to eq(described_class::ZONES_MAX)
+    end
+
+    it "accepte plus de trois cases tant qu'on reste sous le plafond" do
+      probleme = avec("zones" => ["Un", "Deux", "Trois", "Quatre"])
+
+      expect(probleme.jeton_zones).to eq(%w[Un Deux Trois Quatre])
+    end
+
     it "ne se croit pas équipé quand aucun outil n'est choisi" do
       expect(build(:manipule_problem).jetons?).to be(false)
     end
