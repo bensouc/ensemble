@@ -1,0 +1,15 @@
+<%# Une sortie, et une seule destination : la liste des prénoms de la classe.
+    On ne quitte jamais /manipule — le cloisonnement tient, l'élève ne peut
+    pas se retrouver dans Ensemble en cliquant à côté.
+
+    Elle existe pour un cas très banal en classe : un élève s'en va au milieu
+    de sa série — la récréation sonne, on l'appelle — et un autre s'assoit à
+    sa place. Sans elle, le second travaillerait sous le nom du premier, et
+    le suivi de l'enseignante mentirait sur les deux.
+
+    Discrète exprès : grise, petite, à l'écart des boutons de l'exercice. Un
+    enfant qui la cherche la trouve ; un enfant qui répond ne la rencontre
+    pas. %>
+<div class="m-sortie">
+  <%= button_to "Ce n'est pas moi", manipule_quitter_path, method: :delete, class: "m-sortie-bouton" %>
+</div>

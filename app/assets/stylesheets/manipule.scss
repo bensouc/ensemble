@@ -346,3 +346,30 @@ form.button_to { display: inline-block; margin: 0; }
   font-size: 0.95rem;
   color: var(--m-encre-douce);
 }
+
+// ───────────────────────── la sortie de séance ─────────────────────────
+//
+// Pour l'élève qui s'assoit devant l'écran d'un autre. Volontairement terne
+// et à l'écart : elle ne doit pas entrer en concurrence avec les réponses,
+// ni se cliquer par accident. Elle ne mène qu'à la liste des prénoms.
+.m-sortie {
+  margin-top: 2.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--m-trait);
+  display: flex;
+  justify-content: center;
+}
+
+.m-sortie-bouton {
+  background: none;
+  border: none;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.95rem;
+  color: var(--m-encre-douce);
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: var(--m-rose);
+  }
+}
