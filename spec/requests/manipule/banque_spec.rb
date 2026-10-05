@@ -177,6 +177,18 @@ RSpec.describe "Manipule, la banque côté enseignante" do
       expect(assigns(:competences)).not_to include(ailleurs)
     end
 
+    # Un seul niveau porte jusqu'à cinq cents compétences : la page en montre
+    # une soixantaine et dit d'affiner, plutôt que d'en dérouler un mur.
+    it "plafonne la liste, mais annonce le compte entier" do
+      stub_const("Manipule::BanqueController::LISTE_MAX", 1)
+      create(:skill, domain: competence.domain, school: enseignante.school, level: 2)
+
+      get manipule_banque_path, params: { ceinture: 2 }
+
+      expect(assigns(:competences).size).to eq(1)
+      expect(assigns(:total)).to eq(2)
+    end
+
     # Chaque niveau porte ses propres domaines, et ils portent les mêmes noms :
     # à plat, la liste alignait quatre « Calcul » indiscernables.
     it "range les domaines sous leur niveau" do

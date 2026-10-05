@@ -8,7 +8,8 @@
       filtres, la seule façon d'en atteindre une était qu'elle porte déjà un
       problème, et on ne pouvait donc jamais écrire le premier. %>
   <%= form_with url: manipule_banque_path, method: :get,
-                class: "d-flex gap-2 flex-wrap align-items-center justify-content-end mb-4" do %>
+                class: "d-flex gap-2 flex-wrap align-items-center justify-content-end mb-4",
+                data: { controller: "manipule-filtres", action: "change->manipule-filtres#envoyer" } do %>
     <%= label_tag :niveau, "Niveau", class: "visually-hidden" %>
     <%= select_tag :niveau, options_for_select(@niveaux.map { |niveau| [niveau.name, niveau.id] }, params[:niveau]),
                    include_blank: "Tous les niveaux", class: "area", style: "width: auto;" %>
@@ -18,16 +19,21 @@
         On les range donc sous leur niveau. %>
     <%= label_tag :domaine, "Domaine", class: "visually-hidden" %>
     <%= select_tag :domaine, grouped_options_for_select(@domaines, params[:domaine]),
-                   include_blank: "Tous les domaines", class: "area", style: "width: auto;" %>
+                   include_blank: "Tous les domaines", class: "area", style: "width: auto;",
+                   data: { manipule_filtres_target: "domaine" } %>
 
     <%= label_tag :ceinture, "Ceinture", class: "visually-hidden" %>
     <%= select_tag :ceinture,
                    options_for_select(Belt::BELT_COLORS.each_with_index.map { |couleur, rang| ["Ceinture #{couleur}", rang + 1] }, params[:ceinture]),
                    include_blank: "Toutes les ceintures", class: "area", style: "width: auto;" %>
 
-    <button type="submit" class="m-cta m-cta--principal">
-      <i class="fa-solid fa-filter"></i><span>Filtrer</span>
-    </button>
+    <%# Le formulaire part tout seul à chaque changement ; ce bouton ne sert
+        plus qu'au cas où le JavaScript n'a pas pris. %>
+    <noscript>
+      <button type="submit" class="m-cta m-cta--principal">
+        <i class="fa-solid fa-filter"></i><span>Filtrer</span>
+      </button>
+    </noscript>
     <% if @filtre %>
       <%= link_to manipule_banque_path, class: "m-cta m-cta--discret" do %>
         <i class="fa-solid fa-xmark"></i><span>Tout effacer</span>
@@ -48,7 +54,10 @@
     </p>
   <% else %>
     <p class="m-fiche-note mb-3">
-      <%= au_pluriel(@competences.size, "compétence") %><%= " sur ce filtre" if @filtre %>.
+      <%= au_pluriel(@total, "compétence") %><%= " sur ce filtre" if @filtre %>.
+      <% if @total > @competences.size %>
+        Les <%= @competences.size %> premières sont affichées — affinez par domaine ou par ceinture.
+      <% end %>
       <%= "Sans filtre, seules celles où vous avez déjà écrit sont listées." unless @filtre %>
     </p>
 

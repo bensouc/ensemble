@@ -21,7 +21,9 @@ module Manipule
       @filtre = filtre?
       @niveaux = Grade.where(school: current_user.school).order(:grade_level)
       @domaines = domaines_du_filtre
-      @competences = competences_affichees
+      toutes = competences_affichees
+      @total = toutes.size
+      @competences = toutes.first(LISTE_MAX)
       @compte = policy_scope(Problem).where(skill_id: @competences.map(&:id))
                                      .group(:skill_id, :published).count
     end
@@ -61,6 +63,11 @@ module Manipule
     private
 
     FILTRES = %i[niveau domaine ceinture].freeze
+
+    # Un seul niveau peut porter cinq cents compétences : au-delà d'une
+    # soixantaine de cartes, personne ne parcourt plus rien, et la page dit
+    # alors d'affiner plutôt que de dérouler.
+    LISTE_MAX = 60
 
     def filtre?
       FILTRES.any? { |nom| params[nom].present? }
