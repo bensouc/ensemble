@@ -10,9 +10,15 @@ module Manipule
     before_action :set_probleme, only: [:circulation]
     before_action :exiger_fichier, only: [:importer]
 
+    # Le choix d'une compétence parmi plus de mille : c'est `Recherche` qui
+    # sait lesquelles montrer, et à quel moment montrer celles qui sont encore
+    # vides — le seul chemin vers un premier problème.
     def index
-      @problemes = policy_scope(Problem).includes(skill: :domain)
-      @par_competence = @problemes.group_by(&:skill).sort_by { |competence, _| [competence.level, competence.name] }
+      @problemes = policy_scope(Problem).includes(skill: { domain: :grade })
+      @recherche = Recherche.new(ecole: current_user.school, niveaux: niveaux_de_ses_classes,
+                                 deja_ecrites: @problemes.map(&:skill), filtres: filtres)
+      @compte = policy_scope(Problem).where(skill_id: @recherche.competences.map(&:id)).
+        group(:skill_id, :published).count
     end
 
     def show
@@ -48,6 +54,19 @@ module Manipule
     end
 
     private
+
+    # Nommés un par un : ces valeurs ne servent qu'à des `where`, jamais à une
+    # affectation, et `permit!` sur une tranche de `params` l'oublierait vite.
+    def filtres
+      { niveau: params[:niveau], domaine: params[:domaine], ceinture: params[:ceinture] }
+    end
+
+    # Les niveaux de ses classes — la même portée que « Mes classes ». Une
+    # enseignante de CE1 n'a rien à écrire pour le CM2, et l'école porte sept
+    # niveaux pour plus de mille compétences.
+    def niveaux_de_ses_classes
+      Grade.where(id: policy_scope(Classroom).select(:grade_id)).order(:grade_level)
+    end
 
     def fichier
       params[:fichier]
