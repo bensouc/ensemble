@@ -65,12 +65,31 @@ Rails.application.routes.draw do
     # Côté enseignante. Ces pages exigent sa session Devise ; le cookie de
     # l'élève, lui, n'y sert jamais à rien — c'est le code qui décide de le
     # lire, et aucun contrôleur d'ici ne le fait.
+    #
+    # `/manipule` est sa porte d'entrée. Un élève qui y arriverait est renvoyé
+    # vers sa série par le garde d'ApplicationController, avant d'atteindre
+    # Devise.
+    root "accueil#index"
+    # L'option s'ouvre compte par compte, et seulement par un admin.
+    get "acces", to: "acces#index", as: :acces
+    patch "acces/:id", to: "acces#update", as: :acces_utilisateur
+
     get "banque", to: "banque#index", as: :banque
     get "banque/:skill_id", to: "banque#show", as: :banque_competence
     get "banque/:skill_id/import", to: "banque#import", as: :banque_import
     post "banque/:skill_id/import", to: "banque#importer", as: :banque_importer
     post "banque/:skill_id/publier", to: "banque#publier", as: :banque_publier
     patch "problemes/:id/circulation", to: "banque#circulation", as: :probleme_circulation
+
+    # L'éditeur. L'aperçu est un POST : il reçoit le formulaire en cours de
+    # frappe, sans rien enregistrer.
+    get "banque/:skill_id/nouveau", to: "problemes#new", as: :nouveau_probleme
+    post "banque/:skill_id/problemes", to: "problemes#create", as: :problemes
+    post "banque/:skill_id/apercu", to: "problemes#apercu", as: :apercu_probleme
+    get "problemes/:id/edition", to: "problemes#edit", as: :edition_probleme
+    patch "problemes/:id", to: "problemes#update", as: :probleme
+    delete "problemes/:id", to: "problemes#destroy"
+    post "problemes/:id/dupliquer", to: "problemes#dupliquer", as: :dupliquer_probleme
 
     # Le suivi d'une classe : qui travaille quoi, et ce que ça a donné.
     # `classe` est déjà pris par l'adresse des élèves, d'où `suivi`.

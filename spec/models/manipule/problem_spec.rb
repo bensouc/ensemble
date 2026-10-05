@@ -86,4 +86,55 @@ RSpec.describe Manipule::Problem do
     expect(probleme.destroy).to be false
     expect(Manipule::Problem.exists?(probleme.id)).to be true
   end
+  describe "les réglages des jetons" do
+    def avec(donnees)
+      build(:manipule_problem, tool: "jetons", tool_data: donnees)
+    end
+
+    it "retrouve le caractère de la ressource choisie" do
+      expect(avec("ressource" => "carotte").jeton_caractere).to eq("🥕")
+    end
+
+    # Une banque importée peut nommer une ressource qu'on ne connaît pas : mieux
+    # vaut un jeton par défaut qu'une case vide que l'élève ne peut pas saisir.
+    it "retombe sur la pomme pour une ressource inconnue" do
+      expect(avec("ressource" => "licorne").jeton_caractere).to eq("🍎")
+      expect(avec({}).jeton_caractere).to eq("🍎")
+    end
+
+    # Trois cents jetons à l'écran ne se comptent pas, ils se subissent.
+    it "plafonne la réserve" do
+      expect(avec("reserve" => 300).jeton_reserve).to eq(described_class::RESERVE_MAX)
+      expect(avec("reserve" => -4).jeton_reserve).to eq(0)
+      expect(avec("reserve" => "15").jeton_reserve).to eq(15)
+    end
+
+    # Une zone sans nom ne serait qu'un rectangle muet : l'élève doit lire où
+    # il pose, c'est ce qui relie le geste à l'énoncé.
+    it "écarte les zones sans nom" do
+      probleme = avec("zones" => ["Le panier", "  ", "", "Sur l'arbre"])
+
+      expect(probleme.jeton_zones).to eq(["Le panier", "Sur l'arbre"])
+    end
+
+    # Six cases, c'est déjà beaucoup : on ne range pas des pommes dans six
+    # endroits à la fois quand on a sept ans. Le plafond vaut aussi contre une
+    # adresse forgée.
+    it "plafonne le nombre de cases" do
+      probleme = avec("zones" => (1..12).map { |rang| "Case #{rang}" })
+
+      expect(probleme.jeton_zones.size).to eq(described_class::ZONES_MAX)
+    end
+
+    it "accepte plus de trois cases tant qu'on reste sous le plafond" do
+      probleme = avec("zones" => ["Un", "Deux", "Trois", "Quatre"])
+
+      expect(probleme.jeton_zones).to eq(%w[Un Deux Trois Quatre])
+    end
+
+    it "ne se croit pas équipé quand aucun outil n'est choisi" do
+      expect(build(:manipule_problem).jetons?).to be(false)
+    end
+  end
+
 end

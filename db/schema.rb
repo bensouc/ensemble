@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_04_210000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_05_184235) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -532,6 +532,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_210000) do
     t.string "invited_by_type"
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
+    t.boolean "manipule", default: false, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
@@ -593,18 +594,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_04_210000) do
   add_foreign_key "classrooms", "users"
   add_foreign_key "domains", "grades"
   add_foreign_key "grades", "schools"
-  add_foreign_key "manipule_assignments", "skills"
-  add_foreign_key "manipule_assignments", "students"
-  add_foreign_key "manipule_assignments", "users"
-  add_foreign_key "manipule_attempts", "manipule_choices", column: "choice_id"
-  add_foreign_key "manipule_attempts", "manipule_practices", column: "practice_id"
-  add_foreign_key "manipule_attempts", "manipule_problems", column: "problem_id"
-  add_foreign_key "manipule_choices", "manipule_problems", column: "problem_id"
-  add_foreign_key "manipule_classroom_tokens", "classrooms"
-  add_foreign_key "manipule_practices", "skills"
-  add_foreign_key "manipule_practices", "students"
-  add_foreign_key "manipule_problems", "skills"
-  add_foreign_key "manipule_problems", "users"
+  add_foreign_key "manipule_assignments", "skills", on_delete: :cascade
+  add_foreign_key "manipule_assignments", "students", on_delete: :cascade
+  add_foreign_key "manipule_assignments", "users", on_delete: :cascade
+  add_foreign_key "manipule_attempts", "manipule_choices", column: "choice_id", on_delete: :cascade
+  add_foreign_key "manipule_attempts", "manipule_practices", column: "practice_id", on_delete: :cascade
+  add_foreign_key "manipule_attempts", "manipule_problems", column: "problem_id", on_delete: :cascade
+  add_foreign_key "manipule_choices", "manipule_problems", column: "problem_id", on_delete: :cascade
+  add_foreign_key "manipule_classroom_tokens", "classrooms", on_delete: :cascade
+  add_foreign_key "manipule_practices", "skills", on_delete: :cascade
+  add_foreign_key "manipule_practices", "students", on_delete: :cascade
+  add_foreign_key "manipule_problems", "skills", on_delete: :cascade
+  add_foreign_key "manipule_problems", "users", on_delete: :nullify
   add_foreign_key "messages", "conversations"
   add_foreign_key "messages", "users"
   add_foreign_key "results", "skills"

@@ -1,4 +1,6 @@
-<div class="container py-4">
+<div class="container py-4 m-prof">
+  <%= render "manipule/shared/nav" %>
+
   <p class="mb-1"><%= link_to "← La banque", manipule_banque_path %></p>
   <h1 class="mb-1"><%= @competence.name %></h1>
   <p class="text-muted">
@@ -8,7 +10,8 @@
   </p>
 
   <div class="d-flex gap-2 mb-4">
-    <%= link_to "Importer un tableur", manipule_banque_import_path(@competence), class: "btn btn-primary" %>
+    <%= link_to "Nouveau problème", manipule_nouveau_probleme_path(@competence), class: "btn btn-primary" %>
+    <%= link_to "Importer un tableur", manipule_banque_import_path(@competence), class: "btn btn-outline-primary" %>
     <% if @problemes.any? { |probleme| !probleme.published } %>
       <%= button_to "Tout mettre en circulation", manipule_banque_publier_path(@competence), class: "btn btn-outline-primary" %>
     <% end %>
@@ -28,6 +31,12 @@
               <% probleme.choices.each do |choix| %>
                 <span class="badge <%= choix.correct? ? "text-bg-success" : "text-bg-light" %> me-1"><%= choix.label %></span>
               <% end %>
+              <% if probleme.jetons? %>
+                <span class="badge text-bg-light me-1">
+                  <%= probleme.jeton_caractere %> <%= probleme.jeton_reserve %> jetons,
+                  <%= probleme.jeton_zones.size %> cases
+                </span>
+              <% end %>
             </div>
             <div class="text-end flex-shrink-0">
               <span class="badge <%= probleme.published ? "text-bg-primary" : "text-bg-secondary" %> mb-2 d-block">
@@ -36,6 +45,14 @@
               <%= button_to probleme.published ? "Retirer" : "Mettre en circulation",
                             manipule_probleme_circulation_path(probleme),
                             method: :patch, class: "btn btn-sm btn-outline-secondary" %>
+              <div class="d-flex gap-1 justify-content-end mt-2">
+                <%= link_to "Modifier", manipule_edition_probleme_path(probleme),
+                            class: "btn btn-sm btn-outline-primary" %>
+                <%# Écrire dix problèmes qui ne diffèrent que par leurs nombres
+                    est le quotidien de l'enseignante. %>
+                <%= button_to "Dupliquer", manipule_dupliquer_probleme_path(probleme),
+                              class: "btn btn-sm btn-outline-secondary" %>
+              </div>
             </div>
           </div>
         </div>

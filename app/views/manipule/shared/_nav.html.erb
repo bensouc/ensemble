@@ -1,0 +1,14 @@
+<%# La barre des écrans de l'enseignante. Elle ne figure QUE sur ses pages :
+    le gabarit de l'élève, lui, n'offre volontairement aucune sortie. %>
+<div class="d-flex align-items-baseline flex-wrap gap-3 mb-4">
+  <%= link_to "Manipule", manipule_root_path, class: "h4 mb-0 text-decoration-none" %>
+  <ul class="nav nav-pills m-onglets">
+    <% onglets_manipule.each do |onglet| %>
+      <li class="nav-item">
+        <%= link_to onglet[:libelle], onglet[:chemin],
+                    class: "nav-link #{'active' if onglet_manipule_actif?(onglet)}",
+                    aria: { current: ("page" if onglet_manipule_actif?(onglet)) } %>
+      </li>
+    <% end %>
+  </ul>
+</div>

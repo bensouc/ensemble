@@ -6,6 +6,10 @@ module Manipule
   class Choice < ApplicationRecord
     belongs_to :problem, inverse_of: :choices
 
+    # Même raison que sur le problème : le lien est polymorphe, donc la base
+    # ne nettoie rien toute seule.
+    has_many :audios, as: :readable, class_name: "Manipule::Audio", dependent: :destroy
+
     validates :label, presence: true
 
     # Seulement sur modification : la création d'une réponse accompagne celle

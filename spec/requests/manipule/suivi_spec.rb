@@ -3,7 +3,8 @@
 require "rails_helper"
 
 RSpec.describe "Manipule, le suivi d'une classe" do
-  let(:enseignante) { create(:user, admin: false) }
+  # L'option Manipule s'ouvre compte par compte ; sans elle, redirection.
+  let(:enseignante) { create(:user, admin: false, manipule: true) }
   let(:niveau) { create(:grade, school: enseignante.school) }
   let(:domaine) { create(:domain, grade: niveau) }
   let(:classe) { create(:classroom, user: enseignante, grade: niveau) }

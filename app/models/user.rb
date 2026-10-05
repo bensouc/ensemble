@@ -57,6 +57,11 @@ class User < ApplicationRecord
 
   # Methods
 
+  # Manipule est une option, ouverte compte par compte le temps de l'essai.
+  # Un admin la voit toujours : c'est lui qui l'ouvre aux autres, il doit
+  # pouvoir regarder ce qu'il ouvre.
+  def manipule_ouvert? = manipule? || admin?
+
   def avatar_url
     if admin?
       ActionController::Base.helpers.asset_path("icons/vroad_b_w.png")

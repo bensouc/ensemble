@@ -52,6 +52,7 @@ RailsAdmin.config do |config|
       field :id
       field :email
       field :admin
+      field :manipule
       field :first_name
       field :last_name
       field :school

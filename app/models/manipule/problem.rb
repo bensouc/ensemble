@@ -8,6 +8,20 @@ module Manipule
     MODES = %w[choix saisie].freeze
     OUTILS = %w[jetons partage horloge dizaines_unites].freeze
 
+    # Les jetons que l'enseignante peut faire manipuler. Des caractères, pas
+    # des images : rien à téléverser, rien à servir, et ça s'affiche sur la
+    # machine du fond de la classe comme sur un iPad.
+    RESSOURCES = {
+      "pomme" => "🍎", "lapin" => "🐰", "carotte" => "🥕", "biscuit" => "🍪",
+      "bille" => "🔵", "piece" => "🪙", "fleur" => "🌸", "etoile" => "⭐"
+    }.freeze
+
+    RESERVE_MAX = 30
+
+    # Au-delà, l'écran de l'élève devient illisible et le geste perd son sens :
+    # on ne range pas des pommes dans six endroits à la fois quand on a sept ans.
+    ZONES_MAX = 6
+
     belongs_to :skill
     belongs_to :user, optional: true
 
@@ -15,6 +29,11 @@ module Manipule
     # Un problème déjà passé par un élève ne se supprime pas : son historique
     # ferait mentir le suivi. On le retire de la circulation (`published`).
     has_many :attempts, inverse_of: :problem, dependent: :restrict_with_error
+
+    # L'audio s'accroche par un lien polymorphe, donc sans clef étrangère :
+    # rien, en base, ne l'emporterait avec son porteur. Sans ceci, supprimer
+    # un problème laisserait ses morceaux de voix orphelins pour toujours.
+    has_many :audios, as: :readable, class_name: "Manipule::Audio", dependent: :destroy
 
     accepts_nested_attributes_for :choices, allow_destroy: true
 
@@ -40,6 +59,28 @@ module Manipule
     def parties_a_lire
       [[self, "enonce", statement], [self, "question", question]] +
         choices.map { |choix| [choix, "choix", choix.label] }
+    end
+
+    # Les réglages de l'outil, lus depuis la colonne structurée. L'outil aide
+    # l'élève à se représenter le problème ; il ne porte PAS la réponse, qui
+    # reste un choix ou une saisie. C'est ce qui a été tranché au cadrage :
+    # « le prof peut soit demander un QCM soit une valeur à entrer ».
+    def jetons?
+      tool == "jetons"
+    end
+
+    def jeton_caractere
+      RESSOURCES.fetch(tool_data["ressource"], RESSOURCES["pomme"])
+    end
+
+    def jeton_reserve
+      tool_data["reserve"].to_i.clamp(0, RESERVE_MAX)
+    end
+
+    # Des zones nommées d'après l'énoncé — « le panier de Sam », « restées sur
+    # l'arbre ». Un nom vide ne donnerait qu'un rectangle muet.
+    def jeton_zones
+      Array(tool_data["zones"]).map(&:to_s).map(&:strip).reject(&:empty?).first(ZONES_MAX)
     end
 
     def choix?

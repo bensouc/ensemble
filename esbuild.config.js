@@ -25,6 +25,9 @@ const configs = [
   // Manipule a son propre point d'entrée : son JavaScript n'alourdit pas le
   // bundle des écoles qui ne s'en servent pas.
   { ...base, entryPoints: { manipule: 'app/javascript/manipule.js' }, format: 'esm' },
+  // L'éditeur en a un troisième, chargé par sa seule page : l'aperçu en
+  // direct ne concerne que l'enseignante qui écrit un problème.
+  { ...base, entryPoints: { manipule_editeur: 'app/javascript/manipule_editeur.js' }, format: 'esm' },
 ]
 
 if (watch) {
