@@ -39,6 +39,21 @@ module ManipuleHelper
     "#{nombre} #{nombre > 1 ? (pluriel || "#{singulier}s") : singulier}"
   end
 
+  # « 1e » n'existe pas : c'est « 1er », puis « 2e », « 3e »… `ordinalize`
+  # d'ActiveSupport parle anglais (« 1st ») et ne sert donc à rien ici.
+  def rang_francais(nombre)
+    nombre == 1 ? "1er" : "#{nombre}e"
+  end
+
+  # Ce qu'il fallait répondre, quel que soit le mode : l'étiquette cochée pour
+  # un QCM, la réponse écrite pour une saisie. Lire ce qu'un enfant a répondu
+  # sans savoir ce qui était attendu ne dit rien de son erreur.
+  def reponse_attendue(probleme)
+    return probleme.choices.detect(&:correct?)&.label if probleme.choix?
+
+    [probleme.answer, probleme.unit].compact_blank.join(" ")
+  end
+
   def chemin_audio(audio)
     return if audio.blank?
 

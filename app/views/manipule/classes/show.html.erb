@@ -44,7 +44,11 @@
     <div class="m-fiche">
       <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
         <div class="flex-grow-1">
-          <h3 class="m-fiche-titre"><%= eleve.first_name %></h3>
+          <h3 class="m-fiche-titre">
+            <%# Les totaux disent qu'il a raté quatre problèmes ; ils ne disent
+                pas lesquels. Le prénom mène au détail. %>
+            <%= link_to eleve.first_name, manipule_suivi_eleve_path(eleve), class: "text-decoration-none" %>
+          </h3>
           <p class="m-fiche-note mb-1">
             <% if affectation %>
               Travaille « <%= affectation.skill.name %> »

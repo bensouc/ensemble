@@ -1,0 +1,64 @@
+<div class="px-4 py-4 m-prof">
+  <%= render "manipule/shared/nav" %>
+  <%= render "manipule/shared/entete", titre: @eleve.first_name,
+             retour: { libelle: @eleve.classroom.name, chemin: manipule_suivi_classe_path(@eleve.classroom) },
+             note: "Ce qu'il a répondu, séance par séance." %>
+
+  <% if @series.empty? %>
+    <p class="m-fiche-note">Cet élève n'est jamais venu sur Manipule.</p>
+  <% else %>
+    <% @series.each do |serie| %>
+      <% repondues = serie.attempts.select(&:repondue?) %>
+      <div class="m-fiche mb-4">
+        <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
+          <div>
+            <h2 class="m-fiche-titre"><%= serie.skill.name %></h2>
+            <p class="m-fiche-note mb-0">
+              <%= l(serie.created_at, format: :short) %> ·
+              <%= repondues.count { |tentative| tentative.status == "correct" } %> juste,
+              <%= repondues.count { |tentative| tentative.status == "wrong" } %> faux,
+              <%= repondues.count { |tentative| tentative.status == "skipped" } %> passé
+              <%# Une série abandonnée se lit à ce qui manque, pas à un total. %>
+              <% if repondues.size < serie.attempts.size %>
+                · arrêté au <%= rang_francais(repondues.size + 1) %> sur <%= serie.attempts.size %>
+              <% end %>
+            </p>
+          </div>
+          <%# Pas de durée ici. `finished_at - started_at` compte aussi le temps
+              où l'enfant était parti : les séances d'essai affichaient
+              « environ 9 heures ». Le vrai temps passé serait la somme des
+              `elapsed_ms`, que le contrôleur de l'élève ne remplit jamais. %>
+        </div>
+
+        <% serie.attempts.each do |tentative| %>
+          <div class="m-reponse">
+            <span class="m-reponse-marque m-reponse--<%= tentative.status %>">
+              <%= { "correct" => "✓", "wrong" => "✗", "skipped" => "→" }.fetch(tentative.status, "·") %>
+            </span>
+            <div class="flex-grow-1">
+              <p class="mb-1"><%= tentative.problem.question %></p>
+              <p class="m-fiche-note mb-0">
+                <%# Ce qu'il a répondu, et — s'il s'est trompé — ce qu'il
+                    fallait répondre. Lire l'un sans l'autre ne sert à rien. %>
+                <% if tentative.status == "pending" %>
+                  Pas répondu.
+                <% elsif tentative.status == "skipped" %>
+                  Passé.
+                <% else %>
+                  A répondu « <strong><%= tentative.choice&.label || tentative.given %></strong> »
+                  <% if tentative.status == "wrong" %>
+                    — attendu « <%= reponse_attendue(tentative.problem) %> »
+                  <% end %>
+                <% end %>
+                <% if tentative.elapsed_ms.present? %>
+                  · <%= (tentative.elapsed_ms / 1000.0).round %> s
+                <% end %>
+                <%= "· #{au_pluriel(tentative.listened_count, 'écoute')}" if tentative.listened_count.positive? %>
+              </p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

@@ -186,6 +186,42 @@
     font-size: 14px;
   }
 
+  // ── ce que l'élève a répondu ─────────────────────────────────────────
+  //
+  // Une ligne par problème, et la marque en marge plutôt qu'en pastille : on
+  // parcourt la colonne des ✗ du regard, sans lire le reste.
+  .m-reponse {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    padding: 0.5rem 0;
+    border-top: colors.$grisC solid thin;
+
+    &:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+  }
+
+  .m-reponse-marque {
+    flex-shrink: 0;
+    width: 1.2rem;
+    text-align: center;
+    font-weight: 700;
+    color: colors.$grisF;
+    opacity: 0.4;
+  }
+
+  .m-reponse--correct {
+    color: colors.$green;
+    opacity: 1;
+  }
+
+  .m-reponse--wrong {
+    color: colors.$rose;
+    opacity: 1;
+  }
+
   // ── les étiquettes ───────────────────────────────────────────────────
   //
   // Même gabarit que la pastille d'action, mais inerte : on lit, on ne clique

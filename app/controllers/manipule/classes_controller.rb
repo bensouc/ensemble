@@ -5,7 +5,7 @@ module Manipule
   # ce que ça a donné. C'est aussi d'ici qu'elle désigne la compétence du jour,
   # sans quoi l'élève tombe sur « Rien à faire pour le moment ».
   class ClassesController < ProfController
-    before_action :set_classe, except: [:index]
+    before_action :set_classe, except: [:index, :eleve]
 
     def index
       @classes = policy_scope(Classroom).includes(:students).order(:name)
@@ -30,6 +30,18 @@ module Manipule
       redirect_to manipule_suivi_classe_path(@classe)
     end
 
+    # Ce que l'enfant a répondu, problème par problème. Les totaux de la page
+    # de la classe disent qu'il a raté quatre problèmes ; ils ne disent pas
+    # lequel, ni ce qu'il a répondu à la place — c'est pourtant là qu'est la
+    # remédiation.
+    def eleve
+      @eleve = Student.find(params[:id])
+      authorize @eleve.classroom, :show?
+      @series = Practice.where(student: @eleve).
+        includes(:skill, attempts: [:choice, { problem: :choices }]).
+        order(created_at: :desc).limit(SERIES_MONTREES)
+    end
+
     # Renouveler ferme aussitôt l'ancienne adresse : c'est le seul recours quand
     # un lien a circulé plus loin que la classe.
     def jeton
@@ -40,6 +52,10 @@ module Manipule
     end
 
     private
+
+    # Au-delà, personne ne déroule : l'enseignante regarde les dernières
+    # séances, pas l'année.
+    SERIES_MONTREES = 10
 
     def set_classe
       @classe = Classroom.find(params[:id])
