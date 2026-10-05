@@ -327,4 +327,9 @@ function brancherTout() {
 
 document.addEventListener("DOMContentLoaded", brancherTout)
 document.addEventListener("turbo:load", brancherTout)
-document.addEventListener("turbo:before-cache", arreter)
+document.addEventListener("turbo:before-cache", () => {
+  arreter()
+  // Même raison que sur l'éditeur : sans cela, une page restituée par Turbo
+  // reviendrait marquée comme déjà branchée, et muette.
+  document.querySelectorAll("[data-m-branche]").forEach((e) => delete e.dataset.mBranche)
+})

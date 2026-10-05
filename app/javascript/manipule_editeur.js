@@ -6,6 +6,11 @@
 const ATTENTE = 400 // ms après la dernière frappe
 
 let minuteur = null
+// Les aperçus se bousculent dès qu'on rafraîchit sans attendre : deux
+// requêtes partent coup sur coup, et rien ne garantit l'ordre des réponses.
+// Sans ce compteur, la plus ANCIENNE pouvait arriver en dernier et réafficher
+// un aperçu périmé — on voyait sa modification s'effacer toute seule.
+let rang = 0
 
 function basculer(formulaire) {
   const choix = formulaire.querySelector("[name='probleme[answer_mode]']:checked")?.value === "choix"
@@ -34,6 +39,8 @@ async function rafraichir(formulaire) {
   champs.delete("_method")
   const jeton = document.querySelector("meta[name='csrf-token']")?.content
 
+  const mien = ++rang
+
   try {
     const reponse = await fetch(formulaire.dataset.apercu, {
       method: "POST",
@@ -43,9 +50,12 @@ async function rafraichir(formulaire) {
     })
     if (!reponse.ok) return
 
+    const page = await reponse.text()
+    if (mien !== rang) return // une demande plus récente est partie depuis
+
     // `srcdoc` plutôt qu'une adresse : la réponse est déjà la page entière, et
     // on évite un second aller-retour. Les adresses d'assets y sont absolues.
-    cadre.srcdoc = await reponse.text()
+    cadre.srcdoc = page
   } catch {
     // Un aperçu qui ne se rafraîchit pas ne doit jamais empêcher d'enregistrer.
   }
@@ -88,6 +98,7 @@ function brancherLesCases(formulaire) {
     liste.appendChild(copie)
     compter()
     champ.focus()
+    formulaire.dispatchEvent(new Event("change", { bubbles: true }))
   })
 
   liste.querySelectorAll("[data-m-retirer-case]").forEach((bouton) => {
@@ -120,20 +131,35 @@ function brancherEditeur() {
   brancherLesCases(formulaire)
   rafraichir(formulaire)
 
+  // Deux rythmes, parce que les deux gestes n'ont rien à voir.
+  //
+  // Pendant qu'on TAPE, on attend une pause : rafraîchir à chaque lettre
+  // enverrait trente requêtes pour un énoncé, et l'aperçu clignoterait.
+  //
+  // Un changement DISCRET — une liste, un bouton radio, un champ qu'on
+  // quitte — n'a aucune raison d'attendre : le geste est fini, le résultat
+  // doit suivre tout de suite.
   formulaire.addEventListener("input", () => {
     basculer(formulaire)
     clearTimeout(minuteur)
     minuteur = setTimeout(() => rafraichir(formulaire), ATTENTE)
   })
 
-  // Un changement de liste ou de bouton radio n'émet pas toujours « input »
-  // sur les vieux navigateurs : « change » rattrape.
   formulaire.addEventListener("change", () => {
     basculer(formulaire)
     clearTimeout(minuteur)
-    minuteur = setTimeout(() => rafraichir(formulaire), ATTENTE)
+    rafraichir(formulaire)
   })
+}
+
+// Turbo met la page en cache telle quelle et la restitue au retour. La marque
+// posée ci-dessus y serait déjà, et plus rien ne se brancherait sur une page
+// dont les écouteurs, eux, n'ont pas survécu. On la retire avant la mise en
+// cache : au retour, la page est de nouveau vierge.
+function oublierLaMarque() {
+  document.querySelectorAll("[data-m-branche]").forEach((e) => delete e.dataset.mBranche)
 }
 
 document.addEventListener("DOMContentLoaded", brancherEditeur)
 document.addEventListener("turbo:load", brancherEditeur)
+document.addEventListener("turbo:before-cache", oublierLaMarque)
