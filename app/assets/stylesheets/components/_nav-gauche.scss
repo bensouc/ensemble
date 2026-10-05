@@ -93,6 +93,28 @@ color: colors.$grisF;
   }
 }
 
+// Manipule n'est pas encore ouverte à tous, et l'étiquette le dit. Un filet
+// plutôt qu'un aplat : le rose plein est réservé à l'icône de l'entrée
+// courante, et un pavé posé à côté du libellé se lirait comme un second
+// bouton. Elle vit dans le flux du mot, donc la rangée garde ses 40 px et
+// l'icône ne bouge pas de sa droite ; `nowrap` lui interdit de passer à la
+// ligne, ce qui désalignerait la colonne.
+.menug_icone .beta{
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 4px;
+  border: 1px solid rgba(colors.$rose, 0.45);
+  border-radius: 999px;
+  color: rgba(colors.$rose, 0.75);
+  font-size: 8px;
+  font-weight: 700;
+  line-height: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  vertical-align: 2px;
+  white-space: nowrap;
+}
+
 .menug_icone:hover{
   color: colors.$grisF;
   background-color: inherit;

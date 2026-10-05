@@ -70,6 +70,23 @@
   }
 
   // ── la barre d'onglets ───────────────────────────────────────────────
+  // La même étiquette que dans le menu de gauche, à la taille du titre : un
+  // filet fin, jamais un aplat. Posée sur la ligne de base du mot plutôt que
+  // sur son milieu, elle accompagne le nom au lieu de le concurrencer.
+  .m-beta {
+    display: inline-block;
+    padding: 0 6px;
+    border: 1px solid rgba(colors.$rose, 0.45);
+    border-radius: 999px;
+    color: rgba(colors.$rose, 0.8);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
   .m-onglets {
     display: flex;
     flex-wrap: wrap;
