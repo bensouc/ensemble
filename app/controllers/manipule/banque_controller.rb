@@ -10,22 +10,15 @@ module Manipule
     before_action :set_probleme, only: [:circulation]
     before_action :exiger_fichier, only: [:importer]
 
-    # Une école porte plus de mille compétences : aucune liste plate ne tient.
-    # Sans filtre, on ne montre que celles où elle a déjà écrit — son travail.
-    # Dès qu'un filtre est posé, on montre tout le périmètre demandé, y compris
-    # les compétences vides : c'était le seul chemin vers un PREMIER problème,
-    # et il n'existait nulle part. Une compétence sans problème n'apparaissait
-    # pas, donc on ne pouvait pas commencer.
+    # Le choix d'une compétence parmi plus de mille : c'est `Recherche` qui
+    # sait lesquelles montrer, et à quel moment montrer celles qui sont encore
+    # vides — le seul chemin vers un premier problème.
     def index
       @problemes = policy_scope(Problem).includes(skill: { domain: :grade })
-      @filtre = filtre?
-      @niveaux = Grade.where(school: current_user.school).order(:grade_level)
-      @domaines = domaines_du_filtre
-      toutes = competences_affichees
-      @total = toutes.size
-      @competences = toutes.first(LISTE_MAX)
-      @compte = policy_scope(Problem).where(skill_id: @competences.map(&:id))
-                                     .group(:skill_id, :published).count
+      @recherche = Recherche.new(ecole: current_user.school, niveaux: niveaux_de_ses_classes,
+                                 deja_ecrites: @problemes.map(&:skill), filtres: filtres)
+      @compte = policy_scope(Problem).where(skill_id: @recherche.competences.map(&:id)).
+        group(:skill_id, :published).count
     end
 
     def show
@@ -62,51 +55,17 @@ module Manipule
 
     private
 
-    FILTRES = %i[niveau domaine ceinture].freeze
-
-    # Un seul niveau peut porter cinq cents compétences : au-delà d'une
-    # soixantaine de cartes, personne ne parcourt plus rien, et la page dit
-    # alors d'affiner plutôt que de dérouler.
-    LISTE_MAX = 60
-
-    def filtre?
-      FILTRES.any? { |nom| params[nom].present? }
+    # Nommés un par un : ces valeurs ne servent qu'à des `where`, jamais à une
+    # affectation, et `permit!` sur une tranche de `params` l'oublierait vite.
+    def filtres
+      { niveau: params[:niveau], domaine: params[:domaine], ceinture: params[:ceinture] }
     end
 
-    # Son école passe par `school_role`. Le `school_id` d'une compétence et
-    # celui du niveau de son domaine peuvent désigner deux écoles différentes :
-    # on exige les deux, sans quoi une compétence fuit d'une école à l'autre.
-    def competences_de_son_ecole
-      Skill.joins(domain: :grade)
-           .where(school_id: current_user.school&.id)
-           .where(grades: { school_id: current_user.school&.id })
-    end
-
-    # Les domaines proposés suivent le niveau choisi. Tant qu'aucun niveau n'est
-    # posé, ils sont tous là — deux écoles n'ont jamais les mêmes.
-    #
-    # Rendus groupés par niveau : chaque niveau porte ses propres domaines, et
-    # ils portent les mêmes noms. À plat, la liste alignait quatre « Calcul »
-    # indiscernables. Les groupes suivent l'ordre scolaire, pas l'alphabet —
-    # sans quoi le CP tomberait après le CM2.
-    def domaines_du_filtre
-      portee = Domain.joins(:grade).preload(:grade)
-                     .where(grades: { school_id: current_user.school&.id })
-      portee = portee.where(grade_id: params[:niveau]) if params[:niveau].present?
-      portee.order(:name)
-            .group_by(&:grade)
-            .sort_by { |niveau, _| Classroom::GRADE.index(niveau&.grade_level) || Classroom::GRADE.size }
-            .map { |niveau, domaines| [niveau&.name.to_s, domaines.map { |domaine| [domaine.name, domaine.id] }] }
-    end
-
-    def competences_affichees
-      return @problemes.map(&:skill).uniq.sort_by { |competence| [competence.level, competence.name] } unless @filtre
-
-      portee = competences_de_son_ecole.preload(domain: :grade)
-      portee = portee.where(grades: { id: params[:niveau] }) if params[:niveau].present?
-      portee = portee.where(domain_id: params[:domaine]) if params[:domaine].present?
-      portee = portee.where(level: params[:ceinture]) if params[:ceinture].present?
-      portee.order(:level, :name).to_a
+    # Les niveaux de ses classes — la même portée que « Mes classes ». Une
+    # enseignante de CE1 n'a rien à écrire pour le CM2, et l'école porte sept
+    # niveaux pour plus de mille compétences.
+    def niveaux_de_ses_classes
+      Grade.where(id: policy_scope(Classroom).select(:grade_id)).order(:grade_level)
     end
 
     def fichier

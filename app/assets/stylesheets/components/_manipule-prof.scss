@@ -122,7 +122,23 @@
   // Les trois lignes gardent leur hauteur même vides : d'un écran à l'autre,
   // le titre et le contenu restent exactement au même endroit.
   .m-entete {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 0.6rem 1.2rem;
     margin-bottom: 1.6rem;
+  }
+
+  // Le texte garde ses trois lignes réservées et fixe seul la hauteur de
+  // l'en-tête ; les actions s'alignent sur sa dernière ligne. `min-width: 0`
+  // l'autorise à se replier plutôt qu'à pousser les actions hors de l'écran.
+  .m-entete-texte {
+    min-width: 0;
+  }
+
+  .m-entete-actions {
+    flex-shrink: 0;
   }
 
   .m-entete-retour {

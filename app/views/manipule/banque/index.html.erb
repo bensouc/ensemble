@@ -1,49 +1,57 @@
 <div class="px-4 py-4 m-prof">
   <%= render "manipule/shared/nav" %>
-  <%= render "manipule/shared/entete", titre: "Les problèmes",
-             note: "Ce que vos élèves s'entraînent à résoudre, rangé par compétence." %>
+  <% filtres = capture do %>
+    <%# Les trois mêmes crans que « Mes progressions de compétences » : niveau,
+        domaine, ceinture. Une école porte plus de mille compétences — sans ces
+        filtres, la seule façon d'en atteindre une était qu'elle porte déjà un
+        problème, et on ne pouvait donc jamais écrire le premier. %>
+    <%= form_with url: manipule_banque_path, method: :get,
+                  class: "d-flex gap-2 flex-wrap align-items-center justify-content-end",
+                  data: { controller: "manipule-filtres", action: "change->manipule-filtres#envoyer" } do %>
+      <%= label_tag :niveau, "Niveau", class: "visually-hidden" %>
+      <%= select_tag :niveau, options_for_select(@recherche.niveaux.map { |niveau| [niveau.name, niveau.id] }, params[:niveau]),
+                     include_blank: "Tous les niveaux", class: "area", style: "width: auto;" %>
 
-  <%# Les trois mêmes crans que « Mes progressions de compétences » : niveau,
-      domaine, ceinture. Une école porte plus de mille compétences — sans ces
-      filtres, la seule façon d'en atteindre une était qu'elle porte déjà un
-      problème, et on ne pouvait donc jamais écrire le premier. %>
-  <%= form_with url: manipule_banque_path, method: :get,
-                class: "d-flex gap-2 flex-wrap align-items-center justify-content-end mb-4",
-                data: { controller: "manipule-filtres", action: "change->manipule-filtres#envoyer" } do %>
-    <%= label_tag :niveau, "Niveau", class: "visually-hidden" %>
-    <%= select_tag :niveau, options_for_select(@niveaux.map { |niveau| [niveau.name, niveau.id] }, params[:niveau]),
-                   include_blank: "Tous les niveaux", class: "area", style: "width: auto;" %>
+      <%# Chaque niveau porte ses propres domaines, et ils s'appellent pareil :
+          une liste à plat donnait quatre « Calcul » de suite, indiscernables.
+          On les range donc sous leur niveau. %>
+      <%= label_tag :domaine, "Domaine", class: "visually-hidden" %>
+      <%= select_tag :domaine, grouped_options_for_select(@recherche.domaines, params[:domaine]),
+                     include_blank: "Tous les domaines", class: "area", style: "width: auto;",
+                     data: { manipule_filtres_target: "domaine" } %>
 
-    <%# Chaque niveau porte ses propres domaines, et ils s'appellent pareil :
-        une liste à plat donnait quatre « Calcul » de suite, indiscernables.
-        On les range donc sous leur niveau. %>
-    <%= label_tag :domaine, "Domaine", class: "visually-hidden" %>
-    <%= select_tag :domaine, grouped_options_for_select(@domaines, params[:domaine]),
-                   include_blank: "Tous les domaines", class: "area", style: "width: auto;",
-                   data: { manipule_filtres_target: "domaine" } %>
+      <%= label_tag :ceinture, "Ceinture", class: "visually-hidden" %>
+      <%= select_tag :ceinture,
+                     options_for_select(Belt::BELT_COLORS.each_with_index.map { |couleur, rang| ["Ceinture #{couleur}", rang + 1] }, params[:ceinture]),
+                     include_blank: "Toutes les ceintures", class: "area", style: "width: auto;" %>
 
-    <%= label_tag :ceinture, "Ceinture", class: "visually-hidden" %>
-    <%= select_tag :ceinture,
-                   options_for_select(Belt::BELT_COLORS.each_with_index.map { |couleur, rang| ["Ceinture #{couleur}", rang + 1] }, params[:ceinture]),
-                   include_blank: "Toutes les ceintures", class: "area", style: "width: auto;" %>
-
-    <%# Le formulaire part tout seul à chaque changement ; ce bouton ne sert
-        plus qu'au cas où le JavaScript n'a pas pris. %>
-    <noscript>
-      <button type="submit" class="m-cta m-cta--principal">
-        <i class="fa-solid fa-filter"></i><span>Filtrer</span>
-      </button>
-    </noscript>
-    <% if @filtre %>
-      <%= link_to manipule_banque_path, class: "m-cta m-cta--discret" do %>
-        <i class="fa-solid fa-xmark"></i><span>Tout effacer</span>
+      <%# Le formulaire part tout seul à chaque changement ; ce bouton ne sert
+          plus qu'au cas où le JavaScript n'a pas pris. %>
+      <noscript>
+        <button type="submit" class="m-cta m-cta--principal">
+          <i class="fa-solid fa-filter"></i><span>Filtrer</span>
+        </button>
+      </noscript>
+      <% if @recherche.filtree? %>
+        <%= link_to manipule_banque_path, class: "m-cta m-cta--discret" do %>
+          <i class="fa-solid fa-xmark"></i><span>Tout effacer</span>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>
 
-  <% if @competences.empty? %>
+  <%= render "manipule/shared/entete", titre: "Les problèmes",
+             note: "Ce que vos élèves s'entraînent à résoudre, rangé par compétence.",
+             actions: filtres %>
+
+  <% if @recherche.competences.empty? %>
     <p class="m-fiche-note">
-      <% if @filtre %>
+      <% if @recherche.niveaux.empty? %>
+        <%# Sans classe, aucun niveau à filtrer : les sélecteurs seraient vides
+            sans rien dire de pourquoi. %>
+        Les filtres s'appuient sur les niveaux de vos classes, et vous n'en avez pas encore.
+        Créez une classe dans <%= link_to "Mes Classes", classrooms_path %>.
+      <% elsif @recherche.filtree? %>
         Aucune compétence sur ce filtre. Élargissez-le, ou créez la compétence dans
         <%= link_to "Mes progressions de compétences", skills_path %> : Manipule
         s'appuie sur les compétences d'Ensemble, elle n'en crée pas.
@@ -54,15 +62,15 @@
     </p>
   <% else %>
     <p class="m-fiche-note mb-3">
-      <%= au_pluriel(@total, "compétence") %><%= " sur ce filtre" if @filtre %>.
-      <% if @total > @competences.size %>
-        Les <%= @competences.size %> premières sont affichées — affinez par domaine ou par ceinture.
+      <%= au_pluriel(@recherche.total, "compétence") %><%= " sur ce filtre" if @recherche.filtree? %>.
+      <% if @recherche.plafonnee? %>
+        Les <%= @recherche.competences.size %> premières sont affichées — affinez par domaine ou par ceinture.
       <% end %>
-      <%= "Sans filtre, seules celles où vous avez déjà écrit sont listées." unless @filtre %>
+      <%= "Sans filtre, seules celles où vous avez déjà écrit sont listées." unless @recherche.filtree? %>
     </p>
 
     <div class="row g-3">
-      <% @competences.each do |competence| %>
+      <% @recherche.competences.each do |competence| %>
         <% visibles = @compte[[competence.id, true]].to_i %>
         <% brouillons = @compte[[competence.id, false]].to_i %>
         <div class="col-md-6 col-xxl-4">

@@ -7,13 +7,22 @@
     devait rechercher où commencer à chaque changement de page.
 
     `titre` est obligatoire. `retour` et `note` sont facultatifs — leur ligne
-    reste là de toute façon. %>
+    reste là de toute façon.
+
+    `actions` se pose à DROITE du titre, sur sa dernière ligne. Les trois
+    lignes réservées restent dans le bloc de texte : c'est lui qui fixe la
+    hauteur, donc poser des actions ne décale rien. %>
 <header class="m-entete">
-  <p class="m-entete-retour">
-    <% if local_assigns[:retour].present? %>
-      <%= link_to "← #{retour[:libelle]}", retour[:chemin] %>
-    <% end %>
-  </p>
-  <h1 class="m-entete-titre"><%= titre %></h1>
-  <p class="m-entete-note"><%= local_assigns[:note] %></p>
+  <div class="m-entete-texte">
+    <p class="m-entete-retour">
+      <% if local_assigns[:retour].present? %>
+        <%= link_to "← #{retour[:libelle]}", retour[:chemin] %>
+      <% end %>
+    </p>
+    <h1 class="m-entete-titre"><%= titre %></h1>
+    <p class="m-entete-note"><%= local_assigns[:note] %></p>
+  </div>
+  <% if local_assigns[:actions].present? %>
+    <div class="m-entete-actions"><%= actions %></div>
+  <% end %>
 </header>

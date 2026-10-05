@@ -9,9 +9,22 @@ RSpec.describe "Manipule, la banque côté enseignante" do
   # `manipule: true` : l'option s'ouvre compte par compte, et sans elle ces
   # pages redirigent avant même d'être atteintes.
   let(:enseignante) { create(:user, admin: false, manipule: true) }
+  # Les filtres s'arrêtent aux niveaux de SES classes : sans classe, elle n'a
+  # aucun niveau à filtrer. La factory :classroom se fabrique sinon un niveau
+  # dans une autre école.
+  #
+  # Le niveau est nommé : la factory :grade tire son nom parmi cinq, et deux
+  # niveaux d'une même école doivent être nommés différemment. Tiré au sort,
+  # le second entrait en collision une fois sur cinq.
+  let(:niveau) { create(:grade, school: enseignante.school, name: "CE1", grade_level: "CE1") }
+  let!(:sa_classe) { create(:classroom, user: enseignante, grade: niveau) }
+  # Les noms sont donnés : la factory :domain en tire un au hasard, et deux
+  # domaines d'un même niveau doivent être nommés différemment. Sans ça, la
+  # spec tombait une fois sur cinq.
+  let(:domaine) { create(:domain, grade: niveau, name: "Résolution de problèmes") }
   let(:competence) do
-    domaine = create(:domain, grade: create(:grade, school: enseignante.school))
-    create(:skill, domain: domaine, school: enseignante.school, level: 1, name: "Recherche d'une partie")
+    create(:skill, domain: domaine, school: enseignante.school,
+                   level: 1, name: "Recherche d'une partie")
   end
 
   def fichier_csv(lignes, separateur: ",")
@@ -140,29 +153,29 @@ RSpec.describe "Manipule, la banque côté enseignante" do
     it "sans filtre, ne liste que les compétences où elle a déjà écrit" do
       get manipule_banque_path
 
-      expect(assigns(:competences)).to eq([competence])
+      expect(assigns(:recherche).competences).to eq([competence])
     end
 
     it "montre les compétences vides dès qu'un filtre est posé" do
       get manipule_banque_path, params: { niveau: competence.domain.grade_id }
 
-      expect(assigns(:competences)).to include(vierge)
+      expect(assigns(:recherche).competences).to include(vierge)
     end
 
     it "la ceinture écarte les autres niveaux" do
       get manipule_banque_path, params: { ceinture: 2 }
 
-      expect(assigns(:competences)).to eq([vierge])
+      expect(assigns(:recherche).competences).to eq([vierge])
     end
 
     it "le domaine écarte les autres domaines du même niveau" do
-      autre_domaine = create(:domain, grade: competence.domain.grade)
+      autre_domaine = create(:domain, grade: niveau, name: "Numération")
       voisine = create(:skill, domain: autre_domaine, school: enseignante.school, level: 2)
 
       get manipule_banque_path, params: { domaine: competence.domain_id }
 
-      expect(assigns(:competences)).to include(vierge)
-      expect(assigns(:competences)).not_to include(voisine)
+      expect(assigns(:recherche).competences).to include(vierge)
+      expect(assigns(:recherche).competences).not_to include(voisine)
     end
 
     # `school_id` et le `school_id` du niveau du domaine peuvent désigner deux
@@ -174,19 +187,39 @@ RSpec.describe "Manipule, la banque côté enseignante" do
 
       get manipule_banque_path, params: { ceinture: 2 }
 
-      expect(assigns(:competences)).not_to include(ailleurs)
+      expect(assigns(:recherche).competences).not_to include(ailleurs)
     end
 
     # Un seul niveau porte jusqu'à cinq cents compétences : la page en montre
     # une soixantaine et dit d'affiner, plutôt que d'en dérouler un mur.
     it "plafonne la liste, mais annonce le compte entier" do
-      stub_const("Manipule::BanqueController::LISTE_MAX", 1)
+      stub_const("Manipule::Recherche::MAXIMUM", 1)
       create(:skill, domain: competence.domain, school: enseignante.school, level: 2)
 
       get manipule_banque_path, params: { ceinture: 2 }
 
-      expect(assigns(:competences).size).to eq(1)
-      expect(assigns(:total)).to eq(2)
+      expect(assigns(:recherche).competences.size).to eq(1)
+      expect(assigns(:recherche).total).to eq(2)
+    end
+
+    # Une enseignante de CE1 n'a rien à écrire pour le CM2 : les niveaux de la
+    # liste sont ceux de ses classes, pas les sept de l'école.
+    it "ne propose que les niveaux de ses classes" do
+      create(:grade, school: enseignante.school, name: "CM2", grade_level: "CM2")
+
+      get manipule_banque_path
+
+      expect(assigns(:recherche).niveaux).to eq([niveau])
+    end
+
+    it "ne montre pas une compétence d'un niveau qu'elle n'a pas en classe" do
+      sans_classe = create(:grade, school: enseignante.school, name: "CM2", grade_level: "CM2")
+      ailleurs = create(:skill, domain: create(:domain, grade: sans_classe, name: "Géométrie"),
+                                school: enseignante.school, level: 2)
+
+      get manipule_banque_path, params: { ceinture: 2 }
+
+      expect(assigns(:recherche).competences).not_to include(ailleurs)
     end
 
     # Chaque niveau porte ses propres domaines, et ils portent les mêmes noms :
@@ -194,7 +227,7 @@ RSpec.describe "Manipule, la banque côté enseignante" do
     it "range les domaines sous leur niveau" do
       get manipule_banque_path
 
-      expect(assigns(:domaines).map(&:first)).to eq([competence.domain.grade.name])
+      expect(assigns(:recherche).domaines.map(&:first)).to eq([competence.domain.grade.name])
     end
   end
 
