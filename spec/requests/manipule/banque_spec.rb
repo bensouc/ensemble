@@ -126,6 +126,66 @@ RSpec.describe "Manipule, la banque côté enseignante" do
     end
   end
 
+  # Une école porte plus de mille compétences : sans filtre, la page ne montre
+  # que celles où elle a déjà écrit. Une compétence encore vierge n'apparaissait
+  # donc nulle part, et on ne pouvait jamais y écrire le PREMIER problème.
+  describe "les filtres" do
+    let!(:vierge) do
+      create(:skill, domain: competence.domain, school: enseignante.school,
+                     level: 2, name: "Comparer des masses")
+    end
+
+    before { create(:manipule_problem, skill: competence) }
+
+    it "sans filtre, ne liste que les compétences où elle a déjà écrit" do
+      get manipule_banque_path
+
+      expect(assigns(:competences)).to eq([competence])
+    end
+
+    it "montre les compétences vides dès qu'un filtre est posé" do
+      get manipule_banque_path, params: { niveau: competence.domain.grade_id }
+
+      expect(assigns(:competences)).to include(vierge)
+    end
+
+    it "la ceinture écarte les autres niveaux" do
+      get manipule_banque_path, params: { ceinture: 2 }
+
+      expect(assigns(:competences)).to eq([vierge])
+    end
+
+    it "le domaine écarte les autres domaines du même niveau" do
+      autre_domaine = create(:domain, grade: competence.domain.grade)
+      voisine = create(:skill, domain: autre_domaine, school: enseignante.school, level: 2)
+
+      get manipule_banque_path, params: { domaine: competence.domain_id }
+
+      expect(assigns(:competences)).to include(vierge)
+      expect(assigns(:competences)).not_to include(voisine)
+    end
+
+    # `school_id` et le `school_id` du niveau du domaine peuvent désigner deux
+    # écoles différentes : un filtre ne doit jamais servir de passe-droit.
+    it "ne sort jamais de son école, même filtré" do
+      autre = create(:school)
+      ailleurs = create(:skill, domain: create(:domain, grade: create(:grade, school: autre)),
+                                school: autre, level: 2)
+
+      get manipule_banque_path, params: { ceinture: 2 }
+
+      expect(assigns(:competences)).not_to include(ailleurs)
+    end
+
+    # Chaque niveau porte ses propres domaines, et ils portent les mêmes noms :
+    # à plat, la liste alignait quatre « Calcul » indiscernables.
+    it "range les domaines sous leur niveau" do
+      get manipule_banque_path
+
+      expect(assigns(:domaines).map(&:first)).to eq([competence.domain.grade.name])
+    end
+  end
+
   describe "le cloisonnement entre écoles" do
     it "n'ouvre pas la compétence d'une autre école" do
       ailleurs = create(:skill, domain: create(:domain, grade: create(:grade, school: create(:school))),

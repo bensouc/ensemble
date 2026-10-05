@@ -3,26 +3,88 @@
   <%= render "manipule/shared/entete", titre: "Les problèmes",
              note: "Ce que vos élèves s'entraînent à résoudre, rangé par compétence." %>
 
-  <% if @par_competence.empty? %>
+  <%# Les trois mêmes crans que « Mes progressions de compétences » : niveau,
+      domaine, ceinture. Une école porte plus de mille compétences — sans ces
+      filtres, la seule façon d'en atteindre une était qu'elle porte déjà un
+      problème, et on ne pouvait donc jamais écrire le premier. %>
+  <%= form_with url: manipule_banque_path, method: :get,
+                class: "d-flex gap-2 flex-wrap align-items-center justify-content-end mb-4" do %>
+    <%= label_tag :niveau, "Niveau", class: "visually-hidden" %>
+    <%= select_tag :niveau, options_for_select(@niveaux.map { |niveau| [niveau.name, niveau.id] }, params[:niveau]),
+                   include_blank: "Tous les niveaux", class: "area", style: "width: auto;" %>
+
+    <%# Chaque niveau porte ses propres domaines, et ils s'appellent pareil :
+        une liste à plat donnait quatre « Calcul » de suite, indiscernables.
+        On les range donc sous leur niveau. %>
+    <%= label_tag :domaine, "Domaine", class: "visually-hidden" %>
+    <%= select_tag :domaine, grouped_options_for_select(@domaines, params[:domaine]),
+                   include_blank: "Tous les domaines", class: "area", style: "width: auto;" %>
+
+    <%= label_tag :ceinture, "Ceinture", class: "visually-hidden" %>
+    <%= select_tag :ceinture,
+                   options_for_select(Belt::BELT_COLORS.each_with_index.map { |couleur, rang| ["Ceinture #{couleur}", rang + 1] }, params[:ceinture]),
+                   include_blank: "Toutes les ceintures", class: "area", style: "width: auto;" %>
+
+    <button type="submit" class="m-cta m-cta--principal">
+      <i class="fa-solid fa-filter"></i><span>Filtrer</span>
+    </button>
+    <% if @filtre %>
+      <%= link_to manipule_banque_path, class: "m-cta m-cta--discret" do %>
+        <i class="fa-solid fa-xmark"></i><span>Tout effacer</span>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% if @competences.empty? %>
     <p class="m-fiche-note">
-      Aucun problème pour l'instant. Choisissez une compétence dans vos niveaux,
-      puis écrivez-en un ou importez un tableur.
+      <% if @filtre %>
+        Aucune compétence sur ce filtre. Élargissez-le, ou créez la compétence dans
+        <%= link_to "Mes progressions de compétences", skills_path %> : Manipule
+        s'appuie sur les compétences d'Ensemble, elle n'en crée pas.
+      <% else %>
+        Aucun problème pour l'instant. Choisissez un niveau ou un domaine ci-dessus :
+        toutes les compétences du filtre apparaîtront, même celles qui n'ont encore rien.
+      <% end %>
     </p>
   <% else %>
+    <p class="m-fiche-note mb-3">
+      <%= au_pluriel(@competences.size, "compétence") %><%= " sur ce filtre" if @filtre %>.
+      <%= "Sans filtre, seules celles où vous avez déjà écrit sont listées." unless @filtre %>
+    </p>
+
     <div class="row g-3">
-      <% @par_competence.each do |competence, problemes| %>
+      <% @competences.each do |competence| %>
+        <% visibles = @compte[[competence.id, true]].to_i %>
+        <% brouillons = @compte[[competence.id, false]].to_i %>
         <div class="col-md-6 col-xxl-4">
-          <div class="m-fiche h-100 d-flex justify-content-between align-items-center gap-3">
+          <%# Le bouton sous le texte, pas à côté : les noms de compétences
+              d'Ensemble font parfois deux lignes de phrase, et en colonne de
+              droite le bouton leur laissait une gouttière de 120 px. %>
+          <div class="m-fiche h-100 d-flex flex-column justify-content-between gap-3">
             <div>
               <h2 class="m-fiche-titre"><%= competence.name %></h2>
-              <p class="m-fiche-note">
-                Ceinture <%= Belt::BELT_COLORS[competence.level - 1] %> ·
-                <%= problemes.count(&:published) %> visibles,
-                <%= au_pluriel(problemes.count { |probleme| !probleme.published }, "brouillon") %>
+              <p class="m-fiche-note mb-0">
+                Ceinture <%= Belt::BELT_COLORS[competence.level - 1] %>
+                <%= " · #{competence.domain.name}" if competence.domain %>
+              </p>
+              <p class="m-fiche-note mb-0">
+                <% if visibles.zero? && brouillons.zero? %>
+                  Aucun problème.
+                <% else %>
+                  <%= visibles %> visibles, <%= au_pluriel(brouillons, "brouillon") %>
+                <% end %>
               </p>
             </div>
-            <%= link_to manipule_banque_competence_path(competence), class: "m-cta flex-shrink-0" do %>
-              <span>Ouvrir</span><i class="fa-solid fa-chevron-right"></i>
+            <%# Une compétence vide n'a rien à ouvrir : le bouton dit ce qu'il
+                fait, et mène droit à l'éditeur. %>
+            <% if visibles.zero? && brouillons.zero? %>
+              <%= link_to manipule_nouveau_probleme_path(competence), class: "m-cta m-cta--creer align-self-start" do %>
+                <i class="fa-solid fa-plus"></i><span>Écrire le premier</span>
+              <% end %>
+            <% else %>
+              <%= link_to manipule_banque_competence_path(competence), class: "m-cta align-self-start" do %>
+                <span>Ouvrir</span><i class="fa-solid fa-chevron-right"></i>
+              <% end %>
             <% end %>
           </div>
         </div>
