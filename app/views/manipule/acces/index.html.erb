@@ -1,25 +1,20 @@
-<div class="container py-4 m-prof">
+<div class="px-4 py-4 m-prof">
   <%= render "manipule/shared/nav" %>
+  <%= render "manipule/shared/entete", titre: "Les accès",
+             note: "Manipule est une option, ouverte compte par compte le temps de l'essai. " \
+                   "#{@ouverts > 1 ? "#{@ouverts} comptes l'ont" : "#{@ouverts} compte l'a"} aujourd'hui." %>
 
-  <h1 class="mb-1">Les accès</h1>
-  <p class="text-muted">
-    Manipule est une option, ouverte compte par compte le temps de l'essai.
-    <%= pluralize(@ouverts, "compte l'a", "comptes l'ont") %> aujourd'hui.
-  </p>
-
-  <%= form_with url: manipule_acces_path, method: :get, class: "row g-2 align-items-center mb-4" do %>
-    <div class="col-auto">
-      <%= text_field_tag :q, @recherche, class: "form-control",
-                         placeholder: "Chercher par nom ou adresse", "aria-label": "Chercher un compte" %>
-    </div>
-    <div class="col-auto"><%= submit_tag "Chercher", class: "btn btn-outline-primary", name: nil %></div>
+  <%= form_with url: manipule_acces_path, method: :get, class: "d-flex flex-wrap align-items-center gap-2 mb-4" do %>
+    <%= text_field_tag :q, @recherche, class: "area", style: "width: 20rem;",
+                       placeholder: "Chercher par nom ou adresse", "aria-label": "Chercher un compte" %>
+    <button type="submit" class="m-cta"><i class="fa-solid fa-magnifying-glass"></i><span>Chercher</span></button>
     <% if @recherche.present? %>
-      <div class="col-auto"><%= link_to "Revenir aux comptes ouverts", manipule_acces_path %></div>
+      <%= link_to "Revenir aux comptes ouverts", manipule_acces_path %>
     <% end %>
   <% end %>
 
   <% if @utilisateurs.empty? %>
-    <p class="text-muted">
+    <p class="m-fiche-note">
       <% if @recherche.present? %>
         Aucun compte ne correspond à « <%= @recherche %> ».
       <% else %>
@@ -27,39 +22,34 @@
       <% end %>
     </p>
   <% else %>
-    <table class="table align-middle">
-      <thead>
-        <tr><th>Compte</th><th>École</th><th>Option</th><th></th></tr>
-      </thead>
-      <tbody>
-        <% @utilisateurs.each do |utilisateur| %>
-          <tr>
-            <td>
-              <%= utilisateur.email %>
-              <% if utilisateur.first_name.present? || utilisateur.last_name.present? %>
-                <span class="text-muted">— <%= "#{utilisateur.first_name} #{utilisateur.last_name}".strip %></span>
-              <% end %>
-              <% if utilisateur.admin? %><span class="badge text-bg-secondary ms-1">admin</span><% end %>
-            </td>
-            <td class="text-muted"><%= utilisateur.school&.name || "—" %></td>
-            <td>
-              <% if utilisateur.manipule? %>
-                <span class="badge text-bg-success">ouverte</span>
-              <% elsif utilisateur.admin? %>
-                <span class="text-muted">par son statut d'admin</span>
-              <% else %>
-                <span class="text-muted">fermée</span>
-              <% end %>
-            </td>
-            <td class="text-end">
-              <%= button_to utilisateur.manipule? ? "Fermer" : "Ouvrir",
-                            manipule_acces_utilisateur_path(utilisateur),
-                            method: :patch, params: { manipule: !utilisateur.manipule?, q: @recherche },
-                            class: "btn btn-sm #{utilisateur.manipule? ? 'btn-outline-secondary' : 'btn-outline-primary'}" %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <% @utilisateurs.each do |utilisateur| %>
+      <div class="m-fiche d-flex justify-content-between align-items-center gap-3 flex-wrap">
+        <div>
+          <h2 class="m-fiche-titre">
+            <%= utilisateur.email %>
+            <% if utilisateur.admin? %><span class="m-etiquette">admin</span><% end %>
+          </h2>
+          <p class="m-fiche-note">
+            <%= "#{utilisateur.first_name} #{utilisateur.last_name}".strip.presence %>
+            <%= "· #{utilisateur.school.name}" if utilisateur.school %>
+          </p>
+        </div>
+        <div class="d-flex align-items-center gap-3 flex-shrink-0">
+          <% if utilisateur.manipule? %>
+            <span class="m-etiquette m-etiquette--juste">ouverte</span>
+          <% elsif utilisateur.admin? %>
+            <span class="m-fiche-note">par son statut d'admin</span>
+          <% else %>
+            <span class="m-etiquette">fermée</span>
+          <% end %>
+          <%= button_to manipule_acces_utilisateur_path(utilisateur), method: :patch,
+                        params: { manipule: !utilisateur.manipule?, q: @recherche },
+                        class: "m-cta #{'m-cta--discret' if utilisateur.manipule?}" do %>
+            <i class="fa-solid fa-<%= utilisateur.manipule? ? "lock" : "lock-open" %>"></i>
+            <span><%= utilisateur.manipule? ? "Fermer" : "Ouvrir" %></span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   <% end %>
 </div>

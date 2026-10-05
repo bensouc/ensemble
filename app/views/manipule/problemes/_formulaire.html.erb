@@ -1,124 +1,115 @@
-<%# `scope: :probleme` : sans lui, `form_with` nomme ses champs d'après le
-    modèle — `manipule_problem[...]` — alors que le reste du formulaire et le
-    contrôleur parlent français. Les deux moitiés ne se rejoignaient pas, et
-    l'aperçu répondait 422 sans que rien ne le dise à l'écran. %>
-<%= form_with model: probleme, scope: :probleme, url: url, method: methode, class: "m-editeur-champs",
-              data: { "m-editeur": true, apercu: manipule_apercu_probleme_path(competence) } do |f| %>
+<%# `as: :probleme` : sans lui, simple_form nomme ses champs d'après le modèle
+    — `manipule_problem[…]` — alors que le reste du formulaire et le contrôleur
+    parlent français. Les deux moitiés ne se rejoindraient pas, et l'aperçu
+    répondrait 422 sans que rien ne le dise à l'écran. Une spec vérifie ces
+    noms, justement parce que ça s'est produit. %>
+<%# `wrapper: :manipule` : les gabarits d'Ensemble posent une classe « valide »
+    sur chaque champ dès l'ouverture d'un formulaire vierge, et huit champs
+    bordés de vert ne disent rien à personne. Les nôtres en sont dépourvus. %>
+<%= simple_form_for probleme, as: :probleme, url: url,
+                    wrapper: :manipule,
+                    wrapper_mappings: { radio_buttons: :manipule_collection },
+                    html: { method: methode, novalidate: false,
+                            data: { "m-editeur": true,
+                                    apercu: manipule_apercu_probleme_path(competence) } } do |f| %>
   <% if probleme.errors.any? %>
-    <div class="alert alert-danger">
+    <div class="m-fiche m-fiche-erreur mb-3">
       <ul class="mb-0">
         <% probleme.errors.full_messages.each do |message| %><li><%= message %></li><% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="mb-3">
-    <%= f.label :statement, "L'énoncé", class: "form-label fw-bold" %>
-    <%= f.text_area :statement, rows: 3, class: "form-control",
-                    placeholder: "Il y a 15 pommes sur le pommier. Sam cueille 7 pommes." %>
-    <div class="form-text">L'histoire, sans la question. C'est ce que l'élève entend en premier.</div>
-  </div>
+  <div class="form-inputs">
+    <%= f.input :statement, label: "L'énoncé", as: :text,
+                input_html: { rows: 3, class: "area",
+                              placeholder: "Il y a 15 pommes sur le pommier. Sam cueille 7 pommes." },
+                hint: "L'histoire, sans la question. C'est ce que l'élève entend en premier." %>
 
-  <div class="mb-4">
-    <%= f.label :question, "La question", class: "form-label fw-bold" %>
-    <%= f.text_field :question, class: "form-control",
-                     placeholder: "Combien reste-t-il de pommes sur le pommier ?" %>
-  </div>
+    <%= f.input :question, label: "La question",
+                input_html: { class: "area",
+                              placeholder: "Combien reste-t-il de pommes sur le pommier ?" } %>
 
-  <fieldset class="mb-4">
-    <legend class="form-label fw-bold">Comment l'élève répond</legend>
-    <% Manipule::Problem::MODES.each do |mode| %>
-      <div class="form-check form-check-inline">
-        <%= f.radio_button :answer_mode, mode, class: "form-check-input", data: { "m-mode": true } %>
-        <%= f.label "answer_mode_#{mode}", mode == "choix" ? "Trois réponses au choix" : "Un nombre à écrire",
-                    class: "form-check-label" %>
-      </div>
-    <% end %>
-  </fieldset>
+    <%= f.input :answer_mode, label: "Comment l'élève répond", as: :radio_buttons,
+                collection: [["Trois réponses au choix", "choix"], ["Un nombre à écrire", "saisie"]],
+                label_method: :first, value_method: :last %>
 
-  <%# Les trois réponses, avec un bouton radio pour la bonne : le modèle en
-      exige exactement une, et trois cases à cocher permettraient d'en cocher
-      zéro ou trois. La contrainte est portée par le formulaire lui-même. %>
-  <div class="mb-4" data-m-si-choix>
-    <p class="form-label fw-bold mb-2">Les trois réponses</p>
-    <% f.object.choices.each_with_index do |choix, rang| %>
-      <%= f.fields_for :choices, choix, child_index: rang do |c| %>
-        <div class="input-group mb-2">
-          <div class="input-group-text">
+    <%# Les trois réponses, avec un bouton radio pour la bonne : le modèle en
+        exige exactement une, et trois cases à cocher permettraient d'en cocher
+        zéro ou trois. La contrainte est portée par le formulaire lui-même. %>
+    <div class="m-champ" data-m-si-choix>
+      <label class="form-label">Les trois réponses</label>
+      <% f.object.choices.each_with_index do |choix, rang| %>
+        <%= f.fields_for :choices, choix, child_index: rang do |c| %>
+          <div class="m-case">
             <%= radio_button_tag "probleme[bonne_reponse]", rang, choix.correct?,
-                                 class: "form-check-input mt-0",
                                  "aria-label": "La bonne réponse est la #{rang + 1}" %>
+            <%= c.hidden_field :id %>
+            <%= c.hidden_field :position, value: rang + 1 %>
+            <%= c.text_field :label, class: "area", placeholder: "Réponse #{rang + 1}" %>
           </div>
-          <%= c.hidden_field :id %>
-          <%= c.hidden_field :position, value: rang + 1 %>
-          <%= c.text_field :label, class: "form-control", placeholder: "Réponse #{rang + 1}" %>
-        </div>
+        <% end %>
       <% end %>
-    <% end %>
-    <div class="form-text">Cochez celle qui est juste. Les deux autres sont les pièges.</div>
-  </div>
-
-  <div class="mb-4 row g-2" data-m-si-saisie>
-    <div class="col">
-      <%= f.label :answer, "La réponse attendue", class: "form-label fw-bold" %>
-      <%= f.text_field :answer, class: "form-control", placeholder: "8" %>
-    </div>
-    <div class="col">
-      <%= f.label :unit, "L'unité", class: "form-label fw-bold" %>
-      <%= f.text_field :unit, class: "form-control", placeholder: "pommes" %>
-    </div>
-  </div>
-
-  <fieldset class="mb-4">
-    <legend class="form-label fw-bold">Un outil à manipuler</legend>
-    <%= f.select :tool,
-                 [["Aucun", ""], ["Des jetons à déplacer", "jetons"]],
-                 {}, class: "form-select", data: { "m-outil": true } %>
-    <div class="form-text">
-      L'outil aide l'élève à se représenter le problème. Il ne corrige rien :
-      la réponse reste celle du dessus.
+      <span class="m-champ-aide">Cochez celle qui est juste. Les deux autres sont les pièges.</span>
     </div>
 
-    <div class="mt-3 ps-3 border-start" data-m-si-jetons>
+    <div class="row g-2 m-champ" data-m-si-saisie>
+      <div class="col"><%= f.input :answer, label: "La réponse attendue",
+                                   input_html: { class: "area", placeholder: "8" } %></div>
+      <div class="col"><%= f.input :unit, label: "L'unité",
+                                   input_html: { class: "area", placeholder: "pommes" } %></div>
+    </div>
+
+    <%= f.input :tool, label: "Un outil à manipuler",
+                collection: [["Des jetons à déplacer", "jetons"]],
+                include_blank: "Aucun",
+                input_html: { class: "area", data: { "m-outil": true } },
+                hint: "L'outil aide l'élève à se représenter le problème. Il ne corrige rien : " \
+                      "la réponse reste celle du dessus." %>
+
+    <div class="m-champ ps-3 border-start" data-m-si-jetons>
       <div class="row g-2 mb-2">
         <div class="col">
           <%= label_tag "probleme[reglages][ressource]", "Le jeton", class: "form-label" %>
           <%= select_tag "probleme[reglages][ressource]",
                          options_for_select(Manipule::Problem::RESSOURCES.map { |nom, signe| ["#{signe} #{nom}", nom] },
                                             probleme.tool_data["ressource"]),
-                         class: "form-select" %>
+                         class: "area" %>
         </div>
         <div class="col">
           <%= label_tag "probleme[reglages][reserve]", "Combien en réserve", class: "form-label" %>
           <%= number_field_tag "probleme[reglages][reserve]", probleme.tool_data["reserve"] || 10,
-                               min: 0, max: Manipule::Problem::RESERVE_MAX, class: "form-control" %>
+                               min: 0, max: Manipule::Problem::RESERVE_MAX, class: "area" %>
         </div>
       </div>
 
       <%# Deux cases au départ, une de plus si le problème en a déjà, et le
           bouton pour en ajouter. Les vides sont ignorées à l'enregistrement. %>
-      <p class="form-label mb-1">Les cases où il pose les jetons</p>
+      <label class="form-label">Les cases où il pose les jetons</label>
       <div data-m-cases>
         <% cases = probleme.jeton_zones %>
         <% [cases.size + 1, 2].max.times do |rang| %>
-          <div class="input-group mb-2" data-m-case>
-            <%= text_field_tag "probleme[reglages][zones][]", cases[rang],
-                               class: "form-control",
+          <div class="m-case" data-m-case>
+            <%= text_field_tag "probleme[reglages][zones][]", cases[rang], class: "area",
                                placeholder: ["Le panier de Sam", "Restées sur l'arbre"][rang] || "Une autre case",
                                "aria-label": "Nom de la case #{rang + 1}" %>
-            <button type="button" class="btn btn-outline-secondary" data-m-retirer-case
-                    aria-label="Retirer cette case">×</button>
+            <button type="button" class="rmv-skill-btn" data-m-retirer-case
+                    aria-label="Retirer cette case"><i class="far fa-times-circle"></i></button>
           </div>
         <% end %>
       </div>
-      <button type="button" class="btn btn-sm btn-outline-secondary" data-m-ajouter-case
-              data-max="<%= Manipule::Problem::ZONES_MAX %>">+ Ajouter une case</button>
-      <div class="form-text">Nommez-les d'après l'énoncé : l'élève doit lire où il pose.</div>
+      <button type="button" class="m-cta m-cta--creer" data-m-ajouter-case
+              data-max="<%= Manipule::Problem::ZONES_MAX %>">
+        <i class="fa-solid fa-plus"></i><span>Ajouter une case</span>
+      </button>
+      <span class="m-champ-aide">Nommez-les d'après l'énoncé : l'élève doit lire où il pose.</span>
     </div>
-  </fieldset>
+  </div>
 
-  <div class="d-flex gap-2">
-    <%= f.submit bouton, class: "btn btn-primary" %>
-    <%= link_to "Annuler", manipule_banque_competence_path(competence), class: "btn btn-outline-secondary" %>
+  <div class="form-actions d-flex align-items-center gap-3 mt-3">
+    <button type="submit" class="m-cta m-cta--principal">
+      <i class="fa-solid fa-check"></i><span><%= bouton %></span>
+    </button>
+    <%= link_to "Annuler", manipule_banque_competence_path(competence) %>
   </div>
 <% end %>

@@ -39,7 +39,7 @@ RSpec.describe Manipule::Practice do
       expect(serie.attempts.repondues).to be_empty
     end
 
-    it "ignore les problèmes qui ne sont pas en circulation" do
+    it "ignore les problèmes qui ne sont pas visible" do
       banque(2)
       banque(5, :brouillon)
 
@@ -52,7 +52,7 @@ RSpec.describe Manipule::Practice do
       banque(3, :brouillon)
 
       expect { described_class.commencer!(student: eleve, skill: competence) }.
-        to raise_error(ArgumentError, /Aucun problème en circulation/)
+        to raise_error(ArgumentError, /Aucun problème visible/)
     end
 
     it "ne laisse pas de série orpheline quand la création échoue" do

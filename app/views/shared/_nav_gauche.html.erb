@@ -94,9 +94,15 @@
               style='decoration-text: none'>
 								Manipule
 							</div>
-							<%# Icône de la bibliothèque Font Awesome déjà embarquée : rien à
-							    téléverser sur Cloudinary, dont le compte est partagé avec la production. %>
-							<i class="fas fa-shapes"></i>
+							<%# Les trois formes de l'icône d'origine — triangle, rond, carré —
+							    redessinées au trait de 2 comme les quatre autres entrées, et en
+							    deux fichiers pour l'état actif. Servies depuis le dépôt, pas depuis
+							    Cloudinary, dont le compte est partagé avec la production. %>
+							<% if controller_path.start_with?("manipule") %>
+								<%= image_tag "icons/manipule-icon.svg", alt: "", class: "on" %>
+							<% else %>
+								<%= image_tag "icons/manipule-red-icon.svg", alt: "" %>
+							<% end %>
 						</div>
 					<% end %>
 					<% end %>

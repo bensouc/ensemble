@@ -1,59 +1,85 @@
-<div class="container py-4 m-prof">
+<div class="px-4 py-4 m-prof">
   <%= render "manipule/shared/nav" %>
+  <%= render "manipule/shared/entete", titre: @competence.name,
+             retour: { libelle: "Les problèmes", chemin: manipule_banque_path },
+             note: "Ceinture #{Belt::BELT_COLORS[@competence.level - 1]} · " \
+                   "#{@problemes.count(&:published)} visibles, " \
+                   "#{au_pluriel(@problemes.count { |probleme| !probleme.published }, 'brouillon')}" %>
 
-  <p class="mb-1"><%= link_to "← La banque", manipule_banque_path %></p>
-  <h1 class="mb-1"><%= @competence.name %></h1>
-  <p class="text-muted">
-    Ceinture <%= Belt::BELT_COLORS[@competence.level - 1] %> ·
-    <%= @problemes.count(&:published) %> en circulation,
-    <%= @problemes.count { |probleme| !probleme.published } %> en brouillon
-  </p>
-
-  <div class="d-flex gap-2 mb-4">
-    <%= link_to "Nouveau problème", manipule_nouveau_probleme_path(@competence), class: "btn btn-primary" %>
-    <%= link_to "Importer un tableur", manipule_banque_import_path(@competence), class: "btn btn-outline-primary" %>
+  <div class="d-flex flex-wrap gap-2 my-4">
+    <%# Vert pour ce qui crée, pastille teintée pour le reste : c'est la
+        distinction qu'Ensemble fait partout ailleurs. %>
+    <%= link_to manipule_nouveau_probleme_path(@competence), class: "m-cta m-cta--creer" do %>
+      <i class="fa-solid fa-plus"></i><span>Nouveau problème</span>
+    <% end %>
+    <%= link_to manipule_banque_import_path(@competence), class: "m-cta" do %>
+      <i class="fa-solid fa-file-arrow-up"></i><span>Importer un tableur</span>
+    <% end %>
     <% if @problemes.any? { |probleme| !probleme.published } %>
-      <%= button_to "Tout mettre en circulation", manipule_banque_publier_path(@competence), class: "btn btn-outline-primary" %>
+      <%= button_to manipule_banque_publier_path(@competence), class: "m-cta" do %>
+        <i class="fa-solid fa-eye"></i><span>Tout rendre visible</span>
+      <% end %>
     <% end %>
   </div>
 
   <% if @problemes.empty? %>
-    <p class="text-muted">Aucun problème sur cette compétence.</p>
+    <p class="m-fiche-note">Aucun problème sur cette compétence.</p>
   <% else %>
     <% @problemes.each do |probleme| %>
-      <div class="card mb-2">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-start gap-3">
-            <div>
-              <p class="mb-1"><%= probleme.statement %></p>
-              <p class="mb-2 text-muted"><%= probleme.question %></p>
-              <%# Ce que l'élève verra : la relecture avant mise en circulation. %>
-              <% probleme.choices.each do |choix| %>
-                <span class="badge <%= choix.correct? ? "text-bg-success" : "text-bg-light" %> me-1"><%= choix.label %></span>
-              <% end %>
-              <% if probleme.jetons? %>
-                <span class="badge text-bg-light me-1">
-                  <%= probleme.jeton_caractere %> <%= probleme.jeton_reserve %> jetons,
-                  <%= probleme.jeton_zones.size %> cases
-                </span>
-              <% end %>
-            </div>
-            <div class="text-end flex-shrink-0">
-              <span class="badge <%= probleme.published ? "text-bg-primary" : "text-bg-secondary" %> mb-2 d-block">
-                <%= probleme.published ? "en circulation" : "brouillon" %>
-              </span>
-              <%= button_to probleme.published ? "Retirer" : "Mettre en circulation",
-                            manipule_probleme_circulation_path(probleme),
-                            method: :patch, class: "btn btn-sm btn-outline-secondary" %>
-              <div class="d-flex gap-1 justify-content-end mt-2">
-                <%= link_to "Modifier", manipule_edition_probleme_path(probleme),
-                            class: "btn btn-sm btn-outline-primary" %>
-                <%# Écrire dix problèmes qui ne diffèrent que par leurs nombres
-                    est le quotidien de l'enseignante. %>
-                <%= button_to "Dupliquer", manipule_dupliquer_probleme_path(probleme),
-                              class: "btn btn-sm btn-outline-secondary" %>
-              </div>
-            </div>
+      <%# Les actions en pied de carte, pas en colonne de droite : en colonne,
+          elles basculaient sous le texte dès qu'un énoncé était un peu long,
+          et chaque carte se présentait différemment. %>
+      <div class="m-fiche">
+        <p class="mb-1"><%= probleme.statement %></p>
+        <p class="m-fiche-note mb-2"><%= probleme.question %></p>
+
+        <%# Ce que l'élève verra : la relecture avant de les rendre visibles. %>
+        <div class="d-flex flex-wrap gap-2">
+          <% if probleme.choix? %>
+            <% probleme.choices.each do |choix| %>
+              <span class="m-etiquette <%= "m-etiquette--juste" if choix.correct? %>"><%= choix.label %></span>
+            <% end %>
+          <% else %>
+            <span class="m-etiquette m-etiquette--juste">
+              à écrire : <%= probleme.answer %> <%= probleme.unit %>
+            </span>
+          <% end %>
+        </div>
+
+        <%# L'outil sur sa propre ligne, dans sa propre teinte : au milieu des
+            réponses, il se lisait comme une quatrième. %>
+        <div class="mt-2">
+          <% if probleme.jetons? %>
+            <span class="m-etiquette m-etiquette--outil">
+              <i class="fa-solid fa-hand-pointer me-2"></i>
+              Jetons — <%= au_pluriel(probleme.jeton_reserve, "jeton") %>
+              <%= probleme.jeton_caractere %>,
+              <%= probleme.jeton_zones.to_sentence(two_words_connector: " et ", last_word_connector: " et ") %>
+            </span>
+          <% else %>
+            <span class="m-fiche-note">Sans outil de manipulation.</span>
+          <% end %>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3 pt-2 border-top">
+          <span class="m-etiquette <%= "m-etiquette--active" if probleme.published %>">
+            <%= probleme.published ? "visible" : "brouillon" %>
+          </span>
+          <div class="d-flex flex-wrap gap-1">
+            <%= link_to manipule_edition_probleme_path(probleme), class: "m-cta m-cta--discret" do %>
+              <i class="fa-solid fa-pen"></i><span>Modifier</span>
+            <% end %>
+            <%# Écrire dix problèmes qui ne diffèrent que par leurs nombres est
+                le quotidien de l'enseignante. %>
+            <%= button_to manipule_dupliquer_probleme_path(probleme), class: "m-cta m-cta--discret",
+                          title: "Dupliquer ce problème" do %>
+              <i class="fa-regular fa-clone"></i><span>Dupliquer</span>
+            <% end %>
+            <%= button_to manipule_probleme_circulation_path(probleme), method: :patch,
+                          class: "m-cta m-cta--discret" do %>
+              <i class="fa-solid fa-eye<%= "-slash" if probleme.published %>"></i>
+              <span><%= probleme.published ? "Masquer" : "Rendre visible" %></span>
+            <% end %>
           </div>
         </div>
       </div>

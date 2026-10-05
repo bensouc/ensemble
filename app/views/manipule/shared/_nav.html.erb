@@ -1,14 +1,19 @@
 <%# La barre des écrans de l'enseignante. Elle ne figure QUE sur ses pages :
-    le gabarit de l'élève, lui, n'offre volontairement aucune sortie. %>
-<div class="d-flex align-items-baseline flex-wrap gap-3 mb-4">
+    le gabarit de l'élève, lui, n'offre volontairement aucune sortie.
+
+    Un soulignement marque l'onglet courant, comme le menu de gauche marque
+    l'entrée courante par la couleur. Ensemble ne connaît pas les pastilles
+    de Bootstrap. %>
+<div class="d-flex align-items-baseline flex-wrap gap-4 mb-4">
   <%= link_to "Manipule", manipule_root_path, class: "h4 mb-0 text-decoration-none" %>
-  <ul class="nav nav-pills m-onglets">
+  <ul class="m-onglets">
     <% onglets_manipule.each do |onglet| %>
-      <li class="nav-item">
+      <li>
         <%= link_to onglet[:libelle], onglet[:chemin],
-                    class: "nav-link #{'active' if onglet_manipule_actif?(onglet)}",
+                    class: ("actif" if onglet_manipule_actif?(onglet)),
                     aria: { current: ("page" if onglet_manipule_actif?(onglet)) } %>
       </li>
     <% end %>
   </ul>
 </div>
+<div class="grey-line-full"></div>

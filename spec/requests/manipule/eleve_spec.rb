@@ -202,7 +202,7 @@ RSpec.describe "Manipule, côté élève" do
       expect(response.body).to include("Rien à faire")
     end
 
-    it "le dit aussi quand la banque n'a aucun problème en circulation" do
+    it "le dit aussi quand la banque n'a aucun problème visible" do
       designer!
       banque(2).each { |probleme| probleme.update!(published: false) }
       entrer!
@@ -297,6 +297,57 @@ RSpec.describe "Manipule, côté élève" do
       get manipule_serie_path
 
       expect(response.body).not_to include("data-m-jetons")
+    end
+  end
+
+  # Un élève s'en va au milieu de sa série — la récréation sonne, on l'appelle
+  # — et un autre s'assoit à sa place. Sans sortie, le second travaillerait
+  # sous le nom du premier, et le suivi mentirait sur les deux.
+  describe "la sortie de séance" do
+    before do
+      designer!
+      banque
+      entrer!
+      # La série se crée au premier affichage, pas à l'entrée.
+      get manipule_serie_path
+    end
+
+    # L'apostrophe est échappée par le gabarit, et c'est ce qu'on veut.
+    it "est offerte sur l'écran de problème" do
+      get manipule_serie_path
+
+      expect(response.body).to include("Ce n&#39;est pas moi")
+    end
+
+    it "est offerte aussi sur le verdict" do
+      tentative = Manipule::Practice.last.attempts.first
+      post manipule_repondre_path, params: { attempt_id: tentative.id, passer: "1" }
+      follow_redirect!
+
+      expect(response.body).to include("passé").and include("Ce n&#39;est pas moi")
+    end
+
+    it "rend la main à la liste des prénoms, sans sortir de Manipule" do
+      get manipule_serie_path
+
+      delete manipule_quitter_path
+
+      expect(response).to redirect_to(manipule_classe_path(token: jeton.token))
+    end
+
+    it "efface bien l'identité, pour que le suivant choisisse la sienne" do
+      delete manipule_quitter_path
+
+      get manipule_serie_path
+
+      expect(response.body).to include("Tu n'es pas encore entré")
+    end
+
+    # Le cloisonnement tient : la sortie ne mène jamais vers Ensemble.
+    it "ne propose aucun lien vers Ensemble" do
+      get manipule_serie_path
+
+      expect(response.body).not_to include(dashboard_path)
     end
   end
 

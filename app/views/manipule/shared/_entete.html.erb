@@ -1,0 +1,19 @@
+<%# L'en-tête de tout écran de Manipule, et ses trois lignes sont TOUJOURS
+    réservées, même vides.
+
+    Sans ça, une page portant un lien de retour décalait tout son contenu
+    d'une ligne par rapport à la précédente : en passant de l'accueil aux
+    problèmes puis aux classes, le titre et les boutons sautaient. Le regard
+    devait rechercher où commencer à chaque changement de page.
+
+    `titre` est obligatoire. `retour` et `note` sont facultatifs — leur ligne
+    reste là de toute façon. %>
+<header class="m-entete">
+  <p class="m-entete-retour">
+    <% if local_assigns[:retour].present? %>
+      <%= link_to "← #{retour[:libelle]}", retour[:chemin] %>
+    <% end %>
+  </p>
+  <h1 class="m-entete-titre"><%= titre %></h1>
+  <p class="m-entete-note"><%= local_assigns[:note] %></p>
+</header>

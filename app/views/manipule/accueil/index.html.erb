@@ -1,45 +1,43 @@
-<div class="container py-4 m-prof">
+<div class="px-4 py-4 m-prof">
   <%= render "manipule/shared/nav" %>
+  <%= render "manipule/shared/entete", titre: "Accueil",
+             note: "L'atelier où vos élèves s'entraînent seuls : ils lisent ou écoutent un problème, " \
+                   "répondent, et l'application leur dit tout de suite si c'est juste." %>
 
-  <p class="text-muted">
-    L'atelier où vos élèves s'entraînent seuls : ils lisent ou écoutent un problème,
-    répondent, et l'application leur dit tout de suite si c'est juste.
-  </p>
-
-  <div class="row g-3 mt-2">
+  <div class="row g-3">
     <div class="col-md-6">
-      <div class="card h-100">
-        <div class="card-body">
-          <h2 class="h5 card-title">La banque</h2>
-          <p class="card-text text-muted mb-3">
-            <% if @en_circulation.zero? && @brouillons.zero? %>
-              Aucun problème pour l'instant.
-            <% else %>
-              <%= pluralize(@en_circulation, "problème en circulation", "problèmes en circulation") %>
-              sur <%= pluralize(@competences, "compétence") %><%= ", #{pluralize(@brouillons, 'brouillon')}" if @brouillons.positive? %>.
-            <% end %>
-          </p>
-          <%= link_to "Ouvrir la banque", manipule_banque_path, class: "btn btn-outline-primary" %>
-        </div>
+      <div class="m-fiche h-100 d-flex flex-column">
+        <h2 class="m-fiche-titre">Les problèmes</h2>
+        <p class="m-fiche-note flex-grow-1 mb-3">
+          <% if @en_circulation.zero? && @brouillons.zero? %>
+            Aucun problème pour l'instant.
+          <% else %>
+            <%= au_pluriel(@en_circulation, "problème") %> visibles
+            sur <%= au_pluriel(@competences, "compétence") %><%= ", #{au_pluriel(@brouillons, 'brouillon')}" if @brouillons.positive? %>.
+          <% end %>
+        </p>
+        <%= link_to manipule_banque_path, class: "m-cta m-cta--principal align-self-start" do %>
+          <i class="fa-solid fa-layer-group"></i><span>Ouvrir les problèmes</span>
+        <% end %>
       </div>
     </div>
 
     <div class="col-md-6">
-      <div class="card h-100">
-        <div class="card-body">
-          <h2 class="h5 card-title">Les classes</h2>
-          <p class="card-text text-muted mb-3">
-            <% if @classes.zero? %>
-              Aucune classe.
-            <% elsif @classes_equipees.zero? %>
-              <%= pluralize(@classes, "classe") %>, aucune n'a encore de compétence désignée —
-              vos élèves tomberaient sur « Rien à faire pour le moment ».
-            <% else %>
-              <%= @classes_equipees %> sur <%= pluralize(@classes, "classe") %> ont une compétence désignée.
-            <% end %>
-          </p>
-          <%= link_to "Ouvrir les classes", manipule_suivi_path, class: "btn btn-outline-primary" %>
-        </div>
+      <div class="m-fiche h-100 d-flex flex-column">
+        <h2 class="m-fiche-titre">Mes classes</h2>
+        <p class="m-fiche-note flex-grow-1 mb-3">
+          <% if @classes.zero? %>
+            Aucune classe.
+          <% elsif @classes_equipees.zero? %>
+            <%= au_pluriel(@classes, "classe") %>, aucune n'a encore de compétence désignée —
+            vos élèves tomberaient sur « Rien à faire pour le moment ».
+          <% else %>
+            <%= @classes_equipees %> sur <%= au_pluriel(@classes, "classe") %> ont une compétence désignée.
+          <% end %>
+        </p>
+        <%= link_to manipule_suivi_path, class: "m-cta m-cta--principal align-self-start" do %>
+          <i class="fa-solid fa-users"></i><span>Ouvrir mes classes</span>
+        <% end %>
       </div>
     </div>
   </div>

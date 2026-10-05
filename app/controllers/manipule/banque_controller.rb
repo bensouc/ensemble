@@ -37,7 +37,7 @@ module Manipule
       authorize @competence, :publier?, policy_class: ProblemPolicy
       nombre = Problem.where(skill: @competence, published: false).count
       Problem.where(skill: @competence, published: false).find_each { |probleme| probleme.update!(published: true) }
-      flash[:notice] = t("manipule.mis_en_circulation", nombre:)
+      flash[:notice] = t("manipule.rendus_visibles", nombre:)
       redirect_to manipule_banque_competence_path(@competence)
     end
 

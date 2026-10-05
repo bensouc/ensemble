@@ -1,84 +1,279 @@
 @use "../config/colors";
+@use "../config/global";
 
 // Les écrans de Manipule côté enseignante.
 //
-// Ils vivent dans le gabarit d'Ensemble, mais leur balisage est du Bootstrap,
-// dont le bleu « primary » jure avec le rose de la marque. Manipule est censé
-// être chez lui ici, pas posé à côté : on reteint, sans toucher aux vues.
+// Ils vivent dans le gabarit d'Ensemble et parlent son vocabulaire actuel :
+// la pastille `pill-cta`, qui a remplacé partout ailleurs les pavés à bordure
+// de 3px. Une première version de ces écrans les avait refabriqués par
+// réflexe — trois gros blocs roses par ligne, illisibles.
 //
-// Cantonné à `.m-prof` : le reste d'Ensemble n'a pas à changer de couleur
-// parce qu'on a ajouté un atelier.
-.m-prof {
-  .nav-link {
-    color: colors.$rose;
-
-    &:hover {
-      color: colors.$grisF;
-    }
-  }
-
-  .nav-link.active {
-    background-color: colors.$rose;
-    color: #fff;
-  }
-
-  .btn-primary {
-    background-color: colors.$rose;
-    border-color: colors.$rose;
-
-    &:hover {
-      background-color: #fff;
-      color: colors.$rose;
-    }
-  }
-
-  .btn-outline-primary {
-    color: colors.$rose;
-    border-color: colors.$rose;
-
-    &:hover {
-      background-color: colors.$rose;
-      color: #fff;
-    }
-  }
-}
-
-// L'éditeur : le formulaire à gauche, l'aperçu à droite.
+// Tout est cantonné à `.m-prof` : on n'a pas ajouté un atelier pour reteindre
+// le reste de l'application.
+// `.contenu` est un conteneur flex et `.pastouche` un élément flex : il se
+// dimensionne donc sur SON CONTENU, et le `margin: 0 auto` du gabarit le
+// centre ensuite sur cette largeur-là. Résultat, chaque écran commençait à un
+// endroit différent — l'accueil occupait 1200 px à partir de x=200, la liste
+// des problèmes 548 px à partir de x=526. Le bloc entier sautait d'une page à
+// l'autre.
 //
-// Une seule colonne en dessous de 992 px — côte à côte, les deux deviendraient
-// illisibles bien avant d'être étroites.
-.m-editeur {
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: minmax(0, 1fr);
-
-  @media (min-width: 992px) {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    align-items: start;
-  }
-}
-
-// L'aperçu suit le défilement : le formulaire est plus long que lui, et on
-// écrit la question en regardant ce qu'elle donne.
-.m-apercu {
-  @media (min-width: 992px) {
-    position: sticky;
-    top: 1rem;
-  }
-}
-
-.m-apercu-titre {
-  margin-bottom: 0.4rem;
-  font-weight: bold;
-  color: colors.$grisF;
-}
-
-// Un cadre, parce que l'aperçu porte la feuille de style de l'élève : sans
-// isolation, elle et celle d'Ensemble se marcheraient dessus.
-.m-apercu-cadre {
+// `:has()` vise le conteneur d'Ensemble UNIQUEMENT quand il porte une page de
+// Manipule : tous les autres écrans gardent le centrage qu'ils ont toujours eu.
+.pastouche:has(.m-prof) {
   width: 100%;
-  height: 34rem;
-  border: 1px solid colors.$grisC;
-  border-radius: 0.6rem;
-  background: #eef2f5;
+}
+
+.m-prof {
+  width: 100%;
+
+  // ── les actions ──────────────────────────────────────────────────────
+  //
+  // Une seule famille, trois poids. `i` + `span` à l'intérieur, comme les
+  // CTA des exercices et des plans de travail.
+  .m-cta {
+    @include global.pill-cta($height: 34px);
+  }
+
+  // Déjà remplie au repos, pour qu'elle ressorte des actions secondaires.
+  // Une par écran, pas davantage.
+  .m-cta--principal {
+    background-color: colors.$rose;
+    color: colors.$blanc;
+
+    i,
+    span {
+      color: colors.$blanc;
+    }
+  }
+
+  // Ce qui crée est vert, comme partout dans Ensemble.
+  .m-cta--creer {
+    @include global.pill-cta($color: colors.$green, $height: 34px);
+  }
+
+  // Sans fond : il y en a une par ligne de liste, et un fond teinté ferait
+  // une colonne de taches roses.
+  .m-cta--discret {
+    @include global.pill-cta($height: 30px);
+    background-color: transparent;
+  }
+
+  // Ensemble applique `.rmv-skill-btn` à un <div> posé dans un lien : la
+  // classe n'a donc jamais eu à remettre à zéro le fond ni la bordure qu'un
+  // navigateur donne à un <button>. Ici c'en est un vrai, et le pavé gris du
+  // navigateur ressortait derrière la croix.
+  button.rmv-skill-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    line-height: 1;
+  }
+
+  // ── la barre d'onglets ───────────────────────────────────────────────
+  .m-onglets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    a {
+      color: colors.$grisF;
+      text-decoration: none;
+      font-size: 15px;
+      padding-bottom: 0.2rem;
+      border-bottom: 2px solid transparent;
+      transition: 0.25s;
+
+      &:hover {
+        color: colors.$rose;
+      }
+    }
+
+    // Un soulignement fin plutôt qu'une pastille pleine : le menu de gauche
+    // marque l'entrée courante par la couleur, pas par un fond.
+    a.actif {
+      color: colors.$rose;
+      font-weight: 600;
+      border-bottom-color: colors.$rose;
+    }
+  }
+
+  // ── l'en-tête ────────────────────────────────────────────────────────
+  //
+  // Les trois lignes gardent leur hauteur même vides : d'un écran à l'autre,
+  // le titre et le contenu restent exactement au même endroit.
+  .m-entete {
+    margin-bottom: 1.6rem;
+  }
+
+  .m-entete-retour {
+    min-height: 1.4rem;
+    margin: 0 0 0.2rem;
+    font-size: 14px;
+  }
+
+  .m-entete-titre {
+    margin: 0 0 0.35rem;
+  }
+
+  .m-entete-note {
+    min-height: 1.45rem;
+    margin: 0;
+    font-size: 14px;
+    color: colors.$grisF;
+    opacity: 0.65;
+  }
+
+  // ── les listes ───────────────────────────────────────────────────────
+  .m-fiche {
+    border: colors.$grisC solid thin;
+    border-radius: 12px;
+    background-color: colors.$blanc;
+    padding: 0.9rem 1.1rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .m-fiche-erreur {
+    border-color: colors.$rose;
+  }
+
+  .m-fiche-titre {
+    margin: 0 0 0.15rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: colors.$grisF;
+  }
+
+  .m-fiche-note {
+    margin: 0;
+    color: colors.$grisF;
+    opacity: 0.65;
+    font-size: 14px;
+  }
+
+  // ── les étiquettes ───────────────────────────────────────────────────
+  //
+  // Même gabarit que la pastille d'action, mais inerte : on lit, on ne clique
+  // pas. D'où l'absence de survol.
+  .m-etiquette {
+    display: inline-flex;
+    align-items: center;
+    height: 26px;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    background-color: rgba(colors.$grisF, 0.06);
+    color: colors.$grisF;
+  }
+
+  .m-etiquette--juste {
+    background-color: rgba(colors.$green, 0.1);
+    color: colors.$green;
+  }
+
+  // L'outil ne se lit pas comme une réponse : une teinte à lui, et sa propre
+  // ligne. Posé au milieu des trois réponses, il passait pour une quatrième.
+  .m-etiquette--outil {
+    background-color: rgba(colors.$bleuF, 0.22);
+    color: #1a4c6c;
+  }
+
+  .m-etiquette--active {
+    background-color: rgba(colors.$rose, 0.1);
+    color: colors.$rose;
+  }
+
+  // ── les champs ───────────────────────────────────────────────────────
+  .area {
+    padding: 0.4rem 0.7rem;
+    width: 100%;
+    font-size: 15px;
+  }
+
+  .m-champ {
+    margin-bottom: 1.1rem;
+  }
+
+  .m-champ-aide {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 13px;
+    color: colors.$grisF;
+    opacity: 0.65;
+  }
+
+  // simple_form pose `form-check-inline` sans `form-check`, or c'est ce
+  // dernier qui porte l'écart entre la case et son libellé chez Bootstrap :
+  // les deux se touchaient. La règle vaut aussi pour les boutons radio de la
+  // bonne réponse, écrits à la main et sans aucun emballage.
+  input[type="radio"],
+  input[type="checkbox"] {
+    margin-right: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .form-check-inline {
+    margin-right: 1.5rem;
+  }
+
+  label,
+  .form-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: colors.$grisF;
+    margin-bottom: 0.3rem;
+  }
+
+  // ── l'éditeur ────────────────────────────────────────────────────────
+  //
+  // Une seule colonne en dessous de 992 px : côte à côte, le formulaire et
+  // l'aperçu deviendraient illisibles bien avant d'être étroits.
+  .m-editeur {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1fr);
+
+    @media (min-width: 992px) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: start;
+    }
+  }
+
+  // L'aperçu suit le défilement : le formulaire est plus long que lui, et on
+  // écrit la question en regardant ce qu'elle donne.
+  .m-apercu {
+    @media (min-width: 992px) {
+      position: sticky;
+      top: 1rem;
+    }
+  }
+
+  .m-apercu-titre {
+    margin-bottom: 0.4rem;
+    font-size: 14px;
+    font-weight: 600;
+    color: colors.$grisF;
+  }
+
+  // Un cadre, parce que l'aperçu porte la feuille de style de l'élève : sans
+  // isolation, elle et celle d'Ensemble se marcheraient dessus.
+  .m-apercu-cadre {
+    width: 100%;
+    height: 34rem;
+    border: colors.$grisC solid thin;
+    border-radius: 12px;
+    background: #eef2f5;
+  }
+
+  // ── les cases de l'outil ─────────────────────────────────────────────
+  .m-case {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    align-items: center;
+  }
 }

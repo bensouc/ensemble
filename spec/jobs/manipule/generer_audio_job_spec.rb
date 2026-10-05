@@ -8,21 +8,21 @@ RSpec.describe Manipule::GenererAudioJob do
   let(:competence) { create(:manipule_skill) }
 
   describe "ce qui poste le job" do
-    it "la mise en circulation d'un problème" do
+    it "la mise visible d'un problème" do
       probleme = create(:manipule_problem, :brouillon, skill: competence)
 
       expect { probleme.update!(published: true) }.
         to have_enqueued_job(described_class).with(probleme)
     end
 
-    it "la correction d'un énoncé déjà en circulation" do
+    it "la correction d'un énoncé déjà visible" do
       probleme = create(:manipule_problem, skill: competence)
 
       expect { probleme.update!(statement: "Il y a 12 pommes sur le pommier.") }.
         to have_enqueued_job(described_class).with(probleme)
     end
 
-    it "la correction d'une réponse déjà en circulation" do
+    it "la correction d'une réponse déjà visible" do
       probleme = create(:manipule_problem, skill: competence)
 
       expect { probleme.choices.first.update!(label: "9 pommes") }.
