@@ -5,38 +5,41 @@
   <h1 class="mb-3">Importer un tableur</h1>
 
   <% if @import&.erreurs&.any? %>
-    <div class="alert alert-danger">
-      <p class="mb-2"><strong>Rien n'a été importé.</strong> Une seule ligne fautive annule tout, pour qu'il n'y ait jamais la moitié d'un fichier en base.</p>
+    <div class="m-fiche m-fiche-erreur">
+      <p class="mb-2">
+        <strong>Rien n'a été importé.</strong>
+        Une seule ligne fautive annule tout, pour qu'il n'y ait jamais la moitié d'un fichier en base.
+      </p>
       <ul class="mb-0">
         <% @import.erreurs.first(15).each do |erreur| %><li><%= erreur %></li><% end %>
       </ul>
-      <% if @import.erreurs.size > 15 %><p class="mb-0 mt-2">… et <%= @import.erreurs.size - 15 %> autres.</p><% end %>
+      <% if @import.erreurs.size > 15 %>
+        <p class="mb-0 mt-2">… et <%= @import.erreurs.size - 15 %> autres.</p>
+      <% end %>
     </div>
   <% end %>
 
-  <div class="card mb-4">
-    <div class="card-body">
-      <p class="mb-2">Le fichier doit avoir une première ligne de titres, puis un problème par ligne :</p>
-      <table class="table table-sm mb-2">
-        <thead><tr><th>Énoncé</th><th>Question</th><th>Bonne réponse</th><th>Mauvaise réponse 1</th><th>Mauvaise réponse 2</th></tr></thead>
-        <tbody>
-          <tr>
-            <td>Il y a 15 pommes sur le pommier. Sam cueille 7 pommes.</td>
-            <td>Combien reste-t-il de pommes ?</td><td>8 pommes</td><td>22 pommes</td><td>7 pommes</td>
-          </tr>
-        </tbody>
-      </table>
-      <p class="text-muted mb-0">
-        Au format <code>.csv</code> ou <code>.xlsx</code>. L'ordre des colonnes n'a pas d'importance, leurs titres si.
-        Les problèmes arrivent en brouillon : vous les relisez avant qu'un élève les voie.
-      </p>
-    </div>
+  <div class="m-fiche mb-4">
+    <p class="mb-2">Le fichier doit avoir une première ligne de titres, puis un problème par ligne :</p>
+    <ul class="m-fiche-note mb-2">
+      <li>Énoncé — <em>Il y a 15 pommes sur le pommier. Sam cueille 7 pommes.</em></li>
+      <li>Question — <em>Combien reste-t-il de pommes ?</em></li>
+      <li>Bonne réponse — <em>8 pommes</em></li>
+      <li>Mauvaise réponse 1 — <em>22 pommes</em></li>
+      <li>Mauvaise réponse 2 — <em>7 pommes</em></li>
+    </ul>
+    <p class="m-fiche-note mb-0">
+      Au format <code>.csv</code> ou <code>.xlsx</code>. L'ordre des colonnes n'a pas d'importance, leurs titres si.
+      Les problèmes arrivent en brouillon : vous les relisez avant qu'un élève les voie.
+    </p>
   </div>
 
   <%= form_with url: manipule_banque_importer_path(@competence), method: :post, multipart: true do |f| %>
-    <div class="mb-3">
-      <%= file_field_tag :fichier, accept: ".csv,.xlsx", class: "form-control", id: "fichier" %>
+    <div class="m-champ">
+      <%= file_field_tag :fichier, accept: ".csv,.xlsx", class: "area", id: "fichier" %>
     </div>
-    <%= f.submit "Importer", class: "btn btn-primary" %>
+    <button type="submit" class="m-cta m-cta--principal">
+      <i class="fa-solid fa-file-arrow-up"></i><span>Importer</span>
+    </button>
   <% end %>
 </div>

@@ -1,104 +1,95 @@
 <div class="container py-4 m-prof">
   <%= render "manipule/shared/nav" %>
 
-  <p class="mb-1"><%= link_to "← Le suivi", manipule_suivi_path %></p>
-  <h1 class="mb-3"><%= @classe.name %></h1>
+  <p class="mb-1"><%= link_to "← Les classes", manipule_suivi_path %></p>
+  <h1 class="mb-4"><%= @classe.name %></h1>
 
-  <div class="card mb-4">
-    <div class="card-body">
-      <h2 class="h6 text-uppercase text-muted">L'adresse des élèves</h2>
-      <p class="mb-2">
-        <code><%= manipule_classe_url(token: @jeton.token) %></code>
-      </p>
-      <p class="text-muted small mb-2">
-        À projeter ou à coller sur les postes. Qui possède cette adresse peut se faire passer pour
-        n'importe quel élève de la classe — renouvelez-la si elle a circulé plus loin.
-      </p>
-      <%= button_to "Renouveler l'adresse", manipule_suivi_jeton_path(@classe), class: "btn btn-sm btn-outline-secondary" %>
-    </div>
+  <div class="m-fiche mb-4">
+    <h2 class="m-fiche-titre">L'adresse des élèves</h2>
+    <p class="mb-2"><code><%= manipule_classe_url(token: @jeton.token) %></code></p>
+    <p class="m-fiche-note mb-3">
+      À projeter ou à coller sur les postes. Qui possède cette adresse peut se faire passer pour
+      n'importe quel élève de la classe — renouvelez-la si elle a circulé plus loin.
+    </p>
+    <%= button_to manipule_suivi_jeton_path(@classe), class: "m-cta m-cta--discret" do %>
+      <i class="fa-solid fa-rotate"></i><span>Renouveler l'adresse</span>
+    <% end %>
   </div>
 
   <% if @competences.empty? %>
-    <div class="alert alert-warning">
+    <div class="m-fiche m-fiche-erreur mb-4">
       Aucune compétence de ce niveau n'a de problème en circulation.
       <%= link_to "Remplissez la banque", manipule_banque_path %> avant de désigner quoi que ce soit.
     </div>
   <% else %>
-    <div class="card mb-4">
-      <div class="card-body">
-        <h2 class="h6 text-uppercase text-muted">Désigner pour toute la classe</h2>
-        <%= form_with url: manipule_suivi_affecter_path(@classe), method: :post, class: "d-flex gap-2 flex-wrap align-items-end" do |f| %>
-          <div>
-            <%= label_tag :skill_id, "Compétence", class: "form-label mb-1" %>
+    <div class="m-fiche mb-4">
+      <h2 class="m-fiche-titre">Désigner pour toute la classe</h2>
+      <%= form_with url: manipule_suivi_affecter_path(@classe), method: :post,
+                    class: "d-flex gap-2 flex-wrap align-items-center mt-2" do |f| %>
+        <%= label_tag :skill_id, "Compétence", class: "visually-hidden" %>
+        <%= select_tag :skill_id,
+                       options_for_select(@competences.map { |c| ["#{c.name} — ceinture #{Belt::BELT_COLORS[c.level - 1]}", c.id] }),
+                       class: "area", style: "width: auto;" %>
+        <button type="submit" class="m-cta m-cta--principal">
+          <i class="fa-solid fa-check"></i><span>Désigner pour tous</span>
+        </button>
+      <% end %>
+    </div>
+  <% end %>
+
+  <h2 class="h5 mb-3">Les élèves</h2>
+  <% @eleves.each do |eleve| %>
+    <% affectation = @affectations[eleve.id] %>
+    <% serie = @dernieres[eleve.id] %>
+    <div class="m-fiche">
+      <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+        <div class="flex-grow-1">
+          <h3 class="m-fiche-titre"><%= eleve.first_name %></h3>
+          <p class="m-fiche-note mb-1">
+            <% if affectation %>
+              Travaille « <%= affectation.skill.name %> »
+            <% else %>
+              Rien de désigné — cet élève tomberait sur « Rien à faire pour le moment ».
+            <% end %>
+          </p>
+          <p class="m-fiche-note mb-0">
+            <% if serie.nil? %>
+              Jamais venu.
+            <% else %>
+              <%# « Passé » n'est pas « faux » : les deux chiffres restent séparés. %>
+              <%= l(serie.created_at, format: :short) %> ·
+              <%= serie.attempts.count { |t| t.status == "correct" } %> juste,
+              <%= serie.attempts.count { |t| t.status == "wrong" } %> faux,
+              <%= serie.attempts.count { |t| t.status == "skipped" } %> passé
+              <% ecoutes = serie.attempts.sum(&:listened_count) %>
+              <%= "· #{au_pluriel(ecoutes, 'écoute')}" if ecoutes.positive? %>
+            <% end %>
+          </p>
+        </div>
+
+        <% if @competences.any? %>
+          <%= form_with url: manipule_suivi_affecter_path(@classe), method: :post,
+                        class: "d-flex gap-2 flex-shrink-0 align-items-center" do |f| %>
+            <%= hidden_field_tag :student_id, eleve.id %>
             <%= select_tag :skill_id,
-                           options_for_select(@competences.map { |c| ["#{c.name} — ceinture #{Belt::BELT_COLORS[c.level - 1]}", c.id] }),
-                           class: "form-select" %>
-          </div>
-          <%= f.submit "Désigner pour tous", class: "btn btn-primary" %>
+                           options_for_select(@competences.map { |c| [c.name, c.id] }, affectation&.skill_id),
+                           class: "area", style: "width: auto; max-width: 16rem;",
+                           "aria-label": "Compétence de #{eleve.first_name}" %>
+            <button type="submit" class="m-cta"><i class="fa-solid fa-check"></i><span>Désigner</span></button>
+          <% end %>
         <% end %>
       </div>
     </div>
   <% end %>
 
-  <h2 class="h5 mb-3">Les élèves</h2>
-  <table class="table align-middle">
-    <thead>
-      <tr><th>Élève</th><th>Travaille</th><th>Dernière séance</th><th class="text-end"></th></tr>
-    </thead>
-    <tbody>
-      <% @eleves.each do |eleve| %>
-        <% affectation = @affectations[eleve.id] %>
-        <% serie = @dernieres[eleve.id] %>
-        <tr>
-          <td><%= eleve.first_name %></td>
-          <td>
-            <% if affectation %>
-              <%= affectation.skill.name %>
-            <% else %>
-              <span class="text-muted">rien de désigné</span>
-            <% end %>
-          </td>
-          <td>
-            <% if serie.nil? %>
-              <span class="text-muted">jamais venu</span>
-            <% else %>
-              <%# « Passé » n'est pas « faux » : les deux chiffres restent séparés. %>
-              <%= l(serie.created_at, format: :short) %> ·
-              <span class="text-success"><%= serie.attempts.count { |t| t.status == "correct" } %> juste</span>,
-              <span class="text-danger"><%= serie.attempts.count { |t| t.status == "wrong" } %> faux</span>,
-              <span class="text-muted"><%= serie.attempts.count { |t| t.status == "skipped" } %> passé</span>
-              <% ecoutes = serie.attempts.sum(&:listened_count) %>
-              <% if ecoutes.positive? %>
-                · <span class="text-muted"><%= ecoutes %> écoute(s)</span>
-              <% end %>
-            <% end %>
-          </td>
-          <td class="text-end">
-            <% if @competences.any? %>
-              <%= form_with url: manipule_suivi_affecter_path(@classe), method: :post, class: "d-flex gap-1 justify-content-end" do |f| %>
-                <%= hidden_field_tag :student_id, eleve.id %>
-                <%= select_tag :skill_id,
-                               options_for_select(@competences.map { |c| [c.name, c.id] }, affectation&.skill_id),
-                               class: "form-select form-select-sm", style: "max-width: 260px" %>
-                <%= f.submit "Désigner", class: "btn btn-sm btn-outline-primary" %>
-              <% end %>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-
   <% if @qui_coince.any? %>
-    <h2 class="h5 mt-4 mb-2">Là où ça coince</h2>
-    <p class="text-muted small">Les problèmes ratés ou passés le plus souvent, tous élèves confondus.</p>
-    <ul class="list-group">
-      <% @qui_coince.each do |probleme, nombre| %>
-        <li class="list-group-item d-flex justify-content-between gap-3">
-          <span><%= probleme.statement %></span>
-          <span class="badge text-bg-secondary align-self-start"><%= nombre %></span>
-        </li>
-      <% end %>
-    </ul>
+    <h2 class="h5 mt-4 mb-1">Là où ça coince</h2>
+    <p class="m-fiche-note mb-3">Les problèmes ratés ou passés le plus souvent, tous élèves confondus.</p>
+    <% @qui_coince.each do |probleme, nombre| %>
+      <div class="m-fiche d-flex justify-content-between gap-3">
+        <span><%= probleme.statement %></span>
+        <span class="m-etiquette flex-shrink-0"><%= nombre %></span>
+      </div>
+    <% end %>
   <% end %>
 </div>

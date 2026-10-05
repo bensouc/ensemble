@@ -32,6 +32,13 @@ module ManipuleHelper
     onglet[:controleurs].include?(controller_name)
   end
 
+  # `pluralize` est sensible à la locale, et aucune inflexion n'est définie
+  # pour le français : « 2 case » en sortait. Même parade que
+  # `Mobile::ClassroomsHelper#eleves_label`, en un seul endroit.
+  def au_pluriel(nombre, singulier, pluriel = nil)
+    "#{nombre} #{nombre > 1 ? (pluriel || "#{singulier}s") : singulier}"
+  end
+
   def chemin_audio(audio)
     return if audio.blank?
 

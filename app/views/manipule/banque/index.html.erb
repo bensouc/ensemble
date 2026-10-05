@@ -1,27 +1,29 @@
 <div class="container py-4 m-prof">
   <%= render "manipule/shared/nav" %>
 
-  <h1 class="mb-1">La banque</h1>
-  <p class="text-muted">Les problèmes que vos élèves s'entraînent à résoudre, rangés par compétence.</p>
+  <h1>La banque</h1>
+  <p class="m-fiche-note mb-4">Les problèmes que vos élèves s'entraînent à résoudre, rangés par compétence.</p>
 
   <% if @par_competence.empty? %>
-    <p class="text-muted">Aucun problème pour l'instant. Choisissez une compétence dans vos niveaux, puis importez un tableur.</p>
+    <p class="m-fiche-note">
+      Aucun problème pour l'instant. Choisissez une compétence dans vos niveaux,
+      puis écrivez-en un ou importez un tableur.
+    </p>
   <% else %>
-    <table class="table align-middle">
-      <thead>
-        <tr><th>Compétence</th><th>Ceinture</th><th class="text-end">En circulation</th><th class="text-end">Brouillons</th><th></th></tr>
-      </thead>
-      <tbody>
-        <% @par_competence.each do |competence, problemes| %>
-          <tr>
-            <td><%= competence.name %></td>
-            <td><%= Belt::BELT_COLORS[competence.level - 1] %></td>
-            <td class="text-end"><%= problemes.count(&:published) %></td>
-            <td class="text-end"><%= problemes.count { |probleme| !probleme.published } %></td>
-            <td class="text-end"><%= link_to "Ouvrir", manipule_banque_competence_path(competence), class: "btn btn-sm btn-outline-primary" %></td>
-          </tr>
+    <% @par_competence.each do |competence, problemes| %>
+      <div class="m-fiche d-flex justify-content-between align-items-center gap-3">
+        <div>
+          <h2 class="m-fiche-titre"><%= competence.name %></h2>
+          <p class="m-fiche-note">
+            Ceinture <%= Belt::BELT_COLORS[competence.level - 1] %> ·
+            <%= problemes.count(&:published) %> en circulation,
+            <%= au_pluriel(problemes.count { |probleme| !probleme.published }, "brouillon") %>
+          </p>
+        </div>
+        <%= link_to manipule_banque_competence_path(competence), class: "m-cta flex-shrink-0" do %>
+          <span>Ouvrir</span><i class="fa-solid fa-chevron-right"></i>
         <% end %>
-      </tbody>
-    </table>
+      </div>
+    <% end %>
   <% end %>
 </div>
