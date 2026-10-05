@@ -20,8 +20,8 @@ module ManipuleHelper
   def onglets_manipule
     onglets = [
       { libelle: "Accueil", chemin: manipule_root_path, controleurs: %w[accueil] },
-      { libelle: "La banque", chemin: manipule_banque_path, controleurs: %w[banque] },
-      { libelle: "Les classes", chemin: manipule_suivi_path, controleurs: %w[classes] }
+      { libelle: "Les problèmes", chemin: manipule_banque_path, controleurs: %w[banque] },
+      { libelle: "Mes classes", chemin: manipule_suivi_path, controleurs: %w[classes] }
     ]
     return onglets unless current_user&.admin?
 

@@ -22,7 +22,7 @@ module Manipule
     # tranchée, c'est cette méthode, et elle seule, qui changera.
     def self.commencer!(student:, skill:, size: TAILLE)
       problemes = Problem.published.where(skill:).order(Arel.sql("RANDOM()")).limit(size).to_a
-      raise ArgumentError, "Aucun problème en circulation pour cette compétence" if problemes.empty?
+      raise ArgumentError, "Aucun problème visible pour cette compétence" if problemes.empty?
 
       transaction do
         serie = create!(student:, skill:, started_at: Time.current, size: problemes.size)

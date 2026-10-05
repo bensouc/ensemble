@@ -60,7 +60,7 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
   end
 
   describe "la création" do
-    it "crée un brouillon, jamais un problème en circulation" do
+    it "crée un brouillon, jamais un problème visible" do
       expect { post manipule_problemes_path(competence), params: { probleme: champs } }.
         to change(Manipule::Problem, :count).by(1)
 

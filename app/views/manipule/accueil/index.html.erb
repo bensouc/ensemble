@@ -9,24 +9,24 @@
   <div class="row g-3">
     <div class="col-md-6">
       <div class="m-fiche h-100 d-flex flex-column">
-        <h2 class="m-fiche-titre">La banque</h2>
+        <h2 class="m-fiche-titre">Les problèmes</h2>
         <p class="m-fiche-note flex-grow-1 mb-3">
           <% if @en_circulation.zero? && @brouillons.zero? %>
             Aucun problème pour l'instant.
           <% else %>
-            <%= au_pluriel(@en_circulation, "problème") %> en circulation
+            <%= au_pluriel(@en_circulation, "problème") %> visibles
             sur <%= au_pluriel(@competences, "compétence") %><%= ", #{au_pluriel(@brouillons, 'brouillon')}" if @brouillons.positive? %>.
           <% end %>
         </p>
         <%= link_to manipule_banque_path, class: "m-cta m-cta--principal align-self-start" do %>
-          <i class="fa-solid fa-layer-group"></i><span>Ouvrir la banque</span>
+          <i class="fa-solid fa-layer-group"></i><span>Ouvrir les problèmes</span>
         <% end %>
       </div>
     </div>
 
     <div class="col-md-6">
       <div class="m-fiche h-100 d-flex flex-column">
-        <h2 class="m-fiche-titre">Les classes</h2>
+        <h2 class="m-fiche-titre">Mes classes</h2>
         <p class="m-fiche-note flex-grow-1 mb-3">
           <% if @classes.zero? %>
             Aucune classe.
@@ -38,7 +38,7 @@
           <% end %>
         </p>
         <%= link_to manipule_suivi_path, class: "m-cta m-cta--principal align-self-start" do %>
-          <i class="fa-solid fa-users"></i><span>Ouvrir les classes</span>
+          <i class="fa-solid fa-users"></i><span>Ouvrir mes classes</span>
         <% end %>
       </div>
     </div>

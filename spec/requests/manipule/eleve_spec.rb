@@ -202,7 +202,7 @@ RSpec.describe "Manipule, côté élève" do
       expect(response.body).to include("Rien à faire")
     end
 
-    it "le dit aussi quand la banque n'a aucun problème en circulation" do
+    it "le dit aussi quand la banque n'a aucun problème visible" do
       designer!
       banque(2).each { |probleme| probleme.update!(published: false) }
       entrer!

@@ -47,9 +47,9 @@ RSpec.describe "Manipule, le suivi d'une classe" do
   end
 
   describe "la page de suivi" do
-    # Désigner une compétence sans problème en circulation mènerait l'élève à un
+    # Désigner une compétence sans problème visible mènerait l'élève à un
     # écran vide, sans qu'elle puisse comprendre pourquoi.
-    it "ne propose que les compétences qui ont des problèmes en circulation" do
+    it "ne propose que les compétences qui ont des problèmes visible" do
       vide = create(:skill, domain: domaine, school: enseignante.school, level: 1, name: "Compétence vide")
       create(:manipule_problem, skill: competence)
       create(:manipule_problem, :brouillon, skill: vide)

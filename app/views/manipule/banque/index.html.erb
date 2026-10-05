@@ -1,7 +1,7 @@
 <div class="container py-4 m-prof">
   <%= render "manipule/shared/nav" %>
 
-  <h1>La banque</h1>
+  <h1>Les problèmes</h1>
   <p class="m-fiche-note mb-4">Les problèmes que vos élèves s'entraînent à résoudre, rangés par compétence.</p>
 
   <% if @par_competence.empty? %>
@@ -16,7 +16,7 @@
           <h2 class="m-fiche-titre"><%= competence.name %></h2>
           <p class="m-fiche-note">
             Ceinture <%= Belt::BELT_COLORS[competence.level - 1] %> ·
-            <%= problemes.count(&:published) %> en circulation,
+            <%= problemes.count(&:published) %> visibles,
             <%= au_pluriel(problemes.count { |probleme| !probleme.published }, "brouillon") %>
           </p>
         </div>

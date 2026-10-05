@@ -32,7 +32,7 @@ RSpec.describe "Manipule, la banque côté enseignante" do
   before { sign_in enseignante }
 
   describe "l'import" do
-    it "crée les problèmes en brouillon, pas en circulation" do
+    it "crée les problèmes en brouillon, pas visible" do
       post manipule_banque_importer_path(competence), params: { fichier: fichier_csv([en_tete, ligne(1), ligne(2)]) }
 
       expect(Manipule::Problem.count).to eq(2)
@@ -106,7 +106,7 @@ RSpec.describe "Manipule, la banque côté enseignante" do
     end
   end
 
-  describe "la mise en circulation" do
+  describe "la mise visible" do
     before { post manipule_banque_importer_path(competence), params: { fichier: fichier_csv([en_tete, ligne(1), ligne(2)]) } }
 
     it "publie tous les brouillons d'un coup" do
