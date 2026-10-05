@@ -7,16 +7,20 @@
   <% if @classes.empty? %>
     <p class="m-fiche-note">Aucune classe.</p>
   <% else %>
-    <% @classes.each do |classe| %>
-      <div class="m-fiche d-flex justify-content-between align-items-center gap-3">
-        <div>
-          <h2 class="m-fiche-titre"><%= classe.name %></h2>
-          <p class="m-fiche-note"><%= au_pluriel(classe.students.size, "élève") %></p>
+    <div class="row g-3">
+      <% @classes.each do |classe| %>
+        <div class="col-md-6 col-xxl-4">
+          <div class="m-fiche h-100 d-flex justify-content-between align-items-center gap-3">
+            <div>
+              <h2 class="m-fiche-titre"><%= classe.name %></h2>
+              <p class="m-fiche-note"><%= au_pluriel(classe.students.size, "élève") %></p>
+            </div>
+            <%= link_to manipule_suivi_classe_path(classe), class: "m-cta flex-shrink-0" do %>
+              <span>Ouvrir</span><i class="fa-solid fa-chevron-right"></i>
+            <% end %>
+          </div>
         </div>
-        <%= link_to manipule_suivi_classe_path(classe), class: "m-cta flex-shrink-0" do %>
-          <span>Ouvrir</span><i class="fa-solid fa-chevron-right"></i>
-        <% end %>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   <% end %>
 </div>

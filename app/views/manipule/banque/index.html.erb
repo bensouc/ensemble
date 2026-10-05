@@ -9,20 +9,24 @@
       puis écrivez-en un ou importez un tableur.
     </p>
   <% else %>
-    <% @par_competence.each do |competence, problemes| %>
-      <div class="m-fiche d-flex justify-content-between align-items-center gap-3">
-        <div>
-          <h2 class="m-fiche-titre"><%= competence.name %></h2>
-          <p class="m-fiche-note">
-            Ceinture <%= Belt::BELT_COLORS[competence.level - 1] %> ·
-            <%= problemes.count(&:published) %> visibles,
-            <%= au_pluriel(problemes.count { |probleme| !probleme.published }, "brouillon") %>
-          </p>
+    <div class="row g-3">
+      <% @par_competence.each do |competence, problemes| %>
+        <div class="col-md-6 col-xxl-4">
+          <div class="m-fiche h-100 d-flex justify-content-between align-items-center gap-3">
+            <div>
+              <h2 class="m-fiche-titre"><%= competence.name %></h2>
+              <p class="m-fiche-note">
+                Ceinture <%= Belt::BELT_COLORS[competence.level - 1] %> ·
+                <%= problemes.count(&:published) %> visibles,
+                <%= au_pluriel(problemes.count { |probleme| !probleme.published }, "brouillon") %>
+              </p>
+            </div>
+            <%= link_to manipule_banque_competence_path(competence), class: "m-cta flex-shrink-0" do %>
+              <span>Ouvrir</span><i class="fa-solid fa-chevron-right"></i>
+            <% end %>
+          </div>
         </div>
-        <%= link_to manipule_banque_competence_path(competence), class: "m-cta flex-shrink-0" do %>
-          <span>Ouvrir</span><i class="fa-solid fa-chevron-right"></i>
-        <% end %>
-      </div>
-    <% end %>
+      <% end %>
+    </div>
   <% end %>
 </div>
