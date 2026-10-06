@@ -15,7 +15,7 @@ RSpec.describe Manipule::Problem do
       probleme.choices.each { |choix| choix.correct = false }
 
       expect(probleme).not_to be_valid
-      expect(probleme.errors[:base]).to include("Un problème doit avoir exactement une bonne réponse")
+      expect(probleme.errors[:base]).to include("Une manipulation doit avoir exactement une bonne réponse")
     end
 
     it "refuse un problème qui en a deux" do

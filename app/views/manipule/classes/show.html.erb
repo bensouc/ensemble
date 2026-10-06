@@ -18,8 +18,8 @@
 
   <% if @competences.empty? %>
     <div class="m-fiche m-fiche-erreur mb-4">
-      Aucune compétence de ce niveau n'a de problème visible.
-      <%= link_to "Écrivez des problèmes", manipule_banque_path %> avant de désigner quoi que ce soit.
+      Aucune compétence de ce niveau n'a de manipulation visible.
+      <%= link_to "Écrivez des manipulations", manipule_banque_path %> avant de désigner quoi que ce soit.
     </div>
   <% else %>
     <div class="m-fiche mb-4">
@@ -45,7 +45,7 @@
       <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
         <div class="flex-grow-1">
           <h3 class="m-fiche-titre">
-            <%# Les totaux disent qu'il a raté quatre problèmes ; ils ne disent
+            <%# Les totaux disent qu'il a raté quatre manipulations ; ils ne disent
                 pas lesquels. Le prénom mène au détail. %>
             <%= link_to manipule_suivi_eleve_path(eleve), class: "m-lien-interne" do %>
               <%= eleve.first_name %><i class="fa-solid fa-chevron-right"></i>
@@ -90,7 +90,7 @@
 
   <% if @qui_coince.any? %>
     <h2 class="h5 mt-4 mb-1">Là où ça coince</h2>
-    <p class="m-fiche-note mb-3">Les problèmes ratés ou passés le plus souvent, tous élèves confondus.</p>
+    <p class="m-fiche-note mb-3">Les manipulations ratées ou passées le plus souvent, tous élèves confondus.</p>
     <% @qui_coince.each do |probleme, nombre| %>
       <div class="m-fiche d-flex justify-content-between gap-3">
         <span><%= probleme.statement %></span>

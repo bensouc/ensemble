@@ -52,7 +52,7 @@ RSpec.describe Manipule::Practice do
       banque(3, :brouillon)
 
       expect { described_class.commencer!(student: eleve, skill: competence) }.
-        to raise_error(ArgumentError, /Aucun problème visible/)
+        to raise_error(ArgumentError, /Aucune manipulation visible/)
     end
 
     it "ne laisse pas de série orpheline quand la création échoue" do

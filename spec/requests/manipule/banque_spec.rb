@@ -50,7 +50,7 @@ RSpec.describe "Manipule, la banque côté enseignante" do
 
       expect(Manipule::Problem.count).to eq(2)
       expect(Manipule::Problem.pluck(:published).uniq).to eq([false])
-      expect(flash[:notice]).to include("2 problèmes importés")
+      expect(flash[:notice]).to include("2 manipulations importées")
     end
 
     it "donne trois réponses à chaque problème, dont une seule juste" do

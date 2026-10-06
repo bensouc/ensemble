@@ -128,7 +128,7 @@ module Manipule
       vivantes = choices.reject(&:marked_for_destruction?)
       return if vivantes.one?(&:correct?)
 
-      errors.add(:base, "Un problème doit avoir exactement une bonne réponse")
+      errors.add(:base, "Une manipulation doit avoir exactement une bonne réponse")
     end
   end
 end

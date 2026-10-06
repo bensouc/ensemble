@@ -2,7 +2,7 @@
   <%= render "manipule/shared/nav" %>
   <%= render "manipule/shared/entete", titre: "Importer un tableur",
              retour: { libelle: @competence.name, chemin: manipule_banque_competence_path(@competence) },
-             note: "Un problème par ligne, et une première ligne de titres." %>
+             note: "Une manipulation par ligne, et une première ligne de titres." %>
 
   <% if @import&.erreurs&.any? %>
     <div class="m-fiche m-fiche-erreur">
@@ -20,7 +20,7 @@
   <% end %>
 
   <div class="m-fiche mb-4">
-    <p class="mb-2">Le fichier doit avoir une première ligne de titres, puis un problème par ligne :</p>
+    <p class="mb-2">Le fichier doit avoir une première ligne de titres, puis une manipulation par ligne :</p>
     <ul class="m-fiche-note mb-2">
       <li>Énoncé — <em>Il y a 15 pommes sur le pommier. Sam cueille 7 pommes.</em></li>
       <li>Question — <em>Combien reste-t-il de pommes ?</em></li>
@@ -30,7 +30,7 @@
     </ul>
     <p class="m-fiche-note mb-0">
       Au format <code>.csv</code> ou <code>.xlsx</code>. L'ordre des colonnes n'a pas d'importance, leurs titres si.
-      Les problèmes arrivent en brouillon : vous les relisez avant qu'un élève les voie.
+      Les manipulations arrivent en brouillon : vous les relisez avant qu'un élève les voie.
     </p>
   </div>
 
