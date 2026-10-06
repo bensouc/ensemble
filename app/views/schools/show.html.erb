@@ -20,7 +20,7 @@
               data-controller="tooltip"
               data-bs-toggle="tooltip"
               data-bs-placement="top"
-              title="Inviter un/e enseignant/e"
+              title="Inviter un.e professeur.e"
             ></i>
 					<% end %>
 				<% end %>
@@ -90,7 +90,7 @@
 					<%= @subscription.current_period_end %></p>
 				<div class="grey-line-full"></div>
 				<div class="school-code">
-					<p>Code pour intégrer un enseignant à votre groupe :</p>
+					<p>Code pour intégrer un.e professeur.e à votre groupe :</p>
 					<h4 class="school-code-value"><%= @school.code %></h4>
 					<% if policy(@school).renew_code? %>
 						<%= button_to renew_code_school_path(@school),

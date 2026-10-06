@@ -1,7 +1,7 @@
 <div class="px-4 py-4 m-prof">
   <%= render "manipule/shared/nav" %>
   <%= render "manipule/shared/entete", titre: @competence.name,
-             retour: { libelle: "Les problèmes", chemin: manipule_banque_path },
+             retour: { libelle: "Les manipulations", chemin: manipule_banque_path },
              note: "Ceinture #{Belt::BELT_COLORS[@competence.level - 1]} · " \
                    "#{@problemes.count(&:published)} visibles, " \
                    "#{au_pluriel(@problemes.count { |probleme| !probleme.published }, 'brouillon')}" %>
@@ -10,7 +10,7 @@
     <%# Vert pour ce qui crée, pastille teintée pour le reste : c'est la
         distinction qu'Ensemble fait partout ailleurs. %>
     <%= link_to manipule_nouveau_probleme_path(@competence), class: "m-cta m-cta--creer" do %>
-      <i class="fa-solid fa-plus"></i><span>Nouveau problème</span>
+      <i class="fa-solid fa-plus"></i><span>Nouvelle manipulation</span>
     <% end %>
     <%= link_to manipule_banque_import_path(@competence), class: "m-cta" do %>
       <i class="fa-solid fa-file-arrow-up"></i><span>Importer un tableur</span>
@@ -23,7 +23,7 @@
   </div>
 
   <% if @problemes.empty? %>
-    <p class="m-fiche-note">Aucun problème sur cette compétence.</p>
+    <p class="m-fiche-note">Aucune manipulation sur cette compétence.</p>
   <% else %>
     <% @problemes.each do |probleme| %>
       <%# Les actions en pied de carte, pas en colonne de droite : en colonne,
@@ -69,10 +69,10 @@
             <%= link_to manipule_edition_probleme_path(probleme), class: "m-cta m-cta--discret" do %>
               <i class="fa-solid fa-pen"></i><span>Modifier</span>
             <% end %>
-            <%# Écrire dix problèmes qui ne diffèrent que par leurs nombres est
+            <%# Écrire dix manipulations qui ne diffèrent que par leurs nombres est
                 le quotidien de l'enseignante. %>
             <%= button_to manipule_dupliquer_probleme_path(probleme), class: "m-cta m-cta--discret",
-                          title: "Dupliquer ce problème" do %>
+                          title: "Dupliquer cette manipulation" do %>
               <i class="fa-regular fa-clone"></i><span>Dupliquer</span>
             <% end %>
             <%= button_to manipule_probleme_circulation_path(probleme), method: :patch,

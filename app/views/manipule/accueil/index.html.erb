@@ -1,23 +1,23 @@
 <div class="px-4 py-4 m-prof">
   <%= render "manipule/shared/nav" %>
   <%= render "manipule/shared/entete", titre: "Accueil",
-             note: "L'atelier où vos élèves s'entraînent seuls : ils lisent ou écoutent un problème, " \
+             note: "L'atelier où vos élèves s'entraînent seuls : ils lisent ou écoutent une manipulation, " \
                    "répondent, et l'application leur dit tout de suite si c'est juste." %>
 
   <div class="row g-3">
     <div class="col-md-6">
       <div class="m-fiche h-100 d-flex flex-column">
-        <h2 class="m-fiche-titre">Les problèmes</h2>
+        <h2 class="m-fiche-titre">Les manipulations</h2>
         <p class="m-fiche-note flex-grow-1 mb-3">
           <% if @en_circulation.zero? && @brouillons.zero? %>
-            Aucun problème pour l'instant.
+            Aucune manipulation pour l'instant.
           <% else %>
-            <%= au_pluriel(@en_circulation, "problème") %> visibles
+            <%= au_pluriel(@en_circulation, "manipulation") %> <%= @en_circulation > 1 ? "visibles" : "visible" %>
             sur <%= au_pluriel(@competences, "compétence") %><%= ", #{au_pluriel(@brouillons, 'brouillon')}" if @brouillons.positive? %>.
           <% end %>
         </p>
         <%= link_to manipule_banque_path, class: "m-cta m-cta--principal align-self-start" do %>
-          <i class="fa-solid fa-layer-group"></i><span>Ouvrir les problèmes</span>
+          <i class="fa-solid fa-layer-group"></i><span>Ouvrir les manipulations</span>
         <% end %>
       </div>
     </div>

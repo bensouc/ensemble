@@ -5,13 +5,13 @@
     <% if juste %>
       Bravo !
     <% elsif @tentative.status == "skipped" %>
-      Tu as passé ce problème.
+      Tu as passé cette manipulation.
     <% else %>
       Ce n'est pas ça.
     <% end %>
   </p>
 </div>
 
-<%= link_to "Problème suivant →", manipule_serie_path, class: "m-suivant" %>
+<%= link_to "Manipulation suivante →", manipule_serie_path, class: "m-suivant" %>
 
 <%= render "manipule/practices/sortie" %>

@@ -18,7 +18,7 @@ module Manipule
     # veut. Les créer à la réponse perdrait la trace d'une série abandonnée.
     def self.commencer!(student:, skill:, size: TAILLE)
       problemes = choisir(student:, skill:, size:)
-      raise ArgumentError, "Aucun problème visible pour cette compétence" if problemes.empty?
+      raise ArgumentError, "Aucune manipulation visible pour cette compétence" if problemes.empty?
 
       transaction do
         serie = create!(student:, skill:, started_at: Time.current, size: problemes.size)

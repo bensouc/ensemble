@@ -4,7 +4,7 @@
     <%# Les trois mêmes crans que « Mes progressions de compétences » : niveau,
         domaine, ceinture. Une école porte plus de mille compétences — sans ces
         filtres, la seule façon d'en atteindre une était qu'elle porte déjà un
-        problème, et on ne pouvait donc jamais écrire le premier. %>
+        manipulation, et on ne pouvait donc jamais écrire la première. %>
     <%= form_with url: manipule_banque_path, method: :get,
                   class: "d-flex gap-2 flex-wrap align-items-center justify-content-end",
                   data: { controller: "manipule-filtres", action: "change->manipule-filtres#envoyer" } do %>
@@ -40,7 +40,7 @@
     <% end %>
   <% end %>
 
-  <%= render "manipule/shared/entete", titre: "Les problèmes",
+  <%= render "manipule/shared/entete", titre: "Les manipulations",
              note: "Ce que vos élèves s'entraînent à résoudre, rangé par compétence.",
              actions: filtres %>
 
@@ -56,7 +56,7 @@
         <%= link_to "Mes progressions de compétences", skills_path %> : Manipule
         s'appuie sur les compétences d'Ensemble, elle n'en crée pas.
       <% else %>
-        Aucun problème pour l'instant. Choisissez un niveau ou un domaine ci-dessus :
+        Aucune manipulation pour l'instant. Choisissez un niveau ou un domaine ci-dessus :
         toutes les compétences du filtre apparaîtront, même celles qui n'ont encore rien.
       <% end %>
     </p>
@@ -86,7 +86,7 @@
               </p>
               <p class="m-fiche-note mb-0">
                 <% if visibles.zero? && brouillons.zero? %>
-                  Aucun problème.
+                  Aucune manipulation.
                 <% else %>
                   <%= visibles %> visibles, <%= au_pluriel(brouillons, "brouillon") %>
                 <% end %>
@@ -96,7 +96,7 @@
                 fait, et mène droit à l'éditeur. %>
             <% if visibles.zero? && brouillons.zero? %>
               <%= link_to manipule_nouveau_probleme_path(competence), class: "m-cta m-cta--creer align-self-start" do %>
-                <i class="fa-solid fa-plus"></i><span>Écrire le premier</span>
+                <i class="fa-solid fa-plus"></i><span>Écrire la première</span>
               <% end %>
             <% else %>
               <%= link_to manipule_banque_competence_path(competence), class: "m-cta align-self-start" do %>
