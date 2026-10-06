@@ -1,0 +1,73 @@
+<div class="px-4 py-4 m-prof">
+  <%= render "manipule/shared/nav" %>
+  <%= render "manipule/shared/entete", titre: "Autre",
+             note: "Vos propres compétences, pour ce qui ne relève d'aucune progression d'Ensemble." %>
+
+  <div class="m-fiche mb-4">
+    <p class="m-fiche-note mb-0">
+      Ce que vous rangez ici reste invisible d'Ensemble : ni dans la progression d'un élève,
+      ni dans la grille de ceintures, ni dans la génération des plans de travail. Mais une
+      manipulation y est rangée comme partout ailleurs — avec son niveau et sa ceinture —
+      donc elle se désigne à un élève de la même façon.
+    </p>
+  </div>
+
+  <% if @niveaux.empty? %>
+    <p class="m-fiche-note">
+      « Autre » s'appuie sur les niveaux de vos classes, et vous n'en avez pas encore.
+      Créez une classe dans <%= link_to "Mes Classes", classrooms_path %>.
+    </p>
+  <% else %>
+    <% @niveaux.each do |niveau| %>
+      <div class="m-fiche mb-4">
+        <h2 class="m-fiche-titre mb-3"><%= niveau.name %></h2>
+
+        <% competences = @competences[niveau] %>
+        <% if competences.empty? %>
+          <p class="m-fiche-note">Rien encore à ce niveau.</p>
+        <% else %>
+          <% competences.each do |competence| %>
+            <% nombre = @compte[competence.id].to_i %>
+            <div class="m-reponse">
+              <span class="m-reponse-marque"><%= Belt::BELT_COLORS[competence.level - 1].first.upcase %></span>
+              <div class="flex-grow-1">
+                <p class="mb-1"><%= competence.name %></p>
+                <p class="m-fiche-note mb-0">
+                  Ceinture <%= Belt::BELT_COLORS[competence.level - 1] %> ·
+                  <%= nombre.zero? ? "aucune manipulation" : au_pluriel(nombre, "manipulation") %>
+                </p>
+              </div>
+              <%# Une compétence vide n'a rien à ouvrir : le bouton dit ce qu'il fait. %>
+              <% if nombre.zero? %>
+                <%= link_to manipule_nouveau_probleme_path(competence), class: "m-cta m-cta--creer flex-shrink-0" do %>
+                  <i class="fa-solid fa-plus"></i><span>Écrire la première</span>
+                <% end %>
+              <% else %>
+                <%= link_to manipule_banque_competence_path(competence), class: "m-cta flex-shrink-0" do %>
+                  <span>Ouvrir</span><i class="fa-solid fa-chevron-right"></i>
+                <% end %>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+
+        <%# Le domaine « Autre » du niveau se crée tout seul à la première
+            compétence : il n'y a rien à préparer avant d'écrire. %>
+        <%= form_with url: manipule_autre_path, method: :post,
+                      class: "d-flex gap-2 flex-wrap align-items-center mt-3" do %>
+          <%= hidden_field_tag :grade_id, niveau.id %>
+          <%= label_tag "nom_#{niveau.id}", "Nom de la compétence", class: "visually-hidden" %>
+          <%= text_field_tag :nom, nil, id: "nom_#{niveau.id}", class: "area", style: "width: auto; min-width: 16rem;",
+                             placeholder: "Nom de la compétence", required: true %>
+          <%= label_tag "ceinture_#{niveau.id}", "Ceinture", class: "visually-hidden" %>
+          <%= select_tag :ceinture,
+                         options_for_select(Belt::BELT_COLORS.each_with_index.map { |couleur, rang| ["Ceinture #{couleur}", rang + 1] }),
+                         id: "ceinture_#{niveau.id}", class: "area", style: "width: auto;" %>
+          <button type="submit" class="m-cta m-cta--creer">
+            <i class="fa-solid fa-plus"></i><span>Ajouter</span>
+          </button>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

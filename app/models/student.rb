@@ -16,7 +16,7 @@ class Student < ApplicationRecord
   delegate :school, to: :grade
 
   def domains
-    Domain.includes(:skills).where(grade:)
+    grade.domains.includes(:skills)
   end
 
   # Restreindre le transfert au même niveau garde l'historique cohérent :

@@ -41,6 +41,7 @@ fr:
     reserve_aux_admins: "L'ouverture des accès est réservée aux administrateurs."
     option_ouverte: "Manipule est ouvert pour %{email}."
     option_fermee_a: "Manipule est fermé pour %{email}."
+    competence_autre_creee: "Compétence créée dans « Autre ». Écrivez-y vos manipulations."
     probleme_cree: "Manipulation créée, en brouillon. Relisez-la avant de la rendre visible."
     probleme_enregistre: "Manipulation enregistrée."
     probleme_duplique: "Copie créée, en brouillon. À vous de la modifier."

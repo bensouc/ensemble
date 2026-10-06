@@ -338,7 +338,7 @@ class WorkPlansController < ApplicationController
     @work_plan_domains = WorkPlanDomain.
                          includes(:domain, :work_plan, work_plan_skills: [:skill, :challenge]).
                          where(work_plan: @work_plan)
-    @domains = Domain.where(grade: @work_plan.grade).sort_by(&:position)
+    @domains = @work_plan.grade.domains.sort_by(&:position)
     @work_plan_skills = WorkPlanSkill.includes(:work_plan_domain, :skill,
                                                :challenge).where(work_plan_domain: @work_plan_domains)
     shared_classrooms = current_user.user_shared_classrooms
