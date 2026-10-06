@@ -74,6 +74,11 @@ Rails.application.routes.draw do
     get "acces", to: "acces#index", as: :acces
     patch "acces/:id", to: "acces#update", as: :acces_utilisateur
 
+    # Le domaine « Autre » : les compétences que l'enseignante nomme elle-même,
+    # hors des progressions d'Ensemble.
+    get "autre", to: "autre#index", as: :autre
+    post "autre", to: "autre#create"
+
     get "banque", to: "banque#index", as: :banque
     get "banque/:skill_id", to: "banque#show", as: :banque_competence
     get "banque/:skill_id/import", to: "banque#import", as: :banque_import

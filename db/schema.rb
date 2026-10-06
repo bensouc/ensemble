@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_05_184235) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_06_055901) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -104,6 +104,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_05_184235) do
     t.datetime "updated_at", null: false
     t.boolean "special"
     t.integer "position"
+    t.boolean "manipule", default: false, null: false
+    t.index ["grade_id", "manipule"], name: "index_domains_on_grade_id_and_manipule"
     t.index ["grade_id", "name"], name: "index_domains_on_grade_id_and_name", unique: true
     t.index ["grade_id"], name: "index_domains_on_grade_id"
   end
