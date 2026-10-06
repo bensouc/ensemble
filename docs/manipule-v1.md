@@ -201,7 +201,7 @@ régénérer le jeton d'une classe.
 
 **C'est le travail supplémentaire qu'impose la branche A**, et il ne se contente pas
 d'être une bonne pratique : sans lui, un élève de CE1 se retrouve à deux clics du
-tableau de bord de sa maîtresse.
+tableau de bord de son professeur.
 
 Deux menaces distinctes, et la seconde est la plus sérieuse.
 
@@ -212,7 +212,7 @@ connexion, ce qui est une impasse pour un enfant de six ans.
 **Une session d'enseignante restée ouverte sur le poste partagé.** C'est le cas
 réel : l'ordinateur du fond de la classe, où elle s'est connectée ce matin. L'élève
 n'a alors même pas besoin de contourner quoi que ce soit, il tape l'adresse
-d'Ensemble et il *est* sa maîtresse.
+d'Ensemble et il *est* son professeur.
 
 Quatre mesures, dont la deuxième est la seule qui traite vraiment le problème.
 
