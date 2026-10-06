@@ -1,4 +1,6 @@
 // Import your components CSS files here.
+// Après Bootstrap : il y reprend la couleur des liens.
+@use "liens";
 @use "actiontext";
 @use "alert";
 @use "area";

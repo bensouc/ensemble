@@ -1,0 +1,21 @@
+@use "../config/colors";
+
+// Le bleu de Bootstrap n'existe nulle part dans la charte d'Ensemble, et tout
+// `<a>` sans règle à lui y tombait : le lien de retour des écrans de Manipule,
+// les liens de texte des mentions légales. On redéfinit donc la variable dont
+// Bootstrap se sert, plutôt que d'écrire une règle `a { color }`.
+//
+// Deux raisons de passer par la variable :
+//
+//   — `config/_global.scss` est importé AVANT Bootstrap. Une règle `a` y
+//     perdrait à specificité égale, et c'est pourquoi la règle voisine doit
+//     porter un `!important` ;
+//   — un `!important` sur la couleur écraserait les cent quarante liens qui
+//     posent déjà la leur. La variable, elle, ne change que ceux qui n'en ont
+//     aucune.
+:root {
+  --bs-link-color: #{colors.$rose};
+  --bs-link-color-rgb: 242, 65, 80;
+  --bs-link-hover-color: #{colors.$roseL};
+  --bs-link-hover-color-rgb: 231, 44, 60;
+}

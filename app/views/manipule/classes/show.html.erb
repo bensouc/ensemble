@@ -47,7 +47,9 @@
           <h3 class="m-fiche-titre">
             <%# Les totaux disent qu'il a raté quatre problèmes ; ils ne disent
                 pas lesquels. Le prénom mène au détail. %>
-            <%= link_to eleve.first_name, manipule_suivi_eleve_path(eleve), class: "text-decoration-none" %>
+            <%= link_to manipule_suivi_eleve_path(eleve), class: "m-lien-interne" do %>
+              <%= eleve.first_name %><i class="fa-solid fa-chevron-right"></i>
+            <% end %>
           </h3>
           <p class="m-fiche-note mb-1">
             <% if affectation %>
