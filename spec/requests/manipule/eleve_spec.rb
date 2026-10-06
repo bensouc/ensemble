@@ -49,7 +49,7 @@ RSpec.describe "Manipule, côté élève" do
 
   # Le vrai risque du poste partagé : la session de l'enseignante restée
   # ouverte sur l'ordinateur du fond de la classe. L'élève n'aurait rien à
-  # contourner, il taperait l'adresse d'Ensemble et il SERAIT sa maîtresse.
+  # contourner, il taperait l'adresse d'Ensemble et il SERAIT son professeur.
   describe "l'exclusion mutuelle" do
     it "déconnecte l'enseignante quand un élève entre" do
       sign_in enseignante

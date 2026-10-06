@@ -6,9 +6,9 @@ module Manipule
   #
   # Deux menaces ont dicté ce qui suit. Un élève qui remonterait vers Ensemble
   # tomberait sur un formulaire de connexion, impasse pour un enfant de six ans.
-  # Et surtout : la session de l'enseignante restée ouverte sur l'ordinateur du
+  # Et surtout : la session du professeur restée ouverte sur l'ordinateur du
   # fond de la classe — là, l'élève n'a rien à contourner, il tape l'adresse
-  # d'Ensemble et il EST sa maîtresse. D'où l'exclusion mutuelle ci-dessous.
+  # d'Ensemble et il EST son professeur. D'où l'exclusion mutuelle ci-dessous.
   class EleveController < ApplicationController
     COOKIE_ELEVE = :manipule_eleve
     # Marqueur sans identité, posé à la racine, et qui ne sert qu'à renvoyer un
