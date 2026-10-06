@@ -186,6 +186,70 @@
     font-size: 14px;
   }
 
+  // ── un lien à l'intérieur d'une fiche ────────────────────────────────
+  //
+  // Il garde la couleur de son texte : le bleu du navigateur n'existe nulle
+  // part ailleurs dans Ensemble. Le chevron dit que ça mène quelque part, et
+  // il avance au survol — c'est le même geste que les pastilles « Ouvrir ».
+  .m-lien-interne {
+    color: inherit;
+    text-decoration: none;
+
+    i {
+      display: inline-block;
+      margin-left: 0.35rem;
+      font-size: 0.68em;
+      color: colors.$rose;
+      opacity: 0.55;
+      transition: 0.2s;
+    }
+
+    &:hover {
+      color: colors.$rose;
+
+      i {
+        opacity: 1;
+        transform: translateX(2px);
+      }
+    }
+  }
+
+  // ── ce que l'élève a répondu ─────────────────────────────────────────
+  //
+  // Une ligne par problème, et la marque en marge plutôt qu'en pastille : on
+  // parcourt la colonne des ✗ du regard, sans lire le reste.
+  .m-reponse {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    padding: 0.5rem 0;
+    border-top: colors.$grisC solid thin;
+
+    &:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+  }
+
+  .m-reponse-marque {
+    flex-shrink: 0;
+    width: 1.2rem;
+    text-align: center;
+    font-weight: 700;
+    color: colors.$grisF;
+    opacity: 0.4;
+  }
+
+  .m-reponse--correct {
+    color: colors.$green;
+    opacity: 1;
+  }
+
+  .m-reponse--wrong {
+    color: colors.$rose;
+    opacity: 1;
+  }
+
   // ── les étiquettes ───────────────────────────────────────────────────
   //
   // Même gabarit que la pastille d'action, mais inerte : on lit, on ne clique

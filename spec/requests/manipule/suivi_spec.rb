@@ -105,6 +105,49 @@ RSpec.describe "Manipule, le suivi d'une classe" do
     end
   end
 
+  # Les totaux de la classe disent qu'un enfant a raté quatre problèmes ; ils
+  # ne disent pas lesquels, ni ce qu'il a répondu à la place.
+  describe "le détail d'un élève" do
+    let!(:problemes) { create_list(:manipule_problem, 3, skill: competence) }
+
+    it "montre sa réponse, et celle qu'on attendait" do
+      serie = Manipule::Practice.commencer!(student: sam, skill: competence)
+      tentative = serie.attempts.first
+      faux = tentative.problem.choices.detect { |choix| !choix.correct? }
+      tentative.repondre_par_choix!(faux)
+
+      get manipule_suivi_eleve_path(sam)
+
+      expect(response.body).to include(faux.label)
+      expect(response.body).to include(tentative.problem.choices.detect(&:correct?).label)
+    end
+
+    it "dit où il s'est arrêté, en français" do
+      Manipule::Practice.commencer!(student: sam, skill: competence)
+
+      get manipule_suivi_eleve_path(sam)
+
+      # `ordinalize` dirait « 1st » : la page doit dire « 1er ».
+      expect(response.body).to include("arrêté au 1er sur 3")
+      expect(response.body).not_to include("1st")
+    end
+
+    it "le dit quand l'élève n'est jamais venu" do
+      get manipule_suivi_eleve_path(lila)
+
+      expect(response.body).to include("jamais venu")
+    end
+
+    it "n'ouvre pas l'élève d'un autre enseignant" do
+      eleve_ailleurs = create(:student, classroom: create(:classroom, user: create(:user, admin: false)))
+
+      get manipule_suivi_eleve_path(eleve_ailleurs)
+
+      expect(response).to have_http_status(:redirect)
+      expect(flash[:alert]).to be_present
+    end
+  end
+
   describe "le cloisonnement" do
     it "n'ouvre pas la classe d'un autre enseignant" do
       ailleurs = create(:classroom, user: create(:user, admin: false))

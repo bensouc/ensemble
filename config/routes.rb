@@ -94,6 +94,8 @@ Rails.application.routes.draw do
     # Le suivi d'une classe : qui travaille quoi, et ce que ça a donné.
     # `classe` est déjà pris par l'adresse des élèves, d'où `suivi`.
     get "suivi", to: "classes#index", as: :suivi
+    # Avant `suivi/:id`, qui avalerait « eleve ».
+    get "suivi/eleve/:id", to: "classes#eleve", as: :suivi_eleve
     get "suivi/:id", to: "classes#show", as: :suivi_classe
     post "suivi/:id/affecter", to: "classes#affecter", as: :suivi_affecter
     post "suivi/:id/jeton", to: "classes#jeton", as: :suivi_jeton
