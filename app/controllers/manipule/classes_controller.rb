@@ -5,6 +5,10 @@ module Manipule
   # ce que ça a donné. C'est aussi d'ici qu'elle désigne la compétence du jour,
   # sans quoi l'élève tombe sur « Rien à faire pour le moment ».
   class ClassesController < ProfController
+    # Au-delà, personne ne déroule : l'enseignante regarde les dernières
+    # séances, pas l'année.
+    SERIES_MONTREES = 10
+
     before_action :set_classe, except: [:index, :eleve]
 
     def index
@@ -52,10 +56,6 @@ module Manipule
     end
 
     private
-
-    # Au-delà, personne ne déroule : l'enseignante regarde les dernières
-    # séances, pas l'année.
-    SERIES_MONTREES = 10
 
     def set_classe
       @classe = Classroom.find(params[:id])
