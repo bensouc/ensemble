@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_06_055901) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_10_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -50,6 +50,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_055901) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "auto_gen_exclusions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "domain_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["domain_id"], name: "index_auto_gen_exclusions_on_domain_id"
+    t.index ["user_id", "domain_id"], name: "index_auto_gen_exclusions_on_user_id_and_domain_id", unique: true
   end
 
   create_table "belts", force: :cascade do |t|
@@ -588,6 +597,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_06_055901) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "auto_gen_exclusions", "domains", on_delete: :cascade
+  add_foreign_key "auto_gen_exclusions", "users", on_delete: :cascade
   add_foreign_key "belts", "domains"
   add_foreign_key "belts", "students"
   add_foreign_key "challenges", "skills"

@@ -306,18 +306,19 @@ class WorkPlansController < ApplicationController
     params.expect(work_plan: [:name, :start_date, :end_date]).to_h.compact_blank.symbolize_keys
   end
 
-  # Sans aucun domaine transmis — la modale de création rapide ne les demande pas —
-  # on prend tous ceux de la classe. Les cases à cocher de la modale des domaines
-  # émettent un champ vide en tête (simple_form, pour permettre la désélection
-  # totale), d'où le rejet des valeurs vides.
+  # Sans aucun domaine transmis, on prend ceux de la classe que le professeur n'a
+  # pas sortis de la génération automatique. Les cases à cocher des modales
+  # émettent un champ vide en tête (pour permettre la désélection totale), d'où
+  # le rejet des valeurs vides.
   def requested_domains
     submitted = params[:student] || params[:"/students/#{@student.id}"]
-    return @student.classroom.grade.domains.sort_by(&:position) if submitted.blank?
+    domains = @student.classroom.grade.domains
+    return AutoGenExclusion.auto_domains(domains.sort_by(&:position), user: current_user) if submitted.blank?
 
     # Parmi les domaines du niveau de l'élève seulement : un id pris tel quel
     # générait le plan sur le domaine d'une autre école, ses compétences et ses
     # exercices.
-    @student.classroom.grade.domains.where(id: submitted[:domains].to_a.compact_blank).sort_by(&:position)
+    domains.where(id: submitted[:domains].to_a.compact_blank).sort_by(&:position)
   end
 
   def multiplecloning_params(id)

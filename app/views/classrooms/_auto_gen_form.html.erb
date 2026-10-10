@@ -1,62 +1,42 @@
-		<!-- Modal select domains on auto gen-->
-  <div class="modal-ensemble" data-controller='modals'>
-
-
-  <%= simple_form_for  student, url:student_auto_new_wp_path(student), method: :post, html:{target:"_blank",
-    data:{action:"submit->modals#emptyModal",turbo:false,turbo_frame: '_top'  }} do |form| %>
+<%# Choix des domaines avant une génération automatique, depuis la fiche d'un élève
+    ou les résultats de sa classe. Le plan s'ouvre dans un nouvel onglet : la
+    modale se masque à l'envoi, sinon elle restait ouverte derrière.
+    Plus de contrôleur `checkboxes` : il cochait toutes les cases à l'ouverture,
+    et les domaines que le professeur a sortis de la génération automatique
+    doivent arriver décochés. %>
+<div class="modal-ensemble" data-controller="modals">
+  <%= simple_form_for student, url: student_auto_new_wp_path(student), method: :post,
+                      html: { target: "_blank",
+                              data: { action: "submit->modals#emptyModal", turbo: false, turbo_frame: "_top" } } do |form| %>
     <div class="modal-ensemble-dialog">
-      <div class="modal-ensemble-content --maw-60
-">
+      <div class="modal-ensemble-content modal-domaines">
         <div class="modal-ensemble-header">
-          <h5 class="modal-title" >Déselectionner les domaines non souhaités pour
-            <%= student.first_name.capitalize %>
+          <h5 class="modal-title">
+            Domaines à générer pour <%= student.first_name.capitalize %>
           </h5>
-          <button
-            type="button"
-            class="btn-close"
-            aria-label="Close"
-            data-action='click->modals#emptyModal'
-          ></button>
+          <button type="button" class="btn-close" aria-label="Fermer"
+                  data-action="click->modals#emptyModal"></button>
         </div>
         <div class="modal-body">
-          <div class="cloning-classroom-card">
-            <div
-              class="btn-group"
-              role="group"
-              aria-label="Basic checkbox toggle button group"
-            >
-              <div class="domain-checkbox" data-controller='checkboxes'>
-                <%= form.input_field :domains,
-                                 # collection: classroom.students.order(first_name: :asc),
+          <div class="domain-choice">
+            <%= form.input_field :domains,
                                  collection: domains,
-                                 # label_method: ,
                                  value_method: lambda { |domain| domain.id },
                                  multiple: true,
                                  as: :check_boxes,
                                  boolean_style: :inline,
-                                 data: {
-                                   checkboxes_target: "boxes",
-                                  #  action: "click->checkboxes#add"
-                                 },
                                  class: "tag-selector",
                                  item_wrapper_class: "tag-item",
-                                 required: true,
-                                 checked: domains %>
-              </div>
-            </div>
+                                 checked: checked_domains.map(&:id) %>
           </div>
         </div>
-        <div class="modal-ensemble-footer">
-          <p class="--grisC w-100">
-            <em>La plan de travail s'ouvrira dans un nouvel onglet</em></p>
-          <button type="button" class="btn btn-secondary"
-          data-action='click->modals#emptyModal'>X</button>
-          <%= form.submit "Valider",
-                      class: "btn btn-secondary --bgc-vert --borderc-vert"
-                      %>
-          <%# <button type="button" class="btn btn-secondary --bgc-vert --borderc-vert ">Valider</button> %>
+        <div class="modal-ensemble-footer wp-new-actions">
+          <p class="wp-new-hint">
+            <em>Le plan de travail s'ouvrira dans un nouvel onglet.</em>
+          </p>
+          <%= form.button :button, "Générer le plan", class: "utility-wp-btn utility-wp-btn--primary" %>
         </div>
       </div>
     </div>
   <% end %>
-  </div>
+</div>

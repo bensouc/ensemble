@@ -254,6 +254,9 @@ Rails.application.routes.draw do
     member do
       patch :move
     end
+    # Sortir le domaine de la génération automatique (`create`), l'y remettre
+    # (`destroy`) — pour le professeur connecté seulement.
+    resource :auto_gen_exclusion, only: [:create, :destroy]
   end
   # ###############ROUTES FOR MODALS###############
   get "students/:id/auto_gen", to: "modals#auto_gen", as: :student_auto_gen_modal

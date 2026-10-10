@@ -125,10 +125,29 @@
 // poussée à droite, hors de la zone qui replie le dossier.
 .wp-student-header {
   align-items: center;
+  border-radius: 12px;
+  transition: background-color 0.25s;
 
   .add-folder-btn {
     margin-right: 20px;
     margin-left: auto;
+
+    // L'icône de la génération auto n'est pas un « + » : la rotation au survol
+    // des autres pastilles « Ajouter » la renversait sans rien signifier.
+    &:hover i {
+      transform: none;
+    }
+  }
+
+  // Survoler « Ajouter » allume aussi l'élève visé : sur une longue liste, on
+  // voit d'un coup d'œil pour qui le plan va être créé.
+  &:has(.add-folder-btn:hover) {
+    background-color: rgba(colors.$rose, 0.08);
+
+    .wp-firstname,
+    .index-folder i {
+      color: colors.$rose;
+    }
   }
 }
 
@@ -144,5 +163,81 @@
     margin: 0;
     color: #9c9c9c;
     font-size: 12px;
+  }
+}
+
+// Les domaines à générer, dépliés sous la période au choix de « Auto ».
+.wp-new-domains {
+  legend {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+}
+
+// Les modales qui proposent des domaines ont une largeur fixe : ajustées à leur
+// contenu, elles s'élargissaient au dépliage des domaines ou au gré de l'aide en
+// pied. Les pastilles et l'aide passent à la ligne, la modale ne bouge pas.
+.modal-ensemble-content.modal-domaines {
+  width: min(720px, calc(100vw - 32px));
+}
+
+// Choix des domaines avant une génération automatique (modales « Ajouter », fiche
+// élève, résultats de classe) : la pastille sobre des CTA (`pill-cta`) plutôt
+// que les étiquettes pleines du clonage, que `.tag-selector` garde ailleurs.
+// Cochée : teintée de rose, avec sa coche. Décochée : un simple contour gris.
+.domain-choice {
+  // Bootstrap fait flotter la `legend` d'un fieldset : sans `clear`, la rangée
+  // flex se range à côté du flottant et s'écrase à zéro de large — une pastille
+  // par ligne, collées à droite.
+  clear: both;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  .tag-item {
+    display: inline-flex;
+  }
+
+  .tag-selector + label {
+    display: inline-flex;
+    height: 30px;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    padding: 0 14px;
+    border: 1px solid colors.$grisC;
+    border-radius: 999px;
+    background-color: transparent;
+    color: #9c9c9c;
+    font-size: 13px;
+    font-weight: 600;
+    transition: 0.25s;
+
+    &:hover {
+      transform: none;
+      border-color: colors.$roseL;
+      background-color: transparent;
+      color: colors.$rose;
+    }
+  }
+
+  .tag-selector:checked + label {
+    border-color: transparent;
+    background-color: rgba(colors.$rose, 0.08);
+    color: colors.$rose;
+
+    &::before {
+      content: "✓";
+    }
+
+    &:hover {
+      background-color: rgba(colors.$rose, 0.16);
+    }
+  }
+
+  .tag-selector:focus-visible + label {
+    outline: 2px solid colors.$roseL;
+    outline-offset: 2px;
   }
 }
