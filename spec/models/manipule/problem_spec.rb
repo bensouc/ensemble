@@ -160,6 +160,13 @@ RSpec.describe Manipule::Problem do
       expect(plateau(depart: 0, unites: 99).plateau_reserve).to eq(described_class::UNITES_MAX)
     end
 
+    # La boîte de dix n'en contient jamais onze : ce qui dépasse est déjà
+    # rangé en barres. L'écran ne peut donc pas démarrer dans un état que
+    # l'élève n'aurait pas pu atteindre lui-même.
+    it "ne pose jamais plus de neuf unités dans la boîte" do
+      (0..99).each { |n| expect(plateau(depart: n).plateau_unites).to be < 10 }
+    end
+
     it "ne se prend pas pour des jetons" do
       expect(plateau(depart: 15)).not_to be_jetons
       expect(plateau(depart: 15)).to be_outil

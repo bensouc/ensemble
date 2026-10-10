@@ -1,12 +1,18 @@
 <%# Le plateau des dizaines et des unités.
 
-    Le geste que la prof a demandé en toutes lettres : « faire apparaître des
-    unités et des dizaines ». L'élève prend des unités dans la réserve, les
-    pose dans la colonne des unités — et quand il en a dix, il les ÉCHANGE
-    lui-même contre une barre. C'est lui qui fait la retenue, pas l'écran :
-    un échange automatique lui volerait précisément ce qu'il doit comprendre.
+    Le geste que la prof a demandé en toutes lettres à la Q52 : « des outils
+    pour faire apparaître des unités et des dizaines ».
 
-    Il peut aussi casser une barre en dix unités, pour la soustraction.
+    La colonne des unités est une BOÎTE DE DIX, avec ses dix emplacements
+    visibles. Elle se remplit sous les yeux de l'élève, et c'est le cœur de
+    l'outil : à tout moment il voit combien il en manque pour faire dix — ce
+    qu'une colonne libre ne montre jamais. Elle en refuse un onzième, et cette
+    impossibilité EST la règle qu'on enseigne.
+
+    Quand elle est pleine, elle devient une case d'échange : l'élève la touche
+    et récupère une barre. Il fait la retenue lui-même ; un échange automatique
+    au dixième cube lui volerait précisément ce qu'il doit comprendre. Il peut
+    aussi casser une barre en dix unités, pour la soustraction.
 
     Comme les jetons : des <button type="button">, puisqu'on est dans le
     formulaire des réponses et qu'un bouton sans type y vaudrait envoi. Rien
@@ -34,27 +40,34 @@
       </div>
     </div>
 
-    <div class="m-colonne" data-m-zone="unites" data-m-accepte="unite">
-      <p class="m-zone-titre">Unités <span class="m-zone-compte" data-m-compte><%= probleme.plateau_unites %></span></p>
-      <div class="m-tas" data-m-tas>
-        <% probleme.plateau_unites.times do |rang| %>
-          <button type="button" class="m-unite" data-m-piece="unite"
-                  aria-label="Unité posée <%= rang + 1 %>"></button>
-        <% end %>
+    <%# La boîte de dix. `data-m-boite` : le moteur lui interdit un onzième
+        cube, et c'est elle qui propose l'échange une fois pleine. %>
+    <div class="m-colonne m-boite" data-m-zone="unites" data-m-accepte="unite" data-m-boite="10">
+      <p class="m-zone-titre">
+        Unités
+        <span class="m-zone-compte"><span data-m-compte><%= probleme.plateau_unites %></span> / 10</span>
+      </p>
+
+      <div class="m-boite-grille">
+        <%# Dix emplacements dessinés, toujours là : c'est le vide qui dit
+            combien il en manque. %>
+        <% 10.times do %><span class="m-case-vide"></span><% end %>
+        <div class="m-tas m-boite-tas" data-m-tas>
+          <% probleme.plateau_unites.times do |rang| %>
+            <button type="button" class="m-unite" data-m-piece="unite"
+                    aria-label="Unité posée <%= rang + 1 %>"></button>
+          <% end %>
+        </div>
       </div>
+
+      <button type="button" class="m-echange-bouton" data-m-echanger hidden>
+        La boîte est pleine — l'échanger contre 1 dizaine
+      </button>
     </div>
   </div>
 
-  <%# Le bouton n'existe que quand l'échange est possible : un bouton grisé
-      en permanence devient un meuble qu'on ne lit plus. %>
-  <div class="m-echange">
-    <button type="button" class="m-echange-bouton" data-m-echanger hidden>
-      Échanger 10 unités contre 1 dizaine
-    </button>
-  </div>
-
   <p class="m-outil-aide">
-    Fais glisser les unités. Quand tu en as dix, tu peux les échanger contre une dizaine.
+    Remplis la boîte de dix. Quand elle est pleine, échange-la contre une dizaine.
     Touche une dizaine pour la casser.
   </p>
 </div>

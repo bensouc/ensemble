@@ -317,7 +317,11 @@ function brancherLesZones(outil, accepte = () => true) {
       // choisir remonte jusqu'ici et la repose aussitôt, si bien qu'on ne peut
       // jamais rien sélectionner. On choisit en touchant une pièce, on dépose
       // en touchant la case ailleurs que sur une pièce.
-      if (e.target.closest("[data-m-jeton], [data-m-piece]")) return
+      //
+      // Le bouton d'échange vit DANS la boîte : sans lui aussi dans ce garde,
+      // un enfant qui touche un cube, change d'avis et touche « échanger » le
+      // voit atterrir dans la boîte.
+      if (e.target.closest("[data-m-jeton], [data-m-piece], [data-m-echanger]")) return
       if (!jetonChoisi || !accepte(jetonChoisi, zone)) return
 
       const piece = jetonChoisi
@@ -350,18 +354,34 @@ function unePiece(sorte) {
 // permanence, il deviendrait un meuble qu'on ne lit plus.
 function reglerLEchange(plateau) {
   const bouton = plateau.querySelector("[data-m-echanger]")
-  if (!bouton) return
+  const boite = plateau.querySelector("[data-m-boite]")
+  if (!bouton || !boite) return
 
   const dizaines = tasDe(plateau, "dizaines")
   const unites = tasDe(plateau, "unites")
-  const maximum = Number(plateau.dataset.maxDizaines || 9)
-  bouton.hidden = !(unites && unites.children.length >= 10 && dizaines && dizaines.children.length < maximum)
+  const pleine = unites && unites.children.length >= Number(boite.dataset.mBoite)
+  const place = dizaines && dizaines.children.length < Number(plateau.dataset.maxDizaines || 9)
+
+  // La boîte pleine se signale elle-même : c'est elle que l'élève regarde, pas
+  // un bouton posé à côté.
+  boite.classList.toggle("m-boite-pleine", Boolean(pleine))
+  bouton.hidden = !(pleine && place)
 }
 
 // Une unité n'a rien à faire dans la colonne des dizaines, et réciproquement :
 // la case dit ce qu'elle accepte.
+//
+// Et la boîte de dix n'en prend pas onze. Ce refus n'est pas une limite
+// technique, c'est la règle qu'on enseigne : au-delà de neuf, il FAUT
+// échanger. Un onzième cube toléré effacerait la leçon.
 function accepteLaPiece(piece, zone) {
-  return zone.dataset.mAccepte === piece.dataset.mPiece
+  if (zone.dataset.mAccepte !== piece.dataset.mPiece) return false
+
+  const boite = Number(zone.dataset.mBoite || 0)
+  if (!boite) return true
+
+  const tas = zone.querySelector("[data-m-tas]")
+  return !tas || tas.contains(piece) || tas.children.length < boite
 }
 
 function brancherUnePieceDuPlateau(piece, plateau) {
@@ -392,6 +412,8 @@ function brancherLesPlateaux() {
       const dizaines = tasDe(plateau, "dizaines")
       if (!unites || !dizaines || unites.children.length < 10) return
 
+      // Une pièce encore choisie n'a plus de sens une fois la boîte vidée.
+      oublierLeChoix()
       for (let i = 0; i < 10; i += 1) unites.lastElementChild.remove()
       const barre = unePiece("barre")
       dizaines.appendChild(barre)
