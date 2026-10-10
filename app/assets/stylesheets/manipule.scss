@@ -7,6 +7,11 @@
 // flèches. Le rose est l'action, le bleu le repère.
 
 :root {
+  // Le cube est l'unité de mesure de tout le matériel : la barre en fait dix,
+  // exactement, par le calcul. « Une barre vaut dix cubes » devient alors vrai
+  // par construction plutôt que par réglage à la main — et tout l'outil se
+  // redimensionne en changeant ce seul nombre.
+  --m-cube: 1.15rem;
   --m-rose: #d8394a;
   --m-rose-pale: #fdecee;
   --m-bleu: #1a4c6c;
@@ -24,9 +29,27 @@
 // un « a » proche de celui des manuels.
 $police: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, Verdana, sans-serif;
 
+// `html` aussi, sinon il reste le défileur : borner le corps ne suffit pas,
+// et la page gardait quatorze pixels de défilement pour rien.
+html:has(> .m-page) {
+  height: 100%;
+  overflow: hidden;
+}
+
+// L'écran de l'élève tient en UNE page, toujours. Un enfant de six ans qui
+// doit faire défiler pour trouver ses réponses a déjà perdu le fil de son
+// problème — et sur un poste de classe, il ne sait souvent même pas qu'on
+// peut faire défiler.
+//
+// `border-box` : sans lui, les 72 px de marges s'AJOUTENT aux 100vh. La page
+// dépassait de 72 pixels, toujours, sur toutes les tailles et pour tous les
+// problèmes. Elle a scrollé pour rien depuis le premier jour.
 .m-page {
   margin: 0;
-  min-height: 100vh;
+  box-sizing: border-box;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
   background: var(--m-fond);
   color: var(--m-encre);
   font-family: $police;
@@ -42,6 +65,12 @@ $police: "Trebuchet MS", "Segoe UI", system-ui, -apple-system, Verdana, sans-ser
 .m-carte {
   width: 100%;
   max-width: 820px;
+  // La carte ne dépasse jamais l'écran : c'est l'outil qui cède, pas la page
+  // qui s'allonge.
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background: var(--m-carte);
   border: 1px solid var(--m-trait);
   border-radius: 18px;
@@ -267,10 +296,17 @@ form.button_to { display: inline-block; margin: 0; }
 //
 // Tailles généreuses : la cible d'un doigt d'enfant de sept ans sur un écran
 // de classe, ce n'est pas la cible d'une souris d'adulte.
+// L'outil prend la place qui RESTE une fois l'énoncé, la question et les
+// réponses posés : c'est lui qui s'adapte, puisque c'est un brouillon.
 .m-outil {
+  flex: 1 1 auto;
+  // Un plancher : comprimé sous cette hauteur, l'outil n'est plus manipulable,
+  // et un brouillon qu'on ne peut pas tenir ne sert à rien. Sur un écran trop
+  // court pour tout contenir, c'est la page qui cède — mais seulement là.
+  min-height: 13rem;
   display: grid;
-  gap: 0.75rem;
-  margin: 1.25rem 0;
+  gap: 0.6rem;
+  margin: 0.9rem 0;
   grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
 }
 
@@ -310,6 +346,230 @@ form.button_to { display: inline-block; margin: 0; }
   flex-wrap: wrap;
   gap: 0.25rem;
   min-height: 3rem;
+}
+
+// ── le plateau des dizaines et des unités ─────────────────────────────
+//
+// Les deux colonnes côte à côte, et la réserve au-dessus : c'est la
+// disposition du matériel de classe, et l'élève la reconnaît.
+.m-plateau {
+  grid-template-columns: 1fr;
+}
+
+.m-colonnes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.m-colonne {
+  background: var(--m-carte);
+  border: 2px dashed var(--m-trait);
+  border-radius: 0.9rem;
+  padding: 0.6rem 0.7rem 0.8rem;
+  min-height: 7.5rem;
+}
+
+// Un cube pour l'unité, une barre de dix pour la dizaine : la proportion EST
+// l'enseignement. Une barre doit se lire comme dix cubes, pas comme un jeton
+// d'une autre couleur — d'où les dix crans dessinés dessus.
+.m-unite {
+  width: var(--m-cube);
+  height: var(--m-cube);
+  background: var(--m-bleu);
+  border: 2px solid transparent;
+  border-radius: 0.3rem;
+  padding: 0;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+// La barre est COUCHÉE, et longue de dix cubes exactement : la proportion est
+// l'enseignement, « une barre vaut dix unités » doit se voir. Debout, elle
+// faisait quinze rem de haut et le plateau — deux réserves et deux colonnes —
+// ne tenait plus sur l'écran d'un enfant.
+.m-barre {
+  width: calc(var(--m-cube) * 10);
+  max-width: 100%;
+  height: var(--m-cube);
+  background: repeating-linear-gradient(
+    to right,
+    var(--m-rose) 0 calc(10% - 2px),
+    var(--m-carte) calc(10% - 2px) 10%
+  );
+  border: 2px solid var(--m-rose);
+  border-radius: 0.3rem;
+  padding: 0;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+.m-tas-barres {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+// La pioche et la case qui échange sur la même ligne : les deux endroits où
+// l'élève va chercher quelque chose. La zone où il pose reste entière dessous.
+// En ligne dès qu'elles TIENNENT, et pas à partir d'une largeur décidée
+// d'avance : l'aperçu de l'éditeur est étroit, et un point de rupture fixe y
+// empilait tout alors qu'il restait la place.
+.m-plateau-haut {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+
+.m-plateau-haut > * {
+  flex: 1 1 13rem;
+}
+
+// Le bloc où l'on pioche : une dizaine, une unité, et c'est tout. Il ne
+// s'épuise pas — compter un stock que personne ne regarde n'apprend rien.
+.m-pioche {
+  background: var(--m-bleu-pale);
+  border: 2px solid var(--m-trait);
+  border-radius: 0.9rem;
+  padding: 0.6rem 0.7rem 0.8rem;
+}
+
+// Une ligne par sorte : les dizaines, puis les unités. Côte à côte, le cube
+// avait l'air d'un bouton de la barre plutôt que d'une pièce à lui.
+.m-pioche-choix {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+// Une seule zone de manipulation : deux colonnes imposeraient un rangement que
+// l'élève n'a pas demandé, et l'énoncé ne parle jamais de colonnes.
+.m-travail {
+  position: relative;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+// `position: relative` : les pièces posées à la main s'y placent en absolu.
+.m-travail-tas {
+  position: relative;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 0.3rem;
+  flex: 1 1 auto;
+  min-height: 3.5rem;
+}
+
+// Ranger est une DEMANDE, jamais un réflexe de l'écran : discret, en haut à
+// droite, il attend qu'on en ait besoin.
+// Les outils de la zone, dans sa ligne de titre : ils y restent à leur place
+// quand le compte est caché.
+.m-travail-outils {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.m-aligner {
+  border: 2px solid var(--m-trait);
+  border-radius: 999px;
+  background: var(--m-carte);
+  color: var(--m-encre-douce);
+  padding: 0.2rem 0.8rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--m-rose);
+    color: var(--m-rose);
+  }
+}
+
+// La case qui échange. Elle ne garde rien : ce qu'on y met en ressort
+// transformé. D'où le trait plein et la couleur — c'est une machine, pas un
+// rangement de plus.
+.m-machine {
+  border: 2px solid var(--m-rose);
+  border-radius: 0.9rem;
+  padding: 0.6rem 0.7rem 0.8rem;
+  background: var(--m-carte);
+}
+
+.m-machine-tas {
+  min-height: 3rem;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 0.35rem;
+}
+
+.m-machine-regle {
+  margin: 0.3rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: var(--m-encre-douce);
+}
+
+// Une pièce et son « − » côte à côte : on en prend, on en enlève. Se comprend
+// sans explication, là où une corbeille demandait de choisir une pièce PUIS de
+// viser un coin de l'écran.
+.m-pioche-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.m-pas {
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 2px solid var(--m-trait);
+  border-radius: 0.5rem;
+  background: var(--m-carte);
+  color: var(--m-encre);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--m-rose);
+    color: var(--m-rose);
+  }
+}
+
+// Le détail sous le total : trois dizaines et cinq unités font trente-cinq.
+.m-plateau-detail {
+  display: flex;
+  align-items: center;
+  margin: 0.2rem 0 0.4rem;
+  font-size: 1rem;
+  color: var(--m-encre-douce);
+}
+
+// Le total, lu en permanence : c'est pour s'y retrouver que l'élève manipule.
+.m-plateau-total {
+  text-align: center;
+  font-size: 1.15rem;
+  margin: 0.4rem 0 0;
+
+  span {
+    font-weight: bold;
+    font-size: 1.6rem;
+    color: var(--m-bleu);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.m-echange-bouton {
+  background: var(--m-rose);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.3rem;
+  font-size: 1.05rem;
+  cursor: pointer;
 }
 
 .m-jeton {

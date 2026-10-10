@@ -289,11 +289,67 @@
     color: colors.$rose;
   }
 
+  // ── désigner la bonne réponse ────────────────────────────────────────
+  //
+  // Trois ronds muets à gauche de trois cases ne disent pas d'eux-mêmes qu'il
+  // faut désigner la bonne. Le rond porte donc son mot, et la ligne cochée se
+  // teinte : on voit laquelle est juste sans la chercher.
+  .m-colonne-juste {
+    margin: 0 0 0.2rem;
+    font-size: 12px;
+    font-weight: 600;
+    color: colors.$grisF;
+    opacity: 0.6;
+  }
+
+  .m-case-reponse {
+    border-radius: 8px;
+    padding: 0.15rem 0.3rem;
+    transition: 0.2s;
+  }
+
+  .m-case-reponse:has(input:checked) {
+    background-color: rgba(colors.$green, 0.1);
+  }
+
+  .m-juste {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.1rem;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    span {
+      font-size: 11px;
+      color: colors.$grisF;
+      opacity: 0.55;
+    }
+  }
+
+  .m-case-reponse:has(input:checked) .m-juste span {
+    color: colors.$green;
+    opacity: 1;
+    font-weight: 600;
+  }
+
   // ── les champs ───────────────────────────────────────────────────────
   .area {
     padding: 0.4rem 0.7rem;
     width: 100%;
     font-size: 15px;
+  }
+
+  // Au gris du navigateur, un exemple se lit comme une réponse déjà écrite :
+  // on ouvre le formulaire, on voit huit champs remplis, on enregistre — et
+  // Rails refuse huit champs vides. L'italique et le gris pâle disent
+  // « exemple » ; le « Ex. » devant le dit en toutes lettres.
+  input::placeholder,
+  textarea::placeholder {
+    font-style: italic;
+    font-weight: 400;
+    color: colors.$grisF;
+    opacity: 0.42;
   }
 
   .m-champ {
@@ -339,8 +395,10 @@
     gap: 1.5rem;
     grid-template-columns: minmax(0, 1fr);
 
+    // L'aperçu un peu plus large que le formulaire : c'est lui qu'on regarde
+    // en écrivant, et c'est lui qui doit tenir sans qu'on le fasse défiler.
     @media (min-width: 992px) {
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
       align-items: start;
     }
   }
@@ -354,6 +412,40 @@
     }
   }
 
+  // Agrandi : l'aperçu prend toute la largeur et le formulaire passe dessous.
+  // On voit alors ce que l'élève voit, à sa taille.
+  .m-editeur-grand {
+    @media (min-width: 992px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .m-apercu {
+      order: -1;
+      position: static;
+    }
+
+    .m-apercu-cadre {
+      height: calc(100vh - 14rem);
+      min-height: 32rem;
+    }
+  }
+
+  .m-agrandir {
+    margin-left: 0.6rem;
+    border: thin solid colors.$grisC;
+    border-radius: 999px;
+    background: none;
+    color: colors.$grisF;
+    font-size: 12px;
+    padding: 0.1rem 0.7rem;
+    cursor: pointer;
+
+    &:hover {
+      border-color: colors.$rose;
+      color: colors.$rose;
+    }
+  }
+
   .m-apercu-titre {
     margin-bottom: 0.4rem;
     font-size: 14px;
@@ -363,9 +455,13 @@
 
   // Un cadre, parce que l'aperçu porte la feuille de style de l'élève : sans
   // isolation, elle et celle d'Ensemble se marcheraient dessus.
+  // La hauteur de l'écran, pas une hauteur fixe : à 34 rem, la page de l'élève
+  // dépassait de deux cents pixels dès qu'un outil était posé, et il fallait
+  // scroller DANS le cadre pour voir ce qu'on venait de régler.
   .m-apercu-cadre {
     width: 100%;
-    height: 34rem;
+    height: calc(100vh - 11rem);
+    min-height: 26rem;
     border: colors.$grisC solid thin;
     border-radius: 12px;
     background: #eef2f5;

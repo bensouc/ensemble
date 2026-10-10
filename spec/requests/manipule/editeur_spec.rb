@@ -99,6 +99,46 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
       expect(probleme.jeton_zones).to eq(["Le panier", "Sur l'arbre"])
     end
 
+    it "range les réglages du plateau des dizaines et des unités" do
+      post manipule_problemes_path(competence), params: {
+        probleme: champs.merge(tool: "dizaines_unites",
+                               reglages: { depart: "15" })
+      }
+
+      probleme = Manipule::Problem.last
+      expect(probleme).to be_dizaines_unites
+      expect(probleme.plateau_depart).to eq(15)
+      # Caché par défaut : le compte peut donner la réponse.
+      expect(probleme).not_to be_compteur
+      expect(probleme.plateau_dizaines).to eq(1)
+      expect(probleme.plateau_unites).to eq(5)
+    end
+
+    it "montre le compte seulement quand l'enseignante le demande" do
+      post manipule_problemes_path(competence), params: {
+        probleme: champs.merge(tool: "dizaines_unites", reglages: { depart: "0", compteur: "1" })
+      }
+
+      expect(Manipule::Problem.last).to be_compteur
+    end
+
+    # Les champs de TOUS les outils partent avec le formulaire : masquer un
+    # bloc ne l'empêche pas d'être envoyé. Sans tri par outil, les réglages de
+    # l'un se retrouvaient dans la colonne de l'autre — deux champs portaient
+    # même le nom `reglages[reserve]`, et le mauvais gagnait.
+    it "ne retient que les réglages de l'outil choisi" do
+      post manipule_problemes_path(competence), params: {
+        probleme: champs.merge(tool: "dizaines_unites",
+                               reglages: { depart: "15",
+                                           ressource: "carotte", reserve: "30",
+                                           zones: ["Le panier"] })
+      }
+
+      probleme = Manipule::Problem.last
+      expect(probleme.plateau_depart).to eq(15)
+      expect(probleme.tool_data.keys).to contain_exactly("depart", "compteur")
+    end
+
     # Sans outil choisi, on ne laisse pas traîner des réglages orphelins qui
     # réapparaîtraient le jour où quelqu'un en choisit un.
     it "ne garde aucun réglage quand aucun outil n'est choisi" do
@@ -125,6 +165,37 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("probleme[bonne_reponse]")
+    end
+
+    # Les messages de Rails nomment la COLONNE : « Statement doit être
+    # rempli(e) », « Choices label… ». L'enseignante lisait de l'anglais de
+    # base de données sur ses propres champs.
+    it "dit en français ce qui manque" do
+      post manipule_problemes_path(competence),
+           params: { probleme: champs(statement: "", question: "") }
+
+      expect(response.body).to include("L&#39;énoncé est vide")
+      expect(response.body).to include("La question est vide")
+      expect(response.body).not_to match(/Statement|Question doit|Choices/)
+    end
+
+    # Le bloc des trois cases est MASQUÉ quand l'élève doit écrire sa réponse,
+    # et un bloc masqué s'envoie quand même. Vides, ses cases rendaient le
+    # problème invalide : plus aucune manipulation « un nombre à écrire » ne
+    # pouvait être enregistrée, sur une erreur désignant des champs invisibles.
+    it "enregistre un nombre à écrire, les trois cases restées vides" do
+      post manipule_problemes_path(competence), params: {
+        probleme: champs(answer_mode: "saisie", answer: "8", unit: "pommes",
+                         choices_attributes: {
+                           "0" => { label: "", position: "1" },
+                           "1" => { label: "", position: "2" },
+                           "2" => { label: "", position: "3" }
+                         })
+      }
+
+      probleme = Manipule::Problem.last
+      expect(probleme.answer).to eq("8")
+      expect(probleme.choices).to be_empty
     end
   end
 

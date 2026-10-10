@@ -1,0 +1,84 @@
+<%# Les dizaines et les unités — un matériel de représentation, pas un
+    exerciseur. L'élève s'en sert pour S'AIDER à résoudre : rien n'y est
+    corrigé, rien n'est envoyé au serveur.
+
+    UNE SEULE zone de travail, et les pièces s'y posent OÙ IL VEUT. Pas de
+    colonnes, pas de rangement imposé — un bouton aligne quand lui le décide.
+
+    Et une case qui transforme, dans les deux sens :
+
+      — il y met dix unités, elles deviennent une dizaine ;
+      — il y pousse une dizaine, elle éclate en dix unités.
+
+    C'est lui qui transforme, en y déposant ce qu'il veut. Un échange fait par
+    l'écran lui volerait la retenue, qui est précisément ce qu'il doit
+    comprendre.
+
+    Comme les jetons, des <button type="button"> : on est dans le formulaire
+    des réponses, et un bouton sans type y vaudrait envoi. %>
+<div class="m-outil m-plateau" data-m-plateau
+     data-max-dizaines="<%= Manipule::Problem::DIZAINES_MAX %>"
+     data-max-unites="<%= Manipule::Problem::UNITES_MAX %>">
+
+  <%# La pioche et la case qui échange côte à côte : ce sont les deux endroits
+      où l'élève va CHERCHER quelque chose. La zone où il pose reste entière
+      en dessous. %>
+  <div class="m-plateau-haut">
+    <div class="m-pioche">
+      <p class="m-zone-titre">Je prends</p>
+      <%# Une ligne par sorte : les dizaines, puis les unités. Côte à côte, le
+          cube avait l'air d'un bouton de la barre. %>
+      <div class="m-pioche-choix">
+        <span class="m-pioche-item">
+          <button type="button" class="m-barre" data-m-piocher="barre"
+                  aria-label="Ajouter une dizaine"></button>
+          <button type="button" class="m-pas" data-m-retirer="barre"
+                  aria-label="Enlever une dizaine">−</button>
+        </span>
+        <span class="m-pioche-item">
+          <button type="button" class="m-unite" data-m-piocher="unite"
+                  aria-label="Ajouter une unité"></button>
+          <button type="button" class="m-pas" data-m-retirer="unite"
+                  aria-label="Enlever une unité">−</button>
+        </span>
+      </div>
+    </div>
+
+    <div class="m-machine" data-m-zone="machine" data-m-accepte="tout">
+      <p class="m-zone-titre">La case qui échange</p>
+      <div class="m-tas m-machine-tas" data-m-tas></div>
+      <p class="m-machine-regle">
+        Mets-y <strong>dix unités</strong> : elles deviennent une dizaine.<br>
+        Pousses-y <strong>une dizaine</strong> : elle éclate en dix unités.
+      </p>
+    </div>
+  </div>
+
+  <%# `data-m-libre` : ici les pièces se posent où elles tombent. %>
+  <div class="m-zone m-travail" data-m-zone="travail" data-m-accepte="tout" data-m-libre>
+    <p class="m-zone-titre">
+      Ce que je prépare
+      <span class="m-travail-outils">
+        <%# Ranger est une DEMANDE, jamais un réflexe de l'écran : c'est l'élève
+            qui décide quand son brouillon devient lisible. Posé dans la ligne
+            de titre, il reste à sa place quand le compte est caché. %>
+        <button type="button" class="m-aligner" data-m-aligner>Ranger</button>
+        <% if probleme.compteur? %>
+          <span class="m-zone-compte">En tout <span data-m-total>0</span></span>
+        <% end %>
+      </span>
+    </p>
+    <% if probleme.compteur? %>
+      <p class="m-plateau-detail"><span data-m-detail></span></p>
+    <% end %>
+
+    <div class="m-tas m-travail-tas" data-m-tas>
+      <% probleme.plateau_dizaines.times do %>
+        <button type="button" class="m-barre" data-m-piece="barre" aria-label="Dizaine"></button>
+      <% end %>
+      <% probleme.plateau_unites.times do %>
+        <button type="button" class="m-unite" data-m-piece="unite" aria-label="Unité"></button>
+      <% end %>
+    </div>
+  </div>
+</div>

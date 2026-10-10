@@ -220,19 +220,51 @@ const SEUIL_GLISSE = 6 // pixels avant de considérer que c'est un glissé
 
 let jetonChoisi = null
 
+// Compte ce qui est dans le tas, sans savoir de quoi il s'agit : des jetons,
+// des unités, des barres. C'est ce qui permet à un seul moteur de servir
+// plusieurs outils.
 function compter(outil) {
   outil.querySelectorAll("[data-m-zone]").forEach((zone) => {
     const compte = zone.querySelector("[data-m-compte]")
-    if (compte) compte.textContent = zone.querySelectorAll("[data-m-jeton]").length
+    const tas = zone.querySelector("[data-m-tas]")
+    if (compte && tas) compte.textContent = tas.children.length
   })
 }
 
-function deposer(jeton, zone) {
+function deposer(jeton, zone, point = null) {
   const tas = zone.querySelector("[data-m-tas]")
   if (!tas) return
 
   tas.appendChild(jeton)
-  compter(zone.closest("[data-m-jetons]"))
+
+  placerDans(jeton, zone, point)
+
+  const outil = zone.closest("[data-m-jetons], [data-m-plateau]")
+  if (outil) {
+    compter(outil)
+    outil.dispatchEvent(new CustomEvent("m:change", { bubbles: false }))
+  }
+}
+
+// Une zone « libre » garde la pièce où elle tombe : l'élève range comme il
+// veut, et un bouton alignera quand LUI le décidera. Ailleurs, la pièce
+// reprend le flux.
+function placerDans(jeton, zone, point) {
+  const tas = zone.querySelector("[data-m-tas]")
+  if (!tas) return
+
+  if (!zone.hasAttribute("data-m-libre") || !point) {
+    jeton.style.position = ""
+    jeton.style.left = ""
+    jeton.style.top = ""
+    return
+  }
+
+  const cadre = tas.getBoundingClientRect()
+  const borner = (valeur, taille, dispo) => Math.max(0, Math.min(valeur, dispo - taille))
+  jeton.style.position = "absolute"
+  jeton.style.left = `${borner(point.x - cadre.left - (jeton.offsetWidth / 2), jeton.offsetWidth, cadre.width)}px`
+  jeton.style.top = `${borner(point.y - cadre.top - (jeton.offsetHeight / 2), jeton.offsetHeight, cadre.height)}px`
 }
 
 function oublierLeChoix() {
@@ -245,7 +277,7 @@ function zoneSous(x, y) {
   return sous ? sous.closest("[data-m-zone]") : null
 }
 
-function brancherUnJeton(jeton, outil) {
+function brancherUnePiece(jeton, outil, accepte = () => true) {
   jeton.addEventListener("pointerdown", (e) => {
     e.preventDefault()
     const depart = { x: e.clientX, y: e.clientY }
@@ -271,6 +303,9 @@ function brancherUnJeton(jeton, outil) {
 
       if (!glisse) {
         // Un simple appui : on choisit le jeton, la case viendra ensuite.
+        // Tout ce qui répond au tapotement passe par ici et jamais par
+        // `click` : `pointerdown` appelle `preventDefault()`, ce qui empêche
+        // le `click` de suivre.
         const dejaChoisi = jetonChoisi === jeton
         oublierLeChoix()
         if (!dejaChoisi) {
@@ -281,7 +316,9 @@ function brancherUnJeton(jeton, outil) {
       }
 
       const cible = zoneSous(ev.clientX, ev.clientY)
-      if (cible && outil.contains(cible)) deposer(jeton, cible)
+      if (cible && outil.contains(cible) && accepte(jeton, cible)) {
+        deposer(jeton, cible, { x: ev.clientX, y: ev.clientY })
+      }
     }
 
     document.addEventListener("pointermove", bouger)
@@ -292,24 +329,259 @@ function brancherUnJeton(jeton, outil) {
 
 function brancherLesJetons() {
   document.querySelectorAll("[data-m-jetons]").forEach((outil) => {
-    outil.querySelectorAll("[data-m-jeton]").forEach((jeton) => brancherUnJeton(jeton, outil))
+    outil.querySelectorAll("[data-m-jeton]").forEach((jeton) => brancherUnePiece(jeton, outil))
 
-    outil.querySelectorAll("[data-m-zone]").forEach((zone) => {
-      zone.addEventListener("click", (e) => {
-        // Le jeton est DANS sa case : sans ce garde, le clic qui vient de le
-        // choisir remonte jusqu'ici et le repose aussitôt, si bien qu'on ne
-        // peut jamais rien sélectionner. On choisit en touchant un jeton, on
-        // dépose en touchant la case ailleurs que sur un jeton.
-        if (e.target.closest("[data-m-jeton]")) return
-        if (!jetonChoisi) return
+    brancherLesZones(outil)
+    compter(outil)
+  })
+}
 
-        const jeton = jetonChoisi
+// Le repli par touches successives : on touche une pièce, puis une case. Il
+// existe pour l'enfant qui n'arrive pas à maintenir le contact en se
+// déplaçant — et il vaut pour TOUS les outils, pas seulement les jetons.
+function brancherLesZones(outil, accepte = () => true) {
+  outil.querySelectorAll("[data-m-zone]").forEach((zone) => {
+    zone.addEventListener("click", (e) => {
+      // La pièce est DANS sa case : sans ce garde, le clic qui vient de la
+      // choisir remonte jusqu'ici et la repose aussitôt, si bien qu'on ne peut
+      // jamais rien sélectionner. On choisit en touchant une pièce, on dépose
+      // en touchant la case ailleurs que sur une pièce.
+      //
+      // Le bouton d'échange vit DANS la boîte : sans lui aussi dans ce garde,
+      // un enfant qui touche un cube, change d'avis et touche « échanger » le
+      // voit atterrir dans la boîte.
+      if (e.target.closest("[data-m-jeton], [data-m-piece], [data-m-echanger]")) return
+      if (!jetonChoisi || !accepte(jetonChoisi, zone)) return
+
+      const piece = jetonChoisi
+      oublierLeChoix()
+      deposer(piece, zone, { x: e.clientX, y: e.clientY })
+    })
+  })
+}
+
+// ── les dizaines et les unités ─────────────────────────────────────────
+//
+// Un matériel de représentation, pas un exerciseur : l'élève s'en sert pour
+// s'AIDER à résoudre. Une seule zone, où les pièces se posent OÙ IL VEUT — pas
+// de colonnes, pas de rangement imposé. Un bouton aligne quand lui le décide.
+//
+// Et une case qui transforme, dans les deux sens : dix unités y deviennent une
+// dizaine, une dizaine y éclate en dix unités. C'est LUI qui transforme, en y
+// déposant ce qu'il veut ; un échange fait par l'écran lui volerait la
+// retenue.
+
+function tasDeTravail(plateau) {
+  return plateau.querySelector('[data-m-zone="travail"] [data-m-tas]')
+}
+
+function unePiece(sorte) {
+  const piece = document.createElement("button")
+  piece.type = "button"
+  piece.className = sorte === "barre" ? "m-barre" : "m-unite"
+  piece.dataset.mPiece = sorte
+  piece.setAttribute("aria-label", sorte === "barre" ? "Dizaine" : "Unité")
+  return piece
+}
+
+// On compte TOUT ce que l'élève a sous la main, la case qui échange comprise.
+// Sinon le total chute pendant qu'il y dépose ses unités — 12, puis 5, puis 4
+// — et il croit perdre des pièces. Compté ainsi, le total ne bouge jamais : ni
+// en déposant, ni en transformant. C'est l'invariant que l'outil enseigne.
+function combien(plateau, sorte) {
+  return plateau.querySelectorAll(`[data-m-piece="${sorte}"]`).length
+}
+
+// Le plafond, lui, ne regarde que la zone de travail : ce qui est dans la
+// machine est de passage.
+function combienEnTravail(plateau, sorte) {
+  return tasDeTravail(plateau)?.querySelectorAll(`[data-m-piece="${sorte}"]`).length || 0
+}
+
+function accepteLaPiece(_piece, zone) {
+  return zone.dataset.mAccepte === "tout"
+}
+
+function maximumDe(plateau, sorte) {
+  const brut = sorte === "barre" ? plateau.dataset.maxDizaines : plateau.dataset.maxUnites
+  const lu = Number(brut)
+  return Number.isFinite(lu) && lu > 0 ? lu : 9
+}
+
+function placeLibre(plateau, sorte, combien = 1) {
+  return combienEnTravail(plateau, sorte) + combien <= maximumDe(plateau, sorte)
+}
+
+// Le total et son détail, lus en permanence. Le détail dit la POSITION sans
+// imposer de colonnes : trois dizaines et cinq unités font trente-cinq.
+function rafraichirLePlateau(plateau) {
+  const dizaines = combien(plateau, "barre")
+  const unites = combien(plateau, "unite")
+
+  const total = plateau.querySelector("[data-m-total]")
+  if (total) total.textContent = (dizaines * 10) + unites
+
+  const detail = plateau.querySelector("[data-m-detail]")
+  if (!detail) return
+
+  const morceaux = []
+  if (dizaines) morceaux.push(`${dizaines} ${dizaines > 1 ? "dizaines" : "dizaine"}`)
+  if (unites) morceaux.push(`${unites} ${unites > 1 ? "unités" : "unité"}`)
+  detail.textContent = morceaux.join(" et ")
+}
+
+function poserUnePiece(plateau, sorte, point = null) {
+  if (!placeLibre(plateau, sorte)) return null
+
+  const piece = unePiece(sorte)
+  const zone = plateau.querySelector('[data-m-zone="travail"]')
+  tasDeTravail(plateau)?.appendChild(piece)
+  brancherUnePiece(piece, plateau, accepteLaPiece)
+  if (point && zone) deposer(piece, zone, point)
+  rafraichirLePlateau(plateau)
+  return piece
+}
+
+// La case qui échange. Elle ne GARDE rien : ce qu'on y met en ressort
+// transformé, et retourne dans la zone de travail. Une dizaine éclate tout de
+// suite ; dix unités attendent d'être dix.
+function faireTournerLaMachine(plateau, machine) {
+  const dedans = machine.querySelector("[data-m-tas]")
+  if (!dedans) return
+
+  // Ce qui sort de la machine se range dans le flux, à la suite. Le poser aux
+  // coordonnées de la machine le tassait contre un bord de la zone, et dix
+  // unités se recouvraient les unes les autres.
+  //
+  // Et on vérifie D'ABORD que le résultat a où aller. Sans ce garde, une
+  // dizaine poussée dans la machine alors que la zone était pleine
+  // disparaissait et il en ressortait moins de dix unités : le total chutait
+  // en silence. Or le total qui ne bouge pas est le seul enseignement de
+  // l'outil. La pièce reste alors dans la machine, et l'élève la ressort.
+  const barre = dedans.querySelector('[data-m-piece="barre"]')
+  if (barre) {
+    if (!placeLibre(plateau, "unite", 10)) return
+
+    barre.remove()
+    for (let i = 0; i < 10; i += 1) poserUnePiece(plateau, "unite")
+    return
+  }
+
+  const unites = dedans.querySelectorAll('[data-m-piece="unite"]')
+  if (unites.length < 10 || !placeLibre(plateau, "barre")) return
+
+  Array.from(unites).slice(0, 10).forEach((u) => u.remove())
+  poserUnePiece(plateau, "barre")
+}
+
+// Ranger : les pièces s'alignent, les dizaines d'abord. À la demande, jamais
+// d'office — c'est l'élève qui décide quand son brouillon devient lisible.
+function rangerLePlateau(plateau) {
+  const tas = tasDeTravail(plateau)
+  if (!tas) return
+
+  const pieces = Array.from(tas.querySelectorAll("[data-m-piece]"))
+  pieces.sort((a, b) => (a.dataset.mPiece === b.dataset.mPiece ? 0 : a.dataset.mPiece === "barre" ? -1 : 1))
+  pieces.forEach((piece) => {
+    piece.style.position = ""
+    piece.style.left = ""
+    piece.style.top = ""
+    tas.appendChild(piece)
+  })
+}
+
+// Deux façons d'ajouter une pièce, et une seule mécanique : on TOUCHE la
+// pioche, la pièce se pose dans la zone ; on la GLISSE, elle suit le doigt et
+// se pose où on la lâche.
+//
+// Les deux passent par `pointerdown` — qui appelle `preventDefault()`, sans
+// quoi le navigateur fait défiler la page au lieu de laisser glisser. Un
+// écouteur `click` posé à côté ne partirait jamais au doigt : c'est le piège
+// qui a déjà fait que toucher une dizaine ne l'ouvrait pas.
+function brancherLaPioche(bouton, plateau) {
+  // Au clavier : `pointerdown` appelle `preventDefault()`, donc le `click`
+  // que le navigateur émettrait sur Entrée ou Espace n'arrive jamais. Sans
+  // cet écouteur, la pioche était inatteignable autrement qu'au doigt.
+  bouton.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return
+
+    e.preventDefault()
+    poserUnePiece(plateau, bouton.dataset.mPiocher)
+  })
+
+  bouton.addEventListener("pointerdown", (e) => {
+    e.preventDefault()
+
+    const piece = poserUnePiece(plateau, bouton.dataset.mPiocher)
+    if (!piece) return
+
+    const zone = plateau.querySelector('[data-m-zone="travail"]')
+    const depart = { x: e.clientX, y: e.clientY }
+    let glisse = false
+
+    const bouger = (ev) => {
+      if (!glisse && Math.hypot(ev.clientX - depart.x, ev.clientY - depart.y) < SEUIL_GLISSE) return
+
+      glisse = true
+      piece.classList.add("m-jeton-vole")
+      // On la POSITIONNE, on ne la redépose pas : `deposer` réinsère le nœud
+      // et émet `m:change` — soit, à chaque mouvement de souris, une
+      // réinsertion dans le DOM et un tour de la machine pour rien.
+      placerDans(piece, zone, { x: ev.clientX, y: ev.clientY })
+    }
+
+    const lacher = (ev) => {
+      document.removeEventListener("pointermove", bouger)
+      document.removeEventListener("pointerup", lacher)
+      document.removeEventListener("pointercancel", lacher)
+      piece.classList.remove("m-jeton-vole")
+      // Un simple appui : la pièce est déjà posée dans la zone, à la suite.
+      if (!glisse) return
+
+      const cible = zoneSous(ev.clientX, ev.clientY)
+      if (cible && plateau.contains(cible) && accepteLaPiece(piece, cible)) {
+        deposer(piece, cible, { x: ev.clientX, y: ev.clientY })
+      } else {
+        // Lâchée hors de toute zone : elle n'a jamais existé.
+        piece.remove()
+      }
+      rafraichirLePlateau(plateau)
+    }
+
+    document.addEventListener("pointermove", bouger)
+    document.addEventListener("pointerup", lacher)
+    document.addEventListener("pointercancel", lacher)
+  })
+}
+
+function brancherLesPlateaux() {
+  document.querySelectorAll("[data-m-plateau]").forEach((plateau) => {
+    plateau.querySelectorAll("[data-m-piece]").forEach((piece) => brancherUnePiece(piece, plateau, accepteLaPiece))
+    brancherLesZones(plateau, accepteLaPiece)
+
+    plateau.querySelectorAll("[data-m-piocher]").forEach((bouton) => brancherLaPioche(bouton, plateau))
+
+    // Enlever : la dernière pièce de cette sorte s'en va. Un « − » en face du
+    // « + » se comprend sans explication.
+    plateau.querySelectorAll("[data-m-retirer]").forEach((bouton) => {
+      bouton.addEventListener("click", () => {
+        const pieces = tasDeTravail(plateau)?.querySelectorAll(`[data-m-piece="${bouton.dataset.mRetirer}"]`)
+        if (!pieces || pieces.length === 0) return
+
         oublierLeChoix()
-        deposer(jeton, zone)
+        pieces[pieces.length - 1].remove()
+        rafraichirLePlateau(plateau)
       })
     })
 
-    compter(outil)
+    plateau.querySelector("[data-m-aligner]")?.addEventListener("click", () => rangerLePlateau(plateau))
+
+    const machine = plateau.querySelector('[data-m-zone="machine"]')
+    plateau.addEventListener("m:change", () => {
+      if (machine) faireTournerLaMachine(plateau, machine)
+      rafraichirLePlateau(plateau)
+    })
+    rafraichirLePlateau(plateau)
   })
 }
 
@@ -323,6 +595,7 @@ function brancherTout() {
   corps.dataset.mBranche = "1"
   brancher()
   brancherLesJetons()
+  brancherLesPlateaux()
 }
 
 document.addEventListener("DOMContentLoaded", brancherTout)

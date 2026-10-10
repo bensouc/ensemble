@@ -68,6 +68,23 @@ fr:
     ended: "Terminé"
   activerecord:
     attributes:
+      # Sans ces noms, les erreurs de l'éditeur de Manipule montraient à
+      # l'enseignante le nom anglais de la colonne : « Statement doit être
+      # rempli(e) ». Le reste de chaque phrase est écrit sur le modèle.
+      manipule/problem:
+        skill: "La compétence"
+        statement: "L'énoncé"
+        question: "La question"
+        answer_mode: "Le mode de réponse"
+        answer: "La réponse attendue"
+        unit: "L'unité"
+        tool: "L'outil"
+      # Les réponses remontent sur le problème sous le nom « choices.label » :
+      # c'est LUI qu'il faut nommer, pas seulement le modèle des réponses.
+      manipule/problem/choices:
+        label: "Une réponse"
+      manipule/choice:
+        label: "La réponse"
       challenge:
         name: Nom
       domain:
@@ -75,6 +92,28 @@ fr:
       grade:
         name: Nom
     errors:
+      models:
+        # Chaque phrase se lit à la suite du nom du champ : « L'énoncé est
+        # vide… ». Celles de Rails parlaient de colonnes et d'accords entre
+        # parenthèses — « doit être rempli(e) ».
+        manipule/problem:
+          attributes:
+            base:
+              une_seule_bonne_reponse: "Une manipulation doit avoir exactement une bonne réponse"
+            statement:
+              blank: "est vide : écrivez l'histoire, sans la question"
+            question:
+              blank: "est vide : c'est ce qu'on demande à l'élève"
+            answer:
+              blank: "est vide : écrivez le nombre attendu"
+            answer_mode:
+              inclusion: "n'a pas été choisi"
+            tool:
+              inclusion: "n'existe pas"
+        manipule/choice:
+          attributes:
+            label:
+              blank: "est vide : les trois cases doivent être remplies"
       messages:
         record_invalid: 'La validation a échoué : %{errors}'
         restrict_dependent_destroy:

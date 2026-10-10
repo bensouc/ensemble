@@ -72,6 +72,15 @@ RSpec.describe Manipule::Problem do
     expect(build(:manipule_problem, tool: "boulier")).not_to be_valid
   end
 
+  # « Aucun » dans le menu renvoie une chaîne vide, pas `nil` : la validation
+  # la refusait, et une manipulation sans outil était impossible à enregistrer.
+  it "accepte « Aucun », que le menu envoie comme une chaîne vide" do
+    probleme = build(:manipule_problem, tool: "")
+
+    expect(probleme).to be_valid
+    expect(probleme.tool).to be_nil
+  end
+
   it "tient son niveau de ceinture de sa compétence" do
     probleme = create(:manipule_problem)
 
@@ -137,4 +146,37 @@ RSpec.describe Manipule::Problem do
     end
   end
 
+
+  # Le plateau des dizaines et des unités : ce que l'enseignante pose avant
+  # que l'élève n'arrive, rangé comme il l'aurait rangé lui-même.
+  describe "le plateau des dizaines et des unités" do
+    def plateau(depart:)
+      described_class.new(tool: "dizaines_unites", tool_data: { "depart" => depart })
+    end
+
+    it "range le départ en barres et en unités" do
+      expect(plateau(depart: 15).plateau_dizaines).to eq(1)
+      expect(plateau(depart: 15).plateau_unites).to eq(5)
+      expect(plateau(depart: 7).plateau_dizaines).to eq(0)
+      expect(plateau(depart: 40).plateau_unites).to eq(0)
+    end
+
+    # Au-delà de neuf barres on aurait une centaine, et ce n'est pas ce que
+    # l'outil enseigne. Au-delà de trente unités l'écran déborde.
+    it "borne ce qu'on peut poser et ce qu'on peut prendre" do
+      expect(plateau(depart: 999).plateau_depart).to eq(described_class::DIZAINES_MAX * 10 + 9)
+      expect(plateau(depart: -5).plateau_depart).to eq(0)
+    end
+
+    # Ce qui dépasse dix est déjà rangé en barres : l'écran ne démarre jamais
+    # dans un état que l'élève n'aurait pas pu atteindre lui-même.
+    it "ne pose jamais plus de neuf unités au départ" do
+      (0..99).each { |n| expect(plateau(depart: n).plateau_unites).to be < 10 }
+    end
+
+    it "ne se prend pas pour des jetons" do
+      expect(plateau(depart: 15)).not_to be_jetons
+      expect(plateau(depart: 15)).to be_outil
+    end
+  end
 end

@@ -121,9 +121,21 @@ module Manipule
                    { choices_attributes: [%i[id label position]] }]
       ).to_h
 
-      base["choices_attributes"] = choix_avec_la_bonne(base["choices_attributes"])
+      base["choices_attributes"] = reponses(base["choices_attributes"])
       base["tool_data"] = reglages
       base
+    end
+
+    # Les trois cases sont dans le formulaire MÊME quand l'élève doit écrire sa
+    # réponse : le bloc est masqué, pas désactivé, et un bloc masqué s'envoie
+    # quand même. Vides, elles rendaient le problème invalide — « une réponse
+    # est vide », à propos de champs que l'enseignante ne voyait pas. Aucune
+    # manipulation « un nombre à écrire » ne pouvait être enregistrée.
+    def reponses(choix)
+      choix = choix_avec_la_bonne(choix)
+      return choix unless params[:probleme][:answer_mode] == "saisie"
+
+      choix.reject { |_rang, attributs| attributs["label"].blank? }
     end
 
     # La bonne réponse est un bouton radio, pas trois cases à cocher : le
@@ -138,13 +150,37 @@ module Manipule
 
     # Les réglages de l'outil arrivent à plat et repartent dans la colonne
     # structurée. Sans outil choisi, on n'y laisse rien traîner.
+    #
+    # Chaque outil lit LES SIENS, et c'est nécessaire : les champs de tous les
+    # outils sont dans le formulaire, et masquer un bloc ne l'empêche pas
+    # d'être envoyé. Sans ce tri, les réglages d'un outil se retrouveraient
+    # dans la colonne d'un autre.
     def reglages
-      return {} if params[:probleme][:tool].blank?
-
       brut = params[:probleme].fetch(:reglages, {})
+
+      case params[:probleme][:tool]
+      when "jetons" then reglages_des_jetons(brut)
+      when "dizaines_unites" then reglages_du_plateau(brut)
+      else {}
+      end
+    end
+
+    def reglages_des_jetons(brut)
       { "ressource" => brut[:ressource].presence || "pomme",
         "reserve" => brut[:reserve].to_i,
-        "zones" => Array(brut[:zones]).map { |zone| zone.to_s.strip }.reject(&:empty?) }
+        "zones" => Array(brut[:zones]).map { |zone| zone.to_s.strip }.reject(&:empty?),
+        "compteur" => compteur(brut) }
+    end
+
+    # Un seul réglage propre au plateau : ce qui est déjà posé. La pioche ne
+    # s'épuise pas, il n'y a donc pas de stock à régler.
+    def reglages_du_plateau(brut)
+      { "depart" => brut[:depart].to_i, "compteur" => compteur(brut) }
+    end
+
+    # Le même réglage pour TOUS les outils : montrer le compte, ou le taire.
+    def compteur(brut)
+      brut[:compteur].to_s == "1" ? "1" : "0"
     end
   end
 end
