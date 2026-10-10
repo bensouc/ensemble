@@ -16,7 +16,7 @@
 		                    method: :post,
 		                    authenticity_token: form_authenticity_token,
 		                    html: { novalidate: false, class: "wp-edit-form",
-		                            data: { turbo: false, controller: "loadingspinnermgnt",
+		                            data: { turbo: false, controller: "loadingspinnermgnt domaines-auto",
 		                                    action: "submit->loadingspinnermgnt#tournerPendantEnvoi " \
 		                                            "pageshow@window->loadingspinnermgnt#reinitialiserAuRetour" } } do |f| %>
 			<div class="modal-ensemble-dialog">
@@ -43,6 +43,21 @@
                         required: :true,
                         input_html: { class: 'datepicker area', locale: "fr",
                                       value: @work_plan.end_date.strftime("%d/%m/%Y") } %>
+						<%# Repliée jusqu'au choix de la génération auto. Les noms `student[domains][]`
+						    sont ceux de la modale des résultats de classe : `auto_new_wp` les lit
+						    déjà, et le champ vide en tête permet de tout décocher. %>
+						<fieldset class="wp-new-domains wp-edit-full-row" hidden disabled
+						          data-domaines-auto-target="domaines">
+							<legend>Domaines à générer</legend>
+							<%= hidden_field_tag "student[domains][]", "", id: nil %>
+							<% @domains.each do |domain| %>
+								<span class="tag-item">
+									<%= check_box_tag "student[domains][]", domain.id, @checked_domains.include?(domain),
+									                  id: "wp_new_domain_#{domain.id}", class: "tag-selector" %>
+									<%= label_tag "wp_new_domain_#{domain.id}", domain.name %>
+								</span>
+							<% end %>
+						</fieldset>
 					</div>
 					<div class="modal-ensemble-footer wp-new-actions">
 						<p class="wp-new-hint">
@@ -53,7 +68,8 @@
 							<%= f.button :button, "Plan vierge", class: "utility-wp-btn" %>
 							<%= f.button :button, "Auto, selon son niveau",
 							             class: "utility-wp-btn utility-wp-btn--primary",
-							             formaction: student_auto_new_wp_path(@student) %>
+							             formaction: student_auto_new_wp_path(@student),
+							             data: { action: "click->domaines-auto#deplier" } %>
 						</div>
 					</div>
 				</div>

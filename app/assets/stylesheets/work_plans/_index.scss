@@ -146,3 +146,12 @@
     font-size: 12px;
   }
 }
+
+// Les domaines à générer, dépliés sous la période au choix de « Auto ».
+.wp-new-domains {
+  legend {
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+}

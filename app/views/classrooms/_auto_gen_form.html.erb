@@ -25,23 +25,20 @@
               role="group"
               aria-label="Basic checkbox toggle button group"
             >
-              <div class="domain-checkbox" data-controller='checkboxes'>
+              <%# Plus de contrôleur `checkboxes` : il cochait toutes les cases à
+                  l'ouverture, et les domaines que le professeur a sortis de la
+                  génération automatique doivent arriver décochés. %>
+              <div class="domain-checkbox">
                 <%= form.input_field :domains,
-                                 # collection: classroom.students.order(first_name: :asc),
                                  collection: domains,
-                                 # label_method: ,
                                  value_method: lambda { |domain| domain.id },
                                  multiple: true,
                                  as: :check_boxes,
                                  boolean_style: :inline,
-                                 data: {
-                                   checkboxes_target: "boxes",
-                                  #  action: "click->checkboxes#add"
-                                 },
                                  class: "tag-selector",
                                  item_wrapper_class: "tag-item",
                                  required: true,
-                                 checked: domains %>
+                                 checked: checked_domains.map(&:id) %>
               </div>
             </div>
           </div>

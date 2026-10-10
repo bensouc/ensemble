@@ -6,6 +6,7 @@ class ModalsController < ApplicationController
   def auto_gen
     @student = authorize Student.includes(:classroom).find(params[:id]), :show?
     @domains = @student.classroom.grade.domains.sort_by(&:position)
+    @checked_domains = AutoGenExclusion.auto_domains(@domains, user: current_user)
   end
 
   # Création rapide d'un plan de travail depuis la liste des plans de travail :
@@ -15,6 +16,8 @@ class ModalsController < ApplicationController
   def new_work_plan
     @student = authorize Student.includes(classroom: :grade).find(params[:id]), :show?
     @work_plan = new_work_plan_for(@student)
+    @domains = @student.classroom.grade.domains.sort_by(&:position)
+    @checked_domains = AutoGenExclusion.auto_domains(@domains, user: current_user)
   end
 
   def display_skills_modal

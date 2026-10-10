@@ -1,3 +1,4 @@
 <%= turbo_frame_tag "general_modal" do %>
-  <%= render 'classrooms/auto_gen_form', student: @student, domains: @domains  %>
+  <%= render 'classrooms/auto_gen_form', student: @student, domains: @domains,
+                                             checked_domains: @checked_domains %>
 <% end %>

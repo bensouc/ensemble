@@ -44,6 +44,8 @@ class User < ApplicationRecord
   has_many :user_conversations, dependent: :destroy
   has_many :conversations, through: :user_conversations
   has_many :messages, dependent: :destroy
+  # Les domaines que ce professeur a sortis de la génération automatique.
+  has_many :auto_gen_exclusions, dependent: :delete_all
 
   # has_one :subscription, dependent: :destroy
   has_one_attached :avatar

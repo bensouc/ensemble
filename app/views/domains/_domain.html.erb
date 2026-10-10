@@ -15,6 +15,22 @@
 			<% end %>
 		<% end %>
 		<p class='grabbable'><%= domain.name %></p>
+		<%# Préférence du professeur connecté, pas du domaine : un collègue n'en voit rien. %>
+		<% if domain.auto_gen_for?(current_user) %>
+			<%= button_to domain_auto_gen_exclusion_path(domain), method: :post,
+			              class: "domain-auto-toggle",
+			              title: "Inclus dans la génération automatique de vos plans de travail. Cliquer pour l'en sortir.",
+			              aria: { label: "Sortir #{domain.name} de la génération automatique" } do %>
+				<i class="fa-solid fa-user-gear"></i>
+			<% end %>
+		<% else %>
+			<%= button_to domain_auto_gen_exclusion_path(domain), method: :delete,
+			              class: "domain-auto-toggle domain-auto-toggle--off",
+			              title: "Hors génération automatique : proposé décoché. Cliquer pour l'y remettre.",
+			              aria: { label: "Remettre #{domain.name} dans la génération automatique" } do %>
+				<i class="fa-solid fa-user-gear"></i>
+			<% end %>
+		<% end %>
 		<% if current_user.demo? %>
 			<div class="--bgc-transparent p-0"
       data-controller="tooltip"

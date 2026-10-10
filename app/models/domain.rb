@@ -8,6 +8,7 @@ class Domain < ApplicationRecord
   has_many :skills, dependent: :destroy
   has_many :belts, dependent: :destroy
   has_many :work_plan_domains, dependent: :destroy
+  has_many :auto_gen_exclusions, dependent: :delete_all
 
   validates :name, presence: true,
                    uniqueness: { message: "est déjà utilisé pour ce niveau", scope: :grade }
@@ -17,6 +18,12 @@ class Domain < ApplicationRecord
 
   def special?
     special == true
+  end
+
+  # Le bloc plutôt qu'une requête : l'association se charge une fois, et la page
+  # des domaines pose la question pour chacun d'eux.
+  def auto_gen_for?(user)
+    user.auto_gen_exclusions.none? { |exclusion| exclusion.domain_id == id }
   end
 
   def all_skills_completed(student, level)

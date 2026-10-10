@@ -57,3 +57,38 @@
     align-items: center;
     justify-content: space-between;
 }
+
+// Bascule « génération automatique » d'un domaine, propre au professeur connecté.
+// Barrée, le domaine reste proposé dans la modale de génération, mais décoché.
+.domain-auto-toggle {
+  position: relative;
+  margin-left: 10px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+
+  &--off {
+    i {
+      color: #9c9c9c;
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: -3px;
+      right: -3px;
+      border-top: 2px solid colors.$rose;
+      transform: rotate(-35deg);
+    }
+  }
+}
+
+.domains-auto-hint {
+  color: #9c9c9c;
+  font-size: 13px;
+
+  i {
+    color: colors.$roseL;
+  }
+}
