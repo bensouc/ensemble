@@ -20,20 +20,22 @@ environment ENV.fetch("RAILS_ENV") { "development" }
 # Only use pidfile in development (Scalingo manages processes in production)
 pidfile ENV.fetch("PIDFILE") { "tmp/pids/server.pid" } unless ENV["RAILS_ENV"] == "production"
 
-# Specifies the number of `workers` to boot in clustered mode.
-# Workers are forked web server processes. If using threads and workers together
-# the concurrency of the application would be max `threads` * `workers`.
-# Workers do not work on JRuby or Windows (both of which do not support
-# processes).
+# Plusieurs processus Puma : un seul n'occupe qu'un cœur à la fois (le GVL de
+# Ruby), quel que soit son nombre de threads. Le VPS en a quatre.
 #
-# workers ENV.fetch("WEB_CONCURRENCY") { 2 }
-
-# Use the `preload_app!` method when specifying a `workers` number.
-# This directive tells Puma to first boot the application and load code
-# before forking the application. This takes advantage of Copy On Write
-# process behavior so workers use less memory.
+# Inerte tant que WEB_CONCURRENCY n'est pas posé à 2 ou plus : la production
+# reste en un seul processus jusqu'à ce qu'on le décide dans Coolify, et le
+# développement n'est jamais forké. Mesuré le 10/10/2026 avant d'en poser
+# deux : 4,6 Go disponibles sur 7,6, le conteneur web à 607 Mo.
 #
-# preload_app!
+# `preload_app!` charge l'application une fois avant de forker : les processus
+# partagent sa mémoire (copy-on-write) au lieu de la payer chacun. Solid Queue
+# reste lancé une seule fois, par le processus maître (plugin plus bas).
+web_concurrency = ENV["WEB_CONCURRENCY"].to_i # absente ou vide : 0, un seul processus
+if web_concurrency > 1
+  workers web_concurrency
+  preload_app!
+end
 
 # Allow puma to be restarted by `rails restart` command.
 plugin :tmp_restart
