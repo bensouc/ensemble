@@ -40,6 +40,14 @@ module ManipuleHelper
     "#{nombre} #{nombre > 1 ? (pluriel || "#{singulier}s") : singulier}"
   end
 
+  # `classrooms.name` n'est pas obligatoire — le modèle ne valide que le
+  # niveau — et une classe de production n'en a pas. Sans secours, le titre de
+  # l'écran disparaissait et le lien de retour de la fiche d'un élève se
+  # réduisait à une flèche nue.
+  def nom_de_classe(classe)
+    classe&.name.presence || "Classe sans nom"
+  end
+
   # « 1e » n'existe pas : c'est « 1er », puis « 2e », « 3e »… `ordinalize`
   # d'ActiveSupport parle anglais (« 1st ») et ne sert donc à rien ici.
   def rang_francais(nombre)

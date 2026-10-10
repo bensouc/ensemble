@@ -1,5 +1,5 @@
 <h1 class="m-titre">Qui es-tu ?</h1>
-<p class="m-sous-titre"><%= @classe.name %></p>
+<p class="m-sous-titre"><%= nom_de_classe(@classe) %></p>
 
 <% if @eleves.any? %>
   <div class="m-prenoms">
@@ -12,3 +12,18 @@
 <% else %>
   <p class="m-vide">Il n'y a encore personne dans cette classe.</p>
 <% end %>
+
+<%# La porte de l'adulte, et la seule de tout /manipule.
+
+    Elle est posée sur CET écran uniquement — celui du choix du prénom, où un
+    enfant cherche son prénom et rien d'autre —, jamais sur un écran de série,
+    et libellée pour un adulte. Les écrans où l'enfant travaille n'offrent
+    toujours aucune route vers Ensemble.
+
+    Sans elle, une enseignante qui regardait le jeu sur sa propre machine ne
+    pouvait plus revenir à ses écrans : elle en avait été déconnectée, et le
+    marqueur la renvoyait à la séance à chaque adresse qu'elle tapait. %>
+<div class="m-porte-prof">
+  <%= button_to "Espace professeur.e", manipule_quitter_path(vers: "ensemble"),
+                method: :delete, class: "m-porte-prof-bouton" %>
+</div>
