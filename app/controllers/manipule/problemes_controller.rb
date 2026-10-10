@@ -156,14 +156,19 @@ module Manipule
     def reglages_des_jetons(brut)
       { "ressource" => brut[:ressource].presence || "pomme",
         "reserve" => brut[:reserve].to_i,
-        "zones" => Array(brut[:zones]).map { |zone| zone.to_s.strip }.reject(&:empty?) }
+        "zones" => Array(brut[:zones]).map { |zone| zone.to_s.strip }.reject(&:empty?),
+        "compteur" => compteur(brut) }
     end
 
-    # Un seul réglage : ce qui est déjà posé. La pioche ne s'épuise pas, il n'y
-    # a donc pas de stock à régler.
+    # Un seul réglage propre au plateau : ce qui est déjà posé. La pioche ne
+    # s'épuise pas, il n'y a donc pas de stock à régler.
     def reglages_du_plateau(brut)
-      { "depart" => brut[:depart].to_i,
-        "compteur" => (brut[:compteur].to_s == "1" ? "1" : "0") }
+      { "depart" => brut[:depart].to_i, "compteur" => compteur(brut) }
+    end
+
+    # Le même réglage pour TOUS les outils : montrer le compte, ou le taire.
+    def compteur(brut)
+      brut[:compteur].to_s == "1" ? "1" : "0"
     end
   end
 end

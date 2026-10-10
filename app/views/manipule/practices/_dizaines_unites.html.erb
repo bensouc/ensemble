@@ -63,12 +63,12 @@
             qui décide quand son brouillon devient lisible. Posé dans la ligne
             de titre, il reste à sa place quand le compte est caché. %>
         <button type="button" class="m-aligner" data-m-aligner>Ranger</button>
-        <% if probleme.plateau_compteur? %>
+        <% if probleme.compteur? %>
           <span class="m-zone-compte">En tout <span data-m-total>0</span></span>
         <% end %>
       </span>
     </p>
-    <% if probleme.plateau_compteur? %>
+    <% if probleme.compteur? %>
       <p class="m-plateau-detail"><span data-m-detail></span></p>
     <% end %>
 

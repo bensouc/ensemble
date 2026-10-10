@@ -128,14 +128,23 @@
         faite en est un autre.
       </span>
 
-      <%# Le compte peut donner la réponse — « en tout 12 » sur un problème qui
-          demande combien il reste. D'où le choix, problème par problème. %>
-      <div class="form-check mt-2">
+    </div>
+  </div>
+
+    <%# Le compte peut DONNER la réponse — « en tout 12 », ou « à placer 10 »
+        sur un problème qui demande combien il reste. Le réglage vaut donc pour
+        tous les outils, et il est posé une seule fois. %>
+    <div class="m-champ ps-3 border-start" data-m-si-outil>
+      <div class="form-check">
         <%= hidden_field_tag "probleme[reglages][compteur]", "0" %>
-        <%= check_box_tag "probleme[reglages][compteur]", "1", probleme.plateau_compteur?,
-                          class: "form-check-input", id: "compteur_du_plateau" %>
-        <%= label_tag "compteur_du_plateau", "Montrer le compte à l'élève", class: "form-check-label" %>
+        <%= check_box_tag "probleme[reglages][compteur]", "1", probleme.compteur?,
+                          class: "form-check-input", id: "compteur_de_l_outil" %>
+        <%= label_tag "compteur_de_l_outil", "Montrer les comptes à l'élève", class: "form-check-label" %>
       </div>
+      <span class="m-champ-aide">
+        Décoché, l'élève manipule sans voir aucun nombre — c'est souvent ce qu'on veut,
+        puisque le compte donne parfois la réponse.
+      </span>
     </div>
   </div>
 

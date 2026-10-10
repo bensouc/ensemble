@@ -109,7 +109,7 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
       expect(probleme).to be_dizaines_unites
       expect(probleme.plateau_depart).to eq(15)
       # Caché par défaut : le compte peut donner la réponse.
-      expect(probleme).not_to be_plateau_compteur
+      expect(probleme).not_to be_compteur
       expect(probleme.plateau_dizaines).to eq(1)
       expect(probleme.plateau_unites).to eq(5)
     end
@@ -119,7 +119,7 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
         probleme: champs.merge(tool: "dizaines_unites", reglages: { depart: "0", compteur: "1" })
       }
 
-      expect(Manipule::Problem.last).to be_plateau_compteur
+      expect(Manipule::Problem.last).to be_compteur
     end
 
     # Les champs de TOUS les outils partent avec le formulaire : masquer un

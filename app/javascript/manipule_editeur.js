@@ -21,6 +21,8 @@ function basculer(formulaire) {
   // Un bloc de réglages par outil, montré quand c'est le sien. `data-m-si`
   // porte le nom de l'outil : ajouter un outil n'ajoute pas une ligne ici.
   formulaire.querySelectorAll("[data-m-si]").forEach((bloc) => { bloc.hidden = bloc.dataset.mSi !== outil })
+  // Le réglage commun à tous les outils : visible dès qu'il y en a un.
+  formulaire.querySelectorAll("[data-m-si-outil]").forEach((bloc) => { bloc.hidden = !outil })
 }
 
 async function rafraichir(formulaire) {
