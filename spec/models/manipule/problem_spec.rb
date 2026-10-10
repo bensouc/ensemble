@@ -179,4 +179,63 @@ RSpec.describe Manipule::Problem do
       expect(plateau(depart: 15)).to be_outil
     end
   end
+
+  # L'horloge. Le cadran fait douze heures : une horloge à aiguilles ne
+  # distingue pas trois heures de quinze heures, et c'est précisément ce
+  # qu'elle apprend à lire.
+  describe "l'horloge" do
+    def horloge(heure: 0, pas: nil)
+      described_class.new(tool: "horloge", tool_data: { "heure" => heure, "pas" => pas })
+    end
+
+    it "garde l'heure de départ en minutes" do
+      expect(horloge(heure: 195).horloge_minutes).to eq(195)
+    end
+
+    it "borne ce qui sort du cadran" do
+      expect(horloge(heure: 5000).horloge_minutes).to eq(described_class::CADRAN - 1)
+      expect(horloge(heure: -30).horloge_minutes).to eq(0)
+    end
+
+    # Un pas inconnu — une adresse forgée, un réglage d'une version précédente
+    # — ne doit pas rendre l'aiguille impossible à poser.
+    it "retombe sur un pas connu" do
+      expect(horloge(pas: 15).horloge_pas).to eq(15)
+      expect(horloge(pas: 7).horloge_pas).to eq(described_class::PAS_PAR_DEFAUT)
+      expect(horloge(pas: nil).horloge_pas).to eq(described_class::PAS_PAR_DEFAUT)
+    end
+
+    it "est un outil, et pas un plateau" do
+      expect(horloge).to be_horloge
+      expect(horloge).to be_outil
+      expect(horloge).not_to be_dizaines_unites
+    end
+  end
+
+  # Le partage en boîtes. C'est l'ÉLÈVE qui ajoute et retire les boîtes :
+  # combien de parts faire est souvent la question même du problème.
+  describe "le partage en boîtes" do
+    def partage(objets: 0, boites: 0)
+      described_class.new(tool: "partage",
+                          tool_data: { "objets" => objets, "boites" => boites, "ressource" => "bille" })
+    end
+
+    it "garde ce qu'il y a à partager et les boîtes du départ" do
+      expect(partage(objets: 12, boites: 3).partage_objets).to eq(12)
+      expect(partage(objets: 12, boites: 3).partage_boites).to eq(3)
+      expect(partage(objets: 12).jeton_caractere).to eq("\u{1F535}")
+    end
+
+    # Zéro boîte est un départ légitime : « combien de paquets peux-tu faire ? »
+    # commence par un plateau nu.
+    it "accepte de partir sans aucune boîte" do
+      expect(partage(objets: 12, boites: 0).partage_boites).to eq(0)
+    end
+
+    it "borne les deux" do
+      expect(partage(objets: 500).partage_objets).to eq(described_class::RESERVE_MAX)
+      expect(partage(boites: 99).partage_boites).to eq(described_class::BOITES_MAX)
+      expect(partage(objets: -3).partage_objets).to eq(0)
+    end
+  end
 end

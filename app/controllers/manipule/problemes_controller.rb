@@ -148,34 +148,62 @@ module Manipule
       choix.each { |rang, attributs| attributs["correct"] = (rang.to_s == bonne) }
     end
 
-    # Les réglages de l'outil arrivent à plat et repartent dans la colonne
-    # structurée. Sans outil choisi, on n'y laisse rien traîner.
+    # Les réglages repartent dans la colonne structurée, aplatis : `tool_data`
+    # ne porte que ceux de l'outil choisi. Sans outil, on n'y laisse rien.
     #
-    # Chaque outil lit LES SIENS, et c'est nécessaire : les champs de tous les
-    # outils sont dans le formulaire, et masquer un bloc ne l'empêche pas
-    # d'être envoyé. Sans ce tri, les réglages d'un outil se retrouveraient
-    # dans la colonne d'un autre.
+    # Dans le FORMULAIRE, en revanche, chaque outil a son bloc nommé par lui —
+    # `reglages[horloge][heure]`. Les champs de tous les outils sont envoyés,
+    # masquer un bloc ne l'en empêche pas, et deux outils voulaient déjà le
+    # même nom : `ressource` pour les jetons comme pour le partage, `depart`
+    # pour le plateau comme l'heure de l'horloge. À plat, le dernier écrivait
+    # par-dessus l'autre — c'est arrivé une fois déjà.
     def reglages
-      brut = params[:probleme].fetch(:reglages, {})
+      outil = params[:probleme][:tool].to_s
+      return {} unless Problem::OUTILS.include?(outil)
 
-      case params[:probleme][:tool]
-      when "jetons" then reglages_des_jetons(brut)
-      when "dizaines_unites" then reglages_du_plateau(brut)
-      else {}
-      end
+      brut = params[:probleme].fetch(:reglages, {})
+      sien = brut.fetch(outil, {})
+
+      propres = case outil
+                when "jetons" then reglages_des_jetons(sien)
+                when "dizaines_unites" then reglages_du_plateau(sien)
+                when "horloge" then reglages_de_l_horloge(sien)
+                when "partage" then reglages_du_partage(sien)
+                end
+
+      # Le seul réglage commun : montrer le compte, ou le taire. Il vit à la
+      # racine du formulaire, puisqu'il ne dépend d'aucun outil.
+      propres.merge("compteur" => compteur(brut))
     end
 
     def reglages_des_jetons(brut)
       { "ressource" => brut[:ressource].presence || "pomme",
         "reserve" => brut[:reserve].to_i,
-        "zones" => Array(brut[:zones]).map { |zone| zone.to_s.strip }.reject(&:empty?),
-        "compteur" => compteur(brut) }
+        "zones" => Array(brut[:zones]).map { |zone| zone.to_s.strip }.reject(&:empty?) }
     end
 
     # Un seul réglage propre au plateau : ce qui est déjà posé. La pioche ne
     # s'épuise pas, il n'y a donc pas de stock à régler.
     def reglages_du_plateau(brut)
-      { "depart" => brut[:depart].to_i, "compteur" => compteur(brut) }
+      { "depart" => brut[:depart].to_i }
+    end
+
+    def reglages_de_l_horloge(brut)
+      { "heure" => minutes_de(brut[:heure]), "pas" => brut[:pas].to_i }
+    end
+
+    def reglages_du_partage(brut)
+      { "ressource" => brut[:ressource].presence || "pomme",
+        "objets" => brut[:objets].to_i,
+        "boites" => brut[:boites].to_i }
+    end
+
+    # Le champ d'heure du navigateur rend « 14:05 ». Le cadran n'a que douze
+    # heures : quatorze heures et deux heures y sont le même dessin, et c'est
+    # précisément ce que l'horloge à aiguilles apprend à lire.
+    def minutes_de(texte)
+      heures, minutes = texte.to_s.split(":")
+      ((heures.to_i * 60) + minutes.to_i) % Problem::CADRAN
     end
 
     # Le même réglage pour TOUS les outils : montrer le compte, ou le taire.

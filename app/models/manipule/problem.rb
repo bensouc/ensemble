@@ -28,6 +28,21 @@ module Manipule
     # on ne range pas des pommes dans six endroits à la fois quand on a sept ans.
     ZONES_MAX = 6
 
+    # L'horloge. Le cadran fait douze heures : une horloge à aiguilles ne
+    # distingue pas trois heures de quinze heures, et c'est précisément ce
+    # qu'elle apprend à lire.
+    CADRAN = 12 * 60
+
+    # Le pas de l'aiguille des minutes. Au CP on place les heures et les
+    # demies ; viser la minute exacte à la souris n'apprend rien et décourage.
+    PAS_HORLOGE = [1, 5, 15, 30].freeze
+    PAS_PAR_DEFAUT = 5
+
+    # Le partage. Des boîtes que l'ÉLÈVE ajoute et retire : combien de parts
+    # faire est souvent LA question du problème, et la lui donner déjà faite
+    # reviendrait à la résoudre à sa place.
+    BOITES_MAX = 8
+
     belongs_to :skill
     belongs_to :user, optional: true
 
@@ -92,6 +107,14 @@ module Manipule
       tool == "dizaines_unites"
     end
 
+    def horloge?
+      tool == "horloge"
+    end
+
+    def partage?
+      tool == "partage"
+    end
+
     # Ce que l'enseignante pose sur le plateau avant que l'élève n'arrive :
     # l'énoncé dit « il y a 15 billes », le plateau montre 15. Rangé en barres
     # et en unités, comme l'élève l'aurait fait lui-même.
@@ -122,6 +145,29 @@ module Manipule
 
     def jeton_reserve
       tool_data["reserve"].to_i.clamp(0, RESERVE_MAX)
+    end
+
+    # L'heure de départ, en minutes sur le cadran de douze heures. Elle place
+    # le problème — « il est 3 h, la récréation est dans vingt minutes » — et
+    # l'élève fait tourner les aiguilles à partir de là.
+    def horloge_minutes
+      tool_data["heure"].to_i.clamp(0, CADRAN - 1)
+    end
+
+    def horloge_pas
+      pas = tool_data["pas"].to_i
+      PAS_HORLOGE.include?(pas) ? pas : PAS_PAR_DEFAUT
+    end
+
+    # Ce qu'il y a à partager, et combien de boîtes sont posées au départ.
+    # Zéro boîte est un départ légitime : « combien de paquets peux-tu
+    # faire ? » commence par un plateau nu.
+    def partage_objets
+      tool_data["objets"].to_i.clamp(0, RESERVE_MAX)
+    end
+
+    def partage_boites
+      tool_data["boites"].to_i.clamp(0, BOITES_MAX)
     end
 
     # Des zones nommées d'après l'énoncé — « le panier de Sam », « restées sur

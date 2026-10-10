@@ -355,6 +355,33 @@ RSpec.describe "Manipule, côté élève" do
 
       expect(response.body).not_to include("data-m-jetons")
     end
+
+    # Chaque outil a son gabarit. Sans ces deux exemples, une erreur dans l'un
+    # d'eux ne se découvrirait que devant un enfant.
+    it "pose l'horloge, aiguilles déjà à l'heure de départ" do
+      Manipule::Problem.find_each do |probleme|
+        probleme.update!(tool: "horloge", tool_data: { "heure" => 195, "pas" => 5 })
+      end
+
+      get manipule_serie_path
+
+      expect(response.body).to include(%(data-m-minutes="195"))
+      # 3 h 15 : la grande au quart, la petite un huitième après le trois.
+      expect(response.body).to include("rotate(90, 100, 100)").and include("rotate(97.5, 100, 100)")
+    end
+
+    it "pose le partage, avec ses objets et ses boîtes du départ" do
+      Manipule::Problem.find_each do |probleme|
+        probleme.update!(tool: "partage",
+                         tool_data: { "ressource" => "bille", "objets" => 12, "boites" => 2 })
+      end
+
+      get manipule_serie_path
+
+      expect(response.body).to include("data-m-partage")
+      expect(response.body.scan(/data-m-jeton\b/).size).to eq(12)
+      expect(response.body.scan(/Bo\u00eete \d/).size).to eq(2)
+    end
   end
 
   # Un élève s'en va au milieu de sa série — la récréation sonne, on l'appelle

@@ -607,6 +607,165 @@ form.button_to { display: inline-block; margin: 0; }
   color: var(--m-encre-douce);
 }
 
+// ── l'horloge ─────────────────────────────────────────────
+//
+// Un cadran d'apprentissage : les heures en grand dedans, les minutes en petit
+// autour. C'est l'horloge des salles de classe, et l'élève la reconnaît.
+.m-horloge {
+  // Une colonne BORNÉE pour le cadran, et non `auto` : une colonne auto se
+  // dimensionne sur son contenu, le contenu se dimensionnait sur la colonne,
+  // et le cadran sortait à zéro par zéro — une horloge invisible dont les
+  // aiguilles répondaient toujours la même heure.
+  //
+  // Et c'est la COLONNE qui porte le plafond de hauteur, pas le cadran : un
+  // `max-height` sur le cadran écrasait le carré en 224 × 201, le dessin se
+  // recentrait dedans, et le point touché ne tombait plus sur le chiffre visé.
+  grid-template-columns: minmax(7rem, min(14rem, 34vh)) minmax(0, 1fr);
+  align-items: center;
+}
+
+.m-horloge-boite {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+}
+
+// Carré, posé par sa LARGEUR, et plafonné en hauteur : sur un écran court
+// c'est le plafond qui gagne, et le rapport garde le cadran rond.
+.m-cadran {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  // Sans cela, le navigateur fait défiler la page au lieu de laisser tourner
+  // l'aiguille : le premier contact serait le dernier.
+  touch-action: none;
+  user-select: none;
+}
+
+.m-cadran-fond {
+  fill: var(--m-carte);
+  stroke: var(--m-bleu);
+  stroke-width: 2.5;
+}
+
+.m-tic { stroke: var(--m-trait); stroke-width: 2; }
+.m-tic-heure { stroke: var(--m-bleu); stroke-width: 3.5; }
+
+.m-cadran-heure {
+  font-size: 19px;
+  font-weight: bold;
+  fill: var(--m-encre);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.m-cadran-minute {
+  font-size: 10px;
+  fill: var(--m-rose);
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.m-aiguille {
+  cursor: grab;
+  touch-action: none;
+}
+
+.m-aiguille:focus-visible .m-aiguille-heure,
+.m-aiguille:focus-visible .m-aiguille-minute {
+  stroke: var(--m-juste);
+}
+
+// La zone de prise : large, et invisible. Une aiguille de cinq pixels ne
+// s'attrape pas avec un doigt de six ans.
+.m-aiguille-prise {
+  stroke: transparent;
+  stroke-width: 26;
+  stroke-linecap: round;
+}
+
+.m-aiguille-heure {
+  stroke: var(--m-bleu);
+  stroke-width: 8;
+  stroke-linecap: round;
+}
+
+.m-aiguille-minute {
+  stroke: var(--m-rose);
+  stroke-width: 5.5;
+  stroke-linecap: round;
+}
+
+.m-cadran-axe { fill: var(--m-encre); }
+
+.m-horloge-cote {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.m-horloge-lecture {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--m-encre);
+
+  span {
+    font-weight: bold;
+    color: var(--m-bleu);
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// ── le partage en boîtes ───────────────────────────────────
+//
+// La réserve en haut, les boîtes en dessous, et les deux boutons qui en
+// ajoutent ou en retirent. Les boîtes défilent entre elles si l'élève en
+// demande huit : c'est la seule chose de cet écran qui ait le droit de
+// défiler, et la page n'en bouge pas.
+.m-partage {
+  grid-template-columns: 1fr;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  min-height: 0;
+}
+
+.m-boites {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+  align-content: start;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.m-boite {
+  min-height: 5.5rem;
+  padding: 0.5rem;
+}
+
+// Une boîte vide ne se voit pas : c'est une zone de dépôt, elle doit appeler
+// le geste.
+.m-boite .m-tas { min-height: 2.6rem; }
+
+.m-partage-outils {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.m-boite-pas {
+  border: 2px solid var(--m-bleu);
+  background: var(--m-carte);
+  color: var(--m-bleu);
+  border-radius: 999px;
+  padding: 0.3rem 0.9rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  cursor: pointer;
+
+  span { font-weight: bold; font-size: 1.1rem; }
+}
+
 // ───────────────────────── la sortie de séance ─────────────────────────
 //
 // Pour l'élève qui s'assoit devant l'écran d'un autre. Volontairement terne

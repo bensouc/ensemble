@@ -45,7 +45,7 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
         expect(response.body).to include(%(name="probleme[#{champ}]"))
       end
       expect(response.body).to include(%(name="probleme[choices_attributes][0][label]"))
-      expect(response.body).to include(%(name="probleme[reglages][ressource]"))
+      expect(response.body).to include(%(name="probleme[reglages][jetons][ressource]"))
       expect(response.body).not_to include("manipule_problem[")
     end
 
@@ -89,8 +89,8 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
     it "range les réglages de l'outil dans la colonne structurée" do
       post manipule_problemes_path(competence), params: {
         probleme: champs.merge(tool: "jetons",
-                               reglages: { ressource: "carotte", reserve: "12",
-                                           zones: ["Le panier", "  ", "Sur l'arbre"] })
+                               reglages: { jetons: { ressource: "carotte", reserve: "12",
+                                                     zones: ["Le panier", "  ", "Sur l'arbre"] } })
       }
 
       probleme = Manipule::Problem.last
@@ -102,7 +102,7 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
     it "range les réglages du plateau des dizaines et des unités" do
       post manipule_problemes_path(competence), params: {
         probleme: champs.merge(tool: "dizaines_unites",
-                               reglages: { depart: "15" })
+                               reglages: { dizaines_unites: { depart: "15" } })
       }
 
       probleme = Manipule::Problem.last
@@ -116,22 +116,25 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
 
     it "montre le compte seulement quand l'enseignante le demande" do
       post manipule_problemes_path(competence), params: {
-        probleme: champs.merge(tool: "dizaines_unites", reglages: { depart: "0", compteur: "1" })
+        probleme: champs.merge(tool: "dizaines_unites",
+                               reglages: { dizaines_unites: { depart: "0" }, compteur: "1" })
       }
 
       expect(Manipule::Problem.last).to be_compteur
     end
 
     # Les champs de TOUS les outils partent avec le formulaire : masquer un
-    # bloc ne l'empêche pas d'être envoyé. Sans tri par outil, les réglages de
-    # l'un se retrouvaient dans la colonne de l'autre — deux champs portaient
-    # même le nom `reglages[reserve]`, et le mauvais gagnait.
+    # bloc ne l'empêche pas d'être envoyé. Chaque outil a donc son bloc nommé
+    # par lui — sans quoi `ressource` désignerait à la fois le jeton et l'objet
+    # à partager, et `depart` à la fois le plateau et l'heure.
     it "ne retient que les réglages de l'outil choisi" do
       post manipule_problemes_path(competence), params: {
         probleme: champs.merge(tool: "dizaines_unites",
-                               reglages: { depart: "15",
-                                           ressource: "carotte", reserve: "30",
-                                           zones: ["Le panier"] })
+                               reglages: { dizaines_unites: { depart: "15" },
+                                           jetons: { ressource: "carotte", reserve: "30",
+                                                     zones: ["Le panier"] },
+                                           horloge: { heure: "09:30", pas: "15" },
+                                           partage: { ressource: "bille", objets: "20", boites: "4" } })
       }
 
       probleme = Manipule::Problem.last
@@ -139,11 +142,45 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
       expect(probleme.tool_data.keys).to contain_exactly("depart", "compteur")
     end
 
+    it "range l'heure de départ de l'horloge, ramenée sur le cadran" do
+      post manipule_problemes_path(competence), params: {
+        probleme: champs.merge(tool: "horloge", reglages: { horloge: { heure: "15:20", pas: "15" } })
+      }
+
+      probleme = Manipule::Problem.last
+      expect(probleme).to be_horloge
+      # Quinze heures vingt et trois heures vingt sont le même dessin.
+      expect(probleme.horloge_minutes).to eq((3 * 60) + 20)
+      expect(probleme.horloge_pas).to eq(15)
+    end
+
+    it "retombe sur un pas connu quand celui envoyé n'existe pas" do
+      post manipule_problemes_path(competence), params: {
+        probleme: champs.merge(tool: "horloge", reglages: { horloge: { heure: "08:00", pas: "7" } })
+      }
+
+      expect(Manipule::Problem.last.horloge_pas).to eq(Manipule::Problem::PAS_PAR_DEFAUT)
+    end
+
+    it "range ce qu'il y a à partager, et les boîtes du départ" do
+      post manipule_problemes_path(competence), params: {
+        probleme: champs.merge(tool: "partage",
+                               reglages: { partage: { ressource: "bille", objets: "12", boites: "3" } })
+      }
+
+      probleme = Manipule::Problem.last
+      expect(probleme).to be_partage
+      expect(probleme.jeton_caractere).to eq("\u{1F535}")
+      expect(probleme.partage_objets).to eq(12)
+      expect(probleme.partage_boites).to eq(3)
+    end
+
     # Sans outil choisi, on ne laisse pas traîner des réglages orphelins qui
     # réapparaîtraient le jour où quelqu'un en choisit un.
     it "ne garde aucun réglage quand aucun outil n'est choisi" do
       post manipule_problemes_path(competence), params: {
-        probleme: champs.merge(reglages: { ressource: "carotte", reserve: "12", zones: ["Le panier"] })
+        probleme: champs.merge(reglages: { jetons: { ressource: "carotte", reserve: "12",
+                                                     zones: ["Le panier"] } })
       }
 
       expect(Manipule::Problem.last.tool_data).to eq({})
@@ -152,8 +189,8 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
     it "garde les cases au-delà des deux proposées d'emblée" do
       post manipule_problemes_path(competence), params: {
         probleme: champs.merge(tool: "jetons",
-                               reglages: { ressource: "pomme", reserve: "8",
-                                           zones: ["Une", "Deux", "Trois", "Quatre"] })
+                               reglages: { jetons: { ressource: "pomme", reserve: "8",
+                                                     zones: ["Une", "Deux", "Trois", "Quatre"] } })
       }
 
       expect(Manipule::Problem.last.jeton_zones).to eq(%w[Une Deux Trois Quatre])
@@ -271,7 +308,8 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
     it "montre l'outil quand il est choisi" do
       post manipule_apercu_probleme_path(competence), params: {
         probleme: champs.merge(tool: "jetons",
-                               reglages: { ressource: "pomme", reserve: "4", zones: ["Le panier"] })
+                               reglages: { jetons: { ressource: "pomme", reserve: "4",
+                                                     zones: ["Le panier"] } })
       }
 
       expect(response.body).to include("data-m-jetons").and include("Le panier")

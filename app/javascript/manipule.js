@@ -218,6 +218,11 @@ function brancher() {
 
 const SEUIL_GLISSE = 6 // pixels avant de considérer que c'est un glissé
 
+// Les racines d'outil. C'est par elles que `deposer` retrouve à QUI annoncer
+// un changement : un outil absent de cette liste déposerait sans jamais
+// recompter ses zones.
+const RACINES = "[data-m-jetons], [data-m-plateau], [data-m-partage]"
+
 let jetonChoisi = null
 
 // Compte ce qui est dans le tas, sans savoir de quoi il s'agit : des jetons,
@@ -239,7 +244,7 @@ function deposer(jeton, zone, point = null) {
 
   placerDans(jeton, zone, point)
 
-  const outil = zone.closest("[data-m-jetons], [data-m-plateau]")
+  const outil = zone.closest(RACINES)
   if (outil) {
     compter(outil)
     outil.dispatchEvent(new CustomEvent("m:change", { bubbles: false }))
@@ -340,23 +345,27 @@ function brancherLesJetons() {
 // existe pour l'enfant qui n'arrive pas à maintenir le contact en se
 // déplaçant — et il vaut pour TOUS les outils, pas seulement les jetons.
 function brancherLesZones(outil, accepte = () => true) {
-  outil.querySelectorAll("[data-m-zone]").forEach((zone) => {
-    zone.addEventListener("click", (e) => {
-      // La pièce est DANS sa case : sans ce garde, le clic qui vient de la
-      // choisir remonte jusqu'ici et la repose aussitôt, si bien qu'on ne peut
-      // jamais rien sélectionner. On choisit en touchant une pièce, on dépose
-      // en touchant la case ailleurs que sur une pièce.
-      //
-      // Le bouton d'échange vit DANS la boîte : sans lui aussi dans ce garde,
-      // un enfant qui touche un cube, change d'avis et touche « échanger » le
-      // voit atterrir dans la boîte.
-      if (e.target.closest("[data-m-jeton], [data-m-piece], [data-m-echanger]")) return
-      if (!jetonChoisi || !accepte(jetonChoisi, zone)) return
+  outil.querySelectorAll("[data-m-zone]").forEach((zone) => brancherUneZone(zone, outil, accepte))
+}
 
-      const piece = jetonChoisi
-      oublierLeChoix()
-      deposer(piece, zone, { x: e.clientX, y: e.clientY })
-    })
+// Une zone à la fois, parce que le partage en fabrique en cours de route :
+// une boîte ajoutée après le branchement n'accueillerait rien.
+function brancherUneZone(zone, outil, accepte = () => true) {
+  zone.addEventListener("click", (e) => {
+    // La pièce est DANS sa case : sans ce garde, le clic qui vient de la
+    // choisir remonte jusqu'ici et la repose aussitôt, si bien qu'on ne peut
+    // jamais rien sélectionner. On choisit en touchant une pièce, on dépose
+    // en touchant la case ailleurs que sur une pièce.
+    //
+    // Le bouton d'échange vit DANS la boîte : sans lui aussi dans ce garde,
+    // un enfant qui touche un cube, change d'avis et touche « échanger » le
+    // voit atterrir dans la boîte.
+    if (e.target.closest("[data-m-jeton], [data-m-piece], [data-m-echanger]")) return
+    if (!jetonChoisi || !accepte(jetonChoisi, zone)) return
+
+    const piece = jetonChoisi
+    oublierLeChoix()
+    deposer(piece, zone, { x: e.clientX, y: e.clientY })
   })
 }
 
@@ -585,6 +594,221 @@ function brancherLesPlateaux() {
   })
 }
 
+// ── l'horloge ──────────────────────────────────────────────────────────
+//
+// Un outil de MANIPULATION : l'élève attrape une aiguille et la fait tourner.
+// Pas une horloge à lire — c'est en la réglant qu'il comprend ce que chaque
+// aiguille raconte.
+//
+// Les deux s'entraînent, comme sur une vraie : passer la grande de 55 à 0
+// avance la petite d'une heure, et poser la petite entre le 3 et le 4 pose la
+// demie. Une horloge dont les minutes tourneraient sans emporter les heures
+// enseignerait quelque chose de faux — et c'est l'erreur que font les enfants
+// qu'on veut précisément corriger.
+
+const TOUR = 12 * 60 // le cadran ne connaît pas l'après-midi
+
+function minutesDe(horloge) {
+  const lu = Number(horloge.dataset.mMinutes)
+  return Number.isFinite(lu) ? ((lu % TOUR) + TOUR) % TOUR : 0
+}
+
+function pasDe(horloge) {
+  const lu = Number(horloge.dataset.mPas)
+  return Number.isFinite(lu) && lu > 0 ? lu : 5
+}
+
+// L'angle du point touché, vu du centre du cadran : 0 en haut, puis dans le
+// sens des aiguilles. `atan2(dx, -dy)` donne exactement cela, sans quart de
+// tour à rattraper ensuite.
+//
+// Le point passe par le repère du DESSIN, pas par le rectangle de l'élément.
+// Un SVG à qui il reste de la place centre son dessin dedans : le rectangle
+// vaut alors 224 de large pour 201 de haut, le cadran 201 par 201 au milieu,
+// et l'angle calculé sur le rectangle rate le chiffre visé d'autant.
+function angleDe(cadran, x, y) {
+  const repere = cadran.getScreenCTM()
+  if (!repere) return 0
+
+  const point = new DOMPoint(x, y).matrixTransform(repere.inverse())
+  return ((Math.atan2(point.x - 100, 100 - point.y) * 180 / Math.PI) + 360) % 360
+}
+
+function afficherLHeure(horloge) {
+  const minutes = minutesDe(horloge)
+  const tourner = (sorte, degres) => {
+    horloge.querySelector(`[data-m-aiguille="${sorte}"]`)?.setAttribute("transform", `rotate(${degres}, 100, 100)`)
+  }
+
+  tourner("minute", (minutes % 60) * 6)
+  // La petite aiguille avance d'un demi-degré par minute : à 3 h 30 elle est
+  // à mi-chemin entre le 3 et le 4, et c'est ce demi-chemin qui dit la demie.
+  tourner("heure", minutes / 2)
+
+  const texte = `${Math.floor(minutes / 60) || 12} h ${String(minutes % 60).padStart(2, "0")}`
+  const lecture = horloge.querySelector("[data-m-heure]")
+  if (lecture) lecture.textContent = texte
+  // L'heure est dite aux aiguilles elles-mêmes : au clavier, c'est le seul
+  // endroit où elle se lit quand l'enseignante a choisi de la cacher.
+  horloge.querySelectorAll("[data-m-aiguille]").forEach((a) => a.setAttribute("aria-valuetext", texte))
+}
+
+function regler(horloge, minutes) {
+  horloge.dataset.mMinutes = ((Math.round(minutes) % TOUR) + TOUR) % TOUR
+  afficherLHeure(horloge)
+}
+
+// Poser la grande aiguille EMPORTE les heures quand elle passe par le douze :
+// c'est ce que fait une vraie horloge. On le reconnaît au saut — de la fin du
+// cadran au début, ou l'inverse — parce que l'angle seul ne dit pas de quel
+// côté on a tourné.
+function poserLesMinutes(horloge, angle) {
+  const pas = pasDe(horloge)
+  const minutes = minutesDe(horloge)
+  const avant = minutes % 60
+  const apres = (Math.round(angle / 6 / pas) * pas) % 60
+
+  let heures = Math.floor(minutes / 60)
+  if (avant >= 45 && apres <= 15) heures += 1
+  else if (avant <= 15 && apres >= 45) heures -= 1
+
+  regler(horloge, (heures * 60) + apres)
+}
+
+// La petite aiguille porte l'heure ET sa fraction : la poser quelque part,
+// c'est poser l'heure entière, minutes comprises.
+function poserLesHeures(horloge, angle) {
+  const pas = pasDe(horloge)
+  regler(horloge, Math.round((angle / 360) * TOUR / pas) * pas)
+}
+
+function poserLAiguille(horloge, cadran, sorte, x, y) {
+  const angle = angleDe(cadran, x, y)
+  if (sorte === "minute") poserLesMinutes(horloge, angle)
+  else poserLesHeures(horloge, angle)
+}
+
+function brancherLHorloge(horloge) {
+  const cadran = horloge.querySelector("[data-m-cadran]")
+  if (!cadran) return
+
+  const saisir = (sorte) => (e) => {
+    // Sans cela, le navigateur fait défiler la page au lieu de laisser
+    // tourner l'aiguille — le premier contact serait le dernier.
+    e.preventDefault()
+    poserLAiguille(horloge, cadran, sorte, e.clientX, e.clientY)
+
+    const bouger = (ev) => poserLAiguille(horloge, cadran, sorte, ev.clientX, ev.clientY)
+    const lacher = () => {
+      document.removeEventListener("pointermove", bouger)
+      document.removeEventListener("pointerup", lacher)
+      document.removeEventListener("pointercancel", lacher)
+    }
+    document.addEventListener("pointermove", bouger)
+    document.addEventListener("pointerup", lacher)
+    document.addEventListener("pointercancel", lacher)
+  }
+
+  horloge.querySelectorAll("[data-m-aiguille]").forEach((aiguille) => {
+    const sorte = aiguille.dataset.mAiguille
+    aiguille.addEventListener("pointerdown", saisir(sorte))
+
+    // Même piège que la pioche du plateau : `pointerdown` appelle
+    // `preventDefault()`, donc le `click` d'Entrée n'arrive jamais. Les
+    // flèches font avancer l'aiguille d'un pas — d'une heure pour la petite.
+    aiguille.addEventListener("keydown", (e) => {
+      const sens = ["ArrowRight", "ArrowUp"].includes(e.key) ? 1 : ["ArrowLeft", "ArrowDown"].includes(e.key) ? -1 : 0
+      if (!sens) return
+
+      e.preventDefault()
+      regler(horloge, minutesDe(horloge) + (sens * (sorte === "minute" ? pasDe(horloge) : 60)))
+    })
+  })
+
+  // Toucher le cadran ailleurs que sur une aiguille déplace la grande : c'est
+  // le geste que font les enfants, et le refuser n'apprendrait rien à
+  // personne.
+  cadran.addEventListener("pointerdown", (e) => {
+    if (e.target.closest("[data-m-aiguille]")) return
+
+    saisir("minute")(e)
+  })
+
+  afficherLHeure(horloge)
+}
+
+function brancherLesHorloges() {
+  document.querySelectorAll("[data-m-horloge]").forEach(brancherLHorloge)
+}
+
+// ── le partage en boîtes ───────────────────────────────────────────────
+//
+// L'élève glisse les objets dans des boîtes, et c'est LUI qui ajoute et retire
+// les boîtes : « combien de paquets peux-tu faire ? » est souvent la question
+// même du problème, et la lui donner déjà résolue n'aiderait personne.
+//
+// Retirer une boîte ne perd jamais rien : ce qu'elle contenait retourne à la
+// réserve. Même règle que la case qui échange — un outil qui fait disparaître
+// des objets enseigne le contraire de ce qu'on veut.
+
+function boitesDe(partage) {
+  return Array.from(partage.querySelectorAll("[data-m-boites] > [data-m-zone]"))
+}
+
+function maximumDeBoites(partage) {
+  const lu = Number(partage.dataset.mMaxBoites)
+  return Number.isFinite(lu) && lu > 0 ? lu : 8
+}
+
+// Les boîtes portent leur rang, pas leur identité : en retirer une au milieu
+// laisserait sinon « Boîte 1, Boîte 3 » à l'écran.
+function renumeroterLesBoites(partage) {
+  boitesDe(partage).forEach((boite, rang) => {
+    const nom = boite.querySelector("[data-m-nom]")
+    if (nom) nom.textContent = `Boîte ${rang + 1}`
+  })
+}
+
+function ajouterUneBoite(partage) {
+  const liste = partage.querySelector("[data-m-boites]")
+  const modele = partage.querySelector("[data-m-modele-boite]")
+  if (!liste || !modele || boitesDe(partage).length >= maximumDeBoites(partage)) return
+
+  const boite = modele.content.firstElementChild.cloneNode(true)
+  liste.appendChild(boite)
+  brancherUneZone(boite, partage)
+  renumeroterLesBoites(partage)
+  compter(partage)
+}
+
+function retirerUneBoite(partage) {
+  const boites = boitesDe(partage)
+  const derniere = boites[boites.length - 1]
+  const reserve = partage.querySelector('[data-m-zone="reserve"]')
+  if (!derniere || !reserve) return
+
+  oublierLeChoix()
+  // Vider AVANT de retirer : la boîte emporterait ses objets avec elle.
+  Array.from(derniere.querySelector("[data-m-tas]")?.children || []).
+    forEach((jeton) => deposer(jeton, reserve))
+  derniere.remove()
+  renumeroterLesBoites(partage)
+  compter(partage)
+}
+
+function brancherLesPartages() {
+  document.querySelectorAll("[data-m-partage]").forEach((partage) => {
+    partage.querySelectorAll("[data-m-jeton]").forEach((jeton) => brancherUnePiece(jeton, partage))
+    brancherLesZones(partage)
+
+    partage.querySelector("[data-m-ajouter-boite]")?.addEventListener("click", () => ajouterUneBoite(partage))
+    partage.querySelector("[data-m-retirer-boite]")?.addEventListener("click", () => retirerUneBoite(partage))
+
+    renumeroterLesBoites(partage)
+    compter(partage)
+  })
+}
+
 // `DOMContentLoaded` et `turbo:load` se déclenchent TOUS LES DEUX au premier
 // chargement. Sans ce garde, chaque écouteur serait posé deux fois, et un clic
 // sur « Tout écouter » lancerait deux lectures concurrentes.
@@ -596,6 +820,8 @@ function brancherTout() {
   brancher()
   brancherLesJetons()
   brancherLesPlateaux()
+  brancherLesHorloges()
+  brancherLesPartages()
 }
 
 document.addEventListener("DOMContentLoaded", brancherTout)

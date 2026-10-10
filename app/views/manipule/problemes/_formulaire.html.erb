@@ -82,7 +82,9 @@
 
     <%= f.input :tool, label: "Un outil à manipuler",
                 collection: [["Des jetons à déplacer", "jetons"],
-                             ["Des dizaines et des unités", "dizaines_unites"]],
+                             ["Des dizaines et des unités", "dizaines_unites"],
+                             ["Une horloge à régler", "horloge"],
+                             ["Un partage en boîtes", "partage"]],
                 include_blank: "Aucun",
                 input_html: { class: "area", data: { "m-outil": true } },
                 hint: "L'outil aide l'élève à se représenter l'énoncé. Il ne corrige rien : " \
@@ -91,15 +93,15 @@
     <div class="m-champ ps-3 border-start" data-m-si="jetons">
       <div class="row g-2 mb-2">
         <div class="col">
-          <%= label_tag "probleme[reglages][ressource]", "Le jeton", class: "form-label" %>
-          <%= select_tag "probleme[reglages][ressource]",
+          <%= label_tag "probleme[reglages][jetons][ressource]", "Le jeton", class: "form-label" %>
+          <%= select_tag "probleme[reglages][jetons][ressource]",
                          options_for_select(Manipule::Problem::RESSOURCES.map { |nom, signe| ["#{signe} #{nom}", nom] },
                                             probleme.tool_data["ressource"]),
                          class: "area" %>
         </div>
         <div class="col">
-          <%= label_tag "probleme[reglages][reserve]", "Combien en réserve", class: "form-label" %>
-          <%= number_field_tag "probleme[reglages][reserve]", probleme.tool_data["reserve"] || 10,
+          <%= label_tag "probleme[reglages][jetons][reserve]", "Combien en réserve", class: "form-label" %>
+          <%= number_field_tag "probleme[reglages][jetons][reserve]", probleme.tool_data["reserve"] || 10,
                                min: 0, max: Manipule::Problem::RESERVE_MAX, class: "area" %>
         </div>
       </div>
@@ -111,7 +113,7 @@
         <% cases = probleme.jeton_zones %>
         <% [cases.size + 1, 2].max.times do |rang| %>
           <div class="m-case" data-m-case>
-            <%= text_field_tag "probleme[reglages][zones][]", cases[rang], class: "area",
+            <%= text_field_tag "probleme[reglages][jetons][zones][]", cases[rang], class: "area",
                                placeholder: ["Ex. Le panier de Sam", "Ex. Restées sur l'arbre"][rang] || "Ex. Le sac de Lila",
                                "aria-label": "Nom de la case #{rang + 1}" %>
             <button type="button" class="rmv-skill-btn" data-m-retirer-case
@@ -127,8 +129,8 @@
     </div>
 
     <div class="m-champ ps-3 border-start" data-m-si="dizaines_unites">
-      <%= label_tag "probleme[reglages][depart]", "Déjà posé sur la zone", class: "form-label" %>
-      <%= number_field_tag "probleme[reglages][depart]", probleme.tool_data["depart"] || 0,
+      <%= label_tag "probleme[reglages][dizaines_unites][depart]", "Déjà posé sur la zone", class: "form-label" %>
+      <%= number_field_tag "probleme[reglages][dizaines_unites][depart]", probleme.tool_data["depart"] || 0,
                            min: 0, max: (Manipule::Problem::DIZAINES_MAX * 10) + 9, class: "area" %>
       <span class="m-champ-aide">
         Laissez 0 pour qu'il parte de rien. Il pioche ensuite autant de dizaines et d'unités
@@ -136,6 +138,57 @@
         faite en est un autre.
       </span>
 
+    </div>
+
+    <div class="m-champ ps-3 border-start" data-m-si="horloge">
+      <div class="row g-2 mb-2">
+        <div class="col">
+          <%= label_tag "probleme[reglages][horloge][heure]", "L'heure de départ", class: "form-label" %>
+          <%# Un champ d'heure du navigateur : au clavier comme au doigt, il
+              sait déjà ce qu'est une heure, et il parle la langue du poste. %>
+          <%= time_field_tag "probleme[reglages][horloge][heure]",
+                             format("%<h>02d:%<m>02d", h: probleme.horloge_minutes / 60,
+                                                       m: probleme.horloge_minutes % 60),
+                             class: "area" %>
+        </div>
+        <div class="col">
+          <%= label_tag "probleme[reglages][horloge][pas]", "L'aiguille avance de", class: "form-label" %>
+          <%= select_tag "probleme[reglages][horloge][pas]",
+                         options_for_select(Manipule::Problem::PAS_HORLOGE.map { |pas| ["#{pas} min", pas] },
+                                            probleme.horloge_pas),
+                         class: "area" %>
+        </div>
+      </div>
+      <span class="m-champ-aide">
+        L'élève fait tourner les aiguilles lui-même. Au CP, un pas de 5 minutes
+        suffit : viser la minute exacte à la souris n'apprend rien.
+      </span>
+    </div>
+
+    <div class="m-champ ps-3 border-start" data-m-si="partage">
+      <div class="row g-2 mb-2">
+        <div class="col">
+          <%= label_tag "probleme[reglages][partage][ressource]", "À partager", class: "form-label" %>
+          <%= select_tag "probleme[reglages][partage][ressource]",
+                         options_for_select(Manipule::Problem::RESSOURCES.map { |nom, signe| ["#{signe} #{nom}", nom] },
+                                            probleme.tool_data["ressource"]),
+                         class: "area" %>
+        </div>
+        <div class="col">
+          <%= label_tag "probleme[reglages][partage][objets]", "Combien à partager", class: "form-label" %>
+          <%= number_field_tag "probleme[reglages][partage][objets]", probleme.partage_objets.nonzero? || 12,
+                               min: 0, max: Manipule::Problem::RESERVE_MAX, class: "area" %>
+        </div>
+        <div class="col">
+          <%= label_tag "probleme[reglages][partage][boites]", "Boîtes au départ", class: "form-label" %>
+          <%= number_field_tag "probleme[reglages][partage][boites]", probleme.partage_boites,
+                               min: 0, max: Manipule::Problem::BOITES_MAX, class: "area" %>
+        </div>
+      </div>
+      <span class="m-champ-aide">
+        C'est l'ÉLÈVE qui ajoute et retire les boîtes : combien de parts faire est
+        souvent LA question. Laissez 0 pour qu'il parte d'un plateau nu.
+      </span>
     </div>
   </div>
 
@@ -147,11 +200,12 @@
         <%= hidden_field_tag "probleme[reglages][compteur]", "0" %>
         <%= check_box_tag "probleme[reglages][compteur]", "1", probleme.compteur?,
                           class: "form-check-input", id: "compteur_de_l_outil" %>
-        <%= label_tag "compteur_de_l_outil", "Montrer les comptes à l'élève", class: "form-check-label" %>
+        <%= label_tag "compteur_de_l_outil", "Montrer le compte à l'élève", class: "form-check-label" %>
       </div>
       <span class="m-champ-aide">
-        Décoché, l'élève manipule sans voir aucun nombre — c'est souvent ce qu'on veut,
-        puisque le compte donne parfois la réponse.
+        Le total des jetons, le nombre du plateau, l'heure de l'horloge, ce qu'il y a
+        dans chaque boîte. Décoché, l'élève manipule sans voir aucun nombre — c'est
+        souvent ce qu'on veut, puisque le compte donne parfois la réponse.
       </span>
     </div>
 
