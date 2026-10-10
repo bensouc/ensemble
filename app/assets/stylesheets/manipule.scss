@@ -375,6 +375,21 @@ form.button_to { display: inline-block; margin: 0; }
   align-items: flex-start;
 }
 
+// La pioche et la case qui échange sur la même ligne : les deux endroits où
+// l'élève va chercher quelque chose. La zone où il pose reste entière dessous.
+.m-plateau-haut {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: stretch;
+}
+
+@media (max-width: 40rem) {
+  .m-plateau-haut {
+    grid-template-columns: 1fr;
+  }
+}
+
 // Le bloc où l'on pioche : une dizaine, une unité, et c'est tout. Il ne
 // s'épuise pas — compter un stock que personne ne regarde n'apprend rien.
 .m-pioche {
@@ -384,11 +399,13 @@ form.button_to { display: inline-block; margin: 0; }
   padding: 0.6rem 0.7rem 0.8rem;
 }
 
+// Une ligne par sorte : les dizaines, puis les unités. Côte à côte, le cube
+// avait l'air d'un bouton de la barre plutôt que d'une pièce à lui.
 .m-pioche-choix {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
 }
 
 // Une seule zone de manipulation : deux colonnes imposeraient un rangement que
