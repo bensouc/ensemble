@@ -39,18 +39,30 @@
         zéro ou trois. La contrainte est portée par le formulaire lui-même. %>
     <div class="m-champ" data-m-si-choix>
       <label class="form-label">Les trois réponses</label>
+      <%# La consigne AVANT les champs : placée dessous, elle se lisait en
+          dernier, et trois ronds muets à gauche de trois cases ne disent pas
+          d'eux-mêmes qu'il faut désigner la bonne. %>
+      <span class="m-champ-aide d-block mb-2">
+        Écrivez les trois, puis <strong>cochez celle qui est juste</strong> — les deux autres
+        sont les pièges.
+      </span>
+      <p class="m-colonne-juste">Laquelle est juste ?</p>
       <% f.object.choices.each_with_index do |choix, rang| %>
         <%= f.fields_for :choices, choix, child_index: rang do |c| %>
-          <div class="m-case">
-            <%= radio_button_tag "probleme[bonne_reponse]", rang, choix.correct?,
-                                 "aria-label": "La bonne réponse est la #{rang + 1}" %>
+          <div class="m-case m-case-reponse">
+            <%# Le rond porte son mot : « juste ». Sans lui, rien à l'écran ne
+                dit ce qu'on désigne en le cochant. %>
+            <label class="m-juste">
+              <%= radio_button_tag "probleme[bonne_reponse]", rang, choix.correct?,
+                                   "aria-label": "La réponse #{rang + 1} est la bonne" %>
+              <span>juste</span>
+            </label>
             <%= c.hidden_field :id %>
             <%= c.hidden_field :position, value: rang + 1 %>
             <%= c.text_field :label, class: "area", placeholder: "Réponse #{rang + 1}" %>
           </div>
         <% end %>
       <% end %>
-      <span class="m-champ-aide">Cochez celle qui est juste. Les deux autres sont les pièges.</span>
     </div>
 
     <div class="row g-2 m-champ" data-m-si-saisie>
