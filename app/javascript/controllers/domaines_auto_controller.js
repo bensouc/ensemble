@@ -15,9 +15,6 @@ export default class extends Controller {
     event.preventDefault()
     this.domainesTarget.hidden = false
     this.domainesTarget.disabled = false
-    // Le libellé raccourcit : sans largeur figée, la modale se resserrerait.
-    const bouton = event.currentTarget
-    bouton.style.minWidth = `${bouton.offsetWidth}px`
-    bouton.textContent = "Générer le plan"
+    event.currentTarget.textContent = "Générer le plan"
   }
 }

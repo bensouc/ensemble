@@ -3,24 +3,21 @@
 		<%# Un seul formulaire, deux boutons : `formaction` envoie l'un vers la création
 		    d'un plan vierge, l'autre vers la génération automatique. Le nom et la
 		    période saisis servent dans les deux cas.
-		    `turbo: false` : les deux chemins répondent par une redirection vers le plan
-		    créé, qui doit charger la page entière et non le contenu de cette frame.
+		    Le plan créé s'ouvre dans un nouvel onglet, comme depuis la fiche d'un élève
+		    ou les résultats de sa classe : la liste reste en place, et la modale se
+		    masque à l'envoi. `turbo: false` : Turbo ne sait pas viser un autre onglet.
 		    `authenticity_token` : le jeton de session, valable partout. Celui que Rails
 		    pose d'office ne vaut que pour l'`action` du formulaire, et `formaction`
-		    envoie le second bouton ailleurs : la génération auto serait refusée.
-		    Le rouage tourne dans le bouton choisi le temps que le serveur crée le
-		    plan — quelques secondes pour la génération auto. Des `button` et non des
-		    `input` : un `input` ne peut rien contenir, pas même un rouage. %>
+		    envoie le second bouton ailleurs : la génération auto serait refusée. %>
 		<%= simple_form_for @work_plan,
 		                    url: work_plans_path,
 		                    method: :post,
 		                    authenticity_token: form_authenticity_token,
-		                    html: { novalidate: false, class: "wp-edit-form",
-		                            data: { turbo: false, controller: "loadingspinnermgnt domaines-auto",
-		                                    action: "submit->loadingspinnermgnt#tournerPendantEnvoi " \
-		                                            "pageshow@window->loadingspinnermgnt#reinitialiserAuRetour" } } do |f| %>
+		                    html: { novalidate: false, class: "wp-edit-form", target: "_blank",
+		                            data: { turbo: false, controller: "domaines-auto",
+		                                    action: "submit->modals#emptyModal" } } do |f| %>
 			<div class="modal-ensemble-dialog">
-				<div class="modal-ensemble-content">
+				<div class="modal-ensemble-content modal-domaines">
 					<div class="modal-ensemble-header">
 						<h5 class="modal-title">
 							Nouveau plan de travail pour <%= @student.first_name.capitalize %>
@@ -50,19 +47,21 @@
 						          data-domaines-auto-target="domaines">
 							<legend>Domaines à générer</legend>
 							<%= hidden_field_tag "student[domains][]", "", id: nil %>
-							<% @domains.each do |domain| %>
-								<span class="tag-item">
-									<%= check_box_tag "student[domains][]", domain.id, @checked_domains.include?(domain),
-									                  id: "wp_new_domain_#{domain.id}", class: "tag-selector" %>
-									<%= label_tag "wp_new_domain_#{domain.id}", domain.name %>
-								</span>
-							<% end %>
+							<div class="domain-choice">
+								<% @domains.each do |domain| %>
+									<span class="tag-item">
+										<%= check_box_tag "student[domains][]", domain.id, @checked_domains.include?(domain),
+										                  id: "wp_new_domain_#{domain.id}", class: "tag-selector" %>
+										<%= label_tag "wp_new_domain_#{domain.id}", domain.name %>
+									</span>
+								<% end %>
+							</div>
 						</fieldset>
 					</div>
 					<div class="modal-ensemble-footer wp-new-actions">
 						<p class="wp-new-hint">
-							<em>Un plan auto-généré reprend les ceintures et résultats de
-								<%= @student.first_name.capitalize %>.</em>
+							<em>Le plan s'ouvrira dans un nouvel onglet. Un plan auto-généré
+								reprend les ceintures et résultats de <%= @student.first_name.capitalize %>.</em>
 						</p>
 						<div class="d-flex">
 							<%= f.button :button, "Plan vierge", class: "utility-wp-btn" %>

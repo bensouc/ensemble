@@ -83,6 +83,25 @@ RSpec.describe "Domaines hors génération automatique", type: :request do
       expect(fieldset.key?("hidden") && fieldset.key?("disabled")).to be(true)
     end
 
+    # Les deux ouvrent le plan dans un nouvel onglet et se masquent à l'envoi :
+    # la modale de la fiche élève restait ouverte derrière.
+    it "ouvrent le plan dans un nouvel onglet et se referment à l'envoi" do
+      [student_auto_gen_modal_path(eleve), student_new_work_plan_modal_path(eleve)].each do |modale|
+        get modale
+
+        form = Nokogiri::HTML(response.body).css("form").first
+        expect(form["target"]).to eq("_blank")
+        expect(form["data-action"]).to include("submit->modals#emptyModal")
+      end
+    end
+
+    it "passent par la modale commune depuis la fiche de l'élève" do
+      get student_path(eleve)
+
+      expect(response.body).to include(student_auto_gen_modal_path(eleve))
+      expect(response.body).not_to include("staticBackdrop")
+    end
+
     it "laissent un collègue de l'école générer sur ce domaine" do
       collegue = create(:user, school:, admin: false)
       classroom.update!(user: collegue)
