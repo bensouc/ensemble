@@ -43,6 +43,14 @@ RSpec.describe "Gabarits de mail" do
     end
   end
 
+  # Brevo ne signe que app-ensemble.fr. Les résultats d'une classe partaient
+  # vers l'enseignant au nom de bensoucdev@gmail.com, que rien n'authentifiait.
+  it "partent tous de l'adresse du domaine de l'application" do
+    tous_les_mails.each do |nom, mail|
+      expect(mail.from).to eq(["ne_pas_repondre@app-ensemble.fr"]), "#{nom} : #{mail.from.inspect}"
+    end
+  end
+
   # Les gabarits portaient leur propre <html><body>, imbriqué dans celui du
   # gabarit partagé.
   it "ne redoublent pas la structure du document" do

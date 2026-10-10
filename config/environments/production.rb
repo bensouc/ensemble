@@ -2,17 +2,25 @@ require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
-config.action_mailer.delivery_method = :smtp
-config.action_mailer.default_url_options = { host: "https://www.app-ensemble.fr" }
-  # SMTP settings for gmail
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.default_url_options = { host: "https://www.app-ensemble.fr" }
+
+  # Le courrier part par le relais SMTP de Brevo, au nom de app-ensemble.fr signé
+  # DKIM. Il partait par une boîte Gmail en se présentant comme
+  # ne_pas_repondre@app-ensemble.fr, alors que le SPF du domaine n'autorise que
+  # Gandi : un message que rien n'authentifie, d'où les indésirables.
+  #
+  # L'identifiant est celui du relais (…@smtp-brevo.com), le mot de passe une clé
+  # SMTP — jamais le mot de passe du compte. Même compte Brevo que Wishes.
   config.action_mailer.smtp_settings = {
-    address: "smtp.gmail.com",
+    address: "smtp-relay.brevo.com",
     port: 587,
-    user_name: ENV["GANDI_MAIL_NAME"],
-    password: ENV["GANDI_MAIL_PSWORD"],
-    authentication: "plain",
-    enable_starttls_auto: true,
+    user_name: ENV["BREVO_SMTP_LOGIN"],
+    password: ENV["BREVO_SMTP_KEY"],
+    authentication: :plain,
+    enable_starttls_auto: true
   }
+
   # Code is not reloaded between requests.
   config.cache_classes = true
 

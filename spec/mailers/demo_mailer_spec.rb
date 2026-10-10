@@ -21,8 +21,8 @@ RSpec.describe DemoMailer do
     expect(mail.subject).to eq("Bienvenue sur Ensemble — votre compte de démonstration est ouvert")
   end
 
-  # `ApplicationMailer` poste depuis `bensoucdev@gmail.com` : l'adresse des
-  # notifications internes, pas celle sous laquelle se présenter à un client.
+  # Le seul expéditeur que Brevo signe : un message au nom d'un autre domaine
+  # n'est authentifié par rien.
   it "part du domaine de l'application" do
     expect(mail.from).to eq(["ne_pas_repondre@app-ensemble.fr"])
     expect(mail[:from].to_s).to include("Ensemble")
