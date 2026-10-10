@@ -403,13 +403,37 @@ form.button_to { display: inline-block; margin: 0; }
   gap: 0.35rem;
 }
 
-.m-corbeille {
-  border: 2px dashed var(--m-trait);
-  border-radius: 0.9rem;
-  padding: 0.5rem;
-  text-align: center;
+// Une pièce et son « − » côte à côte : on en prend, on en enlève. Se comprend
+// sans explication, là où une corbeille demandait de choisir une pièce PUIS de
+// viser un coin de l'écran.
+.m-pioche-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.m-pas {
+  width: 2.2rem;
+  height: 2.2rem;
+  border: 2px solid var(--m-trait);
+  border-radius: 0.5rem;
+  background: var(--m-carte);
+  color: var(--m-encre);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--m-rose);
+    color: var(--m-rose);
+  }
+}
+
+// Le détail sous le total : trois dizaines et cinq unités font trente-cinq.
+.m-plateau-detail {
+  margin: 0.2rem 0 0;
+  font-size: 1rem;
   color: var(--m-encre-douce);
-  font-size: 0.95rem;
 }
 
 // Le total, lu en permanence : c'est pour s'y retrouver que l'élève manipule.

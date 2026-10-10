@@ -382,8 +382,20 @@ function placeLibre(plateau, sorte) {
 // Le total, lu en permanence : sans lui l'élève manipule sans savoir où il en
 // est, et c'est pour s'y retrouver qu'il manipule.
 function rafraichirLePlateau(plateau) {
+  const dizaines = combien(plateau, "barre")
+  const unites = combien(plateau, "unite")
+
   const total = plateau.querySelector("[data-m-total]")
-  if (total) total.textContent = (combien(plateau, "barre") * 10) + combien(plateau, "unite")
+  if (total) total.textContent = (dizaines * 10) + unites
+
+  // Le détail dit la position sans imposer de colonnes.
+  const detail = plateau.querySelector("[data-m-detail]")
+  if (detail) {
+    const morceaux = []
+    if (dizaines) morceaux.push(`${dizaines} ${dizaines > 1 ? "dizaines" : "dizaine"}`)
+    if (unites) morceaux.push(`${unites} ${unites > 1 ? "unités" : "unité"}`)
+    detail.textContent = morceaux.join(" et ")
+  }
 
   const bouton = plateau.querySelector("[data-m-echanger]")
   // Le bouton n'apparaît que quand les dix unités sont là : l'élève VOIT le
@@ -432,6 +444,21 @@ function brancherLesPlateaux() {
       bouton.addEventListener("click", () => poserUnePiece(plateau, bouton.dataset.mPiocher))
     })
 
+    // Enlever : la dernière pièce de cette sorte s'en va. Un « − » en face du
+    // « + » se comprend sans explication, là où une corbeille demandait de
+    // choisir une pièce PUIS de viser un coin de l'écran.
+    plateau.querySelectorAll("[data-m-retirer]").forEach((bouton) => {
+      bouton.addEventListener("click", () => {
+        const sorte = bouton.dataset.mRetirer
+        const pieces = tasDeTravail(plateau)?.querySelectorAll(`[data-m-piece="${sorte}"]`)
+        if (!pieces || pieces.length === 0) return
+
+        oublierLeChoix()
+        pieces[pieces.length - 1].remove()
+        rafraichirLePlateau(plateau)
+      })
+    })
+
     plateau.querySelector("[data-m-echanger]")?.addEventListener("click", () => {
       const tas = tasDeTravail(plateau)
       if (!tas || combien(plateau, "unite") < 10) return
@@ -441,12 +468,7 @@ function brancherLesPlateaux() {
       poserUnePiece(plateau, "barre")
     })
 
-    plateau.addEventListener("m:change", () => {
-      // La corbeille ne garde rien : ce qu'on y dépose disparaît. C'est le
-      // seul moyen de se corriger sans tout recommencer.
-      plateau.querySelectorAll('[data-m-zone="corbeille"] [data-m-piece]').forEach((p) => p.remove())
-      rafraichirLePlateau(plateau)
-    })
+    plateau.addEventListener("m:change", () => rafraichirLePlateau(plateau))
     rafraichirLePlateau(plateau)
   })
 }

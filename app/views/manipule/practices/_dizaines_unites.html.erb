@@ -1,8 +1,9 @@
 <%# Les dizaines et les unités.
 
-    Deux zones, et pas une de plus : un bloc où l'élève PIOCHE, une zone où il
-    MANIPULE. La pioche ne s'épuise pas — elle fabrique une pièce à chaque
-    appui —, ce qui évite de compter un stock que personne ne regarde.
+    Une SEULE zone, où dizaines et unités vivent ensemble — pas deux colonnes :
+    l'élève range comme il veut, et l'énoncé ne parle jamais de colonnes. Au-
+    dessus, un bloc où il prend et où il enlève. La pioche ne s'épuise pas :
+    compter un stock que personne ne regarde n'apprend rien.
 
     Deux gestes lui appartiennent, et aucun n'est automatique :
 
@@ -23,10 +24,18 @@
   <div class="m-pioche">
     <p class="m-zone-titre">Je prends</p>
     <div class="m-pioche-choix">
-      <button type="button" class="m-barre" data-m-piocher="barre"
-              aria-label="Prendre une dizaine"></button>
-      <button type="button" class="m-unite" data-m-piocher="unite"
-              aria-label="Prendre une unité"></button>
+      <span class="m-pioche-item">
+        <button type="button" class="m-barre" data-m-piocher="barre"
+                aria-label="Ajouter une dizaine"></button>
+        <button type="button" class="m-pas" data-m-retirer="barre"
+                aria-label="Enlever une dizaine">−</button>
+      </span>
+      <span class="m-pioche-item">
+        <button type="button" class="m-unite" data-m-piocher="unite"
+                aria-label="Ajouter une unité"></button>
+        <button type="button" class="m-pas" data-m-retirer="unite"
+                aria-label="Enlever une unité">−</button>
+      </span>
     </div>
   </div>
 
@@ -38,6 +47,9 @@
       Ce que je prépare
       <span class="m-zone-compte">En tout <span data-m-total>0</span></span>
     </p>
+    <%# Le détail dit la POSITION sans imposer de colonnes : l'élève lit que
+        trois dizaines et cinq unités font trente-cinq. %>
+    <p class="m-plateau-detail" data-m-detail></p>
     <div class="m-tas m-travail-tas" data-m-tas>
       <% probleme.plateau_dizaines.times do %>
         <button type="button" class="m-barre" data-m-piece="barre"
@@ -53,11 +65,5 @@
     </button>
   </div>
 
-  <p class="m-outil-aide">
-    Touche une dizaine pour l'ouvrir en dix unités. Touche une pièce puis la corbeille pour l'enlever.
-  </p>
-
-  <div class="m-corbeille" data-m-zone="corbeille" data-m-accepte="tout">
-    <span>Enlever</span>
-  </div>
+  <p class="m-outil-aide">Touche une dizaine pour l'ouvrir en dix unités.</p>
 </div>
