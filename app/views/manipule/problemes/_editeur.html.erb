@@ -4,7 +4,12 @@
              retour: { libelle: competence.name, chemin: manipule_banque_competence_path(competence) },
              note: "Le formulaire à gauche, ce que l'élève verra à droite." %>
 
-  <div class="m-editeur">
+  <%# Un contrôleur Stimulus, et non plus une balise <script> sur cette seule
+      page : un module ES ne s'exécute qu'une fois par adresse, et Turbo ne le
+      rejoue ni à la visite suivante ni au rendu 422 d'une validation refusée.
+      `connect()` ne connaît pas ces cas particuliers. %>
+  <div class="m-editeur" data-controller="manipule-editeur"
+       data-action="input->manipule-editeur#saisie change->manipule-editeur#changement">
     <div>
       <%= render "manipule/problemes/formulaire",
                  probleme:, competence:, url:, methode:, bouton: %>
@@ -23,13 +28,14 @@
             rétrécir jusqu'à ce qu'il y tienne serait le dessiner pour le
             mauvais écran. D'où ce bouton — l'aperçu prend toute la largeur, et
             on voit ce que l'élève voit, à sa taille. %>
-        <button type="button" class="m-agrandir" data-m-agrandir
+        <button type="button" class="m-agrandir"
+                data-manipule-editeur-target="agrandir"
+                data-action="manipule-editeur#agrandir"
                 aria-label="Agrandir l'aperçu">Agrandir</button>
       </p>
-      <iframe class="m-apercu-cadre" data-m-apercu title="Aperçu de l'écran de l'élève"></iframe>
+      <iframe class="m-apercu-cadre" data-manipule-editeur-target="apercu"
+              title="Aperçu de l'écran de l'élève"></iframe>
       <span class="m-champ-aide">Il se met à jour pendant que vous écrivez. Rien n'y est enregistré.</span>
     </div>
   </div>
 </div>
-
-<%= javascript_include_tag "manipule_editeur", type: "module", defer: true %>

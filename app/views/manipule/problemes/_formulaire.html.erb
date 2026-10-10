@@ -11,6 +11,7 @@
                     wrapper_mappings: { radio_buttons: :manipule_collection },
                     html: { method: methode, novalidate: false,
                             data: { "m-editeur": true,
+                                    "manipule-editeur-target": "formulaire",
                                     apercu: manipule_apercu_probleme_path(competence) } } do |f| %>
   <% if probleme.errors.any? %>
     <div class="m-fiche m-fiche-erreur mb-3">
