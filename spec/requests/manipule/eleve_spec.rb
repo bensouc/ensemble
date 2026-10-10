@@ -22,6 +22,63 @@ RSpec.describe "Manipule, côté élève" do
     post manipule_entrer_path(token: jeton.token), params: { student_id: eleve.id }
   end
 
+  # Une enseignante qui ouvre le lien de sa classe sur SA machine en est
+  # déconnectée — c'est voulu — et tant que le marqueur vivait, chaque adresse
+  # d'Ensemble la renvoyait à la séance. Elle était enfermée dans le jeu, et
+  # c'est arrivé en vrai.
+  describe "la porte de l'adulte" do
+    it "est proposée sur l'écran du choix du prénom" do
+      get manipule_classe_path(token: jeton.token)
+
+      expect(response.body).to include("Espace professeur.e")
+    end
+
+    it "n'est proposée sur AUCUN écran où l'enfant travaille" do
+      banque
+      designer!
+      entrer!
+
+      get manipule_serie_path
+
+      expect(response.body).not_to include("Espace professeur.e")
+    end
+
+    it "efface la session de l'élève et mène à la connexion d'Ensemble" do
+      banque
+      designer!
+      entrer!
+
+      delete manipule_quitter_path(vers: "ensemble")
+
+      expect(response).to redirect_to(new_user_session_path)
+      expect(cookies[Manipule::EleveController::COOKIE_MARQUEUR]).to be_blank
+    end
+
+    # Sans marqueur, le garde d'ApplicationController redevient inerte : c'est
+    # lui qui la renvoyait à la séance.
+    it "rend à Ensemble ses adresses" do
+      banque
+      designer!
+      entrer!
+      delete manipule_quitter_path(vers: "ensemble")
+
+      get manipule_root_path
+
+      expect(response).not_to redirect_to(manipule_serie_path)
+    end
+
+    # La sortie de l'enfant ne bouge pas : il ne quitte jamais /manipule.
+    it "laisse la sortie de l'enfant ramener à la liste des prénoms" do
+      banque
+      designer!
+      entrer!
+
+      delete manipule_quitter_path
+
+      expect(response).to redirect_to(manipule_classe_path(token: jeton.token))
+    end
+  end
+
   describe "l'entrée par l'adresse de la classe" do
     it "affiche les prénoms de la classe" do
       get manipule_classe_path(token: jeton.token)

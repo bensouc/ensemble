@@ -107,6 +107,27 @@ RSpec.describe "Manipule, le suivi d'une classe" do
 
   # Les totaux de la classe disent qu'un enfant a raté quatre problèmes ; ils
   # ne disent pas lesquels, ni ce qu'il a répondu à la place.
+  # `classrooms.name` n'est pas obligatoire — le modèle ne valide que le niveau
+  # — et une classe de production n'en avait pas. Le titre de l'écran
+  # disparaissait, l'en-tête tombait de 102 à 51 px, et le lien de retour de la
+  # fiche d'un élève se réduisait à une flèche nue.
+  describe "une classe sans nom" do
+    let(:anonyme) { create(:classroom, user: enseignante, grade: niveau, name: "") }
+    let!(:son_eleve) { create(:student, classroom: anonyme, first_name: "Noé") }
+
+    it "garde un titre sur la page de la classe" do
+      get manipule_suivi_classe_path(anonyme)
+
+      expect(response.body).to include("Classe sans nom")
+    end
+
+    it "garde un libellé sur le lien de retour de la fiche d'un élève" do
+      get manipule_suivi_eleve_path(son_eleve)
+
+      expect(response.body).to include("← Classe sans nom")
+    end
+  end
+
   describe "le détail d'un élève" do
     let!(:problemes) { create_list(:manipule_problem, 3, skill: competence) }
 

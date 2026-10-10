@@ -160,6 +160,22 @@ function oublierLaMarque() {
   document.querySelectorAll("[data-m-branche]").forEach((e) => delete e.dataset.mBranche)
 }
 
+// Ce fichier est un MODULE, inclus dans la page de l'éditeur. Un module ne
+// s'exécute qu'une fois par adresse : Turbo réinsère bien la balise à chaque
+// visite, le navigateur ne la rejoue pas. Et la première fois qu'on arrive ici
+// par une visite Turbo, le module s'exécute APRÈS que `turbo:load` a été émis
+// — aucun des deux écouteurs ci-dessous ne se déclenchera pour cette page-là,
+// et l'aperçu reste blanc.
+//
+// En production, cela touchait la PREMIÈRE manipulation écrite après chaque
+// connexion, et elle seule : une fois le module exécuté, son écouteur
+// `turbo:load` survit et toutes les visites suivantes se branchent. Un défaut
+// qui disparaît dès qu'on l'essaie une deuxième fois.
+//
+// D'où ce branchement immédiat. La marque `data-m-branche` le rend sans effet
+// si l'un des événements a déjà fait le travail.
+brancherEditeur()
+
 document.addEventListener("DOMContentLoaded", brancherEditeur)
 document.addEventListener("turbo:load", brancherEditeur)
 document.addEventListener("turbo:before-cache", oublierLaMarque)

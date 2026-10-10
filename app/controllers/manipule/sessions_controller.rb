@@ -21,9 +21,20 @@ module Manipule
       redirect_to manipule_serie_path
     end
 
+    # Deux sorties, une seule mécanique : on efface d'abord la session de
+    # l'élève, toujours.
+    #
+    # Celle de l'enfant ramène à la liste des prénoms — il ne quitte jamais
+    # /manipule. Celle de l'adulte (`vers=ensemble`) mène à la connexion
+    # d'Ensemble : une enseignante qui ouvre le lien de sa classe sur SA
+    # machine en est déconnectée — c'est voulu, une session est la sienne ou
+    # celle d'un élève — et tant que le marqueur vivait, chaque adresse
+    # d'Ensemble la renvoyait à la séance. Elle était enfermée dans le jeu.
     def destroy
       classe = eleve_courant&.classroom
       fermer_session_eleve
+      return redirect_to(new_user_session_path) if params[:vers] == "ensemble"
+
       jeton = classe && ClassroomToken.find_by(classroom: classe)
       redirect_to jeton ? manipule_classe_path(token: jeton.token) : root_path
     end

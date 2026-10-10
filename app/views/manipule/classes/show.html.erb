@@ -1,6 +1,6 @@
 <div class="px-4 py-4 m-prof">
   <%= render "manipule/shared/nav" %>
-  <%= render "manipule/shared/entete", titre: @classe.name,
+  <%= render "manipule/shared/entete", titre: nom_de_classe(@classe),
              retour: { libelle: "Mes classes", chemin: manipule_suivi_path },
              note: au_pluriel(@eleves.size, "élève") %>
 

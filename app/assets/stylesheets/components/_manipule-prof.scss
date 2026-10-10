@@ -147,7 +147,12 @@
     font-size: 14px;
   }
 
+  // Les trois lignes réservent leur hauteur, le titre COMPRIS. Il ne l'avait
+  // pas : en développement toutes les pages portaient un titre, et une classe
+  // sans nom en production a fait tomber l'en-tête de 102 à 51 px — très
+  // exactement le saut d'écran que ce partiel existe pour empêcher.
   .m-entete-titre {
+    min-height: 3rem;
     margin: 0 0 0.35rem;
   }
 

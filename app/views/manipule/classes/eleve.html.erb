@@ -1,7 +1,7 @@
 <div class="px-4 py-4 m-prof">
   <%= render "manipule/shared/nav" %>
   <%= render "manipule/shared/entete", titre: @eleve.first_name,
-             retour: { libelle: @eleve.classroom.name, chemin: manipule_suivi_classe_path(@eleve.classroom) },
+             retour: { libelle: nom_de_classe(@eleve.classroom), chemin: manipule_suivi_classe_path(@eleve.classroom) },
              note: "Ce qu'il a répondu, séance par séance." %>
 
   <% if @series.empty? %>
