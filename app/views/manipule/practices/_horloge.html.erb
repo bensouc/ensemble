@@ -1,0 +1,86 @@
+<%# L'horloge. Un outil de MANIPULATION, pas de lecture : l'élève attrape une
+    aiguille et la fait tourner. C'est ce que Benoît a tranché — « l'élève
+    manipule, donc c'est vraiment un outil de manipulation ».
+
+    Les deux aiguilles s'attrapent, et elles s'entraînent comme sur une vraie
+    horloge : passer de 55 à 0 avance la petite aiguille d'une heure. Une
+    horloge où les minutes tourneraient sans emporter les heures enseignerait
+    quelque chose de faux.
+
+    L'heure en chiffres s'affiche ou se tait, comme les totaux des autres
+    outils : « quelle heure est-il ? » n'est plus une question si l'écran y
+    répond.
+
+    Tracé en SVG, sans aucune image : une salle de classe n'a pas toujours
+    internet, et le cadran doit se redessiner net sur un tableau comme sur un
+    iPad. %>
+<%
+  centre = 100
+  point = lambda do |angle, rayon|
+    radians = angle * Math::PI / 180
+    [centre + (rayon * Math.sin(radians)), centre - (rayon * Math.cos(radians))]
+  end
+  minutes = probleme.horloge_minutes
+%>
+<div class="m-outil m-horloge" data-m-horloge
+     data-m-minutes="<%= minutes %>"
+     data-m-pas="<%= probleme.horloge_pas %>">
+
+  <div class="m-horloge-boite">
+    <svg class="m-cadran" viewBox="0 0 200 200" data-m-cadran
+         role="group" aria-label="Horloge à régler">
+      <circle class="m-cadran-fond" cx="100" cy="100" r="84" />
+
+      <%# Soixante traits : les cinq minutes sont longues, les autres courtes.
+          C'est ce qui permet de COMPTER les minutes une à une, le geste par
+          lequel on apprend à lire une horloge avant de savoir la lire. %>
+      <% 60.times do |rang| %>
+        <% heure = (rang % 5).zero? %>
+        <% debut = point.call(rang * 6, heure ? 70 : 75) %>
+        <% fin = point.call(rang * 6, 80) %>
+        <line class="<%= heure ? "m-tic-heure" : "m-tic" %>"
+              x1="<%= debut[0].round(2) %>" y1="<%= debut[1].round(2) %>"
+              x2="<%= fin[0].round(2) %>" y2="<%= fin[1].round(2) %>" />
+      <% end %>
+
+      <%# Les heures en grand, les minutes en petit autour : c'est l'horloge
+          d'apprentissage des classes, et l'élève la reconnaît. %>
+      <% (1..12).each do |heure| %>
+        <% ou = point.call(heure * 30, 56) %>
+        <text class="m-cadran-heure" x="<%= ou[0].round(2) %>" y="<%= ou[1].round(2) %>"><%= heure %></text>
+      <% end %>
+      <% (1..12).each do |cinq| %>
+        <% ou = point.call(cinq * 30, 93) %>
+        <text class="m-cadran-minute" x="<%= ou[0].round(2) %>" y="<%= ou[1].round(2) %>"><%= (cinq * 5) % 60 %></text>
+      <% end %>
+
+      <%# Chaque aiguille porte un trait épais TRANSPARENT par-dessus le trait
+          visible : une aiguille de cinq pixels de large ne s'attrape pas avec
+          un doigt de six ans. C'est la zone de prise, pas le dessin. %>
+      <g class="m-aiguille" data-m-aiguille="heure" tabindex="0" role="slider"
+         aria-label="La petite aiguille, les heures"
+         transform="rotate(<%= (minutes % 720) / 2.0 %>, 100, 100)">
+        <line class="m-aiguille-prise" x1="100" y1="100" x2="100" y2="58" />
+        <line class="m-aiguille-heure" x1="100" y1="110" x2="100" y2="58" />
+      </g>
+      <g class="m-aiguille" data-m-aiguille="minute" tabindex="0" role="slider"
+         aria-label="La grande aiguille, les minutes"
+         transform="rotate(<%= (minutes % 60) * 6 %>, 100, 100)">
+        <line class="m-aiguille-prise" x1="100" y1="100" x2="100" y2="30" />
+        <line class="m-aiguille-minute" x1="100" y1="112" x2="100" y2="30" />
+      </g>
+
+      <circle class="m-cadran-axe" cx="100" cy="100" r="6" />
+    </svg>
+  </div>
+
+  <div class="m-horloge-cote">
+    <% if probleme.compteur? %>
+      <p class="m-horloge-lecture">Il est <span data-m-heure></span></p>
+    <% end %>
+    <p class="m-outil-aide">
+      Attrape une aiguille et fais-la tourner. La petite dit les heures,
+      la grande dit les minutes.
+    </p>
+  </div>
+</div>

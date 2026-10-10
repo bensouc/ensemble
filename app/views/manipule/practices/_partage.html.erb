@@ -1,0 +1,64 @@
+<%# Le partage en boîtes. L'élève glisse les objets d'une réserve vers des
+    boîtes — et c'est LUI qui ajoute et retire les boîtes.
+
+    C'est ce qui distingue cet outil des jetons, dont l'enseignante nomme les
+    cases d'après l'énoncé. Ici, « combien de paquets peux-tu faire ? » est
+    souvent LA question : lui donner le bon nombre de boîtes au départ, ce
+    serait répondre à sa place.
+
+    Retirer une boîte ne perd jamais rien : ce qu'elle contenait retourne à la
+    réserve. Même règle que la case qui échange du plateau — un outil qui fait
+    disparaître des objets enseigne le contraire de ce qu'on veut.
+
+    Des <button type="button"> : on est dans le formulaire des réponses, et un
+    bouton sans type y vaudrait envoi. %>
+<div class="m-outil m-partage" data-m-partage
+     data-m-max-boites="<%= Manipule::Problem::BOITES_MAX %>">
+
+  <div class="m-zone m-zone-reserve" data-m-zone="reserve">
+    <p class="m-zone-titre">À partager<% if probleme.compteur? %>
+      <span class="m-zone-compte" data-m-compte><%= probleme.partage_objets %></span><% end %></p>
+    <div class="m-tas" data-m-tas>
+      <% probleme.partage_objets.times do |rang| %>
+        <button type="button" class="m-jeton" data-m-jeton
+                aria-label="<%= probleme.tool_data["ressource"].to_s.capitalize.presence || "Objet" %> <%= rang + 1 %>"><%= probleme.jeton_caractere %></button>
+      <% end %>
+    </div>
+  </div>
+
+  <%# Le modèle d'une boîte, pour celles que l'élève ajoutera. Il vit ici et
+      non dans le JavaScript : c'est le gabarit qui sait si le compte doit
+      s'afficher, et un modèle recopié dans du code finirait par diverger. %>
+  <template data-m-modele-boite>
+    <div class="m-zone m-boite" data-m-zone="boite">
+      <p class="m-zone-titre"><span data-m-nom>Boîte</span><% if probleme.compteur? %>
+        <span class="m-zone-compte" data-m-compte>0</span><% end %></p>
+      <div class="m-tas" data-m-tas></div>
+    </div>
+  </template>
+
+  <div class="m-boites" data-m-boites>
+    <% probleme.partage_boites.times do |rang| %>
+      <div class="m-zone m-boite" data-m-zone="boite">
+        <p class="m-zone-titre"><span data-m-nom>Boîte <%= rang + 1 %></span><% if probleme.compteur? %>
+          <span class="m-zone-compte" data-m-compte>0</span><% end %></p>
+        <div class="m-tas" data-m-tas></div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="m-partage-outils">
+    <button type="button" class="m-boite-pas" data-m-ajouter-boite>
+      <span aria-hidden="true">+</span> une boîte
+    </button>
+    <button type="button" class="m-boite-pas" data-m-retirer-boite>
+      <span aria-hidden="true">−</span> une boîte
+    </button>
+  </div>
+
+  <p class="m-outil-aide">
+    Fais glisser les objets dans les boîtes. Tu peux aussi en toucher un, puis
+    toucher une boîte. Ajoute ou enlève des boîtes : ce qu'il y a dedans
+    revient à sa place.
+  </p>
+</div>
