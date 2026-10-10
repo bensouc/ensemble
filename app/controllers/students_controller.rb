@@ -8,7 +8,11 @@ class StudentsController < ApplicationController
     respond_to do |format|
       format.html do
         @belt = Belt::BELT_COLORS
-        @domains = @student.domains.sort_by(&:position)
+        # `grade.domains` et non `@student.domains` : celui-ci embarque les
+        # compétences de chaque domaine (`includes(:skills)`), chargées pour rien —
+        # l'en-tête n'affiche que les noms, et la grille charge les siennes.
+        @domains = @student.grade.domains.sort_by(&:position)
+        @grille = GrilleProgression.new(@student, @domains)
       end
       format.pdf do
         data_pdf = PdfGenerator::StudentResultPdf.new(@student)
@@ -57,12 +61,11 @@ class StudentsController < ApplicationController
     authorize @student, :update?
     student_grade = @student.grade
     @special_work_plan = WorkPlan.find_or_create_by(student: @student, grade: student_grade, special_wps: true)
-    domain = Domain.find(params_add_validated_wps[:domain])
-    level = if domain.special?
-              1
-            else
-              params_add_validated_wps[:level].to_i
-            end
+    @domain = domain = Domain.find(params_add_validated_wps[:domain])
+    # Le niveau de la case cliquée, pour le rappel sous le titre ; un domaine
+    # « spécial » range toutes ses compétences au niveau 1.
+    @level = params_add_validated_wps[:level].to_i
+    level = domain.special? ? 1 : @level
     skills = domain.skills.select { |skill| skill.level == level }
     @no_validated_skills = skills.reject do |skill|
       Result.find_by(skill:, student: @student, kind: "ceinture", status: "completed")
