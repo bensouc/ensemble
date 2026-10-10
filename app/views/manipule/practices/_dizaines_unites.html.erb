@@ -1,0 +1,60 @@
+<%# Le plateau des dizaines et des unités.
+
+    Le geste que la prof a demandé en toutes lettres : « faire apparaître des
+    unités et des dizaines ». L'élève prend des unités dans la réserve, les
+    pose dans la colonne des unités — et quand il en a dix, il les ÉCHANGE
+    lui-même contre une barre. C'est lui qui fait la retenue, pas l'écran :
+    un échange automatique lui volerait précisément ce qu'il doit comprendre.
+
+    Il peut aussi casser une barre en dix unités, pour la soustraction.
+
+    Comme les jetons : des <button type="button">, puisqu'on est dans le
+    formulaire des réponses et qu'un bouton sans type y vaudrait envoi. Rien
+    n'est corrigé ici, rien n'est envoyé au serveur. %>
+<div class="m-outil m-plateau" data-m-plateau
+     data-max-dizaines="<%= Manipule::Problem::DIZAINES_MAX %>">
+  <div class="m-zone m-zone-reserve" data-m-zone="reserve" data-m-accepte="unite">
+    <p class="m-zone-titre">À prendre <span class="m-zone-compte" data-m-compte><%= probleme.plateau_reserve %></span></p>
+    <div class="m-tas" data-m-tas>
+      <% probleme.plateau_reserve.times do |rang| %>
+        <button type="button" class="m-unite" data-m-piece="unite"
+                aria-label="Unité <%= rang + 1 %>"></button>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="m-colonnes">
+    <div class="m-colonne" data-m-zone="dizaines" data-m-accepte="barre">
+      <p class="m-zone-titre">Dizaines <span class="m-zone-compte" data-m-compte><%= probleme.plateau_dizaines %></span></p>
+      <div class="m-tas m-tas-barres" data-m-tas>
+        <% probleme.plateau_dizaines.times do |rang| %>
+          <button type="button" class="m-barre" data-m-piece="barre"
+                  aria-label="Dizaine <%= rang + 1 %>, toucher pour la casser en dix unités"></button>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="m-colonne" data-m-zone="unites" data-m-accepte="unite">
+      <p class="m-zone-titre">Unités <span class="m-zone-compte" data-m-compte><%= probleme.plateau_unites %></span></p>
+      <div class="m-tas" data-m-tas>
+        <% probleme.plateau_unites.times do |rang| %>
+          <button type="button" class="m-unite" data-m-piece="unite"
+                  aria-label="Unité posée <%= rang + 1 %>"></button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <%# Le bouton n'existe que quand l'échange est possible : un bouton grisé
+      en permanence devient un meuble qu'on ne lit plus. %>
+  <div class="m-echange">
+    <button type="button" class="m-echange-bouton" data-m-echanger hidden>
+      Échanger 10 unités contre 1 dizaine
+    </button>
+  </div>
+
+  <p class="m-outil-aide">
+    Fais glisser les unités. Quand tu en as dix, tu peux les échanger contre une dizaine.
+    Touche une dizaine pour la casser.
+  </p>
+</div>

@@ -1,0 +1,10 @@
+<%# Le point de montage des outils, et le seul.
+
+    Chaque outil a son partiel — `_jetons`, `_dizaines_unites`… — et c'est ici
+    qu'on choisit. Sans ça, chaque écran qui montre une manipulation portait un
+    `if` par outil : trois écrans fois quatre outils.
+
+    L'outil aide l'élève à se représenter l'énoncé ; il ne porte JAMAIS la
+    réponse, qui reste un choix ou une saisie. Rien n'y est corrigé, rien n'y
+    est envoyé au serveur. %>
+<%= render "manipule/practices/#{probleme.tool}", probleme: probleme if probleme.outil? %>

@@ -99,6 +99,36 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
       expect(probleme.jeton_zones).to eq(["Le panier", "Sur l'arbre"])
     end
 
+    it "range les réglages du plateau des dizaines et des unités" do
+      post manipule_problemes_path(competence), params: {
+        probleme: champs.merge(tool: "dizaines_unites", reglages: { depart: "15", unites: "12" })
+      }
+
+      probleme = Manipule::Problem.last
+      expect(probleme).to be_dizaines_unites
+      expect(probleme.plateau_depart).to eq(15)
+      expect(probleme.plateau_dizaines).to eq(1)
+      expect(probleme.plateau_unites).to eq(5)
+      expect(probleme.plateau_reserve).to eq(12)
+    end
+
+    # Les champs de TOUS les outils partent avec le formulaire : masquer un
+    # bloc ne l'empêche pas d'être envoyé. Sans tri par outil, les réglages de
+    # l'un se retrouvaient dans la colonne de l'autre — deux champs portaient
+    # même le nom `reglages[reserve]`, et le mauvais gagnait.
+    it "ne retient que les réglages de l'outil choisi" do
+      post manipule_problemes_path(competence), params: {
+        probleme: champs.merge(tool: "dizaines_unites",
+                               reglages: { depart: "15", unites: "12",
+                                           ressource: "carotte", reserve: "30",
+                                           zones: ["Le panier"] })
+      }
+
+      probleme = Manipule::Problem.last
+      expect(probleme.plateau_reserve).to eq(12)
+      expect(probleme.tool_data.keys).to contain_exactly("depart", "unites")
+    end
+
     # Sans outil choisi, on ne laisse pas traîner des réglages orphelins qui
     # réapparaîtraient le jour où quelqu'un en choisit un.
     it "ne garde aucun réglage quand aucun outil n'est choisi" do

@@ -137,4 +137,32 @@ RSpec.describe Manipule::Problem do
     end
   end
 
+
+  # Le plateau des dizaines et des unités : ce que l'enseignante pose avant
+  # que l'élève n'arrive, rangé comme il l'aurait rangé lui-même.
+  describe "le plateau des dizaines et des unités" do
+    def plateau(depart:, unites: 0)
+      described_class.new(tool: "dizaines_unites", tool_data: { "depart" => depart, "unites" => unites })
+    end
+
+    it "range le départ en barres et en unités" do
+      expect(plateau(depart: 15).plateau_dizaines).to eq(1)
+      expect(plateau(depart: 15).plateau_unites).to eq(5)
+      expect(plateau(depart: 7).plateau_dizaines).to eq(0)
+      expect(plateau(depart: 40).plateau_unites).to eq(0)
+    end
+
+    # Au-delà de neuf barres on aurait une centaine, et ce n'est pas ce que
+    # l'outil enseigne. Au-delà de trente unités l'écran déborde.
+    it "borne ce qu'on peut poser et ce qu'on peut prendre" do
+      expect(plateau(depart: 999).plateau_depart).to eq(described_class::DIZAINES_MAX * 10 + 9)
+      expect(plateau(depart: -5).plateau_depart).to eq(0)
+      expect(plateau(depart: 0, unites: 99).plateau_reserve).to eq(described_class::UNITES_MAX)
+    end
+
+    it "ne se prend pas pour des jetons" do
+      expect(plateau(depart: 15)).not_to be_jetons
+      expect(plateau(depart: 15)).to be_outil
+    end
+  end
 end

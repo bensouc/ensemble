@@ -61,13 +61,14 @@
     </div>
 
     <%= f.input :tool, label: "Un outil à manipuler",
-                collection: [["Des jetons à déplacer", "jetons"]],
+                collection: [["Des jetons à déplacer", "jetons"],
+                             ["Des dizaines et des unités", "dizaines_unites"]],
                 include_blank: "Aucun",
                 input_html: { class: "area", data: { "m-outil": true } },
                 hint: "L'outil aide l'élève à se représenter l'énoncé. Il ne corrige rien : " \
                       "la réponse reste celle du dessus." %>
 
-    <div class="m-champ ps-3 border-start" data-m-si-jetons>
+    <div class="m-champ ps-3 border-start" data-m-si="jetons">
       <div class="row g-2 mb-2">
         <div class="col">
           <%= label_tag "probleme[reglages][ressource]", "Le jeton", class: "form-label" %>
@@ -103,6 +104,23 @@
         <i class="fa-solid fa-plus"></i><span>Ajouter une case</span>
       </button>
       <span class="m-champ-aide">Nommez-les d'après l'énoncé : l'élève doit lire où il pose.</span>
+    </div>
+
+    <div class="m-champ ps-3 border-start" data-m-si="dizaines_unites">
+      <div class="row g-2 mb-2">
+        <div class="col">
+          <%= label_tag "probleme[reglages][depart]", "Ce qui est déjà sur le plateau", class: "form-label" %>
+          <%= number_field_tag "probleme[reglages][depart]", probleme.tool_data["depart"] || 0,
+                               min: 0, max: Manipule::Problem::DIZAINES_MAX * 10 + 9, class: "area" %>
+          <span class="m-champ-aide">Rangé en barres et en unités, comme l'élève l'aurait fait.</span>
+        </div>
+        <div class="col">
+          <%= label_tag "probleme[reglages][unites]", "Unités à prendre", class: "form-label" %>
+          <%= number_field_tag "probleme[reglages][unites]", probleme.tool_data["unites"] || 10,
+                               min: 0, max: Manipule::Problem::UNITES_MAX, class: "area" %>
+          <span class="m-champ-aide">C'est avec elles qu'il ajoute, et qu'il découvre la retenue.</span>
+        </div>
+      </div>
     </div>
   </div>
 

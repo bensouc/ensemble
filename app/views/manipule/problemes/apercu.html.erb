@@ -9,7 +9,7 @@
 
 <p class="m-question"><%= @probleme.question.presence || "Et la question ici." %></p>
 
-<%= render "manipule/practices/jetons", probleme: @probleme if @probleme.jetons? %>
+<%= render "manipule/practices/outil", probleme: @probleme %>
 
 <% if @probleme.choix? %>
   <div class="m-choix">

@@ -18,6 +18,12 @@ module Manipule
 
     RESERVE_MAX = 30
 
+    # Le plateau des dizaines et des unités. Neuf barres : à dix, on aurait une
+    # centaine, et ce n'est pas ce que l'outil enseigne. Trente unités en
+    # réserve suffisent pour tout ce qui se joue en CP et en CE1.
+    DIZAINES_MAX = 9
+    UNITES_MAX = 30
+
     # Au-delà, l'écran de l'élève devient illisible et le geste perd son sens :
     # on ne range pas des pommes dans six endroits à la fois quand on a sept ans.
     ZONES_MAX = 6
@@ -65,8 +71,38 @@ module Manipule
     # l'élève à se représenter le problème ; il ne porte PAS la réponse, qui
     # reste un choix ou une saisie. C'est ce qui a été tranché au cadrage :
     # « le prof peut soit demander un QCM soit une valeur à entrer ».
+    def outil?
+      tool.present?
+    end
+
     def jetons?
       tool == "jetons"
+    end
+
+    def dizaines_unites?
+      tool == "dizaines_unites"
+    end
+
+    # Ce que l'enseignante pose sur le plateau avant que l'élève n'arrive :
+    # l'énoncé dit « il y a 15 billes », le plateau montre 15. Rangé en barres
+    # et en unités, comme l'élève l'aurait fait lui-même.
+    def plateau_depart
+      tool_data["depart"].to_i.clamp(0, (DIZAINES_MAX * 10) + 9)
+    end
+
+    def plateau_dizaines
+      plateau_depart / 10
+    end
+
+    def plateau_unites
+      plateau_depart % 10
+    end
+
+    # Les unités que l'élève peut encore prendre : c'est avec elles qu'il
+    # ajoute, et c'est en les échangeant dix contre une qu'il découvre la
+    # retenue.
+    def plateau_reserve
+      tool_data["unites"].to_i.clamp(0, UNITES_MAX)
     end
 
     def jeton_caractere

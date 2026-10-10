@@ -138,13 +138,29 @@ module Manipule
 
     # Les réglages de l'outil arrivent à plat et repartent dans la colonne
     # structurée. Sans outil choisi, on n'y laisse rien traîner.
+    #
+    # Chaque outil lit LES SIENS, et c'est nécessaire : les champs de tous les
+    # outils sont dans le formulaire, et masquer un bloc ne l'empêche pas
+    # d'être envoyé. Sans ce tri, les réglages d'un outil se retrouveraient
+    # dans la colonne d'un autre.
     def reglages
-      return {} if params[:probleme][:tool].blank?
-
       brut = params[:probleme].fetch(:reglages, {})
+
+      case params[:probleme][:tool]
+      when "jetons" then reglages_des_jetons(brut)
+      when "dizaines_unites" then reglages_du_plateau(brut)
+      else {}
+      end
+    end
+
+    def reglages_des_jetons(brut)
       { "ressource" => brut[:ressource].presence || "pomme",
         "reserve" => brut[:reserve].to_i,
         "zones" => Array(brut[:zones]).map { |zone| zone.to_s.strip }.reject(&:empty?) }
+    end
+
+    def reglages_du_plateau(brut)
+      { "depart" => brut[:depart].to_i, "unites" => brut[:unites].to_i }
     end
   end
 end

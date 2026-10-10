@@ -220,10 +220,14 @@ const SEUIL_GLISSE = 6 // pixels avant de considérer que c'est un glissé
 
 let jetonChoisi = null
 
+// Compte ce qui est dans le tas, sans savoir de quoi il s'agit : des jetons,
+// des unités, des barres. C'est ce qui permet à un seul moteur de servir
+// plusieurs outils.
 function compter(outil) {
   outil.querySelectorAll("[data-m-zone]").forEach((zone) => {
     const compte = zone.querySelector("[data-m-compte]")
-    if (compte) compte.textContent = zone.querySelectorAll("[data-m-jeton]").length
+    const tas = zone.querySelector("[data-m-tas]")
+    if (compte && tas) compte.textContent = tas.children.length
   })
 }
 
@@ -232,7 +236,11 @@ function deposer(jeton, zone) {
   if (!tas) return
 
   tas.appendChild(jeton)
-  compter(zone.closest("[data-m-jetons]"))
+  const outil = zone.closest("[data-m-jetons], [data-m-plateau]")
+  if (outil) {
+    compter(outil)
+    outil.dispatchEvent(new CustomEvent("m:change", { bubbles: false }))
+  }
 }
 
 function oublierLeChoix() {
@@ -245,7 +253,7 @@ function zoneSous(x, y) {
   return sous ? sous.closest("[data-m-zone]") : null
 }
 
-function brancherUnJeton(jeton, outil) {
+function brancherUnePiece(jeton, outil, accepte = () => true) {
   jeton.addEventListener("pointerdown", (e) => {
     e.preventDefault()
     const depart = { x: e.clientX, y: e.clientY }
@@ -281,7 +289,7 @@ function brancherUnJeton(jeton, outil) {
       }
 
       const cible = zoneSous(ev.clientX, ev.clientY)
-      if (cible && outil.contains(cible)) deposer(jeton, cible)
+      if (cible && outil.contains(cible) && accepte(jeton, cible)) deposer(jeton, cible)
     }
 
     document.addEventListener("pointermove", bouger)
@@ -292,24 +300,111 @@ function brancherUnJeton(jeton, outil) {
 
 function brancherLesJetons() {
   document.querySelectorAll("[data-m-jetons]").forEach((outil) => {
-    outil.querySelectorAll("[data-m-jeton]").forEach((jeton) => brancherUnJeton(jeton, outil))
+    outil.querySelectorAll("[data-m-jeton]").forEach((jeton) => brancherUnePiece(jeton, outil))
 
-    outil.querySelectorAll("[data-m-zone]").forEach((zone) => {
-      zone.addEventListener("click", (e) => {
-        // Le jeton est DANS sa case : sans ce garde, le clic qui vient de le
-        // choisir remonte jusqu'ici et le repose aussitôt, si bien qu'on ne
-        // peut jamais rien sélectionner. On choisit en touchant un jeton, on
-        // dépose en touchant la case ailleurs que sur un jeton.
-        if (e.target.closest("[data-m-jeton]")) return
-        if (!jetonChoisi) return
+    brancherLesZones(outil)
+    compter(outil)
+  })
+}
 
-        const jeton = jetonChoisi
-        oublierLeChoix()
-        deposer(jeton, zone)
-      })
+// Le repli par touches successives : on touche une pièce, puis une case. Il
+// existe pour l'enfant qui n'arrive pas à maintenir le contact en se
+// déplaçant — et il vaut pour TOUS les outils, pas seulement les jetons.
+function brancherLesZones(outil, accepte = () => true) {
+  outil.querySelectorAll("[data-m-zone]").forEach((zone) => {
+    zone.addEventListener("click", (e) => {
+      // La pièce est DANS sa case : sans ce garde, le clic qui vient de la
+      // choisir remonte jusqu'ici et la repose aussitôt, si bien qu'on ne peut
+      // jamais rien sélectionner. On choisit en touchant une pièce, on dépose
+      // en touchant la case ailleurs que sur une pièce.
+      if (e.target.closest("[data-m-jeton], [data-m-piece]")) return
+      if (!jetonChoisi || !accepte(jetonChoisi, zone)) return
+
+      const piece = jetonChoisi
+      oublierLeChoix()
+      deposer(piece, zone)
+    })
+  })
+}
+
+// ── le plateau des dizaines et des unités ──────────────────────────────
+//
+// Deux gestes que l'élève fait LUI-MÊME, et c'est tout l'enjeu : un échange
+// automatique à la dixième unité lui volerait la retenue, qui est précisément
+// ce que l'outil doit lui faire comprendre.
+
+function tasDe(plateau, nom) {
+  return plateau.querySelector(`[data-m-zone="${nom}"] [data-m-tas]`)
+}
+
+function unePiece(sorte) {
+  const piece = document.createElement("button")
+  piece.type = "button"
+  piece.className = sorte === "barre" ? "m-barre" : "m-unite"
+  piece.dataset.mPiece = sorte
+  piece.setAttribute("aria-label", sorte === "barre" ? "Dizaine, toucher pour la casser en dix unités" : "Unité")
+  return piece
+}
+
+// Le bouton n'apparaît que quand l'échange est possible : grisé en
+// permanence, il deviendrait un meuble qu'on ne lit plus.
+function reglerLEchange(plateau) {
+  const bouton = plateau.querySelector("[data-m-echanger]")
+  if (!bouton) return
+
+  const dizaines = tasDe(plateau, "dizaines")
+  const unites = tasDe(plateau, "unites")
+  const maximum = Number(plateau.dataset.maxDizaines || 9)
+  bouton.hidden = !(unites && unites.children.length >= 10 && dizaines && dizaines.children.length < maximum)
+}
+
+// Une unité n'a rien à faire dans la colonne des dizaines, et réciproquement :
+// la case dit ce qu'elle accepte.
+function accepteLaPiece(piece, zone) {
+  return zone.dataset.mAccepte === piece.dataset.mPiece
+}
+
+function brancherUnePieceDuPlateau(piece, plateau) {
+  brancherUnePiece(piece, plateau, accepteLaPiece)
+
+  // Casser une dizaine : le geste de la soustraction. Au simple appui, pas au
+  // glissé — une barre ne se dépose nulle part ailleurs.
+  if (piece.dataset.mPiece !== "barre") return
+
+  piece.addEventListener("click", () => {
+    const unites = tasDe(plateau, "unites")
+    if (!unites) return
+
+    piece.remove()
+    for (let i = 0; i < 10; i += 1) unites.appendChild(unePiece("unite"))
+    compter(plateau)
+    reglerLEchange(plateau)
+  })
+}
+
+function brancherLesPlateaux() {
+  document.querySelectorAll("[data-m-plateau]").forEach((plateau) => {
+    plateau.querySelectorAll("[data-m-piece]").forEach((piece) => brancherUnePieceDuPlateau(piece, plateau))
+    brancherLesZones(plateau, accepteLaPiece)
+
+    plateau.querySelector("[data-m-echanger]")?.addEventListener("click", () => {
+      const unites = tasDe(plateau, "unites")
+      const dizaines = tasDe(plateau, "dizaines")
+      if (!unites || !dizaines || unites.children.length < 10) return
+
+      for (let i = 0; i < 10; i += 1) unites.lastElementChild.remove()
+      const barre = unePiece("barre")
+      dizaines.appendChild(barre)
+      brancherUnePieceDuPlateau(barre, plateau)
+      compter(plateau)
+      reglerLEchange(plateau)
     })
 
-    compter(outil)
+    // Une unité glissée dans la colonne peut rendre l'échange possible.
+    plateau.addEventListener("m:change", () => reglerLEchange(plateau))
+
+    compter(plateau)
+    reglerLEchange(plateau)
   })
 }
 
@@ -323,6 +418,7 @@ function brancherTout() {
   corps.dataset.mBranche = "1"
   brancher()
   brancherLesJetons()
+  brancherLesPlateaux()
 }
 
 document.addEventListener("DOMContentLoaded", brancherTout)

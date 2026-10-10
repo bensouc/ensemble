@@ -312,6 +312,80 @@ form.button_to { display: inline-block; margin: 0; }
   min-height: 3rem;
 }
 
+// ── le plateau des dizaines et des unités ─────────────────────────────
+//
+// Les deux colonnes côte à côte, et la réserve au-dessus : c'est la
+// disposition du matériel de classe, et l'élève la reconnaît.
+.m-plateau {
+  grid-template-columns: 1fr;
+}
+
+.m-colonnes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.m-colonne {
+  background: var(--m-carte);
+  border: 2px dashed var(--m-trait);
+  border-radius: 0.9rem;
+  padding: 0.6rem 0.7rem 0.8rem;
+  min-height: 7.5rem;
+}
+
+// Un cube pour l'unité, une barre de dix pour la dizaine : la proportion EST
+// l'enseignement. Une barre doit se lire comme dix cubes, pas comme un jeton
+// d'une autre couleur — d'où les dix crans dessinés dessus.
+.m-unite {
+  width: 1.5rem;
+  height: 1.5rem;
+  background: var(--m-bleu);
+  border: 2px solid transparent;
+  border-radius: 0.3rem;
+  padding: 0;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.m-barre {
+  width: 1.5rem;
+  height: 15rem;
+  max-height: 100%;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--m-rose) 0 calc(10% - 2px),
+    var(--m-carte) calc(10% - 2px) 10%
+  );
+  border: 2px solid var(--m-rose);
+  border-radius: 0.3rem;
+  padding: 0;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+.m-tas-barres {
+  align-items: flex-start;
+  min-height: 15rem;
+}
+
+.m-echange {
+  display: flex;
+  justify-content: center;
+}
+
+.m-echange-bouton {
+  background: var(--m-rose);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.3rem;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
 .m-jeton {
   font-size: 1.9rem;
   line-height: 1;

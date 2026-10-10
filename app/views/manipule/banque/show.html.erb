@@ -56,6 +56,12 @@
               <%= probleme.jeton_caractere %>,
               <%= probleme.jeton_zones.to_sentence(two_words_connector: " et ", last_word_connector: " et ") %>
             </span>
+          <% elsif probleme.dizaines_unites? %>
+            <span class="m-etiquette m-etiquette--outil">
+              <i class="fa-solid fa-hand-pointer me-2"></i>
+              Dizaines et unités — plateau à <%= probleme.plateau_depart %>,
+              <%= au_pluriel(probleme.plateau_reserve, "unité") %> à prendre
+            </span>
           <% else %>
             <span class="m-fiche-note">Sans outil de manipulation.</span>
           <% end %>

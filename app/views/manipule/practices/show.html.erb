@@ -7,7 +7,7 @@
     <%= tag.p @probleme.question, class: "m-question",
               data: { "m-question": true, "m-lire": true,
                       "m-audio": chemin_audio(@audios_probleme["question"]) } %>
-    <%= render "manipule/practices/jetons", probleme: @probleme if @probleme.jetons? %>
+    <%= render "manipule/practices/outil", probleme: @probleme %>
 
     <div class="m-choix">
       <% @choix.each do |choix| %>
@@ -32,7 +32,7 @@
     <%= tag.p @probleme.question, class: "m-question",
               data: { "m-question": true, "m-lire": true,
                       "m-audio": chemin_audio(@audios_probleme["question"]) } %>
-    <%= render "manipule/practices/jetons", probleme: @probleme if @probleme.jetons? %>
+    <%= render "manipule/practices/outil", probleme: @probleme %>
 
     <div class="m-saisie">
       <%= text_field_tag :saisie, nil, inputmode: "numeric", autocomplete: "off",

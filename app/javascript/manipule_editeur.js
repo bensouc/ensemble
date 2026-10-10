@@ -18,7 +18,9 @@ function basculer(formulaire) {
 
   formulaire.querySelectorAll("[data-m-si-choix]").forEach((bloc) => { bloc.hidden = !choix })
   formulaire.querySelectorAll("[data-m-si-saisie]").forEach((bloc) => { bloc.hidden = choix })
-  formulaire.querySelectorAll("[data-m-si-jetons]").forEach((bloc) => { bloc.hidden = outil !== "jetons" })
+  // Un bloc de réglages par outil, montré quand c'est le sien. `data-m-si`
+  // porte le nom de l'outil : ajouter un outil n'ajoute pas une ligne ici.
+  formulaire.querySelectorAll("[data-m-si]").forEach((bloc) => { bloc.hidden = bloc.dataset.mSi !== outil })
 }
 
 async function rafraichir(formulaire) {
