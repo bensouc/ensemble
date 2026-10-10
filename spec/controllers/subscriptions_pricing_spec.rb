@@ -58,7 +58,7 @@ end
 RSpec.describe "Secrets côté client" do
   let(:secrets) do
     %w[STRIPE_API_KEY STRIPE_WEBHOOK_SECRET_KEY RECAPTCHA_SECRET_KEY
-       GANDI_MAIL_PSWORD CHALLENGE_MISTRAL_API_KEY]
+       BREVO_SMTP_KEY CHALLENGE_MISTRAL_API_KEY]
   end
 
   it "n'apparaissent dans aucun gabarit ni script servi au navigateur" do
