@@ -253,7 +253,10 @@ function zoneSous(x, y) {
   return sous ? sous.closest("[data-m-zone]") : null
 }
 
-function brancherUnePiece(jeton, outil, accepte = () => true) {
+// `auTap` : ce que fait la pièce quand on la TOUCHE sans la déplacer. Si elle
+// s'en charge, on ne la sélectionne pas — ouvrir une dizaine et la choisir
+// pour la déposer sont deux gestes qui s'excluent.
+function brancherUnePiece(jeton, outil, accepte = () => true, auTap = null) {
   jeton.addEventListener("pointerdown", (e) => {
     e.preventDefault()
     const depart = { x: e.clientX, y: e.clientY }
@@ -278,6 +281,11 @@ function brancherUnePiece(jeton, outil, accepte = () => true) {
       jeton.style.transform = ""
 
       if (!glisse) {
+        // `pointerdown` appelle `preventDefault()`, ce qui empêche le `click`
+        // de suivre : une action posée sur `click` ne partirait JAMAIS au
+        // doigt. Tout ce qui répond au tapotement passe donc par ici.
+        if (auTap && auTap(jeton)) return
+
         // Un simple appui : on choisit le jeton, la case viendra ensuite.
         const dejaChoisi = jetonChoisi === jeton
         oublierLeChoix()
@@ -384,24 +392,26 @@ function rafraichirLePlateau(plateau) {
 }
 
 function brancherUnePieceDuPlateau(piece, plateau) {
-  brancherUnePiece(piece, plateau, accepteLaPiece)
+  brancherUnePiece(piece, plateau, accepteLaPiece, (touchee) => ouvrirLaDizaine(touchee, plateau))
+}
 
-  if (piece.dataset.mPiece !== "barre") return
+// Ouvrir une dizaine : on la touche, elle devient dix unités À SA PLACE. C'est
+// le geste le plus simple de l'outil, et les dix crans de la barre disent déjà
+// ce qu'elle contient.
+function ouvrirLaDizaine(piece, plateau) {
+  if (piece.dataset.mPiece !== "barre") return false
 
-  // Ouvrir une dizaine : un simple appui, et c'est le geste le plus simple de
-  // l'outil. Les dix crans de la barre disent déjà qu'elle en contient dix.
-  piece.addEventListener("click", () => {
-    const tas = tasDeTravail(plateau)
-    if (!tas || !tas.contains(piece)) return
+  const tas = tasDeTravail(plateau)
+  if (!tas || !tas.contains(piece)) return false
 
-    oublierLeChoix()
-    piece.replaceWith(...Array.from({ length: 10 }, () => {
-      const cube = unePiece("unite")
-      brancherUnePieceDuPlateau(cube, plateau)
-      return cube
-    }))
-    rafraichirLePlateau(plateau)
-  })
+  oublierLeChoix()
+  piece.replaceWith(...Array.from({ length: 10 }, () => {
+    const cube = unePiece("unite")
+    brancherUnePieceDuPlateau(cube, plateau)
+    return cube
+  }))
+  rafraichirLePlateau(plateau)
+  return true
 }
 
 function poserUnePiece(plateau, sorte) {
