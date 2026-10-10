@@ -148,7 +148,11 @@
 }
 
 // Les domaines à générer, dépliés sous la période au choix de « Auto ».
+// `contain: inline-size` : la rangée de pastilles ne compte pas dans la largeur de
+// la modale, qui reste celle d'avant le dépliage — les domaines passent à la ligne.
 .wp-new-domains {
+  contain: inline-size;
+
   legend {
     margin-bottom: 8px;
     font-size: 14px;
