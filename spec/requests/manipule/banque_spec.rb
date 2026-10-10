@@ -244,6 +244,27 @@ RSpec.describe "Manipule, la banque côté enseignante" do
       expect(flash[:alert]).to be_present
     end
 
+    # Vu en production : un compte admin voyait le CE1 d'une AUTRE école au
+    # milieu du sien — deux niveaux portant le même nom —, et aucun filtre ne
+    # pouvait les atteindre, puisque les filtres s'arrêtent aux niveaux de ses
+    # propres classes. Ces écrans sont la banque d'une enseignante, pas une
+    # console d'administration.
+    it "n'ouvre pas la banque des autres écoles, même à un admin" do
+      patronne = create(:user, admin: true, manipule: true)
+      autre_ecole = create(:school)
+      competence_ailleurs = create(:skill, domain: create(:domain, grade: create(:grade, school: autre_ecole)),
+                                           school: autre_ecole, level: 1)
+      create(:manipule_problem, skill: competence_ailleurs)
+      chez_elle = create(:skill, domain: create(:domain, grade: create(:grade, school: patronne.school)),
+                                 school: patronne.school, level: 1)
+      create(:manipule_problem, skill: chez_elle)
+      sign_in patronne
+
+      get manipule_banque_path
+
+      expect(assigns(:problemes).map(&:skill)).to eq([chez_elle])
+    end
+
     it "ne liste que les problèmes de son école" do
       post manipule_banque_importer_path(competence), params: { fichier: fichier_csv([en_tete, ligne(1)]) }
       autre_ecole = create(:school)
