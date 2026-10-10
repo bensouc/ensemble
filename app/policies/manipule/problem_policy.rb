@@ -5,9 +5,22 @@ module Manipule
   # les exercices d'Ensemble : les enseignants de l'école, et les admins.
   class ProblemPolicy < ApplicationPolicy
     class Scope < ApplicationPolicy::Scope
+      # Même un admin ne voit ici que SON école. Ces trois écrans — l'accueil,
+      # la banque, « Autre » — sont la banque de l'enseignante, pas une console
+      # d'administration.
+      #
+      # Le laissez-passer admin y faisait entrer les manipulations de toutes
+      # les écoles, mélangées et sans dire à qui elles appartenaient. Et elles
+      # étaient INATTEIGNABLES : les filtres, eux, s'arrêtent aux niveaux de
+      # ses propres classes, donc aucune combinaison ne pouvait les retrouver.
+      # Vu en production, sur un compte qui voyait le CE1 d'une autre école au
+      # milieu du sien — deux niveaux portant le même nom, par-dessus le
+      # marché.
+      #
+      # « Rien au-dessus de l'école » est la règle d'Ensemble. Le laissez-passer
+      # reste sur `de_son_ecole?` : un admin peut toujours ouvrir une compétence
+      # qu'on lui nomme, pour dépanner. Il ne dicte plus ce qu'on LISTE.
       def resolve
-        return scope.all if user.admin?
-
         # `User` n'a pas de colonne `school_id` : son école passe par
         # `school_role`, et peut manquer sur une inscription abandonnée.
         scope.joins(:skill).where(skills: { school_id: user.school&.id })
