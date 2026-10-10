@@ -16,7 +16,16 @@
         d'Ensemble, et les deux se marcheraient dessus. Les jetons s'y déplacent
         pour de vrai. %>
     <div class="m-apercu">
-      <p class="m-apercu-titre">Ce que l'élève verra</p>
+      <p class="m-apercu-titre">
+        Ce que l'élève verra
+        <%# La colonne de droite fait quatre cents pixels, l'écran d'un élève
+            en fait neuf cents : un outil de manipulation n'y tient pas, et le
+            rétrécir jusqu'à ce qu'il y tienne serait le dessiner pour le
+            mauvais écran. D'où ce bouton — l'aperçu prend toute la largeur, et
+            on voit ce que l'élève voit, à sa taille. %>
+        <button type="button" class="m-agrandir" data-m-agrandir
+                aria-label="Agrandir l'aperçu">Agrandir</button>
+      </p>
       <iframe class="m-apercu-cadre" data-m-apercu title="Aperçu de l'écran de l'élève"></iframe>
       <span class="m-champ-aide">Il se met à jour pendant que vous écrivez. Rien n'y est enregistré.</span>
     </div>

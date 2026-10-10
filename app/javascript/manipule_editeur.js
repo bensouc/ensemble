@@ -127,6 +127,21 @@ function uneSeuleFois(element, marque, poser) {
   return true
 }
 
+// Agrandir l'aperçu : il passe sur toute la largeur, le formulaire dessous.
+// Rien à enregistrer, c'est un confort de lecture — d'où le simple basculement
+// d'une classe.
+function brancherLAgrandissement() {
+  const bouton = document.querySelector("[data-m-agrandir]")
+  const editeur = document.querySelector(".m-editeur")
+  if (!bouton || !editeur || bouton.dataset.mBranche) return
+
+  bouton.dataset.mBranche = "1"
+  bouton.addEventListener("click", () => {
+    const grand = editeur.classList.toggle("m-editeur-grand")
+    bouton.textContent = grand ? "Réduire" : "Agrandir"
+  })
+}
+
 function brancherEditeur() {
   const formulaire = document.querySelector("[data-m-editeur]")
   if (!uneSeuleFois(formulaire, "mBranche", () => {})) return
@@ -179,7 +194,10 @@ function oublierLaMarque() {
 // D'où ce branchement immédiat. La marque `data-m-branche` le rend sans effet
 // si l'un des événements a déjà fait le travail.
 brancherEditeur()
+brancherLAgrandissement()
 
 document.addEventListener("DOMContentLoaded", brancherEditeur)
 document.addEventListener("turbo:load", brancherEditeur)
+document.addEventListener("turbo:load", brancherLAgrandissement)
+document.addEventListener("DOMContentLoaded", brancherLAgrandissement)
 document.addEventListener("turbo:before-cache", oublierLaMarque)
