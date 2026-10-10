@@ -64,4 +64,42 @@ RSpec.describe SkillsHelper, type: :helper do
       expect(helper.competences_par_sous_domaine([])).to be_empty
     end
   end
+
+  # L'ajout d'une compétence dans un plan de travail : la liste suivait l'ordre
+  # des symboles, et rien n'y distinguait ce que l'élève avait déjà acquis.
+  describe "#options_competences_a_ajouter" do
+    # Domaine et compétences dans l'école de l'élève : valider une compétence
+    # recompte celles de SON école pour la ceinture, et des compétences d'une
+    # autre école la feraient valider entière.
+    let(:eleve) { create(:student) }
+    let(:domaine) { create(:domain, grade: eleve.grade, name: "Numération", special: false) }
+    let(:wpd) { create(:work_plan_domain, domain: domaine, level: 2, work_plan: create(:work_plan, student: eleve)) }
+
+    def competence(position, nom)
+      create(:skill, domain: domaine, level: 2, position:, name: nom, symbol: "◼", school: eleve.school)
+    end
+
+    it "suit l'ordre rangé, et met à part celles déjà validées en ceinture" do
+      troisieme = competence(3, "Troisième")
+      competence(1, "Première")
+      competence(2, "Deuxième")
+      Result.create!(student: eleve, skill: troisieme, kind: "ceinture", status: "completed")
+
+      html = Nokogiri::HTML("<select>#{helper.options_competences_a_ajouter(wpd)}</select>")
+
+      expect(html.css("optgroup").map { |g| g["label"] }).to eq(["À travailler", "Déjà validées en ceinture"])
+      expect(html.css("optgroup").first.css("option").map(&:text)).to eq(%w[Première Deuxième])
+      expect(html.css("option.competence-validee").map(&:text)).to eq(["✓ Troisième"])
+    end
+
+    it "reste une liste simple tant que rien n'est validé" do
+      competence(2, "Deuxième")
+      competence(1, "Première")
+
+      html = Nokogiri::HTML("<select>#{helper.options_competences_a_ajouter(wpd)}</select>")
+
+      expect(html.css("optgroup")).to be_empty
+      expect(html.css("option").map(&:text)).to eq(%w[Première Deuxième])
+    end
+  end
 end

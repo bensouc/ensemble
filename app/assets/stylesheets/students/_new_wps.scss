@@ -171,7 +171,8 @@
 
   // Les pastilles des autres modales ; leur marge sert ailleurs, ici le `gap`
   // espace les boutons.
-  .utility-wp-btn {
+  .utility-wp-btn,
+  .utility-wp-btn--neutre {
     margin: 0;
   }
 }
