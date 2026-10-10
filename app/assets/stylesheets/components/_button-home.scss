@@ -56,6 +56,13 @@
   margin: 7px 0 0 12px;
 }
 
+// Sortir sans rien faire (Annuler) : la même pastille, en gris — elle ne doit
+// pas se lire comme une action, ni concurrencer le rose de l'action principale.
+.utility-wp-btn--neutre {
+  @include global.pill-cta($color: colors.$grisF, $height: 34px);
+  margin: 7px 0 0 12px;
+}
+
 // Action principale d'un plan de travail (la Correction) : déjà remplie au repos,
 // pour qu'elle ressorte des actions secondaires.
 .utility-wp-btn--primary {

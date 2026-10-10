@@ -8,15 +8,16 @@
 				<% skill_to_hide_nb =  Belt::SCORES_TO_VALIDATES[domain.grade.grade_level.to_sym][domain.name.to_sym][level - 1] %>
 			<% end %>
 			<% skills.sort.each do |skill| %>
-				<% wps = results.find { |f| f.skill == skill && f.belt_validated?} %>
-				<% wps = last_wps.select { |f| f.skill == skill }.sort_by{|f| f.updated_at }.last if wps.nil? %>
+				<%# Par `skill_id` : comparer les compétences les chargeait une à une. %>
+				<% wps = results.find { |f| f.skill_id == skill.id && f.belt_validated? } %>
+				<% wps = last_wps.select { |f| f.skill_id == skill.id }.max_by(&:updated_at) if wps.nil? %>
 				<% if skill_to_hide_nb < 1 || wps.class == WorkPlanSkill %>
 					<!-- START WPS result-->
 					<% unless wps.nil? %>
 						<div class="a-wps" data-controller='wps-result'>
 							<%= render "belts/wps_result_status", wps: wps %>
 							<div class="skill-name d-none" data-wps-result-target='name'>
-								<%= wps.skill.name %>
+								<%= skill.name %>
 								-
 								<%= render "belts/wps_status", wps: wps %>
 							</div>
@@ -37,8 +38,8 @@
 		    dans leur ordre de création — et la branche voisine, elle, triait déjà
 		    par position : les deux moitiés du même partiel se contredisaient. %>
 		<% skills.sort.each do |skill| %>
-			<% wps = results.select { |result| result.skill == skill }.first %>
-			<% wps = last_wps.select { |f| f.skill == skill }.sort_by{|f| f.updated_at }.last if wps.nil? %>
+			<% wps = results.find { |result| result.skill_id == skill.id } %>
+			<% wps = last_wps.select { |f| f.skill_id == skill.id }.max_by(&:updated_at) if wps.nil? %>
 			<% unless wps.nil? %>
 				<div class="a-wps" data-controller='wps-result'>
 					<%= render "belts/wps_result_status", wps: wps %>

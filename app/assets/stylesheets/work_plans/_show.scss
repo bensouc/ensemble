@@ -469,6 +469,14 @@
   margin-right: 33px;
   background-color: rgba(250, 128, 114, 0.308);
   transition: 0.3s;
+
+  // Une compétence déjà validée en ceinture : un fond plus sombre là où le
+  // navigateur l'accepte (Windows, Linux, Firefox). Sur macOS la liste est
+  // native et l'ignore — le groupe et la coche suffisent alors.
+  option.competence-validee {
+    background-color: #e4e4e4;
+    color: #6b6b6b;
+  }
 }
 
 .challenge-selector {

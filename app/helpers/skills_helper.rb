@@ -23,4 +23,33 @@ module SkillsHelper
       group_by { |skill| skill.sub_domain.presence }.
       sort_by { |sous_domaine, competences| [sous_domaine ? 1 : 0, competences.first.position.to_i] }
   end
+
+  # Les compétences qu'on peut ajouter à un domaine d'un plan de travail, dans
+  # l'ordre que l'enseignant a rangé — la liste suivait l'ordre des symboles.
+  #
+  # Celles que l'élève a déjà validées en ceinture passent dans un second groupe,
+  # marquées d'une coche : une liste déroulante native n'affiche ni icône ni fond
+  # coloré sur macOS, un groupe et une coche si. Elles restent sélectionnables —
+  # on peut vouloir retravailler une compétence acquise.
+  def options_competences_a_ajouter(work_plan_domain)
+    skills = Skill.where(domain_id: work_plan_domain.domain_id, level: work_plan_domain.level).order(:position, :id)
+    validees = competences_validees_en_ceinture(work_plan_domain, skills)
+    a_travailler, deja_validees = skills.partition { |skill| validees.exclude?(skill.id) }
+    return options_for_select(a_travailler.map { |skill| [skill.name, skill.id] }) if deja_validees.empty?
+
+    grouped_options_for_select(
+      "À travailler" => a_travailler.map { |skill| [skill.name, skill.id] },
+      "Déjà validées en ceinture" => options_validees(deja_validees)
+    )
+  end
+
+  private
+
+  def options_validees(skills)
+    skills.map { |skill| ["✓ #{skill.name}", skill.id, { class: "competence-validee" }] }
+  end
+
+  def competences_validees_en_ceinture(work_plan_domain, skills)
+    Result.completed.where(student_id: work_plan_domain.work_plan.student_id, skill: skills).pluck(:skill_id).to_set
+  end
 end

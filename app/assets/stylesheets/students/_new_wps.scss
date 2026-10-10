@@ -87,30 +87,57 @@
     transform: scale(0);
   }
 
+  // Le style sobre des pastilles de domaines (`.domain-choice`) : décochée, un
+  // contour gris ; cochée, teintée de rose avec sa coche. Toutes étaient roses
+  // au repos : rien ne distinguait une compétence cochée d'une autre. L'arrondi
+  // seul diffère — un intitulé tient souvent sur deux ou trois lignes.
   .tag-selector + label {
-    display: inline-block;
+    display: inline-flex;
+    gap: 6px;
+    align-items: baseline;
     margin: 0;
-    padding: echelle.$espace-sm echelle.$espace-md;
-    color: colors.$rose;
-    font-size: echelle.$texte-sm;
-    background-color: rgba(colors.$rose, 0.08);
-    border: thin solid rgba(colors.$rose, 0.35);
-    border-radius: echelle.$rayon;
+    padding: 6px 14px;
+    color: #9c9c9c;
+    font-size: 13px;
+    font-weight: 600;
+    background-color: transparent;
+    border: 1px solid colors.$grisC;
+    border-radius: 16px;
     cursor: pointer;
-    transition: 0.15s ease;
+    transition: 0.25s;
 
     &:hover {
-      color: colors.$blanc;
-      background-color: colors.$rose;
-      border-color: colors.$rose;
+      color: colors.$rose;
+      background-color: transparent;
+      border-color: colors.$roseL;
     }
   }
 
   .tag-selector:checked + label {
-    color: colors.$blanc;
-    background-color: colors.$rose;
-    border-color: colors.$rose;
+    color: colors.$rose;
+    background-color: rgba(colors.$rose, 0.08);
+    border-color: transparent;
+
+    &::before {
+      content: "✓";
+    }
+
+    &:hover {
+      background-color: rgba(colors.$rose, 0.16);
+    }
   }
+
+  .tag-selector:focus-visible + label {
+    outline: 2px solid colors.$roseL;
+    outline-offset: 2px;
+  }
+}
+
+// La case dont viennent les compétences : domaine et ceinture.
+.modale-contexte {
+  margin: 4px 0 0;
+  color: #9c9c9c;
+  font-size: 13px;
 }
 
 // La fermeture : une croix discrète dans le coin. Elle n'a pas à peser autant
@@ -142,42 +169,11 @@
   justify-content: flex-end;
   margin-top: echelle.$espace-lg;
 
-  // Les deux à la même échelle, et « Annuler » en retrait : c'est « Valider »
-  // qu'on vient chercher. Le pavé gris plein pesait plus lourd que l'action
-  // principale, et l'œil se posait sur le mauvais bouton.
-  .cancel-btn {
-    padding: 0.45rem 1.1rem;
-    color: colors.$grisF !important;
-    font-size: echelle.$texte-sm;
-    font-weight: 500;
-    background-color: transparent;
-    border-color: transparent;
-
-    &:hover {
-      color: colors.$grisF !important;
-      background-color: colors.$light-gray;
-    }
-  }
-
-  .validate-challenge-btn {
-    margin-left: 0;
-    padding: 0.45rem 1.1rem;
-    font-size: echelle.$texte-sm;
-    font-weight: 500;
-  }
-
-  // Seul dans la rangée, « Fermer » est l'action principale : il reprend le
-  // poids que « Annuler » cède à « Valider ».
-  .cancel-btn.--seul {
-    color: colors.$blanc !important;
-    background-color: colors.$grisF;
-    border-color: colors.$grisF;
-
-    &:hover {
-      color: colors.$grisF !important;
-      background-color: colors.$light-gray;
-      border-color: colors.$grisC;
-    }
+  // Les pastilles des autres modales ; leur marge sert ailleurs, ici le `gap`
+  // espace les boutons.
+  .utility-wp-btn,
+  .utility-wp-btn--neutre {
+    margin: 0;
   }
 }
 

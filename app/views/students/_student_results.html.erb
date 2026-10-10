@@ -56,13 +56,10 @@
 		<div class="right-levels d-flex">
 			<% @domains.each do |domain| %>
 				<div class="domain-main-col">
+					<%# Les cases sont rendues avec la page, depuis `@grille` : chargées une à
+					    une, elles coûtaient une requête au serveur chacune. %>
 					<% WorkPlanDomain::LEVELS.reverse_each do |level| %>
-						<%= turbo_frame_tag "student_#{@student.id}domain_#{domain.id}_level#{level}",
-            src: student_show_path(@student, domain, level), loading:"lazy" do%>
-							<div class="domain-col mb-2">
-								<div class="spinner-border --grisC" role="status"></div >
-							</div >
-						<% end %>
+						<%= render "belts/belt", **@grille.case_locals(domain, level) %>
 					<% end %>
 				</div>
 			<% end %>

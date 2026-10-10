@@ -7,7 +7,14 @@
 			<%= simple_form_for :new_wps, html: {novalidate: false} do |form|%>
 				<div class="new-wps-card" >
 					<div class="modal-header">
-						<h3>Sélectionner les compétences à valider pour <%= @student.first_name.capitalize %></h3>
+						<div>
+							<h3>Compétences à valider pour <%= @student.first_name.capitalize %></h3>
+							<%# Le rappel de la case cliquée : la modale ne disait pas de quel
+							    domaine ni de quelle ceinture venaient ces compétences. %>
+							<p class="modale-contexte">
+								<%= @domain.name %> · ceinture <%= Belt::BELT_COLORS[@level - 1] %>
+							</p>
+						</div>
 						<%# Une croix discrète dans le coin, et non un second bouton gris de la
 						    taille du principal : la modale en offrait deux, celui de l'en-tête
 						    posé juste après le titre, donc au milieu de la ligne. %>
@@ -51,7 +58,6 @@
 									                     multiple: true,
 									                     as: :check_boxes,
 									                     boolean_style: :inline,
-									                     data: { checkboxes_target: "boxes", action: "click->checkboxes#add" },
 									                     class: "tag-selector",
 									                     item_wrapper_class: "tag-item" %>
 								</div>
@@ -64,14 +70,12 @@
 				    dit pas ce qu'elle annule, et se lisait comme un bouton inachevé. %>
 				<div class="modale-actions">
 					<% if @no_validated_skills.blank? %>
-						<div class="cancel-btn --seul" data-action="click->reset-frame#resetFrame">
-							Fermer
-						</div>
+						<button type="button" class="utility-wp-btn utility-wp-btn--primary"
+						        data-action="click->reset-frame#resetFrame">Fermer</button>
 					<% else %>
-						<div class="cancel-btn" data-action="click->reset-frame#resetFrame">
-							Annuler
-						</div>
-						<%= form.submit 'Valider', class: 'validate-challenge-btn' %>
+						<button type="button" class="utility-wp-btn--neutre"
+						        data-action="click->reset-frame#resetFrame">Annuler</button>
+						<%= form.button :button, "Valider", class: "utility-wp-btn utility-wp-btn--primary" %>
 					<% end %>
 				</div>
 			<% end %>
