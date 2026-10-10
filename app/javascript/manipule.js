@@ -333,9 +333,18 @@ function brancherLesZones(outil, accepte = () => true) {
 
 // ── le plateau des dizaines et des unités ──────────────────────────────
 //
-// Deux gestes que l'élève fait LUI-MÊME, et c'est tout l'enjeu : un échange
-// automatique à la dixième unité lui volerait la retenue, qui est précisément
-// ce que l'outil doit lui faire comprendre.
+// Un brouillon pour s'aider à résoudre, pas un exercice. L'élève prend des
+// dizaines et des unités — les deux, et c'est le point : construire une
+// dizaine avec dix unités est un geste, en prendre une toute faite en est un
+// autre, et un problème peut demander l'un ou l'autre.
+//
+// Deux gestes lui appartiennent, et aucun n'est automatique :
+//
+//   — CONSTRUIRE : dix unités du plateau deviennent une dizaine ;
+//   — EXPLOSER : une dizaine du plateau redevient dix unités.
+//
+// Un échange fait par l'écran lui volerait la retenue, qui est précisément ce
+// qu'il doit comprendre.
 
 function tasDe(plateau, nom) {
   return plateau.querySelector(`[data-m-zone="${nom}"] [data-m-tas]`)
@@ -346,59 +355,67 @@ function unePiece(sorte) {
   piece.type = "button"
   piece.className = sorte === "barre" ? "m-barre" : "m-unite"
   piece.dataset.mPiece = sorte
-  piece.setAttribute("aria-label", sorte === "barre" ? "Dizaine, toucher pour la casser en dix unités" : "Unité")
+  piece.setAttribute("aria-label",
+    sorte === "barre" ? "Dizaine, toucher pour l'exploser en dix unités" : "Unité")
   return piece
 }
 
-// Le bouton n'apparaît que quand l'échange est possible : grisé en
-// permanence, il deviendrait un meuble qu'on ne lit plus.
-function reglerLEchange(plateau) {
-  const bouton = plateau.querySelector("[data-m-echanger]")
-  const boite = plateau.querySelector("[data-m-boite]")
-  if (!bouton || !boite) return
-
-  const dizaines = tasDe(plateau, "dizaines")
-  const unites = tasDe(plateau, "unites")
-  const pleine = unites && unites.children.length >= Number(boite.dataset.mBoite)
-  const place = dizaines && dizaines.children.length < Number(plateau.dataset.maxDizaines || 9)
-
-  // La boîte pleine se signale elle-même : c'est elle que l'élève regarde, pas
-  // un bouton posé à côté.
-  boite.classList.toggle("m-boite-pleine", Boolean(pleine))
-  bouton.hidden = !(pleine && place)
+// Une unité n'a rien à faire dans la colonne des dizaines, et réciproquement :
+// chaque case dit ce qu'elle accepte.
+function accepteLaPiece(piece, zone) {
+  return zone.dataset.mAccepte === piece.dataset.mPiece
 }
 
-// Une unité n'a rien à faire dans la colonne des dizaines, et réciproquement :
-// la case dit ce qu'elle accepte.
-//
-// Et la boîte de dix n'en prend pas onze. Ce refus n'est pas une limite
-// technique, c'est la règle qu'on enseigne : au-delà de neuf, il FAUT
-// échanger. Un onzième cube toléré effacerait la leçon.
-function accepteLaPiece(piece, zone) {
-  if (zone.dataset.mAccepte !== piece.dataset.mPiece) return false
+// Ce que vaut le plateau, à tout moment. Sans ce total, l'élève manipule sans
+// savoir où il en est — et c'est pour s'y retrouver qu'il manipule.
+function recompter(plateau) {
+  compter(plateau)
+  const total = plateau.querySelector("[data-m-total]")
+  if (!total) return
 
-  const boite = Number(zone.dataset.mBoite || 0)
-  if (!boite) return true
+  const dizaines = tasDe(plateau, "dizaines")?.children.length || 0
+  const unites = tasDe(plateau, "unites")?.children.length || 0
+  total.textContent = dizaines * 10 + unites
+}
 
-  const tas = zone.querySelector("[data-m-tas]")
-  return !tas || tas.contains(piece) || tas.children.length < boite
+// Le bouton n'apparaît que quand les dix unités sont là : l'élève VOIT
+// l'échange devenir possible, et c'est lui qui le fait.
+function reglerLEchange(plateau) {
+  const bouton = plateau.querySelector("[data-m-echanger]")
+  if (!bouton) return
+
+  const unites = tasDe(plateau, "unites")?.children.length || 0
+  const dizaines = tasDe(plateau, "dizaines")?.children.length || 0
+  bouton.hidden = !(unites >= 10 && dizaines < Number(plateau.dataset.maxDizaines || 9))
+}
+
+function rafraichirLePlateau(plateau) {
+  recompter(plateau)
+  reglerLEchange(plateau)
 }
 
 function brancherUnePieceDuPlateau(piece, plateau) {
   brancherUnePiece(piece, plateau, accepteLaPiece)
 
-  // Casser une dizaine : le geste de la soustraction. Au simple appui, pas au
-  // glissé — une barre ne se dépose nulle part ailleurs.
   if (piece.dataset.mPiece !== "barre") return
 
+  // Exploser une dizaine : le geste de la soustraction. Au simple appui — et
+  // seulement sur le plateau : une dizaine de la réserve, on la prend, on ne
+  // l'explose pas avant de l'avoir posée.
   piece.addEventListener("click", () => {
+    if (piece.closest('[data-m-zone="dizaines"]') === null) return
+
     const unites = tasDe(plateau, "unites")
     if (!unites) return
 
+    oublierLeChoix()
     piece.remove()
-    for (let i = 0; i < 10; i += 1) unites.appendChild(unePiece("unite"))
-    compter(plateau)
-    reglerLEchange(plateau)
+    for (let i = 0; i < 10; i += 1) {
+      const cube = unePiece("unite")
+      unites.appendChild(cube)
+      brancherUnePieceDuPlateau(cube, plateau)
+    }
+    rafraichirLePlateau(plateau)
   })
 }
 
@@ -412,21 +429,17 @@ function brancherLesPlateaux() {
       const dizaines = tasDe(plateau, "dizaines")
       if (!unites || !dizaines || unites.children.length < 10) return
 
-      // Une pièce encore choisie n'a plus de sens une fois la boîte vidée.
       oublierLeChoix()
       for (let i = 0; i < 10; i += 1) unites.lastElementChild.remove()
       const barre = unePiece("barre")
       dizaines.appendChild(barre)
       brancherUnePieceDuPlateau(barre, plateau)
-      compter(plateau)
-      reglerLEchange(plateau)
+      rafraichirLePlateau(plateau)
     })
 
-    // Une unité glissée dans la colonne peut rendre l'échange possible.
-    plateau.addEventListener("m:change", () => reglerLEchange(plateau))
-
-    compter(plateau)
-    reglerLEchange(plateau)
+    // Une pièce déposée change le total, et peut rendre l'échange possible.
+    plateau.addEventListener("m:change", () => rafraichirLePlateau(plateau))
+    rafraichirLePlateau(plateau)
   })
 }
 

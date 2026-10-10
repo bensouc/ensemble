@@ -98,11 +98,16 @@ module Manipule
       plateau_depart % 10
     end
 
-    # Les unités que l'élève peut encore prendre : c'est avec elles qu'il
-    # ajoute, et c'est en les échangeant dix contre une qu'il découvre la
-    # retenue.
+    # Ce que l'élève peut PRENDRE : des dizaines et des unités, les deux. Il
+    # doit pouvoir se servir des unes comme des autres — construire une dizaine
+    # avec dix unités est un geste, en prendre une toute faite en est un autre,
+    # et les deux ont leur place.
     def plateau_reserve
       tool_data["unites"].to_i.clamp(0, UNITES_MAX)
+    end
+
+    def plateau_reserve_dizaines
+      tool_data["dizaines"].to_i.clamp(0, DIZAINES_MAX)
     end
 
     def jeton_caractere

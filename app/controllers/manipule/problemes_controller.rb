@@ -160,7 +160,9 @@ module Manipule
     end
 
     def reglages_du_plateau(brut)
-      { "depart" => brut[:depart].to_i, "unites" => brut[:unites].to_i }
+      { "depart" => brut[:depart].to_i,
+        "dizaines" => brut[:dizaines].to_i,
+        "unites" => brut[:unites].to_i }
     end
   end
 end
