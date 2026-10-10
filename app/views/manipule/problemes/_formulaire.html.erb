@@ -115,6 +115,15 @@
         qu'il veut : construire une dizaine avec dix unités est un geste, en prendre une toute
         faite en est un autre.
       </span>
+
+      <%# Le compte peut donner la réponse — « en tout 12 » sur un problème qui
+          demande combien il reste. D'où le choix, problème par problème. %>
+      <div class="form-check mt-2">
+        <%= hidden_field_tag "probleme[reglages][compteur]", "0" %>
+        <%= check_box_tag "probleme[reglages][compteur]", "1", probleme.plateau_compteur?,
+                          class: "form-check-input", id: "compteur_du_plateau" %>
+        <%= label_tag "compteur_du_plateau", "Montrer le compte à l'élève", class: "form-check-label" %>
+      </div>
     </div>
   </div>
 

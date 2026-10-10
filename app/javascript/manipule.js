@@ -473,14 +473,63 @@ function rangerLePlateau(plateau) {
   })
 }
 
+// Deux façons d'ajouter une pièce, et une seule mécanique : on TOUCHE la
+// pioche, la pièce se pose dans la zone ; on la GLISSE, elle suit le doigt et
+// se pose où on la lâche.
+//
+// Les deux passent par `pointerdown` — qui appelle `preventDefault()`, sans
+// quoi le navigateur fait défiler la page au lieu de laisser glisser. Un
+// écouteur `click` posé à côté ne partirait jamais au doigt : c'est le piège
+// qui a déjà fait que toucher une dizaine ne l'ouvrait pas.
+function brancherLaPioche(bouton, plateau) {
+  bouton.addEventListener("pointerdown", (e) => {
+    e.preventDefault()
+
+    const piece = poserUnePiece(plateau, bouton.dataset.mPiocher)
+    if (!piece) return
+
+    const zone = plateau.querySelector('[data-m-zone="travail"]')
+    const depart = { x: e.clientX, y: e.clientY }
+    let glisse = false
+
+    const bouger = (ev) => {
+      if (!glisse && Math.hypot(ev.clientX - depart.x, ev.clientY - depart.y) < SEUIL_GLISSE) return
+
+      glisse = true
+      piece.classList.add("m-jeton-vole")
+      deposer(piece, zone, { x: ev.clientX, y: ev.clientY })
+    }
+
+    const lacher = (ev) => {
+      document.removeEventListener("pointermove", bouger)
+      document.removeEventListener("pointerup", lacher)
+      document.removeEventListener("pointercancel", lacher)
+      piece.classList.remove("m-jeton-vole")
+      // Un simple appui : la pièce est déjà posée dans la zone, à la suite.
+      if (!glisse) return
+
+      const cible = zoneSous(ev.clientX, ev.clientY)
+      if (cible && plateau.contains(cible) && accepteLaPiece(piece, cible)) {
+        deposer(piece, cible, { x: ev.clientX, y: ev.clientY })
+      } else {
+        // Lâchée hors de toute zone : elle n'a jamais existé.
+        piece.remove()
+      }
+      rafraichirLePlateau(plateau)
+    }
+
+    document.addEventListener("pointermove", bouger)
+    document.addEventListener("pointerup", lacher)
+    document.addEventListener("pointercancel", lacher)
+  })
+}
+
 function brancherLesPlateaux() {
   document.querySelectorAll("[data-m-plateau]").forEach((plateau) => {
     plateau.querySelectorAll("[data-m-piece]").forEach((piece) => brancherUnePiece(piece, plateau, accepteLaPiece))
     brancherLesZones(plateau, accepteLaPiece)
 
-    plateau.querySelectorAll("[data-m-piocher]").forEach((bouton) => {
-      bouton.addEventListener("click", () => poserUnePiece(plateau, bouton.dataset.mPiocher))
-    })
+    plateau.querySelectorAll("[data-m-piocher]").forEach((bouton) => brancherLaPioche(bouton, plateau))
 
     // Enlever : la dernière pièce de cette sorte s'en va. Un « − » en face du
     // « + » se comprend sans explication.

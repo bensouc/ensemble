@@ -42,14 +42,19 @@
   <div class="m-zone m-travail" data-m-zone="travail" data-m-accepte="tout" data-m-libre>
     <p class="m-zone-titre">
       Ce que je prépare
-      <span class="m-zone-compte">En tout <span data-m-total>0</span></span>
+      <span class="m-travail-outils">
+        <%# Ranger est une DEMANDE, jamais un réflexe de l'écran : c'est l'élève
+            qui décide quand son brouillon devient lisible. Posé dans la ligne
+            de titre, il reste à sa place quand le compte est caché. %>
+        <button type="button" class="m-aligner" data-m-aligner>Ranger</button>
+        <% if probleme.plateau_compteur? %>
+          <span class="m-zone-compte">En tout <span data-m-total>0</span></span>
+        <% end %>
+      </span>
     </p>
-    <p class="m-plateau-detail">
-      <span data-m-detail></span>
-      <%# Ranger est une DEMANDE, jamais un réflexe de l'écran : c'est l'élève
-          qui décide quand son brouillon devient lisible. %>
-      <button type="button" class="m-aligner" data-m-aligner>Ranger</button>
-    </p>
+    <% if probleme.plateau_compteur? %>
+      <p class="m-plateau-detail"><span data-m-detail></span></p>
+    <% end %>
 
     <div class="m-tas m-travail-tas" data-m-tas>
       <% probleme.plateau_dizaines.times do %>

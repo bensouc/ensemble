@@ -98,6 +98,14 @@ module Manipule
       plateau_depart % 10
     end
 
+    # Le compte affiché peut DONNER la réponse : « en tout 12 » sur un problème
+    # qui demande combien il reste, et l'élève n'a plus qu'à lire. L'enseignante
+    # décide donc problème par problème. Caché par défaut : on montre moins
+    # plutôt que de souffler la réponse sans s'en rendre compte.
+    def plateau_compteur?
+      tool_data["compteur"].to_s == "1"
+    end
+
     def jeton_caractere
       RESSOURCES.fetch(tool_data["ressource"], RESSOURCES["pomme"])
     end

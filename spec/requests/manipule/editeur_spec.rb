@@ -108,8 +108,18 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
       probleme = Manipule::Problem.last
       expect(probleme).to be_dizaines_unites
       expect(probleme.plateau_depart).to eq(15)
+      # Caché par défaut : le compte peut donner la réponse.
+      expect(probleme).not_to be_plateau_compteur
       expect(probleme.plateau_dizaines).to eq(1)
       expect(probleme.plateau_unites).to eq(5)
+    end
+
+    it "montre le compte seulement quand l'enseignante le demande" do
+      post manipule_problemes_path(competence), params: {
+        probleme: champs.merge(tool: "dizaines_unites", reglages: { depart: "0", compteur: "1" })
+      }
+
+      expect(Manipule::Problem.last).to be_plateau_compteur
     end
 
     # Les champs de TOUS les outils partent avec le formulaire : masquer un
@@ -126,7 +136,7 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
 
       probleme = Manipule::Problem.last
       expect(probleme.plateau_depart).to eq(15)
-      expect(probleme.tool_data.keys).to contain_exactly("depart")
+      expect(probleme.tool_data.keys).to contain_exactly("depart", "compteur")
     end
 
     # Sans outil choisi, on ne laisse pas traîner des réglages orphelins qui

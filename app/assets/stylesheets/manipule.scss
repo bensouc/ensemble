@@ -409,8 +409,15 @@ form.button_to { display: inline-block; margin: 0; }
 
 // Ranger est une DEMANDE, jamais un réflexe de l'écran : discret, en haut à
 // droite, il attend qu'on en ait besoin.
+// Les outils de la zone, dans sa ligne de titre : ils y restent à leur place
+// quand le compte est caché.
+.m-travail-outils {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
 .m-aligner {
-  margin-left: 0.6rem;
   border: 2px solid var(--m-trait);
   border-radius: 999px;
   background: var(--m-carte);

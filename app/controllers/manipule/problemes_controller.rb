@@ -162,7 +162,8 @@ module Manipule
     # Un seul réglage : ce qui est déjà posé. La pioche ne s'épuise pas, il n'y
     # a donc pas de stock à régler.
     def reglages_du_plateau(brut)
-      { "depart" => brut[:depart].to_i }
+      { "depart" => brut[:depart].to_i,
+        "compteur" => (brut[:compteur].to_s == "1" ? "1" : "0") }
     end
   end
 end
