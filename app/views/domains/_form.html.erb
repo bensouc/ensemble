@@ -3,9 +3,13 @@
 		<div class="domain-form">
 			<%= f.input :name, label: false,input_html:{maxlength:29}, required: true,class: '--bgc-transparent',
       placeholder: 'Nom du domaine' %>
-			<div class="d-none">
-				<%= f.association :grade, value:grade%>
-			</div>
+			<%# Un champ caché, et non `f.association :grade` : celui-ci rendait un
+			    <select> de TOUS les niveaux de TOUTES les écoles dans le HTML servi
+			    à chaque enseignante. Invisible à l'œil, présent dans la source, et
+			    grandissant à chaque école inscrite — pour un champ dont la valeur
+			    est de toute façon imposée. L'écriture, elle, était déjà gardée par
+			    `DomainPolicy`, qui exige l'école du niveau. %>
+			<%= f.hidden_field :grade_id, value: grade.id %>
 			<% if current_user.demo? %>
 				<div class="--bgc-transparent m-1"
         data-controller="tooltip"
