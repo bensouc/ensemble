@@ -1,80 +1,63 @@
-<%# Le plateau des dizaines et des unités.
+<%# Les dizaines et les unités.
 
-    Deux gestes, et l'élève les fait tous les deux lui-même :
+    Deux zones, et pas une de plus : un bloc où l'élève PIOCHE, une zone où il
+    MANIPULE. La pioche ne s'épuise pas — elle fabrique une pièce à chaque
+    appui —, ce qui évite de compter un stock que personne ne regarde.
 
-      — CONSTRUIRE une dizaine avec dix unités ;
-      — EXPLOSER une dizaine en dix unités.
+    Deux gestes lui appartiennent, et aucun n'est automatique :
 
-    Et il peut PRENDRE les unes comme les autres : la réserve offre des
-    dizaines toutes faites ET des unités. Construire une dizaine est un geste,
-    en prendre une en est un autre, et les deux comptent.
+      — OUVRIR une dizaine : il la touche, elle devient dix unités ;
+      — GROUPER dix unités en une dizaine.
 
-    Rien n'est corrigé ici, rien n'est envoyé au serveur : c'est un brouillon
-    qu'on manipule avec les mains. Comme les jetons, des
+    Un échange fait par l'écran lui volerait la retenue, qui est précisément ce
+    qu'il doit comprendre.
+
+    C'est un brouillon pour s'aider à résoudre, pas un exercice : rien n'y est
+    corrigé, rien n'est envoyé au serveur. Comme les jetons, des
     <button type="button"> — on est dans le formulaire des réponses, et un
     bouton sans type y vaudrait envoi. %>
 <div class="m-outil m-plateau" data-m-plateau
-     data-max-dizaines="<%= Manipule::Problem::DIZAINES_MAX %>">
+     data-max-dizaines="<%= Manipule::Problem::DIZAINES_MAX %>"
+     data-max-unites="<%= Manipule::Problem::UNITES_MAX %>">
 
-  <div class="m-zone m-zone-reserve" data-m-zone="reserve-dizaines" data-m-accepte="barre">
-    <p class="m-zone-titre">Des dizaines à prendre
-      <span class="m-zone-compte" data-m-compte><%= probleme.plateau_reserve_dizaines %></span></p>
-    <div class="m-tas m-tas-barres" data-m-tas>
-      <% probleme.plateau_reserve_dizaines.times do |rang| %>
+  <div class="m-pioche">
+    <p class="m-zone-titre">Je prends</p>
+    <div class="m-pioche-choix">
+      <button type="button" class="m-barre" data-m-piocher="barre"
+              aria-label="Prendre une dizaine"></button>
+      <button type="button" class="m-unite" data-m-piocher="unite"
+              aria-label="Prendre une unité"></button>
+    </div>
+  </div>
+
+  <%# La zone de manipulation. Une seule : séparer les dizaines des unités en
+      deux colonnes imposerait un rangement que l'élève n'a pas demandé, et
+      l'énoncé ne parle jamais de colonnes. %>
+  <div class="m-zone m-travail" data-m-zone="travail" data-m-accepte="tout">
+    <p class="m-zone-titre">
+      Ce que je prépare
+      <span class="m-zone-compte">En tout <span data-m-total>0</span></span>
+    </p>
+    <div class="m-tas m-travail-tas" data-m-tas>
+      <% probleme.plateau_dizaines.times do %>
         <button type="button" class="m-barre" data-m-piece="barre"
-                aria-label="Dizaine à prendre <%= rang + 1 %>"></button>
+                aria-label="Dizaine, toucher pour l'ouvrir en dix unités"></button>
+      <% end %>
+      <% probleme.plateau_unites.times do %>
+        <button type="button" class="m-unite" data-m-piece="unite" aria-label="Unité"></button>
       <% end %>
     </div>
-  </div>
 
-  <div class="m-zone m-zone-reserve" data-m-zone="reserve-unites" data-m-accepte="unite">
-    <p class="m-zone-titre">Des unités à prendre
-      <span class="m-zone-compte" data-m-compte><%= probleme.plateau_reserve %></span></p>
-    <div class="m-tas" data-m-tas>
-      <% probleme.plateau_reserve.times do |rang| %>
-        <button type="button" class="m-unite" data-m-piece="unite"
-                aria-label="Unité à prendre <%= rang + 1 %>"></button>
-      <% end %>
-    </div>
-  </div>
-
-  <%# Le plateau de travail. C'est là que le nombre se construit, et le total
-      s'y lit en permanence : sans lui, l'élève manipule sans savoir où il en
-      est. %>
-  <div class="m-colonnes">
-    <div class="m-colonne" data-m-zone="dizaines" data-m-accepte="barre">
-      <p class="m-zone-titre">Dizaines <span class="m-zone-compte" data-m-compte><%= probleme.plateau_dizaines %></span></p>
-      <div class="m-tas m-tas-barres" data-m-tas>
-        <% probleme.plateau_dizaines.times do |rang| %>
-          <button type="button" class="m-barre" data-m-piece="barre"
-                  aria-label="Dizaine <%= rang + 1 %>, toucher pour l'exploser en dix unités"></button>
-        <% end %>
-      </div>
-    </div>
-
-    <div class="m-colonne" data-m-zone="unites" data-m-accepte="unite">
-      <p class="m-zone-titre">Unités <span class="m-zone-compte" data-m-compte><%= probleme.plateau_unites %></span></p>
-      <div class="m-tas" data-m-tas>
-        <% probleme.plateau_unites.times do |rang| %>
-          <button type="button" class="m-unite" data-m-piece="unite"
-                  aria-label="Unité <%= rang + 1 %>"></button>
-        <% end %>
-      </div>
-    </div>
-  </div>
-
-  <%# Le bouton n'apparaît que quand dix unités sont là : l'élève voit
-      l'échange devenir possible, et c'est lui qui le fait. %>
-  <div class="m-echange">
     <button type="button" class="m-echange-bouton" data-m-echanger hidden>
-      Construire 1 dizaine avec 10 unités
+      Grouper 10 unités en 1 dizaine
     </button>
   </div>
 
-  <p class="m-plateau-total">En tout : <span data-m-total>0</span></p>
-
   <p class="m-outil-aide">
-    Prends des dizaines et des unités. Avec dix unités tu peux construire une dizaine,
-    et toucher une dizaine l'explose en dix unités.
+    Touche une dizaine pour l'ouvrir en dix unités. Touche une pièce puis la corbeille pour l'enlever.
   </p>
+
+  <div class="m-corbeille" data-m-zone="corbeille" data-m-accepte="tout">
+    <span>Enlever</span>
+  </div>
 </div>

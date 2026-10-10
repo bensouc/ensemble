@@ -375,9 +375,41 @@ form.button_to { display: inline-block; margin: 0; }
   align-items: flex-start;
 }
 
-.m-echange {
+// Le bloc où l'on pioche : une dizaine, une unité, et c'est tout. Il ne
+// s'épuise pas — compter un stock que personne ne regarde n'apprend rien.
+.m-pioche {
+  background: var(--m-bleu-pale);
+  border: 2px solid var(--m-trait);
+  border-radius: 0.9rem;
+  padding: 0.6rem 0.7rem 0.8rem;
+}
+
+.m-pioche-choix {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+// Une seule zone de manipulation : deux colonnes imposeraient un rangement que
+// l'élève n'a pas demandé, et l'énoncé ne parle jamais de colonnes.
+.m-travail {
+  min-height: 11rem;
+}
+
+.m-travail-tas {
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 0.35rem;
+}
+
+.m-corbeille {
+  border: 2px dashed var(--m-trait);
+  border-radius: 0.9rem;
+  padding: 0.5rem;
+  text-align: center;
+  color: var(--m-encre-douce);
+  font-size: 0.95rem;
 }
 
 // Le total, lu en permanence : c'est pour s'y retrouver que l'élève manipule.

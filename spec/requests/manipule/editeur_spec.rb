@@ -102,7 +102,7 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
     it "range les réglages du plateau des dizaines et des unités" do
       post manipule_problemes_path(competence), params: {
         probleme: champs.merge(tool: "dizaines_unites",
-                               reglages: { depart: "15", dizaines: "4", unites: "12" })
+                               reglages: { depart: "15" })
       }
 
       probleme = Manipule::Problem.last
@@ -110,9 +110,6 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
       expect(probleme.plateau_depart).to eq(15)
       expect(probleme.plateau_dizaines).to eq(1)
       expect(probleme.plateau_unites).to eq(5)
-      expect(probleme.plateau_reserve).to eq(12)
-      # Il doit pouvoir PRENDRE une dizaine, pas seulement en construire une.
-      expect(probleme.plateau_reserve_dizaines).to eq(4)
     end
 
     # Les champs de TOUS les outils partent avec le formulaire : masquer un
@@ -122,14 +119,14 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
     it "ne retient que les réglages de l'outil choisi" do
       post manipule_problemes_path(competence), params: {
         probleme: champs.merge(tool: "dizaines_unites",
-                               reglages: { depart: "15", unites: "12",
+                               reglages: { depart: "15",
                                            ressource: "carotte", reserve: "30",
                                            zones: ["Le panier"] })
       }
 
       probleme = Manipule::Problem.last
-      expect(probleme.plateau_reserve).to eq(12)
-      expect(probleme.tool_data.keys).to contain_exactly("depart", "dizaines", "unites")
+      expect(probleme.plateau_depart).to eq(15)
+      expect(probleme.tool_data.keys).to contain_exactly("depart")
     end
 
     # Sans outil choisi, on ne laisse pas traîner des réglages orphelins qui

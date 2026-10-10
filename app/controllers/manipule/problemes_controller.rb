@@ -159,10 +159,10 @@ module Manipule
         "zones" => Array(brut[:zones]).map { |zone| zone.to_s.strip }.reject(&:empty?) }
     end
 
+    # Un seul réglage : ce qui est déjà posé. La pioche ne s'épuise pas, il n'y
+    # a donc pas de stock à régler.
     def reglages_du_plateau(brut)
-      { "depart" => brut[:depart].to_i,
-        "dizaines" => brut[:dizaines].to_i,
-        "unites" => brut[:unites].to_i }
+      { "depart" => brut[:depart].to_i }
     end
   end
 end

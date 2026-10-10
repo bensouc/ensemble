@@ -331,23 +331,18 @@ function brancherLesZones(outil, accepte = () => true) {
   })
 }
 
-// ── le plateau des dizaines et des unités ──────────────────────────────
+// ── les dizaines et les unités ─────────────────────────────────────────
 //
-// Un brouillon pour s'aider à résoudre, pas un exercice. L'élève prend des
-// dizaines et des unités — les deux, et c'est le point : construire une
-// dizaine avec dix unités est un geste, en prendre une toute faite en est un
-// autre, et un problème peut demander l'un ou l'autre.
+// Deux zones : un bloc où l'élève PIOCHE, une zone où il MANIPULE. La pioche
+// ne s'épuise pas — elle fabrique une pièce à chaque appui —, ce qui évite de
+// compter un stock que personne ne regarde.
 //
-// Deux gestes lui appartiennent, et aucun n'est automatique :
-//
-//   — CONSTRUIRE : dix unités du plateau deviennent une dizaine ;
-//   — EXPLOSER : une dizaine du plateau redevient dix unités.
-//
-// Un échange fait par l'écran lui volerait la retenue, qui est précisément ce
-// qu'il doit comprendre.
+// Deux gestes lui appartiennent, et aucun n'est automatique : OUVRIR une
+// dizaine en dix unités, GROUPER dix unités en une dizaine. Un échange fait
+// par l'écran lui volerait la retenue.
 
-function tasDe(plateau, nom) {
-  return plateau.querySelector(`[data-m-zone="${nom}"] [data-m-tas]`)
+function tasDeTravail(plateau) {
+  return plateau.querySelector('[data-m-zone="travail"] [data-m-tas]')
 }
 
 function unePiece(sorte) {
@@ -356,42 +351,36 @@ function unePiece(sorte) {
   piece.className = sorte === "barre" ? "m-barre" : "m-unite"
   piece.dataset.mPiece = sorte
   piece.setAttribute("aria-label",
-    sorte === "barre" ? "Dizaine, toucher pour l'exploser en dix unités" : "Unité")
+    sorte === "barre" ? "Dizaine, toucher pour l'ouvrir en dix unités" : "Unité")
   return piece
 }
 
-// Une unité n'a rien à faire dans la colonne des dizaines, et réciproquement :
-// chaque case dit ce qu'elle accepte.
-function accepteLaPiece(piece, zone) {
-  return zone.dataset.mAccepte === piece.dataset.mPiece
+function combien(plateau, sorte) {
+  return tasDeTravail(plateau)?.querySelectorAll(`[data-m-piece="${sorte}"]`).length || 0
 }
 
-// Ce que vaut le plateau, à tout moment. Sans ce total, l'élève manipule sans
-// savoir où il en est — et c'est pour s'y retrouver qu'il manipule.
-function recompter(plateau) {
-  compter(plateau)
-  const total = plateau.querySelector("[data-m-total]")
-  if (!total) return
-
-  const dizaines = tasDe(plateau, "dizaines")?.children.length || 0
-  const unites = tasDe(plateau, "unites")?.children.length || 0
-  total.textContent = dizaines * 10 + unites
+// La corbeille prend tout, la zone de travail aussi : l'élève range comme il
+// veut. Ce qui est borné, c'est la quantité — au-delà, l'écran devient
+// illisible et le geste perd son sens.
+function accepteLaPiece(_piece, zone) {
+  return zone.dataset.mAccepte === "tout"
 }
 
-// Le bouton n'apparaît que quand les dix unités sont là : l'élève VOIT
-// l'échange devenir possible, et c'est lui qui le fait.
-function reglerLEchange(plateau) {
-  const bouton = plateau.querySelector("[data-m-echanger]")
-  if (!bouton) return
-
-  const unites = tasDe(plateau, "unites")?.children.length || 0
-  const dizaines = tasDe(plateau, "dizaines")?.children.length || 0
-  bouton.hidden = !(unites >= 10 && dizaines < Number(plateau.dataset.maxDizaines || 9))
+function placeLibre(plateau, sorte) {
+  const maximum = Number(sorte === "barre" ? plateau.dataset.maxDizaines : plateau.dataset.maxUnites) || 9
+  return combien(plateau, sorte) < maximum
 }
 
+// Le total, lu en permanence : sans lui l'élève manipule sans savoir où il en
+// est, et c'est pour s'y retrouver qu'il manipule.
 function rafraichirLePlateau(plateau) {
-  recompter(plateau)
-  reglerLEchange(plateau)
+  const total = plateau.querySelector("[data-m-total]")
+  if (total) total.textContent = (combien(plateau, "barre") * 10) + combien(plateau, "unite")
+
+  const bouton = plateau.querySelector("[data-m-echanger]")
+  // Le bouton n'apparaît que quand les dix unités sont là : l'élève VOIT le
+  // groupement devenir possible, et c'est lui qui le fait.
+  if (bouton) bouton.hidden = !(combien(plateau, "unite") >= 10 && placeLibre(plateau, "barre"))
 }
 
 function brancherUnePieceDuPlateau(piece, plateau) {
@@ -399,24 +388,29 @@ function brancherUnePieceDuPlateau(piece, plateau) {
 
   if (piece.dataset.mPiece !== "barre") return
 
-  // Exploser une dizaine : le geste de la soustraction. Au simple appui — et
-  // seulement sur le plateau : une dizaine de la réserve, on la prend, on ne
-  // l'explose pas avant de l'avoir posée.
+  // Ouvrir une dizaine : un simple appui, et c'est le geste le plus simple de
+  // l'outil. Les dix crans de la barre disent déjà qu'elle en contient dix.
   piece.addEventListener("click", () => {
-    if (piece.closest('[data-m-zone="dizaines"]') === null) return
-
-    const unites = tasDe(plateau, "unites")
-    if (!unites) return
+    const tas = tasDeTravail(plateau)
+    if (!tas || !tas.contains(piece)) return
 
     oublierLeChoix()
-    piece.remove()
-    for (let i = 0; i < 10; i += 1) {
+    piece.replaceWith(...Array.from({ length: 10 }, () => {
       const cube = unePiece("unite")
-      unites.appendChild(cube)
       brancherUnePieceDuPlateau(cube, plateau)
-    }
+      return cube
+    }))
     rafraichirLePlateau(plateau)
   })
+}
+
+function poserUnePiece(plateau, sorte) {
+  if (!placeLibre(plateau, sorte)) return
+
+  const piece = unePiece(sorte)
+  tasDeTravail(plateau)?.appendChild(piece)
+  brancherUnePieceDuPlateau(piece, plateau)
+  rafraichirLePlateau(plateau)
 }
 
 function brancherLesPlateaux() {
@@ -424,21 +418,25 @@ function brancherLesPlateaux() {
     plateau.querySelectorAll("[data-m-piece]").forEach((piece) => brancherUnePieceDuPlateau(piece, plateau))
     brancherLesZones(plateau, accepteLaPiece)
 
-    plateau.querySelector("[data-m-echanger]")?.addEventListener("click", () => {
-      const unites = tasDe(plateau, "unites")
-      const dizaines = tasDe(plateau, "dizaines")
-      if (!unites || !dizaines || unites.children.length < 10) return
-
-      oublierLeChoix()
-      for (let i = 0; i < 10; i += 1) unites.lastElementChild.remove()
-      const barre = unePiece("barre")
-      dizaines.appendChild(barre)
-      brancherUnePieceDuPlateau(barre, plateau)
-      rafraichirLePlateau(plateau)
+    plateau.querySelectorAll("[data-m-piocher]").forEach((bouton) => {
+      bouton.addEventListener("click", () => poserUnePiece(plateau, bouton.dataset.mPiocher))
     })
 
-    // Une pièce déposée change le total, et peut rendre l'échange possible.
-    plateau.addEventListener("m:change", () => rafraichirLePlateau(plateau))
+    plateau.querySelector("[data-m-echanger]")?.addEventListener("click", () => {
+      const tas = tasDeTravail(plateau)
+      if (!tas || combien(plateau, "unite") < 10) return
+
+      oublierLeChoix()
+      Array.from(tas.querySelectorAll('[data-m-piece="unite"]')).slice(0, 10).forEach((u) => u.remove())
+      poserUnePiece(plateau, "barre")
+    })
+
+    plateau.addEventListener("m:change", () => {
+      // La corbeille ne garde rien : ce qu'on y dépose disparaît. C'est le
+      // seul moyen de se corriger sans tout recommencer.
+      plateau.querySelectorAll('[data-m-zone="corbeille"] [data-m-piece]').forEach((p) => p.remove())
+      rafraichirLePlateau(plateau)
+    })
     rafraichirLePlateau(plateau)
   })
 }

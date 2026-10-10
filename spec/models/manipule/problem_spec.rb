@@ -141,8 +141,8 @@ RSpec.describe Manipule::Problem do
   # Le plateau des dizaines et des unités : ce que l'enseignante pose avant
   # que l'élève n'arrive, rangé comme il l'aurait rangé lui-même.
   describe "le plateau des dizaines et des unités" do
-    def plateau(depart:, unites: 0)
-      described_class.new(tool: "dizaines_unites", tool_data: { "depart" => depart, "unites" => unites })
+    def plateau(depart:)
+      described_class.new(tool: "dizaines_unites", tool_data: { "depart" => depart })
     end
 
     it "range le départ en barres et en unités" do
@@ -157,13 +157,11 @@ RSpec.describe Manipule::Problem do
     it "borne ce qu'on peut poser et ce qu'on peut prendre" do
       expect(plateau(depart: 999).plateau_depart).to eq(described_class::DIZAINES_MAX * 10 + 9)
       expect(plateau(depart: -5).plateau_depart).to eq(0)
-      expect(plateau(depart: 0, unites: 99).plateau_reserve).to eq(described_class::UNITES_MAX)
     end
 
-    # La boîte de dix n'en contient jamais onze : ce qui dépasse est déjà
-    # rangé en barres. L'écran ne peut donc pas démarrer dans un état que
-    # l'élève n'aurait pas pu atteindre lui-même.
-    it "ne pose jamais plus de neuf unités dans la boîte" do
+    # Ce qui dépasse dix est déjà rangé en barres : l'écran ne démarre jamais
+    # dans un état que l'élève n'aurait pas pu atteindre lui-même.
+    it "ne pose jamais plus de neuf unités au départ" do
       (0..99).each { |n| expect(plateau(depart: n).plateau_unites).to be < 10 }
     end
 

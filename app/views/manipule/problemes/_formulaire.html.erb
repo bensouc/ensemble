@@ -107,27 +107,13 @@
     </div>
 
     <div class="m-champ ps-3 border-start" data-m-si="dizaines_unites">
-      <div class="row g-2 mb-2">
-        <div class="col">
-          <%= label_tag "probleme[reglages][depart]", "Déjà posé sur le plateau", class: "form-label" %>
-          <%= number_field_tag "probleme[reglages][depart]", probleme.tool_data["depart"] || 0,
-                               min: 0, max: (Manipule::Problem::DIZAINES_MAX * 10) + 9, class: "area" %>
-          <span class="m-champ-aide">Laissez 0 pour qu'il parte de rien et construise lui-même.</span>
-        </div>
-        <div class="col">
-          <%= label_tag "probleme[reglages][dizaines]", "Dizaines à prendre", class: "form-label" %>
-          <%= number_field_tag "probleme[reglages][dizaines]", probleme.tool_data["dizaines"] || 5,
-                               min: 0, max: Manipule::Problem::DIZAINES_MAX, class: "area" %>
-        </div>
-        <div class="col">
-          <%= label_tag "probleme[reglages][unites]", "Unités à prendre", class: "form-label" %>
-          <%= number_field_tag "probleme[reglages][unites]", probleme.tool_data["unites"] || 20,
-                               min: 0, max: Manipule::Problem::UNITES_MAX, class: "area" %>
-        </div>
-      </div>
+      <%= label_tag "probleme[reglages][depart]", "Déjà posé sur la zone", class: "form-label" %>
+      <%= number_field_tag "probleme[reglages][depart]", probleme.tool_data["depart"] || 0,
+                           min: 0, max: (Manipule::Problem::DIZAINES_MAX * 10) + 9, class: "area" %>
       <span class="m-champ-aide">
-        Il prend les unes comme les autres : construire une dizaine avec dix unités est un geste,
-        en prendre une toute faite en est un autre.
+        Laissez 0 pour qu'il parte de rien. Il pioche ensuite autant de dizaines et d'unités
+        qu'il veut : construire une dizaine avec dix unités est un geste, en prendre une toute
+        faite en est un autre.
       </span>
     </div>
   </div>
