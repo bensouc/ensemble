@@ -72,6 +72,15 @@ RSpec.describe Manipule::Problem do
     expect(build(:manipule_problem, tool: "boulier")).not_to be_valid
   end
 
+  # « Aucun » dans le menu renvoie une chaîne vide, pas `nil` : la validation
+  # la refusait, et une manipulation sans outil était impossible à enregistrer.
+  it "accepte « Aucun », que le menu envoie comme une chaîne vide" do
+    probleme = build(:manipule_problem, tool: "")
+
+    expect(probleme).to be_valid
+    expect(probleme.tool).to be_nil
+  end
+
   it "tient son niveau de ceinture de sa compétence" do
     probleme = create(:manipule_problem)
 

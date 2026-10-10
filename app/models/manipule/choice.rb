@@ -10,7 +10,7 @@ module Manipule
     # ne nettoie rien toute seule.
     has_many :audios, as: :readable, class_name: "Manipule::Audio", dependent: :destroy
 
-    validates :label, presence: true
+    validates :label, presence: { message: "est vide : les trois cases doivent être remplies" }
 
     # Seulement sur modification : la création d'une réponse accompagne celle
     # de son problème, dont le propre déclencheur suffit.

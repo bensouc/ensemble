@@ -68,6 +68,23 @@ fr:
     ended: "Terminé"
   activerecord:
     attributes:
+      # Sans ces noms, les erreurs de l'éditeur de Manipule montraient à
+      # l'enseignante le nom anglais de la colonne : « Statement doit être
+      # rempli(e) ». Le reste de chaque phrase est écrit sur le modèle.
+      manipule/problem:
+        skill: "La compétence"
+        statement: "L'énoncé"
+        question: "La question"
+        answer_mode: "Le mode de réponse"
+        answer: "La réponse attendue"
+        unit: "L'unité"
+        tool: "L'outil"
+      # Les réponses remontent sur le problème sous le nom « choices.label » :
+      # c'est LUI qu'il faut nommer, pas seulement le modèle des réponses.
+      manipule/problem/choices:
+        label: "Une réponse"
+      manipule/choice:
+        label: "La réponse"
       challenge:
         name: Nom
       domain:

@@ -163,7 +163,7 @@ export default class extends Controller {
       const copie = cases[cases.length - 1].cloneNode(true)
       const champ = copie.querySelector("input")
       champ.value = ""
-      champ.placeholder = "Une autre case"
+      champ.placeholder = "Ex. Le sac de Lila"
       champ.setAttribute("aria-label", `Nom de la case ${cases.length + 1}`)
       retirer(copie.querySelector("[data-m-retirer-case]"))
       liste.appendChild(copie)

@@ -43,11 +43,21 @@ module Manipule
 
     accepts_nested_attributes_for :choices, allow_destroy: true
 
-    validates :statement, presence: true
-    validates :question, presence: true
-    validates :answer_mode, inclusion: { in: MODES }
-    validates :tool, inclusion: { in: OUTILS }, allow_nil: true
-    validates :answer, presence: true, if: :saisie?
+    # « Aucun » est une valeur du menu, et un menu renvoie une chaîne vide, pas
+    # `nil` : sans cette normalisation, `allow_nil` ne s'appliquait pas et une
+    # manipulation SANS outil était refusée — « Tool n'est pas inclus dans la
+    # liste », sur un formulaire où l'enseignante n'avait rien choisi.
+    normalizes :tool, with: ->(valeur) { valeur.presence }
+
+    # Chaque message est écrit : ceux de Rails parlent anglais des attributs
+    # (« Statement doit être rempli(e) ») et l'enseignante ne sait pas ce
+    # qu'est un « statement ». Les noms français des champs sont dans
+    # `fr.yml`, le reste de la phrase ici.
+    validates :statement, presence: { message: "est vide : écrivez l'histoire, sans la question" }
+    validates :question, presence: { message: "est vide : c'est ce qu'on demande à l'élève" }
+    validates :answer_mode, inclusion: { in: MODES, message: "n'a pas été choisi" }
+    validates :tool, inclusion: { in: OUTILS, message: "n'existe pas" }, allow_nil: true
+    validates :answer, presence: { message: "est vide : écrivez le nombre attendu" }, if: :saisie?
     validate :exactement_une_bonne_reponse, if: :choix?
 
     # L'audio se fabrique quand le problème entre en circulation, et se refait

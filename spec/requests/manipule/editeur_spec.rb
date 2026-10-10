@@ -166,6 +166,37 @@ RSpec.describe "Manipule, l'éditeur d'un problème" do
       expect(response).to have_http_status(:unprocessable_content)
       expect(response.body).to include("probleme[bonne_reponse]")
     end
+
+    # Les messages de Rails nomment la COLONNE : « Statement doit être
+    # rempli(e) », « Choices label… ». L'enseignante lisait de l'anglais de
+    # base de données sur ses propres champs.
+    it "dit en français ce qui manque" do
+      post manipule_problemes_path(competence),
+           params: { probleme: champs(statement: "", question: "") }
+
+      expect(response.body).to include("L&#39;énoncé est vide")
+      expect(response.body).to include("La question est vide")
+      expect(response.body).not_to match(/Statement|Question doit|Choices/)
+    end
+
+    # Le bloc des trois cases est MASQUÉ quand l'élève doit écrire sa réponse,
+    # et un bloc masqué s'envoie quand même. Vides, ses cases rendaient le
+    # problème invalide : plus aucune manipulation « un nombre à écrire » ne
+    # pouvait être enregistrée, sur une erreur désignant des champs invisibles.
+    it "enregistre un nombre à écrire, les trois cases restées vides" do
+      post manipule_problemes_path(competence), params: {
+        probleme: champs(answer_mode: "saisie", answer: "8", unit: "pommes",
+                         choices_attributes: {
+                           "0" => { label: "", position: "1" },
+                           "1" => { label: "", position: "2" },
+                           "2" => { label: "", position: "3" }
+                         })
+      }
+
+      probleme = Manipule::Problem.last
+      expect(probleme.answer).to eq("8")
+      expect(probleme.choices).to be_empty
+    end
   end
 
   describe "la modification" do

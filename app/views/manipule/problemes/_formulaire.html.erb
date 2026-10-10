@@ -13,23 +13,15 @@
                             data: { "m-editeur": true,
                                     "manipule-editeur-target": "formulaire",
                                     apercu: manipule_apercu_probleme_path(competence) } } do |f| %>
-  <% if probleme.errors.any? %>
-    <div class="m-fiche m-fiche-erreur mb-3">
-      <ul class="mb-0">
-        <% probleme.errors.full_messages.each do |message| %><li><%= message %></li><% end %>
-      </ul>
-    </div>
-  <% end %>
-
   <div class="form-inputs">
     <%= f.input :statement, label: "L'énoncé", as: :text,
                 input_html: { rows: 3, class: "area",
-                              placeholder: "Il y a 15 pommes sur le pommier. Sam cueille 7 pommes." },
+                              placeholder: "Ex. Il y a 15 pommes sur le pommier. Sam cueille 7 pommes." },
                 hint: "L'histoire, sans la question. C'est ce que l'élève entend en premier." %>
 
     <%= f.input :question, label: "La question",
                 input_html: { class: "area",
-                              placeholder: "Combien reste-t-il de pommes sur le pommier ?" } %>
+                              placeholder: "Ex. Combien reste-t-il de pommes sur le pommier ?" } %>
 
     <%= f.input :answer_mode, label: "Comment l'élève répond", as: :radio_buttons,
                 collection: [["Trois réponses au choix", "choix"], ["Un nombre à écrire", "saisie"]],
@@ -60,17 +52,32 @@
             </label>
             <%= c.hidden_field :id %>
             <%= c.hidden_field :position, value: rang + 1 %>
-            <%= c.text_field :label, class: "area", placeholder: "Réponse #{rang + 1}" %>
+            <%= c.text_field :label, class: "area",
+                                     placeholder: ["Ex. 8", "Ex. 7", "Ex. 22"][rang] || "Ex. 12",
+                                     "aria-label": "Réponse #{rang + 1}" %>
           </div>
         <% end %>
+      <% end %>
+
+      <%# Il n'y avait plus qu'un encart en haut de page, et il répétait mot
+          pour mot ce que chaque champ dit déjà sous lui. Restent ces deux-là,
+          qui n'ont nulle part où s'afficher : les cases sont écrites à la
+          main, donc sans l'habillage de simple_form, et « exactement une
+          bonne réponse » porte sur les trois ensemble. Elles se lisent ici,
+          sous le bloc qu'elles concernent.
+          `uniq` : trois cases vides donnaient trois fois la même phrase. %>
+      <% probleme.errors.
+           select { |erreur| erreur.attribute == :base || erreur.attribute.to_s.start_with?("choices.") }.
+           map(&:full_message).uniq.each do |message| %>
+        <div class="invalid-feedback d-block"><%= message %></div>
       <% end %>
     </div>
 
     <div class="row g-2 m-champ" data-m-si-saisie>
       <div class="col"><%= f.input :answer, label: "La réponse attendue",
-                                   input_html: { class: "area", placeholder: "8" } %></div>
+                                   input_html: { class: "area", placeholder: "Ex. 8" } %></div>
       <div class="col"><%= f.input :unit, label: "L'unité",
-                                   input_html: { class: "area", placeholder: "pommes" } %></div>
+                                   input_html: { class: "area", placeholder: "Ex. pommes" } %></div>
     </div>
 
     <%= f.input :tool, label: "Un outil à manipuler",
@@ -105,7 +112,7 @@
         <% [cases.size + 1, 2].max.times do |rang| %>
           <div class="m-case" data-m-case>
             <%= text_field_tag "probleme[reglages][zones][]", cases[rang], class: "area",
-                               placeholder: ["Le panier de Sam", "Restées sur l'arbre"][rang] || "Une autre case",
+                               placeholder: ["Ex. Le panier de Sam", "Ex. Restées sur l'arbre"][rang] || "Ex. Le sac de Lila",
                                "aria-label": "Nom de la case #{rang + 1}" %>
             <button type="button" class="rmv-skill-btn" data-m-retirer-case
                     aria-label="Retirer cette case"><i class="far fa-times-circle"></i></button>

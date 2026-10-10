@@ -121,9 +121,21 @@ module Manipule
                    { choices_attributes: [%i[id label position]] }]
       ).to_h
 
-      base["choices_attributes"] = choix_avec_la_bonne(base["choices_attributes"])
+      base["choices_attributes"] = reponses(base["choices_attributes"])
       base["tool_data"] = reglages
       base
+    end
+
+    # Les trois cases sont dans le formulaire MÊME quand l'élève doit écrire sa
+    # réponse : le bloc est masqué, pas désactivé, et un bloc masqué s'envoie
+    # quand même. Vides, elles rendaient le problème invalide — « une réponse
+    # est vide », à propos de champs que l'enseignante ne voyait pas. Aucune
+    # manipulation « un nombre à écrire » ne pouvait être enregistrée.
+    def reponses(choix)
+      choix = choix_avec_la_bonne(choix)
+      return choix unless params[:probleme][:answer_mode] == "saisie"
+
+      choix.reject { |_rang, attributs| attributs["label"].blank? }
     end
 
     # La bonne réponse est un bouton radio, pas trois cases à cocher : le
