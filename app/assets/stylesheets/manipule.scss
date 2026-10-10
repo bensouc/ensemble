@@ -394,13 +394,58 @@ form.button_to { display: inline-block; margin: 0; }
 // Une seule zone de manipulation : deux colonnes imposeraient un rangement que
 // l'élève n'a pas demandé, et l'énoncé ne parle jamais de colonnes.
 .m-travail {
-  min-height: 11rem;
+  position: relative;
+  min-height: 14rem;
 }
 
+// `position: relative` : les pièces posées à la main s'y placent en absolu.
 .m-travail-tas {
+  position: relative;
   align-items: flex-start;
   align-content: flex-start;
   gap: 0.35rem;
+  min-height: 11rem;
+}
+
+// Ranger est une DEMANDE, jamais un réflexe de l'écran : discret, en haut à
+// droite, il attend qu'on en ait besoin.
+.m-aligner {
+  margin-left: 0.6rem;
+  border: 2px solid var(--m-trait);
+  border-radius: 999px;
+  background: var(--m-carte);
+  color: var(--m-encre-douce);
+  padding: 0.2rem 0.8rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--m-rose);
+    color: var(--m-rose);
+  }
+}
+
+// La case qui échange. Elle ne garde rien : ce qu'on y met en ressort
+// transformé. D'où le trait plein et la couleur — c'est une machine, pas un
+// rangement de plus.
+.m-machine {
+  border: 2px solid var(--m-rose);
+  border-radius: 0.9rem;
+  padding: 0.6rem 0.7rem 0.8rem;
+  background: var(--m-carte);
+}
+
+.m-machine-tas {
+  min-height: 4rem;
+  align-items: flex-start;
+  align-content: flex-start;
+  gap: 0.35rem;
+}
+
+.m-machine-regle {
+  margin: 0.4rem 0 0;
+  font-size: 0.95rem;
+  color: var(--m-encre-douce);
 }
 
 // Une pièce et son « − » côte à côte : on en prend, on en enlève. Se comprend
@@ -431,7 +476,9 @@ form.button_to { display: inline-block; margin: 0; }
 
 // Le détail sous le total : trois dizaines et cinq unités font trente-cinq.
 .m-plateau-detail {
-  margin: 0.2rem 0 0;
+  display: flex;
+  align-items: center;
+  margin: 0.2rem 0 0.4rem;
   font-size: 1rem;
   color: var(--m-encre-douce);
 }
