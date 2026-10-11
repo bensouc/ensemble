@@ -1,5 +1,7 @@
 <div class="px-4 py-4 m-prof">
   <%= render "manipule/shared/nav" %>
+  <%# Où vit la compétence : dans les progressions d'Ensemble, ou hors d'elles. %>
+  <%= render Ui::TabsComponent.new(label: "Manipulations", tabs: onglets_manipulations) %>
   <% filtres = capture do %>
     <%# Les trois mêmes crans que « Mes progressions de compétences » : niveau,
         domaine, ceinture. Une école porte plus de mille compétences — sans ces

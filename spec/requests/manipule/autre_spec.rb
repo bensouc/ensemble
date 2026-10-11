@@ -29,6 +29,18 @@ RSpec.describe "Manipule, le domaine « Autre »" do
     expect(competence.school).to eq(enseignante.school)
   end
 
+  # « Autre » ne disait rien de ce qui le distinguait des manipulations : un
+  # seul onglet, et deux sous-onglets qui disent où vit la compétence.
+  it "se range sous Manipulations, en sous-onglet « Mes compétences »" do
+    get manipule_autre_path
+
+    page = Nokogiri::HTML(response.body)
+    expect(page.css(".m-onglets a").map { |a| a.text.strip }).to include("Manipulations")
+    expect(page.css(".m-onglets a").map { |a| a.text.strip }).not_to include("Autre")
+    expect(page.css(".ui-tabs a").map(&:text)).to eq(["Progressions d'Ensemble", "Mes compétences"])
+    expect(page.at_css(".ui-tabs a.ui-tabs-active").text).to eq("Mes compétences")
+  end
+
   it "ne crée qu'un domaine « Autre » par niveau" do
     2.times { |rang| post manipule_autre_path, params: { grade_id: niveau.id, nom: "Compétence #{rang}", ceinture: 1 } }
 
