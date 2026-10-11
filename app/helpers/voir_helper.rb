@@ -2,7 +2,9 @@
 
 # Les onglets des deux sections de « Voir » : chacune a sa liste, et ses
 # exercices — les exercices classiques pour les plans de travail, ceux de
-# ceinture pour les ceintures.
+# ceinture pour les ceintures. Les libellés des ceintures le disent : les deux
+# pages se ressemblent trait pour trait, et « Exercices » des deux côtés
+# laissait croire à une même liste.
 module VoirHelper
   # La section de « Voir » où l'on se trouve : le sous-menu de la barre de gauche
   # reste ouvert tant qu'on y est, et son entrée y est marquée. `nil` hors de
@@ -29,8 +31,8 @@ module VoirHelper
 
   def onglets_ceintures(actif)
     [
-      { label: "Ceintures", href: belt_sheets_path, active: actif == :liste },
-      { label: "Exercices", href: challenges_path(ceinture: 1), active: actif == :exercices }
+      { label: "Fiches de ceinture", href: belt_sheets_path, active: actif == :liste },
+      { label: "Exercices de ceinture", href: challenges_path(ceinture: 1), active: actif == :exercices }
     ]
   end
 end
