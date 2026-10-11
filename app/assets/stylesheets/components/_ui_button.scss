@@ -1,0 +1,71 @@
+@use "../config/colors";
+@use "../config/global";
+
+// Le bouton d'Ensemble (`Ui::ButtonComponent`). La pastille de la refonte des
+// plans de travail (`global.pill-cta`), déclinée en variantes.
+//
+// Chaque variante est écrite `.ui-btn.ui-btn--…` : deux classes, pour l'emporter
+// sur les règles d'écran qui visent `button` dans un conteneur — celle du titre
+// d'une carte de classe (`.classroom-name button`) colorait en rose tous les
+// boutons de la modale qu'il héberge.
+
+.ui-btn {
+  margin: 0;
+
+  &.ui-btn--secondary {
+    @include global.pill-cta($height: 34px);
+  }
+
+  &.ui-btn--neutral {
+    @include global.pill-cta($color: colors.$grisF, $height: 34px);
+  }
+
+  &.ui-btn--success {
+    @include global.pill-cta($color: colors.$green, $height: 34px);
+  }
+
+  // Déjà pleine au repos : elle ressort des actions secondaires. Au survol, le
+  // seul soulèvement de la pastille.
+  &.ui-btn--primary {
+    @include global.pill-cta($height: 34px);
+    background-color: colors.$rose;
+    color: colors.$blanc;
+  }
+
+  &.ui-btn--icon {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background-color: transparent;
+    color: colors.$rose;
+    font-size: 16px;
+    transition: 0.25s;
+
+    &:hover,
+    &[aria-expanded="true"] {
+      background-color: rgba(colors.$rose, 0.08);
+      cursor: pointer;
+    }
+  }
+
+  // Les CTA des listes d'exercices : 24 px de haut.
+  &.ui-btn--sm {
+    height: 24px;
+    padding: 0 12px;
+
+    &.ui-btn--icon {
+      width: 24px;
+      padding: 0;
+    }
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}

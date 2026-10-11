@@ -55,25 +55,17 @@
                   } %>
 						</div>
 					<% end %>
-					<div class='m-top box-end' id='dmn-validate'>
-						<%#= f.submit "Valider", class: 'validate-domain-btn fs-2' %>
-						<%= f.button :button,
-                     "Exercices",
-                     type: "submit",
-                     name: "kind",
-                     value: "exercice",
-                     class: "validate-domain-btn fs-2 ms-3 font-weight-bold d-none",
-                     data: {domain_form_target:'btn'} %>
-						<%= f.button :button,
-                     "Ceinture",
-                     type: "submit",
-                     name: "kind",
-                     value: "ceinture",
-                     class: "validate-domain-btn fs-2 ms-3 font-weight-bold d-none",
-                     data: {domain_form_target:'btn'} %>
-						<%= link_to work_plan_path(work_plan, anchor: "bottom"), class: 'cancel-domain-btn' do %>
-							<i class="fas fa-times"></i>
-						<% end %>
+					<%# Les deux envois restent cachés (`d-none`) tant qu'aucune ceinture n'est
+					    choisie : `domain-form` les montre. %>
+					<div class="m-top box-end gap-2" id="dmn-validate">
+						<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral,
+						                                   href: work_plan_path(work_plan, anchor: "bottom")) %>
+						<%= render Ui::ButtonComponent.new("Exercices", variant: :primary, type: "submit",
+						                                   data: { domain_form_target: "btn" },
+						                                   html: { name: "kind", value: "exercice", class: "d-none" }) %>
+						<%= render Ui::ButtonComponent.new("Ceinture", variant: :primary, type: "submit",
+						                                   data: { domain_form_target: "btn" },
+						                                   html: { name: "kind", value: "ceinture", class: "d-none" }) %>
 					</div>
 				<% end %>
 			</div>

@@ -1,0 +1,10 @@
+// `Classrooms::TitleComponent` : le niveau, en petit à droite du nom d'une
+// classe. Il ne reprend ni le gras ni l'italique du titre : c'est une
+// précision, pas le nom.
+.classroom-title-grade {
+  margin-left: 0.35em;
+  font-size: 0.55em;
+  font-style: normal;
+  font-weight: 600;
+  opacity: 0.75;
+}

@@ -22,8 +22,7 @@
 						<h5 class="modal-title">
 							Nouveau plan de travail pour <%= @student.first_name.capitalize %>
 						</h5>
-						<button type="button" class="btn-close" aria-label="Fermer"
-						        data-action="click->modals#emptyModal"></button>
+						<%= render Ui::ButtonComponent.new(variant: :icon, icon: "fa-xmark", title: "Fermer", html: { class: "ms-auto" }, data: { action: "click->modals#emptyModal" }) %>
 					</div>
 					<div class="modal-body">
 						<%= f.hidden_field :student_id %>
@@ -63,12 +62,11 @@
 							<em>Le plan s'ouvrira dans un nouvel onglet. Un plan auto-généré
 								reprend les ceintures et résultats de <%= @student.first_name.capitalize %>.</em>
 						</p>
-						<div class="d-flex">
-							<%= f.button :button, "Plan vierge", class: "utility-wp-btn" %>
-							<%= f.button :button, "Auto, selon son niveau",
-							             class: "utility-wp-btn utility-wp-btn--primary",
-							             formaction: student_auto_new_wp_path(@student),
-							             data: { action: "click->domaines-auto#deplier" } %>
+						<div class="d-flex gap-2">
+							<%= render Ui::ButtonComponent.new("Plan vierge", type: "submit") %>
+							<%= render Ui::ButtonComponent.new("Auto, selon son niveau", variant: :primary, type: "submit",
+							                                   data: { action: "click->domaines-auto#deplier" },
+							                                   html: { formaction: student_auto_new_wp_path(@student) }) %>
 						</div>
 					</div>
 				</div>

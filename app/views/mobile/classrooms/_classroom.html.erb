@@ -5,7 +5,7 @@
 		<%= link_to mobile_classrooms_path, class: "mobile-classe-entete" do %>
 			<span class="mobile-classe-niveau"><%= classroom.grade.grade_level.upcase %></span>
 			<span class="mobile-classe-corps">
-				<span class="mobile-classe-nom"><%= classroom.safe_name %></span>
+				<span class="mobile-classe-nom"><%= classroom.display_name %></span>
 				<span class="mobile-classe-effectif"><%= eleves_label(students.size) %></span>
 			</span>
 			<i class="fa-solid fa-chevron-down --roseL"></i>
