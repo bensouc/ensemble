@@ -133,6 +133,16 @@ color: colors.$grisF;
     color: colors.$grisF;
   }
 }
+// L'entrée de « Voir » où l'on se trouve : le rose de l'état courant, sur le
+// fond à 8 % des pastilles — on la repère d'un coup d'œil.
+.sub-link--active {
+  margin-left: -10px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background-color: rgba(colors.$rose, 0.08);
+  color: colors.$rose;
+  font-weight: 600;
+}
 
 .menug_icone-dead{
   align-items: center;
