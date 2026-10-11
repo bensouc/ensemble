@@ -2,7 +2,7 @@
   <%= render "manipule/shared/nav" %>
   <%# Où vit la compétence : dans les progressions d'Ensemble, ou hors d'elles. %>
   <%= render Ui::TabsComponent.new(label: "Manipulations", tabs: onglets_manipulations, secondary: true) %>
-  <%= render "manipule/shared/entete", titre: "Mes compétences",
+  <%= render "manipule/shared/entete", titre: "Progression Manipule",
              note: "Vos propres compétences, pour ce qui ne relève d'aucune progression d'Ensemble." %>
 
   <div class="m-fiche mb-4">
@@ -16,7 +16,7 @@
 
   <% if @niveaux.empty? %>
     <p class="m-fiche-note">
-      « Mes compétences » s'appuie sur les niveaux de vos classes, et vous n'en avez pas encore.
+      « Progression Manipule » s'appuie sur les niveaux de vos classes, et vous n'en avez pas encore.
       Créez une classe dans <%= link_to "Mes Classes", classrooms_path %>.
     </p>
   <% else %>

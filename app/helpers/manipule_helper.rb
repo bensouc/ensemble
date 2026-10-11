@@ -35,8 +35,8 @@ module ManipuleHelper
   # progressions d'Ensemble, et celles que l'enseignante crée elle-même.
   def onglets_manipulations
     [
-      { label: "Progressions d'Ensemble", href: manipule_banque_path, active: controller_name == "banque" },
-      { label: "Mes compétences", href: manipule_autre_path, active: controller_name == "autre" }
+      { label: "Progression Ensemble", href: manipule_banque_path, active: controller_name == "banque" },
+      { label: "Progression Manipule", href: manipule_autre_path, active: controller_name == "autre" }
     ]
   end
 
