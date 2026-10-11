@@ -1,0 +1,59 @@
+<%# Voir > Ceintures : la présentation de Voir > Plans de travail — une classe,
+    puis un dossier par élève, ses fiches dedans. %>
+<div class="container3">
+	<% if @classrooms.empty? %>
+		<p class="belt-sheet-empty">Aucune classe n'a ouvert les fiches de ceinture : le réglage est dans la modale de la classe.</p>
+	<% end %>
+	<% @classrooms.each do |classroom| %>
+		<div class="wp-one-classroom">
+			<h1><%= render(Classrooms::TitleComponent.new(classroom: classroom)) %></h1>
+			<% classroom.students.order(:first_name).each do |student| %>
+				<% fiches = @sheets_by_student.fetch(student.id, []) %>
+				<div data-controller="wp-by-student">
+					<div class="d-flex wp-student-header">
+						<div class="d-flex wp-student-folder" data-action="click->wp-by-student#displayList">
+							<div class="index-folder">
+								<i class="fa-solid fa-folder-closed me-4 ms-3" data-wp-by-student-target="folderopen"></i>
+								<i class="fa-solid fa-folder-open me-4 ms-3 d-none" data-wp-by-student-target="folderclosed"></i>
+							</div>
+							<div class="index-wp-name d-flex">
+								<div class="wp-firstname"><%= student.first_name %></div>
+								<div class="invisible">--</div>
+								<div class="index-wp-count" data-wp-by-student-target="count">
+									( <%= fiches.size %> fiche<%= "s" if fiches.size > 1 %> )
+								</div>
+							</div>
+						</div>
+						<%# `button_to` enveloppe la pastille dans un formulaire : c'est lui qu'il
+						    faut pousser à droite, comme le lien « Ajouter » des plans de travail. %>
+						<%= button_to student_belt_sheets_path(student), class: "add-folder-btn", form_class: "ms-auto",
+						              title: "Nouvelle fiche de ceinture pour #{student.first_name}" do %>
+							<i class="fas fa-bacon"></i>
+							<span>Ajouter</span>
+						<% end %>
+					</div>
+					<div data-wp-by-student-target="wplist" class="list-wp-index d-none">
+						<% fiches.each do |fiche| %>
+							<div class="index-wp-line">
+								<div class="student-wp">
+									<%= link_to belt_sheet_path(fiche) do %>
+										<div class="namept">Fiche du <%= l(fiche.created_at.to_date) %></div>
+										<div class="index-wp-count">
+											<%= fiche.belt_sheet_domains.size %> domaine<%= "s" if fiche.belt_sheet_domains.size > 1 %>
+										</div>
+									<% end %>
+								</div>
+								<div class="rmv-wp">
+									<%= button_to belt_sheet_path(fiche), method: :delete, class: "--bgc-blanc",
+									              form: { data: { turbo_confirm: "Supprimer cette fiche de ceinture ?" } } do %>
+										<div class="rmv-skill-btn"><i class="far fa-times-circle"></i></div>
+									<% end %>
+								</div>
+							</div>
+						<% end %>
+					</div>
+				</div>
+			<% end %>
+		</div>
+	<% end %>
+</div>

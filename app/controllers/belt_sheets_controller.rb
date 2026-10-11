@@ -6,6 +6,17 @@
 class BeltSheetsController < ApplicationController
   before_action :set_belt_sheet, only: [:show, :destroy]
 
+  # Voir > Ceintures : les classes qui ont ouvert les fiches de ceinture, un
+  # dossier par élève — la présentation de Voir > Plans de travail.
+  def index
+    partagees = current_user.user_shared_classrooms.where(belt_sheets: true)
+    @classrooms = (current_user.classrooms.where(belt_sheets: true) + partagees).
+      uniq.sort_by(&:created_at)
+    @sheets_by_student = policy_scope(BeltSheet).includes(:belt_sheet_domains).
+      where(student: Student.where(classroom: @classrooms)).
+      order(created_at: :desc).group_by(&:student_id)
+  end
+
   def show
     authorize @belt_sheet
   end
@@ -21,7 +32,14 @@ class BeltSheetsController < ApplicationController
     authorize @belt_sheet
     student = @belt_sheet.student
     @belt_sheet.destroy
-    redirect_to student_path(student), notice: t("fiches_ceinture.supprimee"), status: :see_other
+    # On revient d'où l'on vient — la liste des fiches, la progression de
+    # l'élève —, sauf de la fiche elle-même, qui n'existe plus.
+    options = { notice: t("fiches_ceinture.supprimee"), status: :see_other }
+    if request.referer.to_s.include?(belt_sheet_path(@belt_sheet))
+      redirect_to student_path(student), **options
+    else
+      redirect_back_or_to student_path(student), **options
+    end
   end
 
   private

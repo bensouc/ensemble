@@ -40,7 +40,16 @@ class ApplicationController < ActionController::Base
   include Pundit::Authorization
   include MobileDevice
 
-  helper_method :impersonating?
+  helper_method :impersonating?, :fiches_de_ceinture_ouvertes?
+
+  # Le menu « Ceintures » et l'onglet des exercices de ceinture n'apparaissent
+  # que si une des classes de l'enseignant a ouvert les fiches de ceinture.
+  # Mémorisé : la barre de gauche et la page le demandent toutes les deux.
+  def fiches_de_ceinture_ouvertes?
+    return @fiches_de_ceinture_ouvertes if defined?(@fiches_de_ceinture_ouvertes)
+
+    @fiches_de_ceinture_ouvertes = user_signed_in? && Classroom.belt_sheets_for?(current_user)
+  end
 
   # Seuls les identifiants de connexion restent fermés : les changer sous
   # l'identité d'un enseignant lui coupe l'accès à son propre compte, sans

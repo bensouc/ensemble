@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # rubocop:disable Metrics/ClassLength
-# rubocop:disable Metrics/CyclomaticComplexity
 
 class ChallengesController < ApplicationController
   before_action :set_work_plan_skill, only: [:clone, :display_challenges] # , :update, :show]
@@ -17,20 +16,11 @@ class ChallengesController < ApplicationController
 
     # "/challenges"=>{"grade"=>"CE2", "domain"=>"26", "level"=>"1", "skills"=>"11067"}
     set_filters
-    challenges = Challenge.includes([:rich_text_content, :work_plan_skills, :skill,
-                                     :user]).joins(:skill).where(skills: { id: @skills.map(&:id) }).ordered
-    # binding.pry
-    @challenges = challenges.select do |challenge|
-      challenge.skill.domain == @domain &&
-        challenge.skill.level == @level.to_i && challenge.skill.grade == @grade &&
-        !challenge.for_belt?
-    end
-    @belt_challenges = challenges.select do |challenge|
-      challenge.skill.domain == @domain &&
-        challenge.skill.level == @level.to_i && challenge.skill.grade == @grade &&
-        challenge.for_belt?
-    end
-    # binding.pry
+    # Deux onglets, deux listes qui ne se mélangent jamais. Celle des exercices
+    # de ceinture n'existe que pour qui a une classe aux fiches de ceinture.
+    @ceinture = params[:ceinture].present? && fiches_de_ceinture_ouvertes?
+    @challenges = Challenge.includes([:rich_text_content, :work_plan_skills, :skill, :user]).
+      where(skill_id: @skills.map(&:id), for_belt: @ceinture).ordered.to_a
   end
 
   def show

@@ -2,37 +2,51 @@
 
 require "rails_helper"
 
-# La liste des exercices a une seconde partie, celle des exercices de ceinture,
-# sous le même filtre niveau / domaine / ceinture. Donner ou non un de ces
-# exercices aux compétences posées « ceinture » se règle sur la classe.
+# Deux onglets dans la liste des exercices, sous le même filtre niveau / domaine
+# / ceinture : les exercices, et ceux de ceinture. Le second n'existe que pour
+# un enseignant dont une classe a ouvert les fiches de ceinture.
 RSpec.describe "Exercices de ceinture", type: :request do
   let(:school) { create(:school) }
   let(:enseignant) { create(:user, school:, admin: false) }
   let(:grade) { create(:grade, school:, name: "CE1", grade_level: "CE1") }
-  let!(:classroom) { create(:classroom, user: enseignant, grade:) }
+  let!(:classroom) { create(:classroom, user: enseignant, grade:, belt_sheets: true) }
   let!(:domain) { create(:domain, grade:, position: 1, name: "Numération") }
   let!(:skill) { create(:skill, domain:, level: 1, school:) }
 
   before { sign_in enseignant }
 
-  def index_filtre
-    get challenges_path, params: { "/challenges": { grade: grade.id, domain: domain.id, level: 1 } }
+  def index_filtre(**extra)
+    get challenges_path, params: { "/challenges": { grade: grade.id, domain: domain.id, level: 1 } }.merge(extra)
   end
 
-  it "range chaque exercice dans sa partie, et n'y mélange rien" do
+  def liste
+    Nokogiri::HTML(response.body).at_css("#skills-challenge-list").text
+  end
+
+  it "montre chaque liste dans son onglet, sans les mélanger" do
     create(:challenge, skill:, user: enseignant, name: "Classique A")
     create(:challenge, skill:, user: enseignant, name: "Épreuve B", for_belt: true)
 
     index_filtre
+    expect(liste).to include("Classique A")
+    expect(liste).not_to include("Épreuve B")
 
-    page = Nokogiri::HTML(response.body)
-    classiques = page.at_css("#skills-challenge-list").text
-    ceintures = page.at_css("#skills-belt-challenge-list").text
-    expect(classiques).to include("Classique A")
-    expect(classiques).not_to include("Épreuve B")
-    expect(ceintures).to include("Épreuve B")
-    expect(ceintures).not_to include("Classique A")
-    expect(page.at_css("#for_belt_dossier_skill_#{skill.id}")).to be_present
+    index_filtre(ceinture: 1)
+    expect(liste).to include("Épreuve B")
+    expect(liste).not_to include("Classique A")
+    expect(Nokogiri::HTML(response.body).at_css("#for_belt_dossier_skill_#{skill.id}")).to be_present
+    # Le filtre garde l'onglet.
+    expect(Nokogiri::HTML(response.body).at_css("#domainForm input[name=ceinture]")).to be_present
+  end
+
+  it "ne montre ni l'onglet ni la liste de ceinture sans classe aux fiches de ceinture" do
+    classroom.update!(belt_sheets: false)
+    create(:challenge, skill:, user: enseignant, name: "Épreuve B", for_belt: true)
+
+    index_filtre(ceinture: 1)
+
+    expect(response.body).not_to include("Exercices de ceinture")
+    expect(liste).not_to include("Épreuve B")
   end
 
   it "ouvre le formulaire d'ajout d'un exercice de ceinture dans sa frame" do

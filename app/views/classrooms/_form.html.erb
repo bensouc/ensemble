@@ -14,6 +14,7 @@
                             hint: "Facultatif : sans nom, la classe porte celui de son niveau.",
                             input_html: {class: 'area'}  %>
     </div>
+    <%= render "classrooms/belt_sheets_switch", f: f %>
     <div class="d-flex flex-row-reverse">
       <%= f.submit "Valider", class: "validate-btn" %>
       <div class="cancel-btn me-3" data-action='click->create-classroom#displayForm'>

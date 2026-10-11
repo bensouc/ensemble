@@ -13,12 +13,12 @@
 				<div class="menug-container">
 					<div class="link-container" data-controller='leftmenulinks'>
 						<div class="menug_icone" data-action="click->left-menu#seechange click->leftmenulinks#toggleDisplayLinks">
-							<div class="<%= "active" if (current_page?(work_plans_path) || controller_name == 'skills') %> "
+							<div class="<%= "active" if (current_page?(work_plans_path) || controller_name == 'skills' || controller_name == 'belt_sheets') %> "
             data-left-menu-target="seetext"
             style='decoration-text: none'>
 								Voir
 							</div>
-							<% if current_page?(work_plans_path) || params[:controller] == "challenges" || controller_name == 'skills' %>
+							<% if current_page?(work_plans_path) || params[:controller] == "challenges" || controller_name == 'skills' || controller_name == 'belt_sheets' %>
 								<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/1blanc_yahz0m.svg",
            class: "on" %>
 							<% else %>
@@ -27,7 +27,12 @@
 						</div>
 						<div class="nav-left-sub-links d-none" data-leftmenulinks-target="links">
 							<%= link_to work_plans_path do %>
-								<p class='sub-link'>Mes Plans de Travail</p>
+								<p class='sub-link'>Plans de travail</p>
+							<% end %>
+							<% if fiches_de_ceinture_ouvertes? %>
+								<%= link_to belt_sheets_path do %>
+									<p class='sub-link'>Ceintures</p>
+								<% end %>
 							<% end %>
 							<%= link_to challenges_path do %>
 								<p class='sub-link'>Exercices</p>

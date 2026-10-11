@@ -225,3 +225,37 @@
     margin: 0;
   }
 }
+
+// Réglage « Fiches de ceinture » d'une classe : l'interrupteur de Bootstrap, à
+// trait fin, en rose quand il est actif. Le libellé reste en texte courant —
+// rendu dans le titre de la carte, il en prenait le gras.
+.belt-sheets-switch {
+  font-size: 14px;
+  font-weight: 400;
+
+  .form-check-input {
+    cursor: pointer;
+
+    &:checked {
+      border-color: colors.$rose;
+      background-color: colors.$rose;
+    }
+
+    &:focus {
+      border-color: rgba(colors.$rose, 0.5);
+      box-shadow: 0 0 0 0.2rem rgba(colors.$rose, 0.15);
+    }
+  }
+
+  .form-check-label {
+    color: colors.$grisF;
+    cursor: pointer;
+  }
+
+  .form-text {
+    display: block;
+    margin-top: 2px;
+    color: #6c6c6c;
+    font-size: 12px;
+  }
+}

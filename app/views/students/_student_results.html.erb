@@ -19,7 +19,9 @@
 			<% end %>
 			<%# Les fiches de ceinture de l'élève : en préparer une nouvelle, ou rouvrir
 			    une de celles déjà faites. %>
-			<%= render "belt_sheets/student_menu", student: student %>
+			<% if student.classroom.belt_sheets? %>
+				<%= render "belt_sheets/student_menu", student: student %>
+			<% end %>
 			</div>
 			<%# La légende partage la ligne de l'impression : c'est la seule bande
 			    libre de l'en-tête, et une légende se consulte au passage — elle n'a

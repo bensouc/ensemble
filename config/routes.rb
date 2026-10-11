@@ -153,7 +153,7 @@ Rails.application.routes.draw do
   resources :students, only: [] do
     resources :belt_sheets, only: [:create]
   end
-  resources :belt_sheets, only: [:show, :destroy] do
+  resources :belt_sheets, only: [:index, :show, :destroy] do
     resources :belt_sheet_domains, only: [:new, :create]
   end
   resources :belt_sheet_domains, only: [:destroy] do

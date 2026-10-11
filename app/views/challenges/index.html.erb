@@ -8,6 +8,8 @@
     html: {id: "domainForm"},
         data: { action: "change->submitonchange#submitForm"
                 } do |f| %>
+			<%# L'onglet courant suit les changements de filtre. %>
+			<%= hidden_field_tag :ceinture, 1, id: nil if @ceinture %>
 			<div class="box-column-challenges-filter">
 				<div class="challenges-skill">
 					<%= f.input :grade,
@@ -49,16 +51,17 @@
 		<% end %>
 	</div>
 	<div class="grey-line"></div>
-	<h1 class='title'>Les exercices </h1>
+	<% if fiches_de_ceinture_ouvertes? %>
+		<%# Le filtre courant suit le changement d'onglet. %>
+		<% filtre = params["/challenges"].present? ? { "/challenges": { grade: @grade&.id, domain: @domain&.id, level: @level } } : {} %>
+		<%= render Ui::TabsComponent.new(label: "Exercices", tabs: [
+		      { label: "Exercices", href: challenges_path(filtre), active: !@ceinture },
+		      { label: "Exercices de ceinture", href: challenges_path(filtre.merge(ceinture: 1)), active: @ceinture }
+		    ]) %>
+	<% end %>
+	<h1 class='title'><%= @ceinture ? "Les exercices de ceinture" : "Les exercices" %></h1>
 	<div id='skills-challenge-list'>
-		<%= render "challenges/skill_folders", skills: @skills, challenges: @challenges, for_belt: false %>
-	</div>
-	<div class="grey-line"></div>
-	<%# Même domaine, même ceinture, une seconde liste : celle des exercices que
-	    reçoit une compétence posée « ceinture » dans un plan de travail. %>
-	<h1 class='title'>Les exercices de ceinture</h1>
-	<div id='skills-belt-challenge-list'>
-		<%= render "challenges/skill_folders", skills: @skills, challenges: @belt_challenges, for_belt: true %>
+		<%= render "challenges/skill_folders", skills: @skills, challenges: @challenges, for_belt: @ceinture %>
 	</div>
 	<div class="top-floating-btn"
 	     data-page-scroll-target="down"

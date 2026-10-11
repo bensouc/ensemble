@@ -71,6 +71,14 @@ class Classroom < ApplicationRecord
     name.presence || grade&.grade_level.to_s.upcase
   end
 
+  # Les fiches de ceinture sont ouvertes pour cet enseignant dès qu'une de ses
+  # classes, à lui ou partagée, les a choisies : c'est ce qui montre le menu
+  # « Ceintures » et l'onglet des exercices de ceinture.
+  def self.belt_sheets_for?(user)
+    partagees = SharedClassroom.where(user:).select(:classroom_id)
+    where(belt_sheets: true).where(user:).or(where(belt_sheets: true, id: partagees)).exists?
+  end
+
   def teachers
     [user, *shared_classrooms.map(&:user)].uniq
   end

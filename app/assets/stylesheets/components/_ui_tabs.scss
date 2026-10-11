@@ -1,0 +1,34 @@
+@use "../config/colors";
+
+// `Ui::TabsComponent` : le soulignement de la barre de Manipule (`.m-onglets`).
+.ui-tabs {
+  margin-bottom: 1rem;
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a {
+    padding-bottom: 0.2rem;
+    border-bottom: 2px solid transparent;
+    color: colors.$grisF;
+    font-size: 15px;
+    text-decoration: none;
+    transition: 0.25s;
+
+    &:hover {
+      color: colors.$rose;
+    }
+  }
+
+  a.ui-tabs-active {
+    border-bottom-color: colors.$rose;
+    color: colors.$rose;
+    font-weight: 600;
+  }
+}

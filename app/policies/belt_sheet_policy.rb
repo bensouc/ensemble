@@ -14,8 +14,11 @@ class BeltSheetPolicy < ApplicationPolicy
     StudentPolicy.new(user, record.student).show?
   end
 
+  # Préparer une fiche demande que la classe de l'élève ait ouvert les fiches de
+  # ceinture. Les fiches déjà faites restent lisibles et modifiables si le
+  # réglage est coupé ensuite : on masque les entrées, on ne retire rien.
   def create?
-    show?
+    show? && record.student.classroom.belt_sheets?
   end
 
   def update?
