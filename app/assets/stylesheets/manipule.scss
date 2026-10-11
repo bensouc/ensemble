@@ -47,8 +47,14 @@ html:has(> .m-page) {
 .m-page {
   margin: 0;
   box-sizing: border-box;
+  // `dvh` : la hauteur réellement visible. Sur une tablette ou un téléphone,
+  // `100vh` compte la barre d'adresse, et le bas de la carte — avec la sortie —
+  // passait sous le bord de l'écran. `vh` reste pour les navigateurs qui
+  // ignorent `dvh`.
   height: 100vh;
+  height: 100dvh;
   max-height: 100vh;
+  max-height: 100dvh;
   overflow: hidden;
   background: var(--m-fond);
   color: var(--m-encre);
@@ -63,6 +69,9 @@ html:has(> .m-page) {
 }
 
 .m-carte {
+  // `border-box`, comme la page : sinon ses 60 px de marges intérieures et sa
+  // bordure s'ajoutent à la hauteur maximale, et la carte dépassait l'écran.
+  box-sizing: border-box;
   width: 100%;
   max-width: 820px;
   // La carte ne dépasse jamais l'écran : c'est l'outil qui cède, pas la page
@@ -70,7 +79,13 @@ html:has(> .m-page) {
   max-height: 100%;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  // La page, elle, ne défile jamais. Mais quand l'outil ne peut plus céder —
+  // une classe de trente prénoms, un énoncé long sur un petit écran —, la
+  // carte défile plutôt que de couper : coupé, le bas de l'écran emportait la
+  // sortie de l'élève et la porte de l'adulte, et l'on ne pouvait plus quitter
+  // le jeu. Les deux restent collées au bas de la carte (`.m-sortie`,
+  // `.m-porte-prof`).
+  overflow-y: auto;
   background: var(--m-carte);
   border: 1px solid var(--m-trait);
   border-radius: 18px;
@@ -771,9 +786,17 @@ form.button_to { display: inline-block; margin: 0; }
 // Pour l'élève qui s'assoit devant l'écran d'un autre. Volontairement terne
 // et à l'écart : elle ne doit pas entrer en concurrence avec les réponses,
 // ni se cliquer par accident. Elle ne mène qu'à la liste des prénoms.
+// Collée au bas de la carte quand celle-ci défile : la sortie ne disparaît
+// jamais sous le contenu.
 .m-sortie {
+  position: sticky;
+  bottom: -32px;
+  z-index: 1;
+  background: var(--m-carte);
   margin-top: 2.5rem;
   padding-top: 1rem;
+  padding-bottom: 32px;
+  margin-bottom: -32px;
   border-top: 1px solid var(--m-trait);
   display: flex;
   justify-content: center;
@@ -781,8 +804,15 @@ form.button_to { display: inline-block; margin: 0; }
 
 // Volontairement plus effacée que la sortie de l'enfant : un adulte qui la
 // cherche la trouve, un enfant qui choisit son prénom ne la rencontre pas.
+// Même chose pour la porte de l'adulte, sous une longue liste de prénoms.
 .m-porte-prof {
+  position: sticky;
+  bottom: -32px;
+  z-index: 1;
+  background: var(--m-carte);
   margin-top: 3rem;
+  padding: 0.5rem 0 32px;
+  margin-bottom: -32px;
   display: flex;
   justify-content: center;
 }
