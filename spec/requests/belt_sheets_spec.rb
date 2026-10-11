@@ -175,7 +175,7 @@ RSpec.describe "Fiches de ceinture", type: :request do
 
       get belt_sheets_path
 
-      expect(response.body).to include("Machin", "Fiche du #{I18n.l(fiche.created_at.to_date)}")
+      expect(response.body).to include("Machin", "Fiche de ceinture", I18n.l(fiche.created_at.to_date, format: "%d/%m/%Y"))
       expect(response.body).not_to include("Sans ceintures", "Personne")
     end
 

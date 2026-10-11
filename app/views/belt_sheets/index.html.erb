@@ -34,13 +34,23 @@
 					</div>
 					<div data-wp-by-student-target="wplist" class="list-wp-index d-none">
 						<% fiches.each do |fiche| %>
+							<%# Le balisage d'une ligne de plan de travail (`work_plans/_index_wp_line`),
+							    colonne pour colonne : l'icône — le PDF, à la place de l'évaluation —, le
+							    nom, le niveau, la date, et la suppression à droite. %>
 							<div class="index-wp-line">
+								<div class="eval_link">
+									<%= link_to export_belt_sheet_path(fiche), target: "_blank", rel: "noopener",
+									            title: "Imprimer la fiche" do %>
+										<i class="fa-solid fa-file-pdf"></i>
+									<% end %>
+								</div>
 								<div class="student-wp">
 									<%= link_to belt_sheet_path(fiche) do %>
-										<div class="namept">Fiche du <%= l(fiche.created_at.to_date) %></div>
-										<div class="index-wp-count">
-											<%= fiche.belt_sheet_domains.size %> domaine<%= "s" if fiche.belt_sheet_domains.size > 1 %>
+										<div class="namept">
+											Fiche de ceinture · <%= fiche.belt_sheet_domains.size %> domaine<%= "s" if fiche.belt_sheet_domains.size > 1 %>
 										</div>
+										<div class="index-wp-count"><%= classroom.grade.name %></div>
+										<div class="wp-dates"><%= l(fiche.created_at.to_date, format: "%a. %d/%m/%Y") %></div>
 									<% end %>
 								</div>
 								<div class="rmv-wp">
