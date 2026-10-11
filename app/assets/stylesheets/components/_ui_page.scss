@@ -34,8 +34,9 @@
   margin-bottom: echelle.$espace-lg;
 }
 
-// Un nom de classe est une partie de la page : il passe sous son titre, au
-// lieu des 2,5 rem d'un h1 qu'il gardait d'avant le titre de page.
-.ui-page .wp-one-classroom h1 {
+// Les titres de la liste — une classe, « Non assigné » — sont des parties de la
+// page : ils passent sous son titre, au lieu des 2,5 rem d'un h1 qu'ils
+// gardaient d'avant le titre de page.
+.ui-page .container3 h1 {
   font-size: echelle.$texte-xl;
 }
