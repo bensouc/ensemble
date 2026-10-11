@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_10_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_11_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -59,6 +59,39 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_10_090000) do
     t.datetime "updated_at", null: false
     t.index ["domain_id"], name: "index_auto_gen_exclusions_on_domain_id"
     t.index ["user_id", "domain_id"], name: "index_auto_gen_exclusions_on_user_id_and_domain_id", unique: true
+  end
+
+  create_table "belt_sheet_domains", force: :cascade do |t|
+    t.bigint "belt_sheet_id", null: false
+    t.bigint "domain_id", null: false
+    t.integer "level", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["belt_sheet_id", "domain_id", "level"], name: "index_belt_sheet_domains_unique", unique: true
+    t.index ["belt_sheet_id"], name: "index_belt_sheet_domains_on_belt_sheet_id"
+    t.index ["domain_id"], name: "index_belt_sheet_domains_on_domain_id"
+  end
+
+  create_table "belt_sheet_skills", force: :cascade do |t|
+    t.bigint "belt_sheet_domain_id", null: false
+    t.bigint "skill_id", null: false
+    t.bigint "challenge_id"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["belt_sheet_domain_id", "skill_id"], name: "index_belt_sheet_skills_on_belt_sheet_domain_id_and_skill_id", unique: true
+    t.index ["belt_sheet_domain_id"], name: "index_belt_sheet_skills_on_belt_sheet_domain_id"
+    t.index ["challenge_id"], name: "index_belt_sheet_skills_on_challenge_id"
+    t.index ["skill_id"], name: "index_belt_sheet_skills_on_skill_id"
+  end
+
+  create_table "belt_sheets", force: :cascade do |t|
+    t.bigint "student_id", null: false
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["student_id"], name: "index_belt_sheets_on_student_id"
+    t.index ["user_id"], name: "index_belt_sheets_on_user_id"
   end
 
   create_table "belts", force: :cascade do |t|
@@ -599,6 +632,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_10_090000) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "auto_gen_exclusions", "domains", on_delete: :cascade
   add_foreign_key "auto_gen_exclusions", "users", on_delete: :cascade
+  add_foreign_key "belt_sheet_domains", "belt_sheets", on_delete: :cascade
+  add_foreign_key "belt_sheet_domains", "domains", on_delete: :cascade
+  add_foreign_key "belt_sheet_skills", "belt_sheet_domains", on_delete: :cascade
+  add_foreign_key "belt_sheet_skills", "challenges", on_delete: :nullify
+  add_foreign_key "belt_sheet_skills", "skills", on_delete: :cascade
+  add_foreign_key "belt_sheets", "students", on_delete: :cascade
+  add_foreign_key "belt_sheets", "users", on_delete: :nullify
   add_foreign_key "belts", "domains"
   add_foreign_key "belts", "students"
   add_foreign_key "challenges", "skills"

@@ -39,6 +39,10 @@ RSpec.describe "Fumée : chaque page s'ouvre", type: :request do
     # La conversation de l'école, que la première visite d'un enseignant non
     # admin crée : la messagerie d'un admin s'ouvre dessus.
     Conversation.find_or_create_school_conversation(collegue)
+    competence_ceinture = create(:challenge, user: enseignant, skill: competence, for_belt: true)
+    fiche = BeltSheet.prepare!(eleve, enseignant)
+    ligne_de_fiche = fiche.belt_sheet_domains.first_or_create!(domain: domaine, level: 1).
+      belt_sheet_skills.first_or_create!(skill: competence, challenge: competence_ceinture)
 
     # La seule page qui appelle Stripe en GET : pas de réseau dans la suite.
     allow(StripeHelper).to receive(:get_or_create_customer).
@@ -49,7 +53,8 @@ RSpec.describe "Fumée : chaque page s'ouvre", type: :request do
       "conversations" => conversation.id, "domains" => domaine.id, "grades" => niveau.id,
       "schools" => ecole.id, "skills" => competence.id, "students" => eleve.id,
       "work_plan_domains" => domaine_du_plan.id, "work_plan_skills" => competence_du_plan.id,
-      "work_plans" => plan.id, "classroom_id" => classe.id, "student_id" => eleve.id,
+      "work_plans" => plan.id, "belt_sheets" => fiche.id, "belt_sheet_id" => fiche.id,
+      "belt_sheet_skills" => ligne_de_fiche.id, "classroom_id" => classe.id, "student_id" => eleve.id,
       "grade_id" => niveau.id, "work_plan_id" => plan.id, "level" => 1, "skill_id" => competence.id,
       # `/manipule/suivi/:id` porte une classe : le segment qui précède `:id`
       # nomme la clef, et il ne s'appelle pas « classrooms » ici. Même chose

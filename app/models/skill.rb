@@ -6,6 +6,7 @@ class Skill < ApplicationRecord
   belongs_to :school, optional: true
   belongs_to :domain, optional: true
   has_many :work_plan_skills, dependent: :destroy
+  has_many :belt_sheet_skills, dependent: :destroy
   has_many :results, dependent: :destroy
   has_many :challenges, dependent: :destroy
   acts_as_list scope: [:domain_id, :level]

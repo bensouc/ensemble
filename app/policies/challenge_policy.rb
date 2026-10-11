@@ -73,7 +73,8 @@ class ChallengePolicy < ApplicationPolicy
     same_school_or_admin?
   end
 
+  # Donné sur une fiche de ceinture, il sert aussi à un élève.
   def challenge_not_used?
-    record.work_plan_skills.empty?
+    record.work_plan_skills.empty? && record.belt_sheet_skills.empty?
   end
 end

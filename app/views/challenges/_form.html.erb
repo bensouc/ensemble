@@ -26,9 +26,9 @@
               <%# À la création, l'annulation vide la frame du formulaire. Elle vit dans
                   cette rangée et non après le formulaire : elle y était placée à coups
                   de `top: -103px; left: 577px`, donc jamais alignée sur Enregistrer. %>
-							<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral,
+<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral,
 							                                   data: { controller: "manageturboframe",
-							                                           manageturboframe_id_value: challenge.skill.id,
+							                                           manageturboframe_frame_value: "#{'for_belt_' if challenge.for_belt?}skill_#{challenge.skill_id}_new_challenge",
 							                                           action: "click->manageturboframe#cleanTurboFrame" }) %>
               <% end %>
 							<%= render Ui::ButtonComponent.new("Enregistrer", variant: :primary, type: "submit") %>

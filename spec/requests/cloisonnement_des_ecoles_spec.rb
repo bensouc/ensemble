@@ -64,6 +64,13 @@ RSpec.describe "Cloisonnement : aucune page ne montre l'école d'à côté", typ
     conversation = Conversation.create!(conversation_type: "classic", name: "Entre nous",
                                         users: [enseignante, collegue])
     create(:message, user: collegue, conversation:)
+    # La fiche de ceinture de l'élève, et son exercice de ceinture : l'énoncé
+    # porte le marqueur de l'exercice, comme celui du plan.
+    epreuve = create(:challenge, user: enseignante, skill: competence, for_belt: true,
+                                 content: "<div>#{nom.call(:exercice, 'Épreuve')}</div>")
+    fiche = BeltSheet.create!(student: eleve, user: enseignante)
+    ligne_de_fiche = fiche.belt_sheet_domains.create!(domain: domaine, level: 1).
+      belt_sheet_skills.create!(skill: competence, challenge: epreuve)
 
     { enseignante:, ids: {
       "belts" => ceinture.id, "challenges" => exercice.id, "classrooms" => classe.id,
@@ -72,6 +79,7 @@ RSpec.describe "Cloisonnement : aucune page ne montre l'école d'à côté", typ
       "work_plan_domains" => domaine_du_plan.id, "work_plan_skills" => competence_du_plan.id,
       "work_plans" => plan.id, "classroom_id" => classe.id, "student_id" => eleve.id,
       "grade_id" => niveau.id, "work_plan_id" => plan.id, "level" => 1, "skill_id" => competence.id,
+      "belt_sheets" => fiche.id, "belt_sheet_id" => fiche.id, "belt_sheet_skills" => ligne_de_fiche.id,
       "suivi" => classe.id, "eleve" => eleve.id,
       "token" => Manipule::ClassroomToken.pour!(classe).token, "problemes" => probleme.id
     }.transform_values(&:to_s) }

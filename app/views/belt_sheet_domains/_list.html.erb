@@ -1,0 +1,8 @@
+<% blocs = belt_sheet.ordered_domains %>
+<% if blocs.empty? %>
+	<p class="belt-sheet-empty">Aucun domaine sur cette fiche : ajoutez-en un ci-dessous.</p>
+<% else %>
+	<% blocs.each do |bloc| %>
+		<%= render "belt_sheet_domains/belt_sheet_domain", bloc: bloc %>
+	<% end %>
+<% end %>

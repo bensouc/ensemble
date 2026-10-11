@@ -1,0 +1,21 @@
+<%# Une compétence du bloc, sans la grille J / E / C du plan de travail. %>
+<div class="d-flex justify-content-between p-2" data-id="<%= line.id %>">
+	<div class="border-skill justify-content-between mt-2">
+		<div>
+			<%= line.skill.symbol %>
+			<%= line.skill.name %>
+			<%# Surtout utile sur une fiche clonée vers un autre élève, ou après une
+			    validation saisie depuis la préparation de la fiche. %>
+			<% if line.deja_validee? %>
+				<span class="belt-validated-tag">Déjà validée</span>
+			<% end %>
+		</div>
+		<%= button_to belt_sheet_skill_path(line), method: :delete, class: "--bgc-transparent p-0 border-0",
+		              form: { data: { turbo_confirm: "Retirer cette compétence de la fiche ?" } },
+		              title: "Retirer cette compétence de la fiche" do %>
+			<div class="rmv-skill-btn">
+				<i class="far fa-times-circle"></i>
+			</div>
+		<% end %>
+	</div>
+</div>

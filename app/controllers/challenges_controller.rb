@@ -204,10 +204,11 @@ class ChallengesController < ApplicationController
   def display_challenges
     authorize @challenge
     authorize @work_plan_skill, :show?
-    # `classic` manquait : les exercices de ceinture apparaissaient dans le
-    # carrousel de remplacement, alors que le bouton qui l'ouvre ne compte que
-    # les exercices classiques.
-    @challenges = Challenge.classic.includes([:rich_text_content]).where(skill: @challenge.skill).ordered.reject do |chal|
+    # La liste de l'exercice remplacé, et elle seule : un exercice de ceinture se
+    # remplace par un exercice de ceinture, un exercice classique par un
+    # exercice classique — le bouton qui ouvre le carrousel compte de même.
+    @challenges = Challenge.includes([:rich_text_content]).
+      where(skill: @challenge.skill, for_belt: @challenge.for_belt).ordered.reject do |chal|
       chal == @challenge
     end
     # raise
@@ -306,7 +307,7 @@ class ChallengesController < ApplicationController
     {
       liste_id: "#{prefixe}skill_#{competence.id}_challenges_list",
       compte_id: "#{prefixe}skill_#{competence.id}_count",
-      dossier_id: "dossier_skill_#{competence.id}",
+      dossier_id: "#{prefixe}dossier_skill_#{competence.id}",
       challenges: liste,
       compte: liste.size
     }

@@ -8,6 +8,7 @@ class Domain < ApplicationRecord
   has_many :skills, dependent: :destroy
   has_many :belts, dependent: :destroy
   has_many :work_plan_domains, dependent: :destroy
+  has_many :belt_sheet_domains, dependent: :destroy
   has_many :auto_gen_exclusions, dependent: :delete_all
 
   validates :name, presence: true,

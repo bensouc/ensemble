@@ -1,0 +1,61 @@
+@use "../config/colors";
+
+// L'éditeur de fiche de ceinture reprend les classes de l'éditeur de plan de
+// travail (`.domain`, `.skill-display`, `.challenge-card`…). Seul ce qui lui est
+// propre vit ici.
+
+.belt-sheet-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.belt-sheet-actions {
+  display: flex;
+  gap: 16px;
+
+  form {
+    display: inline;
+  }
+}
+
+.belt-sheet-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  color: colors.$rose;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.belt-sheet-empty {
+  color: #9c9c9c;
+  font-style: italic;
+}
+
+// « Déjà validée » à côté du nom d'une compétence : l'élève n'a plus à la
+// passer, l'enseignant décide de la garder ou de la retirer.
+.belt-validated-tag {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 0 8px;
+  border: 1px solid #5cb85c;
+  border-radius: 999px;
+  color: #3d8b3d;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.belt-sheet-menu {
+  display: inline-block;
+
+  form {
+    display: block;
+  }
+}

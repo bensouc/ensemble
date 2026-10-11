@@ -1,0 +1,37 @@
+<%# Un bloc : un domaine à une couleur de ceinture, ses compétences, puis
+    l'exercice de ceinture de chacune — la disposition de l'éditeur de plan. %>
+<div class="domain" id="<%= dom_id(bloc) %>">
+	<div class="p-1 d-flex">
+		<div class="domain-belt-level">
+			<div class="domain-display d-flex justify-content-start">
+				<%= button_to belt_sheet_domain_path(bloc), method: :delete, class: "--bgc-transparent p-0 border-0",
+				              form: { data: { turbo_confirm: "Retirer ce domaine de la fiche ?" } },
+				              title: "Retirer ce domaine de la fiche" do %>
+					<div class="rmv-skill-btn mt-3 me-2">
+						<i class="far fa-times-circle"></i>
+					</div>
+				<% end %>
+				<%= bloc.domain.name %>
+			</div>
+			<div class="d-flex justify-content-around belt-display">
+				<div class="bd-maison">
+					<i class="fas fa-bacon belt-<%= bloc.level %> display-2 font-weight-bold"></i>
+				</div>
+			</div>
+			<div class="d-flex justify-content-around mt-1 belt-display">
+				<strong><%= bloc.couleur.capitalize %></strong>
+			</div>
+		</div>
+		<div class="p-2 skill-display">
+			<div data-controller="drag" data-drag-url-value="<%= move_belt_sheet_skill_path(':id') %>">
+				<% bloc.belt_sheet_skills.each do |line| %>
+					<%= render "belt_sheet_skills/skill_row", line: line %>
+				<% end %>
+			</div>
+			<%= render "belt_sheet_skills/add_form", bloc: bloc %>
+		</div>
+	</div>
+	<% bloc.belt_sheet_skills.each do |line| %>
+		<%= render "belt_sheet_skills/challenge", line: line %>
+	<% end %>
+</div>

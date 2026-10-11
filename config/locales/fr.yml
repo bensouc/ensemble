@@ -47,6 +47,20 @@ fr:
     probleme_duplique: "Copie créée, en brouillon. À vous de la modifier."
     probleme_supprime: "Manipulation supprimée."
     probleme_deja_travaille: "Cette manipulation a déjà été travaillée par un élève : elle ne se supprime pas, masquez-la."
+  fiches_ceinture:
+    preparee: "Fiche de ceinture préparée"
+    rien_a_preparer: "Aucune ceinture à préparer automatiquement : ajoutez les domaines à la main."
+    supprimee: "Fiche de ceinture supprimée"
+    bloc_ajoute: "Bloc %{domaine} – ceinture %{couleur} ajouté"
+    bloc_deja_la: "%{domaine} – ceinture %{couleur} est déjà sur la fiche."
+    tout_valide: "%{eleve} a déjà validé toutes les compétences de %{domaine} – ceinture %{couleur}."
+    bloc_retire: "Domaine retiré de la fiche"
+    competence_ajoutee: "Compétence ajoutée"
+    competence_retiree: "Compétence retirée"
+    exercice_change: "Exercice changé"
+    pas_d_autre_exercice: "Il n'existe pas d'autre exercice de ceinture pour cette compétence"
+    exercice_vide_ajoute: "Exercice de ceinture à rédiger ajouté"
+    exercice_clone: "Exercice cloné"
   #ENSEMBLE:
   unauthorized: "Vous n'êtes pas autorisé à effectuer cette action"
   name_already_exists: "Le nom choisit est déjà utilisé"
@@ -114,6 +128,14 @@ fr:
           attributes:
             label:
               blank: "est vide : les trois cases doivent être remplies"
+        belt_sheet_domain:
+          attributes:
+            domain_id:
+              taken: "est déjà sur la fiche à cette ceinture"
+        belt_sheet_skill:
+          attributes:
+            skill_id:
+              taken: "est déjà dans ce bloc"
       messages:
         record_invalid: 'La validation a échoué : %{errors}'
         restrict_dependent_destroy:
