@@ -12,6 +12,8 @@
   align-items: center;
   width: 200px;
   height: 100vh;
+  // Un écran trop bas pour tout montrer : la barre défile plutôt que de rogner.
+  overflow-y: auto;
   background-color: colors.$blanc;
   border-right: 1px solid colors.$grisC;
   border-color: transparent, colors.$grisC, transparent, transparent;
@@ -33,18 +35,18 @@
   }
 }
 
+// Sa hauteur suit ses entrées : figée à 60 % de l'écran, elle était dépassée sur
+// un écran bas dès que le sous-menu s'ouvrait, et le calendrier chevauchait.
 .menu-g{
   width: fit-content;
   padding: 5px;
-  height: 60%;
 }
+// Hauteur libre : fixée à 191 px, elle était dépassée dès que le sous-menu de
+// « Voir » s'ouvrait, et le calendrier venait chevaucher les entrées.
 .menug-container{
   display:flex;
   flex-direction: column;
-  justify-content: space-between;
-
-  height: 191px;
-  margin-bottom: 6em;
+  margin-bottom: 2rem;
   a {
    text-decoration: none;
 
@@ -76,21 +78,39 @@ color: colors.$grisF;
   height: 33px;
 }
 
+// Une entrée de la barre (`shared/_nav_entree`) : le libellé en gris foncé, le
+// quartier du logo en rose à droite — le lien avec le logo. L'entrée courante :
+// un fond clair sur toute la ligne, le libellé en rose.
 .menug_icone{
   position: relative;
-  align-items: center;
-  color: colors.$rose;
-  display:flex;
+  display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: space-between;
   // Resserré : 10 px de marge haute et basse espaçaient les entrées de 60 px.
   margin: 4px 0;
-  padding: 5px 5px 5px 5px;
-  transition: opacity 2s ease .05s;
-  width: 158px;
+  padding: 0 10px;
+  width: 168px;
   height: 40px;
+  border-radius: 10px;
+  color: colors.$grisF;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  cursor: pointer;
   img{
     max-width: 22px;
+  }
+  &:hover {
+    background-color: rgba(colors.$grisF, 0.05);
+  }
+}
+
+.menug_icone--active {
+  background-color: rgba(colors.$rose, 0.08);
+  color: colors.$rose;
+
+  &:hover {
+    background-color: rgba(colors.$rose, 0.12);
   }
 }
 
