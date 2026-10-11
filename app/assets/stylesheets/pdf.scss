@@ -476,7 +476,10 @@ th:not([align]) {
 // Seule exception à la parité : le corps de texte. Les plans de travail
 // imprimés sont calibrés sur 20px, et adopter les 17px de l'éditeur
 // re-paginerait tout l'existant. Retirer cette règle pour une parité stricte.
-.cont-challenge .trix-content {
+// La fiche de ceinture (`.enonce`) suit la même règle : sans elle, ses énoncés
+// sortaient en 17 px, titres compris.
+.cont-challenge .trix-content,
+.enonce .trix-content {
   font-size: 20px;
 }
 
