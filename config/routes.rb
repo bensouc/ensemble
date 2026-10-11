@@ -104,6 +104,8 @@ Rails.application.routes.draw do
     get "suivi/:id", to: "classes#show", as: :suivi_classe
     post "suivi/:id/affecter", to: "classes#affecter", as: :suivi_affecter
     post "suivi/:id/jeton", to: "classes#jeton", as: :suivi_jeton
+    # Le code de l'« Espace professeur.e » de la classe : le poser, le retirer.
+    patch "suivi/:id/code", to: "classes#code", as: :suivi_code
   end
 
   # ############### CONTACTROUTES ###############

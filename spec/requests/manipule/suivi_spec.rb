@@ -105,6 +105,35 @@ RSpec.describe "Manipule, le suivi d'une classe" do
     end
   end
 
+  describe "le code de l'Espace professeur.e" do
+    let(:jeton) { Manipule::ClassroomToken.pour!(classe) }
+
+    it "se définit depuis la classe, sans être gardé en clair" do
+      patch manipule_suivi_code_path(classe), params: { code_prof: "1234" }
+
+      expect(jeton.reload).to be_code_prof
+      expect(jeton.code_prof_digest).not_to include("1234")
+      expect(jeton.porte_ouverte?("1234")).to be(true)
+      expect(jeton.porte_ouverte?("0000")).to be(false)
+    end
+
+    it "refuse un code trop court" do
+      patch manipule_suivi_code_path(classe), params: { code_prof: "12" }
+
+      expect(jeton.reload).not_to be_code_prof
+      expect(flash[:alert]).to include("au moins 4")
+    end
+
+    it "se retire, et la porte redevient libre" do
+      jeton.update!(code_prof: "1234")
+
+      patch manipule_suivi_code_path(classe), params: { retirer: 1 }
+
+      expect(jeton.reload).not_to be_code_prof
+      expect(jeton.porte_ouverte?(nil)).to be(true)
+    end
+  end
+
   # Les totaux de la classe disent qu'un enfant a raté quatre problèmes ; ils
   # ne disent pas lesquels, ni ce qu'il a répondu à la place.
   # `classrooms.name` n'est pas obligatoire — le modèle ne valide que le niveau

@@ -67,6 +67,54 @@ RSpec.describe "Manipule, côté élève" do
       expect(response).not_to redirect_to(manipule_serie_path)
     end
 
+    # Un élève qui trouve la porte de l'adulte quittait le jeu. L'enseignante
+    # peut la fermer par un code, réglé dans Manipule pour la classe.
+    describe "fermée par un code" do
+      before { jeton.update!(code_prof: "1234") }
+
+      it "demande le code, au lieu d'ouvrir d'un clic" do
+        get manipule_classe_path(token: jeton.token)
+
+        expect(response.body).to include("Espace professeur.e", 'name="code_prof"')
+      end
+
+      it "refuse un mauvais code : on reste dans le jeu, la session de l'élève intacte" do
+        banque
+        designer!
+        entrer!
+
+        delete manipule_quitter_path, params: { vers: "ensemble", token: jeton.token, code_prof: "0000" }
+
+        expect(response).to redirect_to(manipule_classe_path(token: jeton.token))
+        expect(cookies[Manipule::EleveController::COOKIE_MARQUEUR]).to be_present
+        follow_redirect!
+        expect(response.body).to include("Code incorrect")
+      end
+
+      it "ouvre avec le bon code" do
+        banque
+        designer!
+        entrer!
+
+        delete manipule_quitter_path, params: { vers: "ensemble", token: jeton.token, code_prof: "1234" }
+
+        expect(response).to redirect_to(new_user_session_path)
+        expect(cookies[Manipule::EleveController::COOKIE_MARQUEUR]).to be_blank
+      end
+
+      it "laisse la porte libre sur « pas encore entré », où aucune classe n'est connue" do
+        banque
+        designer!
+        entrer!
+        eleve.destroy
+        get manipule_serie_path
+
+        delete manipule_quitter_path(vers: "ensemble")
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
     # Le marqueur survit à l'identité : l'élève supprimé ou changé de classe, ou
     # le cookie signé illisible (clé de l'application changée). La série ne
     # reconnaît personne, et l'écran « pas encore entré » n'avait pas de sortie :

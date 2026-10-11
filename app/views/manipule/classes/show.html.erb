@@ -16,6 +16,35 @@
     <% end %>
   </div>
 
+  <%# Le code qui ferme la porte de l'adulte, sur l'écran des prénoms : sans lui,
+      un élève qui la trouve quitte le jeu. %>
+  <div class="m-fiche mb-4">
+    <h2 class="m-fiche-titre">Le code de l'Espace professeur.e</h2>
+    <p class="m-fiche-note mb-3">
+      <% if @jeton.code_prof? %>
+        Un code est défini : « Espace professeur.e » le demande avant de revenir à Ensemble.
+      <% else %>
+        Aucun code : sur l'écran des prénoms, « Espace professeur.e » ramène directement à Ensemble.
+        Un code empêche un élève de quitter le jeu par là.
+      <% end %>
+    </p>
+    <%= form_with url: manipule_suivi_code_path(@classe), method: :patch,
+                  class: "d-flex gap-2 flex-wrap align-items-center" do %>
+      <%= label_tag :code_prof, "Nouveau code", class: "visually-hidden" %>
+      <%= password_field_tag :code_prof, nil, minlength: 4, required: true, autocomplete: "new-password",
+                             placeholder: (@jeton.code_prof? ? "Nouveau code" : "Au moins 4 caractères"),
+                             class: "form-control w-auto" %>
+      <%= render Ui::ButtonComponent.new(@jeton.code_prof? ? "Changer le code" : "Définir le code",
+                                         variant: :primary, type: "submit") %>
+    <% end %>
+    <% if @jeton.code_prof? %>
+      <%= button_to manipule_suivi_code_path(@classe), method: :patch, params: { retirer: 1 },
+                    class: "m-cta m-cta--discret mt-2" do %>
+        <i class="fa-solid fa-lock-open"></i><span>Retirer le code</span>
+      <% end %>
+    <% end %>
+  </div>
+
   <% if @competences.empty? %>
     <div class="m-fiche m-fiche-erreur mb-4">
       Aucune compétence de ce niveau n'a de manipulation visible.
