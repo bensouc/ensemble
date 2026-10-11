@@ -1,0 +1,40 @@
+@use "../config/colors";
+@use "../config/echelle";
+
+// `Ui::PageComponent` : le titre d'un écran de « Voir », ses onglets, son
+// contenu. Le titre est en gris foncé : le rose est réservé à l'action
+// principale et à l'état courant — ici, l'onglet actif.
+.ui-page {
+  width: 1000px;
+  max-width: 100%;
+}
+
+.ui-page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: echelle.$espace-sm echelle.$espace-md;
+  margin-bottom: echelle.$espace-sm;
+}
+
+.ui-page-title {
+  margin: 0;
+  color: colors.$grisF;
+  font-size: echelle.$texte-2xl;
+  font-weight: 700;
+}
+
+.ui-page-actions {
+  display: flex;
+  gap: echelle.$espace-sm;
+}
+
+.ui-page .ui-tabs {
+  margin-bottom: echelle.$espace-lg;
+  border-bottom: 1px solid colors.$grisC;
+
+  ul {
+    margin-bottom: -1px;
+  }
+}

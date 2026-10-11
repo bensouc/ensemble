@@ -13,7 +13,7 @@
 				<div class="menug-container">
 					<div class="link-container" data-controller='leftmenulinks'>
 						<div class="menug_icone" data-action="click->left-menu#seechange click->leftmenulinks#toggleDisplayLinks">
-							<div class="<%= "active" if (current_page?(work_plans_path) || controller_name == 'skills' || controller_name == 'belt_sheets') %> "
+							<div class="<%= "active" if (current_page?(work_plans_path) || %w[skills belt_sheets challenges].include?(controller_name)) %> "
             data-left-menu-target="seetext"
             style='decoration-text: none'>
 								Voir
@@ -33,9 +33,6 @@
 								<%= link_to belt_sheets_path do %>
 									<p class='sub-link'>Ceintures</p>
 								<% end %>
-							<% end %>
-							<%= link_to challenges_path do %>
-								<p class='sub-link'>Exercices</p>
 							<% end %>
 							<%= link_to skills_path do %>
 								<p class='sub-link'>Mes progressions de compétences</p>

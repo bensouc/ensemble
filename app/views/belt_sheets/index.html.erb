@@ -1,5 +1,6 @@
 <%# Voir > Ceintures : la présentation de Voir > Plans de travail — une classe,
     puis un dossier par élève, ses fiches dedans. %>
+<%= render Ui::PageComponent.new(title: "Ceintures", tabs: onglets_ceintures(:liste)) do %>
 <div class="container3">
 	<% if @classrooms.empty? %>
 		<p class="belt-sheet-empty">Aucune classe n'a ouvert les fiches de ceinture : le réglage est dans la modale de la classe.</p>
@@ -67,3 +68,4 @@
 		</div>
 	<% end %>
 </div>
+<% end %>
