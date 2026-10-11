@@ -83,7 +83,8 @@ color: colors.$grisF;
   display:flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 10px 0;
+  // Resserré : 10 px de marge haute et basse espaçaient les entrées de 60 px.
+  margin: 4px 0;
   padding: 5px 5px 5px 5px;
   transition: opacity 2s ease .05s;
   width: 158px;
@@ -128,6 +129,8 @@ color: colors.$grisF;
       padding-left: 10px;
 }
 .sub-link{
+  // La marge d'un paragraphe (1 rem) espaçait les entrées du sous-menu.
+  margin: 4px 0;
   color: colors.$roseL;
   &:hover{
     color: colors.$grisF;
@@ -150,7 +153,8 @@ color: colors.$grisF;
   display:flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 10px 0;
+  // Resserré : 10 px de marge haute et basse espaçaient les entrées de 60 px.
+  margin: 4px 0;
   padding: 5px 5px 5px 5px;
   transition: opacity 2s ease .05s;
   width: 158px;
