@@ -93,7 +93,8 @@ RSpec.describe "Fiches de ceinture", type: :request do
     post student_belt_sheets_path(eleve)
 
     get new_belt_sheet_belt_sheet_domain_path(fiche)
-    expect(response.body).to include("ceinture jaune")
+    pastille = Nokogiri::HTML(response.body).at_css("input[value='#{grammaire.id}']").parent
+    expect(pastille.at_css("i.fa-bacon.belt-2")).to be_present
     expect(response.body).not_to include("belt_sheet_domain[level]")
 
     # Une ceinture glissée dans la requête n'est pas lue : c'est la N+1.

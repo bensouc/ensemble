@@ -1,26 +1,27 @@
 <%# Choisir un domaine, et lui seul : sa ceinture est celle qui suit la dernière
-    que l'élève a validée — la blanche pour un domaine spécial. Elle s'affiche à
-    côté de son nom ; un domaine dont il a déjà la noire ne se choisit pas. %>
+    que l'élève a validée — la blanche pour un domaine spécial. Chaque pastille
+    en porte l'icône, à sa couleur ; un domaine dont il a déjà la noire est
+    grisé. Le même choix en pastilles que l'ajout d'un domaine à un plan. %>
 <%= turbo_frame_tag :new_belt_sheet_domain do %>
 	<div class="add-domain">
 		<div class="add-domain-form">
-			<%= simple_form_for BeltSheetDomain.new, url: belt_sheet_belt_sheet_domains_path(@belt_sheet),
-			                    method: :post, html: { novalidate: true } do |f| %>
-				<h3>Choisissez un domaine</h3>
-				<div class="m-top">
-					<%= f.input :domain_id, label: "", required: true, as: :radio_buttons,
-					            collection: @domains, value_method: :id,
-					            label_method: lambda { |domain|
-					              niveau = @ceintures[domain]
-					              suffixe = niveau ? "ceinture #{Belt::BELT_COLORS[niveau - 1]}" : "toutes validées"
-					              safe_join([domain.name, tag.small(" · #{suffixe}", class: "text-muted")])
-					            },
-					            disabled: @domains.reject { |domain| @ceintures[domain] }.map(&:id),
-					            collection_wrapper_tag: "div", collection_wrapper_class: "wrapper",
-					            item_wrapper_class: "domain-item",
-					            input_html: { class: "selector domain-selector" } %>
+			<%= form_with url: belt_sheet_belt_sheet_domains_path(@belt_sheet), method: :post do %>
+				<div class="ui-step">
+					<div class="ui-step-title">
+						<span class="ui-step-num">1</span>Domaine
+						<small>— sa ceinture est celle qui suit la dernière validée</small>
+					</div>
+					<div class="ui-chips">
+						<% @domains.each do |domain| %>
+							<% niveau = @ceintures[domain] %>
+							<%= render Ui::ChoiceChipComponent.new(name: "belt_sheet_domain[domain_id]", value: domain.id,
+							                                       label: domain.name, belt: niveau || Belt::BELT_COLORS.size,
+							                                       hint: ("toutes validées" unless niveau),
+							                                       disabled: niveau.nil?) %>
+						<% end %>
+					</div>
 				</div>
-				<div class="m-top box-end gap-2">
+				<div class="box-end gap-2">
 					<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral, href: belt_sheet_path(@belt_sheet),
 					                                   data: { turbo_frame: "_top" }) %>
 					<%= render Ui::ButtonComponent.new("Ajouter", variant: :primary, type: "submit") %>
