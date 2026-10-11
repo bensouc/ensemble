@@ -86,16 +86,35 @@ RSpec.describe "Fiches de ceinture", type: :request do
     expect(ligne.challenge).to be_for_belt
   end
 
-  it "ajoute un domaine à la main, à la ceinture choisie, et le range à sa place" do
+  it "ajoute un domaine à la ceinture qui suit la dernière validée, et le range à sa place" do
     grammaire = create(:domain, grade:, position: 0, name: "Grammaire", special: false)
     verbe = create(:skill, domain: grammaire, level: 2, school:, name: "Le verbe")
+    create(:belt, student: eleve, domain: grammaire, level: 1, completed: true)
     post student_belt_sheets_path(eleve)
 
-    post belt_sheet_belt_sheet_domains_path(fiche),
-         params: { belt_sheet_domain: { domain_id: grammaire.id, level: 2 } }, as: :turbo_stream
+    get new_belt_sheet_belt_sheet_domain_path(fiche)
+    expect(response.body).to include("ceinture jaune")
+    expect(response.body).not_to include("belt_sheet_domain[level]")
 
+    # Une ceinture glissée dans la requête n'est pas lue : c'est la N+1.
+    post belt_sheet_belt_sheet_domains_path(fiche),
+         params: { belt_sheet_domain: { domain_id: grammaire.id, level: 5 } }, as: :turbo_stream
+
+    bloc = fiche.belt_sheet_domains.find_by!(domain: grammaire)
+    expect(bloc.level).to eq(2)
+    expect(bloc.belt_sheet_skills.map(&:skill)).to eq([verbe])
     expect(fiche.ordered_domains.map(&:domain)).to eq([grammaire, numeration])
-    expect(fiche.belt_sheet_domains.find_by!(domain: grammaire).belt_sheet_skills.map(&:skill)).to eq([verbe])
+  end
+
+  it "n'ajoute rien pour un domaine dont l'élève a déjà la noire" do
+    7.times { |i| create(:belt, student: eleve, domain: numeration, level: i + 1, completed: true) }
+    post student_belt_sheets_path(eleve), params: { belt_sheet: { domain_ids: [""] } }
+
+    post belt_sheet_belt_sheet_domains_path(fiche), params: { belt_sheet_domain: { domain_id: numeration.id } },
+                                                    as: :turbo_stream
+
+    expect(fiche.belt_sheet_domains).to be_empty
+    expect(response.body).to include("Toutes les ceintures de Numération sont déjà validées")
   end
 
   it "retire puis remet une compétence, et retire un domaine" do

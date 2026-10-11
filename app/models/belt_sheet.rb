@@ -74,7 +74,7 @@ class BeltSheet < ApplicationRecord
   # La ceinture qui suit la dernière validée, avec ses compétences pas encore
   # validées ; un domaine spécial, qui n'en a qu'une, arrive vide.
   def ajouter_selon_resultats!(domain)
-    level = domain.special? ? 1 : prochaine_ceinture(domain)
+    level = ceinture_pour(domain)
     add_domain!(domain, level) if level
   end
 
@@ -83,7 +83,7 @@ class BeltSheet < ApplicationRecord
   # spécial, qui n'en a qu'une.
   def ajouter_en_cours!(domain, skills)
     if skills.empty?
-      level = domain.special? ? 1 : prochaine_ceinture(domain)
+      level = ceinture_pour(domain)
       belt_sheet_domains.create!(domain:, level:) if level
       return
     end
@@ -119,6 +119,13 @@ class BeltSheet < ApplicationRecord
       end
       copie
     end
+  end
+
+  # La ceinture d'un domaine sur cette fiche : celle qui suit la dernière que
+  # l'élève a validée ; la blanche pour un domaine spécial, qui n'en a qu'une.
+  # `nil` quand il a déjà la noire.
+  def ceinture_pour(domain)
+    domain.special? ? 1 : prochaine_ceinture(domain)
   end
 
   # La ceinture qui suit la dernière validée dans ce domaine ; `nil` quand
