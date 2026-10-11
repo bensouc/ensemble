@@ -1,8 +1,13 @@
 <% fiches = student.belt_sheets.order(created_at: :desc).limit(10) %>
 <div class="dropdown belt-sheet-menu">
+	<%# L'infobulle de Bootstrap, à droite comme celle du bouton de génération : la
+	    bulle native du navigateur s'ouvrait par-dessus lui. Elle vit sur l'icône,
+	    le bouton portant déjà `data-bs-toggle="dropdown"` — et Bootstrap cherche le
+	    menu à côté de lui, il ne faut pas l'envelopper. %>
 	<button type="button" class="--bgc-blanc border-0 p-0" data-bs-toggle="dropdown" aria-expanded="false"
-	        title="Fiches de ceinture">
-		<i class="fas fa-bacon printer-logo ms-4"></i>
+	        aria-label="Fiches de ceinture">
+		<i class="fas fa-bacon printer-logo ms-4" data-controller="tooltip" data-bs-placement="right"
+		   title="Fiches de ceinture"></i>
 	</button>
 	<ul class="dropdown-menu">
 		<li>

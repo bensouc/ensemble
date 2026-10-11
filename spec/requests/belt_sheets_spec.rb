@@ -123,6 +123,16 @@ RSpec.describe "Fiches de ceinture", type: :request do
     end.to raise_error(ActiveRecord::RecordNotFound)
   end
 
+  it "ouvre le PDF par sa page d'attente, depuis le bouton de la fiche" do
+    post student_belt_sheets_path(eleve)
+
+    get belt_sheet_path(fiche)
+    expect(response.body).to include(export_belt_sheet_path(fiche))
+
+    get export_belt_sheet_path(fiche)
+    expect(response.body).to include("Génération de la fiche de ceinture", belt_sheet_path(fiche, format: :pdf))
+  end
+
   describe "le réglage de la classe" do
     it "refuse de préparer une fiche quand la classe n'a pas ouvert les fiches de ceinture" do
       classroom.update!(belt_sheets: false)

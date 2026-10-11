@@ -4,7 +4,7 @@
 # l'élève : pour chaque domaine, la ceinture qui suit la dernière validée, avec
 # ses compétences pas encore validées (`BeltSheet.prepare!`).
 class BeltSheetsController < ApplicationController
-  before_action :set_belt_sheet, only: [:show, :destroy]
+  before_action :set_belt_sheet, only: [:show, :export, :destroy]
 
   # Voir > Ceintures : les classes qui ont ouvert les fiches de ceinture, un
   # dossier par élève — la présentation de Voir > Plans de travail.
@@ -19,6 +19,20 @@ class BeltSheetsController < ApplicationController
 
   def show
     authorize @belt_sheet
+    respond_to do |format|
+      format.html
+      # `inline` : le PDF s'ouvre dans l'onglet de la page d'attente, où la
+      # visionneuse offre Imprimer et Enregistrer.
+      format.pdf do
+        pdf = PdfGenerator::BeltSheetPdf.new(@belt_sheet)
+        send_data pdf.generate, filename: "#{pdf.title}.pdf", type: "application/pdf", disposition: "inline"
+      end
+    end
+  end
+
+  def export
+    authorize @belt_sheet, :show?
+    render layout: false
   end
 
   def create

@@ -154,6 +154,8 @@ Rails.application.routes.draw do
     resources :belt_sheets, only: [:create]
   end
   resources :belt_sheets, only: [:index, :show, :destroy] do
+    # La page d'attente du PDF, comme pour le plan de travail.
+    get :export, on: :member
     resources :belt_sheet_domains, only: [:new, :create]
   end
   resources :belt_sheet_domains, only: [:destroy] do

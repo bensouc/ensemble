@@ -45,8 +45,14 @@ class BeltSheet < ApplicationRecord
   # n'a pas encore validées. Un bloc où il a tout validé ne s'ajoute pas : il
   # n'y aurait rien à lui faire passer.
   #
+  # Un domaine spécial arrive VIDE : il n'a qu'une ceinture, qui porte toutes ses
+  # compétences — une vingtaine en géométrie —, et se valide au score. C'est à
+  # l'enseignant de choisir celles qu'il fait passer.
+  #
   # Renvoie le bloc, ou `nil` s'il n'a pas été ajouté.
   def add_domain!(domain, level)
+    return belt_sheet_domains.create!(domain:, level:) if domain.special?
+
     skills = Skill.where(domain:, level:).ordered.reject { |skill| competence_validee?(skill) }
     return nil if skills.empty?
 
@@ -64,7 +70,8 @@ class BeltSheet < ApplicationRecord
   # Les blocs dans l'ordre des domaines tel que l'école l'a défini, puis des
   # ceintures — jamais dans l'ordre où on les a ajoutés.
   def ordered_domains
-    belt_sheet_domains.includes(:domain).sort_by { |bloc| [bloc.domain.position.to_i, bloc.level, bloc.id] }
+    belt_sheet_domains.includes(:domain, belt_sheet_skills: [:skill, { challenge: :rich_text_content }]).
+      sort_by { |bloc| [bloc.domain.position.to_i, bloc.level, bloc.id] }
   end
 
   def title
