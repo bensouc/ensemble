@@ -30,7 +30,7 @@
 						<div class="nav-left-sub-links <%= "d-none" unless section_voir %>" data-leftmenulinks-target="links">
 							<% entrees = [[:plans, "Plans de travail", work_plans_path]]
 							   entrees << [:ceintures, "Ceintures", belt_sheets_path] if fiches_de_ceinture_ouvertes?
-							   entrees << [:progressions, "Mes progressions de compétences", skills_path] %>
+							   entrees << [:progressions, "Mes compétences", skills_path] %>
 							<% entrees.each do |section, libelle, chemin| %>
 								<%= link_to chemin, aria: { current: ("page" if section_voir == section) } do %>
 									<p class="sub-link <%= "sub-link--active" if section_voir == section %>"><%= libelle %></p>

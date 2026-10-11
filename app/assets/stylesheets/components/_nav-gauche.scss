@@ -123,26 +123,30 @@ color: colors.$grisF;
 
 }
 
+// Le sous-menu de « Voir », lu comme une arborescence : en retrait, rattaché à
+// son entrée par un filet gris, en texte courant — le gras rose reste aux
+// entrées principales. Ses entrées se lisaient comme des entrées de plus.
 .nav-left-sub-links{
-  // position: absolute;
   width: 158px;
-      padding-left: 10px;
+  margin: 0 0 8px 12px;
+  padding-left: 12px;
+  border-left: 2px solid colors.$grisC;
 }
 .sub-link{
-  // La marge d'un paragraphe (1 rem) espaçait les entrées du sous-menu.
-  margin: 4px 0;
-  color: colors.$roseL;
+  margin: 6px 0;
+  color: colors.$grisF;
+  font-size: 14px;
+  font-weight: 500;
   &:hover{
-    color: colors.$grisF;
+    color: colors.$rose;
   }
 }
-// L'entrée de « Voir » où l'on se trouve : le rose de l'état courant, sur le
-// fond à 8 % des pastilles — on la repère d'un coup d'œil.
+// L'entrée courante : le rose de l'état courant, et un trait posé SUR le filet —
+// le principe de l'onglet actif.
 .sub-link--active {
-  margin-left: -10px;
-  padding: 4px 10px;
-  border-radius: 10px;
-  background-color: rgba(colors.$rose, 0.08);
+  margin-left: -14px;
+  padding-left: 12px;
+  border-left: 2px solid colors.$rose;
   color: colors.$rose;
   font-weight: 600;
 }
