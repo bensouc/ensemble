@@ -18,6 +18,22 @@
       seuls boutons de l'écran sont ceux de l'exercice. Un élève ne doit jamais
       pouvoir sortir d'ici par accident. %>
   <body class="m-page">
+    <%# Dans la marge grise, sur un écran assez large : la marque, et le retour à
+        la liste des prénoms quand un élève est entré — la même sortie que « Ce
+        n'est pas moi », qu'elle remplace alors. On ne quitte jamais /manipule. %>
+    <aside class="m-cote">
+      <div class="m-cote-marque">
+        <%= image_tag "icons/manipule-red-icon.svg", alt: "", class: "m-cote-logo" %>
+        <span>Manipule</span>
+      </div>
+      <%# L'aperçu de l'éditeur rend ce gabarit depuis un écran de l'enseignante,
+          qui ne connaît pas d'élève. %>
+      <% if controller.respond_to?(:eleve_courant, true) && eleve_courant %>
+        <%= button_to manipule_quitter_path, method: :delete, class: "m-cote-retour" do %>
+          ← Retour à la classe
+        <% end %>
+      <% end %>
+    </aside>
     <main class="m-carte">
       <%= yield %>
     </main>

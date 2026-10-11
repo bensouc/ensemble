@@ -1,5 +1,9 @@
 <%# `data-m-audio` porte le morceau pré-généré quand il existe ; sans lui, le
     navigateur se rabat sur sa propre voix — qu'il n'a pas toujours. %>
+<%# L'énoncé, et « Tout écouter » en haut à droite : le bouton ne s'intercale plus
+    entre l'énoncé et la question. L'énoncé reste le premier dans le code, pour
+    l'ordre de lecture. %>
+<div class="m-tete">
 <%= tag.p probleme.statement, class: "m-enonce",
           data: { "m-enonce": true, "m-lire": true, "m-audio": chemin_audio(audio_enonce) } %>
 
@@ -9,4 +13,5 @@
           data-attempt="<%= @tentative&.id %>">🔊 Tout écouter</button>
   <button type="button" class="m-stop" data-m-stop hidden>⏹ Arrêter</button>
   <span class="m-voix" data-m-voix></span>
+</div>
 </div>
