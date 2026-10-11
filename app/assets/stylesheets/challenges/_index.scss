@@ -148,6 +148,23 @@
     }
   }
 
+  // « Copier en ceinture » ne tient pas sur une ligne dans les 100 px de la
+  // gouttière : il passe sur deux, au lieu de déborder sur la carte.
+  .clone-challenge-btn--deux-lignes {
+    height: auto;
+    min-height: 24px;
+    max-width: 100%;
+    padding: 3px 9px;
+    border-radius: 12px;
+    line-height: 1.2;
+    text-align: left;
+    white-space: normal;
+
+    span {
+      white-space: normal;
+    }
+  }
+
   // Frère du « Cloner » : même pilule, même gabarit. C'est une action de rangement,
   // pas de création — elle ne cherche pas à attirer l'œil davantage.
   .transfer-challenge-btn {

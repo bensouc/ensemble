@@ -56,4 +56,38 @@ RSpec.describe "Exercices de ceinture", type: :request do
     expect(page.at_css("turbo-frame#for_belt_skill_#{skill.id}_new_challenge")).to be_present
     expect(page.at_css("input[name='challenge[for_belt]']")["value"]).to eq("true")
   end
+
+  describe "Copier en ceinture" do
+    let!(:exercice) { create(:challenge, skill:, user: enseignant, name: "Compter", content: "<div>Énoncé</div>") }
+
+    it "ajoute une copie aux exercices de ceinture de la même compétence, l'original en place" do
+      expect { post copy_to_belt_challenge_path(exercice), as: :turbo_stream }.to change(Challenge, :count).by(1)
+
+      copie = Challenge.where.not(id: exercice.id).sole
+      expect(copie).to have_attributes(skill_id: skill.id, for_belt: true, name: "Compter-Ceinture", user: enseignant)
+      expect(copie.content.to_plain_text).to include("Énoncé")
+      expect(exercice.reload).not_to be_for_belt
+      expect(response.body).to include("Copie ajoutée aux exercices de ceinture")
+    end
+
+    it "se propose sous Cloner, sur un exercice classique seulement" do
+      create(:challenge, skill:, user: enseignant, for_belt: true)
+
+      index_filtre
+      expect(response.body.scan(copy_to_belt_challenge_path(exercice)).size).to eq(1)
+
+      index_filtre(ceinture: 1)
+      expect(response.body).not_to include("Copier en ceinture")
+    end
+
+    it "n'existe pas sans classe aux fiches de ceinture" do
+      classroom.update!(belt_sheets: false)
+
+      index_filtre
+      expect(response.body).not_to include("Copier en ceinture")
+
+      expect { post copy_to_belt_challenge_path(exercice), as: :turbo_stream }.not_to change(Challenge, :count)
+      expect(response).to have_http_status(:forbidden)
+    end
+  end
 end
