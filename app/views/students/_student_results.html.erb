@@ -6,29 +6,27 @@
     >
 			<h1>Progression de
 				<%= student.first_name %></h1>
-			<%# La modale commune aux résultats de classe : elle coche les domaines selon
-			    les préférences du professeur, et se referme à l'envoi — le plan s'ouvre
-			    dans un nouvel onglet. L'ancienne modale Bootstrap, propre à cette page,
-			    restait ouverte derrière. %>
-			<%= link_to student_auto_gen_modal_path(student),
-			            class: "--bgc-blanc",
-			            data: { turbo_frame: "general_modal", controller: "tooltip",
-			                    bs_toggle: "tooltip", bs_placement: "right" },
-			            title: "Générer le prochain Plan de travail" do %>
-				<i class="fa-solid fa-user-gear printer-logo ms-4"></i>
-			<% end %>
-			<%# Préparer une fiche de ceinture : le même balisage que le bouton de
-			    génération juste avant — un clic ouvre la modale, l'infobulle de
-			    Bootstrap à droite. Les fiches déjà faites sont dans Voir > Ceintures. %>
-			<% if student.classroom.belt_sheets? %>
-				<%= link_to student_new_belt_sheet_modal_path(student),
-				            class: "--bgc-blanc",
-				            data: { turbo_frame: "general_modal", controller: "tooltip",
-				                    bs_toggle: "tooltip", bs_placement: "right" },
-				            title: "Préparer une fiche de ceinture" do %>
-					<i class="fas fa-bacon printer-logo ms-4"></i>
+			<%# Deux boutons-icônes du composant, l'infobulle de Bootstrap à droite,
+			    masqués à l'impression :
+			    - générer le prochain plan : la modale commune aux résultats de classe,
+			      qui coche les domaines selon les préférences du professeur et se
+			      referme à l'envoi — le plan s'ouvre dans un nouvel onglet ;
+			    - préparer une fiche de ceinture ; celles déjà faites sont dans
+			      Voir > Ceintures. %>
+			<div class="d-inline-flex gap-1 ms-3 d-print-none">
+				<%= render Ui::ButtonComponent.new(variant: :icon, size: :lg, icon: "fa-user-gear",
+				                                   href: student_auto_gen_modal_path(student),
+				                                   title: "Générer le prochain Plan de travail",
+				                                   data: { turbo_frame: "general_modal", controller: "tooltip",
+				                                           bs_toggle: "tooltip", bs_placement: "right" }) %>
+				<% if student.classroom.belt_sheets? %>
+					<%= render Ui::ButtonComponent.new(variant: :icon, size: :lg, icon: "fa-bacon",
+					                                   href: student_new_belt_sheet_modal_path(student),
+					                                   title: "Préparer une fiche de ceinture",
+					                                   data: { turbo_frame: "general_modal", controller: "tooltip",
+					                                           bs_toggle: "tooltip", bs_placement: "right" }) %>
 				<% end %>
-			<% end %>
+			</div>
 			</div>
 			<%# La légende partage la ligne de l'impression : c'est la seule bande
 			    libre de l'en-tête, et une légende se consulte au passage — elle n'a
