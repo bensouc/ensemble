@@ -7,15 +7,11 @@
 			<h4 class="date-domain">Préparée le <%= l(@belt_sheet.created_at.to_date, format: :long) %></h4>
 		</div>
 		<div class="belt-sheet-actions">
-			<%= link_to student_path(@belt_sheet.student), class: "belt-sheet-action", title: "Revenir à la progression de l'élève" do %>
-				<i class="fa-solid fa-arrow-left"></i>
-				<span>Progression</span>
-			<% end %>
-			<%= button_to belt_sheet_path(@belt_sheet), method: :delete, class: "belt-sheet-action",
-			              form: { data: { turbo_confirm: "Supprimer cette fiche de ceinture ?" } } do %>
-				<i class="fa-solid fa-trash-can"></i>
-				<span>Supprimer</span>
-			<% end %>
+			<%= render Ui::ButtonComponent.new("Progression", icon: "fa-arrow-left", href: student_path(@belt_sheet.student),
+			                                   title: "Revenir à la progression de l'élève") %>
+			<%= render Ui::ButtonComponent.new("Supprimer", variant: :neutral, icon: "fa-trash-can",
+			                                   url: belt_sheet_path(@belt_sheet), method: :delete,
+			                                   form: { data: { turbo_confirm: "Supprimer cette fiche de ceinture ?" } }) %>
 		</div>
 	</div>
 
