@@ -39,7 +39,7 @@ class BeltSheetDomainsController < ApplicationController
     if @belt_sheet.belt_sheet_domains.exists?(domain:, level:)
       t("fiches_ceinture.bloc_deja_la", **noms)
     elsif @belt_sheet.add_domain!(domain, level)
-      t("fiches_ceinture.bloc_ajoute", **noms)
+      t(domain.special? ? "fiches_ceinture.bloc_special_ajoute" : "fiches_ceinture.bloc_ajoute", **noms)
     else
       t("fiches_ceinture.tout_valide", **noms)
     end

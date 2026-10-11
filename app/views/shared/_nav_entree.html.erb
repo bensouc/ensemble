@@ -1,0 +1,8 @@
+<%# Une entrée de la barre de gauche : le libellé à gauche, en gris foncé, et à
+    droite son quartier du logo, toujours rose — c'est le lien avec le logo.
+    L'entrée courante : son libellé passe en rose, sur un fond clair qui couvre
+    la ligne. `extra` : ce qui suit le libellé (l'étiquette « bêta »). %>
+<div class="menug_icone <%= "menug_icone--active" if actif %>">
+	<div class="menug_libelle"><%= libelle %><%= local_assigns[:extra] %></div>
+	<%= image_tag icone, alt: "" %>
+</div>

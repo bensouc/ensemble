@@ -1,4 +1,5 @@
 @use "../config/colors";
+@use "../config/echelle";
 @use "../config/global";
 
 // Le bouton d'Ensemble (`Ui::ButtonComponent`). La pastille de la refonte des
@@ -61,6 +62,19 @@
     &.ui-btn--icon {
       width: 24px;
       padding: 0;
+    }
+  }
+
+  // Une icône seule à côté d'un titre de page : la cible tactile de l'échelle.
+  &.ui-btn--lg {
+    height: echelle.$cible-tactile;
+    padding: 0 20px;
+    font-size: 15px;
+
+    &.ui-btn--icon {
+      width: echelle.$cible-tactile;
+      padding: 0;
+      font-size: 20px;
     }
   }
 

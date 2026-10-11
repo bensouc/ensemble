@@ -52,6 +52,17 @@ RSpec.describe BeltSheet, type: :model do
       expect(sheet.belt_sheet_domains.where(domain: geometrie)).to be_empty
     end
 
+    it "ajoute à la main un domaine spécial VIDE : l'enseignant choisit ses compétences" do
+      geometrie = create(:domain, grade:, name: "Géométrie", position: 3, special: true)
+      3.times { |i| competence(geometrie, 1, "Tracer #{i}") }
+      sheet = described_class.prepare!(student, user)
+
+      bloc = sheet.add_domain!(geometrie, 1)
+
+      expect(bloc).to be_persisted
+      expect(bloc.belt_sheet_skills).to be_empty
+    end
+
     it "n'ajoute pas de bloc quand l'élève a tout validé, ni après la noire" do
       7.times { |i| create(:belt, student:, domain: numeration, level: i + 1, completed: true) }
       competence(numeration, 7, "Tout")

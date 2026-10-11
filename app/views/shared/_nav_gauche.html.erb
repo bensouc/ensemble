@@ -11,102 +11,52 @@
 		<div class="menu-g">
 			<% if user_signed_in? %>
 				<div class="menug-container">
-					<div class="link-container" data-controller='leftmenulinks'>
-						<div class="menug_icone" data-action="click->left-menu#seechange click->leftmenulinks#toggleDisplayLinks">
-							<div class="<%= "active" if (current_page?(work_plans_path) || controller_name == 'skills') %> "
-            data-left-menu-target="seetext"
-            style='decoration-text: none'>
-								Voir
-							</div>
-							<% if current_page?(work_plans_path) || params[:controller] == "challenges" || controller_name == 'skills' %>
-								<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/1blanc_yahz0m.svg",
-           class: "on" %>
-							<% else %>
-								<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638459822/ico_menu_1_wvddvx.svg" %>
-							<% end %>
+					<div class="link-container" data-controller="leftmenulinks">
+						<%# « Voir » n'est pas un lien : il ouvre ou replie son sous-menu. %>
+						<div data-action="click->leftmenulinks#toggleDisplayLinks" role="button">
+							<%= render "shared/nav_entree", libelle: "Voir", actif: section_voir.present?,
+							           icone: "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638459822/ico_menu_1_wvddvx.svg" %>
 						</div>
-						<div class="nav-left-sub-links d-none" data-leftmenulinks-target="links">
-							<%= link_to work_plans_path do %>
-								<p class='sub-link'>Mes Plans de Travail</p>
-							<% end %>
-							<%= link_to challenges_path do %>
-								<p class='sub-link'>Exercices</p>
-							<% end %>
-							<%= link_to skills_path do %>
-								<p class='sub-link'>Mes progressions de compétences</p>
+						<%# Ouvert tant qu'on est dans une page de « Voir », l'entrée courante
+						    marquée ; le clic sur « Voir » le replie ou le déplie. %>
+						<div class="nav-left-sub-links <%= "d-none" unless section_voir %>" data-leftmenulinks-target="links">
+							<% entrees = [[:plans, "Plans de travail", work_plans_path]]
+							   entrees << [:ceintures, "Ceintures", belt_sheets_path] if fiches_de_ceinture_ouvertes?
+							   entrees << [:progressions, "Mes compétences", skills_path] %>
+							<% entrees.each do |section, libelle, chemin| %>
+								<%= link_to chemin, aria: { current: ("page" if section_voir == section) } do %>
+									<p class="sub-link <%= "sub-link--active" if section_voir == section %>"><%= libelle %></p>
+								<% end %>
 							<% end %>
 						</div>
 					</div>
 					<%= link_to new_work_plan_path do %>
-						<div class="menug_icone" data-action="click->left-menu#seechange">
-							<div class="<%= "active" if (current_page?(new_work_plan_path) || (params[:action] == "show" && controller_name == 'work_plans' ))  %>"
-            data-left-menu-target="seetext"
-            style='decoration-text: none'>
-								Créer
-							</div>
-							<%# || (params[:action] == "show" && current_page?(work_plan_path(params[:id]))) %>
-							<% if (current_page?(new_work_plan_path)|| (params[:action] == "show" && controller_name == 'work_plans' )) %>
-								<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/2blanc_tixkrs.svg",alt: "logo Workplan", class: "on" %>
-							<% else %>
-								<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/2_ekrwe3.svg",alt: "logo Workplan", class: "" %>
-							<% end %>
-						</div>
+						<%= render "shared/nav_entree", libelle: "Créer",
+						           actif: current_page?(new_work_plan_path) || (action_name == "show" && controller_name == "work_plans"),
+						           icone: "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/2_ekrwe3.svg" %>
 					<% end %>
 					<%= link_to classrooms_path do %>
-						<div class="menug_icone" data-action="click->left-menu#seechange">
-							<div class="<%= "active" if current_page?(classrooms_path) || controller_name()== 'students' %> "
-            data-left-menu-target="seetext"
-            style="decoration-text: none">
-								<% if current_user.classrooms.count + current_user.user_shared_classrooms.count < 2 %>
-									Ma Classe
-								<% else %>
-									Mes Classes
-								<% end %>
-							</div>
-							<% if current_page?(classrooms_path) || controller_name() == 'students' %>
-								<%= image_tag "icons/eval-icon.svg", class: "on" %>
-							<% else %>
-								<%= image_tag "icons/eval-red-icon.svg" %>
-							<% end %>
-						</div>
+						<%= render "shared/nav_entree",
+						           libelle: current_user.classrooms.count + current_user.user_shared_classrooms.count < 2 ? "Ma Classe" : "Mes Classes",
+						           actif: current_page?(classrooms_path) || controller_name == "students",
+						           icone: "icons/eval-red-icon.svg" %>
 					<% end %>
-					<%= link_to conversations_path do%>
-						<div class="menug_icone" data-action="click->left-menu#seechange">
-							<div class="<%= "active" if (current_page?(new_work_plan_path) || (params[:action] == "show" && controller_name == 'work_plans' ))  %>"
-              data-left-menu-target="seetext"
-              style='decoration-text: none'>
-								Partager
-							</div>
-							<%# || (params[:action] == "show" && current_page?(work_plan_path(params[:id]))) %>
-							<% if (current_page?(conversations_path)) %>
-								<%= image_tag "https://res.cloudinary.com/dr50qe2fh/image/upload/v1638798743/2blanc_tixkrs.svg",alt: "logo Workplan", class: "on" %>
-							<% else %>
-								<%= image_tag "btns/share_rose_white.png",alt: "logo Workplan", class: "" %>
-							<% end %>
-						</div>
-						<% end %>
-					<%# Manipule est une option : sans elle, l'entrée n'existe pas. %>
+					<%# Son libellé s'allumait sur les pages de Créer : il en recopiait la
+					    condition. %>
+					<%= link_to conversations_path do %>
+						<%= render "shared/nav_entree", libelle: "Partager", actif: controller_name == "conversations",
+						           icone: "btns/share_rose_white.png" %>
+					<% end %>
+					<%# Manipule est une option : sans elle, l'entrée n'existe pas. Son icône,
+					    fa-cubes-stacked figée en SVG, est servie depuis le dépôt et non
+					    Cloudinary, dont le compte est partagé avec la production. %>
 					<% if current_user.manipule_ouvert? %>
-					<%= link_to manipule_root_path do %>
-						<div class="menug_icone" data-action="click->left-menu#seechange">
-							<div class="<%= "active" if controller_path.start_with?("manipule") %>"
-              data-left-menu-target="seetext"
-              style='decoration-text: none'>
-								Manipule<span class="beta">bêta</span>
-							</div>
-							<%# fa-cubes-stacked, figée en SVG plutôt que posée en <i> : deux
-							    fichiers, un par état, et l'entrée se comporte exactement comme les
-							    quatre autres. Servie depuis le dépôt, pas depuis Cloudinary, dont
-							    le compte est partagé avec la production. %>
-							<% if controller_path.start_with?("manipule") %>
-								<%= image_tag "icons/manipule-icon.svg", alt: "", class: "on" %>
-							<% else %>
-								<%= image_tag "icons/manipule-red-icon.svg", alt: "" %>
-							<% end %>
-						</div>
+						<%= link_to manipule_root_path do %>
+							<%= render "shared/nav_entree", libelle: "Manipule", actif: controller_path.start_with?("manipule"),
+							           icone: "icons/manipule-red-icon.svg", extra: tag.span("bêta", class: "beta") %>
+						<% end %>
 					<% end %>
-					<% end %>
-					</div>
+				</div>
 				<% end %>
 			</div>
 			<div class="calendrier">

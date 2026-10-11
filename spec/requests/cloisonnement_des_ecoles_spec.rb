@@ -51,7 +51,8 @@ RSpec.describe "Cloisonnement : aucune page ne montre l'école d'à côté", typ
                                 name: nom.call(:competence, "Compter jusqu'à dix"))
     exercice = create(:challenge, user: enseignante, skill: competence,
                                   content: "<div>#{nom.call(:exercice, 'Consigne')}</div>")
-    classe = create(:classroom, user: enseignante, grade: niveau, name: nom.call(:classe, "Ma classe"))
+    classe = create(:classroom, user: enseignante, grade: niveau, name: nom.call(:classe, "Ma classe"),
+                                 belt_sheets: true)
     eleve = create(:student, classroom: classe, first_name: nom.call(:eleve, "Sam"))
     plan = create(:work_plan, user: enseignante, grade: niveau, student: eleve)
     domaine_du_plan = create(:work_plan_domain, work_plan: plan, domain: domaine, level: 1)

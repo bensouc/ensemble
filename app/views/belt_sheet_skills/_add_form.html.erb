@@ -6,17 +6,15 @@
 			<h6>Ajouter une compétence</h6>
 		</div>
 		<div class="d-none" data-skill-add-target="form">
-			<%= form_with url: belt_sheet_domain_belt_sheet_skills_path(bloc), method: :post, class: "d-flex" do %>
-				<div class="d-flex justify-content-between pb-1">
-					<%= select_tag :skill_id, options, prompt: "Sélectionnez une compétence",
-					               class: "skill-selector", required: true %>
-				</div>
-				<div class="d-flex">
-					<%= submit_tag "Valider", class: "add-skill-btn" %>
-					<div class="cancel-btn ms-3" data-action="click->skill-add#displayForm" style="margin-top: 10px">
-						<i class="fas fa-times"></i>
-					</div>
-				</div>
+			<%# Une seule ligne, centrée : le select et les deux boutons n'ont pas la même
+			    hauteur, et une marge sur l'un les décalait. %>
+			<%= form_with url: belt_sheet_domain_belt_sheet_skills_path(bloc), method: :post,
+			              class: "d-flex align-items-center flex-wrap gap-2 mt-2" do %>
+				<%= select_tag :skill_id, options, prompt: "Sélectionnez une compétence",
+				               class: "skill-selector m-0", required: true %>
+				<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral,
+				                                   data: { action: "click->skill-add#displayForm" }) %>
+				<%= render Ui::ButtonComponent.new("Valider", variant: :primary, type: "submit") %>
 			<% end %>
 		</div>
 	</div>

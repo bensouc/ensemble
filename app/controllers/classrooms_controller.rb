@@ -30,6 +30,9 @@ class ClassroomsController < ApplicationController
     authorize @classroom
     @classroom.name = set_classroom_params[:name]
     @classroom.name = nil if @classroom.name == ""
+    # Le niveau ne se change pas après coup : seul le réglage des fiches de
+    # ceinture accompagne le nom.
+    @classroom.belt_sheets = set_classroom_params[:belt_sheets] if set_classroom_params.key?(:belt_sheets)
     @classroom.save!
     redirect_to classrooms_path
   end
@@ -120,7 +123,7 @@ class ClassroomsController < ApplicationController
   end
 
   def set_classroom_params
-    params.expect(classroom: [:grade_id, :name])
+    params.expect(classroom: [:grade_id, :name, :belt_sheets])
   end
 
   # COntroller Method

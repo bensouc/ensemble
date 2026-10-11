@@ -1,3 +1,4 @@
+<%= render Ui::PageComponent.new(title: "Plans de travail", tabs: onglets_plans_de_travail(:liste)) do %>
 <div class="container3" data-controller="display-right-anchor">
   <%= turbo_frame_tag "work_plan_index" do %>
     <% @my_classrooms.each do |classroom| %>
@@ -29,3 +30,4 @@
     <%# end classroom loop => class wp-one-classroom %>
   <% end %>
 </div>
+<% end %>

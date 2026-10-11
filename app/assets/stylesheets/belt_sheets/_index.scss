@@ -15,23 +15,11 @@
 
 .belt-sheet-actions {
   display: flex;
-  gap: 16px;
+  gap: 8px;
 
   form {
     display: inline;
   }
-}
-
-.belt-sheet-action {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 0;
-  border: none;
-  background-color: transparent;
-  color: colors.$rose;
-  font-size: 14px;
-  text-decoration: none;
 }
 
 .belt-sheet-empty {
@@ -50,12 +38,4 @@
   color: #3d8b3d;
   font-size: 12px;
   white-space: nowrap;
-}
-
-.belt-sheet-menu {
-  display: inline-block;
-
-  form {
-    display: block;
-  }
 }

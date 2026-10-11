@@ -1,0 +1,47 @@
+@use "../config/colors";
+@use "../config/echelle";
+
+// `Ui::PageComponent` : le titre d'un écran de « Voir », ses onglets, son
+// contenu. Le titre est en gris foncé : le rose est réservé à l'action
+// principale et à l'état courant — ici, l'onglet actif.
+.ui-page {
+  width: 1000px;
+  max-width: 100%;
+}
+
+// Une hauteur minimale, celle d'un bouton :lg : le titre, centré, se pose au
+// même endroit qu'il y ait une action à droite ou non. Sans elle, le nom de
+// l'école de « Mes compétences » agrandissait l'en-tête, et le titre sautait
+// d'une page à l'autre.
+.ui-page-header {
+  min-height: echelle.$cible-tactile;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: echelle.$espace-sm echelle.$espace-md;
+  margin-bottom: echelle.$espace-sm;
+}
+
+.ui-page-title {
+  margin: 0;
+  color: colors.$grisF;
+  font-size: echelle.$texte-2xl;
+  font-weight: 700;
+}
+
+.ui-page-actions {
+  display: flex;
+  gap: echelle.$espace-sm;
+}
+
+.ui-page .ui-tabs {
+  margin-bottom: echelle.$espace-lg;
+}
+
+// Les titres de la liste — une classe, « Non assigné » — sont des parties de la
+// page : ils passent sous son titre, au lieu des 2,5 rem d'un h1 qu'ils
+// gardaient d'avant le titre de page.
+.ui-page .container3 h1 {
+  font-size: echelle.$texte-xl;
+}

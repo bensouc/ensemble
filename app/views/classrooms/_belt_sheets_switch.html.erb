@@ -1,0 +1,10 @@
+<%# Réglage de la classe : ouvre les fiches de ceinture de ses élèves, le menu
+    « Ceintures » et l'onglet des exercices de ceinture. %>
+<div class="form-check form-switch belt-sheets-switch <%= local_assigns[:wrapper_class] %>">
+	<%= f.check_box :belt_sheets, class: "form-check-input", role: "switch",
+	                id: "classroom_belt_sheets_#{f.object.id || 'new'}" %>
+	<label class="form-check-label" for="classroom_belt_sheets_<%= f.object.id || 'new' %>">
+		Fiches de ceinture
+		<span class="form-text">Prépare et imprime pour chaque élève les épreuves des ceintures qu'il passe.</span>
+	</label>
+</div>

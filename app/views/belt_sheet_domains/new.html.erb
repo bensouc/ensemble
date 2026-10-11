@@ -25,13 +25,11 @@
 					                          data: { domain_form_target: "box", action: "click->domain-form#displayBtn" } },
 					            label_method: ->(level) { render "work_plan_domains/show_level_btn", level: level } %>
 				</div>
-				<div class="m-top box-end">
-					<%= f.button :button, "Ajouter", type: "submit",
-					             class: "validate-domain-btn fs-2 ms-3 font-weight-bold d-none",
-					             data: { domain_form_target: "btn" } %>
-					<%= link_to belt_sheet_path(@belt_sheet), class: "cancel-domain-btn", data: { turbo_frame: "_top" } do %>
-						<i class="fas fa-times"></i>
-					<% end %>
+				<div class="m-top box-end gap-2">
+					<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral, href: belt_sheet_path(@belt_sheet),
+					                                   data: { turbo_frame: "_top" }) %>
+					<%= render Ui::ButtonComponent.new("Ajouter", variant: :primary, type: "submit",
+					                                   data: { domain_form_target: "btn" }, html: { class: "d-none" }) %>
 				</div>
 			<% end %>
 		</div>

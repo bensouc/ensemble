@@ -1,16 +1,14 @@
-<%# temp level management ici CM2 %>
+<%# Un onglet par niveau des classes de l'enseignant, à la place des pastilles
+    « > CE1 » : on passe d'un niveau à l'autre comme d'une section à l'autre. %>
+<% onglets = @grades.map do |niveau|
+     { label: niveau.name.upcase, href: skills_path(grade: niveau), active: niveau == @grade,
+       data: { action: "loading-spinner2#displayLoadingSpinner" } }
+   end %>
 <div data-controller="loading-spinner2">
-	<div class="classroom-level-selectors">
-		<% @grades.each do |classroom_grade| %>
-			<%= link_to skills_path(grade: classroom_grade ), data:{action:'loading-spinner2#displayLoadingSpinner'} do %>
-				<div class="class-pill <%= 'active' if classroom_grade == @grade %> ">
-					<i class="fa-solid fa-angle-right"></i> <%= classroom_grade.name.upcase %>
-				</div>
-			<% end %>
-		<% end %>
-		<h1 class=''>Mes Compétences </h1>
-		<div class='skill-school-name'>(<%= @grade.school.name.capitalize %>)</div>
-	</div>
+<%= render Ui::PageComponent.new(title: "Mes compétences", tabs: onglets) do |page| %>
+	<% page.with_actions do %>
+		<span class="skill-school-name">(<%= @grade.school.name.capitalize %>)</span>
+	<% end %>
 	<%= turbo_frame_tag "skills_list" do %>
 		<% if @domain.nil? %>
 			<%= render 'domains/domains_list', grade: @grade, domain: @domain  %>
@@ -83,6 +81,7 @@
 			<% end %>
 		</div>
 	</div>
+<% end %>
 </div>
 <% unless @errors.nil?  %>
   <%= render 'errors_display', errors: @errors %>

@@ -9,7 +9,7 @@ RSpec.describe "Fiches de ceinture", type: :request do
   let(:school) { create(:school) }
   let(:enseignant) { create(:user, school:, admin: false) }
   let(:grade) { create(:grade, school:, name: "CE1", grade_level: "CE1") }
-  let(:classroom) { create(:classroom, user: enseignant, grade:) }
+  let(:classroom) { create(:classroom, user: enseignant, grade:, belt_sheets: true) }
   let(:eleve) { create(:student, classroom:, first_name: "Machin") }
   let!(:numeration) { create(:domain, grade:, position: 1, name: "Numération", special: false) }
   let!(:compter) { create(:skill, domain: numeration, level: 1, school:, name: "Compter jusqu'à 10") }
@@ -121,6 +121,104 @@ RSpec.describe "Fiches de ceinture", type: :request do
     expect do
       post belt_sheet_domain_belt_sheet_skills_path(bloc), params: { skill_id: autre_ceinture.id }, as: :turbo_stream
     end.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  it "ouvre le PDF par sa page d'attente, depuis le bouton de la fiche" do
+    post student_belt_sheets_path(eleve)
+
+    get belt_sheet_path(fiche)
+    expect(response.body).to include(export_belt_sheet_path(fiche))
+
+    get export_belt_sheet_path(fiche)
+    expect(response.body).to include("Génération de la fiche de ceinture", belt_sheet_path(fiche, format: :pdf))
+  end
+
+  describe "la modale de préparation" do
+    let!(:geometrie) { create(:domain, grade:, position: 2, name: "Géométrie", special: true) }
+    let!(:grammaire) { create(:domain, grade:, position: 3, name: "Grammaire", special: false) }
+
+    before { create(:skill, domain: grammaire, level: 1, school:, name: "Le verbe") }
+
+    it "propose les domaines du niveau, cochés sauf les spéciaux" do
+      get student_new_belt_sheet_modal_path(eleve)
+
+      cases = Nokogiri::HTML(response.body).css("input[type=checkbox][name='belt_sheet[domain_ids][]']")
+      cochees = cases.select { |c| c.key?("checked") }.map { |c| c["value"].to_i }
+      expect(cases.map { |c| c["value"].to_i }).to contain_exactly(numeration.id, geometrie.id, grammaire.id)
+      expect(cochees).to contain_exactly(numeration.id, grammaire.id)
+    end
+
+    it "ne prépare que les domaines cochés, et un domaine spécial coché arrive vide" do
+      post student_belt_sheets_path(eleve), params: { belt_sheet: { domain_ids: ["", numeration.id, geometrie.id] } }
+
+      blocs = fiche.ordered_domains
+      expect(blocs.map(&:domain)).to eq([numeration, geometrie])
+      expect(blocs.last.belt_sheet_skills).to be_empty
+    end
+
+    it "ignore un domaine d'un autre niveau glissé dans la requête" do
+      ailleurs = create(:domain, grade: create(:grade, school:, name: "CM1", grade_level: "CM1"), name: "Ailleurs")
+
+      post student_belt_sheets_path(eleve), params: { belt_sheet: { domain_ids: [ailleurs.id, numeration.id] } }
+
+      expect(fiche.belt_sheet_domains.map(&:domain)).to eq([numeration])
+    end
+  end
+
+  describe "le réglage de la classe" do
+    it "refuse de préparer une fiche quand la classe n'a pas ouvert les fiches de ceinture" do
+      classroom.update!(belt_sheets: false)
+
+      expect { post student_belt_sheets_path(eleve) }.not_to change(BeltSheet, :count)
+    end
+
+    it "laisse lire une fiche déjà faite après qu'on a coupé le réglage" do
+      post student_belt_sheets_path(eleve)
+      classroom.update!(belt_sheets: false)
+
+      get belt_sheet_path(fiche)
+      expect(response).to have_http_status(:ok)
+    end
+
+    it "montre le menu Ceintures et la fiche de l'élève seulement avec le réglage" do
+      get student_path(eleve)
+      expect(response.body).to include(belt_sheets_path, student_new_belt_sheet_modal_path(eleve))
+
+      classroom.update!(belt_sheets: false)
+      get student_path(eleve)
+      expect(response.body).not_to include(student_new_belt_sheet_modal_path(eleve))
+      expect(response.body).not_to include(%(href="#{belt_sheets_path}"))
+    end
+
+    it "se règle depuis la modale de la classe" do
+      classroom.update!(belt_sheets: false)
+
+      patch classroom_path(classroom), params: { classroom: { name: "Les hiboux", belt_sheets: "1" } }
+
+      expect(classroom.reload).to have_attributes(name: "Les hiboux", belt_sheets: true)
+    end
+  end
+
+  describe "Voir > Ceintures" do
+    it "range les fiches par élève, sous les classes qui ont le réglage" do
+      autre_classe = create(:classroom, user: enseignant, grade:, name: "Sans ceintures")
+      create(:student, classroom: autre_classe, first_name: "Personne")
+      post student_belt_sheets_path(eleve)
+
+      get belt_sheets_path
+
+      expect(response.body).to include("Machin", "Fiche de ceinture", I18n.l(fiche.created_at.to_date, format: "%d/%m/%Y"))
+      expect(response.body).not_to include("Sans ceintures", "Personne")
+    end
+
+    it "revient à la liste après la suppression d'une fiche" do
+      post student_belt_sheets_path(eleve)
+
+      delete belt_sheet_path(fiche), headers: { "HTTP_REFERER" => belt_sheets_url }
+
+      expect(response).to redirect_to(belt_sheets_url)
+      expect(BeltSheet.where(student: eleve)).to be_empty
+    end
   end
 
   describe "cloisonnement" do

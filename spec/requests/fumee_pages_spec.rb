@@ -22,7 +22,7 @@ RSpec.describe "Fumée : chaque page s'ouvre", type: :request do
     tableau = Table.create!(columns: 2, rows: 2)
     piece_jointe = %(<action-text-attachment sgid="#{tableau.attachable_sgid}"></action-text-attachment>)
     exercice = create(:challenge, user: enseignant, skill: competence, content: "<div>Consigne</div>#{piece_jointe}")
-    classe = create(:classroom, user: enseignant, grade: niveau)
+    classe = create(:classroom, user: enseignant, grade: niveau, belt_sheets: true)
     eleve = create(:student, classroom: classe)
     plan = create(:work_plan, user: enseignant, grade: niveau, student: eleve)
     domaine_du_plan = create(:work_plan_domain, work_plan: plan, domain: domaine, level: 1)

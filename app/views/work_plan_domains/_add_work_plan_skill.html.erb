@@ -5,21 +5,18 @@
 		<h6>Ajouter une compétence</h6>
 	</div>
 	<div class="d-none" data-skill-add-target="form">
-		<%= simple_form_for [WorkPlanSkill.new ], html: { novalidate: false }, url:  work_plan_domain_work_plan_skills_path(work_plan_domain), method: :post, class:'d-flex'  do |f| %>
-			<div class=" d-flex justify-content-between pb-1 ">
-				<div class='d-flex '>
-					<%= select_tag :skill, options_competences_a_ajouter(work_plan_domain),
-					               prompt: "Sélectionnez une compétence", class: "skill-selector", required: true %>
-				</div>
-				<div>
-					<%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>ceinture</option>"), :prompt => "Sélectionnez Un type" ,class: 'skill-selector', :required => true %>
-				</div>
-			</div>
-			<div class="d-flex gap-2 mt-2">
-				<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral,
-				                                   data: { action: "click->skill-add#displayForm" }) %>
-				<%= render Ui::ButtonComponent.new("Valider", variant: :primary, type: "submit") %>
-			</div>
+		<%# Une seule ligne, centrée : la compétence, le type, puis les boutons. Le
+		    `class: 'd-flex'` d'avant, passé à `simple_form_for` hors de `html:`, ne
+		    touchait pas le formulaire — les boutons tombaient à la ligne. %>
+		<%= simple_form_for [WorkPlanSkill.new], url: work_plan_domain_work_plan_skills_path(work_plan_domain), method: :post,
+		                    html: { novalidate: false, class: "d-flex align-items-center flex-wrap gap-2 mt-2" } do |f| %>
+			<%= select_tag :skill, options_competences_a_ajouter(work_plan_domain),
+			               prompt: "Sélectionnez une compétence", class: "skill-selector m-0", required: true %>
+			<%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>ceinture</option>"),
+			               prompt: "Sélectionnez un type", class: "skill-selector m-0", required: true %>
+			<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral,
+			                                   data: { action: "click->skill-add#displayForm" }) %>
+			<%= render Ui::ButtonComponent.new("Valider", variant: :primary, type: "submit") %>
 		<% end %>
 	</div>
 </div>

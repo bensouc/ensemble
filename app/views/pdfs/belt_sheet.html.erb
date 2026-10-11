@@ -1,0 +1,82 @@
+<%# La fiche de ceinture, sur le modèle des fiches papier : un bloc par domaine et
+    ceinture, chacun sous son cartouche — la ceinture à gauche, le domaine et sa
+    couleur au centre, le prénom et la date à droite —, puis une bande grise par
+    compétence et son énoncé.
+
+    Mise en page : le plus de blocs possible par page, et un bloc n'est jamais
+    coupé (`break-inside: avoid`). Un bloc plus haut qu'une page ne peut pas
+    tenir : il ne se coupe alors qu'entre deux compétences, et son cartouche,
+    porté par un `<thead>`, se répète en haut de la suite.
+
+    Largeur de 1000 px, comme le plan de travail : Chrome la ramène à la page, et
+    les énoncés rendent exactement comme dans le PDF du plan. %>
+<style>
+  body { height: auto; display: block; }
+  .fiche { width: 990px; margin: 0 auto; font-family: "Poppins", sans-serif; color: #3D3D3D; }
+  * { box-sizing: border-box; }
+  .bloc { width: 100%; margin-bottom: 28px; border-collapse: collapse; break-inside: avoid; page-break-inside: avoid; }
+  .cartouche td { border: 1.5px solid #3D3D3D; vertical-align: middle; }
+  .cartouche .ceinture { width: 150px; text-align: center; padding: 6px; }
+  .cartouche .ceinture img { width: 110px; height: auto; }
+  .cartouche .titre { text-align: center; padding: 6px 12px; }
+  .cartouche .domaine { font-size: 30px; font-weight: 700; line-height: 1.1; }
+  .cartouche .couleur { font-size: 20px; }
+  .cartouche .eleve { width: 230px; padding: 8px 14px; font-size: 18px; line-height: 1.6; }
+  .competence { break-inside: avoid; page-break-inside: avoid; }
+  .bande { padding: 4px 10px; border: 1.5px solid #3D3D3D; border-top: none;
+           background: #BFBFBF; font-size: 19px; font-weight: 700; }
+  .bande img { width: 14px; height: 14px; margin-right: 8px; vertical-align: middle; }
+  .enonce { padding: 12px 10px 18px; font-size: 18px; }
+  .enonce .challenge-name-in-content { display: none; }
+  .a-definir { color: #9C9C9C; font-style: italic; }
+</style>
+<div class="fiche">
+	<%# Un bloc sans compétence — un domaine spécial pas encore garni — n'a rien à
+	    imprimer. %>
+	<% blocs.select { |bloc| bloc.belt_sheet_skills.any? }.each do |bloc| %>
+		<table class="bloc">
+			<thead>
+				<tr>
+					<td>
+						<table class="cartouche" style="width: 100%; border-collapse: collapse;">
+							<tr>
+								<td class="ceinture">
+									<%= image_tag(PdfGenerator.image_data_uri("belts/belt_#{bloc.level}.png"), alt: "") %>
+								</td>
+								<td class="titre">
+									<div class="domaine"><%= bloc.domain.name %></div>
+									<div class="couleur">Ceinture <%= bloc.couleur %></div>
+								</td>
+								<td class="eleve">
+									<div><%= belt_sheet.student.first_name.to_s.capitalize %></div>
+									<div>Date : &nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp; /</div>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</thead>
+			<tbody>
+				<% bloc.belt_sheet_skills.each do |ligne| %>
+					<tr class="competence">
+						<td>
+							<div class="bande">
+								<% if ligne.skill.symbol_img_name.present? %>
+									<%= image_tag(PdfGenerator.image_data_uri("symbols/#{ligne.skill.symbol_img_name}"), alt: "") %>
+								<% end %>
+								<%= ligne.skill.name %>
+							</div>
+							<div class="enonce">
+								<% if ligne.challenge.nil? %>
+									<p class="a-definir">Exercice de ceinture à définir</p>
+								<% else %>
+									<%= ligne.challenge.content.body %>
+								<% end %>
+							</div>
+						</td>
+					</tr>
+				<% end %>
+			</tbody>
+		</table>
+	<% end %>
+</div>

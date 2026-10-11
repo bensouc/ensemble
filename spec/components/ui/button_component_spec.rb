@@ -18,6 +18,13 @@ RSpec.describe Ui::ButtonComponent, type: :component do
     expect(bouton["class"]).to eq("ui-btn ui-btn--primary ui-btn--sm")
   end
 
+  it "a une grande taille, celle de la cible tactile, pour les icônes à côté d'un titre" do
+    bouton = render_inline(described_class.new(variant: :icon, size: :lg, icon: "fa-bacon", title: "Fiche")).
+      at_css("button")
+
+    expect(bouton["class"]).to eq("ui-btn ui-btn--icon ui-btn--lg")
+  end
+
   it "passe ses attributs data, et garde une classe en plus" do
     bouton = render_inline(described_class.new("Annuler", variant: :neutral,
                                                           data: { bs_dismiss: "modal" },

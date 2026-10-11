@@ -1,5 +1,9 @@
 <%# Les flèches flottantes : la liste des exercices, une fois les dossiers
     dépliés, fait plusieurs écrans de haut. %>
+<%# Les exercices classiques sont un onglet des plans de travail, ceux de ceinture
+    un onglet des ceintures : la page prend le titre et les onglets de sa section. %>
+<%= render Ui::PageComponent.new(title: @ceinture ? "Ceintures" : "Plans de travail",
+                                 tabs: @ceinture ? onglets_ceintures(:exercices) : onglets_plans_de_travail(:exercices)) do %>
 <div class="challenges-container"
      data-controller="page-scroll"
      data-action="scroll@window->page-scroll#refresh resize@window->page-scroll#refresh">
@@ -8,6 +12,8 @@
     html: {id: "domainForm"},
         data: { action: "change->submitonchange#submitForm"
                 } do |f| %>
+			<%# L'onglet courant suit les changements de filtre. %>
+			<%= hidden_field_tag :ceinture, 1, id: nil if @ceinture %>
 			<div class="box-column-challenges-filter">
 				<div class="challenges-skill">
 					<%= f.input :grade,
@@ -49,16 +55,8 @@
 		<% end %>
 	</div>
 	<div class="grey-line"></div>
-	<h1 class='title'>Les exercices </h1>
 	<div id='skills-challenge-list'>
-		<%= render "challenges/skill_folders", skills: @skills, challenges: @challenges, for_belt: false %>
-	</div>
-	<div class="grey-line"></div>
-	<%# Même domaine, même ceinture, une seconde liste : celle des exercices que
-	    reçoit une compétence posée « ceinture » dans un plan de travail. %>
-	<h1 class='title'>Les exercices de ceinture</h1>
-	<div id='skills-belt-challenge-list'>
-		<%= render "challenges/skill_folders", skills: @skills, challenges: @belt_challenges, for_belt: true %>
+		<%= render "challenges/skill_folders", skills: @skills, challenges: @challenges, for_belt: @ceinture %>
 	</div>
 	<div class="top-floating-btn"
 	     data-page-scroll-target="down"
@@ -73,3 +71,4 @@
 		<i class="fa-solid fa-circle-arrow-up"></i>
 	</div>
 </div>
+<% end %>

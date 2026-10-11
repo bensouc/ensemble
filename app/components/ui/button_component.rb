@@ -20,7 +20,7 @@ module Ui
   #   render Ui::ButtonComponent.new("Cloner", icon: "fa-regular fa-clone", url: duplicate_path(x))
   class ButtonComponent < ViewComponent::Base
     VARIANTS = %i[primary secondary neutral success icon].freeze
-    SIZES = %i[sm md].freeze
+    SIZES = %i[sm md lg].freeze
 
     # rubocop:disable Metrics/ParameterLists
     def initialize(label = nil, variant: :secondary, size: :md, icon: nil, href: nil, url: nil, method: :post,
@@ -81,7 +81,7 @@ module Ui
     end
 
     def css_classes
-      ["ui-btn", "ui-btn--#{@variant}", ("ui-btn--sm" if @size == :sm), @html[:class]].compact.join(" ")
+      ["ui-btn", "ui-btn--#{@variant}", ("ui-btn--#{@size}" unless @size == :md), @html[:class]].compact.join(" ")
     end
   end
 end

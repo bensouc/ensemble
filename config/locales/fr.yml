@@ -52,6 +52,7 @@ fr:
     rien_a_preparer: "Aucune ceinture à préparer automatiquement : ajoutez les domaines à la main."
     supprimee: "Fiche de ceinture supprimée"
     bloc_ajoute: "Bloc %{domaine} – ceinture %{couleur} ajouté"
+    bloc_special_ajoute: "Bloc %{domaine} ajouté : choisissez les compétences à faire passer."
     bloc_deja_la: "%{domaine} – ceinture %{couleur} est déjà sur la fiche."
     tout_valide: "%{eleve} a déjà validé toutes les compétences de %{domaine} – ceinture %{couleur}."
     bloc_retire: "Domaine retiré de la fiche"
