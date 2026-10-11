@@ -32,9 +32,10 @@
 
 .ui-page .ui-tabs {
   margin-bottom: echelle.$espace-lg;
-  border-bottom: 1px solid colors.$grisC;
+}
 
-  ul {
-    margin-bottom: -1px;
-  }
+// Un nom de classe est une partie de la page : il passe sous son titre, au
+// lieu des 2,5 rem d'un h1 qu'il gardait d'avant le titre de page.
+.ui-page .wp-one-classroom h1 {
+  font-size: echelle.$texte-xl;
 }
