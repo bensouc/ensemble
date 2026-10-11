@@ -146,6 +146,30 @@ Rails.application.routes.draw do
     post "create_empty_challenge", to: "work_plan_skills#create_empty_challenge", as: :create_empty_challenge
   end
 
+  # ############### routes for BELT_SHEETS ###############
+  # La fiche de ceinture d'un élève, préparée depuis sa fiche. Même découpage que
+  # le plan de travail : la fiche, ses blocs (domaine + ceinture), leurs lignes
+  # (compétence + exercice de ceinture).
+  resources :students, only: [] do
+    resources :belt_sheets, only: [:create]
+  end
+  resources :belt_sheets, only: [:show, :destroy] do
+    resources :belt_sheet_domains, only: [:new, :create]
+  end
+  resources :belt_sheet_domains, only: [:destroy] do
+    resources :belt_sheet_skills, only: [:create]
+  end
+  resources :belt_sheet_skills, only: [:show, :update, :destroy] do
+    member do
+      patch :move
+      # L'exercice de la ligne : en reprendre un (carrousel), en créer un vide,
+      # cloner celui qui y est.
+      post :pick_challenge
+      post :create_empty_challenge
+      post :clone_challenge
+    end
+  end
+
   # ###############routes for CLASSROOMS###############
   # Ni `show` ni `new` : ClassroomsController ne les définit pas, et rien n'y
   # mène. Les routes promettaient des pages qui répondaient 404.

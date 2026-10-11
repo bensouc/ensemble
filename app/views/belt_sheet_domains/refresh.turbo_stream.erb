@@ -1,0 +1,7 @@
+<%= turbo_stream.update "belt_sheet_domains" do %>
+	<%= render "belt_sheet_domains/list", belt_sheet: @belt_sheet %>
+<% end %>
+<%= turbo_stream.replace :new_belt_sheet_domain do %>
+	<%= render "belt_sheet_domains/add_link", belt_sheet: @belt_sheet %>
+<% end %>
+<%= turbo_stream.prepend "flash", partial: "shared/flashes" %>

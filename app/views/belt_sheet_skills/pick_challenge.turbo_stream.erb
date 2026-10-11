@@ -1,0 +1,9 @@
+<%# Le carrousel prend la place de la ligne entière, comme pour un WPS sans
+    exercice : le choix s'enregistre sur la ligne, l'annulation la réaffiche. %>
+<%= turbo_stream.replace dom_id(@line) do %>
+	<%= render "challenges/challenges_carroussel",
+	           frame_id: dom_id(@line),
+	           challenge: @line.challenge,
+	           challenges: @challenges,
+	           holder: @line %>
+<% end %>

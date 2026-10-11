@@ -18,6 +18,8 @@ class Challenge < ApplicationRecord
   has_one :school, through: :skill
 
   has_many :work_plan_skills, dependent: nil
+  # Un exercice supprimé laisse la ligne de fiche sans exercice, à recharger.
+  has_many :belt_sheet_skills, dependent: :nullify
 
   validates :name, presence: true,
                    uniqueness: { message: "est déjà utilisé pour cette compétence", scope: :skill }
@@ -89,15 +91,21 @@ class Challenge < ApplicationRecord
   # Le nom doit être unique par compétence : celui construit sur `count + 1`
   # retombe sur un nom déjà pris dès qu'un exercice a été supprimé, et
   # l'enregistrement échouait alors en silence.
-  def self.create_empty(skill, current_user)
-    challenge = Challenge.new(skill:, name: empty_challenge_name(skill), user: current_user)
-    challenge.content = "Exercice à REDIGER............................"
+  #
+  # `for_belt` : le même bouton dans l'éditeur de fiche de ceinture ; l'exercice
+  # vide rejoint alors la liste des exercices de ceinture.
+  def self.create_empty(skill, current_user, for_belt: false)
+    challenge = Challenge.new(skill:, name: empty_challenge_name(skill, for_belt:), user: current_user, for_belt:)
+    challenge.content = "#{for_belt ? 'Exercice de ceinture' : 'Exercice'} à REDIGER............................"
     challenge.save!
     challenge
   end
 
-  def self.empty_challenge_name(skill)
-    base = "#{skill.name} #{Challenge.classic.where(skill_id: skill.id).count + 1}-NEW"
+  # Le nom est unique par compétence, toutes listes confondues : les noms pris
+  # se cherchent donc dans les deux, le rang dans la sienne seulement.
+  def self.empty_challenge_name(skill, for_belt: false)
+    rang = Challenge.where(skill_id: skill.id, for_belt:).count + 1
+    base = "#{skill.name} #{'Ceinture ' if for_belt}#{rang}-NEW"
     taken = Challenge.where(skill_id: skill.id).pluck(:name).to_set
 
     return base unless taken.include?(base)

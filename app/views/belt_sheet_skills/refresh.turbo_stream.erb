@@ -1,0 +1,4 @@
+<%= turbo_stream.replace dom_id(@line) do %>
+	<%= render "belt_sheet_skills/challenge", line: @line %>
+<% end %>
+<%= turbo_stream.prepend "flash", partial: "shared/flashes" %>

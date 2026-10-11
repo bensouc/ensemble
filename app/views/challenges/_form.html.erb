@@ -30,7 +30,7 @@
                   de `top: -103px; left: 577px`, donc jamais alignée sur Enregistrer. %>
 							<div class="cancel-btn"
 							     data-controller="manageturboframe"
-							     data-manageturboframe-id-value="<%= challenge.skill.id %>"
+							     data-manageturboframe-frame-value="<%= "#{'for_belt_' if challenge.for_belt?}skill_#{challenge.skill_id}_new_challenge" %>"
 							     data-action="click->manageturboframe#cleanTurboFrame">
 								Annuler
 							</div>

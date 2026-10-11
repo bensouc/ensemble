@@ -1,0 +1,24 @@
+<% fiches = student.belt_sheets.order(created_at: :desc).limit(10) %>
+<div class="dropdown belt-sheet-menu">
+	<button type="button" class="--bgc-blanc border-0 p-0" data-bs-toggle="dropdown" aria-expanded="false"
+	        title="Fiches de ceinture">
+		<i class="fas fa-bacon printer-logo ms-4"></i>
+	</button>
+	<ul class="dropdown-menu">
+		<li>
+			<%= button_to student_belt_sheets_path(student), class: "dropdown-item", data: { turbo_frame: "_top" } do %>
+				<i class="fa-solid fa-circle-plus me-2"></i>Nouvelle fiche de ceinture
+			<% end %>
+		</li>
+		<% if fiches.any? %>
+			<li><hr class="dropdown-divider"></li>
+			<% fiches.each do |fiche| %>
+				<li>
+					<%= link_to belt_sheet_path(fiche), class: "dropdown-item", data: { turbo_frame: "_top" } do %>
+						Fiche du <%= l(fiche.created_at.to_date) %>
+					<% end %>
+				</li>
+			<% end %>
+		<% end %>
+	</ul>
+</div>

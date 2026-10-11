@@ -1,0 +1,54 @@
+<%# L'exercice de ceinture d'une ligne, avec les actions de l'éditeur de plan :
+    Cloner, Charger, et sans exercice, Charger un existant / Créer. %>
+<%= turbo_frame_tag dom_id(line) do %>
+	<div class="display-challenge-name">
+		<h4><%= line.skill.name %></h4>
+	</div>
+	<% autres = Challenge.for_belt.where(skill_id: line.skill_id).where.not(id: line.challenge_id).exists? %>
+	<% if line.challenge.nil? %>
+		<div class="challenge-card empty-challenge">
+			<div class="empty-challenge-msg">
+				<div class="empty-challenge-text">
+					<i class="fa-regular fa-file-lines"></i>
+					<p>
+						<% if autres %>
+							<%= line.student.first_name %> a déjà eu tous les exercices de ceinture de cette compétence.
+						<% else %>
+							Aucun exercice de ceinture n'existe encore pour cette compétence.
+						<% end %>
+					</p>
+				</div>
+				<div class="empty-challenge-actions">
+					<% if autres %>
+						<%= button_to pick_challenge_belt_sheet_skill_path(line), class: "empty-challenge-btn" do %>
+							<i class="far fa-folder-open"></i>
+							<span>Charger un exercice existant</span>
+						<% end %>
+					<% end %>
+					<%= button_to create_empty_challenge_belt_sheet_skill_path(line), class: "empty-challenge-btn" do %>
+						<i class="fa-solid fa-plus"></i>
+						<span>Créer un nouveau</span>
+					<% end %>
+				</div>
+			</div>
+		</div>
+	<% else %>
+		<div class="challenge-card">
+			<div class="d-flex" data-controller="edit-challenge">
+				<%= render "challenges/challenge", challenge: line.challenge %>
+			</div>
+			<div class="challenge-mngt">
+				<%= button_to clone_challenge_belt_sheet_skill_path(line), class: "replace-challenge-btn" do %>
+					<i class="far fa-clone"></i>
+					<span>Cloner</span>
+				<% end %>
+				<% if autres %>
+					<%= button_to pick_challenge_belt_sheet_skill_path(line), class: "replace-challenge-btn" do %>
+						<i class="far fa-folder-open"></i>
+						<span>Charger</span>
+					<% end %>
+				<% end %>
+			</div>
+		</div>
+	<% end %>
+<% end %>

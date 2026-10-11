@@ -1,0 +1,4 @@
+<%= turbo_stream.replace dom_id(@bloc) do %>
+	<%= render "belt_sheet_domains/belt_sheet_domain", bloc: @bloc.reload %>
+<% end %>
+<%= turbo_stream.prepend "flash", partial: "shared/flashes" %>

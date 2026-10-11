@@ -1,11 +1,20 @@
 <%# Sans exercice courant, on ne peut pas revenir à sa fiche : on re-rend le WPS,
-    qui réaffiche les CTA Charger / Créer. %>
-<%= link_to (work_plan_skill.challenge.nil? ? work_plan_skill_path(work_plan_skill) : challenge_path(work_plan_skill.challenge)),
+    qui réaffiche les CTA Charger / Créer. Une ligne de fiche de ceinture, elle,
+    se re-rend toujours entière : c'est elle que le carrousel a remplacée. %>
+<% holder = local_assigns[:holder] || work_plan_skill %>
+<% cancel_path = if holder.is_a?(BeltSheetSkill)
+                   belt_sheet_skill_path(holder)
+                 elsif holder.challenge.nil?
+                   work_plan_skill_path(holder)
+                 else
+                   challenge_path(holder.challenge)
+                 end %>
+<%= link_to cancel_path,
   class:"carrousel-cancellation --roseL --bgc-blanc --cursor-pointer" do %>
   <i class="fa-solid fa-circle-xmark"></i>
 <% end %>
 
-<%= simple_form_for work_plan_skill do |f| %>
+<%= simple_form_for holder do |f| %>
   <%= f.hidden_field :challenge_id, value: challenge.id %>
   <%# <input type='submit' value='' class="btn"> %>
   <div class="carrousel-validation">

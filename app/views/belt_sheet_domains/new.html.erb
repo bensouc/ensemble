@@ -1,0 +1,39 @@
+<%# Choisir un domaine puis une ceinture : la mécanique du formulaire de domaine
+    du plan de travail (`domain-form`), qui fixe la ceinture des domaines
+    spéciaux. Un seul bouton : il n'y a pas de type à choisir. %>
+<%= turbo_frame_tag :new_belt_sheet_domain do %>
+	<div class="add-domain">
+		<div class="add-domain-form" data-controller="domain-form" data-domain-form-special-value="<%= @special %>">
+			<%= simple_form_for BeltSheetDomain.new, url: belt_sheet_belt_sheet_domains_path(@belt_sheet),
+			                    method: :post, html: { novalidate: true } do |f| %>
+				<h3>Choisissez un domaine</h3>
+				<div class="m-top">
+					<%= f.input :domain_id, label: "", required: true, as: :radio_buttons,
+					            collection: @domains, label_method: :name, value_method: :id,
+					            collection_wrapper_tag: "div", collection_wrapper_class: "wrapper",
+					            item_wrapper_class: "domain-item",
+					            input_html: { class: "selector domain-selector",
+					                          data: { action: "click->domain-form#displayBelt" } } %>
+				</div>
+				<div class="m-top d-none" data-domain-form-target="beltForm">
+					<h3>Choisissez une ceinture</h3>
+					<%= f.input :level, required: true, label: "", as: :radio_buttons,
+					            collection: WorkPlanDomain::LEVELS,
+					            collection_wrapper_tag: "div", collection_wrapper_class: "wrapper",
+					            item_wrapper_class: "level-item",
+					            input_html: { class: "selector level-selector",
+					                          data: { domain_form_target: "box", action: "click->domain-form#displayBtn" } },
+					            label_method: ->(level) { render "work_plan_domains/show_level_btn", level: level } %>
+				</div>
+				<div class="m-top box-end">
+					<%= f.button :button, "Ajouter", type: "submit",
+					             class: "validate-domain-btn fs-2 ms-3 font-weight-bold d-none",
+					             data: { domain_form_target: "btn" } %>
+					<%= link_to belt_sheet_path(@belt_sheet), class: "cancel-domain-btn", data: { turbo_frame: "_top" } do %>
+						<i class="fas fa-times"></i>
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+	</div>
+<% end %>
