@@ -1,4 +1,5 @@
 @use "../config/colors";
+@use "../config/echelle";
 @use "../config/font_families";
 @use "../config/global";
 
@@ -280,7 +281,10 @@
     }
   }
 
+  // Bootstrap espace les boutons du pied par leur marge ; `Ui::ButtonComponent`
+  // remet la sienne à zéro, c'est donc le pied qui porte l'écart.
   .modal-footer {
+    gap: echelle.$espace-sm;
     padding: 12px 24px;
   }
 }
