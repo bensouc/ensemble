@@ -131,6 +131,21 @@ RSpec.describe BeltSheet, type: :model do
     end
   end
 
+  describe ".apercu" do
+    it "dit, domaine par domaine, ce que chaque façon de préparer mettrait — sans rien enregistrer" do
+      create(:belt, student:, domain: numeration, level: 1, completed: true)
+      prevue = competence(numeration, 2, "Comparer")
+      competence(numeration, 2, "Ranger")
+      wpd = create(:work_plan_domain, work_plan: create(:work_plan, user:, student:, grade:), domain: numeration, level: 2)
+      WorkPlanSkill.create!(skill: prevue, work_plan_domain: wpd, kind: "ceinture", status: "new")
+
+      apercu = nil
+      expect { apercu = described_class.apercu(student, [numeration, grammaire]) }.not_to change(described_class, :count)
+      expect(apercu[numeration]).to eq(en_cours: [[2, 1]], resultats: [2, 2])
+      expect(apercu[grammaire]).to eq(en_cours: [], resultats: nil)
+    end
+  end
+
   describe "l'exercice de ceinture d'une ligne" do
     let!(:skill) { competence(numeration, 1, "Compter") }
 

@@ -1,0 +1,14 @@
+<%# Ce qu'un mode met dans un domaine : une ceinture par couple [niveau, nombre
+    de compétences], ou la raison de son absence. Un domaine spécial arrive
+    vide : c'est l'enseignant qui le garnit. %>
+<% if ceintures.empty? %>
+	<span class="fiche-domaine-vide"><%= vide %></span>
+<% else %>
+	<% ceintures.each do |level, nombre| %>
+		<span class="fiche-ceinture">
+			<i class="fa-solid fa-bacon ui-chip-belt belt-<%= level %>" aria-hidden="true"></i>
+			Ceinture <%= Belt::BELT_COLORS[level - 1] %> ·
+			<%= special && nombre.zero? ? "à garnir à la main" : "#{nombre} #{nombre > 1 ? "compétences" : "compétence"}" %>
+		</span>
+	<% end %>
+<% end %>

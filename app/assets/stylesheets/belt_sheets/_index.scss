@@ -39,3 +39,99 @@
   font-size: 12px;
   white-space: nowrap;
 }
+
+// La modale d'une nouvelle fiche : le mode choisi (`data-mode` sur le
+// formulaire) ne montre que son aide et son aperçu.
+.fiche-mode {
+  margin-bottom: 1.25rem;
+}
+
+.fiche-mode-titre,
+.fiche-domaines legend {
+  margin-bottom: 6px;
+  color: colors.$grisF;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.fiche-mode-aide {
+  margin: 8px 2px 0;
+  color: #6c6c6c;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+[data-mode="en_cours"] [data-mode="resultats"],
+[data-mode="resultats"] [data-mode="en_cours"] {
+  display: none;
+}
+
+// Une ligne par domaine : la case, le nom, et ce que le mode y met — poussé à
+// droite. Un `label` : dans `.wp-edit-form`, il héritait du gras 12 px.
+.fiche-domaine,
+.wp-edit-form .fiche-domaine {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 10px 4px;
+  border-top: 1px solid colors.$grisC;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+
+  input[type="checkbox"] {
+    accent-color: colors.$rose;
+  }
+}
+
+.fiche-domaine-nom {
+  color: colors.$grisF;
+}
+
+.fiche-domaine-apercu {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  margin-left: auto;
+  color: #6c6c6c;
+  font-size: 13px;
+  text-align: right;
+}
+
+.fiche-ceinture {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  .ui-chip-belt {
+    font-size: 15px;
+  }
+}
+
+.fiche-domaine-vide {
+  color: #9c9c9c;
+  font-style: italic;
+}
+
+.fiche-domaine:has(input:not(:checked)) .fiche-domaine-nom {
+  color: #9c9c9c;
+}
+
+// La modale d'une nouvelle fiche, centrée dans la fenêtre : la marge commune
+// (`15% auto`, un pourcentage de la LARGEUR) la poussait vers le bas, hors de
+// l'écran sur un portable. `margin: auto` dans un conteneur flex centre sans
+// rogner le haut quand elle dépasse.
+.modal-ensemble:has(.modal-fiche) {
+  display: flex;
+
+  > form {
+    margin: auto;
+    padding: 24px 0;
+  }
+
+  .modal-fiche {
+    margin: 0;
+  }
+}

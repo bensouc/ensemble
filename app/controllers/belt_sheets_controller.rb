@@ -37,7 +37,7 @@ class BeltSheetsController < ApplicationController
   def create
     student = Student.find(params[:student_id])
     authorize BeltSheet.new(student:)
-    # Les deux boutons de la modale : les ceintures en cours, ou selon les résultats.
+    # Le sélecteur de la modale : les ceintures de ses plans, ou ses prochaines.
     mode = BeltSheet::MODES.include?(params[:mode]) ? params[:mode] : "resultats"
     @belt_sheet = BeltSheet.prepare!(student, current_user, domains: domaines_choisis(student), mode:)
     redirect_to belt_sheet_path(@belt_sheet), notice: notice_preparation
