@@ -15,10 +15,13 @@
 			<% end %>
 		<% end %>
 		<p class='grabbable'><%= domain.name %></p>
-		<%# Préférence du professeur connecté, pas du domaine : un collègue n'en voit rien. %>
+		<%# Préférence du professeur connecté, pas du domaine : un collègue n'en voit rien.
+		    L'infobulle de Bootstrap, immédiate : la bulle native mettait une seconde
+		    à venir. %>
 		<% if domain.auto_gen_for?(current_user) %>
 			<%= button_to domain_auto_gen_exclusion_path(domain), method: :post,
 			              class: "domain-auto-toggle",
+			              data: { controller: "tooltip", bs_toggle: "tooltip", bs_placement: "top" },
 			              title: "Inclus dans la génération automatique de vos plans de travail. Cliquer pour l'en sortir.",
 			              aria: { label: "Sortir #{domain.name} de la génération automatique" } do %>
 				<i class="fa-solid fa-user-gear"></i>
@@ -26,6 +29,7 @@
 		<% else %>
 			<%= button_to domain_auto_gen_exclusion_path(domain), method: :delete,
 			              class: "domain-auto-toggle domain-auto-toggle--off",
+			              data: { controller: "tooltip", bs_toggle: "tooltip", bs_placement: "top" },
 			              title: "Hors génération automatique : proposé décoché. Cliquer pour l'y remettre.",
 			              aria: { label: "Remettre #{domain.name} dans la génération automatique" } do %>
 				<i class="fa-solid fa-user-gear"></i>
