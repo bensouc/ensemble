@@ -17,17 +17,19 @@ class BeltSheet < ApplicationRecord
 
   delegate :grade, to: :student
 
-  # Une fiche prête à imprimer : pour chaque domaine du niveau de l'élève, la
-  # ceinture qui suit la dernière qu'il a validée, avec les compétences de cette
-  # ceinture qu'il n'a pas encore validées.
+  # Une fiche prête à imprimer : pour chaque domaine choisi, la ceinture qui suit
+  # la dernière que l'élève a validée, avec les compétences de cette ceinture
+  # qu'il n'a pas encore validées.
   #
-  # Les domaines spéciaux, validés au score et non compétence par compétence,
-  # ne sont pas préparés : l'enseignant les ajoute à la main.
-  def self.prepare!(student, user)
+  # Sans choix, tous les domaines de son niveau sauf les spéciaux. Un domaine
+  # spécial — validé au score, non compétence par compétence — n'est préparé que
+  # s'il est choisi, et arrive alors vide (`add_domain!`).
+  def self.prepare!(student, user, domains: nil)
+    domains ||= student.grade.domains.reject(&:special?)
     transaction do
       sheet = create!(student:, user:)
-      student.grade.domains.reject(&:special?).sort_by(&:position).each do |domain|
-        level = sheet.prochaine_ceinture(domain)
+      domains.sort_by(&:position).each do |domain|
+        level = domain.special? ? 1 : sheet.prochaine_ceinture(domain)
         sheet.add_domain!(domain, level) if level
       end
       sheet

@@ -20,6 +20,15 @@ class ModalsController < ApplicationController
     @checked_domains = AutoGenExclusion.auto_domains(@domains, user: current_user)
   end
 
+  # Nouvelle fiche de ceinture : la modale du nouveau plan de travail, réduite
+  # au choix des domaines. Les domaines spéciaux arrivent décochés — ils se
+  # préparent vides, l'enseignant y choisit ses compétences.
+  def new_belt_sheet
+    @student = authorize Student.includes(classroom: :grade).find(params[:id]), :show?
+    @domains = @student.classroom.grade.domains.sort_by(&:position)
+    @checked_domains = @domains.reject(&:special?)
+  end
+
   def display_skills_modal
     @student = authorize Student.find(params[:student_id]), :show?
     @domain = Domain.find(params[:id])

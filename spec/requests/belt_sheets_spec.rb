@@ -133,6 +133,38 @@ RSpec.describe "Fiches de ceinture", type: :request do
     expect(response.body).to include("Génération de la fiche de ceinture", belt_sheet_path(fiche, format: :pdf))
   end
 
+  describe "la modale de préparation" do
+    let!(:geometrie) { create(:domain, grade:, position: 2, name: "Géométrie", special: true) }
+    let!(:grammaire) { create(:domain, grade:, position: 3, name: "Grammaire", special: false) }
+
+    before { create(:skill, domain: grammaire, level: 1, school:, name: "Le verbe") }
+
+    it "propose les domaines du niveau, cochés sauf les spéciaux" do
+      get student_new_belt_sheet_modal_path(eleve)
+
+      cases = Nokogiri::HTML(response.body).css("input[type=checkbox][name='belt_sheet[domain_ids][]']")
+      cochees = cases.select { |c| c.key?("checked") }.map { |c| c["value"].to_i }
+      expect(cases.map { |c| c["value"].to_i }).to contain_exactly(numeration.id, geometrie.id, grammaire.id)
+      expect(cochees).to contain_exactly(numeration.id, grammaire.id)
+    end
+
+    it "ne prépare que les domaines cochés, et un domaine spécial coché arrive vide" do
+      post student_belt_sheets_path(eleve), params: { belt_sheet: { domain_ids: ["", numeration.id, geometrie.id] } }
+
+      blocs = fiche.ordered_domains
+      expect(blocs.map(&:domain)).to eq([numeration, geometrie])
+      expect(blocs.last.belt_sheet_skills).to be_empty
+    end
+
+    it "ignore un domaine d'un autre niveau glissé dans la requête" do
+      ailleurs = create(:domain, grade: create(:grade, school:, name: "CM1", grade_level: "CM1"), name: "Ailleurs")
+
+      post student_belt_sheets_path(eleve), params: { belt_sheet: { domain_ids: [ailleurs.id, numeration.id] } }
+
+      expect(fiche.belt_sheet_domains.map(&:domain)).to eq([numeration])
+    end
+  end
+
   describe "le réglage de la classe" do
     it "refuse de préparer une fiche quand la classe n'a pas ouvert les fiches de ceinture" do
       classroom.update!(belt_sheets: false)
@@ -150,11 +182,11 @@ RSpec.describe "Fiches de ceinture", type: :request do
 
     it "montre le menu Ceintures et la fiche de l'élève seulement avec le réglage" do
       get student_path(eleve)
-      expect(response.body).to include(belt_sheets_path, student_belt_sheets_path(eleve))
+      expect(response.body).to include(belt_sheets_path, student_new_belt_sheet_modal_path(eleve))
 
       classroom.update!(belt_sheets: false)
       get student_path(eleve)
-      expect(response.body).not_to include(student_belt_sheets_path(eleve))
+      expect(response.body).not_to include(student_new_belt_sheet_modal_path(eleve))
       expect(response.body).not_to include(%(href="#{belt_sheets_path}"))
     end
 

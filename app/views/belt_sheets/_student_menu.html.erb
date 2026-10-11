@@ -11,7 +11,8 @@
 	</button>
 	<ul class="dropdown-menu">
 		<li>
-			<%= button_to student_belt_sheets_path(student), class: "dropdown-item", data: { turbo_frame: "_top" } do %>
+			<%= link_to student_new_belt_sheet_modal_path(student), class: "dropdown-item",
+			            data: { turbo_frame: "general_modal" } do %>
 				<i class="fa-solid fa-circle-plus me-2"></i>Nouvelle fiche de ceinture
 			<% end %>
 		</li>

@@ -287,6 +287,7 @@ Rails.application.routes.draw do
   # ###############ROUTES FOR MODALS###############
   get "students/:id/auto_gen", to: "modals#auto_gen", as: :student_auto_gen_modal
   get "students/:id/new_work_plan", to: "modals#new_work_plan", as: :student_new_work_plan_modal
+  get "students/:id/new_belt_sheet", to: "modals#new_belt_sheet", as: :student_new_belt_sheet_modal
 
   # ###############END for SKILLS###############
 

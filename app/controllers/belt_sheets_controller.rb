@@ -38,7 +38,7 @@ class BeltSheetsController < ApplicationController
   def create
     student = Student.find(params[:student_id])
     authorize BeltSheet.new(student:)
-    @belt_sheet = BeltSheet.prepare!(student, current_user)
+    @belt_sheet = BeltSheet.prepare!(student, current_user, domains: domaines_choisis(student))
     redirect_to belt_sheet_path(@belt_sheet), notice: notice_preparation
   end
 
@@ -57,6 +57,16 @@ class BeltSheetsController < ApplicationController
   end
 
   private
+
+  # Les domaines cochés dans la modale, parmi ceux du niveau de l'élève — un id
+  # pris tel quel garnirait la fiche des compétences d'une autre école. Sans
+  # modale (aucun paramètre), la préparation choisit elle-même.
+  def domaines_choisis(student)
+    ids = params.dig(:belt_sheet, :domain_ids)
+    return nil if ids.nil?
+
+    student.grade.domains.where(id: Array(ids).compact_blank).to_a
+  end
 
   def set_belt_sheet
     @belt_sheet = BeltSheet.includes(belt_sheet_domains: [:domain, { belt_sheet_skills: [:skill, :challenge] }]).

@@ -24,10 +24,10 @@
 								</div>
 							</div>
 						</div>
-						<%# `button_to` enveloppe la pastille dans un formulaire : c'est lui qu'il
-						    faut pousser à droite, comme le lien « Ajouter » des plans de travail. %>
-						<%= button_to student_belt_sheets_path(student), class: "add-folder-btn", form_class: "ms-auto",
-						              title: "Nouvelle fiche de ceinture pour #{student.first_name}" do %>
+						<%# La modale du nouveau plan de travail, réduite au choix des domaines. %>
+						<%= link_to student_new_belt_sheet_modal_path(student), class: "add-folder-btn",
+						            data: { turbo_frame: "general_modal" },
+						            title: "Nouvelle fiche de ceinture pour #{student.first_name}" do %>
 							<i class="fas fa-bacon"></i>
 							<span>Ajouter</span>
 						<% end %>
