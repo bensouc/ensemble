@@ -15,11 +15,10 @@
 					<%= select_tag :kind, raw("<option>jeu</option><option>exercice</option><option>ceinture</option>"), :prompt => "Sélectionnez Un type" ,class: 'skill-selector', :required => true %>
 				</div>
 			</div>
-			<div class='d-flex'>
-				<%= f.submit 'Valider' ,class: 'add-skill-btn' %>
-				<div class="cancel-btn ms-3" data-action="click->skill-add#displayForm" style='margin-top: 10px'>
-					<i class="fas fa-times"></i>
-				</div>
+			<div class="d-flex gap-2 mt-2">
+				<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral,
+				                                   data: { action: "click->skill-add#displayForm" }) %>
+				<%= render Ui::ButtonComponent.new("Valider", variant: :primary, type: "submit") %>
 			</div>
 		<% end %>
 	</div>

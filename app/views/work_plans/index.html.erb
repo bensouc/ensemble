@@ -4,8 +4,7 @@
       <%= turbo_frame_tag classroom do %>
         <div class="wp-one-classroom">
           <h1>
-            <%= "#{classroom.grade.grade_level.upcase} " %>
-            <p class='ms-2'><%= classroom.name.nil? ? "" : "#{" - "} #{classroom.name}" %></p>
+            <%= render(Classrooms::TitleComponent.new(classroom: classroom)) %>
             <div class="sharing-details">
               <% if classroom.user != current_user %>
                 <h6>Classe Partagée par

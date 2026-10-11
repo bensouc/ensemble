@@ -122,4 +122,17 @@ RSpec.describe Classroom, type: :model do
       expect(classroom.completed_results_by_domain(domaine)).to eq(eleve => [acquise])
     end
   end
+
+  describe "#display_name" do
+    let(:grade) { create(:grade, name: "CE2", grade_level: "CE2") }
+
+    it "rend le nom donné par l'enseignant" do
+      expect(build(:classroom, grade:, name: "Les hiboux").display_name).to eq("Les hiboux")
+    end
+
+    it "rend le niveau quand la classe n'a pas de nom, qu'il soit nil ou vide" do
+      expect(build(:classroom, grade:, name: nil).display_name).to eq("CE2")
+      expect(build(:classroom, grade:, name: "").display_name).to eq("CE2")
+    end
+  end
 end

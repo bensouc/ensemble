@@ -6,7 +6,7 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<h5 class="modal-title" id="editingClassroomModal-<%=classroom.id%>Label">Modifier la classe</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+				<%= render Ui::ButtonComponent.new(variant: :icon, icon: "fa-xmark", title: "Fermer", data: { bs_dismiss: "modal" }) %>
 			</div>
 			<%= simple_form_for classroom, html: { novalidate: false, class: "wp-edit-form" } do |f| %>
 				<div class="modal-body">
@@ -17,7 +17,7 @@
 						       value="<%= classroom.grade&.grade_level&.upcase %>" disabled>
 					</div>
 					<%= f.input :name, label: "Nom de la classe", wrapper_html: { class: "wp-edit-full-row" },
-					            hint: "Facultatif : il s'affiche à côté du niveau, par exemple « #{classroom.grade&.grade_level&.upcase} – Les hiboux ».",
+					            hint: "Facultatif : sans nom, la classe porte celui de son niveau.",
 					            input_html: { class: "area", id: "classroom_name_#{classroom.id}" } %>
 				</div>
 				<div class="modal-footer">

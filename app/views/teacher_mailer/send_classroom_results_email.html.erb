@@ -2,7 +2,7 @@
 
 <p style="<%= mail_style(:texte) %>">
 	Bonjour <strong><%= @teacher.first_name&.strip.presence&.capitalize %></strong>,
-	les résultats de <strong><%= @classroom.safe_name %></strong>, à la date du
+	les résultats de <strong><%= @classroom.display_name %></strong>, à la date du
 	<%= I18n.l(Time.current, format: :full_day_month_year) %>, sont disponibles.
 </p>
 

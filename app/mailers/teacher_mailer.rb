@@ -5,6 +5,6 @@ class TeacherMailer < ApplicationMailer
     @teacher = user
     @classroom = classroom
     @download_url = download_url
-    mail(to: @teacher.email, subject: "Ensemble : les résultats de #{@classroom.safe_name} sont prêts")
+    mail(to: @teacher.email, subject: "Ensemble : les résultats de #{@classroom.display_name} sont prêts")
   end
 end

@@ -6,7 +6,7 @@ module ClassroomsHelper
   def classroom_transfer_label(classroom)
     teachers = classroom.teachers.filter_map { |teacher| teacher.first_name.presence&.capitalize }
 
-    [classroom.safe_name, classroom.grade.name, teachers.join(", ").presence].uniq.compact.join(" — ")
+    [classroom.display_name, classroom.grade.name, teachers.join(", ").presence].uniq.compact.join(" — ")
   end
 
   # Pourquoi la création de classe est fermée. Un message unique couvrait cinq

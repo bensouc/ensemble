@@ -5,7 +5,7 @@
   </p>
 <% else %>
   <p>
-    <%= student.first_name %> quitte <strong><%= student.classroom.safe_name %></strong>.
+    <%= student.first_name %> quitte <strong><%= student.classroom.display_name %></strong>.
     Son historique (plans de travail, ceintures, résultats) le suit.
   </p>
   <%# turbo_frame: "_top" : la redirection doit remplacer la page, pas le frame. %>
