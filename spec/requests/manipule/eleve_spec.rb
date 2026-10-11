@@ -67,6 +67,37 @@ RSpec.describe "Manipule, côté élève" do
       expect(response).not_to redirect_to(manipule_serie_path)
     end
 
+    # Le marqueur survit à l'identité : l'élève supprimé ou changé de classe, ou
+    # le cookie signé illisible (clé de l'application changée). La série ne
+    # reconnaît personne, et l'écran « pas encore entré » n'avait pas de sortie :
+    # chaque adresse d'Ensemble y ramenait. Enfermée pour de bon — en prod.
+    describe "quand l'élève du marqueur n'est plus reconnu" do
+      before do
+        banque
+        designer!
+        entrer!
+        eleve.destroy
+      end
+
+      it "efface le marqueur, et propose la porte de l'adulte" do
+        get root_path
+        expect(response).to redirect_to(manipule_serie_path)
+
+        get manipule_serie_path
+
+        expect(response.body).to include("Espace professeur.e")
+        expect(cookies[Manipule::EleveController::COOKIE_MARQUEUR]).to be_blank
+      end
+
+      it "rend à Ensemble ses adresses" do
+        get manipule_serie_path
+
+        get manipule_root_path
+
+        expect(response).not_to redirect_to(manipule_serie_path)
+      end
+    end
+
     # La sortie de l'enfant ne bouge pas : il ne quitte jamais /manipule.
     it "laisse la sortie de l'enfant ramener à la liste des prénoms" do
       banque

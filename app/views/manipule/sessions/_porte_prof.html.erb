@@ -1,0 +1,12 @@
+<%# La porte de l'adulte. Posée sur deux écrans seulement, où l'enfant ne
+    travaille pas : le choix du prénom, et « pas encore entré » — l'écran qui
+    s'affiche quand plus aucun élève n'est reconnu. Libellée pour un adulte ;
+    les écrans de série n'offrent toujours aucune route vers Ensemble.
+
+    Sans elle, une enseignante qui regardait le jeu sur sa propre machine ne
+    pouvait plus revenir à ses écrans : elle en avait été déconnectée, et le
+    marqueur la renvoyait à la séance à chaque adresse qu'elle tapait. %>
+<div class="m-porte-prof">
+  <%= button_to "Espace professeur.e", manipule_quitter_path(vers: "ensemble"),
+                method: :delete, class: "m-porte-prof-bouton" %>
+</div>
