@@ -199,6 +199,20 @@
 .challenge-skill-header {
   align-items: center;
   gap: 4px;
+  border-radius: 12px;
+  transition: background-color 0.25s;
+
+  // Survoler « Ajouter » allume la compétence visée, comme l'élève visé dans la
+  // liste des plans de travail (`.wp-student-header`) : sur une longue liste, on
+  // voit d'un coup d'œil où l'exercice va être ajouté.
+  &:has(.add-folder-btn:hover) {
+    background-color: rgba(colors.$rose, 0.08);
+
+    .wp-firstname,
+    .index-folder i {
+      color: colors.$rose;
+    }
+  }
 }
 
 // Placement seul : l'apparence vient de `.add-folder-btn`. Bord droit aligné sur
