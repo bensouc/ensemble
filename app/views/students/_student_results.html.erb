@@ -17,10 +17,17 @@
 			            title: "Générer le prochain Plan de travail" do %>
 				<i class="fa-solid fa-user-gear printer-logo ms-4"></i>
 			<% end %>
-			<%# Les fiches de ceinture de l'élève : en préparer une nouvelle, ou rouvrir
-			    une de celles déjà faites. %>
+			<%# Préparer une fiche de ceinture : le même balisage que le bouton de
+			    génération juste avant — un clic ouvre la modale, l'infobulle de
+			    Bootstrap à droite. Les fiches déjà faites sont dans Voir > Ceintures. %>
 			<% if student.classroom.belt_sheets? %>
-				<%= render "belt_sheets/student_menu", student: student %>
+				<%= link_to student_new_belt_sheet_modal_path(student),
+				            class: "--bgc-blanc",
+				            data: { turbo_frame: "general_modal", controller: "tooltip",
+				                    bs_toggle: "tooltip", bs_placement: "right" },
+				            title: "Préparer une fiche de ceinture" do %>
+					<i class="fas fa-bacon printer-logo ms-4"></i>
+				<% end %>
 			<% end %>
 			</div>
 			<%# La légende partage la ligne de l'impression : c'est la seule bande
