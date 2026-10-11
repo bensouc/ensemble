@@ -41,6 +41,13 @@ class Challenge < ApplicationRecord
     Challenge.new(name: clone_name, content: cloned_content, skill_id:, for_belt:)
   end
 
+  # « Copier en ceinture » : une copie de cet exercice dans les exercices de
+  # ceinture de la même compétence, en fin de liste. L'original ne bouge pas.
+  # Mêmes précautions qu'au clonage : ses tableaux sont dédoublés.
+  def new_belt_copy
+    Challenge.new(name: clone_name("Ceinture"), content: cloned_content, skill_id:, for_belt: true)
+  end
+
   # Ranger l'exercice sous une autre compétence, en queue de sa liste.
   #
   # `update!(skill:)` seul ne suffit PAS. `acts_as_list` (0.7.7) ne sait pas
@@ -120,8 +127,8 @@ class Challenge < ApplicationRecord
   # Suffixe déterministe plutôt que `rand(1..100)` : le nom est unique par
   # compétence, et deux clonages successifs pouvaient tirer le même nombre —
   # l'enregistrement échouait alors sans que l'utilisateur comprenne pourquoi.
-  def clone_name
-    base = "#{name}-Clone"
+  def clone_name(suffixe = "Clone")
+    base = "#{name}-#{suffixe}"
     taken = Challenge.where(skill_id: skill_id)
                      .where("name LIKE ?", "#{Challenge.sanitize_sql_like(base)}%")
                      .pluck(:name)

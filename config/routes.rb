@@ -256,6 +256,8 @@ Rails.application.routes.draw do
     member do
       patch :move
       post :duplicate
+      # Une copie dans les exercices de ceinture de la même compétence.
+      post :copy_to_belt
       # `move` désigne le rang DANS la liste (les flèches ⬆️⬇️). Changer de
       # compétence est autre chose, et « transfer » est déjà le mot de
       # l'application pour rattacher un enregistrement à un autre parent —

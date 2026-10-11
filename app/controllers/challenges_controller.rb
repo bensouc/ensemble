@@ -5,7 +5,7 @@
 class ChallengesController < ApplicationController
   before_action :set_work_plan_skill, only: [:clone, :display_challenges] # , :update, :show]
   before_action :set_challenge,
-                only: [:clone, :update, :display_challenges, :show, :edit, :destroy, :move, :duplicate,
+                only: [:clone, :update, :display_challenges, :show, :edit, :destroy, :move, :duplicate, :copy_to_belt,
                        :transfer_form, :transfer]
   skip_after_action :verify_policy_scoped, only: [:index]
   helper_method :challenges_frame_id, :challenges_list_frame_id
@@ -134,6 +134,25 @@ class ChallengesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to challenges_path, notice: "Exercice cloné" }
       format.turbo_stream { flash.now[:notice] = "Exercice cloné" }
+    end
+  end
+
+  # « Copier en ceinture » : l'exercice reste où il est, sa copie rejoint les
+  # exercices de ceinture de la même compétence. Seulement depuis un exercice
+  # classique, et pour qui a une classe aux fiches de ceinture — les autres ne
+  # voient pas ces exercices.
+  def copy_to_belt
+    authorize @challenge, :clone?
+    return head(:forbidden) if @challenge.for_belt? || !fiches_de_ceinture_ouvertes?
+
+    copy = @challenge.new_belt_copy
+    copy.user = current_user
+    copy.save!
+    message = "Copie ajoutée aux exercices de ceinture de « #{@challenge.skill.name} »."
+
+    respond_to do |format|
+      format.html { redirect_to challenges_path(ceinture: 1), notice: message }
+      format.turbo_stream { flash.now[:notice] = message }
     end
   end
 

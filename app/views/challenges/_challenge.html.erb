@@ -87,6 +87,17 @@
         <i class="fa-regular fa-clone"></i>
         <span>Cloner</span>
       <% end %>
+      <%# Une copie dans les exercices de ceinture de la même compétence ; l'original
+          reste ici. Seulement pour qui a une classe aux fiches de ceinture. %>
+      <% if !challenge.for_belt? && fiches_de_ceinture_ouvertes? %>
+        <%= button_to copy_to_belt_challenge_path(challenge),
+                      class: "clone-challenge-btn clone-challenge-btn--deux-lignes",
+                      title: "Ajoute une copie de cet exercice aux exercices de ceinture" do %>
+          <i class="fas fa-bacon"></i>
+          <%# Espace insécable : deux lignes, « Copier en » puis « ceinture ». %>
+          <span>Copier&nbsp;en ceinture</span>
+        <% end %>
+      <% end %>
       <%# Déplacer n'est possible que tant qu'aucun plan de travail ne s'y réfère :
           changer la compétence d'un exercice déjà donné réécrirait l'historique
           d'un élève. Le bouton disparaît alors, plutôt que d'échouer au clic. %>
