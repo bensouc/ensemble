@@ -29,6 +29,12 @@ class ModalsController < ApplicationController
     @checked_domains = @domains.reject(&:special?)
   end
 
+  # Cloner une fiche de ceinture : les élèves du même niveau, classe par classe.
+  def clone_belt_sheet
+    @belt_sheet = authorize BeltSheet.find(params[:id]), :show?
+    @candidates = @belt_sheet.clone_candidates(current_user).group_by(&:classroom)
+  end
+
   def display_skills_modal
     @student = authorize Student.find(params[:student_id]), :show?
     @domain = Domain.find(params[:id])

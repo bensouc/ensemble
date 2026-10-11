@@ -62,6 +62,8 @@ fr:
     pas_d_autre_exercice: "Il n'existe pas d'autre exercice de ceinture pour cette compétence"
     exercice_vide_ajoute: "Exercice de ceinture à rédiger ajouté"
     exercice_clone: "Exercice cloné"
+    clonee: "Fiche clonée pour %{eleves}."
+    aucun_eleve_coche: "Aucun élève coché : la fiche n'a pas été clonée."
   #ENSEMBLE:
   unauthorized: "Vous n'êtes pas autorisé à effectuer cette action"
   name_already_exists: "Le nom choisit est déjà utilisé"

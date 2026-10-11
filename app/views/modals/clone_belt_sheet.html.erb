@@ -1,0 +1,53 @@
+<%= turbo_frame_tag "general_modal" do %>
+	<div class="modal-ensemble" data-controller="modals">
+		<%# La modale du nouveau plan de travail : les élèves en pastilles à cocher,
+		    classe par classe. Seuls ceux du même niveau, dans les classes qui ont
+		    ouvert les fiches de ceinture. %>
+		<%= form_with url: clone_belt_sheet_path(@belt_sheet), method: :post,
+		              class: "wp-edit-form", data: { turbo_frame: "_top" } do %>
+			<div class="modal-ensemble-dialog">
+				<div class="modal-ensemble-content modal-domaines">
+					<div class="modal-ensemble-header">
+						<h5 class="modal-title">
+							Cloner la fiche de <%= @belt_sheet.student.first_name.capitalize %>
+						</h5>
+						<%= render Ui::ButtonComponent.new(variant: :icon, icon: "fa-xmark", title: "Fermer", html: { class: "ms-auto" }, data: { action: "click->modals#emptyModal" }) %>
+					</div>
+					<div class="modal-body">
+						<% if @candidates.empty? %>
+							<p class="belt-sheet-empty wp-edit-full-row">
+								Aucun autre élève de ce niveau dans une classe aux fiches de ceinture.
+							</p>
+						<% end %>
+						<% @candidates.each do |classroom, eleves| %>
+							<fieldset class="wp-new-domains wp-edit-full-row">
+								<legend><%= render(Classrooms::TitleComponent.new(classroom: classroom)) %></legend>
+								<div class="domain-choice">
+									<% eleves.each do |eleve| %>
+										<span class="tag-item">
+											<%= check_box_tag "clone[student_ids][]", eleve.id, false,
+											                  id: "clone_eleve_#{eleve.id}", class: "tag-selector" %>
+											<%= label_tag "clone_eleve_#{eleve.id}", eleve.first_name %>
+										</span>
+									<% end %>
+								</div>
+							</fieldset>
+						<% end %>
+					</div>
+					<div class="modal-ensemble-footer wp-new-actions">
+						<p class="wp-new-hint">
+							<em>Chaque élève reçoit les mêmes domaines, compétences et exercices. Celles
+								qu'il a déjà validées seront marquées « Déjà validée » : à vous de les retirer.</em>
+						</p>
+						<div class="d-flex gap-2">
+							<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral, data: { action: "click->modals#emptyModal" }) %>
+							<% if @candidates.any? %>
+								<%= render Ui::ButtonComponent.new("Cloner", variant: :primary, icon: "fa-regular fa-clone", type: "submit") %>
+							<% end %>
+						</div>
+					</div>
+				</div>
+			</div>
+		<% end %>
+	</div>
+<% end %>

@@ -36,6 +36,33 @@ class BeltSheet < ApplicationRecord
     end
   end
 
+  # Les élèves vers qui cloner cette fiche : ceux du même niveau, dans les
+  # classes de l'enseignant — les siennes et celles qu'on lui partage — qui ont
+  # ouvert les fiches de ceinture. Pas l'élève de la fiche.
+  def clone_candidates(user)
+    partagees = SharedClassroom.where(user:).select(:classroom_id)
+    classes = Classroom.where(belt_sheets: true, grade_id: student.classroom.grade_id).
+      where(user:).or(Classroom.where(belt_sheets: true, grade_id: student.classroom.grade_id, id: partagees))
+    Student.where(classroom: classes).where.not(id: student_id).includes(:classroom).order(:first_name)
+  end
+
+  # Une copie de la fiche pour un autre élève du même niveau : les mêmes blocs,
+  # les mêmes compétences, les mêmes exercices. Les compétences qu'il a déjà
+  # validées y restent — l'éditeur les marque « Déjà validée », l'enseignant
+  # décide.
+  def clone_for!(student, user)
+    transaction do
+      copie = BeltSheet.create!(student:, user:)
+      ordered_domains.each do |bloc|
+        nouveau = copie.belt_sheet_domains.create!(domain: bloc.domain, level: bloc.level)
+        bloc.belt_sheet_skills.each do |ligne|
+          nouveau.belt_sheet_skills.create!(skill: ligne.skill, challenge: ligne.challenge)
+        end
+      end
+      copie
+    end
+  end
+
   # La ceinture qui suit la dernière validée dans ce domaine ; `nil` quand
   # l'élève a déjà la noire.
   def prochaine_ceinture(domain)

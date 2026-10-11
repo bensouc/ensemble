@@ -109,4 +109,30 @@ RSpec.describe BeltSheet, type: :model do
       expect(BeltSheetSkill.find(line.id).deja_validee?).to be(true)
     end
   end
+
+  describe "#clone_for!" do
+    let(:camarade) { create(:student, classroom:) }
+
+    it "copie les blocs, les compétences et les exercices pour un autre élève" do
+      skill = competence(numeration, 1, "Compter")
+      epreuve = create(:challenge, skill:, user:, for_belt: true)
+      source = described_class.prepare!(student, user)
+
+      copie = source.clone_for!(camarade, user)
+
+      expect(copie.student).to eq(camarade)
+      expect(copie.belt_sheet_skills.map { |l| [l.skill, l.challenge] }).to eq([[skill, epreuve]])
+      expect(source.reload.belt_sheet_skills.count).to eq(1)
+    end
+
+    it "garde une compétence que l'élève d'arrivée a déjà validée, marquée comme telle" do
+      skill = competence(numeration, 1, "Compter")
+      Result.create!(student: camarade, skill:, kind: "ceinture", status: "completed")
+      source = described_class.prepare!(student, user)
+
+      ligne = source.clone_for!(camarade, user).belt_sheet_skills.sole
+
+      expect(ligne.deja_validee?).to be(true)
+    end
+  end
 end
