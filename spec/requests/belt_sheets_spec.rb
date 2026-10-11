@@ -191,8 +191,10 @@ RSpec.describe "Fiches de ceinture", type: :request do
         page = Nokogiri::HTML(response.body)
         cochees = page.css("input[type=checkbox][checked]").map { |c| c["value"].to_i }
         expect(cochees).to eq([grammaire.id])
-        expect(page.at_css("label[for='belt_sheet_domain_#{grammaire.id}']").text.squish).to include("1 en cours")
-        expect(page.css("button[name=mode]").map { |b| b["value"] }).to contain_exactly("en_cours", "resultats")
+        expect(page.at_css("label[for='belt_sheet_domain_#{grammaire.id}']").text.squish).to include("1 à passer")
+        modes = page.css("input[type=radio][name=mode]")
+        expect(modes.map { |m| m["value"] }).to contain_exactly("en_cours", "resultats")
+        expect(modes.find { |m| m.key?("checked") }["value"]).to eq("en_cours")
       end
 
       it "prépare les ceintures en cours avec le bouton du même nom" do

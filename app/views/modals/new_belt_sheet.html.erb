@@ -14,6 +14,23 @@
 						<%= render Ui::ButtonComponent.new(variant: :icon, icon: "fa-xmark", title: "Fermer", html: { class: "ms-auto" }, data: { action: "click->modals#emptyModal" }) %>
 					</div>
 					<div class="modal-body">
+						<%# Ce qu'on prépare, d'abord : deux cartes, chacune dit ce qu'elle met dans
+						    la fiche. Deux boutons portaient ces deux façons, et l'aide qui les
+						    distinguait se lisait mal. %>
+						<% prenom = @student.first_name.capitalize %>
+						<fieldset class="ui-options wp-edit-full-row">
+							<legend>Que mettre dans la fiche ?</legend>
+							<div class="ui-options-grille">
+							<%= render Ui::OptionCardComponent.new(
+							      name: "mode", value: "en_cours", checked: @en_cours.any?,
+							      title: "Ses ceintures à passer",
+							      text: "Les ceintures prévues dans les plans de travail de #{prenom}, pas encore passées.") %>
+							<%= render Ui::OptionCardComponent.new(
+							      name: "mode", value: "resultats", checked: @en_cours.empty?,
+							      title: "Ses prochaines ceintures",
+							      text: "Dans chaque domaine, la ceinture qui suit la dernière validée par #{prenom}, avec les compétences qui lui restent à valider.") %>
+							</div>
+						</fieldset>
 						<fieldset class="wp-new-domains wp-edit-full-row">
 							<legend>Domaines de la fiche</legend>
 							<%= hidden_field_tag "belt_sheet[domain_ids][]", "", id: nil %>
@@ -25,7 +42,7 @@
 										<%= label_tag "belt_sheet_domain_#{domain.id}" do %>
 											<%= domain.name %>
 											<% if @en_cours[domain] %>
-												<small class="ms-1">· <%= @en_cours[domain] %> en cours</small>
+												<small class="ms-1">· <%= @en_cours[domain] %> à passer</small>
 											<% end %>
 										<% end %>
 									</span>
@@ -34,18 +51,9 @@
 						</fieldset>
 					</div>
 					<div class="modal-ensemble-footer wp-new-actions">
-						<p class="wp-new-hint">
-							<em><strong>Ceintures en cours</strong> : les compétences posées « ceinture » dans un plan
-								de travail, pas encore passées. <strong>Selon les résultats</strong> : pour chaque domaine,
-								la ceinture qui suit la dernière validée par <%= @student.first_name.capitalize %>.</em>
-						</p>
-						<%# Deux boutons, un même formulaire : `mode` dit comment préparer. %>
-						<div class="d-flex gap-2">
+						<div class="d-flex gap-2 ms-auto">
 							<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral, data: { action: "click->modals#emptyModal" }) %>
-							<%= render Ui::ButtonComponent.new("Selon les résultats", type: "submit",
-							                                   html: { name: "mode", value: "resultats" }) %>
-							<%= render Ui::ButtonComponent.new("Ceintures en cours", variant: :primary, type: "submit",
-							                                   html: { name: "mode", value: "en_cours" }) %>
+							<%= render Ui::ButtonComponent.new("Préparer la fiche", variant: :primary, type: "submit") %>
 						</div>
 					</div>
 				</div>
