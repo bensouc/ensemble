@@ -21,21 +21,17 @@
 						</div>
 						<div class="form-actions d-flex justify-content-end height-validate-challenge">
             <% if challenge.persisted? %>
-							<%= link_to challenge_path(challenge), class:"cancel-btn" do %>
-									<i class="fas fa-times"></i>
-							<% end%>
+							<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral, href: challenge_path(challenge)) %>
               <% else %>
               <%# À la création, l'annulation vide la frame du formulaire. Elle vit dans
                   cette rangée et non après le formulaire : elle y était placée à coups
                   de `top: -103px; left: 577px`, donc jamais alignée sur Enregistrer. %>
-							<div class="cancel-btn"
-							     data-controller="manageturboframe"
-							     data-manageturboframe-frame-value="<%= "#{'for_belt_' if challenge.for_belt?}skill_#{challenge.skill_id}_new_challenge" %>"
-							     data-action="click->manageturboframe#cleanTurboFrame">
-								Annuler
-							</div>
+<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral,
+							                                   data: { controller: "manageturboframe",
+							                                           manageturboframe_frame_value: "#{'for_belt_' if challenge.for_belt?}skill_#{challenge.skill_id}_new_challenge",
+							                                           action: "click->manageturboframe#cleanTurboFrame" }) %>
               <% end %>
-							<%= form.submit 'Enregistrer', class: 'validate-challenge-btn'%>
+							<%= render Ui::ButtonComponent.new("Enregistrer", variant: :primary, type: "submit") %>
 						</div>
 					<% end %>
 				</div>

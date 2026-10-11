@@ -24,7 +24,8 @@ class StudentTransfersController < ApplicationController
                   alert: "Transfert impossible : cette classe n'est pas disponible pour #{@student.first_name}."
     else
       # Formulation sans accord de genre : Student n'a pas de champ pour le sexe.
-      notice = "#{@student.first_name} a changé de classe : #{@student.classroom.safe_name} → #{target.safe_name}."
+      depart = @student.classroom.display_name
+      notice = "#{@student.first_name} a changé de classe : #{depart} → #{target.display_name}."
       @student.update!(classroom: target)
       redirect_to classrooms_path, notice:
     end

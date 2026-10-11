@@ -62,8 +62,13 @@ class Classroom < ApplicationRecord
     shared_classrooms.order(:id).first&.user
   end
 
-  def safe_name
-    name == "" ? grade.grade_level : name
+  # Le nom d'une classe dans un texte (mail, message, nom de fichier) : celui
+  # que l'enseignant lui a donné, le niveau à défaut. `safe_name`, son
+  # prédécesseur, ne testait que la chaîne vide — le contrôleur enregistre
+  # `nil` —, et rendait donc `nil` pour une classe sans nom. Les titres, eux,
+  # ajoutent le niveau en petit (`ClassroomsHelper#classroom_title`).
+  def display_name
+    name.presence || grade&.grade_level.to_s.upcase
   end
 
   def teachers

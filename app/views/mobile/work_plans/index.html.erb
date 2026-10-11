@@ -26,7 +26,7 @@
 				<div class="mobile-classe-entete --titre">
 					<span class="mobile-classe-niveau"><%= classroom.grade.grade_level.upcase %></span>
 					<span class="mobile-classe-corps">
-						<span class="mobile-classe-nom"><%= classroom.safe_name %></span>
+						<span class="mobile-classe-nom"><%= classroom.display_name %></span>
 						<span class="mobile-classe-effectif"><%= eleves_label(classroom.students.size) %></span>
 					</span>
 				</div>
