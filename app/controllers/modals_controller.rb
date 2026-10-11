@@ -20,15 +20,14 @@ class ModalsController < ApplicationController
     @checked_domains = AutoGenExclusion.auto_domains(@domains, user: current_user)
   end
 
-  # Nouvelle fiche de ceinture : la modale du nouveau plan de travail, réduite
-  # au choix des domaines, et deux façons de préparer — les ceintures en cours,
-  # ou selon les résultats. Cochés d'avance : les domaines qui ont une ceinture
-  # en cours, à défaut tous les domaines non spéciaux.
+  # Nouvelle fiche de ceinture : deux façons de préparer — les ceintures prévues
+  # dans ses plans, ou ses prochaines ceintures —, et pour chaque domaine ce que
+  # chacune y mettrait. Mode d'entrée : les ceintures des plans, s'il y en a.
   def new_belt_sheet
     @student = authorize Student.includes(classroom: :grade).find(params[:id]), :show?
     @domains = @student.classroom.grade.domains.sort_by(&:position)
-    @en_cours = BeltSheet.ceintures_en_cours(@student).group_by(&:domain).transform_values(&:size)
-    @checked_domains = @en_cours.keys.presence || @domains.reject(&:special?)
+    @apercu = BeltSheet.apercu(@student, @domains)
+    @mode = @apercu.values.any? { |a| a[:en_cours].any? } ? "en_cours" : "resultats"
   end
 
   # Cloner une fiche de ceinture : les élèves du même niveau, classe par classe.

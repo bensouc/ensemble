@@ -185,14 +185,22 @@ RSpec.describe "Fiches de ceinture", type: :request do
         WorkPlanSkill.create!(skill: verbe, work_plan_domain: wpd, kind: "ceinture", status: "new")
       end
 
-      it "coche les domaines qui en ont une, et dit combien" do
+      it "s'ouvre sur les ceintures des plans, coche les domaines qui en ont une, et montre les deux aperçus" do
         get student_new_belt_sheet_modal_path(eleve)
 
         page = Nokogiri::HTML(response.body)
         cochees = page.css("input[type=checkbox][checked]").map { |c| c["value"].to_i }
         expect(cochees).to eq([grammaire.id])
-        expect(page.at_css("label[for='belt_sheet_domain_#{grammaire.id}']").text.squish).to include("1 en cours")
-        expect(page.css("button[name=mode]").map { |b| b["value"] }).to contain_exactly("en_cours", "resultats")
+        ligne = page.at_css("#belt_sheet_domain_#{grammaire.id}").parent
+        expect(ligne["data-en-cours"]).to eq("true")
+        expect(ligne.at_css("[data-mode=en_cours]").text.squish).to eq("Ceinture blanche · 1 compétence")
+        expect(ligne.at_css("[data-mode=resultats]").text.squish).to eq("Ceinture blanche · 1 compétence")
+        geo = page.at_css("#belt_sheet_domain_#{geometrie.id}").parent
+        expect(geo.at_css("[data-mode=en_cours]").text.squish).to eq("rien de prévu")
+        expect(geo.at_css("[data-mode=resultats]").text.squish).to eq("Ceinture blanche · à garnir à la main")
+        modes = page.css("input[type=radio][name=mode]")
+        expect(modes.map { |m| m["value"] }).to contain_exactly("en_cours", "resultats")
+        expect(modes.find { |m| m.key?("checked") }["value"]).to eq("en_cours")
       end
 
       it "prépare les ceintures en cours avec le bouton du même nom" do

@@ -1,12 +1,15 @@
 <%= turbo_frame_tag "general_modal" do %>
 	<div class="modal-ensemble" data-controller="modals">
-		<%# La modale du nouveau plan de travail, réduite au choix des domaines. La
-		    fiche préparée s'ouvre à la place de la page (`_top`) : c'est elle qu'on
-		    vient régler. Le champ vide en tête permet de tout décocher. %>
+		<%# Deux façons de préparer, et pour chaque domaine ce que chacune y mettrait :
+		    la ceinture et son nombre de compétences. Changer de façon change
+		    l'aperçu et les domaines cochés d'avance (`fiche-mode`). La fiche
+		    préparée s'ouvre à la place de la page (`_top`). Le champ vide en tête
+		    permet de tout décocher. %>
 		<%= form_with url: student_belt_sheets_path(@student), method: :post,
-		              class: "wp-edit-form", data: { turbo_frame: "_top" } do %>
+		              class: "wp-edit-form",
+		              data: { turbo_frame: "_top", controller: "fiche-mode", fiche_mode_mode_value: @mode, mode: @mode } do %>
 			<div class="modal-ensemble-dialog">
-				<div class="modal-ensemble-content modal-domaines">
+				<div class="modal-ensemble-content modal-domaines modal-fiche">
 					<div class="modal-ensemble-header">
 						<h5 class="modal-title">
 							Nouvelle fiche de ceinture pour <%= @student.first_name.capitalize %>
@@ -14,38 +17,47 @@
 						<%= render Ui::ButtonComponent.new(variant: :icon, icon: "fa-xmark", title: "Fermer", html: { class: "ms-auto" }, data: { action: "click->modals#emptyModal" }) %>
 					</div>
 					<div class="modal-body">
-						<fieldset class="wp-new-domains wp-edit-full-row">
-							<legend>Domaines de la fiche</legend>
+						<% prenom = @student.first_name.capitalize %>
+						<div class="fiche-mode wp-edit-full-row">
+							<div class="fiche-mode-titre">Préparer la fiche avec</div>
+							<%= render Ui::SegmentedComponent.new(
+							      name: "mode", checked: @mode, label: "Préparer la fiche avec",
+							      options: { "en_cours" => "Les ceintures de ses plans", "resultats" => "Ses prochaines ceintures" },
+							      data: { action: "fiche-mode#choisir" }) %>
+							<p class="fiche-mode-aide" data-mode="en_cours">
+								Les exercices de ceinture déjà prévus dans les plans de travail de <%= prenom %>, et qu'il n'a pas encore passés.
+							</p>
+							<p class="fiche-mode-aide" data-mode="resultats">
+								Pour chaque domaine, la ceinture en cours de <%= prenom %>, avec toutes les compétences qui lui restent à valider.
+							</p>
+						</div>
+						<fieldset class="fiche-domaines wp-edit-full-row">
+							<legend>Domaines</legend>
 							<%= hidden_field_tag "belt_sheet[domain_ids][]", "", id: nil %>
-							<div class="domain-choice">
-								<% @domains.each do |domain| %>
-									<span class="tag-item">
-										<%= check_box_tag "belt_sheet[domain_ids][]", domain.id, @checked_domains.include?(domain),
-										                  id: "belt_sheet_domain_#{domain.id}", class: "tag-selector" %>
-										<%= label_tag "belt_sheet_domain_#{domain.id}" do %>
-											<%= domain.name %>
-											<% if @en_cours[domain] %>
-												<small class="ms-1">· <%= @en_cours[domain] %> en cours</small>
-											<% end %>
-										<% end %>
+							<% @domains.each do |domain| %>
+								<% apercu = @apercu[domain] %>
+								<% par_mode = { "en_cours" => apercu[:en_cours].any?,
+								                "resultats" => apercu[:resultats].present? && !domain.special? } %>
+								<label class="fiche-domaine" data-fiche-mode-target="domaine"
+								       data-en-cours="<%= par_mode["en_cours"] %>" data-resultats="<%= par_mode["resultats"] %>">
+									<%= check_box_tag "belt_sheet[domain_ids][]", domain.id, par_mode[@mode],
+									                  id: "belt_sheet_domain_#{domain.id}" %>
+									<span class="fiche-domaine-nom"><%= domain.name %></span>
+									<span class="fiche-domaine-apercu" data-mode="en_cours">
+										<%= render "modals/fiche_ceintures", ceintures: apercu[:en_cours], special: domain.special?, vide: "rien de prévu" %>
 									</span>
-								<% end %>
-							</div>
+									<span class="fiche-domaine-apercu" data-mode="resultats">
+										<%= render "modals/fiche_ceintures", ceintures: Array.wrap(apercu[:resultats] && [apercu[:resultats]]),
+										                                     special: domain.special?, vide: "toutes validées" %>
+									</span>
+								</label>
+							<% end %>
 						</fieldset>
 					</div>
 					<div class="modal-ensemble-footer wp-new-actions">
-						<p class="wp-new-hint">
-							<em><strong>Ceintures en cours</strong> : les compétences posées « ceinture » dans un plan
-								de travail, pas encore passées. <strong>Selon les résultats</strong> : pour chaque domaine,
-								la ceinture qui suit la dernière validée par <%= @student.first_name.capitalize %>.</em>
-						</p>
-						<%# Deux boutons, un même formulaire : `mode` dit comment préparer. %>
-						<div class="d-flex gap-2">
+						<div class="d-flex gap-2 ms-auto">
 							<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral, data: { action: "click->modals#emptyModal" }) %>
-							<%= render Ui::ButtonComponent.new("Selon les résultats", type: "submit",
-							                                   html: { name: "mode", value: "resultats" }) %>
-							<%= render Ui::ButtonComponent.new("Ceintures en cours", variant: :primary, type: "submit",
-							                                   html: { name: "mode", value: "en_cours" }) %>
+							<%= render Ui::ButtonComponent.new("Préparer la fiche", variant: :primary, type: "submit") %>
 						</div>
 					</div>
 				</div>

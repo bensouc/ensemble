@@ -71,6 +71,32 @@ class BeltSheet < ApplicationRecord
     %w[ceinture controle].include?(wps.kind) && wps.status == "new"
   end
 
+  # Ce que chaque façon de préparer mettrait dans la fiche, domaine par domaine —
+  # l'aperçu de la modale, calculé sans rien enregistrer. Une ceinture est un
+  # couple [niveau, nombre de compétences] ; `en_cours` en liste une par
+  # ceinture prévue, `resultats` au plus une. Un domaine spécial arrive vide.
+  #
+  #   { domain => { en_cours: [[2, 3]], resultats: [3, 5] } }
+  def self.apercu(student, domains)
+    en_cours = ceintures_en_cours(student).group_by(&:domain)
+    fiche = new(student:)
+    domains.index_with do |domain|
+      { en_cours: en_cours.fetch(domain, []).group_by(&:level).map { |level, skills| [level, skills.size] },
+        resultats: fiche.apercu_selon_resultats(domain) }
+    end
+  end
+
+  # La ceinture qu'ajouterait `ajouter_selon_resultats!`, et ses compétences à
+  # passer ; `nil` quand elle n'ajouterait rien.
+  def apercu_selon_resultats(domain)
+    level = ceinture_pour(domain)
+    return nil unless level
+    return [level, 0] if domain.special?
+
+    restantes = Skill.where(domain:, level:).count { |skill| !competence_validee?(skill) }
+    [level, restantes] if restantes.positive?
+  end
+
   # La ceinture qui suit la dernière validée, avec ses compétences pas encore
   # validées ; un domaine spécial, qui n'en a qu'une, arrive vide.
   def ajouter_selon_resultats!(domain)
