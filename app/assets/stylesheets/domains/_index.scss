@@ -1,11 +1,25 @@
 @use "../config/colors";
 
+// La gestion des domaines, calée sur le bord du contenu : la liste n'a plus de
+// marge à gauche, le titre porte le retour aux compétences à sa droite.
+.domains-manage-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+
+  h2 {
+    margin: 0;
+  }
+}
+
 #domains_list {
   display: flex;
   flex-direction: row;
   gap: 10px;
   flex-wrap: wrap;
-  padding: 15px;
+  padding: 15px 0;
   justify-content: flex-start;
 }
 .domain-box {
