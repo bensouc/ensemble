@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
-# La fiche de ceinture d'un élève. Elle se crée déjà garnie, depuis la fiche de
-# l'élève : pour chaque domaine, la ceinture qui suit la dernière validée, avec
-# ses compétences pas encore validées (`BeltSheet.prepare!`).
+# La fiche de ceinture d'un élève. Elle se crée déjà garnie, au choix : ses
+# ceintures en cours, ou selon ses résultats (`BeltSheet.prepare!`).
 class BeltSheetsController < ApplicationController
   before_action :set_belt_sheet, only: [:show, :export, :clone, :destroy]
 
@@ -38,7 +37,9 @@ class BeltSheetsController < ApplicationController
   def create
     student = Student.find(params[:student_id])
     authorize BeltSheet.new(student:)
-    @belt_sheet = BeltSheet.prepare!(student, current_user, domains: domaines_choisis(student))
+    # Les deux boutons de la modale : les ceintures en cours, ou selon les résultats.
+    mode = BeltSheet::MODES.include?(params[:mode]) ? params[:mode] : "resultats"
+    @belt_sheet = BeltSheet.prepare!(student, current_user, domains: domaines_choisis(student), mode:)
     redirect_to belt_sheet_path(@belt_sheet), notice: notice_preparation
   end
 

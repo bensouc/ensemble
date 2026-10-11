@@ -156,6 +156,38 @@ RSpec.describe "Fiches de ceinture", type: :request do
       expect(blocs.last.belt_sheet_skills).to be_empty
     end
 
+    context "avec une ceinture en cours" do
+      let(:verbe) { Skill.find_by!(name: "Le verbe") }
+
+      before do
+        wpd = create(:work_plan_domain, work_plan: create(:work_plan, user: enseignant, student: eleve, grade:),
+                                        domain: grammaire, level: 1)
+        WorkPlanSkill.create!(skill: verbe, work_plan_domain: wpd, kind: "ceinture", status: "new")
+      end
+
+      it "coche les domaines qui en ont une, et dit combien" do
+        get student_new_belt_sheet_modal_path(eleve)
+
+        page = Nokogiri::HTML(response.body)
+        cochees = page.css("input[type=checkbox][checked]").map { |c| c["value"].to_i }
+        expect(cochees).to eq([grammaire.id])
+        expect(page.at_css("label[for='belt_sheet_domain_#{grammaire.id}']").text.squish).to include("1 en cours")
+        expect(page.css("button[name=mode]").map { |b| b["value"] }).to contain_exactly("en_cours", "resultats")
+      end
+
+      it "prépare les ceintures en cours avec le bouton du même nom" do
+        post student_belt_sheets_path(eleve), params: { mode: "en_cours", belt_sheet: { domain_ids: [grammaire.id] } }
+
+        expect(fiche.belt_sheet_skills.map(&:skill)).to eq([verbe])
+      end
+
+      it "retombe sur « selon les résultats » pour un mode inconnu" do
+        post student_belt_sheets_path(eleve), params: { mode: "nimporte", belt_sheet: { domain_ids: [numeration.id] } }
+
+        expect(fiche.belt_sheet_skills.map(&:skill)).to contain_exactly(compter, ranger)
+      end
+    end
+
     it "ignore un domaine d'un autre niveau glissé dans la requête" do
       ailleurs = create(:domain, grade: create(:grade, school:, name: "CM1", grade_level: "CM1"), name: "Ailleurs")
 
