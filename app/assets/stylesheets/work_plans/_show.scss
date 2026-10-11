@@ -213,6 +213,12 @@
 // Modale d'édition d'un plan de travail : champs en colonne, pleine largeur, avec
 // leurs libellés.
 .wp-edit-form {
+  // Une modale se rend souvent DANS l'élément qui l'ouvre : celle d'une classe
+  // vit dans `.classroom-name`, le titre de la carte, dont elle héritait la
+  // police de 22 px en gras — l'aide sous le nom s'affichait en gros titre.
+  font-size: 14px;
+  font-weight: 400;
+
   .modal-body {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -223,6 +229,14 @@
   // Nom et élève sur la largeur entière, les deux dates côte à côte.
   .wp-edit-full-row {
     grid-column: 1 / -1;
+  }
+
+  .form-text {
+    display: block;
+    margin-top: 5px;
+    color: colors.$grisF;
+    font-size: 12px;
+    font-weight: 400;
   }
 
   .form-group {

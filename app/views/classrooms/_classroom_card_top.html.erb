@@ -29,7 +29,11 @@
 				</button>
 				<%# MODAL %>
 				<%= render 'form_edit', classroom: classroom%>
-			</div>
+			<%# PAS de `</div>` ici pour `.classroom-name` : la modale d'édition ne
+			    refermait pas sa propre `<div class="modal">`, et ce `</div>` la
+			    refermait à sa place. Toute la carte s'est construite sur ce décalage —
+			    la modale refermée proprement, le retirer garde le même DOM. Rétablir
+			    l'équilibre demande de reprendre la mise en page de la carte. %>
 		</div>
 		<%# END MODAL EDITING CLASSROOM %>
 	</div>

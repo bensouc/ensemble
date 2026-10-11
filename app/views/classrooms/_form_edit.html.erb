@@ -1,36 +1,31 @@
+<%# Même modèle que la modale d'édition d'un plan de travail : des champs
+    libellés en grille (`wp-edit-form`), et le pied Annuler / Valider en
+    `Ui::ButtonComponent`. Le formulaire enveloppe le corps ET le pied. %>
 <div class="modal fade" id="editingClassroomModal-<%=classroom.id%>" tabindex="-1" aria-labelledby="editingClassroomModal-<%=classroom.id%>Label" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content" >
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="editingClassroomModal-<%=classroom.id%>Label">Edition de la classe</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<h5 class="modal-title" id="editingClassroomModal-<%=classroom.id%>Label">Modifier la classe</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
 			</div>
-			<div class="modal-body" >
-				<%= simple_form_for classroom, html: { novalidate: false } do |f|%>
-					<div class="classroom-field ">
-						<div class="left_box">
-							<%# <i class="fa-solid fa-graduation-cap class-grade"></i>
-      <p>*</p> %>
-							<%# <%=f.input :grade, label: false, required: true,
-                              include_blank:  "Choisissez un niveau",
-                              collection: Classroom::GRADE,
-                              input_html: {class: 'area add-grade d-none'}
-                                %>
-						</div>
-						<div class="center_box">
-							<%=f.input :name, label: false,
-                            hint: 'Vous pouvez donner un nom à votre classe',
-                            input_html: {class: 'area'}  %>
-						</div>
-						<div class="d-flex flex-row-reverse">
-							<%= f.submit "Valider", class: "validate-btn", data: {turbo_frame: "_top"} %>
-						</div>
+			<%= simple_form_for classroom, html: { novalidate: false, class: "wp-edit-form" } do |f| %>
+				<div class="modal-body">
+					<%# Le niveau ne se change pas après coup : il est montré, pas envoyé. %>
+					<div class="form-group wp-edit-full-row">
+						<label for="classroom_grade_<%= classroom.id %>">Niveau</label>
+						<input type="text" id="classroom_grade_<%= classroom.id %>" class="area form-control"
+						       value="<%= classroom.grade&.grade_level&.upcase %>" disabled>
 					</div>
-				<% end %>
-			</div>
-			<div class="modal-footer">
-				<%# <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> %>
-				<%# <button type="button" class="btn btn-primary">Save changes</button> %>
-			</div>
+					<%= f.input :name, label: "Nom de la classe", wrapper_html: { class: "wp-edit-full-row" },
+					            hint: "Facultatif : il s'affiche à côté du niveau, par exemple « #{classroom.grade&.grade_level&.upcase} – Les hiboux ».",
+					            input_html: { class: "area", id: "classroom_name_#{classroom.id}" } %>
+				</div>
+				<div class="modal-footer">
+					<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral, data: { bs_dismiss: "modal" }) %>
+					<%= render Ui::ButtonComponent.new("Valider", variant: :primary, type: "submit",
+					                                   data: { turbo_frame: "_top" }) %>
+				</div>
+			<% end %>
 		</div>
 	</div>
+</div>
