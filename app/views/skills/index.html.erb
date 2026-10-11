@@ -11,7 +11,9 @@
 	<% end %>
 	<%= turbo_frame_tag "skills_list" do %>
 		<% if @domain.nil? %>
-			<%= render 'domains/domains_list', grade: @grade, domain: @domain  %>
+			<%# Un niveau sans domaine : la gestion des domaines, pour en créer. Le
+			    partiel appelé ici, `domains_list`, n'a jamais existé — la page plantait. %>
+			<%= render 'domains/domains', grade: @grade, domain: @domain  %>
 		<% else %>
 			<div  class="skills-classroom-level-card"
       data-controller='allskilldisplay'
@@ -60,7 +62,6 @@
 							<% end %>
 						<% end %>
 					</div>
-				<% end %>
 
 
 				<div class="skills-boxe"
@@ -78,9 +79,10 @@
 						</div>
 					<% end %>
 				</div>
-			<% end %>
+			</div>
 		</div>
-	</div>
+		<% end %>
+	<% end %>
 <% end %>
 </div>
 <% unless @errors.nil?  %>

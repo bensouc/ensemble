@@ -25,7 +25,7 @@
                   } %>
 					<%= f.input :domain,
                   collection: @domains.sort_by(&:position),
-                  selected: @domain.id,
+                  selected: @domain&.id,
                   label: false,
                   input_html: {
                     class: "area grow m-left"
@@ -56,7 +56,16 @@
 	</div>
 	<div class="grey-line"></div>
 	<div id='skills-challenge-list'>
-		<%= render "challenges/skill_folders", skills: @skills, challenges: @challenges, for_belt: @ceinture %>
+		<%# Un niveau sans domaine n'a rien à filtrer : on le dit, et on mène là où on
+		    les crée, au lieu de planter sur `@domain.id`. %>
+		<% if @domain.nil? %>
+			<p class="belt-sheet-empty">
+				Aucun domaine pour ce niveau :
+				<%= link_to "créez-en depuis Mes compétences", skills_path(grade: @grade&.id) %>.
+			</p>
+		<% else %>
+			<%= render "challenges/skill_folders", skills: @skills, challenges: @challenges, for_belt: @ceinture %>
+		<% end %>
 	</div>
 	<div class="top-floating-btn"
 	     data-page-scroll-target="down"
