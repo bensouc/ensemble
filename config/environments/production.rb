@@ -1,4 +1,5 @@
 require "active_support/core_ext/integer/time"
+require_relative "../../lib/cache_des_assets"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -41,6 +42,8 @@ Rails.application.configure do
   # Disable serving static files from the `/public` folder by default since
   # Apache or NGINX already handles this.
   config.public_file_server.enabled = ENV["RAILS_SERVE_STATIC_FILES"].present?
+  # Les fichiers à empreinte de `/assets` gardés un an en cache (lib/cache_des_assets.rb).
+  config.middleware.insert_before ActionDispatch::Static, CacheDesAssets
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.asset_host = "http://assets.example.com"
