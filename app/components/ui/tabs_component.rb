@@ -27,9 +27,10 @@ module Ui
 
     private
 
+    # `data` : les attributs d'un onglet — un indicateur de chargement, une frame.
     def lien(tab)
       link_to(tab[:label], tab[:href], class: ("ui-tabs-active" if tab[:active]),
-                                       aria: { current: ("page" if tab[:active]) })
+                                       aria: { current: ("page" if tab[:active]) }, data: tab[:data])
     end
   end
 end
