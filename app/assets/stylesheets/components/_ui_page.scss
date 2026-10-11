@@ -9,7 +9,12 @@
   max-width: 100%;
 }
 
+// Une hauteur minimale, celle d'un bouton :lg : le titre, centré, se pose au
+// même endroit qu'il y ait une action à droite ou non. Sans elle, le nom de
+// l'école de « Mes compétences » agrandissait l'en-tête, et le titre sautait
+// d'une page à l'autre.
 .ui-page-header {
+  min-height: echelle.$cible-tactile;
   display: flex;
   flex-wrap: wrap;
   align-items: center;

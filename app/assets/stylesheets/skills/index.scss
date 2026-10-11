@@ -53,9 +53,10 @@
     background-color: colors.$rose;
   }
 }
+// Le nom de l'école, à droite du titre de la page : un complément, en gris. Il
+// gardait le décalage (18 px) et la hauteur (47 px) de l'ancien en-tête, qui
+// faisaient descendre le titre.
 .skill-school-name {
-  margin-left: 10px;
-  padding-top: 18px;
-
-  height: 47px;
+  color: #9c9c9c;
+  font-size: 14px;
 }
