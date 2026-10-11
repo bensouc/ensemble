@@ -55,6 +55,7 @@ fr:
     bloc_special_ajoute: "Bloc %{domaine} ajouté : choisissez les compétences à faire passer."
     bloc_deja_la: "%{domaine} – ceinture %{couleur} est déjà sur la fiche."
     tout_valide: "%{eleve} a déjà validé toutes les compétences de %{domaine} – ceinture %{couleur}."
+    noire_deja: "Toutes les ceintures de %{domaine} sont déjà validées."
     bloc_retire: "Domaine retiré de la fiche"
     competence_ajoutee: "Compétence ajoutée"
     competence_retiree: "Compétence retirée"

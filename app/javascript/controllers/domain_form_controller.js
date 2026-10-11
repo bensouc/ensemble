@@ -1,52 +1,32 @@
 import { Controller } from "@hotwired/stimulus";
+
+// Ajouter un domaine à un plan de travail, en deux temps : le domaine, puis sa
+// ceinture. Un domaine spécial n'a qu'une ceinture : la blanche est cochée
+// d'office, et l'étape 2 reste repliée. Les envois n'apparaissent qu'une fois
+// la ceinture choisie.
+//
+// Le domaine spécial était reconnu à son libellé (« Géométrie », « Grandeurs
+// et Mesures ») ; il l'est désormais par `data-special`, posé d'après le domaine.
 export default class extends Controller {
-  static targets = ['beltForm', 'box','btn'];
-  static values = {
-    special: Boolean
-  }
-  connect() {
-    // console.log('add-domain connected');
-    console.log(this.btnTargets)
-    // this.btnTargets.forEach((btn)=>{
-    //   btn.cla
-    // })
-  }
+  static targets = ["beltForm", "box", "btn"];
 
   displayBelt(event) {
-    console.log(this.specialValue)
-    // console.log(event.target.value)
-    const domain = event.target.nextElementSibling.innerHTML
-    if (!this.specialValue) {
-      console.log('coucou')
-      this.beltFormTarget.classList.remove('d-none');
-    } else if ( (domain === 'Géométrie' ||
-    domain === 'Grandeurs et Mesures')) {
-      this.beltFormTarget.classList.add('d-none');
-      // put level 1 checkbox as true
-      this.boxTarget.checked = true
-      this.boxTarget.value = 1
-      this.displayBtn()
+    if (event.target.dataset.special === "true") {
+      this.beltFormTarget.classList.add("d-none");
+      this.boxTargets[0].checked = true;
+      this.displayBtn();
+    } else {
+      this.beltFormTarget.classList.remove("d-none");
+      if (!this.boxTargets.some((box) => box.checked)) this.#hideBtn();
     }
-    else {
-      this.#hideBtn()
-      this.beltFormTarget.classList.remove('d-none');
-    }
-
-    // document.body.scrollTop = document.body.scrollHeight;
-    // document.documentElement.scrollTop = document.documentElement.scrollHeight;
     window.scrollTo(0, document.body.scrollHeight);
   }
 
-  displayBtn(){
-    this.btnTargets.forEach((btn) => {
-      btn.classList.remove('d-none')
-    })
+  displayBtn() {
+    this.btnTargets.forEach((btn) => btn.classList.remove("d-none"));
   }
+
   #hideBtn() {
-    this.btnTargets.forEach((btn) => {
-      btn.classList.remove('d-none')
-      btn.classList.add('d-none')
-      console.log("hide btn")
-    })
+    this.btnTargets.forEach((btn) => btn.classList.add("d-none"));
   }
 }

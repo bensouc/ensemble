@@ -86,16 +86,36 @@ RSpec.describe "Fiches de ceinture", type: :request do
     expect(ligne.challenge).to be_for_belt
   end
 
-  it "ajoute un domaine à la main, à la ceinture choisie, et le range à sa place" do
+  it "ajoute un domaine à la ceinture qui suit la dernière validée, et le range à sa place" do
     grammaire = create(:domain, grade:, position: 0, name: "Grammaire", special: false)
     verbe = create(:skill, domain: grammaire, level: 2, school:, name: "Le verbe")
+    create(:belt, student: eleve, domain: grammaire, level: 1, completed: true)
     post student_belt_sheets_path(eleve)
 
-    post belt_sheet_belt_sheet_domains_path(fiche),
-         params: { belt_sheet_domain: { domain_id: grammaire.id, level: 2 } }, as: :turbo_stream
+    get new_belt_sheet_belt_sheet_domain_path(fiche)
+    pastille = Nokogiri::HTML(response.body).at_css("input[value='#{grammaire.id}']").parent
+    expect(pastille.at_css("i.fa-bacon.belt-2")).to be_present
+    expect(response.body).not_to include("belt_sheet_domain[level]")
 
+    # Une ceinture glissée dans la requête n'est pas lue : c'est la N+1.
+    post belt_sheet_belt_sheet_domains_path(fiche),
+         params: { belt_sheet_domain: { domain_id: grammaire.id, level: 5 } }, as: :turbo_stream
+
+    bloc = fiche.belt_sheet_domains.find_by!(domain: grammaire)
+    expect(bloc.level).to eq(2)
+    expect(bloc.belt_sheet_skills.map(&:skill)).to eq([verbe])
     expect(fiche.ordered_domains.map(&:domain)).to eq([grammaire, numeration])
-    expect(fiche.belt_sheet_domains.find_by!(domain: grammaire).belt_sheet_skills.map(&:skill)).to eq([verbe])
+  end
+
+  it "n'ajoute rien pour un domaine dont l'élève a déjà la noire" do
+    7.times { |i| create(:belt, student: eleve, domain: numeration, level: i + 1, completed: true) }
+    post student_belt_sheets_path(eleve), params: { belt_sheet: { domain_ids: [""] } }
+
+    post belt_sheet_belt_sheet_domains_path(fiche), params: { belt_sheet_domain: { domain_id: numeration.id } },
+                                                    as: :turbo_stream
+
+    expect(fiche.belt_sheet_domains).to be_empty
+    expect(response.body).to include("Toutes les ceintures de Numération sont déjà validées")
   end
 
   it "retire puis remet une compétence, et retire un domaine" do
@@ -154,6 +174,38 @@ RSpec.describe "Fiches de ceinture", type: :request do
       blocs = fiche.ordered_domains
       expect(blocs.map(&:domain)).to eq([numeration, geometrie])
       expect(blocs.last.belt_sheet_skills).to be_empty
+    end
+
+    context "avec une ceinture en cours" do
+      let(:verbe) { Skill.find_by!(name: "Le verbe") }
+
+      before do
+        wpd = create(:work_plan_domain, work_plan: create(:work_plan, user: enseignant, student: eleve, grade:),
+                                        domain: grammaire, level: 1)
+        WorkPlanSkill.create!(skill: verbe, work_plan_domain: wpd, kind: "ceinture", status: "new")
+      end
+
+      it "coche les domaines qui en ont une, et dit combien" do
+        get student_new_belt_sheet_modal_path(eleve)
+
+        page = Nokogiri::HTML(response.body)
+        cochees = page.css("input[type=checkbox][checked]").map { |c| c["value"].to_i }
+        expect(cochees).to eq([grammaire.id])
+        expect(page.at_css("label[for='belt_sheet_domain_#{grammaire.id}']").text.squish).to include("1 en cours")
+        expect(page.css("button[name=mode]").map { |b| b["value"] }).to contain_exactly("en_cours", "resultats")
+      end
+
+      it "prépare les ceintures en cours avec le bouton du même nom" do
+        post student_belt_sheets_path(eleve), params: { mode: "en_cours", belt_sheet: { domain_ids: [grammaire.id] } }
+
+        expect(fiche.belt_sheet_skills.map(&:skill)).to eq([verbe])
+      end
+
+      it "retombe sur « selon les résultats » pour un mode inconnu" do
+        post student_belt_sheets_path(eleve), params: { mode: "nimporte", belt_sheet: { domain_ids: [numeration.id] } }
+
+        expect(fiche.belt_sheet_skills.map(&:skill)).to contain_exactly(compter, ranger)
+      end
     end
 
     it "ignore un domaine d'un autre niveau glissé dans la requête" do

@@ -77,6 +77,60 @@ RSpec.describe BeltSheet, type: :model do
     end
   end
 
+  describe ".prepare! en mode « ceintures en cours »" do
+    let(:work_plan) { create(:work_plan, user:, student:, grade:) }
+
+    # Une compétence posée dans un plan de travail de l'élève, à un état donné.
+    def poser(skill, kind:, status: "new", domain: skill.domain)
+      wpd = create(:work_plan_domain, work_plan:, domain:, level: skill.level)
+      WorkPlanSkill.create!(skill:, work_plan_domain: wpd, kind:, status:)
+    end
+
+    def preparer(**)
+      described_class.prepare!(student, user, mode: "en_cours", **)
+    end
+
+    it "ne met que les compétences posées « ceinture » et pas encore passées" do
+      en_cours = competence(numeration, 3, "Comparer")
+      ratee = competence(numeration, 3, "Ranger")
+      exercice = competence(numeration, 3, "Encadrer")
+      poser(en_cours, kind: "ceinture")
+      poser(ratee, kind: "ceinture", status: "redo")
+      poser(exercice, kind: "exercice")
+
+      bloc = preparer.belt_sheet_domains.sole
+      expect([bloc.domain, bloc.level]).to eq([numeration, 3])
+      expect(bloc.belt_sheet_skills.map(&:skill)).to eq([en_cours])
+    end
+
+    it "suit le dernier WPS : une ceinture repassée en exercice n'est plus en cours" do
+      skill = competence(numeration, 2, "Comparer")
+      poser(skill, kind: "ceinture").update_column(:updated_at, 2.days.ago)
+      poser(skill, kind: "exercice")
+
+      expect(preparer.belt_sheet_domains).to be_empty
+    end
+
+    it "prend aussi les domaines spéciaux, avec leurs compétences en cours" do
+      geometrie = create(:domain, grade:, name: "Géométrie", position: 3, special: true)
+      tracer = competence(geometrie, 1, "Tracer")
+      competence(geometrie, 1, "Mesurer")
+      poser(tracer, kind: "ceinture")
+
+      bloc = preparer.belt_sheet_domains.sole
+      expect(bloc.belt_sheet_skills.map(&:skill)).to eq([tracer])
+    end
+
+    it "laisse vide un domaine coché sans ceinture en cours" do
+      poser(competence(numeration, 1, "Compter"), kind: "ceinture")
+
+      sheet = preparer(domains: [numeration, grammaire])
+
+      expect(sheet.ordered_domains.map { |b| [b.domain, b.belt_sheet_skills.size] }).
+        to eq([[grammaire, 0], [numeration, 1]])
+    end
+  end
+
   describe "l'exercice de ceinture d'une ligne" do
     let!(:skill) { competence(numeration, 1, "Compter") }
 

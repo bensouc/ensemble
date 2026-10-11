@@ -8,7 +8,11 @@
   display: flex;
   // align-items: center;
   flex-direction: column;
-  justify-content: space-between;
+  // Empilée depuis le haut, et non répartie (`space-between`) : ouvrir le
+  // sous-menu de Voir redistribuait l'espace, et le logo, les menus et les dates
+  // bougeaient tous. Les menus sont fixés en haut, les dates en bas
+  // (`.calendrier`), le sous-menu se déplie entre les deux.
+  justify-content: flex-start;
   align-items: center;
   width: 200px;
   height: 100vh;
@@ -39,6 +43,7 @@
 // un écran bas dès que le sous-menu s'ouvrait, et le calendrier chevauchait.
 .menu-g{
   width: fit-content;
+  margin-top: 3rem;
   padding: 5px;
 }
 // Hauteur libre : fixée à 191 px, elle était dépassée dès que le sous-menu de
@@ -187,7 +192,10 @@ color: colors.$grisF;
 
 
 
+// Poussées au bas de la barre, et laissées là : le sous-menu prend l'espace
+// libre au-dessus d'elles sans les déplacer.
 .calendrier{
+  margin-top: auto;
   margin-bottom: 1em;
   h3{
     font-family: font_families.$titres-font;

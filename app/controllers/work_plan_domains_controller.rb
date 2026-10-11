@@ -13,7 +13,6 @@ class WorkPlanDomainsController < ApplicationController
     @work_plan = WorkPlan.find(params_wp_id)
     authorize @work_plan, :update?
     @domains = @work_plan.grade.domains.sort_by(&:position)
-    @special = @domains.any? { |domain| domain.special? }
   end
 
   def create

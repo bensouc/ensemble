@@ -17,22 +17,80 @@ class BeltSheet < ApplicationRecord
 
   delegate :grade, to: :student
 
-  # Une fiche prête à imprimer : pour chaque domaine choisi, la ceinture qui suit
-  # la dernière que l'élève a validée, avec les compétences de cette ceinture
-  # qu'il n'a pas encore validées.
+  MODES = %w[en_cours resultats].freeze
+
+  # Une fiche prête à imprimer, de deux façons :
   #
-  # Sans choix, tous les domaines de son niveau sauf les spéciaux. Un domaine
-  # spécial — validé au score, non compétence par compétence — n'est préparé que
-  # s'il est choisi, et arrive alors vide (`add_domain!`).
-  def self.prepare!(student, user, domains: nil)
-    domains ||= student.grade.domains.reject(&:special?)
+  # - `en_cours` : les ceintures EN COURS de l'élève — celles que son enseignant
+  #   a décidé de lui faire passer en posant la compétence « ceinture » dans un
+  #   plan de travail, pas encore passée (`ceintures_en_cours`). Un domaine coché
+  #   sans ceinture en cours arrive vide ;
+  # - `resultats` : selon ses résultats — pour chaque domaine, la ceinture qui
+  #   suit la dernière validée, avec ses compétences pas encore validées.
+  #
+  # Un bloc par domaine et ceinture. `domains` : ceux cochés dans la modale ;
+  # sans choix, ceux qui ont une ceinture en cours (`en_cours`), ou tous les
+  # domaines non spéciaux (`resultats`). Un domaine spécial — validé au score —
+  # arrive vide dans le second mode. L'enseignant ajuste ensuite dans l'éditeur.
+  def self.prepare!(student, user, domains: nil, mode: "resultats")
+    mode == "en_cours" ? preparer_en_cours!(student, user, domains) : preparer_selon_resultats!(student, user, domains)
+  end
+
+  def self.preparer_en_cours!(student, user, domains)
+    en_cours = ceintures_en_cours(student).group_by(&:domain)
+    remplir!(student, user, domains || en_cours.keys) do |sheet, domain|
+      sheet.ajouter_en_cours!(domain, en_cours.fetch(domain, []))
+    end
+  end
+
+  def self.preparer_selon_resultats!(student, user, domains)
+    remplir!(student, user, domains || student.grade.domains.reject(&:special?)) do |sheet, domain|
+      sheet.ajouter_selon_resultats!(domain)
+    end
+  end
+
+  # La fiche, puis un passage par domaine, dans l'ordre de l'école.
+  def self.remplir!(student, user, domains)
     transaction do
-      sheet = create!(student:, user:)
-      domains.sort_by(&:position).each do |domain|
-        level = domain.special? ? 1 : sheet.prochaine_ceinture(domain)
-        sheet.add_domain!(domain, level) if level
+      create!(student:, user:).tap do |sheet|
+        domains.sort_by(&:position).each { |domain| yield sheet, domain }
       end
-      sheet
+    end
+  end
+
+  # Les compétences sur lesquelles l'élève passe sa ceinture : son dernier WPS y
+  # est posé « ceinture » (ou « contrôle », son équivalent) et n'a pas encore été
+  # évalué — ni validé, ni raté (une ceinture ratée repasse en exercice).
+  def self.ceintures_en_cours(student)
+    skills = Skill.where(domain_id: student.grade.domains.select(:id))
+    WorkPlanSkill.last_wps(student, skills).includes(skill: :domain).select { |wps| en_cours?(wps) }.
+      map(&:skill).sort_by { |skill| [skill.level, skill.position.to_i, skill.id] }
+  end
+
+  def self.en_cours?(wps)
+    %w[ceinture controle].include?(wps.kind) && wps.status == "new"
+  end
+
+  # La ceinture qui suit la dernière validée, avec ses compétences pas encore
+  # validées ; un domaine spécial, qui n'en a qu'une, arrive vide.
+  def ajouter_selon_resultats!(domain)
+    level = ceinture_pour(domain)
+    add_domain!(domain, level) if level
+  end
+
+  # Les blocs d'un domaine, une ceinture par bloc. Sans ceinture en cours, un
+  # bloc vide, à la ceinture que l'élève prépare — la blanche pour un domaine
+  # spécial, qui n'en a qu'une.
+  def ajouter_en_cours!(domain, skills)
+    if skills.empty?
+      level = ceinture_pour(domain)
+      belt_sheet_domains.create!(domain:, level:) if level
+      return
+    end
+
+    skills.group_by(&:level).each do |level, competences|
+      bloc = belt_sheet_domains.create!(domain:, level:)
+      competences.each { |skill| bloc.add_skill!(skill) }
     end
   end
 
@@ -61,6 +119,13 @@ class BeltSheet < ApplicationRecord
       end
       copie
     end
+  end
+
+  # La ceinture d'un domaine sur cette fiche : celle qui suit la dernière que
+  # l'élève a validée ; la blanche pour un domaine spécial, qui n'en a qu'une.
+  # `nil` quand il a déjà la noire.
+  def ceinture_pour(domain)
+    domain.special? ? 1 : prochaine_ceinture(domain)
   end
 
   # La ceinture qui suit la dernière validée dans ce domaine ; `nil` quand

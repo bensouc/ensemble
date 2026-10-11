@@ -22,7 +22,12 @@
 									<span class="tag-item">
 										<%= check_box_tag "belt_sheet[domain_ids][]", domain.id, @checked_domains.include?(domain),
 										                  id: "belt_sheet_domain_#{domain.id}", class: "tag-selector" %>
-										<%= label_tag "belt_sheet_domain_#{domain.id}", domain.name %>
+										<%= label_tag "belt_sheet_domain_#{domain.id}" do %>
+											<%= domain.name %>
+											<% if @en_cours[domain] %>
+												<small class="ms-1">· <%= @en_cours[domain] %> en cours</small>
+											<% end %>
+										<% end %>
 									</span>
 								<% end %>
 							</div>
@@ -30,13 +35,17 @@
 					</div>
 					<div class="modal-ensemble-footer wp-new-actions">
 						<p class="wp-new-hint">
-							<em>Chaque domaine reçoit la ceinture qui suit la dernière validée par
-								<%= @student.first_name.capitalize %>, avec les compétences qu'il lui reste.
-								Un domaine spécial arrive vide : vous y choisirez les compétences.</em>
+							<em><strong>Ceintures en cours</strong> : les compétences posées « ceinture » dans un plan
+								de travail, pas encore passées. <strong>Selon les résultats</strong> : pour chaque domaine,
+								la ceinture qui suit la dernière validée par <%= @student.first_name.capitalize %>.</em>
 						</p>
+						<%# Deux boutons, un même formulaire : `mode` dit comment préparer. %>
 						<div class="d-flex gap-2">
 							<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral, data: { action: "click->modals#emptyModal" }) %>
-							<%= render Ui::ButtonComponent.new("Préparer la fiche", variant: :primary, type: "submit") %>
+							<%= render Ui::ButtonComponent.new("Selon les résultats", type: "submit",
+							                                   html: { name: "mode", value: "resultats" }) %>
+							<%= render Ui::ButtonComponent.new("Ceintures en cours", variant: :primary, type: "submit",
+							                                   html: { name: "mode", value: "en_cours" }) %>
 						</div>
 					</div>
 				</div>

@@ -1,19 +1,22 @@
 # frozen_string_literal: true
 
 # Les blocs d'une fiche de ceinture : un domaine à une couleur de ceinture.
-# L'ajouter le garnit des compétences que l'élève n'a pas encore validées.
+# L'ajouter le garnit des compétences que l'élève n'a pas encore validées. La
+# ceinture ne se choisit pas : c'est celle qui suit la dernière qu'il a validée.
 class BeltSheetDomainsController < ApplicationController
   def new
     @belt_sheet = BeltSheet.find(params[:belt_sheet_id])
     authorize @belt_sheet, :update?
     @domains = @belt_sheet.grade.domains.sort_by(&:position)
-    @special = @domains.any?(&:special?)
+    @ceintures = @domains.index_with { |domain| @belt_sheet.ceinture_pour(domain) }
   end
 
   def create
     @belt_sheet = BeltSheet.find(params[:belt_sheet_id])
     authorize @belt_sheet, :update?
-    flash.now[:notice] = ajouter(domaine_choisi, domain_params[:level].to_i.clamp(1, Belt::BELT_COLORS.size))
+    domain = domaine_choisi
+    level = @belt_sheet.ceinture_pour(domain)
+    flash.now[:notice] = level ? ajouter(domain, level) : t("fiches_ceinture.noire_deja", domaine: domain.name)
     respond_with_sheet
   end
 
@@ -56,6 +59,6 @@ class BeltSheetDomainsController < ApplicationController
   end
 
   def domain_params
-    params.expect(belt_sheet_domain: [:domain_id, :level])
+    params.expect(belt_sheet_domain: [:domain_id])
   end
 end

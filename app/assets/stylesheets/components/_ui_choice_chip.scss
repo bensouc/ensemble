@@ -1,0 +1,116 @@
+@use "../config/colors";
+@use "../config/echelle";
+
+// `Ui::ChoiceChipComponent` : un bouton radio en pastille. Le choix courant
+// passe au rose de l'état courant, sur le fond à 8 %.
+.ui-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: echelle.$espace-sm;
+}
+
+.ui-chip {
+  position: relative;
+  margin: 0;
+  cursor: pointer;
+}
+
+// Le bouton radio reste dans la page — clavier, lecteur d'écran, `required` —,
+// mais invisible : c'est la pastille qui le montre.
+.ui-chip-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ui-chip-body {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid colors.$grisC;
+  border-radius: 999px;
+  background-color: colors.$blanc;
+  color: colors.$grisF;
+  font-size: 14px;
+  white-space: nowrap;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.ui-chip:hover .ui-chip-body {
+  border-color: rgba(colors.$rose, 0.5);
+}
+
+.ui-chip-input:checked + .ui-chip-body {
+  border-color: colors.$rose;
+  background-color: rgba(colors.$rose, 0.08);
+  color: colors.$rose;
+  font-weight: 600;
+}
+
+.ui-chip-input:focus-visible + .ui-chip-body {
+  outline: 2px solid colors.$rose;
+  outline-offset: 2px;
+}
+
+// L'icône de ceinture, à la couleur de son niveau (`.belt-N`). Un fin contour :
+// la blanche disparaissait sur le fond blanc.
+.ui-chip-belt {
+  font-size: 18px;
+  filter: drop-shadow(0 0 0.6px rgba(0, 0, 0, 0.55));
+}
+
+.ui-chip-hint {
+  color: #9c9c9c;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.ui-chip--disabled {
+  cursor: default;
+  opacity: 0.45;
+
+  &:hover .ui-chip-body {
+    border-color: colors.$grisC;
+  }
+}
+
+// Les étapes d'un formulaire en deux temps : un numéro, rempli une fois
+// l'étape faite.
+.ui-step {
+  margin-bottom: echelle.$espace-md;
+}
+
+.ui-step-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: colors.$grisF;
+  font-size: 15px;
+  font-weight: 600;
+
+  small {
+    color: #9c9c9c;
+    font-weight: 400;
+  }
+}
+
+.ui-step-num {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(colors.$rose, 0.1);
+  color: colors.$rose;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.ui-step:has(.ui-chip-input:checked) .ui-step-num {
+  background-color: colors.$rose;
+  color: colors.$blanc;
+}

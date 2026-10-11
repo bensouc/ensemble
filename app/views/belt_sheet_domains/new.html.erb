@@ -1,35 +1,30 @@
-<%# Choisir un domaine puis une ceinture : la mécanique du formulaire de domaine
-    du plan de travail (`domain-form`), qui fixe la ceinture des domaines
-    spéciaux. Un seul bouton : il n'y a pas de type à choisir. %>
+<%# Choisir un domaine, et lui seul : sa ceinture est celle qui suit la dernière
+    que l'élève a validée — la blanche pour un domaine spécial. Chaque pastille
+    en porte l'icône, à sa couleur ; un domaine dont il a déjà la noire est
+    grisé. Le même choix en pastilles que l'ajout d'un domaine à un plan. %>
 <%= turbo_frame_tag :new_belt_sheet_domain do %>
 	<div class="add-domain">
-		<div class="add-domain-form" data-controller="domain-form" data-domain-form-special-value="<%= @special %>">
-			<%= simple_form_for BeltSheetDomain.new, url: belt_sheet_belt_sheet_domains_path(@belt_sheet),
-			                    method: :post, html: { novalidate: true } do |f| %>
-				<h3>Choisissez un domaine</h3>
-				<div class="m-top">
-					<%= f.input :domain_id, label: "", required: true, as: :radio_buttons,
-					            collection: @domains, label_method: :name, value_method: :id,
-					            collection_wrapper_tag: "div", collection_wrapper_class: "wrapper",
-					            item_wrapper_class: "domain-item",
-					            input_html: { class: "selector domain-selector",
-					                          data: { action: "click->domain-form#displayBelt" } } %>
+		<div class="add-domain-form">
+			<%= form_with url: belt_sheet_belt_sheet_domains_path(@belt_sheet), method: :post do %>
+				<div class="ui-step">
+					<div class="ui-step-title">
+						<span class="ui-step-num">1</span>Domaine
+						<small>— sa ceinture est celle qui suit la dernière validée</small>
+					</div>
+					<div class="ui-chips">
+						<% @domains.each do |domain| %>
+							<% niveau = @ceintures[domain] %>
+							<%= render Ui::ChoiceChipComponent.new(name: "belt_sheet_domain[domain_id]", value: domain.id,
+							                                       label: domain.name, belt: niveau || Belt::BELT_COLORS.size,
+							                                       hint: ("toutes validées" unless niveau),
+							                                       disabled: niveau.nil?) %>
+						<% end %>
+					</div>
 				</div>
-				<div class="m-top d-none" data-domain-form-target="beltForm">
-					<h3>Choisissez une ceinture</h3>
-					<%= f.input :level, required: true, label: "", as: :radio_buttons,
-					            collection: WorkPlanDomain::LEVELS,
-					            collection_wrapper_tag: "div", collection_wrapper_class: "wrapper",
-					            item_wrapper_class: "level-item",
-					            input_html: { class: "selector level-selector",
-					                          data: { domain_form_target: "box", action: "click->domain-form#displayBtn" } },
-					            label_method: ->(level) { render "work_plan_domains/show_level_btn", level: level } %>
-				</div>
-				<div class="m-top box-end gap-2">
+				<div class="box-end gap-2">
 					<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral, href: belt_sheet_path(@belt_sheet),
 					                                   data: { turbo_frame: "_top" }) %>
-					<%= render Ui::ButtonComponent.new("Ajouter", variant: :primary, type: "submit",
-					                                   data: { domain_form_target: "btn" }, html: { class: "d-none" }) %>
+					<%= render Ui::ButtonComponent.new("Ajouter", variant: :primary, type: "submit") %>
 				</div>
 			<% end %>
 		</div>
