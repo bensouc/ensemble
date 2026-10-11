@@ -165,6 +165,44 @@ RSpec.describe "Fiches de ceinture", type: :request do
     end
   end
 
+  describe "cloner une fiche" do
+    let!(:camarade) { create(:student, classroom:, first_name: "Liam") }
+    let!(:sans_ceintures) do
+      create(:student, classroom: create(:classroom, user: enseignant, grade:, name: "Sans"), first_name: "Hors")
+    end
+    let!(:autre_niveau) do
+      autre = create(:grade, school:, name: "CM1", grade_level: "CM1")
+      create(:student, classroom: create(:classroom, user: enseignant, grade: autre, belt_sheets: true),
+                       first_name: "Ailleurs")
+    end
+
+    before { post student_belt_sheets_path(eleve) }
+
+    it "propose les élèves du même niveau, dans les classes aux fiches de ceinture" do
+      get belt_sheet_clone_modal_path(fiche)
+
+      noms = Nokogiri::HTML(response.body).css(".tag-item label").map(&:text)
+      expect(noms).to eq(["Liam"])
+    end
+
+    it "crée une copie pour chaque élève coché, et ignore un élève hors des candidats" do
+      expect do
+        post clone_belt_sheet_path(fiche), params: { clone: { student_ids: ["", camarade.id, sans_ceintures.id] } }
+      end.to change(BeltSheet, :count).by(1)
+
+      copie = BeltSheet.find_by!(student: camarade)
+      expect(copie.belt_sheet_skills.map(&:skill)).to eq(fiche.belt_sheet_skills.map(&:skill))
+      expect(response).to redirect_to(belt_sheets_path)
+      expect(flash[:notice]).to eq("Fiche clonée pour Liam.")
+    end
+
+    it "le dit quand aucun élève n'est coché" do
+      expect { post clone_belt_sheet_path(fiche), params: { clone: { student_ids: [""] } } }.
+        not_to change(BeltSheet, :count)
+      expect(flash[:notice]).to include("Aucun élève coché")
+    end
+  end
+
   describe "le réglage de la classe" do
     it "refuse de préparer une fiche quand la classe n'a pas ouvert les fiches de ceinture" do
       classroom.update!(belt_sheets: false)

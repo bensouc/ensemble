@@ -4,7 +4,7 @@
 # l'élève : pour chaque domaine, la ceinture qui suit la dernière validée, avec
 # ses compétences pas encore validées (`BeltSheet.prepare!`).
 class BeltSheetsController < ApplicationController
-  before_action :set_belt_sheet, only: [:show, :export, :destroy]
+  before_action :set_belt_sheet, only: [:show, :export, :clone, :destroy]
 
   # Voir > Ceintures : les classes qui ont ouvert les fiches de ceinture, un
   # dossier par élève — la présentation de Voir > Plans de travail.
@@ -42,6 +42,16 @@ class BeltSheetsController < ApplicationController
     redirect_to belt_sheet_path(@belt_sheet), notice: notice_preparation
   end
 
+  # Une copie pour chaque élève coché — parmi les candidats seulement : un id pris
+  # tel quel clonerait la fiche vers un élève d'une autre classe, ou d'une
+  # classe qui n'a pas ouvert les fiches de ceinture.
+  def clone
+    authorize @belt_sheet, :show?
+    eleves = @belt_sheet.clone_candidates(current_user).where(id: Array(params.dig(:clone, :student_ids)).compact_blank)
+    eleves.each { |eleve| @belt_sheet.clone_for!(eleve, current_user) }
+    redirect_to belt_sheets_path, notice: notice_clonage(eleves), status: :see_other
+  end
+
   def destroy
     authorize @belt_sheet
     student = @belt_sheet.student
@@ -71,6 +81,12 @@ class BeltSheetsController < ApplicationController
   def set_belt_sheet
     @belt_sheet = BeltSheet.includes(belt_sheet_domains: [:domain, { belt_sheet_skills: [:skill, :challenge] }]).
       find(params[:id])
+  end
+
+  def notice_clonage(eleves)
+    return t("fiches_ceinture.aucun_eleve_coche") if eleves.empty?
+
+    t("fiches_ceinture.clonee", eleves: eleves.map(&:first_name).to_sentence)
   end
 
   # Une fiche vide n'est pas une erreur — l'élève a peut-être tout validé, ou
