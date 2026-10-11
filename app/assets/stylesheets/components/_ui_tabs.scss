@@ -37,3 +37,17 @@
     font-weight: 600;
   }
 }
+
+// Un second niveau, sous une barre qui a déjà son filet : pas le sien, et un
+// texte plus petit. L'onglet actif garde son soulignement.
+.ui-tabs.ui-tabs--secondary {
+  border-bottom: none;
+
+  ul {
+    margin-bottom: 0;
+  }
+
+  a {
+    font-size: 14px;
+  }
+}

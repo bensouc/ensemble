@@ -1,0 +1,37 @@
+<%# La porte de l'adulte. Posée sur deux écrans seulement, où l'enfant ne
+    travaille pas : le choix du prénom, et « pas encore entré » — l'écran qui
+    s'affiche quand plus aucun élève n'est reconnu. Libellée pour un adulte ;
+    les écrans de série n'offrent toujours aucune route vers Ensemble.
+
+    Sans elle, une enseignante qui regardait le jeu sur sa propre machine ne
+    pouvait plus revenir à ses écrans : elle en avait été déconnectée, et le
+    marqueur la renvoyait à la séance à chaque adresse qu'elle tapait.
+
+    `jeton` : celui de la classe, quand on la connaît. S'il porte un code, la
+    porte le demande — un `<details>` qui se déplie, sans JavaScript ; sinon
+    elle s'ouvre d'un clic. Sur « pas encore entré », aucune classe n'est
+    connue : la porte reste libre, c'est elle qui empêche d'y être enfermée. %>
+<% jeton = local_assigns[:jeton] %>
+<div class="m-porte-prof">
+  <% if jeton&.code_prof? %>
+    <%# Un code refusé : la porte reste dépliée, et le dit — le gabarit de Manipule
+        n'affiche pas les messages flash. %>
+    <details class="m-porte-prof-code" <%= "open" if flash[:alert] %>>
+      <summary class="m-porte-prof-bouton">Espace professeur.e</summary>
+      <%= form_with url: manipule_quitter_path, method: :delete, class: "d-flex gap-2 align-items-center mt-2" do %>
+        <%= hidden_field_tag :vers, "ensemble" %>
+        <%= hidden_field_tag :token, jeton.token %>
+        <%= label_tag :code_prof, "Code", class: "visually-hidden" %>
+        <%= password_field_tag :code_prof, nil, required: true, autocomplete: "off",
+                               placeholder: "Code", class: "form-control form-control-sm w-auto" %>
+        <%= submit_tag "Entrer", class: "m-porte-prof-bouton" %>
+      <% end %>
+      <% if flash[:alert] %>
+        <p class="m-porte-prof-erreur" role="alert"><%= flash[:alert] %></p>
+      <% end %>
+    </details>
+  <% else %>
+    <%= button_to "Espace professeur.e", manipule_quitter_path(vers: "ensemble"),
+                  method: :delete, class: "m-porte-prof-bouton" %>
+  <% end %>
+</div>

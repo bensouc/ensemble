@@ -30,22 +30,51 @@ module Manipule
     # machine en est déconnectée — c'est voulu, une session est la sienne ou
     # celle d'un élève — et tant que le marqueur vivait, chaque adresse
     # d'Ensemble la renvoyait à la séance. Elle était enfermée dans le jeu.
+    #
+    # La porte de l'adulte peut être fermée par un code (réglé dans Manipule,
+    # pour la classe) : sans le bon code, on reste dans le jeu, la session de
+    # l'élève intacte. Sans classe connue — l'écran « pas encore entré » —, elle
+    # reste libre.
     def destroy
-      classe = eleve_courant&.classroom
-      fermer_session_eleve
-      return redirect_to(new_user_session_path) if params[:vers] == "ensemble"
+      classe = classe_quittee
+      return refuser_la_porte(classe) if vers_ensemble? && !porte_ouverte?(classe)
 
-      jeton = classe && ClassroomToken.find_by(classroom: classe)
-      redirect_to jeton ? manipule_classe_path(token: jeton.token) : root_path
+      fermer_session_eleve
+      redirect_to vers_ensemble? ? new_user_session_path : liste_des_prenoms(classe)
     end
 
     private
 
+    def vers_ensemble?
+      params[:vers] == "ensemble"
+    end
+
+    # La classe qu'on quitte : celle de l'élève, ou celle de l'adresse quand
+    # personne n'est entré (la porte de l'écran des prénoms).
+    def classe_quittee
+      eleve_courant&.classroom || ClassroomToken.find_by(token: params[:token].to_s)&.classroom
+    end
+
+    def liste_des_prenoms(classe)
+      jeton = classe && ClassroomToken.find_by(classroom: classe)
+      jeton ? manipule_classe_path(token: jeton.token) : root_path
+    end
+
+    def porte_ouverte?(classe)
+      jeton = classe && ClassroomToken.find_by(classroom: classe)
+      jeton.nil? || jeton.porte_ouverte?(params[:code_prof])
+    end
+
+    def refuser_la_porte(classe)
+      jeton = ClassroomToken.find_by(classroom: classe)
+      redirect_to manipule_classe_path(token: jeton.token), alert: t("manipule.code_incorrect")
+    end
+
     def set_classe
       return if action_name == "destroy"
 
-      jeton = ClassroomToken.find_by(token: params[:token])
-      @classe = jeton&.classroom
+      @jeton = ClassroomToken.find_by(token: params[:token])
+      @classe = @jeton&.classroom
       render :adresse_inconnue, status: :not_found if @classe.nil?
     end
   end

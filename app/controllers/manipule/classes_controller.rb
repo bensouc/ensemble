@@ -55,7 +55,21 @@ module Manipule
       redirect_to manipule_suivi_classe_path(@classe)
     end
 
+    # Poser le code de l'« Espace professeur.e », ou le retirer (`retirer`).
+    def code
+      authorize @classe, :update?
+      niveau, cle = regler_code(ClassroomToken.pour!(@classe))
+      flash[niveau] = t("manipule.#{cle}")
+      redirect_to manipule_suivi_classe_path(@classe)
+    end
+
     private
+
+    def regler_code(jeton)
+      return jeton.update!(code_prof_digest: nil) && [:notice, "code_retire"] if params[:retirer].present?
+
+      jeton.update(code_prof: params[:code_prof].to_s.strip) ? [:notice, "code_pose"] : [:alert, "code_trop_court"]
+    end
 
     def set_classe
       @classe = Classroom.find(params[:id])

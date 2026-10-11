@@ -803,6 +803,27 @@ form.button_to { display: inline-block; margin: 0; }
   }
 }
 
+// La porte fermée par un code : le libellé se déplie en un petit champ, sans
+// marqueur de liste — il doit rester aussi effacé que la porte libre.
+.m-porte-prof-code {
+  text-align: center;
+
+  summary {
+    display: inline-block;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+}
+
+.m-porte-prof-erreur {
+  margin: 0.4rem 0 0;
+  color: var(--m-rose);
+  font-size: 0.8rem;
+}
+
 .m-sortie-bouton {
   background: none;
   border: none;

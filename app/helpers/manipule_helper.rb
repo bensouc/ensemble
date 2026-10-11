@@ -20,13 +20,24 @@ module ManipuleHelper
   def onglets_manipule
     onglets = [
       { libelle: "Accueil", chemin: manipule_root_path, controleurs: %w[accueil] },
-      { libelle: "Les manipulations", chemin: manipule_banque_path, controleurs: %w[banque] },
-      { libelle: "Autre", chemin: manipule_autre_path, controleurs: %w[autre] },
+      # Un seul onglet pour écrire des manipulations ; ses deux sous-onglets
+      # (`onglets_manipulations`) disent où vit la compétence. « Autre », à côté,
+      # ne disait rien de ce qui le distinguait.
+      { libelle: "Manipulations", chemin: manipule_banque_path, controleurs: %w[banque autre] },
       { libelle: "Mes classes", chemin: manipule_suivi_path, controleurs: %w[classes] }
     ]
     return onglets unless current_user&.admin?
 
     onglets << { libelle: "Les accès", chemin: manipule_acces_path, controleurs: %w[acces] }
+  end
+
+  # Les deux sous-onglets de « Manipulations » : les compétences des
+  # progressions d'Ensemble, et celles que l'enseignante crée elle-même.
+  def onglets_manipulations
+    [
+      { label: "Progression Ensemble", href: manipule_banque_path, active: controller_name == "banque" },
+      { label: "Progression Manipule", href: manipule_autre_path, active: controller_name == "autre" }
+    ]
   end
 
   def onglet_manipule_actif?(onglet)

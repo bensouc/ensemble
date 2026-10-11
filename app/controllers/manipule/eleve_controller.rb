@@ -33,8 +33,16 @@ module Manipule
       @eleve_courant = Student.find_by(id: cookies.signed[COOKIE_ELEVE])
     end
 
+    # Plus aucun élève reconnu — supprimé, changé de classe, ou cookie signé
+    # devenu illisible quand la clé de l'application change — alors que le
+    # marqueur, lui, tient toujours : chaque adresse d'Ensemble ramenait ici, à
+    # un écran sans sortie. On l'efface donc, et l'écran offre la porte de
+    # l'adulte.
     def exiger_eleve!
-      render :perdu, status: :ok if eleve_courant.nil?
+      return unless eleve_courant.nil?
+
+      fermer_session_eleve
+      render :perdu, status: :ok
     end
 
     # Entrer en élève déconnecte l'enseignante : une session est la sienne ou

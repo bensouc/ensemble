@@ -16,4 +16,11 @@ RSpec.describe Ui::TabsComponent, type: :component do
     expect(liens.first["aria-current"]).to eq("page")
     expect(liens.last["aria-current"]).to be_nil
   end
+
+  it "a une variante de second niveau, sans filet" do
+    nav = render_inline(described_class.new(tabs: [{ label: "A", href: "/a", active: true }], secondary: true)).
+      at_css("nav")
+
+    expect(nav["class"]).to eq("ui-tabs ui-tabs--secondary")
+  end
 end

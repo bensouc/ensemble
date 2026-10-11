@@ -13,17 +13,4 @@
   <p class="m-vide">Il n'y a encore personne dans cette classe.</p>
 <% end %>
 
-<%# La porte de l'adulte, et la seule de tout /manipule.
-
-    Elle est posée sur CET écran uniquement — celui du choix du prénom, où un
-    enfant cherche son prénom et rien d'autre —, jamais sur un écran de série,
-    et libellée pour un adulte. Les écrans où l'enfant travaille n'offrent
-    toujours aucune route vers Ensemble.
-
-    Sans elle, une enseignante qui regardait le jeu sur sa propre machine ne
-    pouvait plus revenir à ses écrans : elle en avait été déconnectée, et le
-    marqueur la renvoyait à la séance à chaque adresse qu'elle tapait. %>
-<div class="m-porte-prof">
-  <%= button_to "Espace professeur.e", manipule_quitter_path(vers: "ensemble"),
-                method: :delete, class: "m-porte-prof-bouton" %>
-</div>
+<%= render "manipule/sessions/porte_prof", jeton: @jeton %>
