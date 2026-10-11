@@ -208,6 +208,37 @@
     display: flex;
     margin: 0;
   }
+
+  // Gris au repos, rose quand on s'en approche : la colonne entière était rose,
+  // au même niveau que les cartes et le titre, et plus rien ne ressortait. La
+  // règle des icônes de la barre de gauche — le rose dit l'état, pas le décor.
+  .clone-challenge-btn,
+  .transfer-challenge-btn {
+    color: colors.$grisF;
+
+    i {
+      color: #9c9c9c;
+    }
+
+    &:hover {
+      background-color: rgba(colors.$rose, 0.08);
+      color: colors.$rose;
+      transform: none;
+
+      i,
+      span {
+        color: colors.$rose;
+      }
+    }
+  }
+
+  .challenge-order-btn {
+    color: #9c9c9c;
+
+    &:hover {
+      color: colors.$rose;
+    }
+  }
 }
 
 // En-tête d'une compétence : le dossier repliable (icône + nom + compteur) puis
