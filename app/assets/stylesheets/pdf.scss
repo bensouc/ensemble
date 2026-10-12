@@ -458,8 +458,7 @@ th:not([align]) {
 // Le PDF doit rendre les tableaux exactement comme l'enseignant les voit en
 // édition. Plutôt que d'en dupliquer les styles ici (c'est ce qui avait fait
 // diverger les deux rendus : ni fond d'en-tête, ni alignement, ni style de
-// cellule), on importe la partie partagée. `trix/_tables_editor.scss`, lui,
-// n'a rien à faire dans un PDF.
+// cellule), on importe la partie partagée.
 //
 // Les jetons sont posés sur `.trix-content`, l'enveloppe qu'ActionText génère
 // autour du contenu rendu — présente aussi bien dans le PDF que dans l'app.
