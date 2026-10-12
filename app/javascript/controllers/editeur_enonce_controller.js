@@ -324,7 +324,10 @@ export default class extends Controller {
   couleur(nuancier, valeur) {
     const c = this.editor.chain().focus()
     if (nuancier === "texte") valeur ? c.setColor(valeur).run() : c.unsetColor().run()
-    else c.setMark("textStyle", { backgroundColor: valeur || null }).removeEmptyTextStyle().run()
+    // `removeEmptyTextStyle` seulement pour retirer : enchaîné après la pose, il
+    // effaçait aussitôt le surlignage d'une case de tableau.
+    else if (valeur) c.setMark("textStyle", { backgroundColor: valeur }).run()
+    else c.setMark("textStyle", { backgroundColor: null }).removeEmptyTextStyle().run()
     this.fermerPopovers()
   }
 
