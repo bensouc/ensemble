@@ -1,0 +1,444 @@
+@use "../config/font_families";
+
+// Figures de l'énoncé (lignes Seyès, horloge, pictogrammes) et taille des images.
+//
+// Mêmes règles à l'affichage, dans le PDF et dans l'éditeur. Deux balisages
+// différents y mènent, d'où les deux familles de sélecteurs :
+//
+//   - affichage et PDF : nos partials posent des classes, `.rt-fig--taille-50`,
+//     `.rt-fig--centre` (voir FigurePresentation) ;
+//   - éditeur : Trix rend lui-même le <figure> et n'y met que du JSON
+//     (`data-trix-attributes`), où la taille vit sous `"presentation":"…"`. On la
+//     lit avec un sélecteur d'attribut.
+
+// Seyès : grands carreaux de 8 mm, trois lignes fines entre deux lignes fortes.
+// L'interligne de 2 mm est celui du cahier : l'unité est le millimètre, pour que
+// la fiche imprimée tombe juste à la règle.
+$seyes-carreau: 8mm;
+$seyes-fine: #b8c8ea;
+$seyes-forte: #7b92cf;
+$seyes-verticale: #cbb8e4;
+$seyes-marge: #e2333f;
+$seyes-largeur-marge: 15mm;
+
+// Version CSS de la ligne Seyès, pour l'éditeur et l'aperçu du menu (l'affichage
+// et le PDF la dessinent en SVG, voir figures/_seyes_svg). `$k` : facteur d'échelle.
+@mixin seyes($k: 1) {
+  display: block;
+  height: $seyes-carreau * $k;
+  background-color: #fff;
+  // La ligne forte tombe à 6 mm : 3 lignes fines au-dessus pour les hampes,
+  // une en dessous pour les jambages, comme sur le cahier.
+  background-image: seyes-lignes($k);
+  // Sans ça, l'impression supprime les fonds : la fiche sortirait blanche.
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+// Comme sur le cahier : les lignes horizontales traversent la marge, seuls les
+// traits verticaux s'arrêtent au trait rouge.
+@mixin seyes-marge($k: 1) {
+  $marge: $seyes-largeur-marge * $k;
+  $trait: 0.4mm * $k;
+  background-image:
+    linear-gradient(to right, transparent $marge, $seyes-marge $marge, $seyes-marge calc(#{$marge} + #{$trait}), transparent calc(#{$marge} + #{$trait})),
+    seyes-lignes($k);
+  // Une valeur par calque : trait rouge, ligne forte, lignes fines, verticales.
+  background-position: 0 0, 0 0, 0 0, $marge 0;
+  background-size: 100% 100%, 100% 100%, 100% 100%, calc(100% - #{$marge}) 100%;
+  background-repeat: no-repeat;
+}
+
+@function seyes-lignes($k) {
+  $forte: 6mm * $k;
+  $trait: 0.4mm * $k;
+  $fin: 0.25mm * $k;
+  @return
+    linear-gradient(to bottom, transparent calc(#{$forte} - #{$trait}), $seyes-forte calc(#{$forte} - #{$trait}), $seyes-forte $forte, transparent $forte),
+    repeating-linear-gradient(to bottom, $seyes-fine 0, $seyes-fine $fin, transparent $fin, transparent 2mm * $k),
+    repeating-linear-gradient(to right, $seyes-verticale 0, $seyes-verticale $fin, transparent $fin, transparent $seyes-carreau * $k);
+}
+
+$tailles: 25, 50, 75, 100;
+
+// --- Affichage et PDF ---------------------------------------------------------
+.trix-content {
+  // Une figure qui flotte ne dépasse pas de son énoncé (sur la carte suivante,
+  // ou sur l'exercice suivant du PDF).
+  display: flow-root;
+
+  .rt-fig {
+    display: block;
+    max-width: 100%;
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  @each $taille in $tailles {
+    .rt-fig--taille-#{$taille} { width: $taille * 1%; }
+  }
+
+  // Gauche et droite habillent : la figure flotte, et le texte — ou une autre
+  // figure — vient se placer à côté. Deux images d'une demi-largeur calées à
+  // gauche tiennent ainsi sur une ligne. L'espace entre elles est pris DANS la
+  // largeur (padding + border-box), sinon ½ + ½ débordait.
+  .rt-fig--gauche,
+  .rt-fig--droite {
+    box-sizing: border-box;
+    margin-top: 0.2em;
+  }
+
+  .rt-fig--gauche { float: left; padding-right: 0.6em; }
+  .rt-fig--droite { float: right; padding-left: 0.6em; }
+  .rt-fig--centre { margin-left: auto; margin-right: auto; }
+
+  .rt-figure--horloge svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  // Une ligne Seyès sans taille choisie occupe toute la largeur ; collées, les
+  // lignes forment une page de cahier continue.
+  .rt-figure--seyes,
+  .rt-figure--ligne {
+    display: block;
+    margin: 0;
+  }
+
+  .rt-ligne-svg,
+  .rt-seyes-svg {
+    display: block;
+    // Sans ça, l'impression supprime les fonds du motif.
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  // Un pictogramme se lit comme une lettre de la phrase.
+  .rt-figure--picto {
+    display: inline-block;
+    vertical-align: -0.2em;
+
+    svg {
+      display: block;
+      width: 1.2em;
+      height: 1.2em;
+    }
+  }
+}
+
+// --- Éditeur ------------------------------------------------------------------
+trix-editor {
+  figure.attachment[data-trix-content-type="application/vnd.ensemble.figure"] {
+    display: block;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  // Lignes Seyès collées les unes aux autres, comme une page de cahier. En bloc,
+  // chaque ligne était séparée de la suivante par un interligne entier : Trix
+  // entoure toute pièce jointe de deux repères invisibles (où poser le curseur),
+  // et ces repères, coincés entre deux blocs, formaient une ligne de texte vide.
+  // En ligne et sur toute la largeur, la figure emporte ses repères sur SA ligne,
+  // et la hauteur de la ligne est celle du carreau.
+  figure.attachment:has(> .rt-seyes),
+  figure.attachment:has(> .rt-ligne) {
+    display: inline-block;
+    width: 100%;
+    vertical-align: top;
+  }
+
+  // Sans taille choisie, une horloge prend un quart de la largeur : c'est ce
+  // qu'en fait l'affichage (`Figure#presentation_par_defaut`).
+  figure.attachment:has(> .rt-figure-img--horloge) {
+    width: 25%;
+  }
+
+  .rt-figure-img--horloge {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  figure.attachment[data-trix-content-type="application/vnd.ensemble.figure-inline"] {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    vertical-align: -0.2em;
+  }
+
+  .rt-figure-img--picto {
+    display: block;
+    width: 1.2em;
+    height: 1.2em;
+  }
+
+  .rt-seyes {
+    @include seyes;
+  }
+
+  .rt-seyes--marge {
+    @include seyes-marge;
+  }
+
+  .rt-ligne {
+    display: block;
+    height: 10mm;
+    border-bottom: 0.3mm solid #8a8a8a;
+  }
+
+  // Taille et position lues dans `data-trix-attributes`. `"presentation":"taille-50`
+  // et pas seulement `taille-50` : le texte d'une légende pourrait le contenir.
+  figure.attachment[data-trix-attributes*='"presentation":"taille-'] {
+    display: block;
+    max-width: 100%;
+
+    img {
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  @each $taille in $tailles {
+    figure.attachment[data-trix-attributes*='"presentation":"taille-#{$taille}'] {
+      width: $taille * 1%;
+    }
+  }
+
+  figure.attachment[data-trix-attributes*='"presentation":"taille-'][data-trix-attributes*=' gauche"'] {
+    float: left;
+    box-sizing: border-box;
+    padding-right: 0.6em;
+  }
+
+  figure.attachment[data-trix-attributes*='"presentation":"taille-'][data-trix-attributes*=' centre"'] {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  figure.attachment[data-trix-attributes*='"presentation":"taille-'][data-trix-attributes*=' droite"'] {
+    float: right;
+    box-sizing: border-box;
+    padding-left: 0.6em;
+  }
+}
+
+// --- Barre de taille et de position ------------------------------------------
+// Ajoutée par rich_text_figures_controller à la barre que Trix affiche au-dessus
+// d'une pièce jointe sélectionnée.
+// Le menu et la barre vivent DANS l'énoncé (la barre est posée sur la pièce
+// jointe, à l'intérieur de .trix-content) : sans ces remises à zéro, ils
+// héritaient de sa police, de sa taille, de son interligne et de son alignement.
+.rt-fig-bar,
+.rt-figures__panel {
+  font-family: font_families.$body-font;
+  font-size: 13px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.3;
+  letter-spacing: normal;
+  text-align: left;
+  text-transform: none;
+  color: var(--rt-ink, #3d3d3d);
+
+  * {
+    margin: 0;
+    font-family: inherit;
+    letter-spacing: inherit;
+  }
+}
+
+.rt-fig-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  margin-right: 4px;
+  background: var(--rt-surface, #fff);
+  border: 1px solid var(--rt-line, #e6e6ea);
+  border-radius: var(--rt-radius-sm, 8px);
+  box-shadow: var(--rt-shadow-pop, 0 8px 28px rgba(16, 16, 20, 0.16));
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.rt-fig-bar__sep {
+  width: 1px;
+  align-self: stretch;
+  margin: 2px 3px;
+  background: var(--rt-line, #e6e6ea);
+}
+
+.rt-fig-bar__btn {
+  min-width: 28px;
+  height: 26px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--rt-ink-soft, #6f6f76);
+  font-family: font_families.$body-font;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--rt-surface-soft, #f7f7f9);
+    color: var(--rt-ink, #3d3d3d);
+  }
+
+  &[aria-pressed="true"] {
+    background: var(--rt-accent-soft, rgba(242, 65, 80, 0.1));
+    color: var(--rt-accent, #f24150);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+  }
+}
+
+// --- Menu « Figure » de la toolbar --------------------------------------------
+trix-toolbar {
+  .rt-figures__panel {
+    width: 300px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .rt-figures__section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+
+    & + & { border-top: 1px solid var(--rt-line); }
+  }
+
+  .rt-figures__titre {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--rt-ink-soft);
+  }
+
+  .rt-figures__rangee {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .rt-figures__choix {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 5px;
+    padding: 6px;
+    background: var(--rt-surface);
+    border: 1px solid var(--rt-line);
+    border-radius: 8px;
+    font-family: font_families.$body-font;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+    color: var(--rt-ink);
+    cursor: pointer;
+
+    &:hover { border-color: var(--rt-accent); }
+  }
+
+  // Aperçu réduit d'une ligne Seyès : la vraie, en millimètres, serait trop haute.
+  .rt-figures__apercu.rt-ligne {
+    height: 18px;
+    border-bottom: 1.5px solid #8a8a8a;
+  }
+
+  .rt-figures__apercu {
+    height: 18px;
+    background-size: auto;
+    zoom: 0.6;
+  }
+
+  .rt-figures__heure {
+    width: 72px;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid var(--rt-line-strong);
+    border-radius: 8px;
+    font-family: font_families.$body-font;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+    color: var(--rt-ink);
+  }
+
+  .rt-figures__case {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin: 0;
+    font-size: 13px;
+    color: var(--rt-ink);
+    cursor: pointer;
+
+    input { accent-color: var(--rt-accent); }
+  }
+
+  .rt-figures__inserer {
+    margin-left: auto;
+    height: 32px;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--rt-accent);
+    color: #fff;
+    font-family: font_families.$body-font;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+    cursor: pointer;
+  }
+
+  .rt-figures__aide {
+    font-size: 11px;
+    color: var(--rt-ink-soft);
+  }
+
+  .rt-figures__erreur {
+    font-size: 12px;
+    color: #ce3e1b;
+  }
+
+  .rt-figures__picto {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    background: var(--rt-surface);
+    border: 1px solid var(--rt-line);
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover { border-color: var(--rt-accent); }
+  }
+}
+

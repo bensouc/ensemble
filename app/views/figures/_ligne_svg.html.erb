@@ -1,0 +1,3 @@
+<%# Ligne simple pour écrire dessus (géométrie : `Figure#ligne_geometrie`). %>
+<% g = dessinable.ligne_geometrie(pdf: PdfGenerator.rendering?) %>
+<svg class="rt-ligne-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="<%= g[:hauteur] %>" role="img" aria-label="<%= dessinable.libelle %>"><line x1="0" y1="<%= g[:y] %>" x2="100%" y2="<%= g[:y] %>" stroke="#8a8a8a" stroke-width="<%= g[:trait] %>"></line></svg>

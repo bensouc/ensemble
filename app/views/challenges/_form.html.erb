@@ -6,7 +6,7 @@
 					<%= form_for challenge, html: { class: '',  } do |form| %>
           <%= form.hidden_field :skill_id%>
           <%= form.hidden_field :for_belt%>
-						<div class="field rt-field pt-2 pb-2" data-controller="rich-text-table table-editor edit-challenge">
+						<div class="field rt-field pt-2 pb-2" data-controller="rich-text-table rich-text-figures table-editor edit-challenge">
 							<div>
 								<%# `form_for` n'affiche aucune erreur de lui-même : sans ce bloc, le
 								    formulaire réaffiché après un échec de validation ne dirait pas pourquoi. %>

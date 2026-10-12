@@ -1,4 +1,6 @@
-<figure class="attachment attachment--<%= blob.representable? ? "preview" : "file" %> attachment--<%= blob.filename.extension %>">
+<%# `blob` est la pièce jointe ActionText : elle porte la taille et la position
+    choisies dans l'éditeur. Une image qui n'en a pas garde sa pleine largeur. %>
+<figure class="<%= ["attachment", "attachment--#{blob.representable? ? "preview" : "file"}", "attachment--#{blob.filename.extension}", *FigurePresentation.css_classes(blob)].join(" ") %>">
   <% if blob.representable? %>
     <% representation = VariantesImages.representation(blob, galerie: local_assigns[:in_gallery]) %>
     <%# En contexte PDF, image_source_for renvoie l'URL Cloudinary directe pour

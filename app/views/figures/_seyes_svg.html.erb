@@ -1,0 +1,10 @@
+<%#
+  Une ligne Seyès en SVG vectoriel (géométrie : `Figure#seyes_geometrie`).
+
+  Comme sur le cahier, les lignes horizontales traversent toute la largeur, marge
+  comprise ; seuls les traits verticaux, répétés par un motif, démarrent au trait
+  rouge. Deux lignes Seyès de la même page partagent le même identifiant de
+  motif : ils décrivent exactement le même dessin.
+%>
+<% g = dessinable.seyes_geometrie(pdf: PdfGenerator.rendering?) %>
+<svg class="rt-seyes-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="<%= g[:carreau] %>" role="img" aria-label="<%= dessinable.libelle %>"><defs><pattern id="<%= g[:motif] %>" x="<%= g[:marge] %>" y="0" width="<%= g[:carreau] %>" height="<%= g[:carreau] %>" patternUnits="userSpaceOnUse"><line x1="<%= g[:fin] / 2 %>" y1="0" x2="<%= g[:fin] / 2 %>" y2="<%= g[:carreau] %>" stroke="#cbb8e4" stroke-width="<%= g[:fin] %>"></line></pattern></defs><rect x="<%= g[:marge] %>" y="0" width="100%" height="<%= g[:carreau] %>" fill="url(#<%= g[:motif] %>)"></rect><% g[:fines].each do |y| %><line x1="0" y1="<%= y %>" x2="100%" y2="<%= y %>" stroke="#b8c8ea" stroke-width="<%= g[:fin] %>"></line><% end %><line x1="0" y1="<%= g[:forte] %>" x2="100%" y2="<%= g[:forte] %>" stroke="#7b92cf" stroke-width="<%= g[:fort] %>"></line><% if dessinable.marge? %><line x1="<%= g[:marge] %>" y1="0" x2="<%= g[:marge] %>" y2="<%= g[:carreau] %>" stroke="#e2333f" stroke-width="<%= g[:fort] %>"></line><% end %></svg>

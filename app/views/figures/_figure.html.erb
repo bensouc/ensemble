@@ -1,0 +1,23 @@
+<%#
+  Rendu d'une figure à l'affichage et dans les PDF.
+
+  `figure` est la pièce jointe ActionText (elle délègue à la Figure) : c'est
+  elle qui porte l'attribut `presentation`, donc la taille et la position.
+
+  Pas de helper d'application ici : rails_admin rend aussi ce partial, sans eux.
+%>
+<% classes = ["rt-figure", "rt-figure--#{figure.kind}", ("rt-figure--marge" if figure.kind == :seyes && figure.marge?)].compact %>
+<% if figure.inline? %>
+  <span class="<%= classes.join(" ") %>"><%= render "figures/picto_svg", dessinable: figure %></span>
+<% else %>
+  <% classes += FigurePresentation.css_classes(figure, defaut: figure.presentation_par_defaut) %>
+  <figure class="<%= classes.join(" ") %>">
+    <% if figure.kind == :seyes %>
+      <%= render "figures/seyes_svg", dessinable: figure %>
+    <% elsif figure.kind == :ligne %>
+      <%= render "figures/ligne_svg", dessinable: figure %>
+    <% else %>
+      <%= render "figures/horloge_svg", dessinable: figure %>
+    <% end %>
+  </figure>
+<% end %>
