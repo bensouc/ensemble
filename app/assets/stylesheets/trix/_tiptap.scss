@@ -1,0 +1,136 @@
+// Éditeur d'énoncé TipTap. L'essentiel de son allure vient des styles de Trix,
+// appliqués aussi à `.rt-barre` et `.rt-editeur` (toolbar, editor, figures) ; ne
+// figure ici que ce qui est propre à TipTap.
+
+.rt-editeur-champ {
+  display: flex;
+  flex-direction: column;
+}
+
+// La zone porte le cadre ; le focus est sur le contenu ProseMirror, à l'intérieur.
+.rt-editeur {
+  position: relative;
+  cursor: text;
+
+  &:focus-within {
+    border-color: var(--rt-accent);
+    box-shadow: 0 0 0 3px var(--rt-accent-ring);
+  }
+
+  .ProseMirror {
+    min-height: 8.5em;
+    outline: none;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+  // Texte d'invite, comme le placeholder de Trix.
+  .is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    color: var(--rt-ink-faint);
+    font-style: italic;
+    pointer-events: none;
+  }
+
+  // --- Pièces jointes (images, figures) ----------------------------------------
+  figure.attachment {
+    position: relative;
+    display: inline-block;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    vertical-align: bottom;
+    cursor: default;
+
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+  }
+
+  figure.attachment.rt-piece--selectionnee {
+    outline: 2px solid var(--rt-accent);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  // Une pièce dimensionnée suit les règles de l'affichage (.rt-fig, _figures.scss) ;
+  // il faut seulement passer devant les règles d'éditeur ci-dessus, plus spécifiques.
+  figure.attachment.rt-fig {
+    display: block;
+    margin: 0.2em 0 0.4em;
+  }
+
+  figure.attachment.rt-fig--gauche { float: left; box-sizing: border-box; padding-right: 0.6em; }
+  figure.attachment.rt-fig--droite { float: right; box-sizing: border-box; padding-left: 0.6em; }
+  figure.attachment.rt-fig--centre { margin-left: auto; margin-right: auto; }
+
+  // On déplace une pièce en la faisant glisser.
+  figure.attachment[draggable="true"] {
+    cursor: grab;
+  }
+
+  // Poignée de redimensionnement, dans le coin de la pièce sélectionnée.
+  .rt-piece-poignee {
+    position: absolute;
+    right: -6px;
+    bottom: -6px;
+    z-index: 6;
+    width: 14px;
+    height: 14px;
+    background: var(--rt-surface);
+    border: 2px solid var(--rt-accent);
+    border-radius: 3px;
+    cursor: nwse-resize;
+    touch-action: none;
+  }
+
+  figure.attachment.rt-fig--gauche .rt-piece-poignee { right: calc(0.6em - 6px); }
+
+  // Pendant qu'on tire la poignée : la largeur en cours.
+  .rt-piece-mesure {
+    position: absolute;
+    right: 0;
+    bottom: calc(100% + 6px);
+    z-index: 6;
+    padding: 2px 6px;
+    background: var(--rt-ink);
+    color: #fff;
+    font-size: 12px;
+    border-radius: 4px;
+  }
+
+  // Barre de taille et de position, posée au-dessus de la pièce sélectionnée.
+  .rt-piece-barre {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 0;
+    z-index: 5;
+    white-space: nowrap;
+  }
+
+  // --- Tableaux -------------------------------------------------------------------
+  .tableWrapper {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .rt-table__grid .selectedCell {
+    background: var(--rt-accent-soft);
+  }
+
+  // Le curseur peut se poser entre deux blocs (avant ou après un tableau).
+  .ProseMirror-gapcursor::after {
+    border-top-color: var(--rt-ink);
+  }
+}
+
+// Boutons du tableau : toujours là, grisés hors d'un tableau — la barre ne
+// change pas de taille quand le curseur y entre (ce décalage faisait rater les
+// clics avec l'ancien éditeur de tableau).
+.rt-barre .rt-tb__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}

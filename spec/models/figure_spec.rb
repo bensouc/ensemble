@@ -68,11 +68,11 @@ RSpec.describe Figure do
     it "applique la taille et la position choisies dans l'éditeur" do
       html = rendu(piece_jointe("horloge-0315-chiffres", presentation: "taille-50 centre"))
 
-      expect(html).to include("rt-fig--taille-50").and include("rt-fig--centre")
+      expect(html).to include("width:50%").and include("rt-fig--centre")
     end
 
     it "donne un quart de la largeur à une horloge sans taille" do
-      expect(rendu(piece_jointe("horloge-0315-chiffres"))).to include("rt-fig--taille-25")
+      expect(rendu(piece_jointe("horloge-0315-chiffres"))).to include("width:25%")
     end
 
     it "dessine une ligne simple pour écrire dessus" do
@@ -81,14 +81,14 @@ RSpec.describe Figure do
       html = rendu(piece_jointe("ligne", presentation: "taille-50 gauche"))
 
       expect(html).to include("rt-figure--ligne").and include('aria-label="Ligne d\'écriture"')
-      expect(html).to include("rt-fig--taille-50").and include("rt-fig--gauche")
+      expect(html).to include("width:50%").and include("rt-fig--gauche")
     end
 
     it "laisse la ligne Seyès en pleine largeur tant qu'aucune taille n'est choisie" do
       html = rendu(piece_jointe("seyes-marge"))
 
       expect(html).to include("rt-figure--seyes").and include("rt-figure--marge")
-      expect(html).not_to include("rt-fig--taille")
+      expect(html).not_to include("width:")
     end
 
     it "place un pictogramme dans la phrase" do
@@ -132,13 +132,26 @@ RSpec.describe FigurePresentation do
     expect(described_class.parse(nil)).to be_nil
   end
 
-  it "lit une taille et une position" do
-    expect(described_class.parse("taille-25 gauche")).to eq(%w[25 gauche])
-    expect(described_class.parse("taille-100")).to eq(["100", nil])
+  it "lit une taille libre et une position" do
+    expect(described_class.parse("taille-25 gauche")).to eq([25, "gauche"])
+    expect(described_class.parse("taille-33 centre")).to eq([33, "centre"])
+    expect(described_class.parse("taille-100")).to eq([100, nil])
   end
 
-  it "ignore une valeur inventée" do
-    expect(described_class.parse("taille-33 centre")).to be_nil
-    expect(described_class.parse("taille-50 partout")).to eq(["50", nil])
+  it "ignore une taille hors bornes ou une position inventée" do
+    expect(described_class.parse("taille-5 centre")).to be_nil
+    expect(described_class.parse("taille-150 centre")).to be_nil
+    expect(described_class.parse("taille-50 partout")).to eq([50, nil])
+  end
+end
+
+# Bloc « colonnes » de l'éditeur : des <div> à classes, que le sanitizer garde.
+RSpec.describe "Colonnes d'un énoncé" do
+  it "gardent leurs classes au rendu, donc leur mise en page" do
+    corps = %(<div class="rt-colonnes rt-colonnes--2"><div class="rt-colonne"><div>chat</div></div>) +
+            %(<div class="rt-colonne"><div>chien</div></div></div>)
+
+    expect(ActionText::Content.new(corps).to_rendered_html_with_layout)
+      .to include('<div class="rt-colonnes rt-colonnes--2"><div class="rt-colonne"><div>chat</div></div>')
   end
 end

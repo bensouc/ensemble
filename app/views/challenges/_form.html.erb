@@ -6,7 +6,7 @@
 					<%= form_for challenge, html: { class: '',  } do |form| %>
           <%= form.hidden_field :skill_id%>
           <%= form.hidden_field :for_belt%>
-						<div class="field rt-field pt-2 pb-2" data-controller="rich-text-table rich-text-figures table-editor edit-challenge">
+						<div class="field rt-field pt-2 pb-2" data-controller="edit-challenge">
 							<div>
 								<%# `form_for` n'affiche aucune erreur de lui-même : sans ce bloc, le
 								    formulaire réaffiché après un échec de validation ne dirait pas pourquoi. %>
@@ -17,7 +17,21 @@
 									<div class="invalid-feedback d-block"><%= name_errors.to_sentence %></div>
 								<% end %>
 							</div>
-							<%= form.rich_text_area :content, placeholder: "Écrivez votre énoncé ici…" %>
+							<%# Éditeur TipTap (à la place de Trix). Le champ caché porte le corps au
+							    format qu'ActionText échange avec Trix : rien ne change à l'enregistrement.
+							    Les tableaux maison y arrivent déjà convertis en tableaux natifs
+							    (EditeurTiptap), qui deviennent définitifs à l'enregistrement. %>
+							<div class="rt-editeur-champ" data-controller="editeur-enonce"
+							     data-editeur-enonce-direct-upload-url-value="<%= main_app.rails_direct_uploads_url %>"
+							     data-editeur-enonce-blob-url-template-value="<%= main_app.rails_service_blob_url(":signed_id", ":filename") %>"
+							     data-editeur-enonce-placeholder-value="Écrivez votre énoncé ici…">
+								<%= form.hidden_field :content, value: EditeurTiptap.contenu_initial(challenge.content),
+								    data: { editeur_enonce_target: "input" } %>
+								<div class="rt-barre" data-editeur-enonce-target="barre"></div>
+								<div class="rt-editeur" data-editeur-enonce-target="zone"></div>
+								<input type="file" accept="image/*" multiple hidden
+								       data-editeur-enonce-target="fichier" data-action="change->editeur-enonce#choisirFichiers">
+							</div>
 						</div>
 						<div class="form-actions d-flex justify-content-end height-validate-challenge">
             <% if challenge.persisted? %>

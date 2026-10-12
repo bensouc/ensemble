@@ -1,0 +1,32 @@
+// Colonnes de l'énoncé (bloc « colonnes » de l'éditeur, editeur/colonnes.js).
+// À l'écran, dans le PDF et dans l'éditeur : la classe porte la mise en page,
+// le sanitizer d'ActionText ne laissant passer ni `grid-template-columns` ni
+// `column-count` dans un style.
+.trix-content .rt-colonnes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 1.5em;
+  align-items: start;
+
+  &.rt-colonnes--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  // Une figure flottante reste dans sa colonne.
+  > .rt-colonne {
+    display: flow-root;
+    min-width: 0;
+  }
+
+  > .rt-colonne > * + * {
+    margin-top: 0.7em;
+  }
+}
+
+// Dans l'éditeur : les colonnes se voient, pour savoir où l'on écrit.
+.rt-editeur .rt-colonnes > .rt-colonne {
+  padding: 4px 6px;
+  outline: 1px dashed var(--rt-line-strong, #dddddd);
+  outline-offset: 2px;
+  border-radius: 4px;
+}

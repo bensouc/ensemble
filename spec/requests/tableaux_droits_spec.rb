@@ -42,23 +42,23 @@ RSpec.describe "Droits sur les tableaux", type: :request do
   end
 
   # Un tableau vit dans l'énoncé d'un exercice, que tous les enseignants de
-  # l'école partagent : un collègue lit le sgid dans l'exercice d'un autre, et
-  # modifie le tableau avec.
-  it "laisse un collègue de l'école modifier le tableau de l'exercice d'un autre" do
+  # l'école partagent. Avec Trix, la page d'édition livrait son sgid, donc le
+  # droit de le réécrire. L'éditeur TipTap reçoit le tableau déjà converti en
+  # tableau natif : le sgid ne sort plus, le collègue modifie le tableau dans
+  # l'énoncé lui-même.
+  it "ne livre plus le sgid du tableau à la page d'édition : il y arrive converti" do
     ecole = create(:school)
     niveau = create(:grade, school: ecole, name: "CE1", grade_level: "CE1")
     competence = create(:skill, school: ecole, level: 1, domain: create(:domain, grade: niveau, name: "Orthographe"))
+    tableau.write_cell!("0-0", "Loup")
     piece_jointe = %(<action-text-attachment sgid="#{tableau.attachable_sgid}"></action-text-attachment>)
     exercice = create(:challenge, skill: competence, user: create(:user, school: ecole, admin: false),
                                   content: "<div>Consigne</div>#{piece_jointe}")
     sign_in create(:user, school: ecole, admin: false)
 
     get edit_challenge_path(exercice)
-    expect(response.body).to include(tableau.attachable_sgid)
 
-    patch "/tables/#{CGI.escape(tableau.attachable_sgid)}",
-          params: { method: "replace", table: { rows: 2, columns: 2, data: { "0-0" => "Loup" } } }, as: :json
-    expect(response).to have_http_status(:ok)
-    expect(tableau.reload.cell(0, 0)).to eq("Loup")
+    expect(response.body).not_to include(tableau.attachable_sgid)
+    expect(response.body).to include("&lt;div&gt;Loup&lt;/div&gt;")
   end
 end

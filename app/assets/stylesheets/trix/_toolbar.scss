@@ -13,7 +13,9 @@
 // Les libellés lecteur d'écran utilisent `.visually-hidden`, l'utilitaire
 // Bootstrap déjà chargé et déjà employé ailleurs dans l'app.
 
-trix-toolbar {
+// `.rt-barre` : la barre de l'éditeur TipTap, qui reprend ces styles à l'identique.
+trix-toolbar,
+.rt-barre {
   margin: 0 0 10px;
 
   // --- Rangée et groupes ---------------------------------------------------
@@ -398,7 +400,8 @@ trix-toolbar.rt-tb--table-focus {
 // Sur mobile la toolbar prend de la place : boutons un peu plus larges pour la
 // cible tactile, et les groupes s'étalent sur plusieurs lignes.
 @media (max-width: 576px) {
-  trix-toolbar {
+  trix-toolbar,
+  .rt-barre {
     --rt-btn-size: 34px;
 
     .trix-button-row { padding: 5px; gap: 5px; }

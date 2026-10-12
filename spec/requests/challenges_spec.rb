@@ -71,4 +71,40 @@ RSpec.describe "Challenges", type: :request do
       expect(challenge.content.to_plain_text).not_to include("Nouvel")
     end
   end
+
+  # L'éditeur TipTap remplace Trix. Il reçoit le corps au format de Trix, les
+  # tableaux maison déjà convertis, et renvoie ce même format : ActionText
+  # convertit les pièces jointes comme avant.
+  describe "éditeur d'énoncé" do
+    let(:table) { Table.create!(rows: 2, columns: 2, data: { "0-0" => "Mot", "1-1" => "chat" }) }
+    let(:challenge) do
+      create(:challenge, skill:, user:, content: %(<div>Classe</div><action-text-attachment sgid="#{table.attachable_sgid}" content-type="application/octet-stream"></action-text-attachment>))
+    end
+
+    it "ouvre l'énoncé dans TipTap, le tableau maison déjà converti" do
+      get edit_challenge_path(challenge), headers: turbo_headers
+
+      formulaire = Nokogiri::HTML(response.body)
+      expect(formulaire.at_css('[data-controller~="editeur-enonce"]')).to be_present
+      expect(formulaire.at_css("trix-editor")).to be_nil
+      champ = formulaire.at_css('input[type="hidden"][name="challenge[content]"]')
+      expect(champ["value"]).to include('<table class="rt-table__grid">').and include("<div>chat</div>")
+    end
+
+    it "enregistre ce que renvoie l'éditeur : tableau natif et pièces jointes au format de Trix" do
+      figure = Figure.find("horloge-0315-chiffres")
+      piece = { sgid: figure.attachable_sgid, contentType: figure.content_type }.to_json
+      envoi = %(<div>Lis l'heure</div><div><figure data-trix-attachment='#{piece}' ) +
+              %(data-trix-attributes='{"presentation":"taille-50 centre"}'></figure></div>) +
+              %(<table class="rt-table__grid"><tbody><tr><td class="rt-cell"><div>Mot</div></td></tr></tbody></table>)
+
+      patch challenge_path(challenge), params: { challenge: { content: envoi } }, headers: turbo_headers
+
+      stocke = challenge.reload.content.body.to_html
+      expect(stocke).to include(%(<action-text-attachment sgid="#{figure.attachable_sgid}"))
+      expect(stocke).to include('presentation="taille-50 centre"')
+      expect(stocke).to include('<table class="rt-table__grid">')
+      expect(challenge.content.to_s).to include("width:50%").and include("<div>Mot</div>")
+    end
+  end
 end

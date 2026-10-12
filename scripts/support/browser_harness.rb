@@ -44,12 +44,13 @@ module BrowserHarness
     end
 
     # Le bundle en IIFE : une page file:// ne peut pas charger de module ES.
-    def dump_bundle(filename = "application.js")
+    # `entry` : un autre point d'entrée que l'application (banc aller-retour TipTap).
+    def dump_bundle(filename = "application.js", entry: "app/javascript/application.js")
       builder = write("build.js", <<~JS)
         const esbuild = require(#{Rails.root.join("node_modules/esbuild").to_s.inspect})
         const rails = require(#{Rails.root.join("node_modules/esbuild-rails").to_s.inspect})
         esbuild.build({
-          entryPoints: [#{Rails.root.join("app/javascript/application.js").to_s.inspect}],
+          entryPoints: [#{Rails.root.join(entry).to_s.inspect}],
           bundle: true, format: 'iife', outfile: #{@dir.join(filename).to_s.inspect},
           absWorkingDir: #{Rails.root.to_s.inspect}, plugins: [rails()], logLevel: 'error',
         }).catch(e => { console.error(e); process.exit(1) })
