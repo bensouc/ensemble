@@ -210,6 +210,9 @@ Rails.application.routes.draw do
   # Pas de `show` : rien ne l'appelait, et il livrait le sgid — donc le droit
   # d'écrire — de n'importe quel tableau à qui en donnait l'id.
   resources :tables, only: [:create, :update]
+  # Figures de l'énoncé (Seyès, horloge, pictos) : rien en base, seulement le
+  # sgid et le rendu d'édition d'une figure décrite par ses paramètres.
+  resources :figures, only: [:create]
 
   # ###############stripe routes###############
   # namespace :stripe do

@@ -1,0 +1,144 @@
+# frozen_string_literal: true
+
+require "rails_helper"
+
+RSpec.describe Figure do
+  def piece_jointe(id, presentation: nil)
+    figure = described_class.find(id)
+    attributs = %(sgid="#{figure.attachable_sgid}" content-type="#{figure.content_type}")
+    attributs += %( presentation="#{presentation}") if presentation
+    "<action-text-attachment #{attributs}></action-text-attachment>"
+  end
+
+  def rendu(html)
+    ActionText::Content.new(html).to_rendered_html_with_layout
+  end
+
+  describe ".id_for" do
+    it "décrit une ligne Seyès, avec ou sans marge" do
+      expect(described_class.id_for(kind: "seyes")).to eq("seyes")
+      expect(described_class.id_for(kind: "seyes", marge: true)).to eq("seyes-marge")
+    end
+
+    it "lit l'heure tapée par l'enseignant, sur un cadran de 12 heures" do
+      expect(described_class.id_for(kind: "horloge", heure: "3:15")).to eq("horloge-0315-chiffres")
+      expect(described_class.id_for(kind: "horloge", heure: "15h15")).to eq("horloge-0315-chiffres")
+      expect(described_class.id_for(kind: "horloge", heure: "12 h", chiffres: false)).to eq("horloge-1200-nue")
+      expect(described_class.id_for(kind: "horloge", heure: "0:30")).to eq("horloge-1230-chiffres")
+    end
+
+    it "donne une horloge sans aiguilles quand l'heure est vide" do
+      expect(described_class.id_for(kind: "horloge", heure: " ")).to eq("horloge-vide-chiffres")
+    end
+
+    it "refuse une heure ou un pictogramme qui n'existent pas" do
+      expect(described_class.id_for(kind: "horloge", heure: "25:00")).to be_nil
+      expect(described_class.id_for(kind: "horloge", heure: "trois heures")).to be_nil
+      expect(described_class.id_for(kind: "picto", nom: "licorne")).to be_nil
+      expect(described_class.id_for(kind: "autre")).to be_nil
+    end
+  end
+
+  it "se retrouve par son sgid, sans rien en base" do
+    figure = described_class.find("horloge-0945-nue")
+
+    expect(ActionText::Attachable.from_attachable_sgid(figure.attachable_sgid)).to eq(figure)
+  end
+
+  it "devient une pièce jointe manquante quand son identifiant ne veut rien dire" do
+    expect { described_class.find("horloge-9999-chiffres") }.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
+  describe "rendu de l'énoncé" do
+    it "dessine l'horloge en SVG, aiguilles comprises" do
+      html = rendu(piece_jointe("horloge-0315-chiffres"))
+
+      expect(html).to include('aria-label="Horloge : 3 h 15"')
+      expect(html.scan("<line").size).to eq(62) # 60 graduations et 2 aiguilles
+      expect(html).to include(">12</text>")
+    end
+
+    it "laisse l'horloge sans aiguilles ni chiffres quand on le demande" do
+      html = rendu(piece_jointe("horloge-vide-nue"))
+
+      expect(html.scan("<line").size).to eq(60)
+      expect(html).not_to include("<text")
+    end
+
+    it "applique la taille et la position choisies dans l'éditeur" do
+      html = rendu(piece_jointe("horloge-0315-chiffres", presentation: "taille-50 centre"))
+
+      expect(html).to include("rt-fig--taille-50").and include("rt-fig--centre")
+    end
+
+    it "donne un quart de la largeur à une horloge sans taille" do
+      expect(rendu(piece_jointe("horloge-0315-chiffres"))).to include("rt-fig--taille-25")
+    end
+
+    it "dessine une ligne simple pour écrire dessus" do
+      expect(described_class.id_for(kind: "ligne")).to eq("ligne")
+
+      html = rendu(piece_jointe("ligne", presentation: "taille-50 gauche"))
+
+      expect(html).to include("rt-figure--ligne").and include('aria-label="Ligne d\'écriture"')
+      expect(html).to include("rt-fig--taille-50").and include("rt-fig--gauche")
+    end
+
+    it "laisse la ligne Seyès en pleine largeur tant qu'aucune taille n'est choisie" do
+      html = rendu(piece_jointe("seyes-marge"))
+
+      expect(html).to include("rt-figure--seyes").and include("rt-figure--marge")
+      expect(html).not_to include("rt-fig--taille")
+    end
+
+    it "place un pictogramme dans la phrase" do
+      html = rendu("<div>Coche : #{piece_jointe('picto-case')} oui</div>")
+
+      expect(html).to match(/Coche :\s*<span class="rt-figure rt-figure--picto">/)
+      expect(html).to include('aria-label="Case à cocher"')
+    end
+
+    it "se lit en texte brut" do
+      texte = ActionText::Content.new("#{piece_jointe('horloge-0315-chiffres')}#{piece_jointe('picto-coche')}").to_plain_text
+
+      expect(texte).to eq("[Horloge : 3 h 15][Coche]")
+    end
+  end
+
+  describe "dans l'éditeur" do
+    it "passe en image, parce que Trix retire les tracés d'un SVG en ligne" do
+      html = ApplicationController.render(partial: "figures/editor",
+                                          locals: { figure: described_class.find("picto-crayon") })
+
+      expect(html).to include('src="data:image/svg+xml;base64,')
+    end
+  end
+
+  describe "au clonage d'un exercice" do
+    it "garde la même figure et sa taille" do
+      challenge = create(:challenge, content: piece_jointe("seyes", presentation: "taille-75 droite"))
+
+      clone_html = challenge.reload.new_clone.content.body.to_html
+
+      expect(clone_html).to include(described_class.find("seyes").attachable_sgid)
+      expect(clone_html).to include('presentation="taille-75 droite"')
+    end
+  end
+end
+
+RSpec.describe FigurePresentation do
+  it "ne change rien à une image déjà en place" do
+    expect(described_class.parse("gallery")).to be_nil
+    expect(described_class.parse(nil)).to be_nil
+  end
+
+  it "lit une taille et une position" do
+    expect(described_class.parse("taille-25 gauche")).to eq(%w[25 gauche])
+    expect(described_class.parse("taille-100")).to eq(["100", nil])
+  end
+
+  it "ignore une valeur inventée" do
+    expect(described_class.parse("taille-33 centre")).to be_nil
+    expect(described_class.parse("taille-50 partout")).to eq(["50", nil])
+  end
+end

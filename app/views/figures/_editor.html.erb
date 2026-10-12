@@ -1,0 +1,17 @@
+<%#
+  Rendu d'une figure DANS l'éditeur Trix (via to_trix_content_attachment_partial_path).
+
+  Trix filtre ce balisage (HTMLSanitizer) : il ne garde que `style href src
+  width height class language`. Un SVG en ligne y perdrait tous ses tracés
+  (`d`, `cx`, `x1`…) ; on le passe donc en image, sous forme de data URI. Le
+  sanitizer d'ActionText, lui, refuse les data URI SVG mais garde le SVG en
+  ligne : c'est pourquoi l'affichage (_figure) l'insère directement.
+%>
+<% if figure.kind == :seyes %>
+  <span class="rt-seyes<%= " rt-seyes--marge" if figure.marge? %>"></span>
+<% elsif figure.kind == :ligne %>
+  <span class="rt-ligne"></span>
+<% else %>
+  <% svg = render(figure.kind == :picto ? "figures/picto_svg" : "figures/horloge_svg", dessinable: figure) %>
+  <img class="rt-figure-img rt-figure-img--<%= figure.kind %>" src="data:image/svg+xml;base64,<%= Base64.strict_encode64(svg.to_str.strip) %>" alt="<%= figure.libelle %>">
+<% end %>

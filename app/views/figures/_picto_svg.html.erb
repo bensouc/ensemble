@@ -1,0 +1,2 @@
+<%# Pictogramme seul. `xmlns` : le même tracé sert d'image (data URI) dans l'éditeur. %>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" role="img" aria-label="<%= dessinable.libelle %>"><% dessinable.dessin.each do |trait| %><path d="<%= trait[:d] %>" fill="<%= trait[:fill] || "none" %>" stroke="<%= trait[:stroke] || "none" %>" stroke-width="<%= trait[:width] || 0 %>" stroke-linecap="round" stroke-linejoin="round"></path><% end %></svg>
