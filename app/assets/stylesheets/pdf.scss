@@ -473,6 +473,7 @@ th:not([align]) {
 @include meta.load-css("trix/content");
 @include meta.load-css("trix/tables");
 @include meta.load-css("trix/figures");
+@include meta.load-css("trix/colonnes");
 
 // Seule exception à la parité : le corps de texte. Les plans de travail
 // imprimés sont calibrés sur 20px, et adopter les 17px de l'éditeur

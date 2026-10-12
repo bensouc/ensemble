@@ -86,3 +86,19 @@
 .rt-table__grid .rt-cell.rt-c-b { font-weight: 700; }
 .rt-table__grid .rt-cell.rt-c-i { font-style: italic; }
 .rt-table__grid .rt-cell.rt-c-u { text-decoration: underline; text-underline-offset: 2px; }
+
+// Tableau natif de l'éditeur TipTap (un tableau maison converti, ou un nouveau) :
+// pas d'enveloppe `.rt-table`, on lui en donne les marges, pour la même allure.
+// `>` : seulement le tableau natif, posé à la racine de l'énoncé — celui d'un
+// tableau maison est déjà dans son enveloppe.
+.trix-content > table.rt-table__grid,
+.rt-editeur .tableWrapper {
+  margin: 14px 0;
+}
+
+// Une case vide d'un tableau natif contient un paragraphe vide, de hauteur
+// nulle : la ligne se tassait. Une espace sans largeur lui rend la hauteur d'une
+// ligne de texte, comme la case vide d'un tableau maison.
+.rt-table__grid .rt-cell > div:empty::before {
+  content: "\200b";
+}

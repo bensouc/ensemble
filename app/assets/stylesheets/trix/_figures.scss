@@ -2,14 +2,9 @@
 
 // Figures de l'énoncé (lignes Seyès, horloge, pictogrammes) et taille des images.
 //
-// Mêmes règles à l'affichage, dans le PDF et dans l'éditeur. Deux balisages
-// différents y mènent, d'où les deux familles de sélecteurs :
-//
-//   - affichage et PDF : nos partials posent des classes, `.rt-fig--taille-50`,
-//     `.rt-fig--centre` (voir FigurePresentation) ;
-//   - éditeur : Trix rend lui-même le <figure> et n'y met que du JSON
-//     (`data-trix-attributes`), où la taille vit sous `"presentation":"…"`. On la
-//     lit avec un sélecteur d'attribut.
+// Mêmes règles à l'affichage, dans le PDF et dans l'éditeur : nos partials
+// (FigurePresentation) et l'éditeur (editeur/piece_jointe.js) posent les mêmes
+// classes, `.rt-fig .rt-fig--gauche`, et la largeur en style, `width: 33%`.
 
 // Seyès : grands carreaux de 8 mm, trois lignes fines entre deux lignes fortes.
 // L'interligne de 2 mm est celui du cahier : l'unité est le millimètre, pour que
@@ -59,8 +54,6 @@ $seyes-largeur-marge: 15mm;
     repeating-linear-gradient(to right, $seyes-verticale 0, $seyes-verticale $fin, transparent $fin, transparent $seyes-carreau * $k);
 }
 
-$tailles: 25, 50, 75, 100;
-
 // --- Affichage et PDF ---------------------------------------------------------
 .trix-content {
   // Une figure qui flotte ne dépasse pas de son énoncé (sur la carte suivante,
@@ -77,10 +70,6 @@ $tailles: 25, 50, 75, 100;
       width: 100%;
       height: auto;
     }
-  }
-
-  @each $taille in $tailles {
-    .rt-fig--taille-#{$taille} { width: $taille * 1%; }
   }
 
   // Gauche et droite habillent : la figure flotte, et le texte — ou une autre
@@ -133,7 +122,8 @@ $tailles: 25, 50, 75, 100;
 }
 
 // --- Éditeur ------------------------------------------------------------------
-trix-editor {
+trix-editor,
+.rt-editeur {
   figure.attachment[data-trix-content-type="application/vnd.ensemble.figure"] {
     display: block;
     width: 100%;
@@ -191,41 +181,6 @@ trix-editor {
     display: block;
     height: 10mm;
     border-bottom: 0.3mm solid #8a8a8a;
-  }
-
-  // Taille et position lues dans `data-trix-attributes`. `"presentation":"taille-50`
-  // et pas seulement `taille-50` : le texte d'une légende pourrait le contenir.
-  figure.attachment[data-trix-attributes*='"presentation":"taille-'] {
-    display: block;
-    max-width: 100%;
-
-    img {
-      width: 100%;
-      height: auto;
-    }
-  }
-
-  @each $taille in $tailles {
-    figure.attachment[data-trix-attributes*='"presentation":"taille-#{$taille}'] {
-      width: $taille * 1%;
-    }
-  }
-
-  figure.attachment[data-trix-attributes*='"presentation":"taille-'][data-trix-attributes*=' gauche"'] {
-    float: left;
-    box-sizing: border-box;
-    padding-right: 0.6em;
-  }
-
-  figure.attachment[data-trix-attributes*='"presentation":"taille-'][data-trix-attributes*=' centre"'] {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  figure.attachment[data-trix-attributes*='"presentation":"taille-'][data-trix-attributes*=' droite"'] {
-    float: right;
-    box-sizing: border-box;
-    padding-left: 0.6em;
   }
 }
 
@@ -311,7 +266,8 @@ trix-editor {
 }
 
 // --- Menu « Figure » de la toolbar --------------------------------------------
-trix-toolbar {
+trix-toolbar,
+.rt-barre {
   .rt-figures__panel {
     width: 300px;
     padding: 6px;

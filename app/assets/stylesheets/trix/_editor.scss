@@ -3,7 +3,9 @@
 // À noter : Trix injecte du CSS dans le <head> à l'exécution, donc *après* la
 // feuille compilée. Pour ces propriétés-là il faut une spécificité supérieure à
 // la sienne (`trix-editor …`), d'où les sélecteurs avec [placeholder] ci-dessous.
-trix-editor {
+// `.rt-editeur` : la zone d'édition de TipTap, mêmes styles.
+trix-editor,
+.rt-editeur {
   padding: 14px 16px; // avant : `padding: 0 !important`, le texte collait au bord
   margin: 0;
   min-height: 8.5em;

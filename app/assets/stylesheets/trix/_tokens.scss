@@ -11,6 +11,8 @@
 // pour ne pas polluer l'espace de noms global.
 trix-toolbar,
 trix-editor,
+.rt-barre,
+.rt-editeur,
 .trix-content,
 .rt-field {
   --rt-ink: #{colors.$grisF};
