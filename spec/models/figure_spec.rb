@@ -145,6 +145,19 @@ RSpec.describe FigurePresentation do
   end
 end
 
+# Une image au sgid illisible (toutes celles de la base de dev, signées avec la
+# clé de la prod) passe par le gabarit `remote_image` : il ignorait la taille.
+RSpec.describe "Taille d'une image affichée par son adresse" do
+  it "est appliquée comme pour une image retrouvée" do
+    corps = %(<action-text-attachment sgid="illisible" content-type="image/png" url="https://exemple.test/i.png" ) +
+            %(width="400" height="300" presentation="taille-35 gauche"></action-text-attachment>)
+
+    html = ActionText::Content.new(corps).to_rendered_html_with_layout
+
+    expect(html).to include("rt-fig rt-fig--gauche").and include("width:35%")
+  end
+end
+
 # Bloc « colonnes » de l'éditeur : des <div> à classes, que le sanitizer garde.
 RSpec.describe "Colonnes d'un énoncé" do
   it "gardent leurs classes au rendu, donc leur mise en page" do

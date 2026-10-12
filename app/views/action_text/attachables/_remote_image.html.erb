@@ -1,0 +1,17 @@
+<%#
+  Surcharge du gabarit d'ActionText pour une image dont le sgid ne se résout
+  pas : ActionText l'affiche alors par son adresse. C'est le cas de toutes les
+  images de la base de dev, signées avec la clé de la prod.
+
+  Ajout : la taille et la position choisies dans l'éditeur, comme
+  active_storage/blobs/_blob — sans quoi l'image retombait en pleine largeur.
+%>
+<% presentation = FigurePresentation.attributs(remote_image) %>
+<figure class="<%= ["attachment", "attachment--preview", *presentation[:classes]].join(" ") %>"<% if presentation[:style] %> style="<%= presentation[:style] %>"<% end %>>
+  <%= image_tag(remote_image.url, width: remote_image.width, height: remote_image.height) %>
+  <% if caption = remote_image.try(:caption) %>
+    <figcaption class="attachment__caption">
+      <%= caption %>
+    </figcaption>
+  <% end %>
+</figure>
