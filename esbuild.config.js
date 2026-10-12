@@ -14,7 +14,19 @@ const base = {
 
 const configs = [
   // Chargé par les layouts en `type: "module"`.
-  { ...base, entryPoints: { application: 'app/javascript/application.js' }, format: 'esm' },
+  //
+  // `splitting` : ce qui n'est importé qu'à la demande (`import()`) part dans un
+  // fichier à part. C'est le cas de l'éditeur d'énoncé (TipTap) : il doublait le
+  // poids du JS de TOUTES les pages, alors qu'il ne sert qu'au formulaire
+  // d'exercice. `.digested` : Propshaft sert alors ces fichiers sous leur nom,
+  // sans y ajouter sa propre empreinte — l'import relatif du bundle les trouve.
+  {
+    ...base,
+    entryPoints: { application: 'app/javascript/application.js' },
+    format: 'esm',
+    splitting: true,
+    chunkNames: '[name]-[hash].digested',
+  },
   // `rails_admin` à la racine des builds : c'est là que rails_admin, en mode
   // `asset_source = :webpack`, va chercher son JS (et son CSS, bin/build-css).
   // Il le charge par une balise <script> CLASSIQUE, pas en module : en ESM, les

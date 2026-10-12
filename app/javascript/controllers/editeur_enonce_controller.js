@@ -1,8 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
-import { Editor } from "@tiptap/core"
 import { DirectUpload } from "@rails/activestorage"
 import { post } from "@rails/request.js"
-import { extensionsDeLEditeur } from "../editeur/extensions"
 
 // Éditeur d'énoncé d'exercice (TipTap), à la place de Trix.
 //
@@ -12,6 +10,9 @@ import { extensionsDeLEditeur } from "../editeur/extensions"
 // (Osponso les a vus s'accumuler à chaque enregistrement).
 //
 // La barre reprend celle de Trix (mêmes classes `rt-tb__*`, donc même allure).
+//
+// TipTap n'est chargé qu'ici, à la demande (`import()`) : il pèse autant que tout
+// le reste du JS de l'app, et ne sert qu'au formulaire d'exercice.
 
 const MOD = /Mac|^iP/.test(navigator.platform) ? "⌘" : "Ctrl+"
 
@@ -220,10 +221,17 @@ export default class extends Controller {
   static targets = ["input", "barre", "zone", "fichier"]
   static values = { directUploadUrl: String, blobUrlTemplate: String, placeholder: String }
 
-  connect() {
+  async connect() {
     // Une connexion précédente (cache Turbo) a pu laisser sa barre derrière elle.
     this.barreTarget.innerHTML = barreHtml()
     this.zoneTarget.innerHTML = ""
+
+    const [{ Editor }, { extensionsDeLEditeur }] = await Promise.all([
+      import("@tiptap/core"),
+      import("../editeur/extensions")
+    ])
+    // Le formulaire a pu être refermé pendant le chargement.
+    if (!this.element.isConnected || this.editor) return
 
     this.editor = new Editor({
       element: this.zoneTarget,
