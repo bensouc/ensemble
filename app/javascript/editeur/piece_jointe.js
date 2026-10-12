@@ -57,7 +57,13 @@ export const PieceJointe = Node.create({
     return {
       attachment: { default: null, parseHTML: (el) => el.getAttribute("data-trix-attachment") },
       attributes: { default: null, parseHTML: (el) => el.getAttribute("data-trix-attributes") },
-      contentType: { default: null, parseHTML: (el) => el.getAttribute("data-trix-content-type") }
+      // Rails ne pose pas `data-trix-content-type` sur ce qu'il donne à l'éditeur
+      // (`to_trix_html`) : le type est dans le JSON de la pièce. Sans ce repli,
+      // une figure rouverte n'était plus reconnue, ni redimensionnable.
+      contentType: {
+        default: null,
+        parseHTML: (el) => el.getAttribute("data-trix-content-type") || lireJson(el.getAttribute("data-trix-attachment")).contentType || null
+      }
     }
   },
 
@@ -171,7 +177,7 @@ class VuePieceJointe {
   // --- Barre de taille et de position --------------------------------------------
 
   get estRedimensionnable() {
-    return this.type === "preview" || this.node.attrs.contentType === FIGURE_TYPE
+    return this.type === "preview" || (this.node.attrs.contentType || this.piece.contentType) === FIGURE_TYPE
   }
 
   get estHorloge() {

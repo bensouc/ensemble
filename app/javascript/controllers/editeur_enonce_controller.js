@@ -499,13 +499,28 @@ export default class extends Controller {
     } else {
       if (this.selectionAvantPopover) this.editor.commands.setTextSelection(this.selectionAvantPopover.from)
       const ligne = params.kind === "seyes" || params.kind === "ligne"
-      // Une ligne d'écriture commence toujours une ligne.
-      if (ligne && this.editor.state.selection.$from.parentOffset > 0) this.editor.commands.setHardBreak()
+      // Une ligne d'écriture commence toujours une ligne — sauf juste après une
+      // autre ligne d'écriture, qui en finit déjà une : le <br> ajouté là
+      // devenait, à l'affichage, une ligne vide entre deux lignes Seyès.
+      if (ligne && this.apresDuTexte()) this.editor.commands.setHardBreak()
       this.inserer(piece, params.kind === "horloge" ? { presentation: "taille-25 gauche" } : null)
     }
     // Le menu reste ouvert après une ligne : on en ajoute une autre d'un clic.
     if (params.kind === "horloge") this.fermerPopovers()
     else this.selectionAvantPopover = this.editor.state.selection
+  }
+
+  // Le curseur suit-il du texte (et non le début du bloc ou une ligne d'écriture) ?
+  apresDuTexte() {
+    const $from = this.editor.state.selection.$from
+    if ($from.parentOffset === 0) return false
+    const avant = $from.nodeBefore
+    if (avant?.type.name !== "pieceJointe") return true
+    try {
+      return !/rt-seyes|rt-ligne/.test(JSON.parse(avant.attrs.attachment).content || "")
+    } catch {
+      return true
+    }
   }
 
   inserer(piece, attributs) {
