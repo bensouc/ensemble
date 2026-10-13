@@ -26,6 +26,29 @@ RSpec.describe EditeurTiptap do
       expect(html).not_to include("data-trix-attachment")
     end
 
+    # Perdu, l'en-tête ou les mots mis en valeur d'un tableau redevenaient du
+    # texte ordinaire à la première ouverture dans l'éditeur.
+    it "garde le style des cases : gras, italique, souligné, couleur, alignement" do
+      table = Table.create!(rows: 1, columns: 2, data: { "0-0" => "chat", "0-1" => "nom" },
+                            col_aligns: %w[left center], cell_styles: { "0-0" => %w[b i u] },
+                            cell_colors: { "0-1" => "#F24150" })
+
+      html = described_class.contenu_initial(corps(piece_jointe(table)))
+
+      expect(html).to include('<td class="rt-cell"><div><strong><em><u>chat</u></em></strong></div></td>')
+      expect(html).to include('<div style="text-align: center"><span style="color: #F24150">nom</span></div>')
+    end
+
+    it "écarte une couleur hors palette et garde les retours à la ligne d'une case" do
+      table = Table.create!(rows: 1, columns: 1, data: { "0-0" => "un\ndeux" },
+                            cell_colors: { "0-0" => "red; background: url(x)" })
+
+      html = described_class.contenu_initial(corps(piece_jointe(table)))
+
+      expect(html).to include("<div>un<br>deux</div>")
+      expect(html).not_to include("url(x)")
+    end
+
     it "échappe le texte d'une case" do
       table = Table.create!(rows: 1, columns: 1, data: { "0-0" => "3 < 5 & <b>" })
 
@@ -38,6 +61,26 @@ RSpec.describe EditeurTiptap do
       table = Table.create!(rows: 1, columns: 1, data: { "0-0" => "2 x 3" })
 
       expect(described_class.contenu_initial(corps(piece_jointe(table)))).to include("2 x 3")
+    end
+
+    # L'adresse enregistrée avec une image est figée au jour de l'envoi
+    # (`http://127.0.0.1:3000/…` en local, un ancien domaine) : l'éditeur
+    # affichait une image cassée.
+    it "donne à une image retrouvée une adresse relative, valable sur tout serveur" do
+      blob = ActiveStorage::Blob.create_and_upload!(io: StringIO.new("png"), filename: "photo.png", content_type: "image/png")
+      html = %(<action-text-attachment sgid="#{blob.attachable_sgid}" content-type="image/png" ) +
+             %(url="http://127.0.0.1:3000/ancienne/adresse.png"></action-text-attachment>)
+
+      contenu = described_class.contenu_initial(corps(html))
+
+      expect(contenu).to include("/rails/active_storage/blobs/").and include("photo.png")
+      expect(contenu).not_to include("127.0.0.1:3000")
+    end
+
+    it "garde son adresse à une image introuvable : c'est la seule qu'on ait" do
+      html = %(<action-text-attachment sgid="illisible" content-type="image/png" url="https://exemple.test/i.png"></action-text-attachment>)
+
+      expect(described_class.contenu_initial(corps(html))).to include("https://exemple.test/i.png")
     end
 
     it "laisse telle quelle une pièce jointe qui n'est pas un tableau" do
