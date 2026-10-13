@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 # Annonce affichée sur le tableau de bord, dans la même fenêtre que le guide
-# « Bien commencer avec Ensemble ». On la ferme pour cette fois (« Plus tard »)
-# ou pour de bon (« Ne plus afficher ») : ce second choix est retenu sur le
-# compte (`users.annonces_masquees`).
+# « Bien commencer avec Ensemble ». « Plus tard » la remet au lendemain
+# (`users.annonces_reportees`), « Ne plus afficher » l'écarte pour de bon
+# (`users.annonces_masquees`) : deux choix retenus sur le compte.
 #
 # Pour en publier une nouvelle : l'ajouter en tête de ACTIVES, avec son partial
 # dans app/views/annonces/. Un identifiant ne se réutilise jamais : c'est lui
@@ -22,9 +22,11 @@ class Annonce
         partial: "annonces/nouvel_editeur")
   ].freeze
 
-  # La plus récente que ce compte n'a pas écartée.
-  def self.a_montrer(user)
-    ACTIVES.find { |annonce| user.annonces_masquees.exclude?(annonce.id) }
+  # La plus récente que ce compte n'a ni écartée, ni remise à plus tard aujourd'hui.
+  def self.a_montrer(user, aujourd_hui: Date.current)
+    ACTIVES.find do |annonce|
+      user.annonces_masquees.exclude?(annonce.id) && user.annonces_reportees[annonce.id] != aujourd_hui.iso8601
+    end
   end
 
   def self.trouver(id)

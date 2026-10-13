@@ -1,7 +1,8 @@
 <%#
   Fenêtre d'annonce du tableau de bord : même cadre que le guide « Bien
-  commencer avec Ensemble » (dashboard/_advice_modal). « Plus tard » la ferme
-  pour cette visite ; « Ne plus afficher » l'écarte pour de bon (Annonce).
+  commencer avec Ensemble » (dashboard/_advice_modal). « Plus tard » la remet
+  au lendemain ; « Ne plus afficher » l'écarte pour de bon (Annonce). La croix
+  la ferme pour cette visite seulement.
 %>
 <dialog id="myModal" class="annonce" open aria-labelledby="annonce-titre">
 	<div class="modal-content annonce__contenu">
@@ -19,9 +20,8 @@
 		<%= render annonce.partial %>
 
 		<div class="annonce__actions">
-			<form method="dialog">
-				<%= render Ui::ButtonComponent.new("Plus tard", variant: :neutral, type: "submit") %>
-			</form>
+			<%= render Ui::ButtonComponent.new("Plus tard", variant: :neutral,
+			                                   url: reporter_annonce_path(annonce.id), method: :patch) %>
 			<%= render Ui::ButtonComponent.new("Ne plus afficher", variant: :primary,
 			                                   url: masquer_annonce_path(annonce.id), method: :patch) %>
 		</div>

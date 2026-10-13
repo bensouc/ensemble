@@ -580,6 +580,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_080000) do
     t.integer "invitations_count", default: 0
     t.boolean "manipule", default: false, null: false
     t.string "annonces_masquees", default: [], null: false, array: true
+    t.jsonb "annonces_reportees", default: {}, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"

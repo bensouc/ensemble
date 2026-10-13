@@ -49,8 +49,9 @@
                             has_work_plan: @has_work_plan %>
 <%# Une seule fenêtre à la fois : le guide « Bien commencer » passe avant
     l'annonce, et un compte qui n'a pas encore renseigné sa découverte d'Ensemble
-    a déjà la sienne. %>
-<% elsif @annonce && current_user.discovery_method.present? %>
+    a déjà la sienne. Pas d'annonce pendant une personnification : l'écarter
+    écrirait sur le compte de la personne. %>
+<% elsif @annonce && current_user.discovery_method.present? && !impersonating? %>
 	<%= render 'annonces/annonce', annonce: @annonce %>
 <% end %>
 <%# Pas pendant une personnification : les comptes de démonstration n'ont jamais

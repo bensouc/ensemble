@@ -5,6 +5,8 @@ require "rails_helper"
 # Annonce du tableau de bord : dans la fenêtre du guide « Bien commencer »,
 # fermée pour cette fois (« Plus tard ») ou pour de bon (« Ne plus afficher »).
 RSpec.describe "Annonces du tableau de bord", type: :request do
+  include ActiveSupport::Testing::TimeHelpers
+
   let(:annonce) { Annonce::ACTIVES.first }
   let(:prof) { create(:user, admin: false, discovery_method: "Bouche-à-oreille") }
 
@@ -34,6 +36,33 @@ RSpec.describe "Annonces du tableau de bord", type: :request do
     expect(prof.reload.annonces_masquees).to eq([annonce.id])
     get dashboard_path
     expect(response.body).not_to include(ERB::Util.html_escape(annonce.titre))
+  end
+
+  it "« Plus tard » la remet au lendemain" do
+    compte_installe!
+    sign_in prof
+
+    patch reporter_annonce_path(annonce.id)
+    get dashboard_path
+    expect(response.body).not_to include(ERB::Util.html_escape(annonce.titre))
+
+    travel 1.day do
+      get dashboard_path
+      expect(response.body).to include(ERB::Util.html_escape(annonce.titre))
+    end
+  end
+
+  it "ne s'affiche pas pendant une personnification, et n'écrit rien sur le compte" do
+    compte_installe!
+    admin = create(:user, admin: true, school: prof.school)
+    sign_in admin
+    post impersonation_path(prof)
+
+    get dashboard_path
+    expect(response.body).not_to include(ERB::Util.html_escape(annonce.titre))
+
+    patch masquer_annonce_path(annonce.id)
+    expect(prof.reload.annonces_masquees).to be_empty
   end
 
   it "laisse la place au guide « Bien commencer » pour un compte sans classe" do
