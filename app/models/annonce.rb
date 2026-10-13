@@ -18,7 +18,7 @@ class Annonce
   end
 
   ACTIVES = [
-    new(id: "nouvel-editeur-2026-10", titre: "Nouvel éditeur d'exercice",
+    new(id: "nouvel-editeur-2026-10", titre: "Le tout nouvel éditeur d'exercice",
         partial: "annonces/nouvel_editeur")
   ].freeze
 
