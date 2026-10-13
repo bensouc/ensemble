@@ -42,10 +42,16 @@
 		</div>
 	</div>
 </div>
-<%unless @has_classrooms && @has_empty_classroom && @has_work_plan || current_user.discovery_method.nil? %>
+<% guide = !(@has_classrooms && @has_empty_classroom && @has_work_plan || current_user.discovery_method.nil?) %>
+<% if guide %>
 	<%= render 'advice_modal',  has_classrooms: @has_classrooms,
                             has_empty_classroom: @has_empty_classroom,
                             has_work_plan: @has_work_plan %>
+<%# Une seule fenêtre à la fois : le guide « Bien commencer » passe avant
+    l'annonce, et un compte qui n'a pas encore renseigné sa découverte d'Ensemble
+    a déjà la sienne. %>
+<% elsif @annonce && current_user.discovery_method.present? %>
+	<%= render 'annonces/annonce', annonce: @annonce %>
 <% end %>
 <%# Pas pendant une personnification : les comptes de démonstration n'ont jamais
     renseigné leur méthode de découverte, la modale bloquait donc leur tableau de

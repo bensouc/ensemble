@@ -25,6 +25,8 @@ Rails.application.routes.draw do
   root to: "pages#home"
   get "/dashboard", to: "dashboard#show"
   post "add_discovery", to: "dashboard#add_discovery_method"
+  # « Ne plus afficher » une annonce du tableau de bord (voir Annonce).
+  patch "annonces/:id/masquer", to: "annonces#masquer", as: :masquer_annonce
   get "mentions_legales", to: "pages#mentions_legales"
   # Le service worker doit être servi depuis la RACINE : il ne pilote que les
   # pages situées sous son propre chemin. Depuis /assets/, il ne verrait jamais
