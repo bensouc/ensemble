@@ -100,6 +100,14 @@ $seyes-largeur-marge: 15mm;
     margin: 0;
   }
 
+  // Un retour à la ligne juste après une ligne d'écriture ne doit rien
+  // ajouter : la ligne, en bloc, en finit déjà une. L'éditeur en posait un entre
+  // deux lignes Seyès, d'où une ligne vide entre elles à l'affichage.
+  .rt-figure--seyes + br,
+  .rt-figure--ligne + br {
+    display: none;
+  }
+
   .rt-ligne-svg,
   .rt-seyes-svg {
     display: block;
