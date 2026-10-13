@@ -42,6 +42,9 @@
   }
 
   strong, b { font-weight: 700; }
+  // `_reset.scss` donne `font: inherit` à `em` : l'italique de l'éditeur (et
+  // celui d'un tableau converti) ne se voyait nulle part.
+  em, i { font-style: italic; }
 
   // --- Liens ---------------------------------------------------------------
   a {
