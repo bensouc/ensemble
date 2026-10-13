@@ -9,6 +9,7 @@ class DashboardController < ApplicationController
     @has_classrooms = current_user.classroom?
     @has_work_plan = !current_user.work_plans.empty?
     @has_empty_classroom = !current_user.all_students.empty?
+    @annonce = Annonce.a_montrer(current_user)
     # render "dashboard/show"
   end
 

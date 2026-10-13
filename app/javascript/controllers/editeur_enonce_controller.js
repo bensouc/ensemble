@@ -31,7 +31,9 @@ const ICONES = {
   indent: icone('<path d="M4 6h16M11 12h9M4 18h16"/><path d="m4.5 9 3 3-3 3"/>'),
   attach: icone('<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="m4 16.5 4.5-4.5 3.5 3.5 3-3 5 5"/><circle cx="15.5" cy="9" r="1.6"/>'),
   table: icone('<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 10h17M3.5 15h17M10 4.5v15"/>'),
-  figure: icone('<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/>'),
+  // Des formes géométriques : le menu ne contient pas que des horloges (lignes
+  // d'écriture, pictogrammes aussi), l'horloge en icône le laissait croire.
+  figure: icone('<circle cx="7.5" cy="7.5" r="4"/><rect x="13" y="3.5" width="7.5" height="7.5" rx="1"/><path d="M12 13.5 16.5 20.5h-9z"/>'),
   link: icone('<path d="m9.5 14.5 5-5"/><path d="M13 7.5 14.5 6a4 4 0 0 1 5.5 5.5L18.5 13"/><path d="M11 16.5 9.5 18A4 4 0 0 1 4 12.5L5.5 11"/>'),
   undo: icone('<path d="m9 14-5-5 5-5"/><path d="M4 9h9.5a6 6 0 0 1 0 12H8"/>'),
   redo: icone('<path d="m15 14 5-5-5-5"/><path d="M20 9h-9.5a6 6 0 0 0 0 12H16"/>'),
