@@ -43,6 +43,8 @@ RSpec.describe "Fumée : chaque page s'ouvre", type: :request do
     fiche = BeltSheet.prepare!(eleve, enseignant)
     ligne_de_fiche = fiche.belt_sheet_domains.first_or_create!(domain: domaine, level: 1).
       belt_sheet_skills.first_or_create!(skill: competence, challenge: competence_ceinture)
+    # De quoi remplir l'onglet des fiches non assignées.
+    BeltSheet.generer!(niveau, domaine, 1, enseignant)
 
     # La seule page qui appelle Stripe en GET : pas de réseau dans la suite.
     allow(StripeHelper).to receive(:get_or_create_customer).

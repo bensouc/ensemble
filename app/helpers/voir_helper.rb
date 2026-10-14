@@ -35,4 +35,13 @@ module VoirHelper
       { label: "Exercices de ceinture", href: challenges_path(ceinture: 1), active: actif == :exercices }
     ]
   end
+
+  # Le second niveau d'onglets des fiches de ceinture : celles des élèves, et
+  # celles d'aucun élève, générées depuis les exercices de ceinture.
+  def onglets_fiches_de_ceinture(actif)
+    [
+      { label: "Par élève", href: belt_sheets_path, active: actif == :par_eleve },
+      { label: "Non assignées", href: non_assignees_belt_sheets_path, active: actif == :non_assignees }
+    ]
+  end
 end

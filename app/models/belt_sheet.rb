@@ -8,14 +8,16 @@
 # Elle n'évalue rien : elle LIT les résultats de l'élève pour se préparer, et
 # n'en écrit jamais. La réussite d'une ceinture se saisit dans le plan de
 # travail.
+#
+# Une fiche peut aussi n'être celle d'aucun élève (`NonAssignee`).
 class BeltSheet < ApplicationRecord
-  belongs_to :student
+  include NonAssignee
+
+  belongs_to :student, optional: true
   # Une fiche survit au départ de son auteur, comme un exercice.
   belongs_to :user, optional: true
   has_many :belt_sheet_domains, dependent: :destroy
   has_many :belt_sheet_skills, through: :belt_sheet_domains
-
-  delegate :grade, to: :student
 
   MODES = %w[en_cours resultats].freeze
 
@@ -182,23 +184,34 @@ class BeltSheet < ApplicationRecord
   end
 
   # Validée en ceinture : par son résultat, ou parce que la ceinture entière l'a
-  # été — la règle de `Student#skill_completed`.
+  # été — la règle de `Student#skill_completed`. Rien, sans élève.
   def competence_validee?(skill)
+    return false if non_assignee?
+
     competences_validees.include?(skill.id) || ceintures_validees.include?([skill.domain_id, skill.level])
   end
 
   # Les blocs dans l'ordre des domaines tel que l'école l'a défini, puis des
   # ceintures — jamais dans l'ordre où on les a ajoutés.
   def ordered_domains
-    belt_sheet_domains.includes(:domain, belt_sheet_skills: [:skill, { challenge: :rich_text_content }]).
-      sort_by { |bloc| [bloc.domain.position.to_i, bloc.level, bloc.id] }
+    dans_l_ordre(belt_sheet_domains.includes(:domain, belt_sheet_skills: [:skill, { challenge: :rich_text_content }]))
+  end
+
+  # Le nom donné par l'enseignant ; à défaut, le prénom de l'élève, ou les
+  # blocs d'une fiche non assignée.
+  def nom
+    name.presence || (non_assignee? ? nom_des_blocs : "Fiche de ceinture — #{student.first_name}")
   end
 
   def title
-    "Ceintures - #{student.first_name} - #{I18n.l(created_at.to_date)}"
+    [name.presence || "Ceintures", student ? student.first_name : grade.name, I18n.l(created_at.to_date)].join(" - ")
   end
 
   private
+
+  def dans_l_ordre(blocs)
+    blocs.sort_by { |bloc| [bloc.domain.position.to_i, bloc.level, bloc.id] }
+  end
 
   def competences_validees
     @competences_validees ||= Result.completed.where(student:).pluck(:skill_id).to_set

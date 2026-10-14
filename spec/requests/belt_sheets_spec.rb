@@ -21,6 +21,18 @@ RSpec.describe "Fiches de ceinture", type: :request do
     BeltSheet.where(student: eleve).sole
   end
 
+  it "garde le prénom de l'élève sous le titre d'une fiche renommée" do
+    post student_belt_sheets_path(eleve)
+    patch belt_sheet_path(fiche), params: { belt_sheet: { name: "Ceintures de novembre" } }
+
+    get belt_sheet_path(fiche)
+    page = Nokogiri::HTML(response.body)
+    expect(page.at_css("h1.wp-title .wp-title-name").text).to eq("Ceintures de novembre")
+    expect(page.at_css("h4.date-domain").text).to start_with("Machin · préparée le")
+    get belt_sheets_path
+    expect(response.body).to include("Ceintures de novembre")
+  end
+
   it "prépare la fiche depuis la fiche de l'élève, et l'ouvre" do
     epreuve = create(:challenge, skill: compter, user: enseignant, for_belt: true, name: "Épreuve compter")
 
@@ -288,6 +300,21 @@ RSpec.describe "Fiches de ceinture", type: :request do
       expect(response.body).not_to include(%(href="#{belt_sheets_path}"))
     end
 
+    it "étiquette la fiche et le plan de travail, tant que la classe a ouvert les fiches" do
+      plan = create(:work_plan, user: enseignant, student: eleve, grade:)
+      post student_belt_sheets_path(eleve)
+      etiquette = -> { Nokogiri::HTML(response.body).at_css(".ui-tag")&.text }
+
+      get belt_sheet_path(fiche)
+      expect(etiquette.call).to eq("Fiche de ceinture")
+      get work_plan_path(plan)
+      expect(etiquette.call).to eq("Plan de travail")
+
+      classroom.update!(belt_sheets: false)
+      get work_plan_path(plan)
+      expect(etiquette.call).to be_nil
+    end
+
     it "se règle depuis la modale de la classe" do
       classroom.update!(belt_sheets: false)
 
@@ -316,6 +343,170 @@ RSpec.describe "Fiches de ceinture", type: :request do
 
       expect(response).to redirect_to(belt_sheets_url)
       expect(BeltSheet.where(student: eleve)).to be_empty
+    end
+  end
+
+  describe "fiches non assignées" do
+    let(:filtres) { { "/challenges": { grade: grade.id, domain: numeration.id, level: 1 } } }
+
+    # La classe aux fiches de ceinture, sans laquelle rien ne se génère : aucun
+    # élève ne l'appelle ici.
+    before { classroom }
+
+    def generer(level: 1, domain: numeration, niveau: grade)
+      post generer_belt_sheets_path(grade_id: niveau.id, domain_id: domain.id, level:)
+    end
+
+    def non_assignee
+      BeltSheet.non_assignees.sole
+    end
+
+    it "se génère depuis les exercices de ceinture filtrés, et s'ouvre dans l'éditeur" do
+      epreuve = create(:challenge, skill: compter, user: enseignant, for_belt: true, name: "Épreuve compter")
+
+      get challenges_path(ceinture: 1, **filtres)
+      bouton = Nokogiri::HTML(response.body).at_css("form[action='#{generer_belt_sheets_path(grade_id: grade.id,
+                                                                                          domain_id: numeration.id,
+                                                                                          level: 1)}']")
+      expect(bouton.text).to include("Générer une fiche")
+
+      generer
+
+      expect(response).to redirect_to(belt_sheet_path(non_assignee))
+      follow_redirect!
+      page = Nokogiri::HTML(response.body)
+      expect(page.at_css("h1.wp-title .wp-title-name").text).to eq("Numération blanche")
+      expect(page.at_css("h4.date-domain").text).to start_with("CE1 · non assignée · préparée le")
+      expect(response.body).to include("Épreuve compter", non_assignees_belt_sheets_path,
+                                       export_belt_sheet_path(non_assignee))
+      # Rien ne se distribue encore à des élèves.
+      expect(response.body).not_to include(belt_sheet_clone_modal_path(non_assignee))
+      expect(non_assignee.belt_sheet_skills.map(&:skill)).to eq([compter, ranger])
+    end
+
+    it "n'offre pas de générer une fiche depuis les exercices classiques" do
+      get challenges_path(filtres)
+
+      expect(response.body).not_to include("Générer une fiche")
+    end
+
+    it "refuse un domaine d'un autre niveau, ou une ceinture qui n'existe pas" do
+      ailleurs = create(:domain, grade: create(:grade, school:, name: "CM1", grade_level: "CM1"), name: "Ailleurs")
+
+      generer(level: 8)
+      expect(response).to have_http_status(:unprocessable_content)
+      # En dernier : la requête qui lève n'enregistre pas la session.
+      expect { generer(domain: ailleurs) }.to raise_error(ActiveRecord::RecordNotFound)
+      expect(BeltSheet.count).to eq(0)
+    end
+
+    it "refuse de générer sans classe aux fiches de ceinture, ou pour le niveau d'une autre école" do
+      classroom.update!(belt_sheets: false)
+      expect { generer }.not_to change(BeltSheet, :count)
+
+      classroom.update!(belt_sheets: true)
+      autre = create(:grade, school: create(:school), name: "CE1", grade_level: "CE1")
+      domaine_autre = create(:domain, grade: autre, name: "Autre numération", special: false)
+      expect { generer(niveau: autre, domain: domaine_autre) }.not_to change(BeltSheet, :count)
+    end
+
+    it "garnit à la main un domaine spécial, puis ajoute un domaine à la ceinture choisie" do
+      geometrie = create(:domain, grade:, position: 2, name: "Géométrie", special: true)
+      create(:skill, domain: geometrie, level: 1, school:, name: "Tracer")
+      grammaire = create(:domain, grade:, position: 3, name: "Grammaire", special: false)
+      verbe = create(:skill, domain: grammaire, level: 4, school:, name: "Le verbe")
+
+      generer(domain: geometrie, level: 5)
+      expect(non_assignee.belt_sheet_domains.sole).to have_attributes(level: 1, belt_sheet_skills: [])
+      expect(flash[:notice]).to include("ajoutez les compétences")
+
+      get new_belt_sheet_belt_sheet_domain_path(non_assignee)
+      expect(response.body).to include("belt_sheet_domain[level]")
+
+      post belt_sheet_belt_sheet_domains_path(non_assignee),
+           params: { belt_sheet_domain: { domain_id: grammaire.id, level: 4 } }, as: :turbo_stream
+
+      bloc = non_assignee.belt_sheet_domains.find_by!(domain: grammaire)
+      expect(bloc.level).to eq(4)
+      expect(bloc.belt_sheet_skills.map(&:skill)).to eq([verbe])
+    end
+
+    it "s'imprime sans prénom" do
+      generer
+
+      get export_belt_sheet_path(non_assignee)
+      expect(response.body).to include(belt_sheet_path(non_assignee, format: :pdf))
+    end
+
+    it "se range par niveau dans son onglet, celles de l'enseignant seulement" do
+      generer
+      collegue = create(:user, school:, admin: false)
+      grammaire = create(:domain, grade:, position: 3, name: "Grammaire", special: false)
+      create(:skill, domain: grammaire, level: 1, school:, name: "Le verbe")
+      BeltSheet.generer!(grade, grammaire, 1, collegue)
+
+      get non_assignees_belt_sheets_path
+
+      page = Nokogiri::HTML(response.body)
+      expect(page.css(".wp-firstname").map(&:text)).to eq(["CE1"])
+      expect(page.css(".namept").map { |n| n.text.squish }).to eq(["Numération blanche"])
+      expect(page.at_css(".ui-tabs--secondary .ui-tabs-active").text).to eq("Non assignées")
+      expect(response.body).not_to include("Machin")
+    end
+
+    it "se renomme depuis la modale de l'éditeur, comme un plan de travail" do
+      generer
+
+      get belt_sheet_path(non_assignee)
+      champ = Nokogiri::HTML(response.body).at_css("#belt-sheet-edit-modal input[name='belt_sheet[name]']")
+      expect(champ["value"]).to eq("Numération blanche")
+
+      patch belt_sheet_path(non_assignee), params: { belt_sheet: { name: "Révisions de Toussaint" } }
+      expect(response).to redirect_to(belt_sheet_path(non_assignee))
+      expect(non_assignee.reload.nom).to eq("Révisions de Toussaint")
+
+      get non_assignees_belt_sheets_path
+      expect(Nokogiri::HTML(response.body).at_css(".namept").text).to eq("Révisions de Toussaint")
+
+      # Vide, elle reprend son nom par défaut.
+      patch belt_sheet_path(non_assignee), params: { belt_sheet: { name: "" } }
+      expect(non_assignee.reload.nom).to eq("Numération blanche")
+    end
+
+    it "s'ouvre dans un nouvel onglet depuis les deux listes, comme un plan de travail" do
+      generer
+      post student_belt_sheets_path(eleve)
+
+      [non_assignees_belt_sheets_path, belt_sheets_path].each do |liste|
+        get liste
+        liens = Nokogiri::HTML(response.body).css(".student-wp a")
+        expect(liens).to be_present
+        expect(liens.map { |lien| lien["target"] }.uniq).to eq(["_blank"])
+      end
+    end
+
+    it "revient à son onglet après sa suppression depuis l'éditeur" do
+      generer
+
+      delete belt_sheet_path(non_assignee), headers: { "HTTP_REFERER" => belt_sheet_url(non_assignee) }
+
+      expect(response).to redirect_to(non_assignees_belt_sheets_path)
+      expect(BeltSheet.count).to eq(0)
+    end
+
+    it "reste fermée à un collègue de la même école" do
+      generer
+      fiche = non_assignee
+      ligne = fiche.belt_sheet_skills.first
+      sign_in create(:user, school:, admin: false)
+
+      get belt_sheet_path(fiche)
+      expect(response).to have_http_status(:redirect)
+      expect { delete belt_sheet_path(fiche) }.not_to change(BeltSheet, :count)
+      expect { post create_empty_challenge_belt_sheet_skill_path(ligne), as: :turbo_stream }.
+        not_to change(Challenge, :count)
+      get non_assignees_belt_sheets_path
+      expect(response.body).not_to include("Numération blanche")
     end
   end
 

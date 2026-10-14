@@ -1,0 +1,26 @@
+<%# Renommer la fiche : la modale d'édition du plan de travail
+    (`work_plans/_show_wp_edit_modal`), réduite au nom. %>
+<div class="modal fade" id="belt-sheet-edit-modal" tabindex="-1" aria-labelledby="belt-sheet-edit-modal-label" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="belt-sheet-edit-modal-label">Édition de la fiche de ceinture</h5>
+				<%= render Ui::ButtonComponent.new(variant: :icon, icon: "fa-xmark", title: "Fermer", html: { class: "ms-auto" }, data: { bs_dismiss: "modal" }) %>
+			</div>
+			<%= simple_form_for belt_sheet, url: belt_sheet_path(belt_sheet), method: :patch,
+			                                html: { novalidate: false, class: "wp-edit-form" } do |f| %>
+				<div class="modal-body">
+					<%= f.input :name, label: "Nom de la fiche",
+					                   required: true,
+					                   wrapper_html: { class: "wp-edit-full-row" },
+					                   input_html: { class: "area", value: belt_sheet.nom } %>
+				</div>
+				<div class="modal-footer">
+					<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral, data: { bs_dismiss: "modal" }) %>
+					<%= render Ui::ButtonComponent.new("Valider", variant: :primary, type: "submit",
+					                                   data: { turbo_frame: "_top" }) %>
+				</div>
+			<% end %>
+		</div>
+	</div>
+</div>

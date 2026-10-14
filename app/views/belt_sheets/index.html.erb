@@ -1,6 +1,7 @@
 <%# Voir > Ceintures : la présentation de Voir > Plans de travail — une classe,
     puis un dossier par élève, ses fiches dedans. %>
 <%= render Ui::PageComponent.new(title: "Ceintures", tabs: onglets_ceintures(:liste)) do %>
+<%= render Ui::TabsComponent.new(label: "Fiches de ceinture", tabs: onglets_fiches_de_ceinture(:par_eleve), secondary: true) %>
 <div class="container3">
 	<% if @classrooms.empty? %>
 		<p class="belt-sheet-empty">Aucune classe n'a ouvert les fiches de ceinture : le réglage est dans la modale de la classe.</p>
@@ -45,10 +46,15 @@
 										<i class="fa-solid fa-bacon fa-fw" aria-hidden="true"></i>
 									<% end %>
 								</div>
+								<%# Un nouvel onglet, comme un plan de travail : la liste reste ouverte. %>
 								<div class="student-wp">
-									<%= link_to belt_sheet_path(fiche) do %>
+									<%= link_to belt_sheet_path(fiche), target: "_blank", rel: "noopener" do %>
 										<div class="namept">
-											Fiche de ceinture · <%= fiche.belt_sheet_domains.size %> domaine<%= "s" if fiche.belt_sheet_domains.size > 1 %>
+											<% if fiche.name.present? %>
+												<%= fiche.name %>
+											<% else %>
+												Fiche de ceinture · <%= fiche.belt_sheet_domains.size %> domaine<%= "s" if fiche.belt_sheet_domains.size > 1 %>
+											<% end %>
 										</div>
 										<div class="index-wp-count"><%= classroom.grade.name %></div>
 										<div class="wp-dates"><%= l(fiche.created_at.to_date, format: "%a. %d/%m/%Y") %></div>

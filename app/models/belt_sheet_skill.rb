@@ -18,10 +18,13 @@ class BeltSheetSkill < ApplicationRecord
   validates :skill_id, uniqueness: { scope: :belt_sheet_domain_id }
 
   # Le premier exercice de ceinture de la compétence que l'élève n'a pas encore
-  # eu sur une fiche, dans l'ordre choisi par l'enseignant. Aucun quand la liste
-  # est épuisée : l'éditeur propose alors d'en charger un ou d'en créer un.
+  # eu sur une fiche, dans l'ordre choisi par l'enseignant — le premier tout
+  # court sur une fiche non assignée. Aucun quand la liste est épuisée :
+  # l'éditeur propose alors d'en charger un ou d'en créer un.
   def next_challenge
-    Challenge.for_belt.where(skill_id:).where.not(id: challenges_deja_donnes).ordered.first
+    exercices = Challenge.for_belt.where(skill_id:).ordered
+    exercices = exercices.where.not(id: challenges_deja_donnes) if student
+    exercices.first
   end
 
   def attach_challenge!

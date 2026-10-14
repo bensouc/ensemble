@@ -158,7 +158,13 @@ Rails.application.routes.draw do
   resources :students, only: [] do
     resources :belt_sheets, only: [:create]
   end
-  resources :belt_sheets, only: [:index, :show, :destroy] do
+  resources :belt_sheets, only: [:index, :show, :update, :destroy] do
+    # Les fiches d'aucun élève : générées depuis les exercices de ceinture,
+    # rangées dans leur onglet.
+    collection do
+      get :non_assignees
+      post :generer
+    end
     # La page d'attente du PDF, comme pour le plan de travail.
     get :export, on: :member
     # Cloner la fiche vers d'autres élèves du même niveau.

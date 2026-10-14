@@ -1,17 +1,35 @@
 <%# L'éditeur de fiche de ceinture : celui du plan de travail, sans le type —
-    toute ligne d'une fiche est une ceinture. %>
+    toute ligne d'une fiche est une ceinture. Le nom se change au stylo, dans
+    une modale, comme celui d'un plan. Une fiche non assignée ramène à sa liste
+    plutôt qu'à un élève. %>
 <div class="pt --center-content belt-sheet">
 	<div class="belt-sheet-header">
 		<div>
-			<h1 class="wp-title">Fiche de ceinture — <%= @belt_sheet.student.first_name %></h1>
-			<h4 class="date-domain">Préparée le <%= l(@belt_sheet.created_at.to_date, format: :long) %></h4>
+			<% if etiqueter_le_document?(@belt_sheet.student) %>
+				<%= render Ui::TagComponent.new("Fiche de ceinture") %>
+			<% end %>
+			<%# Le titre d'un plan de travail (`work_plans/_shared_header_wp`) : une ligne,
+			    coupée en points de suspension, le stylo collé à la dernière lettre. %>
+			<h1 class="wp-title">
+				<span class="wp-title-name" title="<%= @belt_sheet.nom %>"><%= @belt_sheet.nom %></span>
+				<button type="button" class="edit-wp-title-btn" data-bs-toggle="modal" data-bs-target="#belt-sheet-edit-modal"
+				        aria-label="Renommer la fiche">
+					<i class="fa-solid fa-pen"></i>
+				</button>
+			</h1>
+			<h4 class="date-domain"><%= sous_titre_fiche(@belt_sheet) %></h4>
 		</div>
 		<div class="belt-sheet-actions">
-			<%= render Ui::ButtonComponent.new("Progression", icon: "fa-arrow-left", href: student_path(@belt_sheet.student),
-			                                   title: "Revenir à la progression de l'élève") %>
-			<%= render Ui::ButtonComponent.new("Cloner", icon: "fa-regular fa-clone",
-			                                   href: belt_sheet_clone_modal_path(@belt_sheet),
-			                                   data: { turbo_frame: "general_modal" }) %>
+			<% if @belt_sheet.non_assignee? %>
+				<%= render Ui::ButtonComponent.new("Fiches", icon: "fa-arrow-left", href: non_assignees_belt_sheets_path,
+				                                   title: "Revenir aux fiches non assignées") %>
+			<% else %>
+				<%= render Ui::ButtonComponent.new("Progression", icon: "fa-arrow-left", href: student_path(@belt_sheet.student),
+				                                   title: "Revenir à la progression de l'élève") %>
+				<%= render Ui::ButtonComponent.new("Cloner", icon: "fa-regular fa-clone",
+				                                   href: belt_sheet_clone_modal_path(@belt_sheet),
+				                                   data: { turbo_frame: "general_modal" }) %>
+			<% end %>
 			<%# Un nouvel onglet : la page d'attente s'y affiche, puis le PDF. %>
 			<%= render Ui::ButtonComponent.new("PDF", variant: :primary, icon: "fa-file-pdf",
 			                                   href: export_belt_sheet_path(@belt_sheet),
@@ -28,3 +46,5 @@
 
 	<%= render "belt_sheet_domains/add_link", belt_sheet: @belt_sheet %>
 </div>
+
+<%= render "belt_sheets/edit_modal", belt_sheet: @belt_sheet %>
