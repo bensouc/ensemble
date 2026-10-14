@@ -11,8 +11,10 @@
 				<div class="empty-challenge-text">
 					<i class="fa-regular fa-file-lines"></i>
 					<p>
-						<% if autres %>
+						<% if autres && line.student %>
 							<%= line.student.first_name %> a déjà eu tous les exercices de ceinture de cette compétence.
+						<% elsif autres %>
+							Aucun exercice de ceinture choisi pour cette compétence.
 						<% else %>
 							Aucun exercice de ceinture n'existe encore pour cette compétence.
 						<% end %>

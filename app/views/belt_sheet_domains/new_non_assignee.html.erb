@@ -1,0 +1,40 @@
+<%# Sur une fiche non assignée, aucun élève ne désigne la ceinture : on choisit le
+    domaine, puis sa ceinture — le formulaire en deux temps de l'ajout d'un
+    domaine à un plan (`work_plan_domains/_form`), et son contrôleur
+    `domain-form`. Un domaine spécial n'a que la blanche, cochée d'office. %>
+<%= turbo_frame_tag :new_belt_sheet_domain do %>
+	<div class="add-domain">
+		<div class="add-domain-form" data-controller="domain-form">
+			<%= form_with url: belt_sheet_belt_sheet_domains_path(@belt_sheet), method: :post do %>
+				<div class="ui-step">
+					<div class="ui-step-title"><span class="ui-step-num">1</span>Domaine</div>
+					<div class="ui-chips">
+						<% @domains.each do |domain| %>
+							<%= render Ui::ChoiceChipComponent.new(name: "belt_sheet_domain[domain_id]", value: domain.id,
+							                                       label: domain.name,
+							                                       data: { action: "change->domain-form#displayBelt",
+							                                               special: domain.special? }) %>
+						<% end %>
+					</div>
+				</div>
+				<div class="ui-step d-none" data-domain-form-target="beltForm">
+					<div class="ui-step-title"><span class="ui-step-num">2</span>Ceinture</div>
+					<div class="ui-chips">
+						<% (1..Belt::BELT_COLORS.size).each do |level| %>
+							<%= render Ui::ChoiceChipComponent.new(name: "belt_sheet_domain[level]", value: level,
+							                                       label: Belt::BELT_COLORS[level - 1].capitalize, belt: level,
+							                                       data: { domain_form_target: "box",
+							                                               action: "change->domain-form#displayBtn" }) %>
+						<% end %>
+					</div>
+				</div>
+				<div class="box-end gap-2">
+					<%= render Ui::ButtonComponent.new("Annuler", variant: :neutral, href: belt_sheet_path(@belt_sheet),
+					                                   data: { turbo_frame: "_top" }) %>
+					<%= render Ui::ButtonComponent.new("Ajouter", variant: :primary, type: "submit",
+					                                   data: { domain_form_target: "btn" }, html: { class: "d-none" }) %>
+				</div>
+			<% end %>
+		</div>
+	</div>
+<% end %>

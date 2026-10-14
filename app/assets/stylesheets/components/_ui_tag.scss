@@ -1,0 +1,17 @@
+@use "../config/colors";
+
+// L'étiquette `Ui::TagComponent` : la pastille « bêta » du menu
+// (`.menug_icone .beta`), à la taille d'un texte qu'on lit.
+.ui-tag {
+  display: inline-block;
+  padding: 0 8px;
+  border: 1px solid rgba(colors.$rose, 0.45);
+  border-radius: 999px;
+  color: rgba(colors.$rose, 0.8);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}

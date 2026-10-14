@@ -36,6 +36,19 @@
   gap: 12px;
   align-items: flex-start;
 }
+
+// « Générer une fiche », à droite des filtres, sur la ligne de la ceinture : la
+// marge rattrape celle du bloc des filtres (20 px) et centre le bouton sur le
+// sélecteur.
+.challenge-filter {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+
+  > .button_to {
+    margin-bottom: 24px;
+  }
+}
 .move-left-btn {
   font-size: 21px;
   position: relative;

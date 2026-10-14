@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_13_080000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_14_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -86,10 +86,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_080000) do
   end
 
   create_table "belt_sheets", force: :cascade do |t|
-    t.bigint "student_id", null: false
+    t.bigint "student_id"
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "grade_id"
+    t.string "name"
+    t.index ["grade_id"], name: "index_belt_sheets_on_grade_id"
     t.index ["student_id"], name: "index_belt_sheets_on_student_id"
     t.index ["user_id"], name: "index_belt_sheets_on_user_id"
   end
@@ -641,6 +644,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_13_080000) do
   add_foreign_key "belt_sheet_skills", "belt_sheet_domains", on_delete: :cascade
   add_foreign_key "belt_sheet_skills", "challenges", on_delete: :nullify
   add_foreign_key "belt_sheet_skills", "skills", on_delete: :cascade
+  add_foreign_key "belt_sheets", "grades", on_delete: :cascade
   add_foreign_key "belt_sheets", "students", on_delete: :cascade
   add_foreign_key "belt_sheets", "users", on_delete: :nullify
   add_foreign_key "belts", "domains"

@@ -1,5 +1,9 @@
 <div id="wp-edition" >
   <div >
+    <%# Plan de travail ou fiche de ceinture : les deux éditeurs se ressemblent. %>
+    <% if etiqueter_le_document?(work_plan.student) %>
+      <%= render Ui::TagComponent.new("Plan de travail") %>
+    <% end %>
     <%# Les utilitaires `d-flex justify-content-between` sont retirés : Bootstrap les
         déclare en !important, ils empêchaient la grille de s'appliquer. %>
     <div class='wp-header-titles' >

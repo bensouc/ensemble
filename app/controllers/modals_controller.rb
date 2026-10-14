@@ -32,7 +32,7 @@ class ModalsController < ApplicationController
 
   # Cloner une fiche de ceinture : les élèves du même niveau, classe par classe.
   def clone_belt_sheet
-    @belt_sheet = authorize BeltSheet.find(params[:id]), :show?
+    @belt_sheet = authorize BeltSheet.find(params[:id]), :clone?
     @candidates = @belt_sheet.clone_candidates(current_user).group_by(&:classroom)
   end
 

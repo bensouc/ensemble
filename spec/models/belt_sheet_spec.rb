@@ -179,6 +179,62 @@ RSpec.describe BeltSheet, type: :model do
     end
   end
 
+  describe ".generer!, une fiche d'aucun élève" do
+    it "prend toutes les compétences de la ceinture, et le premier exercice de chacune" do
+      comparer = competence(numeration, 3, "Comparer")
+      ranger = competence(numeration, 3, "Ranger")
+      competence(numeration, 4, "Plus tard")
+      second = create(:challenge, skill: comparer, user:, for_belt: true)
+      premier = create(:challenge, skill: comparer, user:, for_belt: true)
+      premier.move_to_top
+      # Un résultat d'élève ne compte pas : la fiche n'est celle de personne.
+      Result.create!(student:, skill: ranger, kind: "ceinture", status: "completed")
+
+      sheet = described_class.generer!(grade, numeration, 3, user)
+
+      expect(sheet).to have_attributes(student: nil, grade:, user:, non_assignee?: true)
+      bloc = sheet.belt_sheet_domains.sole
+      expect([bloc.domain, bloc.level]).to eq([numeration, 3])
+      expect(bloc.belt_sheet_skills.map { |l| [l.skill, l.challenge] }).to eq([[comparer, premier], [ranger, nil]])
+      expect(bloc.belt_sheet_skills.map(&:deja_validee?)).to eq([false, false])
+      expect(second.reload.position).to be > premier.reload.position
+    end
+
+    it "redonne le même premier exercice d'une fiche à l'autre : aucun élève ne l'a déjà eu" do
+      skill = competence(numeration, 1, "Compter")
+      premier = create(:challenge, skill:, user:, for_belt: true)
+      create(:challenge, skill:, user:, for_belt: true)
+
+      2.times do
+        expect(described_class.generer!(grade, numeration, 1, user).belt_sheet_skills.sole.challenge).to eq(premier)
+      end
+    end
+
+    it "laisse vide le bloc d'un domaine spécial : c'est au professeur de construire sa fiche" do
+      geometrie = create(:domain, grade:, name: "Géométrie", position: 3, special: true)
+      competence(geometrie, 1, "Tracer")
+
+      bloc = described_class.generer!(grade, geometrie, 1, user).belt_sheet_domains.sole
+
+      expect(bloc.level).to eq(1)
+      expect(bloc.belt_sheet_skills).to be_empty
+    end
+
+    it "porte son niveau, et se nomme d'après ses blocs" do
+      competence(numeration, 2, "Comparer")
+      competence(grammaire, 1, "Le verbe")
+      sheet = described_class.generer!(grade, numeration, 2, user)
+      sheet.add_domain!(grammaire, 1)
+
+      expect(sheet.reload.grade).to eq(grade)
+      expect(sheet.nom).to eq("Grammaire blanche · Numération jaune")
+      expect(sheet.title).to start_with("Ceintures - CE1 - ")
+      sheet.update!(name: "Révisions")
+      expect([sheet.nom, sheet.title]).to all(start_with("Révisions"))
+      expect(described_class.new(user:)).not_to be_valid
+    end
+  end
+
   describe "#clone_for!" do
     let(:camarade) { create(:student, classroom:) }
 

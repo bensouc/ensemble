@@ -72,6 +72,8 @@ RSpec.describe "Cloisonnement : aucune page ne montre l'école d'à côté", typ
     fiche = BeltSheet.create!(student: eleve, user: enseignante)
     ligne_de_fiche = fiche.belt_sheet_domains.create!(domain: domaine, level: 1).
       belt_sheet_skills.create!(skill: competence, challenge: epreuve)
+    # Une fiche non assignée : son nom est celui de ses blocs, donc du domaine.
+    BeltSheet.generer!(niveau, domaine, 1, enseignante)
 
     { enseignante:, ids: {
       "belts" => ceinture.id, "challenges" => exercice.id, "classrooms" => classe.id,

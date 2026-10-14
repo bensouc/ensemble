@@ -53,6 +53,15 @@
 				</div>
 			</div>
 		<% end %>
+		<%# Une fiche de ceinture d'aucun élève, pour la ceinture filtrée : toutes ses
+		    compétences, le premier exercice de chacune. Elle s'ouvre dans l'éditeur,
+		    et se retrouve dans Voir > Ceintures > Non assignées. Hors du formulaire
+		    des filtres : un formulaire ne s'imbrique pas dans un autre. %>
+		<% if @ceinture && @domain && @skills.exists? %>
+			<%= render Ui::ButtonComponent.new("Générer une fiche", variant: :primary, icon: "fa-bacon",
+			                                   url: generer_belt_sheets_path(grade_id: @grade.id, domain_id: @domain.id, level: @level),
+			                                   title: "Une fiche de ceinture avec un exercice par compétence, à retoucher puis imprimer") %>
+		<% end %>
 	</div>
 	<div class="grey-line"></div>
 	<div id='skills-challenge-list'>

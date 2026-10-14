@@ -1,6 +1,23 @@
 # frozen_string_literal: true
 
 module BeltSheetsHelper
+  # L'étiquette « Fiche de ceinture » / « Plan de travail » au-dessus d'un
+  # éditeur : les deux se ressemblent trait pour trait. Seulement quand la
+  # classe de l'élève a ouvert les fiches de ceinture — sans elles, il n'y a
+  # rien à distinguer —, ou l'une de ses classes, sans élève.
+  def etiqueter_le_document?(student)
+    student ? student.classroom.belt_sheets? : fiches_de_ceinture_ouvertes?
+  end
+
+  # Sous le nom de la fiche : ce que le nom ne dit plus — le niveau d'une fiche
+  # non assignée, le prénom de l'élève quand on l'a renommée —, et sa date.
+  def sous_titre_fiche(fiche)
+    contexte = if fiche.non_assignee? then [fiche.grade.name, "non assignée"]
+               elsif fiche.name.present? then [fiche.student.first_name]
+               end
+    [*contexte, "préparée le #{l(fiche.created_at.to_date, format: :long)}"].join(" · ").upcase_first
+  end
+
   # Les compétences du bloc qu'on peut encore y ajouter : celles de sa ceinture
   # qui n'y sont pas, à travailler d'abord, déjà validées ensuite — comme dans
   # l'éditeur de plan de travail.
