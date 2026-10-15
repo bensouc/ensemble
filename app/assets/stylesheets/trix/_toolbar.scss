@@ -382,21 +382,6 @@ trix-toolbar,
 }
 
 // --- Édition d'une cellule de tableau --------------------------------------
-// Les outils de la toolbar principale ne peuvent pas agir sur le contenu d'une
-// cellule (il vit dans une pièce jointe, hors du document Trix). On les met en
-// retrait tant qu'une cellule a le focus, plutôt que de les laisser suggérer
-// une action sans effet.
-trix-toolbar.rt-tb--table-focus {
-  .trix-button-row {
-    cursor: not-allowed;
-  }
-
-  .trix-button-group {
-    pointer-events: none;
-    opacity: 0.4;
-  }
-}
-
 // Sur mobile la toolbar prend de la place : boutons un peu plus larges pour la
 // cible tactile, et les groupes s'étalent sur plusieurs lignes.
 @media (max-width: 576px) {

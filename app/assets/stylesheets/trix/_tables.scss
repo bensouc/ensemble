@@ -1,10 +1,9 @@
-// Tableaux ActionText — styles PARTAGÉS entre l'éditeur et le PDF.
+// Tableaux d'énoncé — styles PARTAGÉS entre l'écran, l'éditeur et le PDF.
 //
 // Importé par `trix/_index.scss` (application) et par `pdf.scss`, pour que le
-// rendu PDF corresponde à ce que l'enseignant voit dans l'éditeur. Il ne doit
-// donc contenir que ce qui vaut dans les deux contextes : la grille, les
-// cellules, l'en-tête et les classes de mise en forme. Tout ce qui touche à
-// l'édition vit dans `_tables_editor.scss`.
+// rendu PDF corresponde à ce que l'enseignant voit dans l'éditeur. Valent pour
+// les deux sortes de tableaux : le tableau maison (`tables/_table`, pas encore
+// converti) et le tableau natif de TipTap, qui porte les mêmes classes.
 //
 // Ces règles sont importées après les feuilles qui posent les anciennes règles
 // de tableau (`work_plans/_challenges.scss` côté app, le bloc historique de

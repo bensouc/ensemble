@@ -221,10 +221,8 @@ Rails.application.routes.draw do
   # ###############routes for BELTS###############
   resources :belts, only: [:show, :destroy, :edit, :update]
 
-  # ###############route for tab editing###############
-  # Pas de `show` : rien ne l'appelait, et il livrait le sgid — donc le droit
-  # d'écrire — de n'importe quel tableau à qui en donnait l'id.
-  resources :tables, only: [:create, :update]
+  # Plus de route de tableaux : l'éditeur TipTap convertit les tableaux maison
+  # en tableaux natifs, qui font partie du texte de l'énoncé.
   # Figures de l'énoncé (Seyès, horloge, pictos) : rien en base, seulement le
   # sgid et le rendu d'édition d'une figure décrite par ses paramètres.
   resources :figures, only: [:create]
