@@ -26,6 +26,21 @@ RSpec.describe "Annonces du tableau de bord", type: :request do
     expect(response.body).to include(ERB::Util.html_escape(annonce.titre)).and include("Ne plus afficher").and include("Plus tard")
   end
 
+  # Plus haute que l'écran, la fenêtre cachait ses boutons sous le pli : rien ne
+  # disait qu'il fallait descendre pour l'écarter.
+  it "prévoit l'indice « Suite plus bas », caché tant que tout tient à l'écran" do
+    compte_installe!
+    sign_in prof
+
+    get dashboard_path
+
+    page = Nokogiri::HTML(response.body)
+    expect(page.at_css(".annonce__contenu")["data-controller"]).to eq("suite-plus-bas")
+    indice = page.at_css(".annonce__contenu .annonce__suite")
+    expect(indice["hidden"]).not_to be_nil
+    expect(indice.at_css("button")["data-action"]).to eq("suite-plus-bas#descendre")
+  end
+
   it "ne s'affiche plus une fois écartée, et le choix est retenu sur le compte" do
     compte_installe!
     sign_in prof

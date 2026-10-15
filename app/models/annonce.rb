@@ -18,6 +18,8 @@ class Annonce
   end
 
   ACTIVES = [
+    new(id: "validation-mobile-2026-10", titre: "Valider des compétences depuis votre téléphone",
+        partial: "annonces/validation_mobile"),
     new(id: "nouvel-editeur-2026-10", titre: "Le tout nouvel éditeur d'exercice",
         partial: "annonces/nouvel_editeur")
   ].freeze
