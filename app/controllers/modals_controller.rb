@@ -36,19 +36,6 @@ class ModalsController < ApplicationController
     @candidates = @belt_sheet.clone_candidates(current_user).group_by(&:classroom)
   end
 
-  def display_skills_modal
-    @student = authorize Student.find(params[:student_id]), :show?
-    @domain = Domain.find(params[:id])
-    @skills = @domain.skills
-    # `skill:` et non `skills:` : Rails 7.2 ne rattrape plus le pluriel d'une
-    # association `belongs_to`. La requête cherchait une colonne
-    # `results.skills` et la modale tombait en 500.
-    @results = Result.completed.includes(:skill).where(
-      skill: @skills,
-      student: @student
-    ).sort_by { |result| [result.skill.symbol, result.skill.name] }
-  end
-
   private
 
   def new_work_plan_for(student)

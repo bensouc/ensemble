@@ -58,6 +58,7 @@ RSpec.describe "Fumée : chaque page s'ouvre", type: :request do
       "work_plans" => plan.id, "belt_sheets" => fiche.id, "belt_sheet_id" => fiche.id,
       "belt_sheet_skills" => ligne_de_fiche.id, "classroom_id" => classe.id, "student_id" => eleve.id,
       "grade_id" => niveau.id, "work_plan_id" => plan.id, "level" => 1, "skill_id" => competence.id,
+      "domain_id" => domaine.id,
       # `/manipule/suivi/:id` porte une classe : le segment qui précède `:id`
       # nomme la clef, et il ne s'appelle pas « classrooms » ici. Même chose
       # pour `/manipule/suivi/eleve/:id`, qui porte un élève.

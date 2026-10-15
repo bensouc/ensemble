@@ -15,3 +15,20 @@
   text-transform: uppercase;
   white-space: nowrap;
 }
+
+// L'embout de couleur à gauche du mot : toute la hauteur de l'étiquette,
+// arrondi avec elle — l'étiquette le rogne. Son filet droit garde la ceinture
+// blanche visible sur le fond blanc.
+.ui-tag--pastille {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  padding-left: 0;
+}
+
+.ui-tag-pastille {
+  align-self: stretch;
+  width: 16px;
+  margin-right: 6px;
+  box-shadow: inset -1px 0 0 rgba(colors.$grisF, 0.15);
+}

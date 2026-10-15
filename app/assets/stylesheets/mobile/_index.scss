@@ -1,5 +1,6 @@
 @use "eval_mobile";
 @use "home";
+@use "validation";
 @use "../config/colors";
 @use "../config/echelle";
 @use "../config/font_families";
@@ -165,6 +166,10 @@
   color: rgba(colors.$grisF, 0.75);
   font-size: echelle.$texte-sm;
   line-height: 1.35;
+
+  &.--justifie {
+    text-align: justify;
+  }
 }
 
 // Une classe dans la liste : niveau, nom, effectif — et, une fois ouverte, ses

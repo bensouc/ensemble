@@ -30,12 +30,12 @@ RSpec.describe "Mobile::Students", type: :request do
       expect(response.body).to include("Leo")
     end
 
-    it "dit à quoi sert l'écran, avec le prénom de l'élève" do
+    it "dit à quoi sert l'écran" do
       sign_in teacher
 
       get mobile_classroom_student_path(classroom, student)
 
-      expect(response.body).to include("Les ceintures obtenues par Leo")
+      expect(response.body).to include("Touchez une ceinture pour valider des compétences.")
     end
 
     it "refuse l'élève d'une autre école" do

@@ -44,6 +44,13 @@ Rails.application.routes.draw do
     resources :classrooms, only: [:index, :show] do
       resources :students, only: [:show, :index]
     end
+    # Toucher la ceinture d'un domaine sur la fiche de l'élève : les compétences
+    # de la ceinture suivante, à cocher.
+    resources :students, only: [] do
+      resources :domains, only: [] do
+        resource :validation, only: [:edit, :update]
+      end
+    end
     get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
     # `get "work_plans/:id/export"` a été retiré : il visait
     # `Mobile::WorkPlansController#export`, une action qui n'a jamais existé, et
@@ -204,7 +211,6 @@ Rails.application.routes.draw do
   # ###############routes for STUDENTS###############
   resources :students, only: [:create, :update, :show, :destroy] do
     resource :transfer, only: %i[new create], controller: "student_transfers"
-    get "domains/:id/modal", to: "modals#display_skills_modal", as: :display_skills_modal
     resources :belts, only: [:create]
     post "", to: "work_plans#auto_new_wp", as: :auto_new_wp
     get "domains/:id/:level", to: "belts#show", as: :show

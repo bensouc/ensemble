@@ -1,0 +1,11 @@
+<%# Chaque ligne est redessinée à sa place : une ceinture obtenue verrouille
+    d'un coup toutes ses compétences. La liste ne se reconstruit pas, elle
+    garderait sinon son défilement à zéro. %>
+<%= turbo_stream.replace "validation-entete", partial: "mobile/validations/entete", locals: { ceinture: @ceinture } %>
+<% @ceinture.competences.each do |skill| %>
+	<%= turbo_stream.replace "ligne_competence_#{skill.id}",
+	                         partial: "mobile/validations/ligne", locals: { ceinture: @ceinture, skill: } %>
+<% end %>
+<%= turbo_stream.replace tuile_ceinture_id(@student, @domain) do %>
+	<%= render "mobile/students/ceinture", student: @student, domain: @domain, belt: @ceinture.belt, obtenue: @obtenue.present? %>
+<% end %>
