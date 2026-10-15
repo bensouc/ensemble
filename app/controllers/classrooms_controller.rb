@@ -115,8 +115,11 @@ class ClassroomsController < ApplicationController
     @subscription = @school.subscription
     # @shared_classrooms = SharedClassroom.where(user: current_user)
     @shared_classrooms = policy_scope(SharedClassroom)
-    shared_classrooms = @shared_classrooms.includes([:classroom]).map(&:classroom)
-    @classrooms = (policy_scope(Classroom) + shared_classrooms).sort_by(&:created_at)
+    # Les siennes d'abord, puis celles qu'on lui partage, chacune par niveau.
+    # Le tri par date de création mêlait les deux.
+    shared_classrooms = @shared_classrooms.includes(classroom: :grade).map(&:classroom)
+    @classrooms = Classroom.par_niveau(policy_scope(Classroom).includes(:grade)) +
+                  Classroom.par_niveau(shared_classrooms)
     @school_grades = @school.grades
     @students_list = []
     @school_teachers = current_user.collegues
