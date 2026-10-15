@@ -1,0 +1,265 @@
+@use "../config/colors";
+@use "../config/echelle";
+
+// La validation d'une ceinture depuis la fiche mobile d'un élève.
+//
+// Une feuille posée en bas de l'écran, là où arrive le pouce, plutôt qu'une
+// boîte centrée : la liste peut compter une trentaine de compétences dans un
+// domaine spécial, elle défile dans la feuille et son en-tête reste en vue.
+
+// Toute la tuile est la cible. Elle s'enfonce sous le doigt : on sait qu'on a
+// touché quelque chose avant que la feuille n'arrive.
+.mobile-ceinture-tuile {
+  color: inherit;
+  text-decoration: none;
+
+  .mobile-belt-bar {
+    transition: transform 0.12s ease;
+  }
+
+  &:active .mobile-belt-bar {
+    transform: scale(0.96);
+  }
+
+  // La ceinture vient de tomber : elle le montre, une fois.
+  &.--obtenue .mobile-belt-bar {
+    animation: ceinture-obtenue 1.2s ease-out 1;
+  }
+}
+
+@keyframes ceinture-obtenue {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(colors.$rose, 0.5);
+  }
+
+  40% {
+    transform: scale(1.06);
+  }
+
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 14px rgba(colors.$rose, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-ceinture-tuile.--obtenue .mobile-belt-bar {
+    animation: none;
+  }
+}
+
+// Au-dessus de la barre du bas (3) et des modales Bootstrap (1055), sous le
+// bandeau de synchronisation (1080). Les quatre côtés plutôt que `inset`, qui
+// manque à Safari avant 14.1.
+.mobile-feuille {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1060;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.mobile-feuille-fond {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.mobile-feuille-boite {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: 88dvh;
+  padding: echelle.$espace-md;
+  padding-right: echelle.marge-sure(right, echelle.$espace-md);
+  padding-bottom: echelle.marge-sure(bottom, echelle.$espace-md);
+  padding-left: echelle.marge-sure(left, echelle.$espace-md);
+  background-color: colors.$blanc;
+  border-radius: echelle.$rayon-lg echelle.$rayon-lg 0 0;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.18);
+
+  // Sur une tablette, la feuille pleine largeur s'étirerait pour quatre mots :
+  // elle redevient une boîte, centrée.
+  @media (min-width: echelle.$tablette) {
+    width: 40rem;
+    margin: auto;
+    border-radius: echelle.$rayon-lg;
+  }
+}
+
+// Deux rangées : l'étiquette, le titre et la croix ; dessous, le domaine et
+// l'élève, calés à gauche sur l'étiquette. Le titre un cran sous `$texte-xl` :
+// à côté de l'étiquette, « Ceinture blanche » passait sinon sur deux lignes
+// sur un téléphone.
+.mobile-feuille-entete {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  column-gap: echelle.$espace-sm;
+  align-items: center;
+  padding-bottom: echelle.$espace-sm;
+  border-bottom: thin solid colors.$grisC;
+
+  h3 {
+    margin: 0;
+    color: colors.$grisF;
+    font-size: echelle.$texte-lg;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .modale-contexte {
+    grid-column: 1 / -1;
+    margin: 0;
+  }
+}
+
+.mobile-feuille-avancement {
+  margin: echelle.$espace-sm 0;
+  color: rgba(colors.$grisF, 0.75);
+  font-size: echelle.$texte-sm;
+}
+
+// La ceinture vient de tomber : de quoi enchaîner sur la suivante.
+.mobile-feuille-suivante {
+  width: 100%;
+  margin-bottom: echelle.$espace-sm;
+}
+
+// Seule la liste défile : l'en-tête reste en vue.
+.mobile-feuille-defilement {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.mobile-validation-liste {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  li + li {
+    border-top: 1px solid rgba(colors.$grisF, 0.08);
+  }
+}
+
+// L'intertitre des sous-domaines de la modale du bureau.
+.mobile-validation-intertitre {
+  margin: echelle.$espace-md 0 echelle.$espace-xs;
+  color: colors.$grisF;
+  font-size: echelle.$texte-xs;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+// `button_to` enveloppe chaque bouton dans son formulaire.
+.mobile-validation-form {
+  margin: 0;
+}
+
+// Toute la ligne est le bouton. Turbo le désactive pendant l'envoi : il ne doit
+// pas pâlir pour autant, c'est justement le moment où la coche apparaît.
+.mobile-validation-ligne {
+  display: flex;
+  gap: echelle.$espace-sm;
+  align-items: center;
+  width: 100%;
+  min-height: echelle.$cible-tactile;
+  margin: 0;
+  padding: echelle.$espace-sm echelle.$espace-xs;
+  color: colors.$grisF;
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+
+  &:active {
+    background-color: colors.$light-gray;
+  }
+
+  &:disabled {
+    color: colors.$grisF;
+    opacity: 1;
+  }
+
+  &.--verrouillee {
+    cursor: default;
+  }
+}
+
+.mobile-validation-symbole {
+  flex: 0 0 1.5rem;
+  font-size: echelle.$texte-md;
+  text-align: center;
+}
+
+.mobile-validation-corps {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mobile-validation-nom {
+  font-size: echelle.$texte-md;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.mobile-validation-note {
+  color: rgba(colors.$grisF, 0.6);
+  font-size: echelle.$texte-xs;
+}
+
+// Le vert des compétences validées de la grille de la classe. Deux classes,
+// pour passer devant le `display` que Font Awesome pose sur ses icônes.
+.mobile-validation-coche {
+  flex: 0 0 auto;
+  font-size: 1.5rem;
+
+  &.--vide {
+    color: colors.$grisC;
+  }
+
+  &.--pleine {
+    display: none;
+    color: colors.$green;
+  }
+}
+
+// L'état de la base…
+.mobile-validation-ligne.--validee {
+  .mobile-validation-coche.--vide {
+    display: none;
+  }
+
+  .mobile-validation-coche.--pleine {
+    display: inline-block;
+  }
+}
+
+// … et, pendant l'envoi, l'état visé : l'inverse.
+.mobile-validation-form[aria-busy="true"] {
+  .mobile-validation-ligne:not(.--validee) .mobile-validation-coche.--vide,
+  .mobile-validation-ligne.--validee .mobile-validation-coche.--pleine {
+    display: none;
+  }
+
+  .mobile-validation-ligne:not(.--validee) .mobile-validation-coche.--pleine,
+  .mobile-validation-ligne.--validee .mobile-validation-coche.--vide {
+    display: inline-block;
+  }
+}
+
+.--verrouillee .mobile-validation-coche.--pleine {
+  opacity: 0.5;
+}

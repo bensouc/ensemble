@@ -41,9 +41,6 @@ RSpec.describe "Droits sur le suivi d'un élève", type: :request do
     it "n'ouvre pas ses compétences acquises ni la génération de son plan" do
       competence
 
-      get student_display_skills_modal_path(eleve, domaine)
-      expect(response).to have_http_status(:redirect)
-
       get student_auto_gen_modal_path(eleve)
       expect(response).to have_http_status(:redirect)
 
@@ -109,9 +106,6 @@ RSpec.describe "Droits sur le suivi d'un élève", type: :request do
       get belt_path(ceinture)
       expect(response).to have_http_status(:ok)
 
-      get student_display_skills_modal_path(eleve, domaine)
-      expect(response).to have_http_status(:ok)
-
       get student_auto_gen_modal_path(eleve)
       expect(response).to have_http_status(:ok)
 
@@ -165,9 +159,6 @@ RSpec.describe "Droits sur le suivi d'un élève", type: :request do
       expect(response).to have_http_status(:ok)
 
       get belt_path(ceinture)
-      expect(response).to have_http_status(:ok)
-
-      get student_display_skills_modal_path(eleve, domaine)
       expect(response).to have_http_status(:ok)
 
       get student_auto_gen_modal_path(eleve)

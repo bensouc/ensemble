@@ -3,7 +3,7 @@
 require "rails_helper"
 
 # Une ceinture obtenue, sur la fiche mobile de l'élève : sa couleur, sa date,
-# son domaine. Un domaine spécial ouvre en plus la modale de ses compétences.
+# son domaine. Elle ouvre les compétences de la ceinture suivante.
 RSpec.describe Belts::BeltComponent, type: :component do
   let(:eleve) { create(:student) }
   let(:domaine) { create(:domain, name: "Numération", special: false) }
@@ -21,7 +21,21 @@ RSpec.describe Belts::BeltComponent, type: :component do
     expect(page.at_css(".mobile-belt-bar.belt-bg-3")).to be_present
     expect(page.at_css(".bar-style").text.squish).to eq("14 sept. 2026")
     expect(page.at_css("h6").text).to eq("Numération")
-    expect(page.at_css("a")).to be_nil
+  end
+
+  it "ouvre la validation de la ceinture suivante, dans la modale" do
+    lien = rendu(ceinture, domaine).at_css("a")
+
+    expect(lien["href"]).to eq("/mobile/students/#{eleve.id}/domains/#{domaine.id}/validation/edit")
+    expect(lien["data-turbo-frame"]).to eq("general_modal")
+    expect(lien["id"]).to eq("mobile_ceinture_#{eleve.id}_#{domaine.id}")
+    expect(lien.at_css("i.domain_special_star")).to be_nil
+  end
+
+  it "le montre quand elle vient de tomber" do
+    page = render_inline(described_class.new(belt: ceinture, domain: domaine, obtenue: true))
+
+    expect(page.at_css("a")["class"].split).to include("--obtenue")
   end
 
   it "écrit le domaine en clair sur les ceintures foncées" do
@@ -30,13 +44,12 @@ RSpec.describe Belts::BeltComponent, type: :component do
     expect(rendu(ceinture, domaine).at_css("h6")["class"]).to eq("text-light")
   end
 
-  it "ouvre la modale des compétences d'un domaine spécial, marqué d'une étoile" do
+  it "marque d'une étoile un domaine spécial, qui ouvre la même validation" do
     domaine.update!(special: true)
 
     lien = rendu(ceinture, domaine).at_css("a")
 
-    expect(lien["href"]).to eq("/students/#{eleve.id}/domains/#{domaine.id}/modal")
-    expect(lien["data-turbo-frame"]).to eq("general_modal")
+    expect(lien["href"]).to eq("/mobile/students/#{eleve.id}/domains/#{domaine.id}/validation/edit")
     expect(lien.at_css("i.domain_special_star")).to be_present
   end
 end

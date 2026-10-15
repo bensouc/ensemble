@@ -2,8 +2,8 @@
 
 require "rails_helper"
 
-# Un domaine sans ceinture, sur la fiche mobile de l'élève. Un domaine spécial
-# ouvre quand même la modale de ses compétences, déjà acquises ou non.
+# Un domaine sans ceinture, sur la fiche mobile de l'élève. Il ouvre les
+# compétences de la ceinture blanche.
 RSpec.describe Belts::NoBeltComponent, type: :component do
   let(:eleve) { create(:student) }
   let(:domaine) { create(:domain, name: "Géométrie", special: false) }
@@ -17,16 +17,23 @@ RSpec.describe Belts::NoBeltComponent, type: :component do
 
     expect(page.at_css(".mobile-belt-bar.belt-bg-1 .bar-style").text.strip).to eq("Aucune Ceinture")
     expect(page.at_css("h6").text).to eq("Géométrie")
-    expect(page.at_css("a")).to be_nil
   end
 
-  it "ouvre la modale des compétences d'un domaine spécial, marqué d'une étoile" do
+  it "ouvre la validation de la ceinture blanche, dans la modale" do
+    lien = rendu.at_css("a")
+
+    expect(lien["href"]).to eq("/mobile/students/#{eleve.id}/domains/#{domaine.id}/validation/edit")
+    expect(lien["data-turbo-frame"]).to eq("general_modal")
+    expect(lien["id"]).to eq("mobile_ceinture_#{eleve.id}_#{domaine.id}")
+    expect(lien.at_css("i.domain_special_star")).to be_nil
+  end
+
+  it "marque d'une étoile un domaine spécial, qui ouvre la même validation" do
     domaine.update!(special: true)
 
     lien = rendu.at_css("a")
 
-    expect(lien["href"]).to eq("/students/#{eleve.id}/domains/#{domaine.id}/modal")
-    expect(lien["data-turbo-frame"]).to eq("general_modal")
+    expect(lien["href"]).to eq("/mobile/students/#{eleve.id}/domains/#{domaine.id}/validation/edit")
     expect(lien.at_css("i.domain_special_star")).to be_present
   end
 end

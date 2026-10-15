@@ -1,0 +1,7 @@
+<%# La ceinture d'un domaine sur la fiche de l'élève : la plus haute obtenue, ou
+    « Aucune Ceinture ». La modale de validation la remplace en enregistrant. %>
+<% if belt %>
+	<%= render Belts::BeltComponent.new(belt:, domain:, obtenue: local_assigns[:obtenue]) %>
+<% else %>
+	<%= render Belts::NoBeltComponent.new(student:, domain:) %>
+<% end %>

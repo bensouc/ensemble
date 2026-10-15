@@ -1,0 +1,37 @@
+<%# Les compétences de la ceinture que l'élève prépare dans un domaine.
+
+    Pas de formulaire : chaque appui sur une ligne l'enregistre, comme une
+    évaluation sur le mobile. Celles qui restent à valider d'abord, dans l'ordre
+    que l'école leur a donné ; les validées ensuite. Une ligne reste à sa place
+    une fois touchée — l'enregistrement la redessine là où elle est. %>
+<%= turbo_frame_tag "general_modal" do %>
+	<div class="mobile-feuille" data-controller="reset-frame" data-reset-frame-name-value="general_modal">
+		<div class="mobile-feuille-fond" data-action="click->reset-frame#resetFrame"></div>
+		<div class="mobile-feuille-boite" role="dialog" aria-modal="true" aria-labelledby="validation-titre">
+			<%= render "mobile/validations/entete", ceinture: @ceinture %>
+			<% if @ceinture.competences.empty? %>
+				<p class="modale-vide">
+					<% if @ceinture.toutes_obtenues? %>
+						<%= @student.first_name.capitalize %> a obtenu toutes les ceintures de <%= @domain.name %>.
+					<% else %>
+						La ceinture <%= @ceinture.couleur %> de <%= @domain.name %> n'a pas encore de compétence.
+					<% end %>
+				</p>
+			<% else %>
+				<div class="mobile-feuille-defilement">
+					<% [[@ceinture.a_valider, nil], [@ceinture.deja_validees, "Déjà validées"]].each do |competences, intertitre| %>
+						<% next if competences.empty? %>
+						<% if intertitre %>
+							<h6 class="mobile-validation-intertitre"><%= intertitre %></h6>
+						<% end %>
+						<ul class="mobile-validation-liste">
+							<% competences.each do |skill| %>
+								<%= render "mobile/validations/ligne", ceinture: @ceinture, skill: %>
+							<% end %>
+						</ul>
+					<% end %>
+				</div>
+			<% end %>
+		</div>
+	</div>
+<% end %>

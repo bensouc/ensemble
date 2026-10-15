@@ -1,0 +1,26 @@
+<%# L'en-tête de la modale : la ceinture en jeu, et où en est l'élève. Redessiné
+    à chaque enregistrement. %>
+<div id="validation-entete">
+	<div class="mobile-feuille-entete">
+		<%# Où en est la ceinture, avec sa couleur en pastille — l'étiquette de
+		    « Plan de travail » et de « Fiche de ceinture » dans les éditeurs —, son
+		    nom à côté ; dessous, le domaine et l'élève, calés sur la pastille. %>
+		<%= render Ui::TagComponent.new(ceinture.toutes_obtenues? || ceinture.obtenue? ? "Obtenue" : "En cours",
+		                                pastille: "belt-bg-#{ceinture.level || Belt::BELT_COLORS.size}") %>
+		<h3 id="validation-titre">Ceinture <%= ceinture.couleur || Belt::BELT_COLORS.last %></h3>
+		<%= render Ui::ButtonComponent.new(variant: :icon, size: :lg, icon: "fa-xmark", title: "Fermer",
+		                                   data: { action: "click->reset-frame#resetFrame" }) %>
+		<p class="modale-contexte"><%= ceinture.domain.name %> · <%= ceinture.student.first_name.capitalize %></p>
+	</div>
+	<% if ceinture.competences.any? %>
+		<p class="mobile-feuille-avancement"><%= avancement_ceinture(ceinture) %></p>
+	<% end %>
+	<%# La ceinture vient de tomber : on enchaîne sur la suivante sans refermer. %>
+	<% if ceinture.couleur_suivante %>
+		<%= render Ui::ButtonComponent.new("Passer à la ceinture #{ceinture.couleur_suivante}", variant: :secondary,
+		                                   size: :lg, icon: "fa-arrow-right",
+		                                   href: edit_mobile_student_domain_validation_path(ceinture.student,
+		                                                                                    ceinture.domain),
+		                                   html: { class: "mobile-feuille-suivante" }) %>
+	<% end %>
+</div>
