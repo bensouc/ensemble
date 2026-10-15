@@ -71,6 +71,14 @@ class Classroom < ApplicationRecord
     name.presence || grade&.grade_level.to_s.upcase
   end
 
+  # L'ordre des listes de classes : par niveau, du CP au CM2, puis par nom. Un
+  # niveau hors de la liste passe après les autres.
+  def self.par_niveau(classes)
+    classes.sort_by do |classe|
+      [GRADE.index(classe.grade&.grade_level.to_s.upcase) || GRADE.size, classe.display_name.downcase, classe.id]
+    end
+  end
+
   # Les fiches de ceinture sont ouvertes pour cet enseignant dès qu'une de ses
   # classes, à lui ou partagée, les a choisies : c'est ce qui montre le menu
   # « Ceintures » et l'onglet des exercices de ceinture.
