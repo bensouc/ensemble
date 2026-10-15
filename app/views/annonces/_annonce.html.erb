@@ -5,7 +5,7 @@
   la ferme pour cette visite seulement.
 %>
 <dialog id="myModal" class="annonce" open aria-labelledby="annonce-titre">
-	<div class="modal-content annonce__contenu">
+	<div class="modal-content annonce__contenu" data-controller="suite-plus-bas">
 		<form method="dialog" class="mb-3">
 			<div class="closing-btn d-flex justify-content-between align-items-center">
 				<%= image_tag 'logo_demo.png' if current_user.demo? %>
@@ -24,6 +24,13 @@
 			                                   url: reporter_annonce_path(annonce.id), method: :patch) %>
 			<%= render Ui::ButtonComponent.new("Ne plus afficher", variant: :primary,
 			                                   url: masquer_annonce_path(annonce.id), method: :patch) %>
+		</div>
+
+		<%# Collé au bas de la fenêtre tant qu'elle ne tient pas dans l'écran : sans
+		    lui, rien ne disait que les boutons étaient plus bas. %>
+		<div class="annonce__suite" hidden data-suite-plus-bas-target="indice">
+			<%= render Ui::ButtonComponent.new("Suite plus bas", variant: :secondary, icon: "fa-arrow-down",
+			                                   data: { action: "suite-plus-bas#descendre" }) %>
 		</div>
 	</div>
 </dialog>
