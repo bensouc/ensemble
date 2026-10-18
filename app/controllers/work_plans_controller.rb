@@ -84,13 +84,18 @@ class WorkPlansController < ApplicationController
   def index
     skip_policy_scope
 
-    shared_classrooms = current_user.user_shared_classrooms.includes(:grade)
-    @my_classrooms = (current_user.classrooms.includes(:grade) + shared_classrooms).sort_by(&:created_at)
+    # Ses classes d'abord, puis celles qu'on lui partage, chacune par niveau —
+    # l'ordre de la liste des classes. Le tri par date de création mêlait les deux.
+    @my_classrooms = Classroom.par_niveau(current_user.classrooms.includes(:grade)) +
+                     Classroom.par_niveau(current_user.user_shared_classrooms.includes(:grade))
     @my_work_plans = current_user.all_classroom_workplans
     @my_work_plans_from_shared_classrooms = current_user.all_shared_classroom_workplans
     @my_work_plans += @my_work_plans_from_shared_classrooms unless @my_work_plans_from_shared_classrooms.empty?
     @my_work_plans = @my_work_plans.sort_by(&:created_at).reverse
-    @my_work_plans_unassigned = WorkPlan.where(user: current_user, special_wps: false, student: nil)
+    # Le plus récent en haut, comme dans le dossier d'un élève : sans ORDER BY,
+    # Postgres rendait l'ordre du tas.
+    @my_work_plans_unassigned = WorkPlan.where(user: current_user, special_wps: false, student: nil).
+                                order(created_at: :desc)
   end
 
   # Page d'attente affichée dans l'onglet le temps de la génération (~1,5 s), qui

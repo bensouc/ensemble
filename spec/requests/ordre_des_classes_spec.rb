@@ -5,7 +5,8 @@ require "rails_helper"
 # Les listes de classes, sur le bureau et sur le mobile : les siennes d'abord,
 # par niveau du CP au CM2 puis par nom ; celles qu'on lui partage ensuite,
 # rangées de même. Le bureau triait tout par date de création, et le mobile
-# n'affichait pas les classes partagées.
+# n'affichait pas les classes partagées. Voir > Plans de travail et Voir >
+# Ceintures, qui listent leurs dossiers par classe, suivent le même ordre.
 RSpec.describe "Ordre des classes", type: :request do
   let(:school) { create(:school) }
   let(:teacher) { create(:user, admin: false, demo: true) }
@@ -15,8 +16,10 @@ RSpec.describe "Ordre des classes", type: :request do
     Grade.find_by(school:, name: nom) || create(:grade, school:, name: nom, grade_level: nom)
   end
 
+  # Les fiches de ceinture ouvertes partout : Voir > Ceintures ne liste que ces
+  # classes-là.
   def classe(nom, niveau_de, user: teacher)
-    create(:classroom, user:, grade: niveau(niveau_de), name: nom)
+    create(:classroom, user:, grade: niveau(niveau_de), name: nom, belt_sheets: true)
   end
 
   # Créées dans le désordre : la date de création ne doit plus rien décider.
@@ -49,6 +52,18 @@ RSpec.describe "Ordre des classes", type: :request do
 
   it "range de même celles du mobile, partagées comprises" do
     get mobile_classrooms_path
+
+    dans_l_ordre(response.body, ordre)
+  end
+
+  it "range de même les classes de Voir > Plans de travail" do
+    get work_plans_path
+
+    dans_l_ordre(response.body, ordre)
+  end
+
+  it "range de même les classes de Voir > Ceintures" do
+    get belt_sheets_path
 
     dans_l_ordre(response.body, ordre)
   end

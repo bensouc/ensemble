@@ -1,0 +1,4 @@
+<%= turbo_stream.remove @belt_sheet %>
+<%= turbo_stream.replace dom_id(@dossier, :nombre_de_fiches),
+                         partial: "belt_sheets/nombre_de_fiches", locals: { dossier: @dossier, nombre: @restantes } %>
+<%= turbo_stream.prepend "flash", partial: "shared/flashes" %>

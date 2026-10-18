@@ -1,0 +1,5 @@
+<%# Le nombre de fiches d'un dossier — un élève, ou un niveau pour les fiches non
+    assignées. Le même rendu dans la liste et après une suppression. %>
+<div class="index-wp-count" id="<%= dom_id(dossier, :nombre_de_fiches) %>" data-wp-by-student-target="count">
+	( <%= nombre %> fiche<%= "s" if nombre > 1 %> )
+</div>
