@@ -138,6 +138,8 @@ RSpec.describe Challenge, type: :model do
       expect(empty.position).to eq(2)
       expect(empty.user).to eq(user)
       expect(empty.content.to_plain_text).to include("REDIGER")
+      # au format de l'éditeur : sans paragraphe signé, il s'ouvrirait en « ancien énoncé »
+      expect(empty.content.body.to_html).to include(%(class="rt-p"))
       expect(empty).to be_persisted
     end
 

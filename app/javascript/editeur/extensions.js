@@ -23,10 +23,16 @@ import { Colonnes, Colonne } from "./colonnes"
 // HTML interdit un <figure> (pièce jointe) dans un <p> : relu par Rails, le <p>
 // se coupait en deux paragraphes vides et la pièce jointe se retrouvait dehors.
 //
-// La classe `rt-p` signe un paragraphe enregistré par cet éditeur : lui seul
-// prend l'interligne 1,4 et se colle au suivant (trix/_content.scss). Un énoncé
-// plus ancien garde sa mise en page tant qu'on ne le rouvre pas.
+// La classe `rt-p` signe un paragraphe de cet éditeur : lui seul prend
+// l'interligne 1,4 et se colle au suivant (trix/_content.scss). Un énoncé plus
+// ancien, sans paragraphe signé (`estUnAncienEnonce`), s'édite sans signer
+// (`signe: false`) : il garde son interligne 1,6 et ses espaces, à l'ouverture
+// comme à l'enregistrement — son affichage et son PDF ne bougent pas.
 const Paragraphe = Paragraph.extend({
+  addOptions() {
+    return { ...this.parent?.(), signe: true }
+  },
+
   parseHTML() {
     return [
       // Des énoncés anciens sont enregistrés dans l'enveloppe de rendu
@@ -37,7 +43,7 @@ const Paragraphe = Paragraph.extend({
     ]
   },
   renderHTML({ HTMLAttributes }) {
-    return ["div", mergeAttributes(HTMLAttributes, { class: "rt-p" }), 0]
+    return ["div", this.options.signe ? mergeAttributes(HTMLAttributes, { class: "rt-p" }) : HTMLAttributes, 0]
   }
 })
 
@@ -116,7 +122,7 @@ const LigneSousLeBloc = Extension.create({
   }
 })
 
-export function extensionsDeLEditeur({ placeholder = "" } = {}) {
+export function extensionsDeLEditeur({ placeholder = "", ancien = false } = {}) {
   return [
     StarterKit.configure({
       heading: { levels: [1, 2, 3] },
@@ -126,7 +132,7 @@ export function extensionsDeLEditeur({ placeholder = "" } = {}) {
       trailingNode: false,
       link: { openOnClick: false, autolink: true }
     }),
-    Paragraphe,
+    Paragraphe.configure({ signe: !ancien }),
     Puce,
     StyleTexte,
     Color,

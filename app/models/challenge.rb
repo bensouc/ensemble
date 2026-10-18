@@ -105,7 +105,10 @@ class Challenge < ApplicationRecord
   # vide rejoint alors la liste des exercices de ceinture.
   def self.create_empty(skill, current_user, for_belt: false)
     challenge = Challenge.new(skill:, name: empty_challenge_name(skill, for_belt:), user: current_user, for_belt:)
-    challenge.content = "#{for_belt ? 'Exercice de ceinture' : 'Exercice'} à REDIGER............................"
+    # Un paragraphe signé `rt-p` : l'exercice naît au format de l'éditeur, pas en
+    # « ancien énoncé » (editeur/blocs.js).
+    texte = "#{for_belt ? 'Exercice de ceinture' : 'Exercice'} à REDIGER............................"
+    challenge.content = %(<div class="rt-p">#{texte}</div>)
     challenge.save!
     challenge
   end

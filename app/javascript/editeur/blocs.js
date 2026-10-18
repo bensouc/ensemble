@@ -20,8 +20,10 @@
 // existe aussi à l'affichage.
 
 const BLOCS = "div, p, li, h1, h2, h3, h4, h5, h6, blockquote, td, th"
-// Les blocs de texte de l'éditeur, tels que getHTML() les écrit.
-const BLOCS_DE_TEXTE = "div.rt-p, h1, h2, h3"
+// Un paragraphe tel que getHTML() l'écrit : un <div>, signé `rt-p` ou non
+// (énoncé ancien), mais pas le conteneur des colonnes.
+const PARAGRAPHE = "div:not(.rt-colonnes, .rt-colonne)"
+const BLOCS_DE_TEXTE = `${PARAGRAPHE}, h1, h2, h3`
 // Ce qui coupe un paragraphe en deux. Une image ne coupe rien : l'éditeur la
 // place dans la ligne.
 const COUPENT = new Set(["TABLE", "DIV", "P", "UL", "OL", "H1", "H2", "H3", "H4", "H5", "H6", "BLOCKQUOTE", "PRE", "HR"])
@@ -105,11 +107,23 @@ function retirerRetourAvantBloc(bloc) {
   if (n?.nodeName === "BR") n.remove()
 }
 
-function transformer(html, traitement) {
+function fragment(html) {
   const modele = document.createElement("template")
   modele.innerHTML = html
+  return modele
+}
+
+function transformer(html, traitement) {
+  const modele = fragment(html)
   traitement(modele.content)
   return modele.innerHTML
+}
+
+// Un énoncé d'avant l'éditeur TipTap : du contenu, et pas un paragraphe signé
+// `rt-p`. L'éditeur le garde dans sa mise en page (extensions.js).
+export function estUnAncienEnonce(html) {
+  const racine = fragment(html).content
+  return [...racine.childNodes].some((n) => !vide(n)) && !racine.querySelector(".rt-p")
 }
 
 // Ce que l'éditeur reçoit.
@@ -129,11 +143,11 @@ export function pourLEnregistrement(html) {
     // La ligne que l'éditeur garde sous un tableau ou des colonnes finaux
     // (`LigneSousLeBloc`) : restée vide, elle n'existe pas.
     const derniere = racine.lastElementChild
-    if (derniere?.matches("div.rt-p") && !dernierNoeud(derniere) &&
+    if (derniere?.matches(PARAGRAPHE) && !dernierNoeud(derniere) &&
         derniere.previousElementSibling?.matches("table, div.rt-colonnes")) derniere.remove()
 
     // Un énoncé vide reste vide, sans ligne blanche.
-    if ([...racine.childNodes].every((n) => vide(n) || (n.nodeType === Node.ELEMENT_NODE && n.matches("div.rt-p") && !dernierNoeud(n)))) {
+    if ([...racine.childNodes].every((n) => vide(n) || (n.nodeType === Node.ELEMENT_NODE && n.matches(PARAGRAPHE) && !dernierNoeud(n)))) {
       racine.replaceChildren()
       return
     }

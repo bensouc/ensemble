@@ -4,11 +4,14 @@
 // relire ». Ce que l'éditeur ferait d'un énoncé qu'on ouvre et réenregistre.
 import { Editor } from "@tiptap/core"
 import { extensionsDeLEditeur } from "../../app/javascript/editeur/extensions"
-import { pourLEditeur, pourLEnregistrement } from "../../app/javascript/editeur/blocs"
+import { pourLEditeur, pourLEnregistrement, estUnAncienEnonce } from "../../app/javascript/editeur/blocs"
 
-const editor = new Editor({ element: document.createElement("div"), extensions: extensionsDeLEditeur() })
+// Un éditeur par mise en page, choisi comme le fait editeur_enonce_controller.
+const editeur = (ancien) => new Editor({ element: document.createElement("div"), extensions: extensionsDeLEditeur({ ancien }) })
+const editeurs = { ancien: editeur(true), nouveau: editeur(false) }
 
 window.allerRetour = function (html) {
+  const editor = estUnAncienEnonce(html) ? editeurs.ancien : editeurs.nouveau
   editor.commands.setContent(pourLEditeur(html), { emitUpdate: false })
   return pourLEnregistrement(editor.getHTML())
 }

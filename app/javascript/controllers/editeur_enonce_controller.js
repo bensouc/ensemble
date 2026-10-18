@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
 import { post } from "@rails/request.js"
-import { pourLEditeur, pourLEnregistrement } from "../editeur/blocs"
+import { pourLEditeur, pourLEnregistrement, estUnAncienEnonce } from "../editeur/blocs"
 
 // Éditeur d'énoncé d'exercice (TipTap), à la place de Trix.
 //
@@ -65,19 +65,21 @@ function traceInterligne(hauteur) {
     `<path d="m2.6 ${haut + 1.9} 1.9-1.9 1.9 1.9M2.6 ${bas - 1.9}l1.9 1.9 1.9-1.9"/>`
 }
 
-// « normal » n'écrit rien : le paragraphe prend l'interligne 1,4 de `.rt-p`.
-const INTERLIGNES = [
-  { valeur: "1", nom: "Interligne 1", hauteur: 1 },
-  { valeur: "1.2", nom: "Interligne 1,2", hauteur: 1.2 },
-  { valeur: "normal", nom: "Interligne normal (1,4)", hauteur: 1.4 },
-  { valeur: "1.6", nom: "Interligne 1,6", hauteur: 1.6 },
-  { valeur: "2", nom: "Interligne 2", hauteur: 2 }
-].map((o) => ({ ...o, trace: traceInterligne(o.hauteur) }))
+// L'interligne « normal » n'écrit rien : 1,4 dans un énoncé de cet éditeur
+// (`.rt-p`), 1,6 dans un énoncé plus ancien, qui garde sa mise en page.
+const INTERLIGNES = ["1", "1.2", "1.4", "1.6", "2"].map((valeur) => ({
+  valeur, hauteur: Number(valeur), trace: traceInterligne(Number(valeur))
+}))
 
-// Un interligne qui n'est plus au menu (2,5 et 3 l'ont été) s'affiche comme le
+function interlignes(parDefaut) {
+  return INTERLIGNES.map((o) => ({
+    ...o, nom: `Interligne ${o.valeur.replace(".", ",")}${o.valeur === parDefaut ? " (normal)" : ""}`
+  }))
+}
+
+// Un interligne qui n'est pas au menu (2,5 et 3 l'ont été) s'affiche comme le
 // plus proche.
 function interligneDuMenu(lineHeight) {
-  if (!lineHeight) return "normal"
   const v = Number(lineHeight)
   return INTERLIGNES.reduce((a, b) => (Math.abs(b.hauteur - v) < Math.abs(a.hauteur - v) ? b : a)).valeur
 }
@@ -200,7 +202,7 @@ function menuFigures() {
   </span>`
 }
 
-function barreHtml() {
+function barreHtml({ interligneParDefaut }) {
   return `<div class="trix-button-row rt-tb" role="toolbar" aria-label="Mise en forme">
     <span class="trix-button-group rt-tb__group">
       ${bouton({ commande: "bold", libelle: "Gras", glyphe: glyphe("B", "bold"), raccourci: "B" })}
@@ -224,7 +226,7 @@ function barreHtml() {
       ${bouton({ commande: "outdent", libelle: "Diminuer le retrait", glyphe: ICONES.outdent })}
       ${bouton({ commande: "indent", libelle: "Augmenter le retrait", glyphe: ICONES.indent })}
       ${menu({ nom: "alignement", libelle: "Alignement", options: ALIGNEMENTS })}
-      ${menu({ nom: "interligne", libelle: "Interligne", options: INTERLIGNES })}
+      ${menu({ nom: "interligne", libelle: "Interligne", options: interlignes(interligneParDefaut) })}
     </span>
     <span class="trix-button-group rt-tb__group">
       ${bouton({ commande: "image", libelle: "Insérer une image", glyphe: ICONES.attach })}
@@ -256,8 +258,11 @@ export default class extends Controller {
   static values = { directUploadUrl: String, blobUrlTemplate: String, placeholder: String }
 
   async connect() {
+    // Un énoncé d'avant cet éditeur garde sa mise en page, interligne compris.
+    const ancien = estUnAncienEnonce(this.inputTarget.value)
+    this.interligneParDefaut = ancien ? "1.6" : "1.4"
     // Une connexion précédente (cache Turbo) a pu laisser sa barre derrière elle.
-    this.barreTarget.innerHTML = barreHtml()
+    this.barreTarget.innerHTML = barreHtml({ interligneParDefaut: this.interligneParDefaut })
     this.zoneTarget.innerHTML = ""
 
     const [{ Editor }, { extensionsDeLEditeur }] = await Promise.all([
@@ -269,7 +274,7 @@ export default class extends Controller {
 
     this.editor = new Editor({
       element: this.zoneTarget,
-      extensions: extensionsDeLEditeur({ placeholder: this.placeholderValue }),
+      extensions: extensionsDeLEditeur({ placeholder: this.placeholderValue, ancien }),
       content: pourLEditeur(this.inputTarget.value),
       editorProps: {
         attributes: { class: "trix-content rt-editeur__contenu" },
@@ -383,7 +388,7 @@ export default class extends Controller {
     else if (menu === "colonnes") valeur === "aucune" ? c.retirerColonnes().run() : c.insererColonnes(Number(valeur)).run()
     else if (menu === "taille") valeur === "normal" ? c.unsetFontSize().run() : c.setFontSize(valeur).run()
     else {
-      const lineHeight = valeur === "normal" ? null : valeur
+      const lineHeight = valeur === this.interligneParDefaut ? null : valeur
       c.updateAttributes("paragraph", { lineHeight }).updateAttributes("heading", { lineHeight }).run()
     }
     this.fermerPopovers()
@@ -424,7 +429,7 @@ export default class extends Controller {
 
     const bloc = e.isActive("heading") ? e.getAttributes("heading") : e.getAttributes("paragraph")
     this.apercuMenu("alignement", bloc.textAlign || "left", ALIGNEMENTS)
-    this.apercuMenu("interligne", interligneDuMenu(bloc.lineHeight), INTERLIGNES)
+    this.apercuMenu("interligne", interligneDuMenu(bloc.lineHeight || this.interligneParDefaut), INTERLIGNES)
     this.apercuMenu("taille", TAILLES.some((t) => t.valeur === style.fontSize) ? style.fontSize : "normal", TAILLES)
     this.apercuMenu("colonnes", "2", COLONNES)
     const dansColonnes = e.isActive("colonnes")
@@ -446,7 +451,9 @@ export default class extends Controller {
       el.innerHTML = icone(choix.trace)
     }
     this.barreTarget.querySelectorAll(`[data-menu="${nom}"]`).forEach((b) => {
+      // La classe allume l'option en cours dans le menu ; l'attribut la dit aux lecteurs d'écran.
       b.setAttribute("aria-checked", b.dataset.valeur === choix.valeur)
+      b.classList.toggle("rt-tb__menu-item--active", b.dataset.valeur === choix.valeur)
     })
   }
 
