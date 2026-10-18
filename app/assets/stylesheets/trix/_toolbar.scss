@@ -130,28 +130,6 @@ trix-toolbar,
     &--heading { font-size: 13px; font-weight: 700; letter-spacing: -0.02em; }
   }
 
-  // --- Chemin « icône historique » ----------------------------------------
-  // Le bouton Tableau est encore injecté par rich_text_table_controller avec
-  // les classes Trix d'origine : son visuel vient d'un background-image sur
-  // ::before, et son libellé est masqué par text-indent. On l'accorde
-  // simplement à la taille des autres boutons.
-  .trix-button--icon {
-    width: var(--rt-btn-size);
-    height: var(--rt-btn-size);
-    max-width: none;
-    text-indent: -9999px;
-
-    &::before {
-      inset: 0;
-      background-size: 18px 18px;
-      opacity: 0.65;
-    }
-
-    &:hover:not(:disabled)::before { opacity: 0.9; }
-    &.trix-active::before { opacity: 1; }
-    &:disabled::before { opacity: 0.3; }
-  }
-
   // --- Nuancier de couleurs -----------------------------------------------
   .rt-tb__palette {
     position: relative;
@@ -385,21 +363,6 @@ trix-toolbar,
 }
 
 // --- Édition d'une cellule de tableau --------------------------------------
-// Les outils de la toolbar principale ne peuvent pas agir sur le contenu d'une
-// cellule (il vit dans une pièce jointe, hors du document Trix). On les met en
-// retrait tant qu'une cellule a le focus, plutôt que de les laisser suggérer
-// une action sans effet.
-trix-toolbar.rt-tb--table-focus {
-  .trix-button-row {
-    cursor: not-allowed;
-  }
-
-  .trix-button-group {
-    pointer-events: none;
-    opacity: 0.4;
-  }
-}
-
 // Sur mobile la toolbar prend de la place : boutons un peu plus larges pour la
 // cible tactile, et les groupes s'étalent sur plusieurs lignes.
 @media (max-width: 576px) {

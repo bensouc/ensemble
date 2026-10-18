@@ -35,7 +35,6 @@ Object.assign(Trix.config.lang, {
   heading2: "Sous-titre",
   heading3: "Petit titre",
   highlight: "Surligner",
-  table: "Tableau",
   textColor: "Couleur du texte",
   textAlign: "Alignement",
   alignLeft: "Aligner à gauche",

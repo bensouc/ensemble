@@ -261,8 +261,8 @@ trix-editor,
 }
 
 // --- Barre de taille et de position ------------------------------------------
-// Ajoutée par rich_text_figures_controller à la barre que Trix affiche au-dessus
-// d'une pièce jointe sélectionnée.
+// Posée par l'éditeur (editeur/piece_jointe.js) au-dessus d'une pièce jointe
+// sélectionnée.
 // Le menu et la barre vivent DANS l'énoncé (la barre est posée sur la pièce
 // jointe, à l'intérieur de .trix-content) : sans ces remises à zéro, ils
 // héritaient de sa police, de sa taille, de son interligne et de son alignement.
