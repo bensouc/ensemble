@@ -96,13 +96,44 @@ RSpec.describe Figure do
       expect([geometrie[:lignes].first, geometrie[:lignes].last]).to eq([0, geometrie[:hauteur]])
     end
 
+    describe "zone de manipulation" do
+      it "lit la taille de la zone et la place de chaque élément" do
+        zone = described_class.find("zone-80x24-b10.4.8_p2.20.8")
+
+        expect(zone.libelle).to eq("Zone de manipulation")
+        expect(zone).not_to be_inline
+        expect(zone.zone_dessin.values_at(:largeur_em, :hauteur_em)).to eq([20.0, 6.0])
+        expect(zone.zone_dessin[:elements].map { |e| [e[:materiel].id, e[:x], e[:y]] })
+          .to eq([["billet-10", 4, 8], ["piece-2", 20, 8]])
+      end
+
+      it "refuse un matériel inconnu, un élément hors du cadre, une taille hors limites" do
+        expect(described_class.id_for(kind: "zone", nom: "80x24")).to eq("zone-80x24")
+        %w[80x24-x9.1.1 80x24-b10.90.1 5x5 300x24].each do |nom|
+          expect(described_class.id_for(kind: "zone", nom:)).to be_nil, nom
+        end
+      end
+
+      it "refuse plus de 60 éléments" do
+        elements = Array.new(61) { |i| "u.#{i % 60}.0" }.join("_")
+
+        expect(described_class.id_for(kind: "zone", nom: "80x24-#{elements}")).to be_nil
+      end
+
+      it "se dessine en un seul SVG, chaque matériel à sa place" do
+        html = rendu(piece_jointe("zone-80x24-b10.4.8_d.40.0"))
+
+        expect(html).to include("rt-figure--zone").and include('aria-label="Zone de manipulation"')
+        expect(html).to include('<svg x="4" y="8"').and include('<svg x="40" y="0"')
+      end
+    end
+
     describe "matériel de manipulation" do
+      # Le matériel ne s'insère que dans une zone : il n'a pas d'`id_for`.
       it "connaît les billets, les pièces et les blocs de numération, et eux seuls" do
-        expect(described_class.id_for(kind: "billet", nom: "20")).to eq("billet-20")
-        expect(described_class.id_for(kind: "piece", nom: "2")).to eq("piece-2")
-        expect(described_class.id_for(kind: "bloc", nom: "centaine")).to eq("bloc-centaine")
-        expect(described_class.id_for(kind: "billet", nom: "7")).to be_nil
-        expect(described_class.id_for(kind: "piece", nom: "5")).to be_nil
+        expect(%w[billet-20 piece-2 bloc-centaine].map { |id| described_class.valid_id?(id) }).to all(be(true))
+        expect(%w[billet-7 piece-5 bloc-dix].map { |id| described_class.valid_id?(id) }).to all(be(false))
+        expect(described_class.id_for(kind: "billet", nom: "20")).to be_nil
       end
 
       it "se dessine dans la ligne, avec sa valeur lisible" do

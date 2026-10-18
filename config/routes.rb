@@ -227,7 +227,9 @@ Rails.application.routes.draw do
   resources :tables, only: [:create, :update]
   # Figures de l'énoncé (Seyès, horloge, pictos) : rien en base, seulement le
   # sgid et le rendu d'édition d'une figure décrite par ses paramètres.
-  resources :figures, only: [:create]
+  resources :figures, only: [:create] do
+    get :materiel, on: :collection
+  end
 
   # ###############stripe routes###############
   # namespace :stripe do

@@ -34,17 +34,27 @@ RSpec.describe "Figures de l'énoncé", type: :request do
       expect(ActionText::Attachable.from_attachable_sgid(response.parsed_body["sgid"]).id).to eq("horloge-0315-nue")
     end
 
-    it "insère du matériel dans la ligne, à la taille de son dessin" do
-      post figures_path, params: { kind: "billet", nom: "50" }, as: :json
+    it "fournit à l'éditeur de zone le catalogue du matériel, dessins compris" do
+      get materiel_figures_path, as: :json
 
-      corps = response.parsed_body
-      expect(ActionText::Attachable.from_attachable_sgid(corps["sgid"]).id).to eq("billet-50")
-      expect(corps["contentType"]).to eq(Figure::INLINE_CONTENT_TYPE)
-      expect(corps["content"]).to include("rt-figure-img--billet").and include("height: 1.7em")
+      catalogue = response.parsed_body
+      expect(catalogue["pas"]).to eq(0.25)
+      expect(catalogue["elements"].keys).to include("b10", "p2", "u", "m")
+      expect(catalogue["elements"]["b10"]).to include("libelle" => "Billet de 10 €", "hauteur" => 6.8)
+      expect(catalogue["elements"]["b10"]["image"]).to start_with("data:image/svg+xml;base64,")
     end
 
-    it "refuse un billet qui n'existe pas" do
-      post figures_path, params: { kind: "billet", nom: "7" }, as: :json
+    it "renvoie une zone de manipulation, en bloc, prête à rouvrir" do
+      post figures_path, params: { kind: "zone", nom: "80x24-b10.4.8_p2.20.8" }, as: :json
+
+      corps = response.parsed_body
+      expect(ActionText::Attachable.from_attachable_sgid(corps["sgid"]).id).to eq("zone-80x24-b10.4.8_p2.20.8")
+      expect(corps["contentType"]).to eq(Figure::CONTENT_TYPE)
+      expect(corps["content"]).to include("rt-figure-img--zone").and include("width: 20.0em")
+    end
+
+    it "refuse une zone dont un élément sort du cadre" do
+      post figures_path, params: { kind: "zone", nom: "80x24-b10.90.8" }, as: :json
 
       expect(response).to have_http_status(:unprocessable_content)
     end

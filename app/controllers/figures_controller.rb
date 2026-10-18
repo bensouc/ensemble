@@ -24,7 +24,26 @@ class FiguresController < ApplicationController
     }
   end
 
+  # Le catalogue du matériel, pour l'éditeur de zone (editeur/zone.js) : chaque
+  # élément avec son dessin, en image, et sa taille en pas de la grille.
+  def materiel
+    skip_authorization
+    render json: {
+      pas: Figure::Zone::PAS_DE_LA_GRILLE,
+      largeurs: Figure::Zone::LARGEURS.minmax, hauteurs: Figure::Zone::HAUTEURS.minmax,
+      elementsAuPlus: Figure::Zone::ELEMENTS_AU_PLUS,
+      elements: Figure::Zone::CODES.transform_values { |id| element_du_catalogue(Figure.find(id)) }
+    }
+  end
+
   private
+
+  def element_du_catalogue(figure)
+    largeur, hauteur = figure.taille_du_materiel.map { |em| (em / Figure::Zone::PAS_DE_LA_GRILLE).round(2) }
+    svg = render_to_string(partial: "figures/#{figure.kind}_svg", locals: { dessinable: figure }, formats: [:html])
+    { libelle: figure.libelle, largeur:, hauteur:,
+      image: "data:image/svg+xml;base64,#{Base64.strict_encode64(svg.strip)}" }
+  end
 
   def booleen(valeur, defaut: false)
     return defaut if valeur.nil?

@@ -98,19 +98,26 @@ const Interligne = Extension.create({
   }
 })
 
-// Une ligne sous un tableau ou des colonnes qui finissent l'énoncé : sans elle,
+// Une ligne sous un tableau, des colonnes ou une zone de manipulation qui finissent l'énoncé : sans elle,
 // on ne pouvait plus écrire dessous (seul un clic dans une bande étroite y
 // posait un curseur presque invisible, et sous des colonnes la saisie partait
 // dans la dernière colonne). Vide, elle n'est pas enregistrée (editeur/blocs.js).
 // Hors de l'historique : « Annuler » ne la retire pas.
 const BLOCS_SANS_LIGNE_DESSOUS = ["table", "colonnes"]
+// Une zone de manipulation, seule dans son paragraphe, fait bloc elle aussi.
+const estUneZone = (node) => node?.type.name === "pieceJointe" && /rt-figure-img--zone/.test(node.attrs.attachment || "")
+const finitParUnBloc = (doc) => {
+  const dernier = doc.lastChild
+  if (BLOCS_SANS_LIGNE_DESSOUS.includes(dernier?.type.name)) return true
+  return dernier?.type.name === "paragraph" && dernier.childCount === 1 && estUneZone(dernier.firstChild)
+}
 
 const LigneSousLeBloc = Extension.create({
   name: "ligneSousLeBloc",
   addProseMirrorPlugins() {
     return [new Plugin({
       appendTransaction: (_transactions, _avant, state) => {
-        if (!BLOCS_SANS_LIGNE_DESSOUS.includes(state.doc.lastChild?.type.name)) return null
+        if (!finitParUnBloc(state.doc)) return null
         return state.tr.insert(state.doc.content.size, state.schema.nodes.paragraph.create())
           .setMeta("addToHistory", false)
       }

@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
-import { post } from "@rails/request.js"
+import { get, post } from "@rails/request.js"
 import { pourLEditeur, pourLEnregistrement, estUnAncienEnonce, sansSignature } from "../editeur/blocs"
 
 // Éditeur d'énoncé d'exercice (TipTap), à la place de Trix.
@@ -172,51 +172,6 @@ function menu({ nom, libelle, options }) {
   </span>`
 }
 
-// Matériel de manipulation (Figure::MATERIEL), aux couleurs de Figure::Dessin.
-// Un clic insère ; le menu reste ouvert pour en aligner plusieurs.
-const BILLETS = [["5", "#E3E5E8", "#6F747C"], ["10", "#F6CFCB", "#C2433A"], ["20", "#CFE2F6", "#3A73BC"],
-  ["50", "#FBDDB8", "#C96F22"], ["100", "#CDE9CB", "#3B8C43"]]
-const PIECES = [["1", "#E8BE48", "#D5D8DC"], ["2", "#D5D8DC", "#E8BE48"]]
-const BLOCS = [
-  ["unite", "Unité", "#F6C343", '<path d="M8 11h7v7H8z"/><path d="M8 11l2.5-2.5h7L15 11M15 18l2.5-2.5v-7"/>'],
-  ["dizaine", "Dizaine", "#5DBB4F", '<path d="M10 5h4v15h-4z"/><path d="M10 5l2-2h4l-2 2M14 20l2-2V3"/>'],
-  ["centaine", "Centaine", "#3FA9E8", '<path d="M4 7h14v14H4z"/><path d="M4 7l2-2h14l-2 2M18 21l2-2V5"/>'],
-  ["millier", "Millier", "#E2445C", '<path d="M3 9h12v12H3z"/><path d="M3 9l6-6h12l-6 6M15 21l6-6V3"/>']
-]
-
-function menuMateriel() {
-  const choix = (id, libelle, apercu) => `<button type="button" class="rt-materiel__choix" data-materiel="${id}"
-    title="${libelle}" aria-label="Insérer : ${libelle}" tabindex="-1">${apercu}</button>`
-  const billets = BILLETS.map(([v, fond, trait]) => choix(`billet-${v}`, `Billet de ${v} €`,
-    `<svg viewBox="0 0 52 28" width="46" height="25" aria-hidden="true"><rect x="1" y="1" width="50" height="26" rx="3" fill="${fond}" stroke="${trait}" stroke-width="1.2"/>` +
-    `<text x="48" y="21" text-anchor="end" font-size="15" font-weight="800" fill="${trait}">${v}</text></svg>`)).join("")
-  const pieces = PIECES.map(([v, couronne, coeur]) => choix(`piece-${v}`, `Pièce de ${v} €`,
-    `<svg viewBox="0 0 28 28" width="26" height="26" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="${couronne}"/><circle cx="14" cy="14" r="9" fill="${coeur}"/>` +
-    `<text x="14" y="18.5" text-anchor="middle" font-size="11" font-weight="800" fill="#2F2F2F">${v}€</text></svg>`)).join("")
-  const blocs = BLOCS.map(([v, libelle, couleur, trace]) => choix(`bloc-${v}`, libelle,
-    `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="${couleur}" stroke="#3D3D3D" stroke-width="1" stroke-linejoin="round">${trace}</g></svg><span>${libelle}</span>`)).join("")
-  return `<span class="rt-tb__palette rt-figures" data-popover>
-    <button type="button" class="trix-button rt-tb__btn" data-ouvrir aria-haspopup="dialog" aria-expanded="false"
-            title="Insérer du matériel" aria-label="Insérer du matériel" tabindex="-1">${ICONES.materiel}
-      <span class="visually-hidden">Insérer du matériel</span></button>
-    <div class="rt-tb__popover rt-figures__panel" role="dialog" aria-label="Insérer du matériel" hidden>
-      <div class="rt-figures__section">
-        <span class="rt-figures__titre">Billets</span>
-        <div class="rt-figures__rangee">${billets}</div>
-      </div>
-      <div class="rt-figures__section">
-        <span class="rt-figures__titre">Pièces</span>
-        <div class="rt-figures__rangee">${pieces}</div>
-      </div>
-      <div class="rt-figures__section">
-        <span class="rt-figures__titre">Blocs de numération</span>
-        <div class="rt-figures__rangee">${blocs}</div>
-        <span class="rt-figures__aide">Cliquez plusieurs fois : ils se rangent côte à côte.</span>
-      </div>
-    </div>
-  </span>`
-}
-
 function menuFigures() {
   const pictos = PICTOS.map(([nom, libelle, traits]) => `
     <button type="button" class="rt-figures__picto" data-picto="${nom}"
@@ -285,7 +240,7 @@ function barreHtml({ interlignes }) {
       ${bouton({ commande: "table", libelle: "Tableau", glyphe: ICONES.table })}
       ${menu({ nom: "colonnes", libelle: "Colonnes", options: COLONNES })}
       ${menuFigures()}
-      ${menuMateriel()}
+      ${bouton({ commande: "zone", libelle: "Insérer une zone de manipulation", glyphe: ICONES.materiel })}
       ${bouton({ commande: "link", libelle: "Lien", glyphe: ICONES.link, raccourci: "K", classe: "rt-tb__btn--offscreen" })}
     </span>
     <span class="trix-button-group rt-tb__group rt-barre__tableau" aria-label="Tableau">
@@ -343,6 +298,7 @@ export default class extends Controller {
       if (e.key === "Enter") { e.preventDefault(); this.insererHorloge() }
     })
     this.element.addEventListener("piece-jointe:changer-heure", this.onChangerHeure)
+    this.element.addEventListener("piece-jointe:modifier-zone", (e) => this.ouvrirZone(e.detail))
     this.element.addEventListener("keydown", (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); this.lien() }
       if (e.key === "Escape") this.fermerPopovers()
@@ -424,10 +380,6 @@ export default class extends Controller {
       return this.insererFigure({ kind: ligne === "seyes-marge" ? "seyes" : ligne, marge: ligne === "seyes-marge" })
     }
     if (cible.dataset.picto) return this.insererFigure({ kind: "picto", nom: cible.dataset.picto })
-    if (cible.dataset.materiel) {
-      const [kind, nom] = cible.dataset.materiel.split("-")
-      return this.insererFigure({ kind, nom })
-    }
     if (cible.classList.contains("rt-figures__inserer")) return this.insererHorloge()
     if (cible.dataset.commande) return this.commande(cible.dataset.commande, cible.dataset.valeur)
   }
@@ -450,6 +402,7 @@ export default class extends Controller {
       case "redo": return c.redo().run()
       case "image": return this.fichierTarget.click()
       case "table": return c.insertTable({ rows: 3, cols: 3, withHeaderRow: false }).run()
+      case "zone": return this.ouvrirZone()
       case "link": return this.lien()
       case "addRowBefore": case "addRowAfter": case "addColumnBefore": case "addColumnAfter":
       case "deleteRow": case "deleteColumn": case "toggleHeaderRow": case "deleteTable":
@@ -623,7 +576,7 @@ export default class extends Controller {
     const reponse = await post("/figures", { body: params, responseKind: "json" })
     if (!reponse.ok) {
       this.barreTarget.querySelector(".rt-figures__erreur").hidden = false
-      return
+      return false
     }
     const piece = await reponse.json
 
@@ -648,6 +601,35 @@ export default class extends Controller {
     // Le menu reste ouvert après une ligne : on en ajoute une autre d'un clic.
     if (params.kind === "horloge") this.fermerPopovers()
     else this.selectionAvantPopover = this.editor.state.selection
+    return true
+  }
+
+  // Zone de manipulation (editeur/zone.js) : neuve depuis la barre, ou rouverte
+  // depuis la sienne (« Modifier la zone »). Valider insère la zone, ou la met à
+  // la place de l'ancienne, comme on change l'heure d'une horloge.
+  async ouvrirZone(cible = null) {
+    this.fermerPopovers()
+    if (!cible) this.selectionAvantPopover = this.editor.state.selection
+    const [{ EditeurDeZone, lireZone, ZONE_NEUVE }, catalogue] = await Promise.all([
+      import("../editeur/zone"), this.catalogueDuMateriel()
+    ])
+    if (!catalogue) return window.alert("Le matériel n'a pas pu être chargé. Réessayez.")
+    new EditeurDeZone({
+      hote: this.element,
+      catalogue,
+      zone: (cible && lireZone(cible.attachment)) || ZONE_NEUVE,
+      taillePolice: getComputedStyle(this.editor.view.dom).fontSize,
+      surValider: (description) =>
+        this.insererFigure({ kind: "zone", nom: description }, { remplacement: cible && { pos: cible.pos } })
+    }).ouvrir()
+  }
+
+  // Le catalogue (GET /figures/materiel), chargé une fois par éditeur.
+  catalogueDuMateriel() {
+    this.catalogue ||= get("/figures/materiel", { responseKind: "json" })
+      .then((reponse) => (reponse.ok ? reponse.json : null))
+      .catch(() => null)
+    return this.catalogue
   }
 
   // Le curseur suit-il du texte (et non le début du bloc ou une ligne d'écriture) ?

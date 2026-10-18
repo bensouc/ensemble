@@ -56,6 +56,16 @@ class Figure
       when :billet then "Billet de #{valeur} €"
       when :piece then "Pièce de #{valeur} €"
       when :bloc then NOMS_DES_BLOCS.fetch(valeur)
+      when :zone then "Zone de manipulation"
+      end
+    end
+
+    # Le cadre du dessin d'un matériel (`viewBox`), pour le poser dans une zone.
+    def materiel_boite
+      case kind
+      when :billet then "0 0 130 68"
+      when :piece then "0 0 44 44"
+      when :bloc then "0 0 #{bloc_dessin[:boite].join(' ')}"
       end
     end
 

@@ -141,23 +141,21 @@ $carreaux-rangees: 3;
     print-color-adjust: exact;
   }
 
-  // Le matériel (billets, pièces, blocs) s'aligne par le bas dans la ligne,
-  // pièce après pièce, comme posé sur la table. Sa taille est celle du dessin.
-  .rt-figure--billet,
-  .rt-figure--piece,
-  .rt-figure--bloc {
-    display: inline-block;
-    vertical-align: bottom;
+  // Une zone de manipulation (figures/_zone_svg) : à sa taille, rétrécie si la
+  // ligne est plus étroite.
+  .rt-figure--zone {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0.4em 0;
 
     svg {
       display: block;
+      max-width: 100%;
+      height: auto;
     }
   }
 
-  // Deux billets côte à côte ne se touchent pas ; pièces et blocs, si.
-  .rt-figure--billet {
-    margin-right: 0.2em;
-  }
 
   // Un pictogramme se lit comme une lettre de la phrase.
   .rt-figure--picto {
@@ -215,20 +213,22 @@ trix-editor,
     vertical-align: -0.2em;
   }
 
-  figure.attachment:has(> .rt-figure-img--billet),
-  figure.attachment:has(> .rt-figure-img--piece),
-  figure.attachment:has(> .rt-figure-img--bloc) {
-    vertical-align: bottom;
-  }
 
-  figure.attachment:has(> .rt-figure-img--billet) {
-    margin-right: 0.2em;
-  }
-
-  .rt-figure-img--billet,
-  .rt-figure-img--piece,
-  .rt-figure-img--bloc {
+  // Dans l'éditeur, la zone montre son cadre ; un clic la sélectionne, « Modifier
+  // la zone » l'ouvre (editeur/zone.js). La pièce jointe épouse la zone, au lieu
+  // de prendre toute la ligne comme les autres figures.
+  figure.attachment:has(> .rt-figure-img--zone) {
     display: block;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .rt-figure-img--zone {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    outline: 1px dashed var(--rt-line-strong, #ddd);
+    outline-offset: 2px;
   }
 
   .rt-figure-img--picto {
@@ -476,25 +476,6 @@ trix-toolbar,
     color: #ce3e1b;
   }
 
-  // Menu du matériel : un aperçu par choix, à sa largeur.
-  .rt-materiel__choix {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    min-height: 34px;
-    padding: 3px 6px;
-    background: var(--rt-surface);
-    border: 1px solid var(--rt-line);
-    border-radius: 8px;
-    font-size: 12px;
-    color: var(--rt-ink);
-    cursor: pointer;
-
-    svg { display: block; }
-
-    &:hover { border-color: var(--rt-accent); }
-  }
-
   .rt-figures__picto {
     width: 34px;
     height: 34px;
@@ -511,3 +492,21 @@ trix-toolbar,
   }
 }
 
+// Un choix de matériel, dans la palette de l'éditeur de zone (editeur/zone.js).
+.rt-materiel__choix {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 3px 6px;
+  background: var(--rt-surface);
+  border: 1px solid var(--rt-line);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--rt-ink);
+  cursor: pointer;
+
+  svg { display: block; }
+
+  &:hover { border-color: var(--rt-accent); }
+}

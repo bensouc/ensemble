@@ -153,8 +153,10 @@ export function pourLEnregistrement(html) {
     // La ligne que l'éditeur garde sous un tableau ou des colonnes finaux
     // (`LigneSousLeBloc`) : restée vide, elle n'existe pas.
     const derniere = racine.lastElementChild
+    const avant = derniere?.previousElementSibling
+    const zone = avant?.matches(PARAGRAPHE) && dernierNoeud(avant)?.matches?.('figure[data-trix-attachment*="rt-figure-img--zone"]')
     if (derniere?.matches(PARAGRAPHE) && !dernierNoeud(derniere) &&
-        derniere.previousElementSibling?.matches("table, div.rt-colonnes")) derniere.remove()
+        (avant?.matches("table, div.rt-colonnes") || zone)) derniere.remove()
 
     // Un énoncé vide reste vide, sans ligne blanche.
     if ([...racine.childNodes].every((n) => vide(n) || (n.nodeType === Node.ELEMENT_NODE && n.matches(PARAGRAPHE) && !dernierNoeud(n)))) {

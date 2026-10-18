@@ -94,6 +94,8 @@ class VuePieceJointe {
     this.dom.contentEditable = "false"
     // Glisser la pièce la déplace dans l'énoncé (ProseMirror gère le dépôt).
     this.dom.draggable = true
+    // Un double-clic sur une zone de manipulation l'ouvre, comme « Modifier la zone ».
+    this.dom.addEventListener("dblclick", () => { if (this.estZone) this.modifierZone() })
     this.rendre(node)
   }
 
@@ -174,6 +176,12 @@ class VuePieceJointe {
     return true
   }
 
+  modifierZone() {
+    this.dom.dispatchEvent(new CustomEvent("piece-jointe:modifier-zone", {
+      bubbles: true, detail: { pos: this.getPos(), attachment: this.node.attrs.attachment }
+    }))
+  }
+
   // --- Barre de taille et de position --------------------------------------------
 
   get estRedimensionnable() {
@@ -184,6 +192,11 @@ class VuePieceJointe {
     return !!this.dom.querySelector(".rt-figure-img--horloge")
   }
 
+  // Une zone de manipulation a sa propre taille : pas de ¼ ½ ¾, mais « Modifier ».
+  get estZone() {
+    return !!this.dom.querySelector(".rt-figure-img--zone")
+  }
+
   afficherBarre() {
     this.barre?.remove()
     const barre = document.createElement("div")
@@ -191,7 +204,9 @@ class VuePieceJointe {
     barre.contentEditable = "false"
 
     let html = ""
-    if (this.estRedimensionnable) {
+    if (this.estZone) {
+      html += '<button type="button" class="rt-fig-bar__btn" data-zone>Modifier la zone</button><span class="rt-fig-bar__sep" aria-hidden="true"></span>'
+    } else if (this.estRedimensionnable) {
       const [taille, position] = presentationEnParties(lireJson(this.node.attrs.attributes).presentation)
       const tailleCourante = taille || (this.estHorloge ? "25" : "100")
       // Une taille libre (33 %) n'enfonce aucun des boutons ¼ ½ ¾.
@@ -219,7 +234,7 @@ class VuePieceJointe {
     barre.addEventListener("click", (e) => this.clicBarre(e))
     this.dom.prepend(barre)
     this.barre = barre
-    if (this.estRedimensionnable) this.afficherPoignee()
+    if (this.estRedimensionnable && !this.estZone) this.afficherPoignee()
   }
 
   // --- Poignée : la taille à la souris ---------------------------------------------
@@ -287,6 +302,8 @@ class VuePieceJointe {
       this.redimensionner(bouton.dataset.taille, this.positionCourante || "centre")
     } else if (bouton.dataset.position) {
       this.redimensionner(this.tailleCourante, bouton.dataset.position)
+    } else if (bouton.hasAttribute("data-zone")) {
+      this.modifierZone()
     } else if (bouton.hasAttribute("data-heure")) {
       this.dom.dispatchEvent(new CustomEvent("piece-jointe:changer-heure", {
         bubbles: true, detail: { pos: this.getPos(), attachment: this.node.attrs.attachment }
