@@ -21,11 +21,43 @@ export function lireZone(attachment) {
   return { largeur: Number(match[1]), hauteur: Number(match[2]), elements }
 }
 
+// La description d'une zone, telle que POST /figures l'attend.
+export function decrireZone({ largeur, hauteur, elements }) {
+  const decrits = elements.map((e) => `${e.code}.${e.x}.${e.y}${e.taille === 100 ? "" : `.${e.taille}`}`).join("_")
+  return `${largeur}x${hauteur}${decrits ? `-${decrits}` : ""}`
+}
+
+// Les éléments que le catalogue connaît : un matériel retiré depuis est laissé de côté.
+export function elementsConnus(catalogue, elements) {
+  return elements.filter((e) => catalogue.elements[e.code]).map((e) => ({ ...e }))
+}
+
+// La place d'un élément, en pas de grille, à sa taille.
+function dimensions(catalogue, e) {
+  const modele = catalogue.elements[e.code]
+  return { largeur: (modele.largeur * e.taille) / 100, hauteur: (modele.hauteur * e.taille) / 100 }
+}
+
+// Le cadre d'une zone, dans les limites du catalogue : il ne rétrécit pas au
+// point de couper un élément.
+export function cadreBorne(catalogue, elements, largeur, hauteur) {
+  const [largeurMin, largeurMax] = catalogue.largeurs
+  const [hauteurMin, hauteurMax] = catalogue.hauteurs
+  const bords = elements.map((e) => {
+    const { largeur: l, hauteur: h } = dimensions(catalogue, e)
+    return [Math.ceil(e.x + l), Math.ceil(e.y + h)]
+  })
+  return {
+    largeur: borner(largeur, Math.max(largeurMin, ...bords.map((b) => b[0])), largeurMax),
+    hauteur: borner(hauteur, Math.max(hauteurMin, ...bords.map((b) => b[1])), hauteurMax)
+  }
+}
+
 // Taille d'un élément, en % de celle du matériel, par crans.
 const CRAN = 10
 const PAS_DU_CLAVIER = { "+": CRAN, "=": CRAN, "-": -CRAN, "_": -CRAN }
 
-const borner = (v, min, max) => Math.min(Math.max(v, min), max)
+function borner(v, min, max) { return Math.min(Math.max(v, min), max) }
 
 export class EditeurDeZone {
   constructor({ hote, catalogue, zone, taillePolice, surValider }) {
@@ -33,8 +65,7 @@ export class EditeurDeZone {
     this.catalogue = catalogue
     this.largeur = zone.largeur
     this.hauteur = zone.hauteur
-    // Un code inconnu du catalogue (matériel retiré depuis) est laissé de côté.
-    this.elements = zone.elements.filter((e) => catalogue.elements[e.code]).map((e) => ({ ...e }))
+    this.elements = elementsConnus(catalogue, zone.elements)
     this.police = parseFloat(taillePolice)
     this.surValider = surValider
     this.choisi = null
@@ -97,10 +128,8 @@ export class EditeurDeZone {
     return `${pas * this.catalogue.pas}em`
   }
 
-  // La place d'un élément, en pas de grille, à sa taille.
   dimensions(e) {
-    const modele = this.catalogue.elements[e.code]
-    return { largeur: (modele.largeur * e.taille) / 100, hauteur: (modele.hauteur * e.taille) / 100 }
+    return dimensions(this.catalogue, e)
   }
 
   // Le cadre est grossi (×2 au plus) pour placer le matériel avec précision, dans
@@ -192,8 +221,7 @@ export class EditeurDeZone {
   }
 
   async valider() {
-    const elements = this.elements.map((e) => `${e.code}.${e.x}.${e.y}${e.taille === 100 ? "" : `.${e.taille}`}`).join("_")
-    const ok = await this.surValider(`${this.largeur}x${this.hauteur}${elements ? `-${elements}` : ""}`)
+    const ok = await this.surValider(decrireZone(this))
     if (ok) return this.fermer()
     const erreur = this.racine.querySelector(".rt-zone__erreur")
     erreur.textContent = "La zone n'a pas pu être enregistrée. Réessayez."
@@ -296,15 +324,7 @@ export class EditeurDeZone {
     return (dx, dy) => Object.assign(e, this.dansLaZone(e, debut.x + dx, debut.y + dy))
   }
 
-  // La zone ne rétrécit pas au point de couper un élément.
   redimensionner(largeur, hauteur) {
-    const [largeurMin, largeurMax] = this.catalogue.largeurs
-    const [hauteurMin, hauteurMax] = this.catalogue.hauteurs
-    const bords = this.elements.map((e) => {
-      const { largeur: l, hauteur: h } = this.dimensions(e)
-      return [Math.ceil(e.x + l), Math.ceil(e.y + h)]
-    })
-    this.largeur = borner(largeur, Math.max(largeurMin, ...bords.map((b) => b[0])), largeurMax)
-    this.hauteur = borner(hauteur, Math.max(hauteurMin, ...bords.map((b) => b[1])), hauteurMax)
+    Object.assign(this, cadreBorne(this.catalogue, this.elements, largeur, hauteur))
   }
 }

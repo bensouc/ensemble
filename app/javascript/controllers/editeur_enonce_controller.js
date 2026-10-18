@@ -300,6 +300,7 @@ export default class extends Controller {
     })
     this.element.addEventListener("piece-jointe:changer-heure", this.onChangerHeure)
     this.element.addEventListener("piece-jointe:modifier-zone", (e) => this.ouvrirZone(e.detail))
+    this.element.addEventListener("piece-jointe:cadre-zone", (e) => this.changerLeCadre(e.detail))
     this.element.addEventListener("keydown", (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); this.lien() }
       if (e.key === "Escape") this.fermerPopovers()
@@ -624,6 +625,20 @@ export default class extends Controller {
       taillePolice: getComputedStyle(this.editor.view.dom).fontSize,
       surValider: (description) => this.insererFigure({ kind: "zone", nom: description }, { remplacement: cible })
     }).ouvrir()
+  }
+
+  // La poignée d'une zone, dans l'énoncé, a tiré son cadre : la zone est
+  // remplacée par une zone de ce cadre, borné comme dans l'éditeur de zone.
+  async changerLeCadre({ pos, attachment, largeur, hauteur }) {
+    const [{ cadreBorne, decrireZone, elementsConnus, lireZone }, catalogue] = await Promise.all([
+      import("../editeur/zone"), this.catalogueDuMateriel()
+    ])
+    const zone = catalogue && lireZone(attachment)
+    if (!zone) return
+    const elements = elementsConnus(catalogue, zone.elements)
+    const cadre = cadreBorne(catalogue, elements, largeur, hauteur)
+    if (cadre.largeur === zone.largeur && cadre.hauteur === zone.hauteur) return
+    this.insererFigure({ kind: "zone", nom: decrireZone({ ...cadre, elements }) }, { remplacement: { pos } })
   }
 
   // Le catalogue (GET /figures/materiel), chargé une fois par éditeur ; après un

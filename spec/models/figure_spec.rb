@@ -135,6 +135,16 @@ RSpec.describe Figure do
         expect(html.scan("<symbol").size).to eq(2)
         expect(html).to include('xlink:href="#rt-materiel-bloc-dizaine" x="44" y="0"').and include(">100</text>")
       end
+
+      # Sa poignée agrandit son cadre (une autre zone), jamais son dessin.
+      it "garde sa largeur : seule sa position compte" do
+        calee = rendu(piece_jointe("zone-80x24-b10.4.8", presentation: "droite"))
+        ancienne = rendu(piece_jointe("zone-80x24-b10.4.8", presentation: "taille-60 centre"))
+
+        expect(calee).to include("rt-fig--droite")
+        expect(ancienne).to include("rt-fig--centre")
+        expect([calee, ancienne]).to all(satisfy { |html| !html.match?(/width:\s*\d+%/) })
+      end
     end
 
     describe "matériel de manipulation" do

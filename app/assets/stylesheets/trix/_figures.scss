@@ -143,20 +143,18 @@ $carreaux-rangees: 3;
 
   // Une zone de manipulation (figures/_zone_svg) : à sa taille, rétrécie si la
   // ligne est plus étroite.
+  // Seuls le haut et le bas : centrée, ses marges latérales restent automatiques.
   .rt-figure--zone {
     display: block;
     width: fit-content;
     max-width: 100%;
-    margin: 0.4em 0;
+    margin-block: 0.4em;
 
     svg {
       display: block;
       max-width: 100%;
       height: auto;
     }
-
-    // Agrandie ou réduite dans l'éditeur (taille-N) : le dessin suit sa largeur.
-    &.rt-fig svg { width: 100%; }
   }
 
   // Un pictogramme se lit comme une lettre de la phrase.
@@ -216,8 +214,8 @@ trix-editor,
   }
 
   // Dans l'éditeur, la zone montre son cadre ; un clic la sélectionne, « Modifier
-  // la zone » l'ouvre (editeur/zone.js). Elle épouse sa largeur naturelle
-  // (--rt-largeur, figures/_editor), ou celle choisie à la poignée.
+  // la zone » l'ouvre (editeur/zone.js), sa poignée tire son cadre. Elle épouse
+  // sa largeur naturelle (--rt-largeur, figures/_editor).
   figure.attachment[data-trix-content-type="application/vnd.ensemble.figure-zone"] {
     display: block;
     width: fit-content;
@@ -226,7 +224,9 @@ trix-editor,
     padding: 0;
   }
 
-  .rt-figure-img--zone {
+  // `img` : passe devant `.rt-fig img { width: 100% }`, qui, une fois la zone
+  // alignée, la ramenait à la taille par défaut d'un SVG (300 px).
+  img.rt-figure-img--zone {
     display: block;
     width: var(--rt-largeur, 100%);
     max-width: 100%;
@@ -234,8 +234,6 @@ trix-editor,
     outline: 1px dashed var(--rt-line-strong, #ddd);
     outline-offset: 2px;
   }
-
-  figure.attachment.rt-fig > .rt-figure-img--zone { width: 100%; }
 
   .rt-figure-img--picto {
     display: block;
