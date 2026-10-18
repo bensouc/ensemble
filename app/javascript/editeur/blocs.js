@@ -126,6 +126,16 @@ export function estUnAncienEnonce(html) {
   return [...racine.childNodes].some((n) => !vide(n)) && !racine.querySelector(".rt-p")
 }
 
+// Ramène un énoncé à l'ancien format : ses paragraphes perdent leur signature.
+export function sansSignature(html) {
+  return transformer(html, (racine) => {
+    racine.querySelectorAll(".rt-p").forEach((p) => {
+      p.classList.remove("rt-p")
+      if (!p.classList.length) p.removeAttribute("class")
+    })
+  })
+}
+
 // Ce que l'éditeur reçoit.
 export function pourLEditeur(html) {
   return transformer(html, (racine) => {
