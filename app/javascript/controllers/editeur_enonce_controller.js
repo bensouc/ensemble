@@ -46,6 +46,7 @@ const ICONES = {
   colonneSuppr: icone('<rect x="7.5" y="3.5" width="9" height="17" rx="1.5"/><path d="m10 9.5 4 5M14 9.5l-4 5"/>'),
   entete: icone('<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17"/><path d="M3.5 4.5h17v5h-17z" style="fill:currentColor;opacity:.35"/>'),
   colonnes: icone('<rect x="3.5" y="4.5" width="7.5" height="15" rx="1.5"/><rect x="13" y="4.5" width="7.5" height="15" rx="1.5"/>'),
+  bordures: icone('<rect x="3.5" y="4.5" width="17" height="15" rx="2" stroke-dasharray="2.2 2"/><path d="M3.5 10h17M3.5 15h17M10 4.5v15" stroke-dasharray="2.2 2"/>'),
   tableSuppr: icone('<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="m9 9.5 6 6M15 9.5l-6 6"/>')
 }
 
@@ -249,6 +250,7 @@ function barreHtml({ interlignes }) {
       ${bouton({ commande: "deleteRow", libelle: "Supprimer la ligne", glyphe: ICONES.ligneSuppr })}
       ${bouton({ commande: "deleteColumn", libelle: "Supprimer la colonne", glyphe: ICONES.colonneSuppr })}
       ${bouton({ commande: "toggleHeaderRow", libelle: "Ligne d'en-tête", glyphe: ICONES.entete })}
+      ${bouton({ commande: "bordures", libelle: "Masquer les bordures", glyphe: ICONES.bordures })}
       ${bouton({ commande: "deleteTable", libelle: "Supprimer le tableau", glyphe: ICONES.tableSuppr })}
     </span>
     <span class="trix-button-group-spacer"></span>
@@ -359,7 +361,16 @@ export default class extends Controller {
   // Toujours le HTML complet : `editor.isEmpty` peut juger vide un énoncé fait
   // d'une seule image, qu'on aurait alors effacé à l'enregistrement.
   synchroniser() {
-    this.inputTarget.value = pourLEnregistrement(this.editor.getHTML())
+    this.inputTarget.value = pourLEnregistrement(this.editor.getHTML(), { tableaux: this.largeursDesTableaux() })
+  }
+
+  // Largeur de chaque tableau et de ce qui le contient, dans l'ordre du document :
+  // l'enregistrement en tire les proportions des colonnes (editeur/blocs.js).
+  largeursDesTableaux() {
+    return [...this.editor.view.dom.querySelectorAll("table")].map((table) => ({
+      tableau: table.getBoundingClientRect().width,
+      conteneur: table.parentElement.clientWidth
+    }))
   }
 
   // --- Barre ---------------------------------------------------------------------
@@ -399,6 +410,7 @@ export default class extends Controller {
       case "redo": return c.redo().run()
       case "image": return this.fichierTarget.click()
       case "table": return c.insertTable({ rows: 3, cols: 3, withHeaderRow: false }).run()
+      case "bordures": return c.updateAttributes("table", { bordures: this.editor.getAttributes("table").bordures === false }).run()
       case "link": return this.lien()
       case "addRowBefore": case "addRowAfter": case "addColumnBefore": case "addColumnAfter":
       case "deleteRow": case "deleteColumn": case "toggleHeaderRow": case "deleteTable":
@@ -451,7 +463,8 @@ export default class extends Controller {
     const actif = {
       bold: e.isActive("bold"), italic: e.isActive("italic"), underline: e.isActive("underline"),
       strike: e.isActive("strike"), blockquote: e.isActive("blockquote"), codeBlock: e.isActive("codeBlock"),
-      bulletList: e.isActive("bulletList"), orderedList: e.isActive("orderedList")
+      bulletList: e.isActive("bulletList"), orderedList: e.isActive("orderedList"),
+      bordures: e.isActive("table") && e.getAttributes("table").bordures === false
     }
     this.barreTarget.querySelectorAll("[data-commande]").forEach((b) => {
       const nom = b.dataset.commande

@@ -147,6 +147,36 @@
     background: var(--rt-accent-soft);
   }
 
+  // Élargir une colonne : on attrape son bord droit (poignée de TipTap,
+  // `column-resize-handle`), le curseur le dit pendant le geste.
+  .rt-table__grid .rt-cell {
+    position: relative;
+  }
+
+  .column-resize-handle {
+    position: absolute;
+    top: 0;
+    right: -2px;
+    bottom: -1px;
+    z-index: 2;
+    width: 4px;
+    background: var(--rt-accent);
+    pointer-events: none;
+  }
+
+  &.resize-cursor,
+  .resize-cursor {
+    cursor: col-resize;
+  }
+
+  // Sans bordures, le tableau garde dans l'éditeur des pointillés légers, pour
+  // voir où sont les cases ; l'affichage et le PDF n'en montrent rien.
+  .rt-table__grid.rt-table--sans-bordure,
+  .rt-table__grid.rt-table--sans-bordure .rt-cell {
+    border-style: dashed;
+    border-color: var(--rt-line-strong);
+  }
+
   // Le curseur peut se poser entre deux blocs (avant ou après un tableau).
   .ProseMirror-gapcursor::after {
     border-top-color: var(--rt-ink);
