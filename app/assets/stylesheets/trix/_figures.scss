@@ -154,6 +154,11 @@ $carreaux-rangees: 3;
     }
   }
 
+  // Deux billets côte à côte ne se touchent pas ; pièces et blocs, si.
+  .rt-figure--billet {
+    margin-right: 0.2em;
+  }
+
   // Un pictogramme se lit comme une lettre de la phrase.
   .rt-figure--picto {
     display: inline-block;
@@ -214,6 +219,10 @@ trix-editor,
   figure.attachment:has(> .rt-figure-img--piece),
   figure.attachment:has(> .rt-figure-img--bloc) {
     vertical-align: bottom;
+  }
+
+  figure.attachment:has(> .rt-figure-img--billet) {
+    margin-right: 0.2em;
   }
 
   .rt-figure-img--billet,
