@@ -107,7 +107,8 @@ module PdfGenerator
   # page `file://` — ce dont ont besoin les bancs d'essai de scripts/.
   # Y vivent la détection du binaire (config/initializers/ferrum.rb), les flags
   # indispensables en conteneur et le retry sur démarrage lent.
-  def self.local_browser(retries: 2, **overrides)
+  # `browser_options` s'ajoute aux flags ci-dessous au lieu de les remplacer.
+  def self.local_browser(retries: 2, browser_options: {}, **overrides)
     Rails.logger.info "[PdfGenerator] Lancement de Chrome: #{CHROME_PATH} (exists: #{File.exist?(CHROME_PATH.to_s)})"
     Ferrum::Browser.new(**{
       browser_path: CHROME_PATH,
@@ -119,7 +120,7 @@ module PdfGenerator
         "disable-setuid-sandbox": true,
         "disable-dev-shm-usage": true,
         "disable-gpu": true
-      }
+      }.merge(browser_options)
     }.merge(overrides))
   rescue Ferrum::ProcessTimeoutError => e
     retries -= 1
