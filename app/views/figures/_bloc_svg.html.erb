@@ -1,0 +1,4 @@
+<%# Bloc de numération en perspective cavalière (géométrie : `Figure#bloc_dessin`) : trois faces et leur quadrillage. %>
+<% d = dessinable.bloc_dessin %>
+<% devant, dessus, cote = d[:couleurs] %>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 <%= d[:boite][0] %> <%= d[:boite][1] %>" width="<%= d[:largeur_em] %>em" height="<%= d[:hauteur_em] %>em" role="img" aria-label="<%= dessinable.libelle %>"><polygon points="<%= d[:devant] %>" fill="<%= devant %>" stroke="<%= cote %>" stroke-width="0.8" stroke-linejoin="round"></polygon><polygon points="<%= d[:dessus] %>" fill="<%= dessus %>" stroke="<%= cote %>" stroke-width="0.8" stroke-linejoin="round"></polygon><polygon points="<%= d[:cote] %>" fill="<%= cote %>" stroke="<%= cote %>" stroke-width="0.8" stroke-linejoin="round"></polygon><% if d[:grille].present? %><path d="<%= d[:grille] %>" fill="none" stroke="#FFFFFF" stroke-opacity="0.75" stroke-width="0.6"></path><% end %></svg>

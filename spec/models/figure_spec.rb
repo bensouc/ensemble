@@ -96,6 +96,33 @@ RSpec.describe Figure do
       expect([geometrie[:lignes].first, geometrie[:lignes].last]).to eq([0, geometrie[:hauteur]])
     end
 
+    describe "matériel de manipulation" do
+      it "connaît les billets, les pièces et les blocs de numération, et eux seuls" do
+        expect(described_class.id_for(kind: "billet", nom: "20")).to eq("billet-20")
+        expect(described_class.id_for(kind: "piece", nom: "2")).to eq("piece-2")
+        expect(described_class.id_for(kind: "bloc", nom: "centaine")).to eq("bloc-centaine")
+        expect(described_class.id_for(kind: "billet", nom: "7")).to be_nil
+        expect(described_class.id_for(kind: "piece", nom: "5")).to be_nil
+      end
+
+      it "se dessine dans la ligne, avec sa valeur lisible" do
+        html = rendu(piece_jointe("billet-100"))
+
+        expect(html).to include("rt-figure--billet-100").and include('aria-label="Billet de 100 €"')
+        expect(html).to include(">100</text>")
+        expect(described_class.find("billet-100")).to be_inline
+      end
+
+      it "dessine un millier en cube quadrillé, plus grand qu'une centaine" do
+        millier = described_class.find("bloc-millier")
+        centaine = described_class.find("bloc-centaine")
+
+        expect(millier.libelle).to eq("Un millier")
+        expect(millier.taille_du_materiel[1]).to be > centaine.taille_du_materiel[1]
+        expect(rendu(piece_jointe("bloc-millier"))).to include("<polygon").and include('stroke="#FFFFFF"')
+      end
+    end
+
     it "donne à la ligne simple la hauteur d'un carreau Seyès, à l'écran comme au PDF" do
       ligne = described_class.find("ligne")
       seyes = described_class.find("seyes")

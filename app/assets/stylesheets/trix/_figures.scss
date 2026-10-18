@@ -141,6 +141,19 @@ $carreaux-rangees: 3;
     print-color-adjust: exact;
   }
 
+  // Le matériel (billets, pièces, blocs) s'aligne par le bas dans la ligne,
+  // pièce après pièce, comme posé sur la table. Sa taille est celle du dessin.
+  .rt-figure--billet,
+  .rt-figure--piece,
+  .rt-figure--bloc {
+    display: inline-block;
+    vertical-align: bottom;
+
+    svg {
+      display: block;
+    }
+  }
+
   // Un pictogramme se lit comme une lettre de la phrase.
   .rt-figure--picto {
     display: inline-block;
@@ -195,6 +208,18 @@ trix-editor,
     padding: 0;
     margin: 0;
     vertical-align: -0.2em;
+  }
+
+  figure.attachment:has(> .rt-figure-img--billet),
+  figure.attachment:has(> .rt-figure-img--piece),
+  figure.attachment:has(> .rt-figure-img--bloc) {
+    vertical-align: bottom;
+  }
+
+  .rt-figure-img--billet,
+  .rt-figure-img--piece,
+  .rt-figure-img--bloc {
+    display: block;
   }
 
   .rt-figure-img--picto {
@@ -440,6 +465,25 @@ trix-toolbar,
   .rt-figures__erreur {
     font-size: 12px;
     color: #ce3e1b;
+  }
+
+  // Menu du matériel : un aperçu par choix, à sa largeur.
+  .rt-materiel__choix {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 34px;
+    padding: 3px 6px;
+    background: var(--rt-surface);
+    border: 1px solid var(--rt-line);
+    border-radius: 8px;
+    font-size: 12px;
+    color: var(--rt-ink);
+    cursor: pointer;
+
+    svg { display: block; }
+
+    &:hover { border-color: var(--rt-accent); }
   }
 
   .rt-figures__picto {

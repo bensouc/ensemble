@@ -6,9 +6,11 @@
 
   Pas de helper d'application ici : rails_admin rend aussi ce partial, sans eux.
 %>
-<% classes = ["rt-figure", "rt-figure--#{figure.kind}", ("rt-figure--marge" if figure.kind == :seyes && figure.marge?)].compact %>
+<% classes = ["rt-figure", "rt-figure--#{figure.kind}", ("rt-figure--marge" if figure.kind == :seyes && figure.marge?),
+               ("rt-figure--#{figure.kind}-#{figure.valeur}" if figure.valeur)].compact %>
 <% if figure.inline? %>
-  <span class="<%= classes.join(" ") %>"><%= render "figures/picto_svg", dessinable: figure %></span>
+  <%# Pictogramme ou matériel : un dessin par sorte (figures/_picto_svg, _billet_svg…). %>
+  <span class="<%= classes.join(" ") %>"><%= render "figures/#{figure.kind}_svg", dessinable: figure %></span>
 <% else %>
   <% presentation = FigurePresentation.attributs(figure, defaut: figure.presentation_par_defaut) %>
   <figure class="<%= (classes + presentation[:classes]).join(" ") %>"<% if presentation[:style] %> style="<%= presentation[:style] %>"<% end %>>

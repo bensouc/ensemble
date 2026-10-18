@@ -1,0 +1,3 @@
+<%# Pièce de 1 ou 2 € (couleurs : `Figure#piece_dessin`) : couronne, cœur, valeur. %>
+<% d = dessinable.piece_dessin %>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44 44" width="<%= d[:taille] %>em" height="<%= d[:taille] %>em" role="img" aria-label="<%= dessinable.libelle %>"><circle cx="22" cy="22" r="20.5" fill="<%= d[:couronne][:fond] %>" stroke="<%= d[:couronne][:trait] %>" stroke-width="1.2"></circle><circle cx="22" cy="22" r="14" fill="<%= d[:coeur][:fond] %>" stroke="<%= d[:coeur][:trait] %>" stroke-width="0.8"></circle><text x="22" y="28.5" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="17" font-weight="800" fill="#2F2F2F"><%= dessinable.valeur %><tspan dx="1.5" font-size="14">€</tspan></text></svg>

@@ -34,6 +34,21 @@ RSpec.describe "Figures de l'énoncé", type: :request do
       expect(ActionText::Attachable.from_attachable_sgid(response.parsed_body["sgid"]).id).to eq("horloge-0315-nue")
     end
 
+    it "insère du matériel dans la ligne, à la taille de son dessin" do
+      post figures_path, params: { kind: "billet", nom: "50" }, as: :json
+
+      corps = response.parsed_body
+      expect(ActionText::Attachable.from_attachable_sgid(corps["sgid"]).id).to eq("billet-50")
+      expect(corps["contentType"]).to eq(Figure::INLINE_CONTENT_TYPE)
+      expect(corps["content"]).to include("rt-figure-img--billet").and include("height: 1.7em")
+    end
+
+    it "refuse un billet qui n'existe pas" do
+      post figures_path, params: { kind: "billet", nom: "7" }, as: :json
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
     it "marque un pictogramme comme se plaçant dans la phrase" do
       post figures_path, params: { kind: "picto", nom: "croix" }, as: :json
 

@@ -35,6 +35,7 @@ const ICONES = {
   // Des formes géométriques : le menu ne contient pas que des horloges (lignes
   // d'écriture, pictogrammes aussi), l'horloge en icône le laissait croire.
   figure: icone('<circle cx="7.5" cy="7.5" r="4"/><rect x="13" y="3.5" width="7.5" height="7.5" rx="1"/><path d="M12 13.5 16.5 20.5h-9z"/>'),
+  materiel: icone('<rect x="2.5" y="5.5" width="14" height="9" rx="1.5"/><path d="M6 10h0.01"/><circle cx="16.5" cy="15.5" r="5" style="fill:var(--rt-surface, #fff)"/>'),
   link: icone('<path d="m9.5 14.5 5-5"/><path d="M13 7.5 14.5 6a4 4 0 0 1 5.5 5.5L18.5 13"/><path d="M11 16.5 9.5 18A4 4 0 0 1 4 12.5L5.5 11"/>'),
   undo: icone('<path d="m9 14-5-5 5-5"/><path d="M4 9h9.5a6 6 0 0 1 0 12H8"/>'),
   redo: icone('<path d="m15 14 5-5-5-5"/><path d="M20 9h-9.5a6 6 0 0 0 0 12H16"/>'),
@@ -171,6 +172,51 @@ function menu({ nom, libelle, options }) {
   </span>`
 }
 
+// Matériel de manipulation (Figure::MATERIEL), aux couleurs de Figure::Dessin.
+// Un clic insère ; le menu reste ouvert pour en aligner plusieurs.
+const BILLETS = [["5", "#E3E5E8", "#6F747C"], ["10", "#F6CFCB", "#C2433A"], ["20", "#CFE2F6", "#3A73BC"],
+  ["50", "#FBDDB8", "#C96F22"], ["100", "#CDE9CB", "#3B8C43"]]
+const PIECES = [["1", "#E8BE48", "#D5D8DC"], ["2", "#D5D8DC", "#E8BE48"]]
+const BLOCS = [
+  ["unite", "Unité", "#F6C343", '<path d="M8 11h7v7H8z"/><path d="M8 11l2.5-2.5h7L15 11M15 18l2.5-2.5v-7"/>'],
+  ["dizaine", "Dizaine", "#5DBB4F", '<path d="M10 5h4v15h-4z"/><path d="M10 5l2-2h4l-2 2M14 20l2-2V3"/>'],
+  ["centaine", "Centaine", "#3FA9E8", '<path d="M4 7h14v14H4z"/><path d="M4 7l2-2h14l-2 2M18 21l2-2V5"/>'],
+  ["millier", "Millier", "#E2445C", '<path d="M3 9h12v12H3z"/><path d="M3 9l6-6h12l-6 6M15 21l6-6V3"/>']
+]
+
+function menuMateriel() {
+  const choix = (id, libelle, apercu) => `<button type="button" class="rt-materiel__choix" data-materiel="${id}"
+    title="${libelle}" aria-label="Insérer : ${libelle}" tabindex="-1">${apercu}</button>`
+  const billets = BILLETS.map(([v, fond, trait]) => choix(`billet-${v}`, `Billet de ${v} €`,
+    `<svg viewBox="0 0 52 28" width="46" height="25" aria-hidden="true"><rect x="1" y="1" width="50" height="26" rx="3" fill="${fond}" stroke="${trait}" stroke-width="1.2"/>` +
+    `<text x="48" y="21" text-anchor="end" font-size="15" font-weight="800" fill="${trait}">${v}</text></svg>`)).join("")
+  const pieces = PIECES.map(([v, couronne, coeur]) => choix(`piece-${v}`, `Pièce de ${v} €`,
+    `<svg viewBox="0 0 28 28" width="26" height="26" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="${couronne}"/><circle cx="14" cy="14" r="9" fill="${coeur}"/>` +
+    `<text x="14" y="18.5" text-anchor="middle" font-size="11" font-weight="800" fill="#2F2F2F">${v}€</text></svg>`)).join("")
+  const blocs = BLOCS.map(([v, libelle, couleur, trace]) => choix(`bloc-${v}`, libelle,
+    `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="${couleur}" stroke="#3D3D3D" stroke-width="1" stroke-linejoin="round">${trace}</g></svg><span>${libelle}</span>`)).join("")
+  return `<span class="rt-tb__palette rt-figures" data-popover>
+    <button type="button" class="trix-button rt-tb__btn" data-ouvrir aria-haspopup="dialog" aria-expanded="false"
+            title="Insérer du matériel" aria-label="Insérer du matériel" tabindex="-1">${ICONES.materiel}
+      <span class="visually-hidden">Insérer du matériel</span></button>
+    <div class="rt-tb__popover rt-figures__panel" role="dialog" aria-label="Insérer du matériel" hidden>
+      <div class="rt-figures__section">
+        <span class="rt-figures__titre">Billets</span>
+        <div class="rt-figures__rangee">${billets}</div>
+      </div>
+      <div class="rt-figures__section">
+        <span class="rt-figures__titre">Pièces</span>
+        <div class="rt-figures__rangee">${pieces}</div>
+      </div>
+      <div class="rt-figures__section">
+        <span class="rt-figures__titre">Blocs de numération</span>
+        <div class="rt-figures__rangee">${blocs}</div>
+        <span class="rt-figures__aide">Cliquez plusieurs fois : ils se rangent côte à côte.</span>
+      </div>
+    </div>
+  </span>`
+}
+
 function menuFigures() {
   const pictos = PICTOS.map(([nom, libelle, traits]) => `
     <button type="button" class="rt-figures__picto" data-picto="${nom}"
@@ -239,6 +285,7 @@ function barreHtml({ interlignes }) {
       ${bouton({ commande: "table", libelle: "Tableau", glyphe: ICONES.table })}
       ${menu({ nom: "colonnes", libelle: "Colonnes", options: COLONNES })}
       ${menuFigures()}
+      ${menuMateriel()}
       ${bouton({ commande: "link", libelle: "Lien", glyphe: ICONES.link, raccourci: "K", classe: "rt-tb__btn--offscreen" })}
     </span>
     <span class="trix-button-group rt-tb__group rt-barre__tableau" aria-label="Tableau">
@@ -377,6 +424,10 @@ export default class extends Controller {
       return this.insererFigure({ kind: ligne === "seyes-marge" ? "seyes" : ligne, marge: ligne === "seyes-marge" })
     }
     if (cible.dataset.picto) return this.insererFigure({ kind: "picto", nom: cible.dataset.picto })
+    if (cible.dataset.materiel) {
+      const [kind, nom] = cible.dataset.materiel.split("-")
+      return this.insererFigure({ kind, nom })
+    }
     if (cible.classList.contains("rt-figures__inserer")) return this.insererHorloge()
     if (cible.dataset.commande) return this.commande(cible.dataset.commande, cible.dataset.valeur)
   }
