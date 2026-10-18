@@ -1,6 +1,8 @@
 // Éditeur d'une zone de manipulation (Figure::Zone). Le matériel s'y pose et s'y
 // déplace librement, aimanté à une grille d'un quart d'em ; un élément s'agrandit
-// par son coin, la zone aussi. « Valider » rend la description de la zone —
+// par son coin, la zone aussi. Plusieurs éléments se choisissent ensemble (Maj +
+// clic, ou un cadre tracé dans la zone) pour être déplacés, dupliqués ou retirés
+// d'un coup. « Valider » rend la description de la zone —
 // `80x24-b10.4.8_p2.20.8.150` : sa taille, puis chaque élément, sa place en pas de
 // grille et, s'il n'est pas à 100 %, sa taille —, que le serveur change en figure
 // (POST /figures, kind « zone »).
@@ -56,6 +58,9 @@ function cadreBorne(catalogue, elements, largeur, hauteur) {
 // Taille d'un élément, en % de celle du matériel, par crans.
 const CRAN = 10
 const PAS_DU_CLAVIER = { "+": CRAN, "=": CRAN, "-": -CRAN, "_": -CRAN }
+const FLECHES = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }
+// La palette : une rangée par sorte de matériel.
+const RANGEES = [["Billets", "billet"], ["Pièces", "piece"], ["Numération", "bloc"]]
 
 function borner(v, min, max) { return Math.min(Math.max(v, min), max) }
 
@@ -68,7 +73,13 @@ export class EditeurDeZone {
     this.elements = elementsConnus(catalogue, zone.elements)
     this.police = parseFloat(taillePolice)
     this.surValider = surValider
-    this.choisi = null
+    // Les index des éléments choisis.
+    this.choisis = []
+  }
+
+  // L'élément choisi quand il est seul : lui seul a une poignée et sa taille écrite.
+  get choisi() {
+    return this.choisis.length === 1 ? this.choisis[0] : null
   }
 
   ouvrir() {
@@ -94,26 +105,30 @@ export class EditeurDeZone {
     this.racine = null
   }
 
-  // La palette, en deux rangées : la monnaie (billets, pièces), puis les blocs de
-  // numération.
+  // La palette, une rangée par sorte : billets, pièces, blocs de numération. Le
+  // matériel de chaque rangée s'aligne après les titres, même quand il passe à la
+  // ligne.
   gabarit() {
-    const rangee = (titre, sortes) => {
-      const choix = Object.entries(this.catalogue.elements).filter(([, e]) => sortes.includes(e.sorte)).map(([code, e]) =>
+    const rangee = ([titre, sorte]) => {
+      const choix = Object.entries(this.catalogue.elements).filter(([, e]) => e.sorte === sorte).map(([code, e]) =>
         `<button type="button" class="rt-materiel__choix" data-ajouter="${code}" title="${e.libelle}"
                  aria-label="Ajouter : ${e.libelle}"><img src="${e.image}" alt="" style="height: ${borner(e.hauteur * 4, 26, 44)}px"></button>`
       ).join("")
-      return `<div class="rt-zone__palette" role="group" aria-label="${titre}"><span class="rt-zone__titre">${titre}</span>${choix}</div>`
+      return `<div class="rt-zone__palette" role="group" aria-label="${titre}"><span class="rt-zone__titre">${titre}</span><div class="rt-zone__tuiles">${choix}</div></div>`
     }
     return `<div class="rt-zone__panneau">
       <div class="rt-zone__entete">
-        <div class="rt-zone__palettes">${rangee("Monnaie", ["billet", "piece"])}${rangee("Numération", ["bloc"])}</div>
+        <div class="rt-zone__palettes">${RANGEES.map(rangee).join("")}</div>
         <div class="rt-zone__selection">
-          <button type="button" class="ui-btn ui-btn--neutral ui-btn--sm" data-retirer disabled><i class="fa-solid fa-trash-can" aria-hidden="true"></i><span>Retirer l'élément</span></button>
+          <div class="rt-zone__actions">
+            <button type="button" class="ui-btn ui-btn--neutral ui-btn--sm" data-dupliquer disabled><i class="fa-solid fa-clone" aria-hidden="true"></i><span>Dupliquer</span></button>
+            <button type="button" class="ui-btn ui-btn--neutral ui-btn--sm" data-retirer disabled><i class="fa-solid fa-trash-can" aria-hidden="true"></i><span class="rt-zone__retirer">Retirer l'élément</span></button>
+          </div>
           <span class="rt-zone__choix" aria-live="polite"></span>
         </div>
       </div>
       <div class="rt-zone__defilement"><div class="rt-zone__cadre"><span class="rt-zone__poignee" title="Agrandir la zone"></span></div></div>
-      <p class="rt-zone__aide">Glissez le matériel pour le placer, tirez le rond de son coin pour l'agrandir. Clavier : flèches pour ajuster, + et − pour la taille, Suppr. pour retirer.</p>
+      <p class="rt-zone__aide">Glissez le matériel pour le placer, tirez le rond de son coin pour l'agrandir. Maj + clic, ou un cadre tracé dans la zone, pour en choisir plusieurs. Clavier : flèches pour déplacer, + et − pour la taille, Suppr. pour retirer, Ctrl+D (⌘D) pour dupliquer, Ctrl+A (⌘A) pour tout choisir.</p>
       <p class="rt-zone__erreur" hidden></p>
       <div class="rt-zone__pied">
         <button type="button" class="ui-btn ui-btn--neutral ui-btn--sm" data-annuler><span>Annuler</span></button>
@@ -154,7 +169,7 @@ export class EditeurDeZone {
       img.draggable = false
       img.dataset.index = index
       Object.assign(img.style, { left: this.em(e.x), top: this.em(e.y), width: this.em(largeur), height: this.em(hauteur) })
-      img.classList.toggle("rt-zone__element--choisi", index === this.choisi)
+      img.classList.toggle("rt-zone__element--choisi", this.choisis.includes(index))
       this.cadre.append(img)
       if (index === this.choisi) {
         const poignee = document.createElement("span")
@@ -164,13 +179,15 @@ export class EditeurDeZone {
         this.cadre.append(poignee)
       }
     })
-    this.racine.querySelector("[data-retirer]").disabled = this.choisi === null
-    // L'élément choisi, et sa taille : à gauche de « Retirer l'élément ».
-    const choisi = this.elements[this.choisi]
+    const nombre = this.choisis.length
+    this.racine.querySelector("[data-retirer]").disabled = nombre === 0
+    this.racine.querySelector(".rt-zone__retirer").textContent = nombre > 1 ? `Retirer les ${nombre} éléments` : "Retirer l'élément"
+    this.racine.querySelector("[data-dupliquer]").disabled = nombre === 0 || !this.placePour(nombre)
+    // Sous les boutons : l'élément choisi et sa taille, ou le nombre d'éléments choisis.
+    const seul = this.elements[this.choisi]
     this.racine.querySelector(".rt-zone__choix").textContent =
-      choisi ? `${this.catalogue.elements[choisi.code].libelle} · ${choisi.taille} %` : ""
-    const plein = this.elements.length >= this.catalogue.elementsAuPlus
-    this.racine.querySelectorAll("[data-ajouter]").forEach((b) => { b.disabled = plein })
+      seul ? `${this.catalogue.elements[seul.code].libelle} · ${seul.taille} %` : nombre > 1 ? `${nombre} éléments` : ""
+    this.racine.querySelectorAll("[data-ajouter]").forEach((b) => { b.disabled = !this.placePour(1) })
   }
 
   // --- Actions ------------------------------------------------------------------
@@ -180,6 +197,7 @@ export class EditeurDeZone {
     if (!bouton) return
     if (bouton.dataset.ajouter) this.ajouter(bouton.dataset.ajouter)
     else if (bouton.hasAttribute("data-retirer")) this.retirer()
+    else if (bouton.hasAttribute("data-dupliquer")) this.dupliquer()
     else if (bouton.hasAttribute("data-annuler")) this.fermer()
     else if (bouton.hasAttribute("data-valider")) this.valider()
   }
@@ -200,15 +218,62 @@ export class EditeurDeZone {
     }
     this.agrandirPour(nouveau.x + largeur, nouveau.y + hauteur)
     this.elements.push({ ...nouveau, ...this.dansLaZone(nouveau, nouveau.x, nouveau.y) })
-    this.choisi = this.elements.length - 1
+    this.choisis = [this.elements.length - 1]
     this.dessiner()
   }
 
+  // La zone peut-elle recevoir autant d'éléments de plus ?
+  placePour(nombre) {
+    return this.elements.length + nombre <= this.catalogue.elementsAuPlus
+  }
+
   retirer() {
-    if (this.choisi === null) return
-    this.elements.splice(this.choisi, 1)
-    this.choisi = null
+    if (!this.choisis.length) return
+    this.elements = this.elements.filter((_, index) => !this.choisis.includes(index))
+    this.choisis = []
     this.dessiner()
+  }
+
+  // Les éléments choisis, recopiés à droite de leur groupe — dessous quand la zone
+  // ne peut plus s'élargir ; la zone grandit pour eux, et les copies deviennent la
+  // sélection.
+  dupliquer() {
+    const originaux = this.choisis.map((index) => this.elements[index])
+    if (!originaux.length || !this.placePour(originaux.length)) return
+    const groupe = this.boite(originaux)
+    const [largeur, hauteur] = [Math.ceil(groupe.droite - groupe.gauche) + 1, Math.ceil(groupe.bas - groupe.haut) + 1]
+    const [dx, dy] = groupe.droite + largeur < this.catalogue.largeurs[1] ? [largeur, 0] : [0, hauteur]
+    const copies = originaux.map((e) => ({ ...e, x: e.x + dx, y: e.y + dy }))
+    this.agrandirPour(groupe.droite + dx, groupe.bas + dy)
+    this.choisis = copies.map((_, n) => this.elements.length + n)
+    this.elements.push(...copies)
+    // La zone n'a pas pu grandir assez : les copies sont ramenées dedans, d'un bloc.
+    this.deplacerLeGroupe(copies.map((e) => ({ ...e })), 0, 0)
+    this.dessiner()
+  }
+
+  // Le rectangle qui contient des éléments, en pas de grille.
+  boite(elements) {
+    const bords = elements.map((e) => ({ e, ...this.dimensions(e) }))
+    return {
+      gauche: Math.min(...bords.map(({ e }) => e.x)),
+      haut: Math.min(...bords.map(({ e }) => e.y)),
+      droite: Math.max(...bords.map(({ e, largeur }) => e.x + largeur)),
+      bas: Math.max(...bords.map(({ e, hauteur }) => e.y + hauteur))
+    }
+  }
+
+  // Déplace les éléments choisis d'un bloc, depuis leurs places de `depart` : le
+  // groupe s'arrête tout entier dès que l'un d'eux touche un bord.
+  deplacerLeGroupe(depart, dx, dy) {
+    const { gauche, haut, droite, bas } = this.boite(depart)
+    const decalage = [
+      borner(dx, -gauche, Math.floor(this.largeur - droite)),
+      borner(dy, -haut, Math.floor(this.hauteur - bas))
+    ]
+    this.choisis.forEach((index, n) => {
+      Object.assign(this.elements[index], { x: depart[n].x + decalage[0], y: depart[n].y + decalage[1] })
+    })
   }
 
   // Agrandit l'élément choisi, ou le réduit, d'autant de crans ; la zone grandit
@@ -243,25 +308,41 @@ export class EditeurDeZone {
   }
 
   onTouche(event) {
+    const commande = event.metaKey || event.ctrlKey
+    const touche = event.key.toLowerCase()
     if (event.key === "Escape") {
       event.preventDefault()
-      return this.fermer()
+      // Échap défait d'abord la sélection, puis ferme la fenêtre.
+      if (!this.choisis.length) return this.fermer()
+      this.choisis = []
+      return this.dessiner()
     }
-    if (this.choisi === null) return
-    const e = this.elements[this.choisi]
+    if (commande && touche === "a") {
+      event.preventDefault()
+      this.choisis = this.elements.map((_, index) => index)
+      return this.dessiner()
+    }
+    if (!this.choisis.length) return
+    if (commande && touche === "d") {
+      event.preventDefault()
+      return this.dupliquer()
+    }
     if (event.key === "Delete" || event.key === "Backspace") {
       event.preventDefault()
       return this.retirer()
     }
     if (PAS_DU_CLAVIER[event.key]) {
       event.preventDefault()
-      this.changerTaille(e, e.taille + PAS_DU_CLAVIER[event.key])
+      this.choisis.forEach((index) => {
+        const e = this.elements[index]
+        this.changerTaille(e, e.taille + PAS_DU_CLAVIER[event.key])
+      })
       return this.dessiner()
     }
-    const pas = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[event.key]
+    const pas = FLECHES[event.key]
     if (!pas) return
     event.preventDefault()
-    Object.assign(e, this.dansLaZone(e, e.x + pas[0], e.y + pas[1]))
+    this.deplacerLeGroupe(this.choisis.map((index) => ({ ...this.elements[index] })), ...pas)
     this.dessiner()
   }
 
@@ -272,11 +353,16 @@ export class EditeurDeZone {
   }
 
   onAppui(event) {
-    const deplacer = this.geste(event.target)
-    if (!deplacer) {
-      this.choisi = null
+    const ajout = event.shiftKey || event.metaKey || event.ctrlKey
+    const element = event.target.closest(".rt-zone__element")
+    // Maj + clic : l'élément entre dans la sélection, ou en sort ; rien ne bouge.
+    if (element && ajout) {
+      const index = Number(element.dataset.index)
+      this.choisis = this.choisis.includes(index) ? this.choisis.filter((i) => i !== index) : [...this.choisis, index]
       return this.dessiner()
     }
+    const deplacer = this.geste(event.target)
+    if (!deplacer) return this.debutCadreDeSelection(event, ajout)
     event.preventDefault()
     const pas = this.pasEnPixels()
     const depart = { x: event.clientX, y: event.clientY }
@@ -304,7 +390,8 @@ export class EditeurDeZone {
     this.dessiner()
   }
 
-  // Ce que fait un glisser selon où il commence ; rien hors d'un élément ou d'une poignée.
+  // Ce que fait un glisser selon où il commence ; hors d'un élément ou d'une
+  // poignée, il trace un cadre de sélection (debutCadreDeSelection).
   geste(cible) {
     if (cible.closest(".rt-zone__poignee")) {
       const debut = { largeur: this.largeur, hauteur: this.hauteur }
@@ -318,10 +405,54 @@ export class EditeurDeZone {
     }
     const element = cible.closest(".rt-zone__element")
     if (!element) return null
-    this.choisi = Number(element.dataset.index)
-    const e = this.elements[this.choisi]
-    const debut = { x: e.x, y: e.y }
-    return (dx, dy) => Object.assign(e, this.dansLaZone(e, debut.x + dx, debut.y + dy))
+    // Un élément hors de la sélection la remplace ; un élément choisi emmène tout
+    // le groupe.
+    const index = Number(element.dataset.index)
+    if (!this.choisis.includes(index)) this.choisis = [index]
+    const depart = this.choisis.map((i) => ({ ...this.elements[i] }))
+    return (dx, dy) => this.deplacerLeGroupe(depart, dx, dy)
+  }
+
+  // Un cadre tracé dans la zone choisit tous les éléments qu'il touche ; avec Maj,
+  // il les ajoute à la sélection. Un simple clic défait la sélection.
+  debutCadreDeSelection(event, ajout) {
+    event.preventDefault()
+    const avant = ajout ? [...this.choisis] : []
+    const origine = this.cadre.getBoundingClientRect()
+    const pas = this.pasEnPixels()
+    const depart = { x: event.clientX - origine.left, y: event.clientY - origine.top }
+    const trace = document.createElement("span")
+    trace.className = "rt-zone__lasso"
+    this.cadre.append(trace)
+    this.enGeste = true
+    this.choisis = avant
+    this.dessiner()
+
+    const suivre = (ev) => {
+      const x = borner(ev.clientX - origine.left, 0, origine.width)
+      const y = borner(ev.clientY - origine.top, 0, origine.height)
+      const [gauche, droite] = [Math.min(depart.x, x), Math.max(depart.x, x)]
+      const [haut, bas] = [Math.min(depart.y, y), Math.max(depart.y, y)]
+      Object.assign(trace.style, { left: `${gauche}px`, top: `${haut}px`, width: `${droite - gauche}px`, height: `${bas - haut}px` })
+      const touches = this.elements.flatMap((e, index) => {
+        const { largeur, hauteur } = this.dimensions(e)
+        const touche = e.x * pas < droite && (e.x + largeur) * pas > gauche && e.y * pas < bas && (e.y + hauteur) * pas > haut
+        return touche ? [index] : []
+      })
+      this.choisis = [...new Set([...avant, ...touches])]
+      this.dessiner()
+    }
+    const lacher = () => {
+      window.removeEventListener("pointermove", suivre)
+      window.removeEventListener("pointerup", lacher)
+      trace.remove()
+      this.enGeste = false
+      if (!this.racine) return
+      this.dessiner()
+      this.racine.focus()
+    }
+    window.addEventListener("pointermove", suivre)
+    window.addEventListener("pointerup", lacher)
   }
 
   redimensionner(largeur, hauteur) {

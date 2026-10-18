@@ -227,8 +227,8 @@
   box-shadow: var(--rt-shadow-pop);
 }
 
-// En haut : la palette, une rangée par sorte, et à droite « Retirer l'élément »,
-// l'élément choisi écrit dessous.
+// En haut : la palette, une rangée par sorte, et à droite « Dupliquer » et
+// « Retirer l'élément », l'élément choisi écrit dessous.
 .rt-zone__entete {
   display: flex;
   align-items: flex-start;
@@ -250,8 +250,12 @@
   gap: 4px;
 }
 
+.rt-zone__actions {
+  display: flex;
+  gap: 6px;
+}
+
 .rt-zone__titre {
-  width: 6.5em;
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.03em;
@@ -259,11 +263,13 @@
   color: var(--rt-ink-soft);
 }
 
+// Le titre dans sa colonne, le matériel dans la sienne : une rangée qui passe à
+// la ligne repart sous le premier élément, pas sous le titre.
 .rt-zone__palette {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
   align-items: center;
-  gap: 6px;
+  gap: 8px;
 
   // Un choix de matériel : son dessin, dans une tuile.
   .rt-materiel__choix {
@@ -308,6 +314,22 @@
   user-select: none;
 
   &:active { cursor: grabbing; }
+}
+
+.rt-zone__tuiles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+// Le cadre de sélection, pendant qu'on le trace.
+.rt-zone__lasso {
+  position: absolute;
+  z-index: 4;
+  background: var(--rt-accent-soft, rgba(232, 74, 95, 0.08));
+  border: 1px dashed var(--rt-accent);
+  pointer-events: none;
 }
 
 .rt-zone__element--choisi {
