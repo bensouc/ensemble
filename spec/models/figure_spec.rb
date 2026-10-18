@@ -114,6 +114,14 @@ RSpec.describe Figure do
         end
       end
 
+      it "agrandit un élément, de 50 à 400 %" do
+        zone = described_class.find("zone-80x24-b10.4.8.200")
+
+        expect(zone.zone_dessin[:elements].first.values_at(:taille, :largeur, :hauteur)).to eq([200, 26.0, 13.6])
+        expect(described_class.id_for(kind: "zone", nom: "80x24-b10.4.8.40")).to be_nil
+        expect(described_class.id_for(kind: "zone", nom: "80x24-b10.4.8.500")).to be_nil
+      end
+
       it "refuse plus de 60 éléments" do
         elements = Array.new(61) { |i| "u.#{i % 60}.0" }.join("_")
 

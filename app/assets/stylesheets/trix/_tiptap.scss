@@ -188,8 +188,17 @@
   box-shadow: var(--rt-shadow-pop);
 }
 
+// En haut : la palette, et « Retirer l'élément » à droite.
+.rt-zone__entete {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .rt-zone__palette {
   display: flex;
+  flex: 1;
   flex-wrap: wrap;
   gap: 6px;
 
@@ -229,6 +238,27 @@
   outline-offset: 1px;
 }
 
+// L'élément choisi et sa taille, à gauche de « Retirer l'élément ».
+.rt-zone__choix {
+  align-self: center;
+  font-size: 12px;
+  color: var(--rt-ink-soft);
+  white-space: nowrap;
+}
+
+// Le coin d'un élément choisi : le tirer l'agrandit, proportions gardées.
+.rt-zone__agrandir {
+  position: absolute;
+  z-index: 3;
+  width: 12px;
+  height: 12px;
+  background: var(--rt-accent);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  cursor: nwse-resize;
+}
+
 .rt-zone__poignee {
   position: absolute;
   right: -6px;
@@ -254,8 +284,7 @@
 .rt-zone__pied {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 8px;
 }
-
-.rt-zone__espace { flex: 1; }
 

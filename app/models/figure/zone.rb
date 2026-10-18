@@ -6,7 +6,8 @@ class Figure
   # zone est entièrement décrite par son identifiant — sa taille, puis chaque
   # élément et sa place, en pas de grille :
   #
-  #   zone-80x24-b10.4.8_p2.20.8   20 × 6 em : un billet de 10 €, une pièce de 2 €
+  #   zone-80x24-b10.4.8_p2.20.8.150   20 × 6 em : un billet de 10 €, une pièce
+  #                                    de 2 € agrandie à 150 %
   #
   # Pas de table, donc rien à dupliquer au clonage ; modifier une zone, c'est en
   # insérer une autre à sa place, comme on change l'heure d'une horloge
@@ -16,11 +17,12 @@ class Figure
     LARGEURS = (16..240) # pas : de 4 à 60 em
     HAUTEURS = (8..160) # pas : de 2 à 40 em
     ELEMENTS_AU_PLUS = 60
+    TAILLES = (50..400) # % de la taille du matériel
     CODES = { "b5" => "billet-5", "b10" => "billet-10", "b20" => "billet-20", "b50" => "billet-50",
               "b100" => "billet-100", "p1" => "piece-1", "p2" => "piece-2", "u" => "bloc-unite",
               "d" => "bloc-dizaine", "c" => "bloc-centaine", "m" => "bloc-millier" }.freeze
     IDENTIFIANT = /\Azone-(?<largeur>\d{1,3})x(?<hauteur>\d{1,3})(?:-(?<elements>[a-z0-9._]+))?\z/
-    ELEMENT = /\A(?<code>[a-z]+\d*)\.(?<x>\d{1,3})\.(?<y>\d{1,3})\z/
+    ELEMENT = /\A(?<code>[a-z]+\d*)\.(?<x>\d{1,3})\.(?<y>\d{1,3})(?:\.(?<taille>\d{2,3}))?\z/
 
     # La zone, en pas de grille : sa taille et la place de chaque élément.
     def zone_dessin
@@ -55,11 +57,16 @@ class Figure
 
       x = match[:x].to_i
       y = match[:y].to_i
-      { materiel: Figure.find(CODES[match[:code]]), x:, y: } if x < largeur && y < hauteur
+      taille = (match[:taille] || 100).to_i
+      return unless x < largeur && y < hauteur && TAILLES.cover?(taille)
+
+      { materiel: Figure.find(CODES[match[:code]]), x:, y:, taille: }
     end
 
     def element_dessine(element)
-      largeur, hauteur = element[:materiel].taille_du_materiel.map { |em| arrondi(em / PAS_DE_LA_GRILLE) }
+      largeur, hauteur = element[:materiel].taille_du_materiel.map do |em|
+        arrondi(em / PAS_DE_LA_GRILLE * element[:taille] / 100.0)
+      end
       { **element, largeur:, hauteur: }
     end
   end
