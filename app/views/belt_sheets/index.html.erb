@@ -21,9 +21,7 @@
 							<div class="index-wp-name d-flex">
 								<div class="wp-firstname"><%= student.first_name %></div>
 								<div class="invisible">--</div>
-								<div class="index-wp-count" data-wp-by-student-target="count">
-									( <%= fiches.size %> fiche<%= "s" if fiches.size > 1 %> )
-								</div>
+								<%= render "nombre_de_fiches", dossier: student, nombre: fiches.size %>
 							</div>
 						</div>
 						<%# La modale du nouveau plan de travail, réduite au choix des domaines. %>
@@ -39,7 +37,7 @@
 							<%# Le balisage d'une ligne de plan de travail (`work_plans/_index_wp_line`),
 							    colonne pour colonne : l'icône — la ceinture, à la place de l'évaluation —, le
 							    nom, le niveau, la date, et la suppression à droite. %>
-							<div class="index-wp-line">
+							<div class="index-wp-line" id="<%= dom_id(fiche) %>">
 								<div class="eval_link">
 									<%= link_to export_belt_sheet_path(fiche), target: "_blank", rel: "noopener",
 									            title: "Imprimer la fiche" do %>

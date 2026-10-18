@@ -344,6 +344,35 @@ RSpec.describe "Fiches de ceinture", type: :request do
       expect(response).to redirect_to(belt_sheets_url)
       expect(BeltSheet.where(student: eleve)).to be_empty
     end
+
+    # Comme un plan de travail : la page ne se recharge pas, le dossier de
+    # l'élève reste ouvert.
+    it "ne retire de la liste que la ligne de la fiche, et recompte le dossier" do
+      2.times { post student_belt_sheets_path(eleve) }
+      supprimee, gardee = BeltSheet.where(student: eleve).order(:id).to_a
+      get belt_sheets_path
+      expect(response.body).to include(%(id="belt_sheet_#{supprimee.id}"), %(id="nombre_de_fiches_student_#{eleve.id}"))
+
+      delete belt_sheet_path(supprimee), headers: { "HTTP_REFERER" => belt_sheets_url }, as: :turbo_stream
+
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include(%(<turbo-stream action="remove" target="belt_sheet_#{supprimee.id}">))
+      expect(response.body).not_to include("belt_sheet_#{gardee.id}")
+      compte = Nokogiri::HTML(response.body).at_css(%(turbo-stream[action="replace"][target="nombre_de_fiches_student_#{eleve.id}"]))
+      expect(compte.inner_html).to include("( 1 fiche )")
+      expect(BeltSheet.where(student: eleve)).to eq([gardee])
+    end
+
+    # Le bouton de l'éditeur est un formulaire Turbo, qui accepte aussi le flux :
+    # il ne doit pas rester sur une fiche qui n'existe plus.
+    it "revient à la progression de l'élève après la suppression depuis l'éditeur" do
+      post student_belt_sheets_path(eleve)
+
+      delete belt_sheet_path(fiche), headers: { "HTTP_REFERER" => belt_sheet_url(fiche) }, as: :turbo_stream
+
+      expect(response).to redirect_to(student_path(eleve))
+      expect(BeltSheet.where(student: eleve)).to be_empty
+    end
   end
 
   describe "fiches non assignées" do
@@ -483,6 +512,18 @@ RSpec.describe "Fiches de ceinture", type: :request do
         expect(liens).to be_present
         expect(liens.map { |lien| lien["target"] }.uniq).to eq(["_blank"])
       end
+    end
+
+    it "ne retire de la liste que sa ligne, et recompte le dossier du niveau" do
+      generer
+      fiche = non_assignee
+
+      delete belt_sheet_path(fiche), headers: { "HTTP_REFERER" => non_assignees_belt_sheets_url }, as: :turbo_stream
+
+      expect(response.body).to include(%(<turbo-stream action="remove" target="belt_sheet_#{fiche.id}">))
+      compte = Nokogiri::HTML(response.body).at_css(%(turbo-stream[action="replace"][target="nombre_de_fiches_grade_#{grade.id}"]))
+      expect(compte.inner_html).to include("( 0 fiche )")
+      expect(BeltSheet.count).to eq(0)
     end
 
     it "revient à son onglet après sa suppression depuis l'éditeur" do

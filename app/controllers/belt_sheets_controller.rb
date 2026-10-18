@@ -13,9 +13,7 @@ class BeltSheetsController < ApplicationController
   # Voir > Ceintures : les classes qui ont ouvert les fiches de ceinture, un
   # dossier par élève — la présentation de Voir > Plans de travail.
   def index
-    partagees = current_user.user_shared_classrooms.where(belt_sheets: true)
-    @classrooms = (current_user.classrooms.where(belt_sheets: true) + partagees).
-      uniq.sort_by(&:created_at)
+    @classrooms = classes_aux_fiches
     @sheets_by_student = policy_scope(BeltSheet).includes(:belt_sheet_domains).
       where(student: Student.where(classroom: @classrooms)).
       order(created_at: :desc).group_by(&:student_id)
@@ -91,17 +89,35 @@ class BeltSheetsController < ApplicationController
   def destroy
     authorize @belt_sheet
     @belt_sheet.destroy
-    # On revient d'où l'on vient — la liste des fiches, la progression de
-    # l'élève —, sauf de la fiche elle-même, qui n'existe plus.
     options = { notice: t("fiches_ceinture.supprimee"), status: :see_other }
-    if request.referer.to_s.include?(belt_sheet_path(@belt_sheet))
-      redirect_to retour_apres_suppression, **options
-    else
-      redirect_back_or_to retour_apres_suppression, **options
+    # Depuis l'éditeur, la fiche n'existe plus : on revient à sa liste.
+    return redirect_to(retour_apres_suppression, **options) if depuis_l_editeur?
+
+    respond_to do |format|
+      # Depuis une liste, seule la ligne s'en va, comme celle d'un plan de
+      # travail. La redirection rechargeait la page, et refermait le dossier.
+      format.turbo_stream do
+        @dossier, @restantes = dossier_et_fiches_restantes
+        flash.now[:notice] = options[:notice]
+      end
+      format.html { redirect_back_or_to retour_apres_suppression, **options }
     end
   end
 
   private
+
+  # Ses classes d'abord, puis celles qu'on lui partage, chacune par niveau —
+  # l'ordre de la liste des classes. Celles qui ont ouvert les fiches seulement.
+  def classes_aux_fiches
+    siennes = current_user.classrooms.where(belt_sheets: true).includes(:grade)
+    partagees = current_user.user_shared_classrooms.where(belt_sheets: true).includes(:grade)
+    (Classroom.par_niveau(siennes) + Classroom.par_niveau(partagees)).uniq
+  end
+
+  # Le bouton Supprimer de l'éditeur : on vient de la page de la fiche.
+  def depuis_l_editeur?
+    request.referer.to_s.include?(belt_sheet_path(@belt_sheet))
+  end
 
   # Les domaines cochés dans la modale, parmi ceux du niveau de l'élève — un id
   # pris tel quel garnirait la fiche des compétences d'une autre école. Sans
@@ -111,6 +127,17 @@ class BeltSheetsController < ApplicationController
     return nil if ids.nil?
 
     student.grade.domains.where(id: Array(ids).compact_blank).to_a
+  end
+
+  # Le dossier de la liste où la fiche était rangée — son élève, ou son niveau
+  # pour une fiche non assignée —, et le nombre de fiches qu'il lui reste.
+  def dossier_et_fiches_restantes
+    fiches = policy_scope(BeltSheet)
+    if @belt_sheet.non_assignee?
+      [@belt_sheet.grade, fiches.non_assignees.where(user: current_user, grade: @belt_sheet.grade).count]
+    else
+      [@belt_sheet.student, fiches.where(student: @belt_sheet.student).count]
+    end
   end
 
   # La progression de l'élève ; la liste des fiches non assignées, sans élève.

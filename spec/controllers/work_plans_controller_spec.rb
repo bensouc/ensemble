@@ -185,6 +185,18 @@ RSpec.describe WorkPlansController, type: :controller do
 
       expect(response.body).to include(student_new_work_plan_modal_path(student))
     end
+
+    # Le plus récent en haut, comme dans le dossier d'un élève. Sans ORDER BY, la
+    # liste sortait dans l'ordre d'insertion.
+    it "range les plans non assignés du plus récent au plus ancien" do
+      sign_in user
+      create(:work_plan, user:, name: "Plan d'octobre", created_at: 2.days.ago)
+      create(:work_plan, user:, name: "Plan de novembre")
+
+      get :index
+
+      expect(response.body.index("Plan de novembre")).to be < response.body.index("Plan d&#39;octobre")
+    end
   end
 
   # Les deux issues de la modale de création rapide, depuis la liste des plans de
