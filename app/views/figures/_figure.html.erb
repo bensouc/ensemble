@@ -16,6 +16,8 @@
       <%= render "figures/seyes_svg", dessinable: figure %>
     <% elsif figure.kind == :ligne %>
       <%= render "figures/ligne_svg", dessinable: figure %>
+    <% elsif figure.kind == :carreaux %>
+      <%= render "figures/carreaux_svg", dessinable: figure %>
     <% else %>
       <%= render "figures/horloge_svg", dessinable: figure %>
     <% end %>

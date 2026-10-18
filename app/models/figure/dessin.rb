@@ -9,6 +9,8 @@ class Figure
     # grossie d'autant dans le PDF pour retomber sur ses 8 mm à la règle.
     ECHELLE_IMPRESSION = 1.32
     PX_PAR_MM = 96 / 25.4
+    # Une figure de petits carreaux : trois rangées, assez pour poser un calcul.
+    RANGEES_DE_CARREAUX = 3
 
     # Ligne Seyès, en pixels CSS : un carreau de 8 mm, trois lignes fines et une
     # forte (à 6 mm, comme sur le cahier : trois interlignes au-dessus pour les
@@ -25,12 +27,28 @@ class Figure
       }.transform_values { |valeur| valeur.is_a?(String) ? valeur : arrondi(valeur) }
     end
 
-    # Ligne simple pour écrire dessus : 10 mm de haut, le trait en bas.
+    # Ligne simple pour écrire dessus : la hauteur d'un carreau Seyès (8 mm), le trait
+    # en bas, comme une feuille lignée.
     def ligne_geometrie(pdf: false)
       mm = PX_PAR_MM * (pdf ? ECHELLE_IMPRESSION : 1)
-      hauteur = 10 * mm
+      hauteur = 8 * mm
       trait = 0.3 * mm
       { hauteur:, trait:, y: hauteur - (trait / 2) }.transform_values { |valeur| arrondi(valeur) }
+    end
+
+    # Petits carreaux de 5 mm (cahier de maths), trois rangées par figure. Les
+    # traits du haut et du bas sont posés sur le bord : le SVG en coupe la moitié,
+    # si bien que deux figures collées donnent un trait d'épaisseur normale, et
+    # qu'une figure seule reste fermée.
+    def carreaux_geometrie(pdf: false)
+      mm = PX_PAR_MM * (pdf ? ECHELLE_IMPRESSION : 1)
+      carreau = 5 * mm
+      {
+        carreau: arrondi(carreau), fin: arrondi(0.25 * mm),
+        hauteur: arrondi(RANGEES_DE_CARREAUX * carreau),
+        lignes: (0..RANGEES_DE_CARREAUX).map { |rang| arrondi(rang * carreau) },
+        motif: "rt-carreaux-#{pdf ? 'pdf' : 'ecran'}"
+      }
     end
 
     # Le cadran se dessine dans un carré de 200 de côté, centre (100, 100).

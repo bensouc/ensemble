@@ -11,6 +11,8 @@
   <span class="rt-seyes<%= " rt-seyes--marge" if figure.marge? %>"></span>
 <% elsif figure.kind == :ligne %>
   <span class="rt-ligne"></span>
+<% elsif figure.kind == :carreaux %>
+  <span class="rt-carreaux"></span>
 <% else %>
   <% svg = render(figure.kind == :picto ? "figures/picto_svg" : "figures/horloge_svg", dessinable: figure) %>
   <img class="rt-figure-img rt-figure-img--<%= figure.kind %>" src="data:image/svg+xml;base64,<%= Base64.strict_encode64(svg.to_str.strip) %>" alt="<%= figure.libelle %>">

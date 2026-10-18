@@ -25,8 +25,17 @@ harness = BrowserHarness::Runner.new("tiptap_aller_retour")
 harness.dump_bundle("aller_retour.js", entry: "scripts/support/tiptap_aller_retour.js")
 harness.dump_stylesheet("application")
 harness.page("tiptap", head: "", body: %(<script src="./aller_retour.js"></script>))
+# Réenregistré, un paragraphe prend exprès la mise en page de l'éditeur (`rt-p` :
+# interligne 1,4, collé au suivant, ligne vide visible). On la neutralise côté
+# « après » pour ne juger que ce que l'éditeur conserve. La ligne vide, au premier
+# niveau seulement : la case vide d'un tableau avait déjà la sienne.
+NEUTRE = <<~CSS
+  #b .rt-p { line-height: inherit; }
+  #b .trix-content > .rt-p + .rt-p, #b .rt-colonne > .rt-p + .rt-p { margin-top: 0.7em; }
+  #b .trix-content > .rt-p:empty::before { content: none; }
+CSS
 harness.page("comparaison",
-             head: %(<link rel="stylesheet" href="./application.css">),
+             head: %(<link rel="stylesheet" href="./application.css"><style>#{NEUTRE}</style>),
              body: <<~HTML)
                <div id="a" class="rt-field" style="width:760px"></div>
                <div id="b" class="rt-field" style="width:760px"></div>

@@ -52,6 +52,18 @@ RSpec.describe Challenge, type: :model do
       expect(rendered).to include("line-height:2")
     end
 
+    it "garde la signature des paragraphes de l'éditeur et la taille du texte" do
+      challenge = create(:challenge)
+      challenge.content = %(<div class="rt-p">Normal <span style="font-size: 1.25em">grand</span></div>)
+      challenge.save!
+
+      rendered = challenge.reload.content.to_s
+
+      # sans la classe, le paragraphe retomberait dans la mise en page des anciens énoncés
+      expect(rendered).to include(%(class="rt-p"))
+      expect(rendered).to include("font-size:1.25em")
+    end
+
     it "retire une balise maison — d'où le choix de `style`" do
       rendered = ActionText::Content.new("<trix-align-center>Centré</trix-align-center>").to_s
 

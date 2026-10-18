@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-# Figure insérée dans l'énoncé d'un exercice : ligne Seyès, horloge, pictogramme.
+# Figure insérée dans l'énoncé d'un exercice : ligne Seyès, ligne simple, ligne à
+# petits carreaux, horloge, pictogramme.
 #
 # Pas de table en base. Une figure est entièrement décrite par son identifiant
 # (`seyes-marge`, `ligne`, `horloge-0315-chiffres`, `picto-coche`), que le sgid signe et
@@ -56,9 +57,16 @@ class Figure
 
   SEYES = /\Aseyes(?<marge>-marge)?\z/
   LIGNE = "ligne"
+  CARREAUX = "carreaux"
+  # Figures sans réglage : l'identifiant suffit.
+  SANS_REGLAGE = { LIGNE => :ligne, CARREAUX => :carreaux }.freeze
   PICTO = /\Apicto-(?<nom>[a-z]+)\z/
   HORLOGE = /\Ahorloge-(?:(?<heures>\d{2})(?<minutes>\d{2})|vide)-(?<chiffres>chiffres|nue)\z/
   HEURE_TAPEE = /\A(?<heures>\d{1,2})\s*(?:(?:h|:)\s*(?<minutes>\d{1,2})?)?\s*\z/i
+
+  # Les figures qui forment une ligne d'écriture : pleine largeur, et collées les
+  # unes aux autres comme une page de cahier.
+  LIGNES_D_ECRITURE = %i[seyes ligne carreaux].freeze
 
   attr_reader :id, :kind, :picto, :heures, :minutes
 
@@ -71,6 +79,7 @@ class Figure
   def self.id_for(kind:, nom: nil, heure: nil, chiffres: true, marge: false)
     id = { "seyes" => "seyes#{'-marge' if marge}",
            "ligne" => LIGNE,
+           "carreaux" => CARREAUX,
            "picto" => "picto-#{nom}",
            "horloge" => "horloge-#{horloge_code(heure)}-#{chiffres ? 'chiffres' : 'nue'}" }[kind.to_s]
     id if id && valid_id?(id)
@@ -98,7 +107,7 @@ class Figure
 
   def initialize(id)
     @id = id
-    @kind = parse_seyes || (:ligne if id == LIGNE) || parse_picto || parse_horloge ||
+    @kind = parse_seyes || SANS_REGLAGE[id] || parse_picto || parse_horloge ||
             # ActionText transforme cette exception en pièce jointe manquante.
             raise(ActiveRecord::RecordNotFound, "Figure inconnue : #{id}")
   end
@@ -136,6 +145,7 @@ class Figure
     case kind
     when :seyes then "Ligne d'écriture Seyès"
     when :ligne then "Ligne d'écriture"
+    when :carreaux then "Ligne à petits carreaux"
     when :horloge then horloge_vide? ? "Horloge sans aiguilles" : "Horloge : #{libelle_heure}"
     when :picto then PICTOS.fetch(picto)
     end
@@ -143,7 +153,7 @@ class Figure
 
   # Ce qu'en garde le texte brut (aperçus, recherche, notifications).
   def attachable_plain_text_representation(_caption = nil)
-    %i[seyes ligne].include?(kind) ? "[ligne d'écriture]" : "[#{libelle}]"
+    LIGNES_D_ECRITURE.include?(kind) ? "[ligne d'écriture]" : "[#{libelle}]"
   end
 
   def marge?

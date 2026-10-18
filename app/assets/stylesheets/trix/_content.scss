@@ -15,6 +15,33 @@
     margin-top: 0.7em;
   }
 
+  // --- Paragraphes de l'éditeur TipTap ---------------------------------------
+  // Signés `rt-p` par l'éditeur (editeur/extensions.js). Les énoncés antérieurs,
+  // sans la classe, gardent l'interligne 1,6 et l'espace entre paragraphes : leur
+  // mise en page, PDF compris, ne bouge pas tant qu'on ne les rouvre pas.
+  //
+  // Interligne plus serré, et Entrée passe à la ligne suivante sans espace,
+  // comme avec Trix ; pour aérer, une ligne vide. L'espace reste autour des
+  // titres, listes, tableaux et images.
+  .rt-p {
+    line-height: 1.4;
+  }
+
+  .rt-p + .rt-p {
+    margin-top: 0;
+  }
+
+  .rt-p + .rt-p:has(.attachment--preview),
+  .rt-p:has(.attachment--preview) + .rt-p {
+    margin-top: 0.7em;
+  }
+
+  // Une ligne vide est un paragraphe vide, de hauteur nulle hors de l'éditeur :
+  // une espace sans largeur lui rend sa ligne.
+  .rt-p:empty::before {
+    content: "\200b";
+  }
+
   // --- Titres --------------------------------------------------------------
   h1,
   h2,

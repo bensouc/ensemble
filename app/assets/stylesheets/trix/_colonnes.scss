@@ -21,6 +21,16 @@
   > .rt-colonne > * + * {
     margin-top: 0.7em;
   }
+
+  // Même règle qu'au premier niveau (trix/_content.scss).
+  > .rt-colonne > .rt-p + .rt-p {
+    margin-top: 0;
+  }
+
+  > .rt-colonne > .rt-p + .rt-p:has(.attachment--preview),
+  > .rt-colonne > .rt-p:has(.attachment--preview) + .rt-p {
+    margin-top: 0.7em;
+  }
 }
 
 // Dans l'éditeur : les colonnes se voient, pour savoir où l'on écrit.
