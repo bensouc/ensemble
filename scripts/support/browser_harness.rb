@@ -22,8 +22,18 @@ module BrowserHarness
     # système de fichiers de Rails et ne pourrait pas ouvrir nos pages file://.
     # On passe par PdfGenerator pour hériter de la détection du binaire, des
     # flags conteneur et du retry sur démarrage lent.
+    #
+    # Et sans réseau : un nom d'hôte ne se résout plus. Les bancs n'ouvrent que
+    # des pages file://, mais la base de dev est une copie de la prod et ses
+    # énoncés pointent vers les images de la prod (1 098 images dans 959 énoncés
+    # le 18/10). Le banc aller-retour, qui les charge tous dans TipTap, envoyait
+    # environ mille requêtes à la prod en quinze secondes à chaque passage : la
+    # limite de Rack::Attack (300 par minute et par IP) renvoyait alors 429 à
+    # tout le réseau du poste, navigateur de l'enseignant compris.
+    HORS_LIGNE = { "host-resolver-rules": "MAP * ~NOTFOUND" }.freeze
+
     def with_browser(**options)
-      browser = PdfGenerator.local_browser(**options)
+      browser = PdfGenerator.local_browser(browser_options: HORS_LIGNE, **options)
       yield browser
     ensure
       browser&.quit
