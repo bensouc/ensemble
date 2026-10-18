@@ -2,6 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
 import { get, post } from "@rails/request.js"
 import { pourLEditeur, pourLEnregistrement, estUnAncienEnonce, sansSignature } from "../editeur/blocs"
+import { idDeLaFigure } from "../editeur/types"
 
 // Éditeur d'énoncé d'exercice (TipTap), à la place de Trix.
 //
@@ -575,7 +576,8 @@ export default class extends Controller {
   async insererFigure(params, { remplacement = null } = {}) {
     const reponse = await post("/figures", { body: params, responseKind: "json" })
     if (!reponse.ok) {
-      this.barreTarget.querySelector(".rt-figures__erreur").hidden = false
+      // Seule l'heure d'une horloge peut être mal tapée ; l'éditeur de zone dit ses erreurs.
+      if (params.kind === "horloge") this.barreTarget.querySelector(".rt-figures__erreur").hidden = false
       return false
     }
     const piece = await reponse.json
@@ -610,25 +612,30 @@ export default class extends Controller {
   async ouvrirZone(cible = null) {
     this.fermerPopovers()
     if (!cible) this.selectionAvantPopover = this.editor.state.selection
-    const [{ EditeurDeZone, lireZone, ZONE_NEUVE }, catalogue] = await Promise.all([
+    const [{ EditeurDeZone, lireZone }, catalogue] = await Promise.all([
       import("../editeur/zone"), this.catalogueDuMateriel()
     ])
     if (!catalogue) return window.alert("Le matériel n'a pas pu être chargé. Réessayez.")
+    const [largeur, hauteur] = catalogue.zoneNeuve
     new EditeurDeZone({
       hote: this.element,
       catalogue,
-      zone: (cible && lireZone(cible.attachment)) || ZONE_NEUVE,
+      zone: (cible && lireZone(cible.attachment)) || { largeur, hauteur, elements: [] },
       taillePolice: getComputedStyle(this.editor.view.dom).fontSize,
-      surValider: (description) =>
-        this.insererFigure({ kind: "zone", nom: description }, { remplacement: cible && { pos: cible.pos } })
+      surValider: (description) => this.insererFigure({ kind: "zone", nom: description }, { remplacement: cible })
     }).ouvrir()
   }
 
-  // Le catalogue (GET /figures/materiel), chargé une fois par éditeur.
+  // Le catalogue (GET /figures/materiel), chargé une fois par éditeur ; après un
+  // échec, le prochain essai le redemande.
   catalogueDuMateriel() {
     this.catalogue ||= get("/figures/materiel", { responseKind: "json" })
       .then((reponse) => (reponse.ok ? reponse.json : null))
       .catch(() => null)
+      .then((catalogue) => {
+        if (!catalogue) this.catalogue = null
+        return catalogue
+      })
     return this.catalogue
   }
 
@@ -669,18 +676,11 @@ export default class extends Controller {
     this.barreTarget.querySelector(".rt-figures__heure").focus()
   }
 
-  // Réglages d'une horloge, lus dans son sgid : `…/Figure/horloge-0315-chiffres`.
-  // Le sgid n'est pas chiffré, seulement signé ; on n'en lit que l'identifiant.
+  // Réglages d'une horloge, lus dans son identifiant : `horloge-0315-chiffres`.
   reglagesHorloge(attachment) {
-    try {
-      const sgid = JSON.parse(attachment).sgid
-      const encode = sgid.slice(0, sgid.lastIndexOf("--")).replace(/-/g, "+").replace(/_/g, "/")
-      const match = atob(encode).match(/Figure\/horloge-(\d{2})?(\d{2})?(?:vide)?-(chiffres|nue)/)
-      if (!match) return ["", true]
-      return [match[1] ? `${parseInt(match[1], 10)}:${match[2]}` : "", match[3] === "chiffres"]
-    } catch {
-      return ["", true]
-    }
+    const match = /^horloge-(\d{2})?(\d{2})?(?:vide)?-(chiffres|nue)$/.exec(idDeLaFigure(attachment) || "")
+    if (!match) return ["", true]
+    return [match[1] ? `${parseInt(match[1], 10)}:${match[2]}` : "", match[3] === "chiffres"]
   }
 }
 

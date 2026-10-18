@@ -12,8 +12,7 @@
 // pièce flotte et le texte, ou une autre image, vient à côté. Voir
 // FigurePresentation côté serveur, qui rend exactement les mêmes classes.
 import { Node } from "@tiptap/core"
-
-export const FIGURE_TYPE = "application/vnd.ensemble.figure"
+import { FIGURE_TYPE, ZONE_TYPE, lireJson } from "./types"
 
 const TAILLES = [
   { valeur: "25", libelle: "¼", titre: "Un quart de la largeur" },
@@ -31,10 +30,6 @@ const POSITIONS = [
   { valeur: "droite", titre: "À droite, le texte à côté",
     trace: '<rect x="13" y="5" width="8" height="8" rx="1.5"/><path d="M3 6h7M3 10h7M5 14h5M3 18.5h18"/>' }
 ]
-
-function lireJson(texte) {
-  try { return JSON.parse(texte || "{}") } catch { return {} }
-}
 
 const TAILLE_MIN = 10
 
@@ -95,7 +90,7 @@ class VuePieceJointe {
     // Glisser la pièce la déplace dans l'énoncé (ProseMirror gère le dépôt).
     this.dom.draggable = true
     // Un double-clic sur une zone de manipulation l'ouvre, comme « Modifier la zone ».
-    this.dom.addEventListener("dblclick", () => { if (this.estZone) this.modifierZone() })
+    this.dom.addEventListener("dblclick", () => { if (this.estZone) this.signaler("modifier-zone") })
     this.rendre(node)
   }
 
@@ -176,25 +171,36 @@ class VuePieceJointe {
     return true
   }
 
-  modifierZone() {
-    this.dom.dispatchEvent(new CustomEvent("piece-jointe:modifier-zone", {
+  // La part de la ligne qu'une zone prend d'elle-même, en % : sa taille de départ
+  // quand on l'aligne sans l'avoir agrandie.
+  tailleNaturelle() {
+    const part = (100 * this.dom.getBoundingClientRect().width) / this.dom.parentElement.clientWidth
+    return String(Math.min(100, Math.max(TAILLE_MIN, Math.round(part))))
+  }
+
+  // « Changer l'heure », « Modifier la zone » : le contrôleur de l'éditeur s'en charge.
+  signaler(nom) {
+    this.dom.dispatchEvent(new CustomEvent(`piece-jointe:${nom}`, {
       bubbles: true, detail: { pos: this.getPos(), attachment: this.node.attrs.attachment }
     }))
   }
 
   // --- Barre de taille et de position --------------------------------------------
 
+  get typeDeContenu() {
+    return this.node.attrs.contentType || this.piece.contentType
+  }
+
   get estRedimensionnable() {
-    return this.type === "preview" || (this.node.attrs.contentType || this.piece.contentType) === FIGURE_TYPE
+    return this.type === "preview" || [FIGURE_TYPE, ZONE_TYPE].includes(this.typeDeContenu)
   }
 
   get estHorloge() {
     return !!this.dom.querySelector(".rt-figure-img--horloge")
   }
 
-  // Une zone de manipulation a sa propre taille : pas de ¼ ½ ¾, mais « Modifier ».
   get estZone() {
-    return !!this.dom.querySelector(".rt-figure-img--zone")
+    return this.typeDeContenu === ZONE_TYPE
   }
 
   afficherBarre() {
@@ -204,25 +210,30 @@ class VuePieceJointe {
     barre.contentEditable = "false"
 
     let html = ""
-    if (this.estZone) {
-      html += '<button type="button" class="rt-fig-bar__btn" data-zone>Modifier la zone</button><span class="rt-fig-bar__sep" aria-hidden="true"></span>'
-    } else if (this.estRedimensionnable) {
+    if (this.estRedimensionnable) {
       const [taille, position] = presentationEnParties(lireJson(this.node.attrs.attributes).presentation)
-      const tailleCourante = taille || (this.estHorloge ? "25" : "100")
+      // Une zone a sa largeur à elle : pas de ¼ ½ ¾, seulement l'alignement ; la
+      // poignée l'agrandit ou la réduit tout entière.
+      const tailleCourante = taille || (this.estZone ? null : this.estHorloge ? "25" : "100")
       // Une taille libre (33 %) n'enfonce aucun des boutons ¼ ½ ¾.
-      const positionCourante = position || (tailleCourante === "100" ? null : "gauche")
+      const positionCourante = position || (tailleCourante && tailleCourante !== "100" ? "gauche" : null)
       this.tailleCourante = tailleCourante
       this.positionCourante = positionCourante
-      html += TAILLES.map(({ valeur, libelle, titre }) =>
-        `<button type="button" class="rt-fig-bar__btn" data-taille="${valeur}" title="${titre}"
-                 aria-pressed="${valeur === tailleCourante}">${libelle}</button>`).join("")
-      html += '<span class="rt-fig-bar__sep" aria-hidden="true"></span>'
+      if (!this.estZone) {
+        html += TAILLES.map(({ valeur, libelle, titre }) =>
+          `<button type="button" class="rt-fig-bar__btn" data-taille="${valeur}" title="${titre}"
+                   aria-pressed="${valeur === tailleCourante}">${libelle}</button>`).join("")
+        html += '<span class="rt-fig-bar__sep" aria-hidden="true"></span>'
+      }
       html += POSITIONS.map(({ valeur, titre, trace }) =>
         `<button type="button" class="rt-fig-bar__btn" data-position="${valeur}" title="${titre}" aria-label="${titre}"
                  aria-pressed="${valeur === positionCourante}" ${tailleCourante === "100" ? "disabled" : ""}>
            <svg viewBox="0 0 24 24" aria-hidden="true">${trace}</svg></button>`).join("")
       if (this.estHorloge) {
         html += '<span class="rt-fig-bar__sep" aria-hidden="true"></span><button type="button" class="rt-fig-bar__btn" data-heure>Changer l\'heure</button>'
+      }
+      if (this.estZone) {
+        html += '<span class="rt-fig-bar__sep" aria-hidden="true"></span><button type="button" class="rt-fig-bar__btn" data-zone>Modifier la zone</button>'
       }
       html += '<span class="rt-fig-bar__sep" aria-hidden="true"></span>'
     }
@@ -234,7 +245,7 @@ class VuePieceJointe {
     barre.addEventListener("click", (e) => this.clicBarre(e))
     this.dom.prepend(barre)
     this.barre = barre
-    if (this.estRedimensionnable && !this.estZone) this.afficherPoignee()
+    if (this.estRedimensionnable) this.afficherPoignee()
   }
 
   // --- Poignée : la taille à la souris ---------------------------------------------
@@ -242,7 +253,9 @@ class VuePieceJointe {
   afficherPoignee() {
     this.poignee?.remove()
     const poignee = document.createElement("span")
-    poignee.className = "rt-piece-poignee"
+    // En bas à droite ; en bas à gauche pour une pièce calée à droite, qui
+    // grandit vers la gauche.
+    poignee.className = `rt-piece-poignee${this.positionCourante === "droite" ? " rt-piece-poignee--gauche" : ""}`
     poignee.title = "Tirer pour changer la taille"
     poignee.draggable = false
     poignee.addEventListener("pointerdown", (e) => this.debutRedimension(e))
@@ -252,7 +265,9 @@ class VuePieceJointe {
   }
 
   // La largeur suit le pointeur, en pourcentage de la largeur de l'énoncé,
-  // arrondie à 5 % près ; elle n'est enregistrée qu'au relâchement.
+  // arrondie à 5 % près ; elle n'est enregistrée qu'au relâchement. Elle se
+  // mesure depuis le bord qui ne bouge pas : le gauche, le droit pour une pièce
+  // calée à droite, le milieu pour une pièce centrée.
   debutRedimension(event) {
     event.preventDefault()
     event.stopPropagation()
@@ -260,17 +275,21 @@ class VuePieceJointe {
     // déplaçable) et la poignée ne reçoit plus le mouvement.
     this.dom.draggable = false
     const largeurEnonce = this.editor.view.dom.getBoundingClientRect().width
-    const gauche = this.dom.getBoundingClientRect().left
+    const cadre = this.dom.getBoundingClientRect()
+    const largeurDepuis = {
+      droite: (x) => cadre.right - x,
+      centre: (x) => 2 * (x - (cadre.left + cadre.width / 2))
+    }[this.positionCourante] || ((x) => x - cadre.left)
+    let taille = this.tailleCourante || this.tailleNaturelle()
     const mesure = document.createElement("span")
     mesure.className = "rt-piece-mesure"
     this.dom.appendChild(mesure)
     this.dom.classList.add("rt-fig")
-    let taille = this.tailleCourante
 
     // Suivi sur la fenêtre, pas sur la poignée : l'éditeur peut redessiner la
     // pièce sur l'appui, et une capture posée sur l'ancienne poignée se perd.
     const suivre = (e) => {
-      const brute = ((e.clientX - gauche) / largeurEnonce) * 100
+      const brute = (largeurDepuis(e.clientX) / largeurEnonce) * 100
       taille = String(Math.min(100, Math.max(TAILLE_MIN, Math.round(brute / 5) * 5)))
       this.dom.style.width = `${taille}%`
       mesure.textContent = `${taille} %`
@@ -301,13 +320,11 @@ class VuePieceJointe {
     } else if (bouton.dataset.taille) {
       this.redimensionner(bouton.dataset.taille, this.positionCourante || "centre")
     } else if (bouton.dataset.position) {
-      this.redimensionner(this.tailleCourante, bouton.dataset.position)
+      this.redimensionner(this.tailleCourante || this.tailleNaturelle(), bouton.dataset.position)
     } else if (bouton.hasAttribute("data-zone")) {
-      this.modifierZone()
+      this.signaler("modifier-zone")
     } else if (bouton.hasAttribute("data-heure")) {
-      this.dom.dispatchEvent(new CustomEvent("piece-jointe:changer-heure", {
-        bubbles: true, detail: { pos: this.getPos(), attachment: this.node.attrs.attachment }
-      }))
+      this.signaler("changer-heure")
     }
   }
 

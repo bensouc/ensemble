@@ -6,32 +6,24 @@
 // (POST /figures, kind « zone »).
 //
 // Chargé à la demande par editeur_enonce_controller, avec le catalogue du
-// matériel (GET /figures/materiel) : le vrai dessin et la taille de chaque élément.
+// matériel (GET /figures/materiel) : le vrai dessin et la taille de chaque élément,
+// et les limites de Figure::Zone.
+import { idDeLaFigure } from "./types"
 
-// La zone d'une figure, lue dans son sgid : `…/Figure/zone-80x24-b10.4.8`. Le sgid
-// est signé, pas chiffré ; on n'en lit que l'identifiant.
+// La zone d'une figure, lue dans son identifiant : `zone-80x24-b10.4.8`.
 export function lireZone(attachment) {
-  try {
-    const sgid = JSON.parse(attachment).sgid
-    const encode = sgid.slice(0, sgid.lastIndexOf("--")).replace(/-/g, "+").replace(/_/g, "/")
-    const match = atob(encode).match(/Figure\/zone-(\d+)x(\d+)(?:-([a-z0-9._]+))?/)
-    if (!match) return null
-    const elements = (match[3] || "").split("_").filter(Boolean).map((texte) => {
-      const [code, x, y, taille] = texte.split(".")
-      return { code, x: Number(x), y: Number(y), taille: Number(taille || 100) }
-    })
-    return { largeur: Number(match[1]), hauteur: Number(match[2]), elements }
-  } catch {
-    return null
-  }
+  const match = /^zone-(\d+)x(\d+)(?:-([a-z0-9._]+))?$/.exec(idDeLaFigure(attachment) || "")
+  if (!match) return null
+  const elements = (match[3] || "").split("_").map((texte) => {
+    const [code, x, y, taille] = texte.split(".")
+    return { code, x: Number(x), y: Number(y), taille: Number(taille || 100) }
+  })
+  return { largeur: Number(match[1]), hauteur: Number(match[2]), elements }
 }
 
-export const ZONE_NEUVE = { largeur: 80, hauteur: 24, elements: [] }
-
-// Taille d'un élément, en % de celle du matériel : par crans de 10 (Figure::Zone::TAILLES).
-const TAILLE_MIN = 50
-const TAILLE_MAX = 400
+// Taille d'un élément, en % de celle du matériel, par crans.
 const CRAN = 10
+const PAS_DU_CLAVIER = { "+": CRAN, "=": CRAN, "-": -CRAN, "_": -CRAN }
 
 const borner = (v, min, max) => Math.min(Math.max(v, min), max)
 
@@ -42,8 +34,8 @@ export class EditeurDeZone {
     this.largeur = zone.largeur
     this.hauteur = zone.hauteur
     // Un code inconnu du catalogue (matériel retiré depuis) est laissé de côté.
-    this.elements = zone.elements.filter((e) => catalogue.elements[e.code]).map((e) => ({ taille: 100, ...e }))
-    this.taillePolice = taillePolice
+    this.elements = zone.elements.filter((e) => catalogue.elements[e.code]).map((e) => ({ ...e }))
+    this.police = parseFloat(taillePolice)
     this.surValider = surValider
     this.choisi = null
   }
@@ -60,15 +52,10 @@ export class EditeurDeZone {
     this.racine.addEventListener("click", (e) => this.onClic(e))
     this.racine.addEventListener("keydown", (e) => this.onTouche(e))
     this.cadre.addEventListener("pointerdown", (e) => this.onAppui(e))
-    this.ajusterLoupe()
     this.dessiner()
     this.racine.focus()
     // La fenêtre peut ne pas avoir encore sa largeur : la loupe se recalcule ensuite.
-    requestAnimationFrame(() => {
-      if (!this.racine) return
-      this.ajusterLoupe()
-      this.dessiner()
-    })
+    requestAnimationFrame(() => this.racine && this.dessiner())
   }
 
   fermer() {
@@ -119,14 +106,12 @@ export class EditeurDeZone {
   // Le cadre est grossi (×2 au plus) pour placer le matériel avec précision, dans
   // la largeur de la fenêtre : l'énoncé, lui, le montrera à sa vraie taille. Pas
   // pendant un glisser : la poignée ne suivrait plus la souris.
-  ajusterLoupe() {
-    const police = parseFloat(this.taillePolice)
-    const place = this.racine.querySelector(".rt-zone__defilement").clientWidth - 16
-    this.loupe = Math.max(1, Math.min(2, place / (this.largeur * this.catalogue.pas * police)))
-  }
-
   dessiner() {
-    this.cadre.style.fontSize = `${parseFloat(this.taillePolice) * this.loupe}px`
+    if (!this.enGeste) {
+      const place = this.racine.querySelector(".rt-zone__defilement").clientWidth - 16
+      this.loupe = borner(place / (this.largeur * this.catalogue.pas * this.police), 1, 2)
+    }
+    this.cadre.style.fontSize = `${this.police * this.loupe}px`
     this.cadre.style.width = this.em(this.largeur)
     this.cadre.style.height = this.em(this.hauteur)
     this.cadre.querySelectorAll(".rt-zone__element, .rt-zone__agrandir").forEach((n) => n.remove())
@@ -187,7 +172,6 @@ export class EditeurDeZone {
     this.agrandirPour(nouveau.x + largeur, nouveau.y + hauteur)
     this.elements.push({ ...nouveau, ...this.dansLaZone(nouveau, nouveau.x, nouveau.y) })
     this.choisi = this.elements.length - 1
-    this.ajusterLoupe()
     this.dessiner()
   }
 
@@ -201,7 +185,7 @@ export class EditeurDeZone {
   // Agrandit l'élément choisi, ou le réduit, d'autant de crans ; la zone grandit
   // avec lui s'il le faut.
   changerTaille(e, taille) {
-    e.taille = borner(Math.round(taille / CRAN) * CRAN, TAILLE_MIN, TAILLE_MAX)
+    e.taille = borner(Math.round(taille / CRAN) * CRAN, ...this.catalogue.tailles)
     const { largeur, hauteur } = this.dimensions(e)
     this.agrandirPour(e.x + largeur, e.y + hauteur)
     Object.assign(e, this.dansLaZone(e, e.x, e.y))
@@ -218,10 +202,7 @@ export class EditeurDeZone {
 
   // La zone s'étend pour contenir ce bord (bas droit), dans ses limites.
   agrandirPour(droite, bas) {
-    const [, largeurMax] = this.catalogue.largeurs
-    const [, hauteurMax] = this.catalogue.hauteurs
-    this.largeur = borner(Math.max(this.largeur, Math.ceil(droite) + 1), this.largeur, largeurMax)
-    this.hauteur = borner(Math.max(this.hauteur, Math.ceil(bas) + 1), this.hauteur, hauteurMax)
+    this.redimensionner(Math.max(this.largeur, Math.ceil(droite) + 1), Math.max(this.hauteur, Math.ceil(bas) + 1))
   }
 
   // Le coin haut gauche d'un élément, ramené dans la zone.
@@ -244,10 +225,9 @@ export class EditeurDeZone {
       event.preventDefault()
       return this.retirer()
     }
-    if (["+", "=", "-", "_"].includes(event.key)) {
+    if (PAS_DU_CLAVIER[event.key]) {
       event.preventDefault()
-      this.changerTaille(e, e.taille + (["+", "="].includes(event.key) ? CRAN : -CRAN))
-      this.ajusterLoupe()
+      this.changerTaille(e, e.taille + PAS_DU_CLAVIER[event.key])
       return this.dessiner()
     }
     const pas = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] }[event.key]
@@ -272,15 +252,22 @@ export class EditeurDeZone {
     event.preventDefault()
     const pas = this.pasEnPixels()
     const depart = { x: event.clientX, y: event.clientY }
+    let dernier = ""
+    this.enGeste = true
     const bouger = (ev) => {
-      deplacer(Math.round((ev.clientX - depart.x) / pas), Math.round((ev.clientY - depart.y) / pas))
+      const dx = Math.round((ev.clientX - depart.x) / pas)
+      const dy = Math.round((ev.clientY - depart.y) / pas)
+      // La souris bouge plus souvent qu'elle ne change de case.
+      if (`${dx},${dy}` === dernier) return
+      dernier = `${dx},${dy}`
+      deplacer(dx, dy)
       this.dessiner()
     }
     const lacher = () => {
       window.removeEventListener("pointermove", bouger)
       window.removeEventListener("pointerup", lacher)
+      this.enGeste = false
       if (!this.racine) return
-      this.ajusterLoupe()
       this.dessiner()
       this.racine.focus()
     }

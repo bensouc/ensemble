@@ -15,7 +15,7 @@
   <span class="rt-carreaux"></span>
 <% else %>
   <% svg = render("figures/#{figure.kind}_svg", dessinable: figure) %>
-  <%# Une zone garde la largeur de son dessin (en em), et rétrécit si la ligne est plus étroite. %>
-  <% largeur = figure.zone_dessin[:largeur_em] if figure.kind == :zone %>
-  <img class="rt-figure-img rt-figure-img--<%= figure.kind %>" src="data:image/svg+xml;base64,<%= Base64.strict_encode64(svg.to_str.strip) %>" alt="<%= figure.libelle %>"<% if largeur %> style="width: <%= largeur %>em"<% end %>>
+  <%# Dans une image, les em du dessin ne suivent plus l'énoncé : la largeur que la figure prend d'elle-même lui est redonnée (--rt-largeur, trix/_figures.scss). %>
+  <% largeur = figure.largeur_naturelle_em %>
+  <img class="rt-figure-img rt-figure-img--<%= figure.kind %>" src="data:image/svg+xml;base64,<%= Base64.strict_encode64(svg.to_str.strip) %>" alt="<%= figure.libelle %>"<% if largeur %> style="--rt-largeur: <%= largeur %>em"<% end %>>
 <% end %>

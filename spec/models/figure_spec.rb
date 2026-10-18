@@ -101,7 +101,7 @@ RSpec.describe Figure do
         zone = described_class.find("zone-80x24-b10.4.8_p2.20.8")
 
         expect(zone.libelle).to eq("Zone de manipulation")
-        expect(zone).not_to be_inline
+        expect(zone.content_type).to eq(Figure::ZONE_CONTENT_TYPE)
         expect(zone.zone_dessin.values_at(:largeur_em, :hauteur_em)).to eq([20.0, 6.0])
         expect(zone.zone_dessin[:elements].map { |e| [e[:materiel].id, e[:x], e[:y]] })
           .to eq([["billet-10", 4, 8], ["piece-2", 20, 8]])
@@ -128,11 +128,12 @@ RSpec.describe Figure do
         expect(described_class.id_for(kind: "zone", nom: "80x24-#{elements}")).to be_nil
       end
 
-      it "se dessine en un seul SVG, chaque matériel à sa place" do
-        html = rendu(piece_jointe("zone-80x24-b10.4.8_d.40.0"))
+      it "se dessine en un seul SVG : chaque matériel une fois, puis posé à chaque place" do
+        html = rendu(piece_jointe("zone-80x24-b100.4.8_d.40.0_d.44.0"))
 
         expect(html).to include("rt-figure--zone").and include('aria-label="Zone de manipulation"')
-        expect(html).to include('<svg x="4" y="8"').and include('<svg x="40" y="0"')
+        expect(html.scan("<symbol").size).to eq(2)
+        expect(html).to include('xlink:href="#rt-materiel-bloc-dizaine" x="44" y="0"').and include(">100</text>")
       end
     end
 
@@ -144,21 +145,13 @@ RSpec.describe Figure do
         expect(described_class.id_for(kind: "billet", nom: "20")).to be_nil
       end
 
-      it "se dessine dans la ligne, avec sa valeur lisible" do
-        html = rendu(piece_jointe("billet-100"))
-
-        expect(html).to include("rt-figure--billet-100").and include('aria-label="Billet de 100 €"')
-        expect(html).to include(">100</text>")
-        expect(described_class.find("billet-100")).to be_inline
-      end
-
       it "dessine un millier en cube quadrillé, plus grand qu'une centaine" do
         millier = described_class.find("bloc-millier")
         centaine = described_class.find("bloc-centaine")
 
         expect(millier.libelle).to eq("Un millier")
-        expect(millier.taille_du_materiel[1]).to be > centaine.taille_du_materiel[1]
-        expect(rendu(piece_jointe("bloc-millier"))).to include("<polygon").and include('stroke="#FFFFFF"')
+        expect(millier.taille_en_pas[1]).to be > centaine.taille_en_pas[1]
+        expect(rendu(piece_jointe("zone-80x40-m.1.1"))).to include("<polygon").and include('stroke="#FFFFFF"')
       end
     end
 

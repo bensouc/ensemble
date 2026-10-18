@@ -1,3 +1,0 @@
-<%# Billet simplifié (couleurs : `Figure#billet_dessin`) : le chiffre, « EURO » et une arche, comme sur le vrai, sans pouvoir être pris pour lui. %>
-<% d = dessinable.billet_dessin %>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="<%= dessinable.materiel_boite %>" width="<%= d[:largeur] %>em" height="<%= d[:hauteur] %>em" role="img" aria-label="<%= dessinable.libelle %>"><%= render "figures/billet_formes", dessinable: %></svg>

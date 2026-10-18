@@ -1,0 +1,3 @@
+<%# Un matériel seul (billet, pièce, bloc), à sa taille en em : l'image de la palette de l'éditeur de zone (FiguresController#materiel). %>
+<% c = dessinable.cadre_du_materiel %>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="<%= c[:boite] %>" width="<%= c[:largeur] %>em" height="<%= c[:hauteur] %>em" role="img" aria-label="<%= dessinable.libelle %>"><%= render "figures/#{dessinable.kind}_formes", dessinable: %></svg>

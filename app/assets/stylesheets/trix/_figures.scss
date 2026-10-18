@@ -154,8 +154,10 @@ $carreaux-rangees: 3;
       max-width: 100%;
       height: auto;
     }
-  }
 
+    // Agrandie ou réduite dans l'éditeur (taille-N) : le dessin suit sa largeur.
+    &.rt-fig svg { width: 100%; }
+  }
 
   // Un pictogramme se lit comme une lettre de la phrase.
   .rt-figure--picto {
@@ -213,23 +215,27 @@ trix-editor,
     vertical-align: -0.2em;
   }
 
-
   // Dans l'éditeur, la zone montre son cadre ; un clic la sélectionne, « Modifier
-  // la zone » l'ouvre (editeur/zone.js). La pièce jointe épouse la zone, au lieu
-  // de prendre toute la ligne comme les autres figures.
-  figure.attachment:has(> .rt-figure-img--zone) {
+  // la zone » l'ouvre (editeur/zone.js). Elle épouse sa largeur naturelle
+  // (--rt-largeur, figures/_editor), ou celle choisie à la poignée.
+  figure.attachment[data-trix-content-type="application/vnd.ensemble.figure-zone"] {
     display: block;
     width: fit-content;
     max-width: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   .rt-figure-img--zone {
     display: block;
+    width: var(--rt-largeur, 100%);
     max-width: 100%;
     height: auto;
     outline: 1px dashed var(--rt-line-strong, #ddd);
     outline-offset: 2px;
   }
+
+  figure.attachment.rt-fig > .rt-figure-img--zone { width: 100%; }
 
   .rt-figure-img--picto {
     display: block;
@@ -490,23 +496,4 @@ trix-toolbar,
 
     &:hover { border-color: var(--rt-accent); }
   }
-}
-
-// Un choix de matériel, dans la palette de l'éditeur de zone (editeur/zone.js).
-.rt-materiel__choix {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 34px;
-  padding: 3px 6px;
-  background: var(--rt-surface);
-  border: 1px solid var(--rt-line);
-  border-radius: 8px;
-  font-size: 12px;
-  color: var(--rt-ink);
-  cursor: pointer;
-
-  svg { display: block; }
-
-  &:hover { border-color: var(--rt-accent); }
 }

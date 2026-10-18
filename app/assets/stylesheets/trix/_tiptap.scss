@@ -115,6 +115,15 @@
 
   figure.attachment.rt-fig--gauche .rt-piece-poignee { right: calc(0.6em - 6px); }
 
+  // Calée à droite, la pièce grandit vers la gauche : sa poignée y passe.
+  .rt-piece-poignee--gauche {
+    right: auto;
+    left: -6px;
+    cursor: nesw-resize;
+  }
+
+  figure.attachment.rt-fig--droite .rt-piece-poignee--gauche { left: calc(0.6em - 6px); }
+
   // Pendant qu'on tire la poignée : la largeur en cours.
   .rt-piece-mesure {
     position: absolute;
@@ -226,9 +235,23 @@
   align-items: center;
   gap: 6px;
 
-  .rt-materiel__choix img {
-    display: block;
-    width: auto;
+  // Un choix de matériel : son dessin, dans une tuile.
+  .rt-materiel__choix {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 3px 6px;
+    background: var(--rt-surface);
+    border: 1px solid var(--rt-line);
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover { border-color: var(--rt-accent); }
+
+    img {
+      display: block;
+      width: auto;
+    }
   }
 }
 
@@ -269,30 +292,28 @@
   white-space: nowrap;
 }
 
-// Le coin d'un élément choisi : le tirer l'agrandit, proportions gardées.
-.rt-zone__agrandir {
+// Les poignées : le coin d'un élément choisi l'agrandit, proportions gardées ;
+// celui du cadre agrandit la zone.
+.rt-zone__agrandir,
+.rt-zone__poignee {
   position: absolute;
-  z-index: 3;
   width: 12px;
   height: 12px;
   background: var(--rt-accent);
   border: 2px solid #fff;
   border-radius: 50%;
-  transform: translate(-50%, -50%);
   cursor: nwse-resize;
 }
 
+.rt-zone__agrandir {
+  z-index: 3;
+  transform: translate(-50%, -50%);
+}
+
 .rt-zone__poignee {
-  position: absolute;
   right: -6px;
   bottom: -6px;
   z-index: 2;
-  width: 12px;
-  height: 12px;
-  background: var(--rt-accent);
-  border: 2px solid #fff;
-  border-radius: 50%;
-  cursor: nwse-resize;
 }
 
 .rt-zone__aide,
@@ -302,7 +323,8 @@
   color: var(--rt-ink-soft);
 }
 
-.rt-zone__erreur { color: var(--rt-accent); }
+// Même rouge que l'erreur de l'horloge (.rt-figures__erreur).
+.rt-zone__erreur { color: #ce3e1b; }
 
 .rt-zone__pied {
   display: flex;

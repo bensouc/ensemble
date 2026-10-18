@@ -1,19 +1,15 @@
 # frozen_string_literal: true
 
 class Figure
-  # Matériel de manipulation : billets, pièces, blocs de numération. Dessiné
-  # plutôt que photographié : un billet simplifié aux couleurs du vrai ne peut
-  # pas être pris pour lui, ce qu'exige la BCE de toute reproduction de billet
-  # en euros. Les dessins sont dans figures/_billet_svg, _piece_svg, _bloc_svg.
+  # Matériel de manipulation : billets, pièces, blocs de numération, que l'on
+  # pose dans une zone (Figure::Zone). Dessiné plutôt que photographié : un
+  # billet simplifié aux couleurs du vrai ne peut pas être pris pour lui, ce
+  # qu'exige la BCE de toute reproduction de billet en euros. Les formes sont
+  # dans figures/_billet_formes, _piece_formes, _bloc_formes.
   #
-  # Tailles en em : le matériel suit le texte qui l'entoure, plus grand au PDF
-  # (20 px) qu'à l'écran (17 px), comme un pictogramme.
+  # Tailles en em : le matériel suit le texte, plus grand au PDF (20 px) qu'à
+  # l'écran (17 px).
   module Materiel
-    SORTES = {
-      "billet" => %w[5 10 20 50 100],
-      "piece" => %w[1 2],
-      "bloc" => %w[unite dizaine centaine millier]
-    }.freeze
     IDENTIFIANT = /\A(?<sorte>billet|piece|bloc)-(?<valeur>[a-z0-9]+)\z/
     NOMS_DES_BLOCS = { "unite" => "Une unité", "dizaine" => "Une dizaine",
                        "centaine" => "Une centaine", "millier" => "Un millier" }.freeze
@@ -47,31 +43,37 @@ class Figure
     PAS = 10
     UNITE_EN_EM = 0.35
 
-    def materiel?
-      SORTES.key?(kind.to_s)
-    end
+    SORTES = { "billet" => COULEURS_DES_BILLETS.keys, "piece" => TAILLES_DES_PIECES.keys,
+               "bloc" => DIMENSIONS_DES_BLOCS.keys }.freeze
+    BOITE_D_UN_BILLET = [130, 68].freeze
+    BOITE_D_UNE_PIECE = 44
 
     def libelle_du_materiel
       case kind
       when :billet then "Billet de #{valeur} €"
       when :piece then "Pièce de #{valeur} €"
       when :bloc then NOMS_DES_BLOCS.fetch(valeur)
-      when :zone then "Zone de manipulation"
       end
     end
 
-    # Le cadre du dessin d'un matériel (`viewBox`), pour le poser dans une zone.
-    def materiel_boite
-      case kind
-      when :billet then "0 0 130 68"
-      when :piece then "0 0 44 44"
-      when :bloc then "0 0 #{bloc_dessin[:boite].join(' ')}"
-      end
+    # Le cadre du dessin (`viewBox`) et sa taille en em.
+    def cadre_du_materiel
+      boite, largeur, hauteur = case kind
+                                when :billet then [BOITE_D_UN_BILLET, billet_dessin[:largeur], HAUTEUR_D_UN_BILLET]
+                                when :piece then [[BOITE_D_UNE_PIECE] * 2, *[piece_dessin[:taille]] * 2]
+                                when :bloc then [bloc_dessin[:boite], *bloc_dessin.values_at(:largeur_em, :hauteur_em)]
+                                end
+      { boite: "0 0 #{boite.join(' ')}", largeur:, hauteur: }
+    end
+
+    # La taille du matériel en pas de la grille d'une zone, à `taille` %.
+    def taille_en_pas(taille = 100)
+      cadre_du_materiel.values_at(:largeur, :hauteur).map { |em| arrondi(em / Zone::PAS_DE_LA_GRILLE * taille / 100.0) }
     end
 
     def billet_dessin
-      { **COULEURS_DES_BILLETS.fetch(valeur), hauteur: HAUTEUR_D_UN_BILLET,
-                                              largeur: arrondi(HAUTEUR_D_UN_BILLET * 130 / 68.0) }
+      largeur, hauteur = BOITE_D_UN_BILLET
+      { **COULEURS_DES_BILLETS.fetch(valeur), largeur: arrondi(HAUTEUR_D_UN_BILLET * largeur / hauteur.to_f) }
     end
 
     def piece_dessin
@@ -79,20 +81,14 @@ class Figure
       { couronne:, coeur:, taille: TAILLES_DES_PIECES.fetch(valeur) }
     end
 
+    # Faces et quadrillage : calculés une fois par figure (une zone réutilise la
+    # même pour tous ses blocs pareils, Zone.materiel).
     def bloc_dessin
-      largeur, hauteur, profondeur = DIMENSIONS_DES_BLOCS.fetch(valeur).map { |n| n * PAS }
-      fuite = profondeur / 2.0
-      { **bloc_faces(largeur, hauteur, fuite), **bloc_cadre(largeur, hauteur, fuite),
-        couleurs: COULEURS_DES_BLOCS.fetch(valeur), grille: trace(bloc_grille(largeur, hauteur, fuite)) }
-    end
-
-    # Largeur et hauteur d'un matériel, en em : celles de son dessin, que
-    # l'image de l'éditeur reprend.
-    def taille_du_materiel
-      case kind
-      when :billet then billet_dessin.values_at(:largeur, :hauteur)
-      when :piece then [piece_dessin[:taille]] * 2
-      when :bloc then bloc_dessin.values_at(:largeur_em, :hauteur_em)
+      @bloc_dessin ||= begin
+        largeur, hauteur, profondeur = DIMENSIONS_DES_BLOCS.fetch(valeur).map { |n| n * PAS }
+        fuite = profondeur / 2.0
+        { **bloc_faces(largeur, hauteur, fuite), **bloc_cadre(largeur, hauteur, fuite),
+          couleurs: COULEURS_DES_BLOCS.fetch(valeur), grille: trace(bloc_grille(largeur, hauteur, fuite)) }
       end
     end
 

@@ -23,12 +23,26 @@ class Figure
               "d" => "bloc-dizaine", "c" => "bloc-centaine", "m" => "bloc-millier" }.freeze
     IDENTIFIANT = /\Azone-(?<largeur>\d{1,3})x(?<hauteur>\d{1,3})(?:-(?<elements>[a-z0-9._]+))?\z/
     ELEMENT = /\A(?<code>[a-z]+\d*)\.(?<x>\d{1,3})\.(?<y>\d{1,3})(?:\.(?<taille>\d{2,3}))?\z/
+    # La zone neuve que propose l'éditeur, en pas : 20 × 6 em.
+    NEUVE = [80, 24].freeze
+
+    # Une seule figure par matériel, partagée par toutes les zones : son dessin
+    # n'est calculé qu'une fois.
+    def self.materiel(code)
+      (@materiel ||= {})[code] ||= Figure.find(CODES.fetch(code))
+    end
 
     # La zone, en pas de grille : sa taille et la place de chaque élément.
     def zone_dessin
-      { largeur: @zone[:largeur], hauteur: @zone[:hauteur],
-        largeur_em: @zone[:largeur] * PAS_DE_LA_GRILLE, hauteur_em: @zone[:hauteur] * PAS_DE_LA_GRILLE,
-        elements: @zone[:elements].map { |element| element_dessine(element) } }
+      @zone_dessin ||= { largeur: @zone[:largeur], hauteur: @zone[:hauteur],
+                         largeur_em: largeur_naturelle_em, hauteur_em: @zone[:hauteur] * PAS_DE_LA_GRILLE,
+                         elements: @zone[:elements].map { |element| element_dessine(element) } }
+    end
+
+    # La largeur que la figure prend d'elle-même, en em ; nil pour une figure
+    # qui suit la largeur de la ligne.
+    def largeur_naturelle_em
+      @zone[:largeur] * PAS_DE_LA_GRILLE if @zone
     end
 
     private
@@ -60,13 +74,11 @@ class Figure
       taille = (match[:taille] || 100).to_i
       return unless x < largeur && y < hauteur && TAILLES.cover?(taille)
 
-      { materiel: Figure.find(CODES[match[:code]]), x:, y:, taille: }
+      { materiel: Zone.materiel(match[:code]), x:, y:, taille: }
     end
 
     def element_dessine(element)
-      largeur, hauteur = element[:materiel].taille_du_materiel.map do |em|
-        arrondi(em / PAS_DE_LA_GRILLE * element[:taille] / 100.0)
-      end
+      largeur, hauteur = element[:materiel].taille_en_pas(element[:taille])
       { **element, largeur:, hauteur: }
     end
   end

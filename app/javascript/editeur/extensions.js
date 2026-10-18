@@ -17,6 +17,7 @@ import { TableKit } from "@tiptap/extension-table"
 import { Placeholder } from "@tiptap/extensions"
 import { Plugin } from "@tiptap/pm/state"
 import { PieceJointe } from "./piece_jointe"
+import { ZONE_TYPE } from "./types"
 import { Colonnes, Colonne } from "./colonnes"
 
 // Les blocs de Trix sont des <div>. Un paragraphe TipTap s'écrit <p> ; or le
@@ -105,7 +106,7 @@ const Interligne = Extension.create({
 // Hors de l'historique : « Annuler » ne la retire pas.
 const BLOCS_SANS_LIGNE_DESSOUS = ["table", "colonnes"]
 // Une zone de manipulation, seule dans son paragraphe, fait bloc elle aussi.
-const estUneZone = (node) => node?.type.name === "pieceJointe" && /rt-figure-img--zone/.test(node.attrs.attachment || "")
+const estUneZone = (node) => node?.type.name === "pieceJointe" && node.attrs.contentType === ZONE_TYPE
 const finitParUnBloc = (doc) => {
   const dernier = doc.lastChild
   if (BLOCS_SANS_LIGNE_DESSOUS.includes(dernier?.type.name)) return true

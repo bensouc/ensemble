@@ -39,6 +39,7 @@ RSpec.describe "Figures de l'énoncé", type: :request do
 
       catalogue = response.parsed_body
       expect(catalogue["pas"]).to eq(0.25)
+      expect(catalogue["tailles"]).to eq([50, 400])
       expect(catalogue["elements"].keys).to include("b10", "p2", "u", "m")
       expect(catalogue["elements"]["b10"]).to include("libelle" => "Billet de 10 €", "sorte" => "billet", "hauteur" => 6.8)
       expect(catalogue["elements"]["b10"]["image"]).to start_with("data:image/svg+xml;base64,")
@@ -49,8 +50,8 @@ RSpec.describe "Figures de l'énoncé", type: :request do
 
       corps = response.parsed_body
       expect(ActionText::Attachable.from_attachable_sgid(corps["sgid"]).id).to eq("zone-80x24-b10.4.8_p2.20.8")
-      expect(corps["contentType"]).to eq(Figure::CONTENT_TYPE)
-      expect(corps["content"]).to include("rt-figure-img--zone").and include("width: 20.0em")
+      expect(corps["contentType"]).to eq(Figure::ZONE_CONTENT_TYPE)
+      expect(corps["content"]).to include("rt-figure-img--zone").and include("--rt-largeur: 20.0em")
     end
 
     it "refuse une zone dont un élément sort du cadre" do

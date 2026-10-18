@@ -29,6 +29,8 @@ class Figure
   CONTENT_TYPE = "application/vnd.ensemble.figure"
   # Un pictogramme se place dans la phrase : il n'a ni taille ni position.
   INLINE_CONTENT_TYPE = "application/vnd.ensemble.figure-inline"
+  # Une zone de manipulation (Figure::Zone) : l'éditeur la reconnaît à ce type.
+  ZONE_CONTENT_TYPE = "application/vnd.ensemble.figure-zone"
 
   PICTOS = {
     "coche" => "Coche",
@@ -111,8 +113,8 @@ class Figure
 
   def initialize(id)
     @id = id
-    @kind = SANS_REGLAGE[id] ||
-            %i[parse_seyes parse_picto parse_materiel parse_zone parse_horloge].lazy.filter_map { send(it) }.first ||
+    @kind = SANS_REGLAGE[id] || parse_seyes || parse_picto || parse_materiel || parse_zone ||
+            parse_horloge ||
             # ActionText transforme cette exception en pièce jointe manquante.
             raise(ActiveRecord::RecordNotFound, "Figure inconnue : #{id}")
   end
@@ -126,14 +128,10 @@ class Figure
 
   delegate :hash, to: :id
 
-  # Un pictogramme se lit comme une lettre de la phrase ; le matériel s'aligne
-  # dans la ligne, pièce après pièce, comme sur la table.
-  def inline?
-    kind == :picto || materiel?
-  end
+  def inline? = kind == :picto
 
   def content_type
-    inline? ? INLINE_CONTENT_TYPE : CONTENT_TYPE
+    { picto: INLINE_CONTENT_TYPE, zone: ZONE_CONTENT_TYPE }.fetch(kind, CONTENT_TYPE)
   end
 
   def to_trix_content_attachment_partial_path
@@ -153,6 +151,7 @@ class Figure
     when :carreaux then "Ligne à petits carreaux"
     when :horloge then libelle_horloge
     when :picto then PICTOS.fetch(picto)
+    when :zone then "Zone de manipulation"
     else libelle_du_materiel
     end
   end
