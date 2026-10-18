@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
-import { get, post } from "@rails/request.js"
+import { post } from "@rails/request.js"
 import { pourLEditeur, pourLEnregistrement, estUnAncienEnonce, sansSignature } from "../editeur/blocs"
 import { idDeLaFigure } from "../editeur/types"
 
@@ -644,10 +644,12 @@ export default class extends Controller {
   }
 
   // Le catalogue (GET /figures/materiel), chargé une fois par éditeur ; après un
-  // échec, le prochain essai le redemande.
+  // échec, le prochain essai le redemande. `no-cache` : le navigateur revérifie
+  // toujours sa copie (304 si rien n'a changé). Gardée une heure, elle cachait
+  // le matériel ajouté entre-temps. request.js ne transmet pas cette option.
   catalogueDuMateriel() {
-    this.catalogue ||= get("/figures/materiel", { responseKind: "json" })
-      .then((reponse) => (reponse.ok ? reponse.json : null))
+    this.catalogue ||= fetch("/figures/materiel", { cache: "no-cache", headers: { Accept: "application/json" } })
+      .then((reponse) => (reponse.ok ? reponse.json() : null))
       .catch(() => null)
       .then((catalogue) => {
         if (!catalogue) this.catalogue = null

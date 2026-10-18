@@ -46,6 +46,16 @@ RSpec.describe "Figures de l'énoncé", type: :request do
       expect(catalogue["elements"]["b10"]["image"]).to start_with("data:image/svg+xml;base64,")
     end
 
+    # Gardé une heure, il cachait le matériel ajouté entre-temps : le navigateur
+    # revérifie sa copie à chaque ouverture, pour rien si elle est à jour.
+    it "laisse le navigateur revérifier le catalogue, sans le renvoyer s'il n'a pas changé" do
+      get materiel_figures_path, as: :json
+
+      expect(response.headers["Cache-Control"]).to include("max-age=0").and include("must-revalidate")
+      get materiel_figures_path, as: :json, headers: { "If-None-Match" => response.headers["ETag"] }
+      expect(response).to have_http_status(:not_modified)
+    end
+
     it "renvoie une zone de manipulation, en bloc, prête à rouvrir" do
       post figures_path, params: { kind: "zone", nom: "80x24-b10.4.8_p2.20.8" }, as: :json
 
