@@ -22,13 +22,13 @@ export function lireZone(attachment) {
 }
 
 // La description d'une zone, telle que POST /figures l'attend.
-export function decrireZone({ largeur, hauteur, elements }) {
+function decrireZone({ largeur, hauteur, elements }) {
   const decrits = elements.map((e) => `${e.code}.${e.x}.${e.y}${e.taille === 100 ? "" : `.${e.taille}`}`).join("_")
   return `${largeur}x${hauteur}${decrits ? `-${decrits}` : ""}`
 }
 
 // Les éléments que le catalogue connaît : un matériel retiré depuis est laissé de côté.
-export function elementsConnus(catalogue, elements) {
+function elementsConnus(catalogue, elements) {
   return elements.filter((e) => catalogue.elements[e.code]).map((e) => ({ ...e }))
 }
 
@@ -40,7 +40,7 @@ function dimensions(catalogue, e) {
 
 // Le cadre d'une zone, dans les limites du catalogue : il ne rétrécit pas au
 // point de couper un élément.
-export function cadreBorne(catalogue, elements, largeur, hauteur) {
+function cadreBorne(catalogue, elements, largeur, hauteur) {
   const [largeurMin, largeurMax] = catalogue.largeurs
   const [hauteurMin, hauteurMax] = catalogue.hauteurs
   const bords = elements.map((e) => {

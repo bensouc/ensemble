@@ -15,34 +15,42 @@
 # lui donnait). Une image déjà en place garde donc sa pleine largeur : rien ne
 # change tant qu'on ne lui donne pas de taille.
 #
-# Une zone de manipulation a sa largeur à elle : sa présentation n'est qu'une
-# position, « droite ».
+# Une zone de manipulation, elle, garde ses proportions : on l'agrandit en % de
+# sa taille naturelle, « echelle-150 droite » (voir `attributs_de_zone`).
 module FigurePresentation
   TAILLE_MIN = 10
   TAILLE_MAX = 100
   POSITIONS = %w[gauche centre droite].freeze
   FORMAT = /\Ataille-(?<taille>\d+)(?: (?<position>[a-z]+))?\z/
+  ECHELLES = (50..400)
+  FORMAT_DE_ZONE = /\A(?:echelle-(?<echelle>\d+) ?)?(?<position>[a-z]*)\z/
 
   module_function
 
   # Classes et style du <figure> rendu. `attachment` : l'ActionText::Attachment
-  # (les partials le reçoivent sous le nom de leur attachable). `taille: false` :
-  # la pièce garde sa largeur, seule sa position compte (une zone).
-  def attributs(attachment, defaut: nil, taille: true)
-    largeur, position = presentation(attachment) || parse(defaut)
-    largeur = nil unless taille
-    return { classes: [], style: nil } unless largeur || position
+  # (les partials le reçoivent sous le nom de leur attachable).
+  def attributs(attachment, defaut: nil)
+    taille, position = parse(attachment.try(:node)&.[]("presentation")) || parse(defaut)
+    return { classes: [], style: nil } unless taille
 
-    { classes: ["rt-fig", ("rt-fig--#{position}" if position)].compact, style: ("width: #{largeur}%" if largeur) }
+    { classes: ["rt-fig", ("rt-fig--#{position}" if position)].compact, style: "width: #{taille}%" }
   end
 
-  def presentation(attachment)
-    parse(attachment.try(:node)&.[]("presentation"))
+  # Classes du <figure> d'une zone et son échelle, en % : le dessin, mesuré en
+  # em, est agrandi d'autant (figures/_zone_svg). Il garde ainsi la même taille
+  # par rapport au texte à l'écran, à l'affichage et au PDF — une part de la
+  # ligne, elle, change avec la largeur de la page.
+  def attributs_de_zone(attachment)
+    match = attachment.try(:node)&.[]("presentation").to_s.match(FORMAT_DE_ZONE)
+    position = match[:position] if match && POSITIONS.include?(match[:position])
+    echelle = match&.[](:echelle).to_i
+    {
+      classes: position ? ["rt-fig", "rt-fig--#{position}"] : [],
+      echelle: ECHELLES.cover?(echelle) ? echelle : 100
+    }
   end
 
   def parse(presentation)
-    return [nil, presentation] if POSITIONS.include?(presentation)
-
     match = presentation.to_s.match(FORMAT)
     return unless match
 

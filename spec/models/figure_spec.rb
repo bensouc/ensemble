@@ -136,14 +136,24 @@ RSpec.describe Figure do
         expect(html).to include('xlink:href="#rt-materiel-bloc-dizaine" x="44" y="0"').and include(">100</text>")
       end
 
-      # Sa poignée agrandit son cadre (une autre zone), jamais son dessin.
-      it "garde sa largeur : seule sa position compte" do
-        calee = rendu(piece_jointe("zone-80x24-b10.4.8", presentation: "droite"))
+      # Agrandie en em, elle garde sa taille par rapport au texte quelle que soit
+      # la largeur de la page (écran, affichage, PDF) : pas de part de la ligne.
+      it "s'agrandit à l'échelle choisie, proportions gardées" do
+        agrandie = rendu(piece_jointe("zone-80x24-b10.4.8", presentation: "echelle-150 droite"))
+
+        expect(agrandie).to include("rt-fig--droite").and include('width="30.0em" height="9.0em"')
+        expect(agrandie).not_to match(/width:\s*\d+%/)
+      end
+
+      it "reste à sa taille naturelle sans échelle, ou avec une échelle hors limites" do
+        expect(rendu(piece_jointe("zone-80x24-b10.4.8", presentation: "centre")))
+          .to include("rt-fig--centre").and include('width="20.0em" height="6.0em"')
+        expect(rendu(piece_jointe("zone-80x24-b10.4.8", presentation: "echelle-900")))
+          .to include('width="20.0em"')
         ancienne = rendu(piece_jointe("zone-80x24-b10.4.8", presentation: "taille-60 centre"))
 
-        expect(calee).to include("rt-fig--droite")
-        expect(ancienne).to include("rt-fig--centre")
-        expect([calee, ancienne]).to all(satisfy { |html| !html.match?(/width:\s*\d+%/) })
+        expect(ancienne).to include('width="20.0em"')
+        expect(ancienne).not_to match(/rt-fig--centre|width:\s*60%/)
       end
     end
 

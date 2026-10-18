@@ -214,8 +214,9 @@ trix-editor,
   }
 
   // Dans l'éditeur, la zone montre son cadre ; un clic la sélectionne, « Modifier
-  // la zone » l'ouvre (editeur/zone.js), sa poignée tire son cadre. Elle épouse
-  // sa largeur naturelle (--rt-largeur, figures/_editor).
+  // la zone » l'ouvre (editeur/zone.js). Elle épouse sa largeur naturelle
+  // (--rt-largeur, figures/_editor), agrandie par sa poignée (--rt-echelle,
+  // editeur/piece_jointe.js) comme à l'affichage (figures/_zone_svg).
   figure.attachment[data-trix-content-type="application/vnd.ensemble.figure-zone"] {
     display: block;
     width: fit-content;
@@ -228,7 +229,7 @@ trix-editor,
   // alignée, la ramenait à la taille par défaut d'un SVG (300 px).
   img.rt-figure-img--zone {
     display: block;
-    width: var(--rt-largeur, 100%);
+    width: calc(var(--rt-largeur, 100%) * var(--rt-echelle, 1));
     max-width: 100%;
     height: auto;
     outline: 1px dashed var(--rt-line-strong, #ddd);
