@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
 import { post } from "@rails/request.js"
+import { pourLEditeur, pourLEnregistrement } from "../editeur/blocs"
 
 // Éditeur d'énoncé d'exercice (TipTap), à la place de Trix.
 //
@@ -269,9 +270,10 @@ export default class extends Controller {
     this.editor = new Editor({
       element: this.zoneTarget,
       extensions: extensionsDeLEditeur({ placeholder: this.placeholderValue }),
-      content: this.inputTarget.value,
+      content: pourLEditeur(this.inputTarget.value),
       editorProps: {
         attributes: { class: "trix-content rt-editeur__contenu" },
+        transformPastedHTML: pourLEditeur,
         handlePaste: (_view, event) => this.fichiersDepuis(event.clipboardData),
         handleDrop: (_view, event) => this.fichiersDepuis(event.dataTransfer)
       },
@@ -310,7 +312,7 @@ export default class extends Controller {
   // Toujours le HTML complet : `editor.isEmpty` peut juger vide un énoncé fait
   // d'une seule image, qu'on aurait alors effacé à l'enregistrement.
   synchroniser() {
-    this.inputTarget.value = this.editor.getHTML()
+    this.inputTarget.value = pourLEnregistrement(this.editor.getHTML())
   }
 
   // --- Barre ---------------------------------------------------------------------
