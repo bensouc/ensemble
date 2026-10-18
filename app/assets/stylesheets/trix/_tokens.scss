@@ -21,6 +21,9 @@ trix-editor,
 
   --rt-line: #e6e6ea;
   --rt-line-strong: #{colors.$grisC};
+  // Traits des tableaux, un cran plus foncés que --rt-line : à #e6e6ea, ils
+  // disparaissaient sur un écran peu lumineux ou de mauvaise qualité.
+  --rt-table-line: #c4c4cc;
 
   --rt-surface: #{colors.$blanc};
   --rt-surface-soft: #f7f7f9;

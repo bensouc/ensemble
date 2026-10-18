@@ -33,7 +33,7 @@
   border-spacing: 0;
   // Le cadre est porté par le tableau, pas par les cases : rognées par
   // l'arrondi, leurs bordures laissaient les coins sans trait.
-  border: 1px solid var(--rt-line, #e6e6ea);
+  border: 1px solid var(--rt-table-line, #c4c4cc);
   border-radius: var(--rt-radius-sm, 8px);
   overflow: hidden;
 
@@ -49,8 +49,8 @@
   vertical-align: middle;
   background-color: transparent;
   border: 0;
-  border-top: 1px solid var(--rt-line, #e6e6ea);
-  border-left: 1px solid var(--rt-line, #e6e6ea);
+  border-top: 1px solid var(--rt-table-line, #c4c4cc);
+  border-left: 1px solid var(--rt-table-line, #c4c4cc);
   word-break: break-word;
 
   &:first-child { border-left: 0; }
