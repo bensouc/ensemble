@@ -26,11 +26,10 @@ class FiguresController < ApplicationController
 
   # Le catalogue du matériel, pour l'éditeur de zone (editeur/zone.js) : chaque
   # élément avec son dessin, en image, et sa taille en pas de la grille.
-  # Le même pour tous, et il ne change qu'au déploiement : le navigateur le garde
-  # d'une page de l'éditeur à l'autre.
+  # Le même pour tous ; il ne change qu'au déploiement, mais alors tout de suite :
+  # pas de durée de cache, le navigateur revérifie sa copie (ETag, 304).
   def materiel
     skip_authorization
-    expires_in 1.hour
     render json: {
       pas: Figure::Zone::PAS_DE_LA_GRILLE, zoneNeuve: Figure::Zone::NEUVE,
       largeurs: Figure::Zone::LARGEURS.minmax, hauteurs: Figure::Zone::HAUTEURS.minmax,

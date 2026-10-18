@@ -40,9 +40,20 @@ RSpec.describe "Figures de l'énoncé", type: :request do
       catalogue = response.parsed_body
       expect(catalogue["pas"]).to eq(0.25)
       expect(catalogue["tailles"]).to eq([50, 400])
-      expect(catalogue["elements"].keys).to include("b10", "p2", "u", "m")
+      expect(catalogue["elements"].keys).to include("b10", "p2", "pc1", "pc50", "u", "m")
+      expect(catalogue["elements"]["pc5"]).to include("libelle" => "Pièce de 5 centimes", "sorte" => "piece")
       expect(catalogue["elements"]["b10"]).to include("libelle" => "Billet de 10 €", "sorte" => "billet", "hauteur" => 6.8)
       expect(catalogue["elements"]["b10"]["image"]).to start_with("data:image/svg+xml;base64,")
+    end
+
+    # Gardé une heure, il cachait le matériel ajouté entre-temps : le navigateur
+    # revérifie sa copie à chaque ouverture, pour rien si elle est à jour.
+    it "laisse le navigateur revérifier le catalogue, sans le renvoyer s'il n'a pas changé" do
+      get materiel_figures_path, as: :json
+
+      expect(response.headers["Cache-Control"]).to include("max-age=0").and include("must-revalidate")
+      get materiel_figures_path, as: :json, headers: { "If-None-Match" => response.headers["ETag"] }
+      expect(response).to have_http_status(:not_modified)
     end
 
     it "renvoie une zone de manipulation, en bloc, prête à rouvrir" do
