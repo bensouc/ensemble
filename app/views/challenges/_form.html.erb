@@ -27,6 +27,19 @@
 							     data-editeur-enonce-placeholder-value="Écrivez votre énoncé ici…">
 								<%= form.hidden_field :content, value: EditeurTiptap.contenu_initial(challenge.content),
 								    data: { editeur_enonce_target: "input" } %>
+								<%# Un exercice à l'ancien format s'édite tel quel (editeur/blocs.js) : ce
+								    bandeau, que l'éditeur n'affiche que pour lui, le fait passer au nouveau,
+								    ou l'y ramène tant qu'il n'est pas enregistré. %>
+								<div class="rt-format" data-editeur-enonce-target="formatAncien" hidden>
+									<span class="rt-format__texte">Cet exercice est à l'ancien format : interligne plus large, et un espace entre les paragraphes.</span>
+									<%= render Ui::ButtonComponent.new("Passer au nouveau format", size: :sm,
+									    data: { action: "editeur-enonce#basculerFormat" }) %>
+								</div>
+								<div class="rt-format" data-editeur-enonce-target="formatConverti" hidden>
+									<span class="rt-format__texte">Exercice passé au nouveau format. Enregistrez pour le garder.</span>
+									<%= render Ui::ButtonComponent.new("Revenir à l'ancien format", variant: :neutral, size: :sm,
+									    data: { action: "editeur-enonce#basculerFormat" }) %>
+								</div>
 								<div class="rt-barre" data-editeur-enonce-target="barre"></div>
 								<div class="rt-editeur" data-editeur-enonce-target="zone"></div>
 								<input type="file" accept="image/*" multiple hidden

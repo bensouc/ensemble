@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
 import { post } from "@rails/request.js"
-import { pourLEditeur, pourLEnregistrement, estUnAncienEnonce } from "../editeur/blocs"
+import { pourLEditeur, pourLEnregistrement, estUnAncienEnonce, sansSignature } from "../editeur/blocs"
 
 // Éditeur d'énoncé d'exercice (TipTap), à la place de Trix.
 //
@@ -260,14 +260,13 @@ function barreHtml({ interlignes }) {
 }
 
 export default class extends Controller {
-  static targets = ["input", "barre", "zone", "fichier"]
+  static targets = ["input", "barre", "zone", "fichier", "formatAncien", "formatConverti"]
   static values = { directUploadUrl: String, blobUrlTemplate: String, placeholder: String }
 
   async connect() {
     // Un énoncé d'avant cet éditeur garde sa mise en page, interligne compris.
     const ancien = estUnAncienEnonce(this.inputTarget.value)
-    this.interlignes = interlignes(ancien)
-    this.interligneParDefaut = this.interlignes[NOMS_DES_INTERLIGNES.indexOf("Normal")].valeur
+    this.reglerFormat(ancien)
     // Une connexion précédente (cache Turbo) a pu laisser sa barre derrière elle.
     this.barreTarget.innerHTML = barreHtml({ interlignes: this.interlignes })
     this.zoneTarget.innerHTML = ""
@@ -279,20 +278,9 @@ export default class extends Controller {
     // Le formulaire a pu être refermé pendant le chargement.
     if (!this.element.isConnected || this.editor) return
 
-    this.editor = new Editor({
-      element: this.zoneTarget,
-      extensions: extensionsDeLEditeur({ placeholder: this.placeholderValue, ancien }),
-      content: pourLEditeur(this.inputTarget.value),
-      editorProps: {
-        attributes: { class: "trix-content rt-editeur__contenu" },
-        transformPastedHTML: pourLEditeur,
-        handlePaste: (_view, event) => this.fichiersDepuis(event.clipboardData),
-        handleDrop: (_view, event) => this.fichiersDepuis(event.dataTransfer)
-      },
-      onUpdate: () => this.synchroniser(),
-      onSelectionUpdate: () => this.etatBarre(),
-      onTransaction: () => this.etatBarre()
-    })
+    this.tiptap = { Editor, extensionsDeLEditeur }
+    this.monterEditeur(pourLEditeur(this.inputTarget.value))
+    if (this.hasFormatAncienTarget) this.formatAncienTarget.hidden = !ancien
 
     this.onClicBarre = this.onClicBarre.bind(this)
     this.onClicDehors = this.onClicDehors.bind(this)
@@ -312,6 +300,53 @@ export default class extends Controller {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); this.lien() }
       if (e.key === "Escape") this.fermerPopovers()
     })
+    this.synchroniser()
+    this.etatBarre()
+  }
+
+  // L'interligne « Normal » et les valeurs du menu dépendent du format.
+  reglerFormat(ancien) {
+    this.ancien = ancien
+    this.interlignes = interlignes(ancien)
+    this.interligneParDefaut = this.interlignes[NOMS_DES_INTERLIGNES.indexOf("Normal")].valeur
+  }
+
+  monterEditeur(contenu) {
+    const { Editor, extensionsDeLEditeur } = this.tiptap
+    this.editor = new Editor({
+      element: this.zoneTarget,
+      extensions: extensionsDeLEditeur({ placeholder: this.placeholderValue, ancien: this.ancien }),
+      content: contenu,
+      editorProps: {
+        attributes: { class: "trix-content rt-editeur__contenu" },
+        transformPastedHTML: pourLEditeur,
+        handlePaste: (_view, event) => this.fichiersDepuis(event.clipboardData),
+        handleDrop: (_view, event) => this.fichiersDepuis(event.dataTransfer)
+      },
+      onUpdate: () => this.synchroniser(),
+      onSelectionUpdate: () => this.etatBarre(),
+      onTransaction: () => this.etatBarre()
+    })
+  }
+
+  // Le bandeau d'un exercice à l'ancien format : le passer au nouveau, ou l'y
+  // ramener tant qu'il n'est pas enregistré. L'éditeur est remonté dans l'autre
+  // format avec le contenu en cours — tel que TipTap l'écrit, sans repasser par
+  // pourLEditeur, qui ôterait un retour à la ligne final voulu. Les interlignes
+  // choisis à la main restent ; les autres prennent le « Normal » du format.
+  // L'historique d'annulation repart de zéro.
+  basculerFormat() {
+    if (!this.editor) return
+    const ancien = !this.ancien
+    const html = this.editor.getHTML()
+    this.editor.destroy()
+    this.zoneTarget.innerHTML = ""
+    this.reglerFormat(ancien)
+    const menuActuel = this.barreTarget.querySelector('[data-apercu-menu="interligne"]').closest("[data-popover]")
+    menuActuel.outerHTML = menu({ nom: "interligne", libelle: "Interligne", options: this.interlignes })
+    this.monterEditeur(ancien ? sansSignature(html) : html)
+    this.formatAncienTarget.hidden = !ancien
+    this.formatConvertiTarget.hidden = ancien
     this.synchroniser()
     this.etatBarre()
   }

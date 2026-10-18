@@ -7,6 +7,32 @@
   flex-direction: column;
 }
 
+// Bandeau d'un exercice à l'ancien format (challenges/_form), au-dessus de la
+// barre, dans les couleurs de l'éditeur.
+.rt-format {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--rt-ink-soft);
+  background: var(--rt-surface-soft);
+  border: 1px solid var(--rt-line);
+  border-radius: var(--rt-radius-sm);
+
+  &[hidden] {
+    display: none;
+  }
+}
+
+// Le texte se replie avant le bouton : le bouton reste à côté de sa phrase.
+.rt-format__texte {
+  flex: 1 1 16rem;
+}
+
 // La zone porte le cadre ; le focus est sur le contenu ProseMirror, à l'intérieur.
 .rt-editeur {
   position: relative;
