@@ -65,23 +65,29 @@ function traceInterligne(hauteur) {
     `<path d="m2.6 ${haut + 1.9} 1.9-1.9 1.9 1.9M2.6 ${bas - 1.9}l1.9 1.9 1.9-1.9"/>`
 }
 
-// L'interligne « normal » n'écrit rien : 1,4 dans un énoncé de cet éditeur
-// (`.rt-p`), 1,6 dans un énoncé plus ancien, qui garde sa mise en page.
-const INTERLIGNES = ["1", "1.2", "1.4", "1.6", "2"].map((valeur) => ({
-  valeur, hauteur: Number(valeur), trace: traceInterligne(Number(valeur))
-}))
+// Le menu nomme les interlignes sans montrer leur valeur : « Normal » vaut 1,4
+// dans un énoncé de cet éditeur (`.rt-p`), 1,6 dans un énoncé plus ancien, qui
+// garde sa mise en page — deux chiffres pour un même mot auraient dérouté.
+// L'interligne « Normal » n'écrit rien.
+const NOMS_DES_INTERLIGNES = ["Très serré", "Serré", "Normal", "Aéré", "Très aéré"]
+const VALEURS_DES_INTERLIGNES = {
+  nouveau: ["1", "1.2", "1.4", "1.6", "2"],
+  // Au-dessus de « Normal », celles du menu de Trix : des énoncés les portent.
+  ancien: ["1.2", "1.4", "1.6", "2", "2.5"]
+}
+// Les mêmes icônes dans les deux cas : elles disent le rang, pas la valeur.
+const ICONES_DES_INTERLIGNES = [1, 1.2, 1.4, 1.6, 2].map(traceInterligne)
 
-function interlignes(parDefaut) {
-  return INTERLIGNES.map((o) => ({
-    ...o, nom: `Interligne ${o.valeur.replace(".", ",")}${o.valeur === parDefaut ? " (normal)" : ""}`
+function interlignes(ancien) {
+  return VALEURS_DES_INTERLIGNES[ancien ? "ancien" : "nouveau"].map((valeur, rang) => ({
+    valeur, hauteur: Number(valeur), nom: NOMS_DES_INTERLIGNES[rang], trace: ICONES_DES_INTERLIGNES[rang]
   }))
 }
 
-// Un interligne qui n'est pas au menu (2,5 et 3 l'ont été) s'affiche comme le
-// plus proche.
-function interligneDuMenu(lineHeight) {
+// Un interligne qui n'est pas au menu (3 l'a été) s'affiche comme le plus proche.
+function interligneDuMenu(lineHeight, options) {
   const v = Number(lineHeight)
-  return INTERLIGNES.reduce((a, b) => (Math.abs(b.hauteur - v) < Math.abs(a.hauteur - v) ? b : a)).valeur
+  return options.reduce((a, b) => (Math.abs(b.hauteur - v) < Math.abs(a.hauteur - v) ? b : a)).valeur
 }
 
 // En `em` : la taille suit celle de l'énoncé, plus grande au PDF qu'à l'écran.
@@ -202,7 +208,7 @@ function menuFigures() {
   </span>`
 }
 
-function barreHtml({ interligneParDefaut }) {
+function barreHtml({ interlignes }) {
   return `<div class="trix-button-row rt-tb" role="toolbar" aria-label="Mise en forme">
     <span class="trix-button-group rt-tb__group">
       ${bouton({ commande: "bold", libelle: "Gras", glyphe: glyphe("B", "bold"), raccourci: "B" })}
@@ -226,7 +232,7 @@ function barreHtml({ interligneParDefaut }) {
       ${bouton({ commande: "outdent", libelle: "Diminuer le retrait", glyphe: ICONES.outdent })}
       ${bouton({ commande: "indent", libelle: "Augmenter le retrait", glyphe: ICONES.indent })}
       ${menu({ nom: "alignement", libelle: "Alignement", options: ALIGNEMENTS })}
-      ${menu({ nom: "interligne", libelle: "Interligne", options: interlignes(interligneParDefaut) })}
+      ${menu({ nom: "interligne", libelle: "Interligne", options: interlignes })}
     </span>
     <span class="trix-button-group rt-tb__group">
       ${bouton({ commande: "image", libelle: "Insérer une image", glyphe: ICONES.attach })}
@@ -260,9 +266,10 @@ export default class extends Controller {
   async connect() {
     // Un énoncé d'avant cet éditeur garde sa mise en page, interligne compris.
     const ancien = estUnAncienEnonce(this.inputTarget.value)
-    this.interligneParDefaut = ancien ? "1.6" : "1.4"
+    this.interlignes = interlignes(ancien)
+    this.interligneParDefaut = this.interlignes[NOMS_DES_INTERLIGNES.indexOf("Normal")].valeur
     // Une connexion précédente (cache Turbo) a pu laisser sa barre derrière elle.
-    this.barreTarget.innerHTML = barreHtml({ interligneParDefaut: this.interligneParDefaut })
+    this.barreTarget.innerHTML = barreHtml({ interlignes: this.interlignes })
     this.zoneTarget.innerHTML = ""
 
     const [{ Editor }, { extensionsDeLEditeur }] = await Promise.all([
@@ -429,7 +436,7 @@ export default class extends Controller {
 
     const bloc = e.isActive("heading") ? e.getAttributes("heading") : e.getAttributes("paragraph")
     this.apercuMenu("alignement", bloc.textAlign || "left", ALIGNEMENTS)
-    this.apercuMenu("interligne", interligneDuMenu(bloc.lineHeight || this.interligneParDefaut), INTERLIGNES)
+    this.apercuMenu("interligne", interligneDuMenu(bloc.lineHeight || this.interligneParDefaut, this.interlignes), this.interlignes)
     this.apercuMenu("taille", TAILLES.some((t) => t.valeur === style.fontSize) ? style.fontSize : "normal", TAILLES)
     this.apercuMenu("colonnes", "2", COLONNES)
     const dansColonnes = e.isActive("colonnes")
