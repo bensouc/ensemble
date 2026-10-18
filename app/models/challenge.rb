@@ -21,8 +21,10 @@ class Challenge < ApplicationRecord
   # Un exercice supprimé laisse la ligne de fiche sans exercice, à recharger.
   has_many :belt_sheet_skills, dependent: :nullify
 
+  # Unique par compétence ET par liste : un exercice de ceinture peut porter le
+  # nom d'un exercice de plan de travail (index unique en base, même portée).
   validates :name, presence: true,
-                   uniqueness: { message: "est déjà utilisé pour cette compétence", scope: :skill }
+                   uniqueness: { message: "est déjà utilisé pour cette compétence", scope: %i[skill_id for_belt] }
   # `presence` rejette `false` autant que `nil` : la validation précédente
   # rendait donc impossible de dé-partager un exercice. Sans effet aujourd'hui
   # (les 2911 exercices sont à `true`), mais c'était un piège armé.
@@ -45,7 +47,7 @@ class Challenge < ApplicationRecord
   # ceinture de la même compétence, en fin de liste. L'original ne bouge pas.
   # Mêmes précautions qu'au clonage : ses tableaux sont dédoublés.
   def new_belt_copy
-    Challenge.new(name: clone_name("Ceinture"), content: cloned_content, skill_id:, for_belt: true)
+    Challenge.new(name: clone_name("Ceinture", liste: true), content: cloned_content, skill_id:, for_belt: true)
   end
 
   # Ranger l'exercice sous une autre compétence, en queue de sa liste.
@@ -95,7 +97,7 @@ class Challenge < ApplicationRecord
   # acts_as_list. Déclenché par le bouton « Créer » de l'éditeur de plan de
   # travail quand l'élève a eu tous les exercices existants.
   #
-  # Le nom doit être unique par compétence : celui construit sur `count + 1`
+  # Le nom doit être unique dans sa liste : celui construit sur `count + 1`
   # retombe sur un nom déjà pris dès qu'un exercice a été supprimé, et
   # l'enregistrement échouait alors en silence.
   #
@@ -108,12 +110,13 @@ class Challenge < ApplicationRecord
     challenge
   end
 
-  # Le nom est unique par compétence, toutes listes confondues : les noms pris
-  # se cherchent donc dans les deux, le rang dans la sienne seulement.
+  # Le nom est unique par compétence et par liste : rang et noms pris se
+  # cherchent dans la sienne.
   def self.empty_challenge_name(skill, for_belt: false)
-    rang = Challenge.where(skill_id: skill.id, for_belt:).count + 1
+    liste = Challenge.where(skill_id: skill.id, for_belt:)
+    rang = liste.count + 1
     base = "#{skill.name} #{'Ceinture ' if for_belt}#{rang}-NEW"
-    taken = Challenge.where(skill_id: skill.id).pluck(:name).to_set
+    taken = liste.pluck(:name).to_set
 
     return base unless taken.include?(base)
 
@@ -125,11 +128,12 @@ class Challenge < ApplicationRecord
   private
 
   # Suffixe déterministe plutôt que `rand(1..100)` : le nom est unique par
-  # compétence, et deux clonages successifs pouvaient tirer le même nombre —
-  # l'enregistrement échouait alors sans que l'utilisateur comprenne pourquoi.
-  def clone_name(suffixe = "Clone")
+  # compétence et par liste, et deux clonages successifs pouvaient tirer le même
+  # nombre — l'enregistrement échouait alors sans que l'utilisateur comprenne
+  # pourquoi. `liste` : celle où la copie arrive (`for_belt`).
+  def clone_name(suffixe = "Clone", liste: for_belt)
     base = "#{name}-#{suffixe}"
-    taken = Challenge.where(skill_id: skill_id)
+    taken = Challenge.where(skill_id:, for_belt: liste)
                      .where("name LIKE ?", "#{Challenge.sanitize_sql_like(base)}%")
                      .pluck(:name)
                      .to_set

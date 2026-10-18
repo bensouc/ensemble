@@ -15,6 +15,22 @@ RSpec.describe Challenge, type: :model do
     expect(challenge2).to_not be_valid
   end
 
+  describe "nom unique par liste" do
+    it "laisse un exercice de ceinture porter le nom d'un exercice de plan de travail" do
+      ceinture = create(:challenge, name: @challenge1.name, skill: @challenge1.skill, for_belt: true)
+
+      expect(ceinture).to be_persisted
+    end
+
+    it "refuse deux exercices de ceinture du même nom pour la même compétence" do
+      create(:challenge, name: "Doublon", skill: @challenge1.skill, for_belt: true)
+      doublon = build(:challenge, name: "Doublon", skill: @challenge1.skill, for_belt: true)
+
+      expect(doublon).not_to be_valid
+      expect { doublon.save!(validate: false) }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+  end
+
   # La mise en forme de bloc — alignement, interligne — est portée par `style`
   # justement parce que `style` traverse le sanitizer d'ActionText sans qu'on ait à
   # toucher son allowlist. Une balise maison, elle, en serait retirée à l'affichage :
