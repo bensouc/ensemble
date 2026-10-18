@@ -147,9 +147,32 @@ export function pourLEditeur(html) {
   })
 }
 
+// Des colonnes élargies à la main : TipTap les écrit en pixels (`colwidth` sur
+// les cases, que l'éditeur relit, et le <colgroup>). Or l'éditeur, l'écran,
+// le téléphone et le PDF n'ont pas la même largeur : le <colgroup> passe en
+// proportions, et le tableau dont toutes les colonnes ont une largeur garde sa
+// part de la page. `mesure` : largeurs rendues dans l'éditeur, s'il les connaît.
+const arrondi = (n) => Math.round(n * 10) / 10
+
+function enProportions(table, mesure) {
+  const cols = [...table.querySelectorAll(":scope > colgroup > col")]
+  const px = cols.map((c) => parseFloat(c.style.width) || 0)
+  table.removeAttribute("style")
+  if (!px.some(Boolean)) return
+
+  const libres = px.filter((w) => !w).length
+  const fixes = px.reduce((somme, w) => somme + w, 0)
+  const largeur = mesure?.tableau || fixes + libres * 100
+  const parColonneLibre = libres ? Math.max(largeur - fixes, 0) / libres : 0
+  cols.forEach((c, i) => c.setAttribute("style", `width: ${arrondi(((px[i] || parColonneLibre) / largeur) * 100)}%`))
+  if (!libres && mesure?.conteneur) table.style.width = `${Math.min(100, arrondi((largeur / mesure.conteneur) * 100))}%`
+}
+
 // Ce que l'éditeur enregistre.
-export function pourLEnregistrement(html) {
+export function pourLEnregistrement(html, { tableaux = [] } = {}) {
   return transformer(html, (racine) => {
+    racine.querySelectorAll("table").forEach((table, i) => enProportions(table, tableaux[i]))
+
     // La ligne que l'éditeur garde sous un tableau ou des colonnes finaux
     // (`LigneSousLeBloc`) : restée vide, elle n'existe pas.
     const derniere = racine.lastElementChild
