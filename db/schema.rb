@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_14_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_18_080000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -119,8 +119,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_14_090000) do
     t.datetime "updated_at", null: false
     t.boolean "for_belt", default: false
     t.integer "position"
+    t.index ["skill_id", "for_belt", "name"], name: "index_challenges_on_skill_id_and_for_belt_and_name", unique: true
     t.index ["skill_id", "for_belt", "position"], name: "index_challenges_on_skill_id_and_for_belt_and_position"
-    t.index ["skill_id", "name"], name: "index_challenges_on_skill_id_and_name", unique: true
     t.index ["skill_id"], name: "index_challenges_on_skill_id"
     t.index ["user_id"], name: "index_challenges_on_user_id"
   end
