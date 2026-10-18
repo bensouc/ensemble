@@ -160,9 +160,22 @@ RSpec.describe Figure do
     describe "matériel de manipulation" do
       # Le matériel ne s'insère que dans une zone : il n'a pas d'`id_for`.
       it "connaît les billets, les pièces et les blocs de numération, et eux seuls" do
-        expect(%w[billet-20 piece-2 bloc-centaine].map { |id| described_class.valid_id?(id) }).to all(be(true))
-        expect(%w[billet-7 piece-5 bloc-dix].map { |id| described_class.valid_id?(id) }).to all(be(false))
+        expect(%w[billet-20 piece-2 piece-50c bloc-centaine].map { |id| described_class.valid_id?(id) }).to all(be(true))
+        expect(%w[billet-7 piece-5 piece-3c piece-100c bloc-dix].map { |id| described_class.valid_id?(id) })
+          .to all(be(false))
         expect(described_class.id_for(kind: "billet", nom: "20")).to be_nil
+      end
+
+      # Diamètres des vraies pièces : 1 c est la plus petite, 50 c dépasse 1 €.
+      it "dessine les pièces en centimes d'un seul métal, à la taille des vraies" do
+        un, cinquante, euro = %w[piece-1c piece-50c piece-1].map { |id| described_class.find(id) }
+
+        expect([un.libelle, cinquante.libelle]).to eq(["Pièce de 1 centime", "Pièce de 50 centimes"])
+        expect(un.piece_dessin).to include(coeur: nil, couronne: Figure::Materiel::CUIVRE, unite: "c")
+        expect(cinquante.piece_dessin[:couronne]).to eq(Figure::Materiel::OR)
+        expect(un.taille_en_pas[0]).to be < euro.taille_en_pas[0]
+        expect(cinquante.taille_en_pas[0]).to be > euro.taille_en_pas[0]
+        expect(rendu(piece_jointe("zone-80x24-pc50.1.1"))).to include(">50<tspan").and include(">c</tspan>")
       end
 
       it "dessine un millier en cube quadrillé, plus grand qu'une centaine" do

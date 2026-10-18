@@ -19,7 +19,9 @@ class Figure
     ELEMENTS_AU_PLUS = 60
     TAILLES = (50..400) # % de la taille du matériel
     CODES = { "b5" => "billet-5", "b10" => "billet-10", "b20" => "billet-20", "b50" => "billet-50",
-              "b100" => "billet-100", "p1" => "piece-1", "p2" => "piece-2", "u" => "bloc-unite",
+              "b100" => "billet-100", "pc1" => "piece-1c", "pc2" => "piece-2c", "pc5" => "piece-5c",
+              "pc10" => "piece-10c", "pc20" => "piece-20c", "pc50" => "piece-50c",
+              "p1" => "piece-1", "p2" => "piece-2", "u" => "bloc-unite",
               "d" => "bloc-dizaine", "c" => "bloc-centaine", "m" => "bloc-millier" }.freeze
     IDENTIFIANT = /\Azone-(?<largeur>\d{1,3})x(?<hauteur>\d{1,3})(?:-(?<elements>[a-z0-9._]+))?\z/
     ELEMENT = /\A(?<code>[a-z]+\d*)\.(?<x>\d{1,3})\.(?<y>\d{1,3})(?:\.(?<taille>\d{2,3}))?\z/

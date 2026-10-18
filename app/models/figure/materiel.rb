@@ -24,11 +24,15 @@ class Figure
     }.freeze
     HAUTEUR_D_UN_BILLET = 1.7 # em
 
-    # Pièces : 1 € à cœur argent et couronne dorée, 2 € l'inverse ; la pièce de
-    # 2 € est un peu plus grande, comme la vraie.
+    # Pièces : 1 € à cœur argent et couronne dorée, 2 € l'inverse ; les centimes
+    # d'une seule couleur, cuivre (1, 2, 5) ou or (10, 20, 50). Les diamètres
+    # suivent ceux des vraies pièces (16,25 mm pour 1 c, 25,75 mm pour 2 €), à
+    # l'échelle de la pièce de 1 € : 1,4 em pour 23,25 mm.
     OR = { fond: "#E8BE48", trait: "#A87A12" }.freeze
     ARGENT = { fond: "#D5D8DC", trait: "#8E949B" }.freeze
-    TAILLES_DES_PIECES = { "1" => 1.4, "2" => 1.55 }.freeze # em
+    CUIVRE = { fond: "#D98B5F", trait: "#9A5130" }.freeze
+    TAILLES_DES_PIECES = { "1c" => 0.98, "2c" => 1.13, "5c" => 1.28, "10c" => 1.19, "20c" => 1.34,
+                           "50c" => 1.46, "1" => 1.4, "2" => 1.55 }.freeze # em
 
     # Blocs en perspective cavalière, quadrillés comme ceux de la classe :
     # largeur × hauteur × profondeur, en unités ; la profondeur fuit de moitié.
@@ -51,7 +55,7 @@ class Figure
     def libelle_du_materiel
       case kind
       when :billet then "Billet de #{valeur} €"
-      when :piece then "Pièce de #{valeur} €"
+      when :piece then centimes? ? "Pièce de #{valeur.to_i} centime#{'s' if valeur.to_i > 1}" : "Pièce de #{valeur} €"
       when :bloc then NOMS_DES_BLOCS.fetch(valeur)
       end
     end
@@ -76,9 +80,18 @@ class Figure
       { **COULEURS_DES_BILLETS.fetch(valeur), largeur: arrondi(HAUTEUR_D_UN_BILLET * largeur / hauteur.to_f) }
     end
 
+    # Une pièce en euros a un cœur d'une autre couleur ; une pièce en centimes
+    # n'a qu'un métal (`couronne`), et un filet en guise de cœur.
     def piece_dessin
-      couronne, coeur = valeur == "1" ? [OR, ARGENT] : [ARGENT, OR]
-      { couronne:, coeur:, taille: TAILLES_DES_PIECES.fetch(valeur) }
+      couronne, coeur = if centimes? then [%w[1c 2c 5c].include?(valeur) ? CUIVRE : OR, nil]
+                        elsif valeur == "1" then [OR, ARGENT]
+                        else [ARGENT, OR]
+                        end
+      { couronne:, coeur:, taille: TAILLES_DES_PIECES.fetch(valeur), nombre: valeur.to_i, unite: centimes? ? "c" : "€" }
+    end
+
+    def centimes?
+      kind == :piece && valeur.end_with?("c")
     end
 
     # Faces et quadrillage : calculés une fois par figure (une zone réutilise la
