@@ -54,7 +54,11 @@ fr:
   fiches_ceinture:
     preparee: "Fiche de ceinture préparée"
     rien_a_preparer: "Aucune ceinture à préparer automatiquement : ajoutez les domaines à la main."
+    generee: "Fiche de ceinture générée : retrouvez-la dans Voir > Ceintures > Non assignées."
+    generee_vide: "Fiche de ceinture créée : ajoutez les compétences à faire passer."
+    aucune_competence: "%{domaine} n'a aucune compétence en ceinture %{couleur}."
     supprimee: "Fiche de ceinture supprimée"
+    renommee: "Fiche de ceinture renommée"
     bloc_ajoute: "Bloc %{domaine} – ceinture %{couleur} ajouté"
     bloc_special_ajoute: "Bloc %{domaine} ajouté : choisissez les compétences à faire passer."
     bloc_deja_la: "%{domaine} – ceinture %{couleur} est déjà sur la fiche."

@@ -6,22 +6,34 @@
 //
 // Chaque réglage ci-dessous a été imposé par un énoncé réel : sans lui, le banc
 // trouvait des énoncés abîmés par un simple ouvrir-enregistrer.
-import { Extension } from "@tiptap/core"
+import { Extension, mergeAttributes } from "@tiptap/core"
 import StarterKit from "@tiptap/starter-kit"
 import Paragraph from "@tiptap/extension-paragraph"
 import { ListItem } from "@tiptap/extension-list"
-import { TextStyle } from "@tiptap/extension-text-style"
+import { TextStyle, FontSize } from "@tiptap/extension-text-style"
 import { Color } from "@tiptap/extension-color"
 import TextAlign from "@tiptap/extension-text-align"
-import { TableKit } from "@tiptap/extension-table"
+import { TableKit, TableView } from "@tiptap/extension-table"
 import { Placeholder } from "@tiptap/extensions"
+import { Plugin } from "@tiptap/pm/state"
 import { PieceJointe } from "./piece_jointe"
+import { ZONE_TYPE } from "./types"
 import { Colonnes, Colonne } from "./colonnes"
 
 // Les blocs de Trix sont des <div>. Un paragraphe TipTap s'écrit <p> ; or le
 // HTML interdit un <figure> (pièce jointe) dans un <p> : relu par Rails, le <p>
 // se coupait en deux paragraphes vides et la pièce jointe se retrouvait dehors.
+//
+// La classe `rt-p` signe un paragraphe de cet éditeur : lui seul prend
+// l'interligne 1,4 et se colle au suivant (trix/_content.scss). Un énoncé plus
+// ancien, sans paragraphe signé (`estUnAncienEnonce`), s'édite sans signer
+// (`signe: false`) : il garde son interligne 1,6 et ses espaces, à l'ouverture
+// comme à l'enregistrement — son affichage et son PDF ne bougent pas.
 const Paragraphe = Paragraph.extend({
+  addOptions() {
+    return { ...this.parent?.(), signe: true }
+  },
+
   parseHTML() {
     return [
       // Des énoncés anciens sont enregistrés dans l'enveloppe de rendu
@@ -32,7 +44,7 @@ const Paragraphe = Paragraph.extend({
     ]
   },
   renderHTML({ HTMLAttributes }) {
-    return ["div", HTMLAttributes, 0]
+    return ["div", this.options.signe ? mergeAttributes(HTMLAttributes, { class: "rt-p" }) : HTMLAttributes, 0]
   }
 })
 
@@ -87,7 +99,76 @@ const Interligne = Extension.create({
   }
 })
 
-export function extensionsDeLEditeur({ placeholder = "" } = {}) {
+// Bordures d'un tableau (bouton « Bordures » de la barre du tableau) : masquées,
+// le tableau porte `rt-table--sans-bordure` (trix/_tables.scss).
+const Bordures = Extension.create({
+  name: "bordures",
+  addGlobalAttributes() {
+    return [{
+      types: ["table"],
+      attributes: {
+        bordures: {
+          default: true,
+          parseHTML: (el) => !el.classList.contains("rt-table--sans-bordure"),
+          renderHTML: (a) => (a.bordures === false ? { class: "rt-table--sans-bordure" } : {})
+        }
+      }
+    }]
+  }
+})
+
+// Un tableau redimensionnable s'affiche par la vue de TipTap, qui dessine un
+// <table> nu : celle-ci lui remet les classes de l'éditeur — la grille et, s'il
+// y a lieu, l'absence de bordures.
+class VueTableau extends TableView {
+  constructor(node, cellMinWidth) {
+    super(node, cellMinWidth)
+    this.classer(node)
+  }
+
+  update(node) {
+    const accepte = super.update(node)
+    if (accepte) this.classer(node)
+    return accepte
+  }
+
+  classer(node) {
+    this.table.className = node.attrs.bordures === false ? "rt-table__grid rt-table--sans-bordure" : "rt-table__grid"
+  }
+}
+
+// Une ligne sous un tableau, des colonnes ou une zone de manipulation qui finissent l'énoncé : sans elle,
+// on ne pouvait plus écrire dessous (seul un clic dans une bande étroite y
+// posait un curseur presque invisible, et sous des colonnes la saisie partait
+// dans la dernière colonne). Vide, elle n'est pas enregistrée (editeur/blocs.js).
+// Hors de l'historique : « Annuler » ne la retire pas.
+const BLOCS_SANS_LIGNE_DESSOUS = ["table", "colonnes"]
+// Une zone de manipulation, seule dans son paragraphe, fait bloc elle aussi.
+const estUneZone = (node) => node?.type.name === "pieceJointe" && node.attrs.contentType === ZONE_TYPE
+const finitParUnBloc = (doc) => {
+  const dernier = doc.lastChild
+  if (BLOCS_SANS_LIGNE_DESSOUS.includes(dernier?.type.name)) return true
+  return dernier?.type.name === "paragraph" && dernier.childCount === 1 && estUneZone(dernier.firstChild)
+}
+
+const LigneSousLeBloc = Extension.create({
+  name: "ligneSousLeBloc",
+  addProseMirrorPlugins() {
+    return [new Plugin({
+      appendTransaction: (_transactions, _avant, state) => {
+        if (!finitParUnBloc(state.doc)) return null
+        return state.tr.insert(state.doc.content.size, state.schema.nodes.paragraph.create())
+          .setMeta("addToHistory", false)
+      }
+    })]
+  },
+  // Dès l'ouverture, et pas seulement à la première frappe.
+  onCreate() {
+    this.editor.view.dispatch(this.editor.state.tr)
+  }
+})
+
+export function extensionsDeLEditeur({ placeholder = "", ancien = false } = {}) {
   return [
     StarterKit.configure({
       heading: { levels: [1, 2, 3] },
@@ -97,22 +178,28 @@ export function extensionsDeLEditeur({ placeholder = "" } = {}) {
       trailingNode: false,
       link: { openOnClick: false, autolink: true }
     }),
-    Paragraphe,
+    Paragraphe.configure({ signe: !ancien }),
     Puce,
     StyleTexte,
     Color,
     Surlignage,
+    // Taille du texte, en `em` : même proportion à l'écran (17 px) et au PDF (20 px).
+    FontSize,
     Interligne,
     TextAlign.configure({ types: ["heading", "paragraph"] }),
     // Mêmes classes que les tableaux maison : même allure à l'écran et au PDF.
     TableKit.configure({
-      table: { resizable: false, HTMLAttributes: { class: "rt-table__grid" } },
+      // Colonnes à élargir en tirant leur bord ; les largeurs, en pixels dans
+      // l'éditeur, s'enregistrent en proportions (editeur/blocs.js).
+      table: { resizable: true, View: VueTableau, cellMinWidth: 40, HTMLAttributes: { class: "rt-table__grid" } },
       tableCell: { HTMLAttributes: { class: "rt-cell" } },
       tableHeader: { HTMLAttributes: { class: "rt-cell" } }
     }),
     PieceJointe,
     Colonnes,
     Colonne,
+    LigneSousLeBloc,
+    Bordures,
     Placeholder.configure({ placeholder })
   ]
 }

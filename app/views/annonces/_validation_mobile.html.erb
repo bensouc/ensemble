@@ -1,0 +1,21 @@
+<p class="annonce__intro">
+	Sur votre téléphone, ouvrez la fiche d'un élève et touchez la ceinture d'un domaine : les compétences
+	de sa ceinture en cours s'affichent. Un appui valide une compétence, un second retire la validation.
+	Quand toutes sont validées, la ceinture est obtenue.
+</p>
+
+<%# Deux captures de téléphone, côte à côte : la fiche de l'élève, puis la
+    ceinture ouverte. En pleine largeur, chacune aurait fait 1 300 px de haut. %>
+<div class="annonce__captures">
+	<%= image_tag "captures/validation_mobile_fiche.png", class: "annonce__capture",
+	              alt: "La fiche mobile d'une élève : ses ceintures domaine par domaine, et l'invitation « Touchez une ceinture pour valider des compétences »" %>
+	<%= image_tag "captures/validation_mobile_modale.png", class: "annonce__capture",
+	              alt: "La ceinture blanche de Vocabulaire ouverte, étiquetée « En cours » : la compétence qui reste à valider, puis les deux déjà validées, cochées en vert" %>
+</div>
+
+<ul class="annonce__liste">
+	<li><i class="fa-solid fa-graduation-cap" aria-hidden="true"></i>Depuis la fiche de l'élève</li>
+	<li><i class="fa-solid fa-hand-pointer" aria-hidden="true"></i>Un appui pour valider</li>
+	<li><i class="fa-solid fa-rotate-left" aria-hidden="true"></i>Un second pour retirer</li>
+	<li><i class="fa-solid fa-bolt" aria-hidden="true"></i>Enregistré aussitôt</li>
+</ul>

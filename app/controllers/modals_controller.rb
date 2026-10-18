@@ -32,21 +32,8 @@ class ModalsController < ApplicationController
 
   # Cloner une fiche de ceinture : les élèves du même niveau, classe par classe.
   def clone_belt_sheet
-    @belt_sheet = authorize BeltSheet.find(params[:id]), :show?
+    @belt_sheet = authorize BeltSheet.find(params[:id]), :clone?
     @candidates = @belt_sheet.clone_candidates(current_user).group_by(&:classroom)
-  end
-
-  def display_skills_modal
-    @student = authorize Student.find(params[:student_id]), :show?
-    @domain = Domain.find(params[:id])
-    @skills = @domain.skills
-    # `skill:` et non `skills:` : Rails 7.2 ne rattrape plus le pluriel d'une
-    # association `belongs_to`. La requête cherchait une colonne
-    # `results.skills` et la modale tombait en 500.
-    @results = Result.completed.includes(:skill).where(
-      skill: @skills,
-      student: @student
-    ).sort_by { |result| [result.skill.symbol, result.skill.name] }
   end
 
   private

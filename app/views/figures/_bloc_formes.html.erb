@@ -1,0 +1,4 @@
+<%# Les formes du dessin, sans leur <svg> : figures/_bloc_svg les enveloppe, figures/_zone_svg les pose dans une zone. %>
+<% d = dessinable.bloc_dessin %>
+<% devant, dessus, cote = d[:couleurs] %>
+<polygon points="<%= d[:devant] %>" fill="<%= devant %>" stroke="<%= cote %>" stroke-width="0.8" stroke-linejoin="round"></polygon><polygon points="<%= d[:dessus] %>" fill="<%= dessus %>" stroke="<%= cote %>" stroke-width="0.8" stroke-linejoin="round"></polygon><polygon points="<%= d[:cote] %>" fill="<%= cote %>" stroke="<%= cote %>" stroke-width="0.8" stroke-linejoin="round"></polygon><% if d[:grille].present? %><path d="<%= d[:grille] %>" fill="none" stroke="#FFFFFF" stroke-opacity="0.75" stroke-width="0.6"></path><% end %>

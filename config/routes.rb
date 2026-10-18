@@ -25,6 +25,9 @@ Rails.application.routes.draw do
   root to: "pages#home"
   get "/dashboard", to: "dashboard#show"
   post "add_discovery", to: "dashboard#add_discovery_method"
+  # « Plus tard » et « Ne plus afficher » une annonce du tableau de bord (voir Annonce).
+  patch "annonces/:id/reporter", to: "annonces#reporter", as: :reporter_annonce
+  patch "annonces/:id/masquer", to: "annonces#masquer", as: :masquer_annonce
   get "mentions_legales", to: "pages#mentions_legales"
   # Le service worker doit être servi depuis la RACINE : il ne pilote que les
   # pages situées sous son propre chemin. Depuis /assets/, il ne verrait jamais
@@ -40,6 +43,13 @@ Rails.application.routes.draw do
     # ressource imbriquée ci-dessous.
     resources :classrooms, only: [:index, :show] do
       resources :students, only: [:show, :index]
+    end
+    # Toucher la ceinture d'un domaine sur la fiche de l'élève : les compétences
+    # de la ceinture suivante, à cocher.
+    resources :students, only: [] do
+      resources :domains, only: [] do
+        resource :validation, only: [:edit, :update]
+      end
     end
     get "work_plans/:id/evaluation", to: "work_plans#evaluation", as: :evaluation
     # `get "work_plans/:id/export"` a été retiré : il visait
@@ -155,7 +165,13 @@ Rails.application.routes.draw do
   resources :students, only: [] do
     resources :belt_sheets, only: [:create]
   end
-  resources :belt_sheets, only: [:index, :show, :destroy] do
+  resources :belt_sheets, only: [:index, :show, :update, :destroy] do
+    # Les fiches d'aucun élève : générées depuis les exercices de ceinture,
+    # rangées dans leur onglet.
+    collection do
+      get :non_assignees
+      post :generer
+    end
     # La page d'attente du PDF, comme pour le plan de travail.
     get :export, on: :member
     # Cloner la fiche vers d'autres élèves du même niveau.
@@ -195,7 +211,6 @@ Rails.application.routes.draw do
   # ###############routes for STUDENTS###############
   resources :students, only: [:create, :update, :show, :destroy] do
     resource :transfer, only: %i[new create], controller: "student_transfers"
-    get "domains/:id/modal", to: "modals#display_skills_modal", as: :display_skills_modal
     resources :belts, only: [:create]
     post "", to: "work_plans#auto_new_wp", as: :auto_new_wp
     get "domains/:id/:level", to: "belts#show", as: :show
@@ -210,7 +225,9 @@ Rails.application.routes.draw do
   # en tableaux natifs, qui font partie du texte de l'énoncé.
   # Figures de l'énoncé (Seyès, horloge, pictos) : rien en base, seulement le
   # sgid et le rendu d'édition d'une figure décrite par ses paramètres.
-  resources :figures, only: [:create]
+  resources :figures, only: [:create] do
+    get :materiel, on: :collection
+  end
 
   # ###############stripe routes###############
   # namespace :stripe do

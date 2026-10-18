@@ -1,0 +1,62 @@
+<%# Voir > Ceintures > Non assignées : les fiches générées depuis les exercices de
+    ceinture, un dossier par niveau — le balisage des dossiers d'élèves de
+    l'onglet « Par élève », le niveau à la place du prénom. %>
+<%= render Ui::PageComponent.new(title: "Ceintures", tabs: onglets_ceintures(:liste)) do %>
+<%= render Ui::TabsComponent.new(label: "Fiches de ceinture", tabs: onglets_fiches_de_ceinture(:non_assignees), secondary: true) %>
+<div class="container3">
+	<% if @sheets_by_grade.empty? %>
+		<p class="belt-sheet-empty">
+			Aucune fiche non assignée : générez-en une depuis les
+			<%= link_to "exercices de ceinture", challenges_path(ceinture: 1) %>.
+		</p>
+	<% end %>
+	<% @sheets_by_grade.each do |grade, fiches| %>
+		<div data-controller="wp-by-student">
+			<div class="d-flex wp-student-header">
+				<div class="d-flex wp-student-folder" data-action="click->wp-by-student#displayList">
+					<div class="index-folder">
+						<i class="fa-solid fa-folder-closed me-4 ms-3" data-wp-by-student-target="folderopen"></i>
+						<i class="fa-solid fa-folder-open me-4 ms-3 d-none" data-wp-by-student-target="folderclosed"></i>
+					</div>
+					<div class="index-wp-name d-flex">
+						<div class="wp-firstname"><%= grade.name %></div>
+						<div class="invisible">--</div>
+						<div class="index-wp-count" data-wp-by-student-target="count">
+							( <%= fiches.size %> fiche<%= "s" if fiches.size > 1 %> )
+						</div>
+					</div>
+				</div>
+			</div>
+			<div data-wp-by-student-target="wplist" class="list-wp-index d-none">
+				<% fiches.each do |fiche| %>
+					<%# La ligne de l'onglet « Par élève », colonne pour colonne : l'impression,
+					    le nom — ici les blocs de la fiche —, le niveau, la date, et la
+					    suppression à droite. %>
+					<div class="index-wp-line">
+						<div class="eval_link">
+							<%= link_to export_belt_sheet_path(fiche), target: "_blank", rel: "noopener",
+							            title: "Imprimer la fiche" do %>
+								<i class="fa-solid fa-bacon fa-fw" aria-hidden="true"></i>
+							<% end %>
+						</div>
+						<%# Un nouvel onglet, comme un plan de travail : la liste reste ouverte. %>
+						<div class="student-wp">
+							<%= link_to belt_sheet_path(fiche), target: "_blank", rel: "noopener" do %>
+								<div class="namept"><%= fiche.nom %></div>
+								<div class="index-wp-count"><%= grade.name %></div>
+								<div class="wp-dates"><%= l(fiche.created_at.to_date, format: "%a. %d/%m/%Y") %></div>
+							<% end %>
+						</div>
+						<div class="rmv-wp">
+							<%= button_to belt_sheet_path(fiche), method: :delete, class: "--bgc-blanc",
+							              form: { data: { turbo_confirm: "Supprimer cette fiche de ceinture ?" } } do %>
+								<div class="rmv-skill-btn"><i class="far fa-times-circle"></i></div>
+							<% end %>
+						</div>
+					</div>
+				<% end %>
+			</div>
+		</div>
+	<% end %>
+</div>
+<% end %>

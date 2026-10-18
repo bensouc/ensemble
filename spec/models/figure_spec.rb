@@ -84,6 +84,96 @@ RSpec.describe Figure do
       expect(html).to include("width:50%").and include("rt-fig--gauche")
     end
 
+    it "dessine trois rangées de petits carreaux, fermées en haut et en bas" do
+      expect(described_class.id_for(kind: "carreaux")).to eq("carreaux")
+
+      html = rendu(piece_jointe("carreaux"))
+      geometrie = described_class.find("carreaux").carreaux_geometrie
+
+      expect(html).to include("rt-figure--carreaux").and include('aria-label="Ligne à petits carreaux"')
+      # un trait sur chaque bord : deux figures collées n'en font qu'un, entier
+      expect(geometrie[:lignes].size).to eq(4)
+      expect([geometrie[:lignes].first, geometrie[:lignes].last]).to eq([0, geometrie[:hauteur]])
+    end
+
+    describe "zone de manipulation" do
+      it "lit la taille de la zone et la place de chaque élément" do
+        zone = described_class.find("zone-80x24-b10.4.8_p2.20.8")
+
+        expect(zone.libelle).to eq("Zone de manipulation")
+        expect(zone.content_type).to eq(Figure::ZONE_CONTENT_TYPE)
+        expect(zone.zone_dessin.values_at(:largeur_em, :hauteur_em)).to eq([20.0, 6.0])
+        expect(zone.zone_dessin[:elements].map { |e| [e[:materiel].id, e[:x], e[:y]] })
+          .to eq([["billet-10", 4, 8], ["piece-2", 20, 8]])
+      end
+
+      it "refuse un matériel inconnu, un élément hors du cadre, une taille hors limites" do
+        expect(described_class.id_for(kind: "zone", nom: "80x24")).to eq("zone-80x24")
+        %w[80x24-x9.1.1 80x24-b10.90.1 5x5 300x24].each do |nom|
+          expect(described_class.id_for(kind: "zone", nom:)).to be_nil, nom
+        end
+      end
+
+      it "agrandit un élément, de 50 à 400 %" do
+        zone = described_class.find("zone-80x24-b10.4.8.200")
+
+        expect(zone.zone_dessin[:elements].first.values_at(:taille, :largeur, :hauteur)).to eq([200, 26.0, 13.6])
+        expect(described_class.id_for(kind: "zone", nom: "80x24-b10.4.8.40")).to be_nil
+        expect(described_class.id_for(kind: "zone", nom: "80x24-b10.4.8.500")).to be_nil
+      end
+
+      it "refuse plus de 60 éléments" do
+        elements = Array.new(61) { |i| "u.#{i % 60}.0" }.join("_")
+
+        expect(described_class.id_for(kind: "zone", nom: "80x24-#{elements}")).to be_nil
+      end
+
+      it "se dessine en un seul SVG : chaque matériel une fois, puis posé à chaque place" do
+        html = rendu(piece_jointe("zone-80x24-b100.4.8_d.40.0_d.44.0"))
+
+        expect(html).to include("rt-figure--zone").and include('aria-label="Zone de manipulation"')
+        expect(html.scan("<symbol").size).to eq(2)
+        expect(html).to include('xlink:href="#rt-materiel-bloc-dizaine" x="44" y="0"').and include(">100</text>")
+      end
+
+      # Sa poignée agrandit son cadre (une autre zone), jamais son dessin.
+      it "garde sa largeur : seule sa position compte" do
+        calee = rendu(piece_jointe("zone-80x24-b10.4.8", presentation: "droite"))
+        ancienne = rendu(piece_jointe("zone-80x24-b10.4.8", presentation: "taille-60 centre"))
+
+        expect(calee).to include("rt-fig--droite")
+        expect(ancienne).to include("rt-fig--centre")
+        expect([calee, ancienne]).to all(satisfy { |html| !html.match?(/width:\s*\d+%/) })
+      end
+    end
+
+    describe "matériel de manipulation" do
+      # Le matériel ne s'insère que dans une zone : il n'a pas d'`id_for`.
+      it "connaît les billets, les pièces et les blocs de numération, et eux seuls" do
+        expect(%w[billet-20 piece-2 bloc-centaine].map { |id| described_class.valid_id?(id) }).to all(be(true))
+        expect(%w[billet-7 piece-5 bloc-dix].map { |id| described_class.valid_id?(id) }).to all(be(false))
+        expect(described_class.id_for(kind: "billet", nom: "20")).to be_nil
+      end
+
+      it "dessine un millier en cube quadrillé, plus grand qu'une centaine" do
+        millier = described_class.find("bloc-millier")
+        centaine = described_class.find("bloc-centaine")
+
+        expect(millier.libelle).to eq("Un millier")
+        expect(millier.taille_en_pas[1]).to be > centaine.taille_en_pas[1]
+        expect(rendu(piece_jointe("zone-80x40-m.1.1"))).to include("<polygon").and include('stroke="#FFFFFF"')
+      end
+    end
+
+    it "donne à la ligne simple la hauteur d'un carreau Seyès, à l'écran comme au PDF" do
+      ligne = described_class.find("ligne")
+      seyes = described_class.find("seyes")
+
+      [false, true].each do |pdf|
+        expect(ligne.ligne_geometrie(pdf:)[:hauteur]).to eq(seyes.seyes_geometrie(pdf:)[:carreau])
+      end
+    end
+
     it "laisse la ligne Seyès en pleine largeur tant qu'aucune taille n'est choisie" do
       html = rendu(piece_jointe("seyes-marge"))
 

@@ -21,7 +21,9 @@ module PdfGenerator
     private
 
     def footer_template
-      eleve = ERB::Util.html_escape(@belt_sheet.student.first_name.to_s.capitalize)
+      # Le prénom de l'élève ; le niveau, pour une fiche non assignée.
+      qui = @belt_sheet.student ? @belt_sheet.student.first_name.to_s.capitalize : @belt_sheet.grade.name
+      eleve = ERB::Util.html_escape(qui)
       date = I18n.l(@belt_sheet.created_at.to_date)
       pages = "Page <span class='pageNumber'></span>/<span class='totalPages'></span>"
       "<div style='font-size: 8px; width: 100%; text-align: right; padding-right: 20px;'>" \

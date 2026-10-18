@@ -7,16 +7,12 @@
 		<i class="fa-solid fa-chevron-up --roseL"></i>
 	<% end %>
 	<div class="mobile-eleve-detail">
-		<%= render "shared/mobile_intro",
-		           texte: "Les ceintures obtenues par #{@student.first_name.capitalize}, domaine par domaine." %>
+		<%= render "shared/mobile_intro", texte: "Touchez une ceinture pour valider des compétences.",
+		                                  classe: "--justifie" %>
 		<div class="mobile-ceintures">
 			<% @domains.each do |domain| %>
-				<% belt = @belts.select { |belt| belt.domain == domain }.max_by(&:level) %>
-				<% if belt %>
-					<%= render Belts::BeltComponent.new(belt: belt, domain: domain) %>
-				<% else %>
-					<%= render Belts::NoBeltComponent.new(student: @student, domain: domain) %>
-				<% end %>
+				<%= render "mobile/students/ceinture", student: @student, domain:,
+				           belt: @belts.select { |belt| belt.domain_id == domain.id }.max_by(&:level) %>
 			<% end %>
 		</div>
 	</div>

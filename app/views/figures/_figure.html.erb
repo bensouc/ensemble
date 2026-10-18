@@ -10,14 +10,9 @@
 <% if figure.inline? %>
   <span class="<%= classes.join(" ") %>"><%= render "figures/picto_svg", dessinable: figure %></span>
 <% else %>
-  <% presentation = FigurePresentation.attributs(figure, defaut: figure.presentation_par_defaut) %>
+  <% presentation = FigurePresentation.attributs(figure, defaut: figure.presentation_par_defaut, taille: figure.kind != :zone) %>
   <figure class="<%= (classes + presentation[:classes]).join(" ") %>"<% if presentation[:style] %> style="<%= presentation[:style] %>"<% end %>>
-    <% if figure.kind == :seyes %>
-      <%= render "figures/seyes_svg", dessinable: figure %>
-    <% elsif figure.kind == :ligne %>
-      <%= render "figures/ligne_svg", dessinable: figure %>
-    <% else %>
-      <%= render "figures/horloge_svg", dessinable: figure %>
-    <% end %>
+    <%# Un dessin par sorte : figures/_seyes_svg, _horloge_svg, _zone_svg… %>
+    <%= render "figures/#{figure.kind}_svg", dessinable: figure %>
   </figure>
 <% end %>

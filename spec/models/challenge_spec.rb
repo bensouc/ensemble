@@ -15,6 +15,22 @@ RSpec.describe Challenge, type: :model do
     expect(challenge2).to_not be_valid
   end
 
+  describe "nom unique par liste" do
+    it "laisse un exercice de ceinture porter le nom d'un exercice de plan de travail" do
+      ceinture = create(:challenge, name: @challenge1.name, skill: @challenge1.skill, for_belt: true)
+
+      expect(ceinture).to be_persisted
+    end
+
+    it "refuse deux exercices de ceinture du même nom pour la même compétence" do
+      create(:challenge, name: "Doublon", skill: @challenge1.skill, for_belt: true)
+      doublon = build(:challenge, name: "Doublon", skill: @challenge1.skill, for_belt: true)
+
+      expect(doublon).not_to be_valid
+      expect { doublon.save!(validate: false) }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+  end
+
   # La mise en forme de bloc — alignement, interligne — est portée par `style`
   # justement parce que `style` traverse le sanitizer d'ActionText sans qu'on ait à
   # toucher son allowlist. Une balise maison, elle, en serait retirée à l'affichage :
@@ -50,6 +66,18 @@ RSpec.describe Challenge, type: :model do
       # les deux déclarations vivent dans le même style : aucune ne doit sauter
       expect(rendered).to include("text-align:center")
       expect(rendered).to include("line-height:2")
+    end
+
+    it "garde la signature des paragraphes de l'éditeur et la taille du texte" do
+      challenge = create(:challenge)
+      challenge.content = %(<div class="rt-p">Normal <span style="font-size: 1.25em">grand</span></div>)
+      challenge.save!
+
+      rendered = challenge.reload.content.to_s
+
+      # sans la classe, le paragraphe retomberait dans la mise en page des anciens énoncés
+      expect(rendered).to include(%(class="rt-p"))
+      expect(rendered).to include("font-size:1.25em")
     end
 
     it "retire une balise maison — d'où le choix de `style`" do
@@ -110,6 +138,8 @@ RSpec.describe Challenge, type: :model do
       expect(empty.position).to eq(2)
       expect(empty.user).to eq(user)
       expect(empty.content.to_plain_text).to include("REDIGER")
+      # au format de l'éditeur : sans paragraphe signé, il s'ouvrirait en « ancien énoncé »
+      expect(empty.content.body.to_html).to include(%(class="rt-p"))
       expect(empty).to be_persisted
     end
 

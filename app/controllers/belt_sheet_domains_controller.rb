@@ -3,11 +3,16 @@
 # Les blocs d'une fiche de ceinture : un domaine à une couleur de ceinture.
 # L'ajouter le garnit des compétences que l'élève n'a pas encore validées. La
 # ceinture ne se choisit pas : c'est celle qui suit la dernière qu'il a validée.
+#
+# Sans élève, rien ne la désigne : sur une fiche non assignée, on choisit le
+# domaine puis sa ceinture, comme dans le plan de travail.
 class BeltSheetDomainsController < ApplicationController
   def new
     @belt_sheet = BeltSheet.find(params[:belt_sheet_id])
     authorize @belt_sheet, :update?
     @domains = @belt_sheet.grade.domains.sort_by(&:position)
+    return render :new_non_assignee if @belt_sheet.non_assignee?
+
     @ceintures = @domains.index_with { |domain| @belt_sheet.ceinture_pour(domain) }
   end
 
@@ -15,7 +20,7 @@ class BeltSheetDomainsController < ApplicationController
     @belt_sheet = BeltSheet.find(params[:belt_sheet_id])
     authorize @belt_sheet, :update?
     domain = domaine_choisi
-    level = @belt_sheet.ceinture_pour(domain)
+    level = @belt_sheet.non_assignee? ? ceinture_choisie(domain) : @belt_sheet.ceinture_pour(domain)
     flash.now[:notice] = level ? ajouter(domain, level) : t("fiches_ceinture.noire_deja", domaine: domain.name)
     respond_with_sheet
   end
@@ -37,14 +42,23 @@ class BeltSheetDomainsController < ApplicationController
     authorize @belt_sheet.grade.domains.find(domain_params[:domain_id]), :show?
   end
 
+  # La ceinture du formulaire, parmi celles qui existent ; la blanche pour un
+  # domaine spécial, qui n'en a qu'une.
+  def ceinture_choisie(domain)
+    return 1 if domain.special?
+
+    Integer(domain_params[:level], exception: false).presence_in(1..Belt::BELT_COLORS.size) ||
+      raise(ActionController::BadRequest, "ceinture inconnue")
+  end
+
   def ajouter(domain, level)
-    noms = { domaine: domain.name, couleur: Belt::BELT_COLORS[level - 1], eleve: @belt_sheet.student.first_name }
+    noms = { domaine: domain.name, couleur: Belt::BELT_COLORS[level - 1], eleve: @belt_sheet.student&.first_name }
     if @belt_sheet.belt_sheet_domains.exists?(domain:, level:)
       t("fiches_ceinture.bloc_deja_la", **noms)
     elsif @belt_sheet.add_domain!(domain, level)
       t(domain.special? ? "fiches_ceinture.bloc_special_ajoute" : "fiches_ceinture.bloc_ajoute", **noms)
     else
-      t("fiches_ceinture.tout_valide", **noms)
+      t(@belt_sheet.non_assignee? ? "fiches_ceinture.aucune_competence" : "fiches_ceinture.tout_valide", **noms)
     end
   end
 
@@ -59,6 +73,6 @@ class BeltSheetDomainsController < ApplicationController
   end
 
   def domain_params
-    params.expect(belt_sheet_domain: [:domain_id])
+    params.expect(belt_sheet_domain: [:domain_id, :level])
   end
 end

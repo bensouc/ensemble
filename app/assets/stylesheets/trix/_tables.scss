@@ -30,6 +30,9 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  // Le cadre est porté par le tableau, pas par les cases : rognées par
+  // l'arrondi, leurs bordures laissaient les coins sans trait.
+  border: 1px solid var(--rt-table-line, #c4c4cc);
   border-radius: var(--rt-radius-sm, 8px);
   overflow: hidden;
 
@@ -45,11 +48,11 @@
   vertical-align: middle;
   background-color: transparent;
   border: 0;
-  border-top: 1px solid var(--rt-line, #e6e6ea);
-  border-left: 1px solid var(--rt-line, #e6e6ea);
+  border-top: 1px solid var(--rt-table-line, #c4c4cc);
+  border-left: 1px solid var(--rt-table-line, #c4c4cc);
   word-break: break-word;
 
-  &:last-child { border-right: 1px solid var(--rt-line, #e6e6ea); }
+  &:first-child { border-left: 0; }
 
   // Conserve une hauteur de ligne uniforme quand la cellule est vide.
   &:empty::before {
@@ -57,8 +60,20 @@
   }
 }
 
-.rt-table__grid tr:last-child .rt-cell {
-  border-bottom: 1px solid var(--rt-line, #e6e6ea);
+// Première ligne : le cadre du tableau fait déjà le trait du haut. Elle ouvre
+// le `thead` (tableau maison à en-tête), le `tbody` posé en premier, ou celui
+// qui suit le `colgroup` de TipTap. (L'ancienne règle `tr:last-child` posait un
+// trait sous la ligne d'en-tête, dernière de son `thead` : un double trait.)
+.rt-table__grid > :is(thead, tbody:first-child, colgroup + tbody) > tr:first-child > .rt-cell {
+  border-top: 0;
+}
+
+// --- Sans bordures ----------------------------------------------------------
+// Bouton « Bordures » de la barre du tableau. Les traits deviennent
+// transparents plutôt que de disparaître : le tableau ne bouge pas d'un pixel.
+.rt-table__grid.rt-table--sans-bordure,
+.rt-table--sans-bordure .rt-cell {
+  border-color: transparent;
 }
 
 // --- Ligne d'en-tête -------------------------------------------------------

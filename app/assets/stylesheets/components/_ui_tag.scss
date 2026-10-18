@@ -1,0 +1,34 @@
+@use "../config/colors";
+
+// L'étiquette `Ui::TagComponent` : la pastille « bêta » du menu
+// (`.menug_icone .beta`), à la taille d'un texte qu'on lit.
+.ui-tag {
+  display: inline-block;
+  padding: 0 8px;
+  border: 1px solid rgba(colors.$rose, 0.45);
+  border-radius: 999px;
+  color: rgba(colors.$rose, 0.8);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 20px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+// L'embout de couleur à gauche du mot : toute la hauteur de l'étiquette,
+// arrondi avec elle — l'étiquette le rogne. Son filet droit garde la ceinture
+// blanche visible sur le fond blanc.
+.ui-tag--pastille {
+  display: inline-flex;
+  align-items: center;
+  overflow: hidden;
+  padding-left: 0;
+}
+
+.ui-tag-pastille {
+  align-self: stretch;
+  width: 16px;
+  margin-right: 6px;
+  box-shadow: inset -1px 0 0 rgba(colors.$grisF, 0.15);
+}

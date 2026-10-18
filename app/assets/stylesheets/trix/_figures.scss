@@ -1,3 +1,4 @@
+@use "sass:math";
 @use "../config/font_families";
 
 // Figures de l'énoncé (lignes Seyès, horloge, pictogrammes) et taille des images.
@@ -54,6 +55,27 @@ $seyes-largeur-marge: 15mm;
     repeating-linear-gradient(to right, $seyes-verticale 0, $seyes-verticale $fin, transparent $fin, transparent $seyes-carreau * $k);
 }
 
+// Petits carreaux de 5 mm, trois rangées par figure (`Figure::Dessin`), pour
+// l'éditeur et l'aperçu du menu (l'affichage et le PDF les dessinent en SVG, voir
+// figures/_carreaux_svg). Chaque rangée porte un demi-trait en haut et en bas :
+// deux rangées, ou deux figures, collées en refont un entier.
+$carreaux-cote: 5mm;
+$carreaux-rangees: 3;
+
+@mixin carreaux($cote: $carreaux-cote) {
+  $fin: 0.25mm;
+  $demi: 0.125mm;
+  display: block;
+  height: $carreaux-rangees * $cote;
+  background-color: #fff;
+  background-image:
+    linear-gradient(to bottom, $seyes-fine $demi, transparent $demi, transparent calc(100% - #{$demi}), $seyes-fine calc(100% - #{$demi})),
+    repeating-linear-gradient(to right, $seyes-fine 0, $seyes-fine $fin, transparent $fin, transparent $cote);
+  background-size: 100% $cote, auto;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
 // --- Affichage et PDF ---------------------------------------------------------
 .trix-content {
   // Une figure qui flotte ne dépasse pas de son énoncé (sur la carte suivante,
@@ -95,7 +117,8 @@ $seyes-largeur-marge: 15mm;
   // Une ligne Seyès sans taille choisie occupe toute la largeur ; collées, les
   // lignes forment une page de cahier continue.
   .rt-figure--seyes,
-  .rt-figure--ligne {
+  .rt-figure--ligne,
+  .rt-figure--carreaux {
     display: block;
     margin: 0;
   }
@@ -104,16 +127,34 @@ $seyes-largeur-marge: 15mm;
   // ajouter : la ligne, en bloc, en finit déjà une. L'éditeur en posait un entre
   // deux lignes Seyès, d'où une ligne vide entre elles à l'affichage.
   .rt-figure--seyes + br,
-  .rt-figure--ligne + br {
+  .rt-figure--ligne + br,
+  .rt-figure--carreaux + br {
     display: none;
   }
 
   .rt-ligne-svg,
-  .rt-seyes-svg {
+  .rt-seyes-svg,
+  .rt-carreaux-svg {
     display: block;
     // Sans ça, l'impression supprime les fonds du motif.
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+  }
+
+  // Une zone de manipulation (figures/_zone_svg) : à sa taille, rétrécie si la
+  // ligne est plus étroite.
+  // Seuls le haut et le bas : centrée, ses marges latérales restent automatiques.
+  .rt-figure--zone {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin-block: 0.4em;
+
+    svg {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
   }
 
   // Un pictogramme se lit comme une lettre de la phrase.
@@ -146,7 +187,8 @@ trix-editor,
   // En ligne et sur toute la largeur, la figure emporte ses repères sur SA ligne,
   // et la hauteur de la ligne est celle du carreau.
   figure.attachment:has(> .rt-seyes),
-  figure.attachment:has(> .rt-ligne) {
+  figure.attachment:has(> .rt-ligne),
+  figure.attachment:has(> .rt-carreaux) {
     display: inline-block;
     width: 100%;
     vertical-align: top;
@@ -171,6 +213,28 @@ trix-editor,
     vertical-align: -0.2em;
   }
 
+  // Dans l'éditeur, la zone montre son cadre ; un clic la sélectionne, « Modifier
+  // la zone » l'ouvre (editeur/zone.js), sa poignée tire son cadre. Elle épouse
+  // sa largeur naturelle (--rt-largeur, figures/_editor).
+  figure.attachment[data-trix-content-type="application/vnd.ensemble.figure-zone"] {
+    display: block;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  // `img` : passe devant `.rt-fig img { width: 100% }`, qui, une fois la zone
+  // alignée, la ramenait à la taille par défaut d'un SVG (300 px).
+  img.rt-figure-img--zone {
+    display: block;
+    width: var(--rt-largeur, 100%);
+    max-width: 100%;
+    height: auto;
+    outline: 1px dashed var(--rt-line-strong, #ddd);
+    outline-offset: 2px;
+  }
+
   .rt-figure-img--picto {
     display: block;
     width: 1.2em;
@@ -187,8 +251,12 @@ trix-editor,
 
   .rt-ligne {
     display: block;
-    height: 10mm;
+    height: $seyes-carreau;
     border-bottom: 0.3mm solid #8a8a8a;
+  }
+
+  .rt-carreaux {
+    @include carreaux;
   }
 }
 
@@ -308,6 +376,13 @@ trix-toolbar,
     gap: 6px;
   }
 
+  // Les lignes d'écriture : quatre tuiles de même taille, deux par rangée.
+  .rt-figures__rangee--lignes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
   .rt-figures__choix {
     flex: 1 1 0;
     display: flex;
@@ -328,9 +403,24 @@ trix-toolbar,
     &:hover { border-color: var(--rt-accent); }
   }
 
-  // Aperçu réduit d'une ligne Seyès : la vraie, en millimètres, serait trop haute.
+  // Aperçus du menu : les vraies lignes, réduites par le `zoom` ci-dessous, et
+  // toutes de la hauteur d'un carreau Seyès. Le dessin des lignes n'était posé que
+  // dans la zone d'édition, pas dans la barre : les aperçus Seyès restaient blancs.
+  .rt-figures__apercu.rt-seyes {
+    @include seyes;
+  }
+
+  .rt-figures__apercu.rt-seyes--marge {
+    @include seyes-marge;
+  }
+
+  // Les trois rangées, à plus petite échelle.
+  .rt-figures__apercu.rt-carreaux {
+    @include carreaux(math.div($seyes-carreau, $carreaux-rangees));
+  }
+
   .rt-figures__apercu.rt-ligne {
-    height: 18px;
+    height: $seyes-carreau;
     border-bottom: 1.5px solid #8a8a8a;
   }
 
@@ -405,4 +495,3 @@ trix-toolbar,
     &:hover { border-color: var(--rt-accent); }
   }
 }
-

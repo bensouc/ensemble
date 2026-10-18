@@ -1,0 +1,203 @@
+// Les blocs d'un énoncé, tels que le navigateur les affiche.
+//
+// ProseMirror ne lit pas un bloc comme le navigateur l'affiche, sur deux points :
+//
+// - un navigateur ignore le dernier <br> d'un bloc : `<div>texte<br></div>`
+//   tient sur une ligne, `<div><br></div>` fait UNE ligne vide. ProseMirror
+//   montre ce retour à la ligne, puis en ajoute un pour y poser le curseur
+//   (`ProseMirror-trailingBreak`) : chaque bloc d'un énoncé Trix qui finissait
+//   par un <br> — à commencer par ses lignes vides — prenait une ligne de plus
+//   dans l'éditeur. À l'inverse, un retour à la ligne tapé en fin de paragraphe
+//   se voyait dans l'éditeur et disparaissait à l'affichage ;
+// - un tableau (ou une liste, un titre…) posé dans un <div> coupe ce bloc en
+//   deux. Le navigateur n'affiche que ce qui l'entoure ; ProseMirror, qui ne
+//   peut pas mettre un tableau dans un paragraphe, laissait un paragraphe vide
+//   devant lui — c'est ainsi que l'éditeur reçoit un ancien tableau maison.
+//
+// À l'ouverture, on découpe donc ces <div> et on retire le <br> final de chaque
+// bloc ; à l'enregistrement, on remet un <br> derrière un retour à la ligne
+// final, et dans un paragraphe vide, pour que la ligne que l'éditeur montre
+// existe aussi à l'affichage.
+
+import { ZONE_TYPE, lireJson } from "./types"
+
+const BLOCS = "div, p, li, h1, h2, h3, h4, h5, h6, blockquote, td, th"
+// Un paragraphe tel que getHTML() l'écrit : un <div>, signé `rt-p` ou non
+// (énoncé ancien), mais pas le conteneur des colonnes.
+const PARAGRAPHE = "div:not(.rt-colonnes, .rt-colonne)"
+const BLOCS_DE_TEXTE = `${PARAGRAPHE}, h1, h2, h3`
+// Ce qui coupe un paragraphe en deux. Une image ne coupe rien : l'éditeur la
+// place dans la ligne.
+const COUPENT = new Set(["TABLE", "DIV", "P", "UL", "OL", "H1", "H2", "H3", "H4", "H5", "H6", "BLOCKQUOTE", "PRE", "HR"])
+const SELECTEUR_COUPENT = [...COUPENT].join(", ").toLowerCase()
+// Des <div> qui ne sont pas des paragraphes : l'éditeur les lit à part.
+const CONTENEURS = ".rt-colonnes, .rt-colonne, .trix-content"
+const EN_LIGNE = new Set(["SPAN", "STRONG", "EM", "B", "I", "U", "S", "DEL", "A", "MARK", "SUB", "SUP", "CODE"])
+// Seuls ces blancs-là s'effacent ; une espace insécable est du contenu.
+const BLANC = /^[ \t\n\r\f]*$/
+
+const blanc = (n) => n.nodeType === Node.TEXT_NODE && BLANC.test(n.textContent)
+const enLigne = (n) => EN_LIGNE.has(n.nodeName)
+// Rien à afficher : des blancs, ou du gras qui n'entoure que des blancs.
+const vide = (n) => blanc(n) || (enLigne(n) && [...n.childNodes].every(vide))
+
+// Le dernier nœud d'un bloc, en descendant dans le gras, l'italique, un lien…
+function dernierNoeud(parent) {
+  for (let n = parent.lastChild; n; n = n.previousSibling) {
+    if (blanc(n)) continue
+    if (!enLigne(n)) return n
+    const dedans = dernierNoeud(n)
+    if (dedans) return dedans
+  }
+  return null
+}
+
+function retirerRetourFinal(bloc) {
+  const n = dernierNoeud(bloc)
+  if (n?.nodeName === "BR") n.remove()
+}
+
+// Ce qui contient un bloc : le bloc lui-même, ou le gras, le lien… qui
+// l'entoure. Le gras reste autour du tableau : il en met les cases en gras.
+const porteUnBloc = (n) => COUPENT.has(n.nodeName) || (enLigne(n) && !!n.querySelector(SELECTEUR_COUPENT))
+
+// `<div>avant<table/>après</div>` -> `<div>avant</div><table/><div>après</div>`.
+// Un morceau vide disparaît ; un morceau fait d'un <br> reste, c'est une ligne
+// vide.
+function decouper(div) {
+  if (div.matches(CONTENEURS) || !div.querySelector(SELECTEUR_COUPENT)) return
+
+  const morceaux = []
+  let courant = []
+  const fermer = () => {
+    if (!courant.every(vide)) {
+      const morceau = div.cloneNode(false)
+      morceau.append(...courant)
+      morceaux.push(morceau)
+    }
+    courant = []
+  }
+  for (const n of [...div.childNodes]) {
+    if (porteUnBloc(n)) {
+      fermer()
+      morceaux.push(n)
+    } else {
+      courant.push(n)
+    }
+  }
+  fermer()
+  div.replaceWith(...morceaux)
+}
+
+// Le nœud affiché juste avant un bloc, dans la même ligne de texte : en
+// remontant le gras qui l'entoure, et en descendant dans celui qui le précède.
+function precedent(bloc) {
+  for (let n = bloc; n; n = enLigne(n.parentNode) ? n.parentNode : null) {
+    for (let p = n.previousSibling; p; p = p.previousSibling) {
+      if (blanc(p)) continue
+      if (!enLigne(p)) return p
+      const dedans = dernierNoeud(p)
+      if (dedans) return dedans
+    }
+  }
+  return null
+}
+
+// Un bloc finit la ligne qui le précède : un <br> juste avant lui ne compte pas.
+function retirerRetourAvantBloc(bloc) {
+  const n = precedent(bloc)
+  if (n?.nodeName === "BR") n.remove()
+}
+
+// Un paragraphe qui ne tient qu'une zone de manipulation (LigneSousLeBloc).
+function seuleUneZone(bloc) {
+  if (!bloc?.matches(PARAGRAPHE) || bloc.children.length !== 1) return false
+  const figure = bloc.firstElementChild
+  return figure.matches("figure[data-trix-attachment]") && lireJson(figure.dataset.trixAttachment).contentType === ZONE_TYPE
+}
+
+function fragment(html) {
+  const modele = document.createElement("template")
+  modele.innerHTML = html
+  return modele
+}
+
+function transformer(html, traitement) {
+  const modele = fragment(html)
+  traitement(modele.content)
+  return modele.innerHTML
+}
+
+// Un énoncé d'avant l'éditeur TipTap : du contenu, et pas un paragraphe signé
+// `rt-p`. L'éditeur le garde dans sa mise en page (extensions.js).
+export function estUnAncienEnonce(html) {
+  const racine = fragment(html).content
+  return [...racine.childNodes].some((n) => !vide(n)) && !racine.querySelector(".rt-p")
+}
+
+// Ramène un énoncé à l'ancien format : ses paragraphes perdent leur signature.
+export function sansSignature(html) {
+  return transformer(html, (racine) => {
+    racine.querySelectorAll(".rt-p").forEach((p) => {
+      p.classList.remove("rt-p")
+      if (!p.classList.length) p.removeAttribute("class")
+    })
+  })
+}
+
+// Ce que l'éditeur reçoit.
+export function pourLEditeur(html) {
+  return transformer(html, (racine) => {
+    racine.querySelectorAll("div").forEach(decouper)
+    racine.querySelectorAll(BLOCS).forEach(retirerRetourFinal)
+    // Après le découpage : le <br> qui finit un morceau découpé est déjà parti,
+    // il ne reste que celui qu'un gras enferme avec le bloc.
+    racine.querySelectorAll(SELECTEUR_COUPENT).forEach(retirerRetourAvantBloc)
+  })
+}
+
+// Des colonnes élargies à la main : TipTap les écrit en pixels (`colwidth` sur
+// les cases, que l'éditeur relit, et le <colgroup>). Or l'éditeur, l'écran,
+// le téléphone et le PDF n'ont pas la même largeur : le <colgroup> passe en
+// proportions, et le tableau dont toutes les colonnes ont une largeur garde sa
+// part de la page. `mesure` : largeurs rendues dans l'éditeur, s'il les connaît.
+const arrondi = (n) => Math.round(n * 10) / 10
+
+function enProportions(table, mesure) {
+  const cols = [...table.querySelectorAll(":scope > colgroup > col")]
+  const px = cols.map((c) => parseFloat(c.style.width) || 0)
+  table.removeAttribute("style")
+  if (!px.some(Boolean)) return
+
+  const libres = px.filter((w) => !w).length
+  const fixes = px.reduce((somme, w) => somme + w, 0)
+  const largeur = mesure?.tableau || fixes + libres * 100
+  const parColonneLibre = libres ? Math.max(largeur - fixes, 0) / libres : 0
+  cols.forEach((c, i) => c.setAttribute("style", `width: ${arrondi(((px[i] || parColonneLibre) / largeur) * 100)}%`))
+  if (!libres && mesure?.conteneur) table.style.width = `${Math.min(100, arrondi((largeur / mesure.conteneur) * 100))}%`
+}
+
+// Ce que l'éditeur enregistre.
+export function pourLEnregistrement(html, { tableaux = [] } = {}) {
+  return transformer(html, (racine) => {
+    racine.querySelectorAll("table").forEach((table, i) => enProportions(table, tableaux[i]))
+
+    // La ligne que l'éditeur garde sous un tableau ou des colonnes finaux
+    // (`LigneSousLeBloc`) : restée vide, elle n'existe pas.
+    const derniere = racine.lastElementChild
+    const avant = derniere?.previousElementSibling
+    if (derniere?.matches(PARAGRAPHE) && !dernierNoeud(derniere) &&
+        (avant?.matches("table, div.rt-colonnes") || seuleUneZone(avant))) derniere.remove()
+
+    // Un énoncé vide reste vide, sans ligne blanche.
+    if ([...racine.childNodes].every((n) => vide(n) || (n.nodeType === Node.ELEMENT_NODE && n.matches(PARAGRAPHE) && !dernierNoeud(n)))) {
+      racine.replaceChildren()
+      return
+    }
+    racine.querySelectorAll(BLOCS_DE_TEXTE).forEach((bloc) => {
+      const n = dernierNoeud(bloc)
+      if (!n) bloc.append(document.createElement("br"))
+      else if (n.nodeName === "BR") n.after(document.createElement("br"))
+    })
+  })
+}

@@ -270,9 +270,12 @@ trix-toolbar,
     }
   }
 
+  // L'option en cours : un fond en plus de la couleur, pour se voir aussi sur
+  // un écran terne.
   .rt-tb__menu-item--active {
     color: var(--rt-accent);
     font-weight: 600;
+    background: var(--rt-accent-soft);
   }
 
   // L'icône du déclencheur est recopiée depuis l'option active.

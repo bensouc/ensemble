@@ -34,6 +34,32 @@ RSpec.describe "Figures de l'énoncé", type: :request do
       expect(ActionText::Attachable.from_attachable_sgid(response.parsed_body["sgid"]).id).to eq("horloge-0315-nue")
     end
 
+    it "fournit à l'éditeur de zone le catalogue du matériel, dessins compris" do
+      get materiel_figures_path, as: :json
+
+      catalogue = response.parsed_body
+      expect(catalogue["pas"]).to eq(0.25)
+      expect(catalogue["tailles"]).to eq([50, 400])
+      expect(catalogue["elements"].keys).to include("b10", "p2", "u", "m")
+      expect(catalogue["elements"]["b10"]).to include("libelle" => "Billet de 10 €", "sorte" => "billet", "hauteur" => 6.8)
+      expect(catalogue["elements"]["b10"]["image"]).to start_with("data:image/svg+xml;base64,")
+    end
+
+    it "renvoie une zone de manipulation, en bloc, prête à rouvrir" do
+      post figures_path, params: { kind: "zone", nom: "80x24-b10.4.8_p2.20.8" }, as: :json
+
+      corps = response.parsed_body
+      expect(ActionText::Attachable.from_attachable_sgid(corps["sgid"]).id).to eq("zone-80x24-b10.4.8_p2.20.8")
+      expect(corps["contentType"]).to eq(Figure::ZONE_CONTENT_TYPE)
+      expect(corps["content"]).to include("rt-figure-img--zone").and include("--rt-largeur: 20.0em")
+    end
+
+    it "refuse une zone dont un élément sort du cadre" do
+      post figures_path, params: { kind: "zone", nom: "80x24-b10.90.8" }, as: :json
+
+      expect(response).to have_http_status(:unprocessable_content)
+    end
+
     it "marque un pictogramme comme se plaçant dans la phrase" do
       post figures_path, params: { kind: "picto", nom: "croix" }, as: :json
 

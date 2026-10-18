@@ -1,0 +1,32 @@
+<%# Une compétence : toute la ligne est le bouton qui l'enregistre.
+
+    Elle envoie l'état voulu, pas une bascule. Pendant l'envoi, Turbo pose
+    `aria-busy` sur son formulaire et la feuille y peint déjà la coche visée :
+    le geste se voit tout de suite, la réponse redessine la ligne sur l'état
+    de la base — et la décoche si l'envoi a échoué. %>
+<% validee = ceinture.validee?(skill) %>
+<% contenu = capture do %>
+	<span class="mobile-validation-symbole"><%= skill.symbol %></span>
+	<span class="mobile-validation-corps">
+		<span class="mobile-validation-nom"><%= skill.name %></span>
+		<% if ceinture.obtenue_a_l_evaluation?(skill) %>
+			<span class="mobile-validation-note">Validée à l'évaluation</span>
+		<% end %>
+	</span>
+	<i class="fa-regular fa-circle mobile-validation-coche --vide" aria-hidden="true"></i>
+	<i class="fa-solid fa-circle-check mobile-validation-coche --pleine" aria-hidden="true"></i>
+<% end %>
+<li id="ligne_competence_<%= skill.id %>">
+	<% if ceinture.verrouillee?(skill) %>
+		<div class="mobile-validation-ligne --validee --verrouillee"><%= contenu %></div>
+	<% else %>
+		<%= button_to mobile_student_domain_validation_path(ceinture.student, ceinture.domain),
+		              method: :patch,
+		              params: { validation: { skill_id: skill.id, validee: !validee, level: ceinture.level } },
+		              class: "mobile-validation-ligne#{' --validee' if validee}",
+		              form: { class: "mobile-validation-form" },
+		              aria: { pressed: validee } do %>
+			<%= contenu %>
+		<% end %>
+	<% end %>
+</li>

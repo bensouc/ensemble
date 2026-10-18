@@ -11,7 +11,11 @@
   <span class="rt-seyes<%= " rt-seyes--marge" if figure.marge? %>"></span>
 <% elsif figure.kind == :ligne %>
   <span class="rt-ligne"></span>
+<% elsif figure.kind == :carreaux %>
+  <span class="rt-carreaux"></span>
 <% else %>
-  <% svg = render(figure.kind == :picto ? "figures/picto_svg" : "figures/horloge_svg", dessinable: figure) %>
-  <img class="rt-figure-img rt-figure-img--<%= figure.kind %>" src="data:image/svg+xml;base64,<%= Base64.strict_encode64(svg.to_str.strip) %>" alt="<%= figure.libelle %>">
+  <% svg = render("figures/#{figure.kind}_svg", dessinable: figure) %>
+  <%# Dans une image, les em du dessin ne suivent plus l'énoncé : la largeur que la figure prend d'elle-même lui est redonnée (--rt-largeur, trix/_figures.scss). %>
+  <% largeur = figure.largeur_naturelle_em %>
+  <img class="rt-figure-img rt-figure-img--<%= figure.kind %>" src="data:image/svg+xml;base64,<%= Base64.strict_encode64(svg.to_str.strip) %>" alt="<%= figure.libelle %>"<% if largeur %> style="--rt-largeur: <%= largeur %>em"<% end %>>
 <% end %>

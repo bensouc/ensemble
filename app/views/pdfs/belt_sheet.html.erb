@@ -51,7 +51,13 @@
 									<div class="couleur">Ceinture <%= bloc.couleur %></div>
 								</td>
 								<td class="eleve">
-									<div><%= belt_sheet.student.first_name.to_s.capitalize %></div>
+									<%# Sans élève, le prénom s'écrit à la main, comme la date — sans
+									    pointillés : ils passaient à la ligne, sur la date. %>
+									<% if belt_sheet.student %>
+										<div><%= belt_sheet.student.first_name.to_s.capitalize %></div>
+									<% else %>
+										<div>Prénom :</div>
+									<% end %>
 									<div>Date : &nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp; /</div>
 								</td>
 							</tr>

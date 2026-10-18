@@ -39,6 +39,17 @@ RSpec.describe "pdfs/belt_sheet", type: :view do
     expect(rendu.at_css(".enonce").text).to include("Exercice de ceinture à définir")
   end
 
+  it "laisse le prénom à écrire sur une fiche non assignée" do
+    skill = create(:skill, domain: numeration, level: 1, school:, name: "Compter")
+    fiche = BeltSheet.generer!(grade, numeration, 1, user)
+
+    render template: "pdfs/belt_sheet", locals: { belt_sheet: fiche, blocs: fiche.reload.ordered_domains }
+    page = Nokogiri::HTML(rendered)
+
+    expect(page.at_css(".cartouche .eleve").text.squish).to start_with("Prénom : Date")
+    expect(page.at_css(".bande").text).to include(skill.name)
+  end
+
   it "n'imprime pas un bloc sans compétence" do
     sheet.belt_sheet_domains.create!(domain: geometrie, level: 1)
 

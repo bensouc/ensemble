@@ -1,6 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
-import { post } from "@rails/request.js"
+import { get, post } from "@rails/request.js"
+import { pourLEditeur, pourLEnregistrement, estUnAncienEnonce, sansSignature } from "../editeur/blocs"
+import { idDeLaFigure } from "../editeur/types"
 
 // Éditeur d'énoncé d'exercice (TipTap), à la place de Trix.
 //
@@ -31,7 +33,10 @@ const ICONES = {
   indent: icone('<path d="M4 6h16M11 12h9M4 18h16"/><path d="m4.5 9 3 3-3 3"/>'),
   attach: icone('<rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><path d="m4 16.5 4.5-4.5 3.5 3.5 3-3 5 5"/><circle cx="15.5" cy="9" r="1.6"/>'),
   table: icone('<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 10h17M3.5 15h17M10 4.5v15"/>'),
-  figure: icone('<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/>'),
+  // Des formes géométriques : le menu ne contient pas que des horloges (lignes
+  // d'écriture, pictogrammes aussi), l'horloge en icône le laissait croire.
+  figure: icone('<circle cx="7.5" cy="7.5" r="4"/><rect x="13" y="3.5" width="7.5" height="7.5" rx="1"/><path d="M12 13.5 16.5 20.5h-9z"/>'),
+  materiel: icone('<rect x="2.5" y="5.5" width="14" height="9" rx="1.5"/><path d="M6 10h0.01"/><circle cx="16.5" cy="15.5" r="5" style="fill:var(--rt-surface, #fff)"/>'),
   link: icone('<path d="m9.5 14.5 5-5"/><path d="M13 7.5 14.5 6a4 4 0 0 1 5.5 5.5L18.5 13"/><path d="M11 16.5 9.5 18A4 4 0 0 1 4 12.5L5.5 11"/>'),
   undo: icone('<path d="m9 14-5-5 5-5"/><path d="M4 9h9.5a6 6 0 0 1 0 12H8"/>'),
   redo: icone('<path d="m15 14 5-5-5-5"/><path d="M20 9h-9.5a6 6 0 0 0 0 12H16"/>'),
@@ -43,6 +48,7 @@ const ICONES = {
   colonneSuppr: icone('<rect x="7.5" y="3.5" width="9" height="17" rx="1.5"/><path d="m10 9.5 4 5M14 9.5l-4 5"/>'),
   entete: icone('<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17"/><path d="M3.5 4.5h17v5h-17z" style="fill:currentColor;opacity:.35"/>'),
   colonnes: icone('<rect x="3.5" y="4.5" width="7.5" height="15" rx="1.5"/><rect x="13" y="4.5" width="7.5" height="15" rx="1.5"/>'),
+  bordures: icone('<rect x="3.5" y="4.5" width="17" height="15" rx="2" stroke-dasharray="2.2 2"/><path d="M3.5 10h17M3.5 15h17M10 4.5v15" stroke-dasharray="2.2 2"/>'),
   tableSuppr: icone('<rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="m9 9.5 6 6M15 9.5l-6 6"/>')
 }
 
@@ -53,11 +59,48 @@ const ALIGNEMENTS = [
   { valeur: "justify", nom: "Justifier", trace: '<path d="M4 6h16M4 12h16M4 18h16"/>' }
 ]
 
-const INTERLIGNES = [
-  { valeur: "normal", nom: "Interligne normal (1,6)", trace: '<path d="M9 5h11M9 9.67h11M9 14.33h11M9 19h11"/><path d="M4.5 7v10"/><path d="m2.6 8.6 1.9-1.9 1.9 1.9M2.6 15.4l1.9 1.9 1.9-1.9"/>' },
-  { valeur: "2", nom: "Interligne 2", trace: '<path d="M9 5.5h11M9 12h11M9 18.5h11"/><path d="M4.5 7v10"/><path d="m2.6 8.6 1.9-1.9 1.9 1.9M2.6 15.4l1.9 1.9 1.9-1.9"/>' },
-  { valeur: "2.5", nom: "Interligne 2,5", trace: '<path d="M9 5h11M9 19h11"/><path d="M4.5 7v10"/><path d="m2.6 8.6 1.9-1.9 1.9 1.9M2.6 15.4l1.9 1.9 1.9-1.9"/>' },
-  { valeur: "3", nom: "Interligne 3", trace: '<path d="M9 4h11M9 20h11"/><path d="M4.5 6v12"/><path d="m2.6 7.6 1.9-1.9 1.9 1.9M2.6 16.4l1.9 1.9 1.9-1.9"/><path d="M9 12h6"/>' }
+// Trois lignes d'autant plus écartées que l'interligne est grand, et la flèche
+// qui mesure l'écart.
+function traceInterligne(hauteur) {
+  const e = Math.round(35 * hauteur) / 10
+  const haut = 12 - e, bas = 12 + e
+  return `<path d="M9 ${haut}h11M9 12h11M9 ${bas}h11"/><path d="M4.5 ${haut}V${bas}"/>` +
+    `<path d="m2.6 ${haut + 1.9} 1.9-1.9 1.9 1.9M2.6 ${bas - 1.9}l1.9 1.9 1.9-1.9"/>`
+}
+
+// Le menu nomme les interlignes sans montrer leur valeur : « Normal » vaut 1,4
+// dans un énoncé de cet éditeur (`.rt-p`), 1,6 dans un énoncé plus ancien, qui
+// garde sa mise en page — deux chiffres pour un même mot auraient dérouté.
+// L'interligne « Normal » n'écrit rien.
+const NOMS_DES_INTERLIGNES = ["Très serré", "Serré", "Normal", "Aéré", "Très aéré"]
+const VALEURS_DES_INTERLIGNES = {
+  nouveau: ["1", "1.2", "1.4", "1.6", "2"],
+  // Au-dessus de « Normal », celles du menu de Trix : des énoncés les portent.
+  ancien: ["1.2", "1.4", "1.6", "2", "2.5"]
+}
+// Les mêmes icônes dans les deux cas : elles disent le rang, pas la valeur.
+const ICONES_DES_INTERLIGNES = [1, 1.2, 1.4, 1.6, 2].map(traceInterligne)
+
+function interlignes(ancien) {
+  return VALEURS_DES_INTERLIGNES[ancien ? "ancien" : "nouveau"].map((valeur, rang) => ({
+    valeur, hauteur: Number(valeur), nom: NOMS_DES_INTERLIGNES[rang], trace: ICONES_DES_INTERLIGNES[rang]
+  }))
+}
+
+// Un interligne qui n'est pas au menu (3 l'a été) s'affiche comme le plus proche.
+function interligneDuMenu(lineHeight, options) {
+  const v = Number(lineHeight)
+  return options.reduce((a, b) => (Math.abs(b.hauteur - v) < Math.abs(a.hauteur - v) ? b : a)).valeur
+}
+
+// En `em` : la taille suit celle de l'énoncé, plus grande au PDF qu'à l'écran.
+const lettre = (taille, y) =>
+  `<text x="12" y="${y}" font-size="${taille}" font-weight="600" text-anchor="middle" style="fill:currentColor;stroke:none">A</text>`
+const TAILLES = [
+  { valeur: "0.85em", nom: "Petit", trace: lettre(12, 16.5) },
+  { valeur: "normal", nom: "Normal", trace: lettre(16, 18) },
+  { valeur: "1.25em", nom: "Grand", trace: lettre(20, 19.5) },
+  { valeur: "1.5em", nom: "Très grand", trace: lettre(24, 21) }
 ]
 
 const COLONNES = [
@@ -142,10 +185,11 @@ function menuFigures() {
     <div class="rt-tb__popover rt-figures__panel" role="dialog" aria-label="Insérer une figure" hidden>
       <div class="rt-figures__section">
         <span class="rt-figures__titre">Ligne d'écriture</span>
-        <div class="rt-figures__rangee">
+        <div class="rt-figures__rangee rt-figures__rangee--lignes">
           <button type="button" class="rt-figures__choix" data-ligne="seyes" tabindex="-1"><span class="rt-figures__apercu rt-seyes" aria-hidden="true"></span>Seyès</button>
           <button type="button" class="rt-figures__choix" data-ligne="seyes-marge" tabindex="-1"><span class="rt-figures__apercu rt-seyes rt-seyes--marge" aria-hidden="true"></span>Seyès avec marge</button>
           <button type="button" class="rt-figures__choix" data-ligne="ligne" tabindex="-1"><span class="rt-figures__apercu rt-ligne" aria-hidden="true"></span>Ligne simple</button>
+          <button type="button" class="rt-figures__choix" data-ligne="carreaux" tabindex="-1"><span class="rt-figures__apercu rt-carreaux" aria-hidden="true"></span>Petits carreaux</button>
         </div>
       </div>
       <div class="rt-figures__section">
@@ -167,7 +211,7 @@ function menuFigures() {
   </span>`
 }
 
-function barreHtml() {
+function barreHtml({ interlignes }) {
   return `<div class="trix-button-row rt-tb" role="toolbar" aria-label="Mise en forme">
     <span class="trix-button-group rt-tb__group">
       ${bouton({ commande: "bold", libelle: "Gras", glyphe: glyphe("B", "bold"), raccourci: "B" })}
@@ -178,6 +222,7 @@ function barreHtml() {
     <span class="trix-button-group rt-tb__group">
       ${nuancier({ nom: "texte", libelle: "Couleur du texte", glyphe: ICONES.textColor, couleurs: COULEURS_TEXTE, effacer: "Couleur par défaut" })}
       ${nuancier({ nom: "surlignage", libelle: "Surligner", glyphe: ICONES.highlight, couleurs: COULEURS_SURLIGNAGE, effacer: "Retirer le surlignage" })}
+      ${menu({ nom: "taille", libelle: "Taille du texte", options: TAILLES })}
     </span>
     <span class="trix-button-group rt-tb__group">
       ${bouton({ commande: "heading", valeur: "1", libelle: "Titre", glyphe: glyphe("H1", "heading"), classe: "rt-tb__btn--text" })}
@@ -190,13 +235,14 @@ function barreHtml() {
       ${bouton({ commande: "outdent", libelle: "Diminuer le retrait", glyphe: ICONES.outdent })}
       ${bouton({ commande: "indent", libelle: "Augmenter le retrait", glyphe: ICONES.indent })}
       ${menu({ nom: "alignement", libelle: "Alignement", options: ALIGNEMENTS })}
-      ${menu({ nom: "interligne", libelle: "Interligne", options: INTERLIGNES })}
+      ${menu({ nom: "interligne", libelle: "Interligne", options: interlignes })}
     </span>
     <span class="trix-button-group rt-tb__group">
       ${bouton({ commande: "image", libelle: "Insérer une image", glyphe: ICONES.attach })}
       ${bouton({ commande: "table", libelle: "Tableau", glyphe: ICONES.table })}
       ${menu({ nom: "colonnes", libelle: "Colonnes", options: COLONNES })}
       ${menuFigures()}
+      ${bouton({ commande: "zone", libelle: "Insérer une zone de manipulation", glyphe: ICONES.materiel })}
       ${bouton({ commande: "link", libelle: "Lien", glyphe: ICONES.link, raccourci: "K", classe: "rt-tb__btn--offscreen" })}
     </span>
     <span class="trix-button-group rt-tb__group rt-barre__tableau" aria-label="Tableau">
@@ -207,6 +253,7 @@ function barreHtml() {
       ${bouton({ commande: "deleteRow", libelle: "Supprimer la ligne", glyphe: ICONES.ligneSuppr })}
       ${bouton({ commande: "deleteColumn", libelle: "Supprimer la colonne", glyphe: ICONES.colonneSuppr })}
       ${bouton({ commande: "toggleHeaderRow", libelle: "Ligne d'en-tête", glyphe: ICONES.entete })}
+      ${bouton({ commande: "bordures", libelle: "Masquer les bordures", glyphe: ICONES.bordures })}
       ${bouton({ commande: "deleteTable", libelle: "Supprimer le tableau", glyphe: ICONES.tableSuppr })}
     </span>
     <span class="trix-button-group-spacer"></span>
@@ -218,12 +265,15 @@ function barreHtml() {
 }
 
 export default class extends Controller {
-  static targets = ["input", "barre", "zone", "fichier"]
+  static targets = ["input", "barre", "zone", "fichier", "formatAncien", "formatConverti"]
   static values = { directUploadUrl: String, blobUrlTemplate: String, placeholder: String }
 
   async connect() {
+    // Un énoncé d'avant cet éditeur garde sa mise en page, interligne compris.
+    const ancien = estUnAncienEnonce(this.inputTarget.value)
+    this.reglerFormat(ancien)
     // Une connexion précédente (cache Turbo) a pu laisser sa barre derrière elle.
-    this.barreTarget.innerHTML = barreHtml()
+    this.barreTarget.innerHTML = barreHtml({ interlignes: this.interlignes })
     this.zoneTarget.innerHTML = ""
 
     const [{ Editor }, { extensionsDeLEditeur }] = await Promise.all([
@@ -233,19 +283,9 @@ export default class extends Controller {
     // Le formulaire a pu être refermé pendant le chargement.
     if (!this.element.isConnected || this.editor) return
 
-    this.editor = new Editor({
-      element: this.zoneTarget,
-      extensions: extensionsDeLEditeur({ placeholder: this.placeholderValue }),
-      content: this.inputTarget.value,
-      editorProps: {
-        attributes: { class: "trix-content rt-editeur__contenu" },
-        handlePaste: (_view, event) => this.fichiersDepuis(event.clipboardData),
-        handleDrop: (_view, event) => this.fichiersDepuis(event.dataTransfer)
-      },
-      onUpdate: () => this.synchroniser(),
-      onSelectionUpdate: () => this.etatBarre(),
-      onTransaction: () => this.etatBarre()
-    })
+    this.tiptap = { Editor, extensionsDeLEditeur }
+    this.monterEditeur(pourLEditeur(this.inputTarget.value))
+    if (this.hasFormatAncienTarget) this.formatAncienTarget.hidden = !ancien
 
     this.onClicBarre = this.onClicBarre.bind(this)
     this.onClicDehors = this.onClicDehors.bind(this)
@@ -261,10 +301,59 @@ export default class extends Controller {
       if (e.key === "Enter") { e.preventDefault(); this.insererHorloge() }
     })
     this.element.addEventListener("piece-jointe:changer-heure", this.onChangerHeure)
+    this.element.addEventListener("piece-jointe:modifier-zone", (e) => this.ouvrirZone(e.detail))
+    this.element.addEventListener("piece-jointe:cadre-zone", (e) => this.changerLeCadre(e.detail))
     this.element.addEventListener("keydown", (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); this.lien() }
       if (e.key === "Escape") this.fermerPopovers()
     })
+    this.synchroniser()
+    this.etatBarre()
+  }
+
+  // L'interligne « Normal » et les valeurs du menu dépendent du format.
+  reglerFormat(ancien) {
+    this.ancien = ancien
+    this.interlignes = interlignes(ancien)
+    this.interligneParDefaut = this.interlignes[NOMS_DES_INTERLIGNES.indexOf("Normal")].valeur
+  }
+
+  monterEditeur(contenu) {
+    const { Editor, extensionsDeLEditeur } = this.tiptap
+    this.editor = new Editor({
+      element: this.zoneTarget,
+      extensions: extensionsDeLEditeur({ placeholder: this.placeholderValue, ancien: this.ancien }),
+      content: contenu,
+      editorProps: {
+        attributes: { class: "trix-content rt-editeur__contenu" },
+        transformPastedHTML: pourLEditeur,
+        handlePaste: (_view, event) => this.fichiersDepuis(event.clipboardData),
+        handleDrop: (_view, event) => this.fichiersDepuis(event.dataTransfer)
+      },
+      onUpdate: () => this.synchroniser(),
+      onSelectionUpdate: () => this.etatBarre(),
+      onTransaction: () => this.etatBarre()
+    })
+  }
+
+  // Le bandeau d'un exercice à l'ancien format : le passer au nouveau, ou l'y
+  // ramener tant qu'il n'est pas enregistré. L'éditeur est remonté dans l'autre
+  // format avec le contenu en cours — tel que TipTap l'écrit, sans repasser par
+  // pourLEditeur, qui ôterait un retour à la ligne final voulu. Les interlignes
+  // choisis à la main restent ; les autres prennent le « Normal » du format.
+  // L'historique d'annulation repart de zéro.
+  basculerFormat() {
+    if (!this.editor) return
+    const ancien = !this.ancien
+    const html = this.editor.getHTML()
+    this.editor.destroy()
+    this.zoneTarget.innerHTML = ""
+    this.reglerFormat(ancien)
+    const menuActuel = this.barreTarget.querySelector('[data-apercu-menu="interligne"]').closest("[data-popover]")
+    menuActuel.outerHTML = menu({ nom: "interligne", libelle: "Interligne", options: this.interlignes })
+    this.monterEditeur(ancien ? sansSignature(html) : html)
+    this.formatAncienTarget.hidden = !ancien
+    this.formatConvertiTarget.hidden = ancien
     this.synchroniser()
     this.etatBarre()
   }
@@ -277,7 +366,16 @@ export default class extends Controller {
   // Toujours le HTML complet : `editor.isEmpty` peut juger vide un énoncé fait
   // d'une seule image, qu'on aurait alors effacé à l'enregistrement.
   synchroniser() {
-    this.inputTarget.value = this.editor.getHTML()
+    this.inputTarget.value = pourLEnregistrement(this.editor.getHTML(), { tableaux: this.largeursDesTableaux() })
+  }
+
+  // Largeur de chaque tableau et de ce qui le contient, dans l'ordre du document :
+  // l'enregistrement en tire les proportions des colonnes (editeur/blocs.js).
+  largeursDesTableaux() {
+    return [...this.editor.view.dom.querySelectorAll("table")].map((table) => ({
+      tableau: table.getBoundingClientRect().width,
+      conteneur: table.parentElement.clientWidth
+    }))
   }
 
   // --- Barre ---------------------------------------------------------------------
@@ -290,7 +388,10 @@ export default class extends Controller {
     if (cible.hasAttribute("data-ouvrir")) return this.basculerPopover(cible.closest("[data-popover]"))
     if (cible.dataset.nuancier) return this.couleur(cible.dataset.nuancier, cible.dataset.couleur)
     if (cible.dataset.menu) return this.choixMenu(cible.dataset.menu, cible.dataset.valeur)
-    if (cible.dataset.ligne) return this.insererFigure({ kind: cible.dataset.ligne === "ligne" ? "ligne" : "seyes", marge: cible.dataset.ligne === "seyes-marge" })
+    if (cible.dataset.ligne) {
+      const ligne = cible.dataset.ligne
+      return this.insererFigure({ kind: ligne === "seyes-marge" ? "seyes" : ligne, marge: ligne === "seyes-marge" })
+    }
     if (cible.dataset.picto) return this.insererFigure({ kind: "picto", nom: cible.dataset.picto })
     if (cible.classList.contains("rt-figures__inserer")) return this.insererHorloge()
     if (cible.dataset.commande) return this.commande(cible.dataset.commande, cible.dataset.valeur)
@@ -314,6 +415,8 @@ export default class extends Controller {
       case "redo": return c.redo().run()
       case "image": return this.fichierTarget.click()
       case "table": return c.insertTable({ rows: 3, cols: 3, withHeaderRow: false }).run()
+      case "zone": return this.ouvrirZone()
+      case "bordures": return c.updateAttributes("table", { bordures: this.editor.getAttributes("table").bordures === false }).run()
       case "link": return this.lien()
       case "addRowBefore": case "addRowAfter": case "addColumnBefore": case "addColumnAfter":
       case "deleteRow": case "deleteColumn": case "toggleHeaderRow": case "deleteTable":
@@ -343,8 +446,9 @@ export default class extends Controller {
     const c = this.editor.chain().focus()
     if (menu === "alignement") c.setTextAlign(valeur).run()
     else if (menu === "colonnes") valeur === "aucune" ? c.retirerColonnes().run() : c.insererColonnes(Number(valeur)).run()
+    else if (menu === "taille") valeur === "normal" ? c.unsetFontSize().run() : c.setFontSize(valeur).run()
     else {
-      const lineHeight = valeur === "normal" ? null : valeur
+      const lineHeight = valeur === this.interligneParDefaut ? null : valeur
       c.updateAttributes("paragraph", { lineHeight }).updateAttributes("heading", { lineHeight }).run()
     }
     this.fermerPopovers()
@@ -365,7 +469,8 @@ export default class extends Controller {
     const actif = {
       bold: e.isActive("bold"), italic: e.isActive("italic"), underline: e.isActive("underline"),
       strike: e.isActive("strike"), blockquote: e.isActive("blockquote"), codeBlock: e.isActive("codeBlock"),
-      bulletList: e.isActive("bulletList"), orderedList: e.isActive("orderedList")
+      bulletList: e.isActive("bulletList"), orderedList: e.isActive("orderedList"),
+      bordures: e.isActive("table") && e.getAttributes("table").bordures === false
     }
     this.barreTarget.querySelectorAll("[data-commande]").forEach((b) => {
       const nom = b.dataset.commande
@@ -385,7 +490,8 @@ export default class extends Controller {
 
     const bloc = e.isActive("heading") ? e.getAttributes("heading") : e.getAttributes("paragraph")
     this.apercuMenu("alignement", bloc.textAlign || "left", ALIGNEMENTS)
-    this.apercuMenu("interligne", bloc.lineHeight || "normal", INTERLIGNES)
+    this.apercuMenu("interligne", interligneDuMenu(bloc.lineHeight || this.interligneParDefaut, this.interlignes), this.interlignes)
+    this.apercuMenu("taille", TAILLES.some((t) => t.valeur === style.fontSize) ? style.fontSize : "normal", TAILLES)
     this.apercuMenu("colonnes", "2", COLONNES)
     const dansColonnes = e.isActive("colonnes")
     this.barreTarget.querySelector('[data-menu="colonnes"][data-valeur="aucune"]').disabled = !dansColonnes
@@ -406,7 +512,9 @@ export default class extends Controller {
       el.innerHTML = icone(choix.trace)
     }
     this.barreTarget.querySelectorAll(`[data-menu="${nom}"]`).forEach((b) => {
+      // La classe allume l'option en cours dans le menu ; l'attribut la dit aux lecteurs d'écran.
       b.setAttribute("aria-checked", b.dataset.valeur === choix.valeur)
+      b.classList.toggle("rt-tb__menu-item--active", b.dataset.valeur === choix.valeur)
     })
   }
 
@@ -482,8 +590,9 @@ export default class extends Controller {
   async insererFigure(params, { remplacement = null } = {}) {
     const reponse = await post("/figures", { body: params, responseKind: "json" })
     if (!reponse.ok) {
-      this.barreTarget.querySelector(".rt-figures__erreur").hidden = false
-      return
+      // Seule l'heure d'une horloge peut être mal tapée ; l'éditeur de zone dit ses erreurs.
+      if (params.kind === "horloge") this.barreTarget.querySelector(".rt-figures__erreur").hidden = false
+      return false
     }
     const piece = await reponse.json
 
@@ -498,7 +607,7 @@ export default class extends Controller {
       }).run()
     } else {
       if (this.selectionAvantPopover) this.editor.commands.setTextSelection(this.selectionAvantPopover.from)
-      const ligne = params.kind === "seyes" || params.kind === "ligne"
+      const ligne = ["seyes", "ligne", "carreaux"].includes(params.kind)
       // Une ligne d'écriture commence toujours une ligne — sauf juste après une
       // autre ligne d'écriture, qui en finit déjà une : le <br> ajouté là
       // devenait, à l'affichage, une ligne vide entre deux lignes Seyès.
@@ -508,6 +617,54 @@ export default class extends Controller {
     // Le menu reste ouvert après une ligne : on en ajoute une autre d'un clic.
     if (params.kind === "horloge") this.fermerPopovers()
     else this.selectionAvantPopover = this.editor.state.selection
+    return true
+  }
+
+  // Zone de manipulation (editeur/zone.js) : neuve depuis la barre, ou rouverte
+  // depuis la sienne (« Modifier la zone »). Valider insère la zone, ou la met à
+  // la place de l'ancienne, comme on change l'heure d'une horloge.
+  async ouvrirZone(cible = null) {
+    this.fermerPopovers()
+    if (!cible) this.selectionAvantPopover = this.editor.state.selection
+    const [{ EditeurDeZone, lireZone }, catalogue] = await Promise.all([
+      import("../editeur/zone"), this.catalogueDuMateriel()
+    ])
+    if (!catalogue) return window.alert("Le matériel n'a pas pu être chargé. Réessayez.")
+    const [largeur, hauteur] = catalogue.zoneNeuve
+    new EditeurDeZone({
+      hote: this.element,
+      catalogue,
+      zone: (cible && lireZone(cible.attachment)) || { largeur, hauteur, elements: [] },
+      taillePolice: getComputedStyle(this.editor.view.dom).fontSize,
+      surValider: (description) => this.insererFigure({ kind: "zone", nom: description }, { remplacement: cible })
+    }).ouvrir()
+  }
+
+  // La poignée d'une zone, dans l'énoncé, a tiré son cadre : la zone est
+  // remplacée par une zone de ce cadre, borné comme dans l'éditeur de zone.
+  async changerLeCadre({ pos, attachment, largeur, hauteur }) {
+    const [{ cadreBorne, decrireZone, elementsConnus, lireZone }, catalogue] = await Promise.all([
+      import("../editeur/zone"), this.catalogueDuMateriel()
+    ])
+    const zone = catalogue && lireZone(attachment)
+    if (!zone) return
+    const elements = elementsConnus(catalogue, zone.elements)
+    const cadre = cadreBorne(catalogue, elements, largeur, hauteur)
+    if (cadre.largeur === zone.largeur && cadre.hauteur === zone.hauteur) return
+    this.insererFigure({ kind: "zone", nom: decrireZone({ ...cadre, elements }) }, { remplacement: { pos } })
+  }
+
+  // Le catalogue (GET /figures/materiel), chargé une fois par éditeur ; après un
+  // échec, le prochain essai le redemande.
+  catalogueDuMateriel() {
+    this.catalogue ||= get("/figures/materiel", { responseKind: "json" })
+      .then((reponse) => (reponse.ok ? reponse.json : null))
+      .catch(() => null)
+      .then((catalogue) => {
+        if (!catalogue) this.catalogue = null
+        return catalogue
+      })
+    return this.catalogue
   }
 
   // Le curseur suit-il du texte (et non le début du bloc ou une ligne d'écriture) ?
@@ -547,18 +704,11 @@ export default class extends Controller {
     this.barreTarget.querySelector(".rt-figures__heure").focus()
   }
 
-  // Réglages d'une horloge, lus dans son sgid : `…/Figure/horloge-0315-chiffres`.
-  // Le sgid n'est pas chiffré, seulement signé ; on n'en lit que l'identifiant.
+  // Réglages d'une horloge, lus dans son identifiant : `horloge-0315-chiffres`.
   reglagesHorloge(attachment) {
-    try {
-      const sgid = JSON.parse(attachment).sgid
-      const encode = sgid.slice(0, sgid.lastIndexOf("--")).replace(/-/g, "+").replace(/_/g, "/")
-      const match = atob(encode).match(/Figure\/horloge-(\d{2})?(\d{2})?(?:vide)?-(chiffres|nue)/)
-      if (!match) return ["", true]
-      return [match[1] ? `${parseInt(match[1], 10)}:${match[2]}` : "", match[3] === "chiffres"]
-    } catch {
-      return ["", true]
-    }
+    const match = /^horloge-(\d{2})?(\d{2})?(?:vide)?-(chiffres|nue)$/.exec(idDeLaFigure(attachment) || "")
+    if (!match) return ["", true]
+    return [match[1] ? `${parseInt(match[1], 10)}:${match[2]}` : "", match[3] === "chiffres"]
   }
 }
 
