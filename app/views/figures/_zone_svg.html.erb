@@ -1,0 +1,12 @@
+<%#
+  Zone de manipulation (`Figure#zone_dessin`) : un seul SVG, où chaque matériel
+  est posé à sa place. Le sanitizer d'ActionText retire `position`, `left` et
+  `top` d'un style : seul un dessin peut placer librement des éléments. Une
+  unité du dessin vaut un pas de la grille, un quart d'em.
+
+  Chaque matériel est dessiné une fois (`symbol`), puis posé autant de fois
+  qu'il le faut (`use`). Deux zones de la même page partagent les mêmes
+  identifiants : ils décrivent exactement le même dessin.
+%>
+<% z = dessinable.zone_dessin %>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 <%= z[:largeur] %> <%= z[:hauteur] %>" width="<%= z[:largeur_em] %>em" height="<%= z[:hauteur_em] %>em" role="img" aria-label="<%= dessinable.libelle %>"><defs><% z[:elements].map { |e| e[:materiel] }.uniq.each do |m| %><symbol id="rt-materiel-<%= m.id %>" viewBox="<%= m.cadre_du_materiel[:boite] %>"><%= render "figures/#{m.kind}_formes", dessinable: m %></symbol><% end %></defs><% z[:elements].each do |e| %><use xlink:href="#rt-materiel-<%= e[:materiel].id %>" x="<%= e[:x] %>" y="<%= e[:y] %>" width="<%= e[:largeur] %>" height="<%= e[:hauteur] %>"></use><% end %></svg>

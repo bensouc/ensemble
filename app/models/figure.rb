@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 # Figure insérée dans l'énoncé d'un exercice : ligne Seyès, ligne simple, ligne à
-# petits carreaux, horloge, pictogramme.
+# petits carreaux, horloge, pictogramme, et matériel de manipulation (billets,
+# pièces, blocs de numération).
 #
 # Pas de table en base. Une figure est entièrement décrite par son identifiant
 # (`seyes-marge`, `ligne`, `horloge-0315-chiffres`, `picto-coche`), que le sgid signe et
@@ -22,10 +23,14 @@ class Figure
   include GlobalID::Identification
   include ActionText::Attachable
   include Figure::Dessin
+  include Figure::Materiel
+  include Figure::Zone
 
   CONTENT_TYPE = "application/vnd.ensemble.figure"
   # Un pictogramme se place dans la phrase : il n'a ni taille ni position.
   INLINE_CONTENT_TYPE = "application/vnd.ensemble.figure-inline"
+  # Une zone de manipulation (Figure::Zone) : l'éditeur la reconnaît à ce type.
+  ZONE_CONTENT_TYPE = "application/vnd.ensemble.figure-zone"
 
   PICTOS = {
     "coche" => "Coche",
@@ -68,7 +73,7 @@ class Figure
   # unes aux autres comme une page de cahier.
   LIGNES_D_ECRITURE = %i[seyes ligne carreaux].freeze
 
-  attr_reader :id, :kind, :picto, :heures, :minutes
+  attr_reader :id, :kind, :picto, :heures, :minutes, :valeur
 
   def self.find(id)
     new(id.to_s)
@@ -81,6 +86,7 @@ class Figure
            "ligne" => LIGNE,
            "carreaux" => CARREAUX,
            "picto" => "picto-#{nom}",
+           "zone" => "zone-#{nom}",
            "horloge" => "horloge-#{horloge_code(heure)}-#{chiffres ? 'chiffres' : 'nue'}" }[kind.to_s]
     id if id && valid_id?(id)
   end
@@ -107,14 +113,13 @@ class Figure
 
   def initialize(id)
     @id = id
-    @kind = parse_seyes || SANS_REGLAGE[id] || parse_picto || parse_horloge ||
+    @kind = SANS_REGLAGE[id] || parse_seyes || parse_picto || parse_materiel || parse_zone ||
+            parse_horloge ||
             # ActionText transforme cette exception en pièce jointe manquante.
             raise(ActiveRecord::RecordNotFound, "Figure inconnue : #{id}")
   end
 
-  def persisted?
-    true
-  end
+  def persisted? = true
 
   def ==(other)
     other.is_a?(Figure) && other.id == id
@@ -123,12 +128,10 @@ class Figure
 
   delegate :hash, to: :id
 
-  def inline?
-    kind == :picto
-  end
+  def inline? = kind == :picto
 
   def content_type
-    inline? ? INLINE_CONTENT_TYPE : CONTENT_TYPE
+    { picto: INLINE_CONTENT_TYPE, zone: ZONE_CONTENT_TYPE }.fetch(kind, CONTENT_TYPE)
   end
 
   def to_trix_content_attachment_partial_path
@@ -146,8 +149,10 @@ class Figure
     when :seyes then "Ligne d'écriture Seyès"
     when :ligne then "Ligne d'écriture"
     when :carreaux then "Ligne à petits carreaux"
-    when :horloge then horloge_vide? ? "Horloge sans aiguilles" : "Horloge : #{libelle_heure}"
+    when :horloge then libelle_horloge
     when :picto then PICTOS.fetch(picto)
+    when :zone then "Zone de manipulation"
+    else libelle_du_materiel
     end
   end
 
@@ -171,6 +176,8 @@ class Figure
   def chiffres?
     @chiffres
   end
+
+  def libelle_horloge = horloge_vide? ? "Horloge sans aiguilles" : "Horloge : #{libelle_heure}"
 
   def libelle_heure
     format("%<heures>d h %<minutes>02d", heures:, minutes:) unless horloge_vide?

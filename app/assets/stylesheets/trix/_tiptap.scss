@@ -115,6 +115,15 @@
 
   figure.attachment.rt-fig--gauche .rt-piece-poignee { right: calc(0.6em - 6px); }
 
+  // Calée à droite, la pièce grandit vers la gauche : sa poignée y passe.
+  .rt-piece-poignee--gauche {
+    right: auto;
+    left: -6px;
+    cursor: nesw-resize;
+  }
+
+  figure.attachment.rt-fig--droite .rt-piece-poignee--gauche { left: calc(0.6em - 6px); }
+
   // Pendant qu'on tire la poignée : la largeur en cours.
   .rt-piece-mesure {
     position: absolute;
@@ -126,6 +135,23 @@
     color: #fff;
     font-size: 12px;
     border-radius: 4px;
+  }
+
+  // Le nouveau cadre d'une zone, pendant qu'on tire sa poignée (debutCadre),
+  // depuis son coin haut gauche — haut droit si elle est calée à droite.
+  .rt-piece-cadre {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 6;
+    border: 2px dashed var(--rt-accent);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .rt-piece-cadre--droite {
+    right: 0;
+    left: auto;
   }
 
   // Barre de taille et de position, posée au-dessus de la pièce sélectionnée.
@@ -190,3 +216,167 @@
   opacity: 0.35;
   cursor: default;
 }
+
+// --- Éditeur d'une zone de manipulation (editeur/zone.js) ----------------------
+// Par-dessus la page, comme une fenêtre : la palette du matériel, le cadre où on
+// le pose, et Valider / Annuler.
+.rt-zone {
+  position: fixed;
+  inset: 0;
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(16, 16, 20, 0.35);
+  outline: none;
+}
+
+.rt-zone__panneau {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: min(900px, 100%);
+  max-height: 100%;
+  padding: 14px;
+  background: var(--rt-surface, #fff);
+  border-radius: var(--rt-radius, 10px);
+  box-shadow: var(--rt-shadow-pop);
+}
+
+// En haut : la palette, une rangée par sorte, et à droite « Retirer l'élément »,
+// l'élément choisi écrit dessous.
+.rt-zone__entete {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rt-zone__palettes {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rt-zone__selection {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.rt-zone__titre {
+  width: 6.5em;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--rt-ink-soft);
+}
+
+.rt-zone__palette {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+
+  // Un choix de matériel : son dessin, dans une tuile.
+  .rt-materiel__choix {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    padding: 3px 6px;
+    background: var(--rt-surface);
+    border: 1px solid var(--rt-line);
+    border-radius: 8px;
+    cursor: pointer;
+
+    &:hover { border-color: var(--rt-accent); }
+
+    img {
+      display: block;
+      width: auto;
+    }
+  }
+}
+
+// Le cadre : la zone à sa taille réelle, quadrillée au pas de la grille aimantée.
+.rt-zone__defilement {
+  overflow: auto;
+  padding: 4px;
+}
+
+.rt-zone__cadre {
+  position: relative;
+  background-color: #fff;
+  background-image:
+    linear-gradient(to right, rgba(61, 61, 61, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(61, 61, 61, 0.07) 1px, transparent 1px);
+  background-size: 1em 1em;
+  outline: 1px dashed var(--rt-line-strong, #ddd);
+  touch-action: none;
+}
+
+.rt-zone__element {
+  position: absolute;
+  cursor: grab;
+  user-select: none;
+
+  &:active { cursor: grabbing; }
+}
+
+.rt-zone__element--choisi {
+  outline: 2px solid var(--rt-accent);
+  outline-offset: 1px;
+}
+
+// L'élément choisi et sa taille, sous « Retirer l'élément ».
+.rt-zone__choix {
+  font-size: 12px;
+  color: var(--rt-ink-soft);
+  white-space: nowrap;
+}
+
+// Les poignées : le coin d'un élément choisi l'agrandit, proportions gardées ;
+// celui du cadre agrandit la zone.
+.rt-zone__agrandir,
+.rt-zone__poignee {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--rt-accent);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  cursor: nwse-resize;
+}
+
+.rt-zone__agrandir {
+  z-index: 3;
+  transform: translate(-50%, -50%);
+}
+
+.rt-zone__poignee {
+  right: -6px;
+  bottom: -6px;
+  z-index: 2;
+}
+
+.rt-zone__aide,
+.rt-zone__erreur {
+  margin: 0;
+  font-size: 12px;
+  color: var(--rt-ink-soft);
+}
+
+// Même rouge que l'erreur de l'horloge (.rt-figures__erreur).
+.rt-zone__erreur { color: #ce3e1b; }
+
+.rt-zone__pied {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+

@@ -1,0 +1,3 @@
+<%# Les formes du dessin, sans leur <svg> : figures/_piece_svg les enveloppe, figures/_zone_svg les pose dans une zone. %>
+<% d = dessinable.piece_dessin %>
+<circle cx="22" cy="22" r="20.5" fill="<%= d[:couronne][:fond] %>" stroke="<%= d[:couronne][:trait] %>" stroke-width="1.2"></circle><circle cx="22" cy="22" r="14" fill="<%= d[:coeur][:fond] %>" stroke="<%= d[:coeur][:trait] %>" stroke-width="0.8"></circle><text x="22" y="28.5" text-anchor="middle" font-family="Poppins, Arial, sans-serif" font-size="17" font-weight="800" fill="#2F2F2F"><%= dessinable.valeur %><tspan dx="1.5" font-size="14">€</tspan></text>

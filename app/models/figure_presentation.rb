@@ -14,6 +14,9 @@
 # Une image reçoit « gallery » à son insertion (c'est la présentation que Trix
 # lui donnait). Une image déjà en place garde donc sa pleine largeur : rien ne
 # change tant qu'on ne lui donne pas de taille.
+#
+# Une zone de manipulation a sa largeur à elle : sa présentation n'est qu'une
+# position, « droite ».
 module FigurePresentation
   TAILLE_MIN = 10
   TAILLE_MAX = 100
@@ -23,15 +26,23 @@ module FigurePresentation
   module_function
 
   # Classes et style du <figure> rendu. `attachment` : l'ActionText::Attachment
-  # (les partials le reçoivent sous le nom de leur attachable).
-  def attributs(attachment, defaut: nil)
-    taille, position = parse(attachment.try(:node)&.[]("presentation")) || parse(defaut)
-    return { classes: [], style: nil } unless taille
+  # (les partials le reçoivent sous le nom de leur attachable). `taille: false` :
+  # la pièce garde sa largeur, seule sa position compte (une zone).
+  def attributs(attachment, defaut: nil, taille: true)
+    largeur, position = presentation(attachment) || parse(defaut)
+    largeur = nil unless taille
+    return { classes: [], style: nil } unless largeur || position
 
-    { classes: ["rt-fig", ("rt-fig--#{position}" if position)].compact, style: "width: #{taille}%" }
+    { classes: ["rt-fig", ("rt-fig--#{position}" if position)].compact, style: ("width: #{largeur}%" if largeur) }
+  end
+
+  def presentation(attachment)
+    parse(attachment.try(:node)&.[]("presentation"))
   end
 
   def parse(presentation)
+    return [nil, presentation] if POSITIONS.include?(presentation)
+
     match = presentation.to_s.match(FORMAT)
     return unless match
 

@@ -1,7 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 import { DirectUpload } from "@rails/activestorage"
-import { post } from "@rails/request.js"
+import { get, post } from "@rails/request.js"
 import { pourLEditeur, pourLEnregistrement, estUnAncienEnonce, sansSignature } from "../editeur/blocs"
+import { idDeLaFigure } from "../editeur/types"
 
 // Éditeur d'énoncé d'exercice (TipTap), à la place de Trix.
 //
@@ -35,6 +36,7 @@ const ICONES = {
   // Des formes géométriques : le menu ne contient pas que des horloges (lignes
   // d'écriture, pictogrammes aussi), l'horloge en icône le laissait croire.
   figure: icone('<circle cx="7.5" cy="7.5" r="4"/><rect x="13" y="3.5" width="7.5" height="7.5" rx="1"/><path d="M12 13.5 16.5 20.5h-9z"/>'),
+  materiel: icone('<rect x="2.5" y="5.5" width="14" height="9" rx="1.5"/><path d="M6 10h0.01"/><circle cx="16.5" cy="15.5" r="5" style="fill:var(--rt-surface, #fff)"/>'),
   link: icone('<path d="m9.5 14.5 5-5"/><path d="M13 7.5 14.5 6a4 4 0 0 1 5.5 5.5L18.5 13"/><path d="M11 16.5 9.5 18A4 4 0 0 1 4 12.5L5.5 11"/>'),
   undo: icone('<path d="m9 14-5-5 5-5"/><path d="M4 9h9.5a6 6 0 0 1 0 12H8"/>'),
   redo: icone('<path d="m15 14 5-5-5-5"/><path d="M20 9h-9.5a6 6 0 0 0 0 12H16"/>'),
@@ -240,6 +242,7 @@ function barreHtml({ interlignes }) {
       ${bouton({ commande: "table", libelle: "Tableau", glyphe: ICONES.table })}
       ${menu({ nom: "colonnes", libelle: "Colonnes", options: COLONNES })}
       ${menuFigures()}
+      ${bouton({ commande: "zone", libelle: "Insérer une zone de manipulation", glyphe: ICONES.materiel })}
       ${bouton({ commande: "link", libelle: "Lien", glyphe: ICONES.link, raccourci: "K", classe: "rt-tb__btn--offscreen" })}
     </span>
     <span class="trix-button-group rt-tb__group rt-barre__tableau" aria-label="Tableau">
@@ -298,6 +301,8 @@ export default class extends Controller {
       if (e.key === "Enter") { e.preventDefault(); this.insererHorloge() }
     })
     this.element.addEventListener("piece-jointe:changer-heure", this.onChangerHeure)
+    this.element.addEventListener("piece-jointe:modifier-zone", (e) => this.ouvrirZone(e.detail))
+    this.element.addEventListener("piece-jointe:cadre-zone", (e) => this.changerLeCadre(e.detail))
     this.element.addEventListener("keydown", (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") { e.preventDefault(); this.lien() }
       if (e.key === "Escape") this.fermerPopovers()
@@ -410,6 +415,7 @@ export default class extends Controller {
       case "redo": return c.redo().run()
       case "image": return this.fichierTarget.click()
       case "table": return c.insertTable({ rows: 3, cols: 3, withHeaderRow: false }).run()
+      case "zone": return this.ouvrirZone()
       case "bordures": return c.updateAttributes("table", { bordures: this.editor.getAttributes("table").bordures === false }).run()
       case "link": return this.lien()
       case "addRowBefore": case "addRowAfter": case "addColumnBefore": case "addColumnAfter":
@@ -584,8 +590,9 @@ export default class extends Controller {
   async insererFigure(params, { remplacement = null } = {}) {
     const reponse = await post("/figures", { body: params, responseKind: "json" })
     if (!reponse.ok) {
-      this.barreTarget.querySelector(".rt-figures__erreur").hidden = false
-      return
+      // Seule l'heure d'une horloge peut être mal tapée ; l'éditeur de zone dit ses erreurs.
+      if (params.kind === "horloge") this.barreTarget.querySelector(".rt-figures__erreur").hidden = false
+      return false
     }
     const piece = await reponse.json
 
@@ -610,6 +617,54 @@ export default class extends Controller {
     // Le menu reste ouvert après une ligne : on en ajoute une autre d'un clic.
     if (params.kind === "horloge") this.fermerPopovers()
     else this.selectionAvantPopover = this.editor.state.selection
+    return true
+  }
+
+  // Zone de manipulation (editeur/zone.js) : neuve depuis la barre, ou rouverte
+  // depuis la sienne (« Modifier la zone »). Valider insère la zone, ou la met à
+  // la place de l'ancienne, comme on change l'heure d'une horloge.
+  async ouvrirZone(cible = null) {
+    this.fermerPopovers()
+    if (!cible) this.selectionAvantPopover = this.editor.state.selection
+    const [{ EditeurDeZone, lireZone }, catalogue] = await Promise.all([
+      import("../editeur/zone"), this.catalogueDuMateriel()
+    ])
+    if (!catalogue) return window.alert("Le matériel n'a pas pu être chargé. Réessayez.")
+    const [largeur, hauteur] = catalogue.zoneNeuve
+    new EditeurDeZone({
+      hote: this.element,
+      catalogue,
+      zone: (cible && lireZone(cible.attachment)) || { largeur, hauteur, elements: [] },
+      taillePolice: getComputedStyle(this.editor.view.dom).fontSize,
+      surValider: (description) => this.insererFigure({ kind: "zone", nom: description }, { remplacement: cible })
+    }).ouvrir()
+  }
+
+  // La poignée d'une zone, dans l'énoncé, a tiré son cadre : la zone est
+  // remplacée par une zone de ce cadre, borné comme dans l'éditeur de zone.
+  async changerLeCadre({ pos, attachment, largeur, hauteur }) {
+    const [{ cadreBorne, decrireZone, elementsConnus, lireZone }, catalogue] = await Promise.all([
+      import("../editeur/zone"), this.catalogueDuMateriel()
+    ])
+    const zone = catalogue && lireZone(attachment)
+    if (!zone) return
+    const elements = elementsConnus(catalogue, zone.elements)
+    const cadre = cadreBorne(catalogue, elements, largeur, hauteur)
+    if (cadre.largeur === zone.largeur && cadre.hauteur === zone.hauteur) return
+    this.insererFigure({ kind: "zone", nom: decrireZone({ ...cadre, elements }) }, { remplacement: { pos } })
+  }
+
+  // Le catalogue (GET /figures/materiel), chargé une fois par éditeur ; après un
+  // échec, le prochain essai le redemande.
+  catalogueDuMateriel() {
+    this.catalogue ||= get("/figures/materiel", { responseKind: "json" })
+      .then((reponse) => (reponse.ok ? reponse.json : null))
+      .catch(() => null)
+      .then((catalogue) => {
+        if (!catalogue) this.catalogue = null
+        return catalogue
+      })
+    return this.catalogue
   }
 
   // Le curseur suit-il du texte (et non le début du bloc ou une ligne d'écriture) ?
@@ -649,18 +704,11 @@ export default class extends Controller {
     this.barreTarget.querySelector(".rt-figures__heure").focus()
   }
 
-  // Réglages d'une horloge, lus dans son sgid : `…/Figure/horloge-0315-chiffres`.
-  // Le sgid n'est pas chiffré, seulement signé ; on n'en lit que l'identifiant.
+  // Réglages d'une horloge, lus dans son identifiant : `horloge-0315-chiffres`.
   reglagesHorloge(attachment) {
-    try {
-      const sgid = JSON.parse(attachment).sgid
-      const encode = sgid.slice(0, sgid.lastIndexOf("--")).replace(/-/g, "+").replace(/_/g, "/")
-      const match = atob(encode).match(/Figure\/horloge-(\d{2})?(\d{2})?(?:vide)?-(chiffres|nue)/)
-      if (!match) return ["", true]
-      return [match[1] ? `${parseInt(match[1], 10)}:${match[2]}` : "", match[3] === "chiffres"]
-    } catch {
-      return ["", true]
-    }
+    const match = /^horloge-(\d{2})?(\d{2})?(?:vide)?-(chiffres|nue)$/.exec(idDeLaFigure(attachment) || "")
+    if (!match) return ["", true]
+    return [match[1] ? `${parseInt(match[1], 10)}:${match[2]}` : "", match[3] === "chiffres"]
   }
 }
 

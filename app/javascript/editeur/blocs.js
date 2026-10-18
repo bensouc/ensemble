@@ -19,6 +19,8 @@
 // final, et dans un paragraphe vide, pour que la ligne que l'éditeur montre
 // existe aussi à l'affichage.
 
+import { ZONE_TYPE, lireJson } from "./types"
+
 const BLOCS = "div, p, li, h1, h2, h3, h4, h5, h6, blockquote, td, th"
 // Un paragraphe tel que getHTML() l'écrit : un <div>, signé `rt-p` ou non
 // (énoncé ancien), mais pas le conteneur des colonnes.
@@ -107,6 +109,13 @@ function retirerRetourAvantBloc(bloc) {
   if (n?.nodeName === "BR") n.remove()
 }
 
+// Un paragraphe qui ne tient qu'une zone de manipulation (LigneSousLeBloc).
+function seuleUneZone(bloc) {
+  if (!bloc?.matches(PARAGRAPHE) || bloc.children.length !== 1) return false
+  const figure = bloc.firstElementChild
+  return figure.matches("figure[data-trix-attachment]") && lireJson(figure.dataset.trixAttachment).contentType === ZONE_TYPE
+}
+
 function fragment(html) {
   const modele = document.createElement("template")
   modele.innerHTML = html
@@ -176,8 +185,9 @@ export function pourLEnregistrement(html, { tableaux = [] } = {}) {
     // La ligne que l'éditeur garde sous un tableau ou des colonnes finaux
     // (`LigneSousLeBloc`) : restée vide, elle n'existe pas.
     const derniere = racine.lastElementChild
+    const avant = derniere?.previousElementSibling
     if (derniere?.matches(PARAGRAPHE) && !dernierNoeud(derniere) &&
-        derniere.previousElementSibling?.matches("table, div.rt-colonnes")) derniere.remove()
+        (avant?.matches("table, div.rt-colonnes") || seuleUneZone(avant))) derniere.remove()
 
     // Un énoncé vide reste vide, sans ligne blanche.
     if ([...racine.childNodes].every((n) => vide(n) || (n.nodeType === Node.ELEMENT_NODE && n.matches(PARAGRAPHE) && !dernierNoeud(n)))) {
