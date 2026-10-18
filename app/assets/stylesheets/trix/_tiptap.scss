@@ -137,23 +137,6 @@
     border-radius: 4px;
   }
 
-  // Le nouveau cadre d'une zone, pendant qu'on tire sa poignée (debutCadre),
-  // depuis son coin haut gauche — haut droit si elle est calée à droite.
-  .rt-piece-cadre {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 6;
-    border: 2px dashed var(--rt-accent);
-    border-radius: 2px;
-    pointer-events: none;
-  }
-
-  .rt-piece-cadre--droite {
-    right: 0;
-    left: auto;
-  }
-
   // Barre de taille et de position, posée au-dessus de la pièce sélectionnée.
   .rt-piece-barre {
     position: absolute;

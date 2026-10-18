@@ -11,8 +11,11 @@
 // largeur), réglée par la poignée ou les boutons ; à gauche et à droite, la
 // pièce flotte et le texte, ou une autre image, vient à côté. Voir
 // FigurePresentation côté serveur, qui rend exactement les mêmes classes.
+//
+// Une zone de manipulation garde ses proportions : « echelle-150 droite »,
+// en % de sa taille naturelle (FigurePresentation.attributs_de_zone).
 import { Node } from "@tiptap/core"
-import { FIGURE_TYPE, ZONE_TYPE, idDeLaFigure, lireJson } from "./types"
+import { FIGURE_TYPE, ZONE_TYPE, lireJson } from "./types"
 
 const TAILLES = [
   { valeur: "25", libelle: "¼", titre: "Un quart de la largeur" },
@@ -32,14 +35,25 @@ const POSITIONS = [
 ]
 
 const TAILLE_MIN = 10
+const ECHELLE_MIN = 50
+const ECHELLE_MAX = 400
 
 export function presentationEnParties(presentation) {
-  // Une position seule : une zone de manipulation, qui a sa largeur à elle.
-  if (POSITIONS.some((p) => p.valeur === presentation)) return [null, presentation]
   const match = /^taille-(\d+)(?: (gauche|centre|droite))?$/.exec(presentation || "")
   if (!match) return [null, null]
   const taille = Math.min(100, Math.max(TAILLE_MIN, parseInt(match[1], 10)))
   return [String(taille), match[2] || null]
+}
+
+// L'échelle d'une zone (100 par défaut) et sa position.
+export function echelleEnParties(presentation) {
+  const match = /^(?:echelle-(\d+) ?)?(gauche|centre|droite)?$/.exec(presentation || "")
+  const echelle = parseInt(match?.[1], 10)
+  return [echelle >= ECHELLE_MIN && echelle <= ECHELLE_MAX ? echelle : 100, match?.[2] || null]
+}
+
+function presentationDeZone(echelle, position) {
+  return [echelle === 100 ? null : `echelle-${echelle}`, position].filter(Boolean).join(" ")
 }
 
 export const PieceJointe = Node.create({
@@ -136,11 +150,18 @@ class VuePieceJointe {
 
   // Taille et position : mêmes classes que l'affichage (FigurePresentation).
   appliquerTaille() {
-    let [taille, position] = presentationEnParties(lireJson(this.node.attrs.attributes).presentation)
-    // Une horloge sans taille prend un quart de la largeur, comme à l'affichage ;
-    // une zone garde la sienne.
+    const presentation = lireJson(this.node.attrs.attributes).presentation
+    let [taille, position] = presentationEnParties(presentation)
+    // Une horloge sans taille prend un quart de la largeur, comme à l'affichage.
     if (!taille && this.estHorloge) [taille, position] = ["25", "gauche"]
-    if (this.estZone) taille = null
+    if (this.estZone) {
+      // Une zone n'a pas de part de la ligne : son dessin est agrandi (--rt-echelle,
+      // trix/_figures.scss).
+      let echelle
+      ;[echelle, position] = echelleEnParties(presentation)
+      taille = null
+      this.dom.style.setProperty("--rt-echelle", echelle / 100)
+    }
     this.dom.classList.toggle("rt-fig", !!(taille || position))
     ;["gauche", "centre", "droite"].forEach((p) => this.dom.classList.toggle(`rt-fig--${p}`, p === position))
     this.dom.style.width = taille ? `${taille}%` : ""
@@ -175,11 +196,10 @@ class VuePieceJointe {
     return true
   }
 
-  // « Changer l'heure », « Modifier la zone », un nouveau cadre de zone : le
-  // contrôleur de l'éditeur s'en charge.
-  signaler(nom, precisions = {}) {
+  // « Changer l'heure », « Modifier la zone » : le contrôleur de l'éditeur s'en charge.
+  signaler(nom) {
     this.dom.dispatchEvent(new CustomEvent(`piece-jointe:${nom}`, {
-      bubbles: true, detail: { pos: this.getPos(), attachment: this.node.attrs.attachment, ...precisions }
+      bubbles: true, detail: { pos: this.getPos(), attachment: this.node.attrs.attachment }
     }))
   }
 
@@ -209,14 +229,19 @@ class VuePieceJointe {
 
     let html = ""
     if (this.estRedimensionnable) {
-      const [taille, position] = presentationEnParties(lireJson(this.node.attrs.attributes).presentation)
-      // Une zone a sa largeur à elle : pas de ¼ ½ ¾, seulement l'alignement ; sa
-      // poignée agrandit son cadre (debutCadre).
-      const tailleCourante = taille || (this.estZone ? null : this.estHorloge ? "25" : "100")
-      // Une taille libre (33 %) n'enfonce aucun des boutons ¼ ½ ¾.
-      const positionCourante = position || (tailleCourante && tailleCourante !== "100" ? "gauche" : null)
-      this.tailleCourante = tailleCourante
-      this.positionCourante = positionCourante
+      const presentation = lireJson(this.node.attrs.attributes).presentation
+      if (this.estZone) {
+        // Une zone garde ses proportions : pas de ¼ ½ ¾, seulement l'alignement ;
+        // sa poignée l'agrandit tout entière (debutEchelle).
+        this.tailleCourante = null
+        ;[this.echelleCourante, this.positionCourante] = echelleEnParties(presentation)
+      } else {
+        const [taille, position] = presentationEnParties(presentation)
+        this.tailleCourante = taille || (this.estHorloge ? "25" : "100")
+        // Une taille libre (33 %) n'enfonce aucun des boutons ¼ ½ ¾.
+        this.positionCourante = position || (this.tailleCourante !== "100" ? "gauche" : null)
+      }
+      const { tailleCourante, positionCourante } = this
       if (!this.estZone) {
         html += TAILLES.map(({ valeur, libelle, titre }) =>
           `<button type="button" class="rt-fig-bar__btn" data-taille="${valeur}" title="${titre}"
@@ -267,7 +292,7 @@ class VuePieceJointe {
   // mesure depuis le bord qui ne bouge pas : le gauche, le droit pour une pièce
   // calée à droite, le milieu pour une pièce centrée.
   debutRedimension(event) {
-    if (this.estZone) return this.debutCadre(event)
+    if (this.estZone) return this.debutEchelle(event)
     event.preventDefault()
     event.stopPropagation()
     // Sinon le navigateur lance le glisser-déposer de la pièce entière (elle est
@@ -308,38 +333,40 @@ class VuePieceJointe {
     window.addEventListener("pointercancel", fin)
   }
 
-  // Le coin d'une zone agrandit son cadre — la place sur la grille —, pas son
-  // dessin. Pendant le geste, un pointillé montre le nouveau cadre ; au lâcher,
-  // le contrôleur remplace la zone par une zone de cette taille.
-  debutCadre(event) {
+  // Le coin d'une zone l'agrandit tout entière, proportions gardées : son
+  // échelle, en % de sa taille naturelle, arrondie à 5 près, jusqu'à la largeur
+  // de l'énoncé. Mesurée comme une image, depuis le bord qui ne bouge pas.
+  debutEchelle(event) {
     event.preventDefault()
     event.stopPropagation()
-    const [largeur, hauteur] = (idDeLaFigure(this.node.attrs.attachment) || "").match(/^zone-(\d+)x(\d+)/)?.slice(1).map(Number) || []
-    if (!largeur) return
     this.dom.draggable = false
-    const cadre = this.dom.querySelector(".rt-figure-img--zone").getBoundingClientRect()
-    const pxParPas = cadre.width / largeur
-    const versLaGauche = this.positionCourante === "droite"
-    const apercu = document.createElement("span")
-    apercu.className = `rt-piece-cadre${versLaGauche ? " rt-piece-cadre--droite" : ""}`
-    this.dom.appendChild(apercu)
-    let nouveau = { largeur, hauteur }
+    const img = this.dom.querySelector(".rt-figure-img--zone")
+    const naturelle = parseFloat(img.style.getPropertyValue("--rt-largeur")) * parseFloat(getComputedStyle(img).fontSize)
+    const largeurEnonce = this.editor.view.dom.getBoundingClientRect().width
+    const plafond = Math.min(ECHELLE_MAX, Math.floor((largeurEnonce / naturelle) * 20) * 5)
+    const cadre = img.getBoundingClientRect()
+    const largeurDepuis = {
+      droite: (x) => cadre.right - x,
+      centre: (x) => 2 * (x - (cadre.left + cadre.width / 2))
+    }[this.positionCourante] || ((x) => x - cadre.left)
+    let echelle = this.echelleCourante
+    const mesure = document.createElement("span")
+    mesure.className = "rt-piece-mesure"
+    this.dom.appendChild(mesure)
 
     const suivre = (e) => {
-      const dx = versLaGauche ? cadre.left - e.clientX : e.clientX - cadre.right
-      nouveau = {
-        largeur: Math.max(1, Math.round((cadre.width + dx) / pxParPas)),
-        hauteur: Math.max(1, Math.round((cadre.height + e.clientY - cadre.bottom) / pxParPas))
-      }
-      Object.assign(apercu.style, { width: `${nouveau.largeur * pxParPas}px`, height: `${nouveau.hauteur * pxParPas}px` })
+      const brute = (largeurDepuis(e.clientX) / naturelle) * 100
+      echelle = Math.min(plafond, Math.max(ECHELLE_MIN, Math.round(brute / 5) * 5))
+      this.dom.style.setProperty("--rt-echelle", echelle / 100)
+      mesure.textContent = `${echelle} %`
     }
     const fin = () => {
       window.removeEventListener("pointermove", suivre)
       window.removeEventListener("pointerup", fin)
       window.removeEventListener("pointercancel", fin)
-      apercu.remove()
+      mesure.remove()
       this.dom.draggable = true
-      if (nouveau.largeur !== largeur || nouveau.hauteur !== hauteur) this.signaler("cadre-zone", nouveau)
+      this.presenter(presentationDeZone(echelle, this.positionCourante))
     }
     window.addEventListener("pointermove", suivre)
     window.addEventListener("pointerup", fin)
@@ -356,8 +383,10 @@ class VuePieceJointe {
       this.editor.chain().focus().deleteRange({ from: pos, to: pos + 1 }).run()
     } else if (bouton.dataset.taille) {
       this.redimensionner(bouton.dataset.taille, this.positionCourante || "centre")
+    } else if (bouton.dataset.position && this.estZone) {
+      this.presenter(presentationDeZone(this.echelleCourante, bouton.dataset.position))
     } else if (bouton.dataset.position) {
-      this.redimensionner(this.estZone ? null : this.tailleCourante, bouton.dataset.position)
+      this.redimensionner(this.tailleCourante, bouton.dataset.position)
     } else if (bouton.hasAttribute("data-zone")) {
       this.signaler("modifier-zone")
     } else if (bouton.hasAttribute("data-heure")) {
@@ -368,9 +397,13 @@ class VuePieceJointe {
   // « Pleine » rend à une image sa présentation d'origine, « gallery » : celle
   // que Trix lui donnait.
   redimensionner(taille, position) {
-    const presentation = !taille ? position
-      : String(taille) === "100" && this.type === "preview" ? "gallery" : `taille-${taille} ${position}`
+    this.presenter(String(taille) === "100" && this.type === "preview" ? "gallery" : `taille-${taille} ${position}`)
+  }
+
+  // Une présentation vide (une zone à 100 %, sans position) n'est pas écrite.
+  presenter(presentation) {
     const attributs = { ...lireJson(this.node.attrs.attributes), presentation }
+    if (!presentation) delete attributs.presentation
     const pos = this.getPos()
     this.editor.chain().command(({ tr }) => {
       tr.setNodeMarkup(pos, undefined, { ...this.node.attrs, attributes: JSON.stringify(attributs) })
