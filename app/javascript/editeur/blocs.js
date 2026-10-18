@@ -126,6 +126,12 @@ export function pourLEditeur(html) {
 // Ce que l'éditeur enregistre.
 export function pourLEnregistrement(html) {
   return transformer(html, (racine) => {
+    // La ligne que l'éditeur garde sous un tableau ou des colonnes finaux
+    // (`LigneSousLeBloc`) : restée vide, elle n'existe pas.
+    const derniere = racine.lastElementChild
+    if (derniere?.matches("div.rt-p") && !dernierNoeud(derniere) &&
+        derniere.previousElementSibling?.matches("table, div.rt-colonnes")) derniere.remove()
+
     // Un énoncé vide reste vide, sans ligne blanche.
     if ([...racine.childNodes].every((n) => vide(n) || (n.nodeType === Node.ELEMENT_NODE && n.matches("div.rt-p") && !dernierNoeud(n)))) {
       racine.replaceChildren()

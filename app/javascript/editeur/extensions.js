@@ -15,6 +15,7 @@ import { Color } from "@tiptap/extension-color"
 import TextAlign from "@tiptap/extension-text-align"
 import { TableKit } from "@tiptap/extension-table"
 import { Placeholder } from "@tiptap/extensions"
+import { Plugin } from "@tiptap/pm/state"
 import { PieceJointe } from "./piece_jointe"
 import { Colonnes, Colonne } from "./colonnes"
 
@@ -91,6 +92,30 @@ const Interligne = Extension.create({
   }
 })
 
+// Une ligne sous un tableau ou des colonnes qui finissent l'énoncé : sans elle,
+// on ne pouvait plus écrire dessous (seul un clic dans une bande étroite y
+// posait un curseur presque invisible, et sous des colonnes la saisie partait
+// dans la dernière colonne). Vide, elle n'est pas enregistrée (editeur/blocs.js).
+// Hors de l'historique : « Annuler » ne la retire pas.
+const BLOCS_SANS_LIGNE_DESSOUS = ["table", "colonnes"]
+
+const LigneSousLeBloc = Extension.create({
+  name: "ligneSousLeBloc",
+  addProseMirrorPlugins() {
+    return [new Plugin({
+      appendTransaction: (_transactions, _avant, state) => {
+        if (!BLOCS_SANS_LIGNE_DESSOUS.includes(state.doc.lastChild?.type.name)) return null
+        return state.tr.insert(state.doc.content.size, state.schema.nodes.paragraph.create())
+          .setMeta("addToHistory", false)
+      }
+    })]
+  },
+  // Dès l'ouverture, et pas seulement à la première frappe.
+  onCreate() {
+    this.editor.view.dispatch(this.editor.state.tr)
+  }
+})
+
 export function extensionsDeLEditeur({ placeholder = "" } = {}) {
   return [
     StarterKit.configure({
@@ -119,6 +144,7 @@ export function extensionsDeLEditeur({ placeholder = "" } = {}) {
     PieceJointe,
     Colonnes,
     Colonne,
+    LigneSousLeBloc,
     Placeholder.configure({ placeholder })
   ]
 }
