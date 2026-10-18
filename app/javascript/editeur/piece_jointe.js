@@ -143,6 +143,9 @@ class VuePieceJointe {
         nom.textContent = piece.filename || "Pièce jointe"
         this.dom.appendChild(nom)
       }
+      // On saisit la pièce, pas son image : sinon le glisser emporte l'image
+      // seule, que le navigateur donne comme un fichier.
+      this.dom.querySelectorAll("img").forEach((img) => { img.draggable = false })
     }
     this.appliquerTaille()
     if (this.barre) this.afficherBarre()

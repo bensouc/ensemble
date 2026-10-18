@@ -327,7 +327,11 @@ export default class extends Controller {
         attributes: { class: "trix-content rt-editeur__contenu" },
         transformPastedHTML: pourLEditeur,
         handlePaste: (_view, event) => this.fichiersDepuis(event.clipboardData),
-        handleDrop: (_view, event) => this.fichiersDepuis(event.dataTransfer)
+        // Une pièce qu'on déplace dans l'énoncé : le navigateur joint son image au
+        // glisser, comme un fichier (« download.svg » pour une zone). C'est un
+        // déplacement, que ProseMirror fait ; l'envoyer remplaçait la zone par ce
+        // fichier.
+        handleDrop: (view, event) => !view.dragging && this.fichiersDepuis(event.dataTransfer)
       },
       onUpdate: () => this.synchroniser(),
       onSelectionUpdate: () => this.etatBarre(),
