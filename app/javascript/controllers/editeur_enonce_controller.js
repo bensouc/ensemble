@@ -55,11 +55,40 @@ const ALIGNEMENTS = [
   { valeur: "justify", nom: "Justifier", trace: '<path d="M4 6h16M4 12h16M4 18h16"/>' }
 ]
 
+// Trois lignes d'autant plus écartées que l'interligne est grand, et la flèche
+// qui mesure l'écart.
+function traceInterligne(hauteur) {
+  const e = Math.round(35 * hauteur) / 10
+  const haut = 12 - e, bas = 12 + e
+  return `<path d="M9 ${haut}h11M9 12h11M9 ${bas}h11"/><path d="M4.5 ${haut}V${bas}"/>` +
+    `<path d="m2.6 ${haut + 1.9} 1.9-1.9 1.9 1.9M2.6 ${bas - 1.9}l1.9 1.9 1.9-1.9"/>`
+}
+
+// « normal » n'écrit rien : le paragraphe prend l'interligne 1,4 de `.rt-p`.
 const INTERLIGNES = [
-  { valeur: "normal", nom: "Interligne normal (1,6)", trace: '<path d="M9 5h11M9 9.67h11M9 14.33h11M9 19h11"/><path d="M4.5 7v10"/><path d="m2.6 8.6 1.9-1.9 1.9 1.9M2.6 15.4l1.9 1.9 1.9-1.9"/>' },
-  { valeur: "2", nom: "Interligne 2", trace: '<path d="M9 5.5h11M9 12h11M9 18.5h11"/><path d="M4.5 7v10"/><path d="m2.6 8.6 1.9-1.9 1.9 1.9M2.6 15.4l1.9 1.9 1.9-1.9"/>' },
-  { valeur: "2.5", nom: "Interligne 2,5", trace: '<path d="M9 5h11M9 19h11"/><path d="M4.5 7v10"/><path d="m2.6 8.6 1.9-1.9 1.9 1.9M2.6 15.4l1.9 1.9 1.9-1.9"/>' },
-  { valeur: "3", nom: "Interligne 3", trace: '<path d="M9 4h11M9 20h11"/><path d="M4.5 6v12"/><path d="m2.6 7.6 1.9-1.9 1.9 1.9M2.6 16.4l1.9 1.9 1.9-1.9"/><path d="M9 12h6"/>' }
+  { valeur: "1", nom: "Interligne 1", hauteur: 1 },
+  { valeur: "1.2", nom: "Interligne 1,2", hauteur: 1.2 },
+  { valeur: "normal", nom: "Interligne normal (1,4)", hauteur: 1.4 },
+  { valeur: "1.6", nom: "Interligne 1,6", hauteur: 1.6 },
+  { valeur: "2", nom: "Interligne 2", hauteur: 2 }
+].map((o) => ({ ...o, trace: traceInterligne(o.hauteur) }))
+
+// Un interligne qui n'est plus au menu (2,5 et 3 l'ont été) s'affiche comme le
+// plus proche.
+function interligneDuMenu(lineHeight) {
+  if (!lineHeight) return "normal"
+  const v = Number(lineHeight)
+  return INTERLIGNES.reduce((a, b) => (Math.abs(b.hauteur - v) < Math.abs(a.hauteur - v) ? b : a)).valeur
+}
+
+// En `em` : la taille suit celle de l'énoncé, plus grande au PDF qu'à l'écran.
+const lettre = (taille, y) =>
+  `<text x="12" y="${y}" font-size="${taille}" font-weight="600" text-anchor="middle" style="fill:currentColor;stroke:none">A</text>`
+const TAILLES = [
+  { valeur: "0.85em", nom: "Petit", trace: lettre(12, 16.5) },
+  { valeur: "normal", nom: "Normal", trace: lettre(16, 18) },
+  { valeur: "1.25em", nom: "Grand", trace: lettre(20, 19.5) },
+  { valeur: "1.5em", nom: "Très grand", trace: lettre(24, 21) }
 ]
 
 const COLONNES = [
@@ -144,10 +173,11 @@ function menuFigures() {
     <div class="rt-tb__popover rt-figures__panel" role="dialog" aria-label="Insérer une figure" hidden>
       <div class="rt-figures__section">
         <span class="rt-figures__titre">Ligne d'écriture</span>
-        <div class="rt-figures__rangee">
+        <div class="rt-figures__rangee rt-figures__rangee--lignes">
           <button type="button" class="rt-figures__choix" data-ligne="seyes" tabindex="-1"><span class="rt-figures__apercu rt-seyes" aria-hidden="true"></span>Seyès</button>
           <button type="button" class="rt-figures__choix" data-ligne="seyes-marge" tabindex="-1"><span class="rt-figures__apercu rt-seyes rt-seyes--marge" aria-hidden="true"></span>Seyès avec marge</button>
           <button type="button" class="rt-figures__choix" data-ligne="ligne" tabindex="-1"><span class="rt-figures__apercu rt-ligne" aria-hidden="true"></span>Ligne simple</button>
+          <button type="button" class="rt-figures__choix" data-ligne="carreaux" tabindex="-1"><span class="rt-figures__apercu rt-carreaux" aria-hidden="true"></span>Petits carreaux</button>
         </div>
       </div>
       <div class="rt-figures__section">
@@ -180,6 +210,7 @@ function barreHtml() {
     <span class="trix-button-group rt-tb__group">
       ${nuancier({ nom: "texte", libelle: "Couleur du texte", glyphe: ICONES.textColor, couleurs: COULEURS_TEXTE, effacer: "Couleur par défaut" })}
       ${nuancier({ nom: "surlignage", libelle: "Surligner", glyphe: ICONES.highlight, couleurs: COULEURS_SURLIGNAGE, effacer: "Retirer le surlignage" })}
+      ${menu({ nom: "taille", libelle: "Taille du texte", options: TAILLES })}
     </span>
     <span class="trix-button-group rt-tb__group">
       ${bouton({ commande: "heading", valeur: "1", libelle: "Titre", glyphe: glyphe("H1", "heading"), classe: "rt-tb__btn--text" })}
@@ -292,7 +323,10 @@ export default class extends Controller {
     if (cible.hasAttribute("data-ouvrir")) return this.basculerPopover(cible.closest("[data-popover]"))
     if (cible.dataset.nuancier) return this.couleur(cible.dataset.nuancier, cible.dataset.couleur)
     if (cible.dataset.menu) return this.choixMenu(cible.dataset.menu, cible.dataset.valeur)
-    if (cible.dataset.ligne) return this.insererFigure({ kind: cible.dataset.ligne === "ligne" ? "ligne" : "seyes", marge: cible.dataset.ligne === "seyes-marge" })
+    if (cible.dataset.ligne) {
+      const ligne = cible.dataset.ligne
+      return this.insererFigure({ kind: ligne === "seyes-marge" ? "seyes" : ligne, marge: ligne === "seyes-marge" })
+    }
     if (cible.dataset.picto) return this.insererFigure({ kind: "picto", nom: cible.dataset.picto })
     if (cible.classList.contains("rt-figures__inserer")) return this.insererHorloge()
     if (cible.dataset.commande) return this.commande(cible.dataset.commande, cible.dataset.valeur)
@@ -345,6 +379,7 @@ export default class extends Controller {
     const c = this.editor.chain().focus()
     if (menu === "alignement") c.setTextAlign(valeur).run()
     else if (menu === "colonnes") valeur === "aucune" ? c.retirerColonnes().run() : c.insererColonnes(Number(valeur)).run()
+    else if (menu === "taille") valeur === "normal" ? c.unsetFontSize().run() : c.setFontSize(valeur).run()
     else {
       const lineHeight = valeur === "normal" ? null : valeur
       c.updateAttributes("paragraph", { lineHeight }).updateAttributes("heading", { lineHeight }).run()
@@ -387,7 +422,8 @@ export default class extends Controller {
 
     const bloc = e.isActive("heading") ? e.getAttributes("heading") : e.getAttributes("paragraph")
     this.apercuMenu("alignement", bloc.textAlign || "left", ALIGNEMENTS)
-    this.apercuMenu("interligne", bloc.lineHeight || "normal", INTERLIGNES)
+    this.apercuMenu("interligne", interligneDuMenu(bloc.lineHeight), INTERLIGNES)
+    this.apercuMenu("taille", TAILLES.some((t) => t.valeur === style.fontSize) ? style.fontSize : "normal", TAILLES)
     this.apercuMenu("colonnes", "2", COLONNES)
     const dansColonnes = e.isActive("colonnes")
     this.barreTarget.querySelector('[data-menu="colonnes"][data-valeur="aucune"]').disabled = !dansColonnes
@@ -500,7 +536,7 @@ export default class extends Controller {
       }).run()
     } else {
       if (this.selectionAvantPopover) this.editor.commands.setTextSelection(this.selectionAvantPopover.from)
-      const ligne = params.kind === "seyes" || params.kind === "ligne"
+      const ligne = ["seyes", "ligne", "carreaux"].includes(params.kind)
       // Une ligne d'écriture commence toujours une ligne — sauf juste après une
       // autre ligne d'écriture, qui en finit déjà une : le <br> ajouté là
       // devenait, à l'affichage, une ligne vide entre deux lignes Seyès.

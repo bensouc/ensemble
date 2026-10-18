@@ -1,0 +1,9 @@
+<%#
+  Petits carreaux en SVG vectoriel (géométrie : `Figure#carreaux_geometrie`).
+
+  Les traits verticaux sont répétés par un motif. Les traits horizontaux du haut
+  et du bas sont centrés sur le bord : le SVG en coupe la moitié, et deux figures
+  collées l'une à l'autre en refont un entier.
+%>
+<% g = dessinable.carreaux_geometrie(pdf: PdfGenerator.rendering?) %>
+<svg class="rt-carreaux-svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="<%= g[:hauteur] %>" role="img" aria-label="<%= dessinable.libelle %>"><defs><pattern id="<%= g[:motif] %>" x="0" y="0" width="<%= g[:carreau] %>" height="<%= g[:hauteur] %>" patternUnits="userSpaceOnUse"><line x1="<%= g[:fin] / 2 %>" y1="0" x2="<%= g[:fin] / 2 %>" y2="<%= g[:hauteur] %>" stroke="#b8c8ea" stroke-width="<%= g[:fin] %>"></line></pattern></defs><rect x="0" y="0" width="100%" height="<%= g[:hauteur] %>" fill="url(#<%= g[:motif] %>)"></rect><% g[:lignes].each do |y| %><line x1="0" y1="<%= y %>" x2="100%" y2="<%= y %>" stroke="#b8c8ea" stroke-width="<%= g[:fin] %>"></line><% end %></svg>

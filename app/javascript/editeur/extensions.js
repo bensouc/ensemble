@@ -6,11 +6,11 @@
 //
 // Chaque réglage ci-dessous a été imposé par un énoncé réel : sans lui, le banc
 // trouvait des énoncés abîmés par un simple ouvrir-enregistrer.
-import { Extension } from "@tiptap/core"
+import { Extension, mergeAttributes } from "@tiptap/core"
 import StarterKit from "@tiptap/starter-kit"
 import Paragraph from "@tiptap/extension-paragraph"
 import { ListItem } from "@tiptap/extension-list"
-import { TextStyle } from "@tiptap/extension-text-style"
+import { TextStyle, FontSize } from "@tiptap/extension-text-style"
 import { Color } from "@tiptap/extension-color"
 import TextAlign from "@tiptap/extension-text-align"
 import { TableKit } from "@tiptap/extension-table"
@@ -21,6 +21,10 @@ import { Colonnes, Colonne } from "./colonnes"
 // Les blocs de Trix sont des <div>. Un paragraphe TipTap s'écrit <p> ; or le
 // HTML interdit un <figure> (pièce jointe) dans un <p> : relu par Rails, le <p>
 // se coupait en deux paragraphes vides et la pièce jointe se retrouvait dehors.
+//
+// La classe `rt-p` signe un paragraphe enregistré par cet éditeur : lui seul
+// prend l'interligne 1,4 et se colle au suivant (trix/_content.scss). Un énoncé
+// plus ancien garde sa mise en page tant qu'on ne le rouvre pas.
 const Paragraphe = Paragraph.extend({
   parseHTML() {
     return [
@@ -32,7 +36,7 @@ const Paragraphe = Paragraph.extend({
     ]
   },
   renderHTML({ HTMLAttributes }) {
-    return ["div", HTMLAttributes, 0]
+    return ["div", mergeAttributes(HTMLAttributes, { class: "rt-p" }), 0]
   }
 })
 
@@ -102,6 +106,8 @@ export function extensionsDeLEditeur({ placeholder = "" } = {}) {
     StyleTexte,
     Color,
     Surlignage,
+    // Taille du texte, en `em` : même proportion à l'écran (17 px) et au PDF (20 px).
+    FontSize,
     Interligne,
     TextAlign.configure({ types: ["heading", "paragraph"] }),
     // Mêmes classes que les tableaux maison : même allure à l'écran et au PDF.

@@ -84,6 +84,27 @@ RSpec.describe Figure do
       expect(html).to include("width:50%").and include("rt-fig--gauche")
     end
 
+    it "dessine trois rangées de petits carreaux, fermées en haut et en bas" do
+      expect(described_class.id_for(kind: "carreaux")).to eq("carreaux")
+
+      html = rendu(piece_jointe("carreaux"))
+      geometrie = described_class.find("carreaux").carreaux_geometrie
+
+      expect(html).to include("rt-figure--carreaux").and include('aria-label="Ligne à petits carreaux"')
+      # un trait sur chaque bord : deux figures collées n'en font qu'un, entier
+      expect(geometrie[:lignes].size).to eq(4)
+      expect([geometrie[:lignes].first, geometrie[:lignes].last]).to eq([0, geometrie[:hauteur]])
+    end
+
+    it "donne à la ligne simple la hauteur d'un carreau Seyès, à l'écran comme au PDF" do
+      ligne = described_class.find("ligne")
+      seyes = described_class.find("seyes")
+
+      [false, true].each do |pdf|
+        expect(ligne.ligne_geometrie(pdf:)[:hauteur]).to eq(seyes.seyes_geometrie(pdf:)[:carreau])
+      end
+    end
+
     it "laisse la ligne Seyès en pleine largeur tant qu'aucune taille n'est choisie" do
       html = rendu(piece_jointe("seyes-marge"))
 
