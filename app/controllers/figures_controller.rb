@@ -41,7 +41,7 @@ class FiguresController < ApplicationController
   def element_du_catalogue(figure)
     largeur, hauteur = figure.taille_du_materiel.map { |em| (em / Figure::Zone::PAS_DE_LA_GRILLE).round(2) }
     svg = render_to_string(partial: "figures/#{figure.kind}_svg", locals: { dessinable: figure }, formats: [:html])
-    { libelle: figure.libelle, largeur:, hauteur:,
+    { libelle: figure.libelle, sorte: figure.kind, largeur:, hauteur:,
       image: "data:image/svg+xml;base64,#{Base64.strict_encode64(svg.strip)}" }
   end
 

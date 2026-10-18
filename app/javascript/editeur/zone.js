@@ -76,16 +76,23 @@ export class EditeurDeZone {
     this.racine = null
   }
 
+  // La palette, en deux rangées : la monnaie (billets, pièces), puis les blocs de
+  // numération.
   gabarit() {
-    const palette = Object.entries(this.catalogue.elements).map(([code, e]) =>
-      `<button type="button" class="rt-materiel__choix" data-ajouter="${code}" title="${e.libelle}"
-               aria-label="Ajouter : ${e.libelle}"><img src="${e.image}" alt="" style="height: ${borner(e.hauteur * 4, 26, 44)}px"></button>`
-    ).join("")
+    const rangee = (titre, sortes) => {
+      const choix = Object.entries(this.catalogue.elements).filter(([, e]) => sortes.includes(e.sorte)).map(([code, e]) =>
+        `<button type="button" class="rt-materiel__choix" data-ajouter="${code}" title="${e.libelle}"
+                 aria-label="Ajouter : ${e.libelle}"><img src="${e.image}" alt="" style="height: ${borner(e.hauteur * 4, 26, 44)}px"></button>`
+      ).join("")
+      return `<div class="rt-zone__palette" role="group" aria-label="${titre}"><span class="rt-zone__titre">${titre}</span>${choix}</div>`
+    }
     return `<div class="rt-zone__panneau">
       <div class="rt-zone__entete">
-        <div class="rt-zone__palette">${palette}</div>
-        <span class="rt-zone__choix" aria-live="polite"></span>
-        <button type="button" class="ui-btn ui-btn--neutral ui-btn--sm" data-retirer disabled><span>Retirer l'élément</span></button>
+        <div class="rt-zone__palettes">${rangee("Monnaie", ["billet", "piece"])}${rangee("Numération", ["bloc"])}</div>
+        <div class="rt-zone__selection">
+          <span class="rt-zone__choix" aria-live="polite"></span>
+          <button type="button" class="ui-btn ui-btn--neutral ui-btn--sm" data-retirer disabled><span>Retirer l'élément</span></button>
+        </div>
       </div>
       <div class="rt-zone__defilement"><div class="rt-zone__cadre"><span class="rt-zone__poignee" title="Agrandir la zone"></span></div></div>
       <p class="rt-zone__aide">Glissez le matériel pour le placer, tirez le rond de son coin pour l'agrandir. Clavier : flèches pour ajuster, + et − pour la taille, Suppr. pour retirer.</p>
