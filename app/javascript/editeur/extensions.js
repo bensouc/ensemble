@@ -13,7 +13,7 @@ import { ListItem } from "@tiptap/extension-list"
 import { TextStyle, FontSize } from "@tiptap/extension-text-style"
 import { Color } from "@tiptap/extension-color"
 import TextAlign from "@tiptap/extension-text-align"
-import { TableKit } from "@tiptap/extension-table"
+import { TableKit, TableView } from "@tiptap/extension-table"
 import { Placeholder } from "@tiptap/extensions"
 import { Plugin } from "@tiptap/pm/state"
 import { PieceJointe } from "./piece_jointe"
@@ -99,6 +99,44 @@ const Interligne = Extension.create({
   }
 })
 
+// Bordures d'un tableau (bouton « Bordures » de la barre du tableau) : masquées,
+// le tableau porte `rt-table--sans-bordure` (trix/_tables.scss).
+const Bordures = Extension.create({
+  name: "bordures",
+  addGlobalAttributes() {
+    return [{
+      types: ["table"],
+      attributes: {
+        bordures: {
+          default: true,
+          parseHTML: (el) => !el.classList.contains("rt-table--sans-bordure"),
+          renderHTML: (a) => (a.bordures === false ? { class: "rt-table--sans-bordure" } : {})
+        }
+      }
+    }]
+  }
+})
+
+// Un tableau redimensionnable s'affiche par la vue de TipTap, qui dessine un
+// <table> nu : celle-ci lui remet les classes de l'éditeur — la grille et, s'il
+// y a lieu, l'absence de bordures.
+class VueTableau extends TableView {
+  constructor(node, cellMinWidth) {
+    super(node, cellMinWidth)
+    this.classer(node)
+  }
+
+  update(node) {
+    const accepte = super.update(node)
+    if (accepte) this.classer(node)
+    return accepte
+  }
+
+  classer(node) {
+    this.table.className = node.attrs.bordures === false ? "rt-table__grid rt-table--sans-bordure" : "rt-table__grid"
+  }
+}
+
 // Une ligne sous un tableau, des colonnes ou une zone de manipulation qui finissent l'énoncé : sans elle,
 // on ne pouvait plus écrire dessous (seul un clic dans une bande étroite y
 // posait un curseur presque invisible, et sous des colonnes la saisie partait
@@ -151,7 +189,9 @@ export function extensionsDeLEditeur({ placeholder = "", ancien = false } = {}) 
     TextAlign.configure({ types: ["heading", "paragraph"] }),
     // Mêmes classes que les tableaux maison : même allure à l'écran et au PDF.
     TableKit.configure({
-      table: { resizable: false, HTMLAttributes: { class: "rt-table__grid" } },
+      // Colonnes à élargir en tirant leur bord ; les largeurs, en pixels dans
+      // l'éditeur, s'enregistrent en proportions (editeur/blocs.js).
+      table: { resizable: true, View: VueTableau, cellMinWidth: 40, HTMLAttributes: { class: "rt-table__grid" } },
       tableCell: { HTMLAttributes: { class: "rt-cell" } },
       tableHeader: { HTMLAttributes: { class: "rt-cell" } }
     }),
@@ -159,6 +199,7 @@ export function extensionsDeLEditeur({ placeholder = "", ancien = false } = {}) 
     Colonnes,
     Colonne,
     LigneSousLeBloc,
+    Bordures,
     Placeholder.configure({ placeholder })
   ]
 }

@@ -69,6 +69,14 @@
   border-top: 0;
 }
 
+// --- Sans bordures ----------------------------------------------------------
+// Bouton « Bordures » de la barre du tableau. Les traits deviennent
+// transparents plutôt que de disparaître : le tableau ne bouge pas d'un pixel.
+.rt-table__grid.rt-table--sans-bordure,
+.rt-table--sans-bordure .rt-cell {
+  border-color: transparent;
+}
+
 // --- Ligne d'en-tête -------------------------------------------------------
 .rt-table__grid th.rt-cell {
   font-weight: 600;
