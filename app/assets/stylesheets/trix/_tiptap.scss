@@ -188,8 +188,8 @@
   box-shadow: var(--rt-shadow-pop);
 }
 
-// En haut : la palette, une rangée par sorte, et à droite l'élément choisi avec
-// « Retirer l'élément ».
+// En haut : la palette, une rangée par sorte, et à droite « Retirer l'élément »,
+// l'élément choisi écrit dessous.
 .rt-zone__entete {
   display: flex;
   align-items: flex-start;
@@ -206,8 +206,9 @@
 
 .rt-zone__selection {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
 }
 
 .rt-zone__titre {
@@ -261,9 +262,8 @@
   outline-offset: 1px;
 }
 
-// L'élément choisi et sa taille, à gauche de « Retirer l'élément ».
+// L'élément choisi et sa taille, sous « Retirer l'élément ».
 .rt-zone__choix {
-  align-self: center;
   font-size: 12px;
   color: var(--rt-ink-soft);
   white-space: nowrap;

@@ -90,8 +90,8 @@ export class EditeurDeZone {
       <div class="rt-zone__entete">
         <div class="rt-zone__palettes">${rangee("Monnaie", ["billet", "piece"])}${rangee("Numération", ["bloc"])}</div>
         <div class="rt-zone__selection">
+          <button type="button" class="ui-btn ui-btn--neutral ui-btn--sm" data-retirer disabled><i class="fa-solid fa-trash-can" aria-hidden="true"></i><span>Retirer l'élément</span></button>
           <span class="rt-zone__choix" aria-live="polite"></span>
-          <button type="button" class="ui-btn ui-btn--neutral ui-btn--sm" data-retirer disabled><span>Retirer l'élément</span></button>
         </div>
       </div>
       <div class="rt-zone__defilement"><div class="rt-zone__cadre"><span class="rt-zone__poignee" title="Agrandir la zone"></span></div></div>
