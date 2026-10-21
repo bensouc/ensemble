@@ -109,9 +109,16 @@ RSpec.describe Figure do
 
       it "refuse un matériel inconnu, un élément hors du cadre, une taille hors limites" do
         expect(described_class.id_for(kind: "zone", nom: "80x24")).to eq("zone-80x24")
-        %w[80x24-x9.1.1 80x24-b10.90.1 5x5 300x24].each do |nom|
+        %w[80x24-x9.1.1 80x24-b10.90.1 1x1 300x24].each do |nom|
           expect(described_class.id_for(kind: "zone", nom:)).to be_nil, nom
         end
+      end
+
+      # Valider resserre le cadre sur le matériel (editeur/zone.js) : il descend
+      # jusqu'au plus petit élément, un cube unité réduit de moitié.
+      it "accepte un cadre resserré sur le matériel" do
+        expect(described_class.id_for(kind: "zone", nom: "13x7-b10.0.0")).to eq("zone-13x7-b10.0.0")
+        expect(described_class.id_for(kind: "zone", nom: "2x2-u.0.0.50")).to eq("zone-2x2-u.0.0.50")
       end
 
       it "agrandit un élément, de 50 à 400 %" do
@@ -143,20 +150,6 @@ RSpec.describe Figure do
 
         expect(agrandie).to include("rt-fig--droite").and include('width="30.0em" height="9.0em"')
         expect(agrandie).not_to match(/width:\s*\d+%/)
-      end
-
-      # Le PDF ne dessine pas le cadre : son vide s'y lisait comme une marge.
-      it "se rogne au plus près du matériel dans un PDF" do
-        imprimee = ->(id) { PdfGenerator.with_rendering_context { rendu(piece_jointe(id)) } }
-
-        expect(rendu(piece_jointe("zone-80x24-b10.4.2_p2.20.8"))).to include('viewBox="0 0 80 24"')
-        # Billet de 10 € (13 × 6,8 pas) en 4.2, pièce de 2 € (6,2 × 6,2) en 20.8.
-        expect(imprimee.call("zone-80x24-b10.4.2_p2.20.8"))
-          .to include('viewBox="0 0 22.2 12.2"').and include('width="5.55em" height="3.05em"')
-          .and include('y="0" width="13.0"').and include('x="16" y="6"')
-        # Ce qui déborde du cadre reste coupé ; une zone vide garde son cadre.
-        expect(imprimee.call("zone-80x24-b10.70.20")).to include('viewBox="0 0 10 4"')
-        expect(imprimee.call("zone-80x24")).to include('viewBox="0 0 80 24"')
       end
 
       it "reste à sa taille naturelle sans échelle, ou avec une échelle hors limites" do

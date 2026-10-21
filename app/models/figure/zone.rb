@@ -14,8 +14,10 @@ class Figure
   # (editeur_enonce_controller, editeur/zone.js).
   module Zone
     PAS_DE_LA_GRILLE = 0.25 # em
-    LARGEURS = (16..240) # pas : de 4 à 60 em
-    HAUTEURS = (8..160) # pas : de 2 à 40 em
+    # Le cadre se resserre sur le matériel quand on valide la zone (editeur/zone.js) :
+    # il descend jusqu'au plus petit élément, un cube unité réduit de moitié.
+    LARGEURS = (2..240) # pas : de ½ à 60 em
+    HAUTEURS = (2..160) # pas : de ½ à 40 em
     ELEMENTS_AU_PLUS = 60
     TAILLES = (50..400) # % de la taille du matériel
     CODES = { "b5" => "billet-5", "b10" => "billet-10", "b20" => "billet-20", "b50" => "billet-50",
@@ -39,20 +41,6 @@ class Figure
       @zone_dessin ||= { largeur: @zone[:largeur], hauteur: @zone[:hauteur],
                          largeur_em: largeur_naturelle_em, hauteur_em: @zone[:hauteur] * PAS_DE_LA_GRILLE,
                          elements: @zone[:elements].map { |element| element_dessine(element) } }
-    end
-
-    # La zone telle qu'on l'imprime : rognée au plus près du matériel. Le PDF ne
-    # dessine pas le cadre, et son vide s'y lisait comme une marge autour du
-    # matériel, plus grande en bas qu'en haut. Une zone vide garde son cadre.
-    def zone_imprimee
-      dessin = zone_dessin
-      elements = dessin[:elements]
-      return dessin if elements.empty?
-
-      gauche, largeur = etendue(elements, :x, :largeur, dessin[:largeur])
-      haut, hauteur = etendue(elements, :y, :hauteur, dessin[:hauteur])
-      { largeur:, hauteur:, largeur_em: largeur * PAS_DE_LA_GRILLE, hauteur_em: hauteur * PAS_DE_LA_GRILLE,
-        elements: elements.map { |element| element.merge(x: element[:x] - gauche, y: element[:y] - haut) } }
     end
 
     # La largeur que la figure prend d'elle-même, en em ; nil pour une figure
@@ -91,14 +79,6 @@ class Figure
       return unless x < largeur && y < hauteur && TAILLES.cover?(taille)
 
       { materiel: Zone.materiel(match[:code]), x:, y:, taille: }
-    end
-
-    # L'étendue du matériel sur un axe, en pas : où il commence, et sur quelle
-    # longueur. Elle s'arrête au cadre, qui coupe à l'écran ce qui en déborde.
-    def etendue(elements, debut, longueur, cadre)
-      premier = elements.pluck(debut).min
-      dernier = [elements.map { |element| element[debut] + element[longueur] }.max, cadre].min
-      [premier, (dernier - premier).round(2)]
     end
 
     def element_dessine(element)
