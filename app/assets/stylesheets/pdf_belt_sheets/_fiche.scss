@@ -1,0 +1,181 @@
+@use "sass:map";
+@use "../config/colors";
+
+// La fiche de ceinture imprimée (pdfs/belt_sheet). Chargée par pdf.scss, que
+// lisent tous les PDF : tout est rangé sous `.fiche`.
+//
+// Largeur de 1000 px, comme le plan de travail : Chrome la ramène à la page, et
+// les énoncés rendent exactement comme dans le PDF du plan.
+
+// Le corps des PDF a une hauteur fixe et range ses enfants en flex (pdf.scss) :
+// la fiche s'écoule de page en page.
+body:has(> .fiche) {
+  height: auto;
+  display: block;
+}
+
+.fiche {
+  width: 976px;
+  margin: 0 auto;
+  font-family: "Poppins", sans-serif;
+  color: colors.$grisF;
+
+  &,
+  * {
+    box-sizing: border-box;
+  }
+
+  // Le plus de blocs possible par page, et un bloc jamais coupé. Plus haut
+  // qu'une page, il se coupe entre deux compétences, et son cartouche, porté
+  // par un `<thead>`, se répète en haut de la suite.
+  .bloc {
+    width: 100%;
+    margin-bottom: 28px;
+    border-collapse: collapse;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .bloc > thead td {
+    padding-bottom: 10px;
+  }
+
+  // --- Cartouche : une carte aux coins arrondis, comme l'énoncé du plan ------
+  .cartouche {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 12px 20px;
+    border: 1.5px solid colors.$grisF;
+    border-radius: 14px;
+
+    .ceinture {
+      width: 104px;
+      height: auto;
+    }
+
+    .titre {
+      flex: 1;
+    }
+
+    .domaine {
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    // L'épaisseur et le style seulement : le raccourci `border` remettrait la
+    // couleur du bord à celle du texte, par-dessus `.couleur--N`.
+    .couleur {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 2px 14px;
+      border-width: 1.5px;
+      border-style: solid;
+      border-radius: 999px;
+      font-size: 16px;
+      font-weight: 600;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    .eleve {
+      width: 250px;
+      padding-left: 20px;
+      border-left: 1.5px solid colors.$grisC;
+      font-size: 18px;
+    }
+
+    .champ {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      min-height: 36px;
+      padding: 4px 0;
+    }
+
+    .champ + .champ {
+      border-top: 1.5px solid colors.$grisC;
+    }
+
+    .prenom {
+      font-weight: 600;
+    }
+
+    .libelle {
+      width: 62px;
+      font-size: 13px;
+      color: colors.$grisM;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .date {
+      font-weight: 600;
+      letter-spacing: 0.3em;
+    }
+  }
+
+  // La pastille à la couleur de la ceinture (colors.$belt-pastilles).
+  @each $niveau, $teintes in colors.$belt-pastilles {
+    .couleur--#{$niveau} {
+      background: map.get($teintes, fond);
+      border-color: map.get($teintes, bord);
+    }
+  }
+
+  // --- Compétences : une bande, puis l'énoncé --------------------------------
+  .competence {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .bande {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 8px 6px 14px;
+    background: colors.$grisC;
+    border-radius: 8px;
+    font-size: 19px;
+    font-weight: 700;
+
+    img {
+      width: 14px;
+      height: 14px;
+    }
+
+    .nom {
+      flex: 1;
+    }
+
+    // Où l'enseignant marque au feutre si la compétence est acquise : assez
+    // grand pour la pointe, 6 mm une fois imprimé. Sans contour, le blanc se
+    // détache seul sur le gris de la bande.
+    .marque {
+      flex: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: colors.$blanc;
+    }
+  }
+
+  // Les règles de l'énoncé du PDF du plan de travail (`.cont-challenge`) : une
+  // largeur utile de 910 px, du Poppins à 20 px (`.enonce .trix-content`, dans
+  // pdf.scss), les images sur toute la largeur (`.challenge-content img`).
+  .enonce {
+    padding: 12px 33px 20px;
+    font-family: "Poppins", sans-serif;
+    font-size: 20px;
+
+    .challenge-name-in-content {
+      display: none;
+    }
+  }
+
+  .a-definir {
+    color: colors.$grisM;
+    font-style: italic;
+  }
+}

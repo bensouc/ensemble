@@ -2,7 +2,8 @@
 // déplace librement, aimanté à une grille d'un quart d'em ; un élément s'agrandit
 // par son coin, la zone aussi. Plusieurs éléments se choisissent ensemble (Maj +
 // clic, ou un cadre tracé dans la zone) pour être déplacés, dupliqués ou retirés
-// d'un coup. « Valider » rend la description de la zone —
+// d'un coup. « Valider » resserre le cadre sur le matériel et rend la
+// description de la zone —
 // `80x24-b10.4.8_p2.20.8.150` : sa taille, puis chaque élément, sa place en pas de
 // grille et, s'il n'est pas à 100 %, sa taille —, que le serveur change en figure
 // (POST /figures, kind « zone »).
@@ -285,8 +286,20 @@ export class EditeurDeZone {
     Object.assign(e, this.dansLaZone(e, e.x, e.y))
   }
 
+  // La zone telle qu'elle s'enregistre : le matériel ramené dans le coin haut
+  // gauche, et le cadre resserré sur lui. L'énoncé, l'affichage et le PDF
+  // montrent ainsi la zone sans vide autour, tous les trois pareils. Une zone
+  // vide garde son cadre.
+  zoneAjustee() {
+    if (!this.elements.length) return this
+    const gauche = Math.min(...this.elements.map((e) => e.x))
+    const haut = Math.min(...this.elements.map((e) => e.y))
+    const elements = this.elements.map((e) => ({ ...e, x: e.x - gauche, y: e.y - haut }))
+    return { elements, ...cadreBorne(this.catalogue, elements, 0, 0) }
+  }
+
   async valider() {
-    const ok = await this.surValider(decrireZone(this))
+    const ok = await this.surValider(decrireZone(this.zoneAjustee()))
     if (ok) return this.fermer()
     const erreur = this.racine.querySelector(".rt-zone__erreur")
     erreur.textContent = "La zone n'a pas pu être enregistrée. Réessayez."

@@ -183,6 +183,7 @@ class VuePieceJointe {
 
   deselectNode() {
     this.dom.classList.remove("rt-piece--selectionnee")
+    this.arreterDeSuivre()
     this.barre?.remove()
     this.barre = null
     this.poignee?.remove()
@@ -271,7 +272,35 @@ class VuePieceJointe {
     barre.addEventListener("click", (e) => this.clicBarre(e))
     this.dom.prepend(barre)
     this.barre = barre
+    this.placerBarre()
     if (this.estRedimensionnable) this.afficherPoignee()
+  }
+
+  // Dans un tableau, la barre ne peut pas dépasser au-dessus de la pièce : le
+  // tableau coupe ce qui sort de son cadre (son arrondi, son défilement
+  // horizontal), et une pièce de la première rangée perdait sa barre. Elle se
+  // place alors à l'écran, au-dessus de la pièce, et la suit quand la page ou
+  // le tableau défile.
+  placerBarre() {
+    const dansUnTableau = !!this.dom.closest(".tableWrapper, .rt-table__grid")
+    this.barre.classList.toggle("rt-piece-barre--fixe", dansUnTableau)
+    if (!dansUnTableau) return this.arreterDeSuivre()
+
+    const piece = this.dom.getBoundingClientRect()
+    const { offsetWidth: largeur, offsetHeight: hauteur } = this.barre
+    this.barre.style.left = `${Math.max(4, Math.min(piece.left, window.innerWidth - largeur - 4))}px`
+    this.barre.style.top = `${piece.top - hauteur - 6}px`
+    if (this.suivre) return
+    this.suivre = () => this.barre && this.placerBarre()
+    window.addEventListener("scroll", this.suivre, true)
+    window.addEventListener("resize", this.suivre)
+  }
+
+  arreterDeSuivre() {
+    if (!this.suivre) return
+    window.removeEventListener("scroll", this.suivre, true)
+    window.removeEventListener("resize", this.suivre)
+    this.suivre = null
   }
 
   // --- Poignée : la taille à la souris ---------------------------------------------
@@ -415,6 +444,7 @@ class VuePieceJointe {
   }
 
   destroy() {
+    this.arreterDeSuivre()
     this.barre?.remove()
     this.poignee?.remove()
   }

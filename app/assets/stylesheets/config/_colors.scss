@@ -18,6 +18,8 @@ $light: #f8f9fa;
 $orange: orange;
 $grisF: #3D3D3D;
 $grisC: #DDDDDD;
+// Les libellés et le texte secondaire, entre les deux.
+$grisM: #9C9C9C;
 $violet: #E7E4FA;
 $jaune: yellow;
 $bleuC: #C8E6FB;
@@ -69,3 +71,16 @@ $belt-4: rgb(13, 196, 22);
 $belt-5: rgb(30, 27, 211);
 $belt-6: rgb(175, 99, 0);
 $belt-7: black;
+
+// La pastille d'une ceinture sur la fiche imprimée (pdfs/belt_sheet) : un fond
+// clair et un bord foncé. La couleur pleine de la ceinture ne tient pas sur le
+// papier : le jaune et le blanc s'y perdent.
+$belt-pastilles: (
+  1: (fond: $blanc, bord: $grisM),
+  2: (fond: #FFF5B8, bord: #B89600),
+  3: (fond: #FFE2B8, bord: #D27C00),
+  4: (fond: #D3F2D5, bord: $eval-reussi-anneau),
+  5: (fond: #DCDBFA, bord: $belt-5),
+  6: (fond: #F1DEC7, bord: #8A4D00),
+  7: (fond: #E3E3E3, bord: $belt-7)
+);

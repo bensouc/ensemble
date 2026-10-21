@@ -27,8 +27,11 @@ RSpec.describe "pdfs/belt_sheet", type: :view do
 
     cartouche = page.at_css(".cartouche").text.squish
     expect(cartouche).to include("Numération", "Ceinture marron", "Abel", "Date")
+    expect(cartouche).not_to include("Prénom")
+    expect(page.at_css(".cartouche .couleur--6")).to be_present
     expect(page.at_css(".bande").text).to include("Les nombres jusqu'à 1000")
     expect(page.at_css(".bande img")).to be_present
+    expect(page.at_css(".bande .marque")).to be_present
     expect(page.at_css(".enonce").text).to include("Écris en chiffres")
   end
 
@@ -46,7 +49,7 @@ RSpec.describe "pdfs/belt_sheet", type: :view do
     render template: "pdfs/belt_sheet", locals: { belt_sheet: fiche, blocs: fiche.reload.ordered_domains }
     page = Nokogiri::HTML(rendered)
 
-    expect(page.at_css(".cartouche .eleve").text.squish).to start_with("Prénom : Date")
+    expect(page.at_css(".cartouche .eleve").text.squish).to start_with("Prénom Date")
     expect(page.at_css(".bande").text).to include(skill.name)
   end
 

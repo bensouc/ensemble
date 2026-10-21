@@ -109,9 +109,16 @@ RSpec.describe Figure do
 
       it "refuse un matériel inconnu, un élément hors du cadre, une taille hors limites" do
         expect(described_class.id_for(kind: "zone", nom: "80x24")).to eq("zone-80x24")
-        %w[80x24-x9.1.1 80x24-b10.90.1 5x5 300x24].each do |nom|
+        %w[80x24-x9.1.1 80x24-b10.90.1 1x1 300x24].each do |nom|
           expect(described_class.id_for(kind: "zone", nom:)).to be_nil, nom
         end
+      end
+
+      # Valider resserre le cadre sur le matériel (editeur/zone.js) : il descend
+      # jusqu'au plus petit élément, un cube unité réduit de moitié.
+      it "accepte un cadre resserré sur le matériel" do
+        expect(described_class.id_for(kind: "zone", nom: "13x7-b10.0.0")).to eq("zone-13x7-b10.0.0")
+        expect(described_class.id_for(kind: "zone", nom: "2x2-u.0.0.50")).to eq("zone-2x2-u.0.0.50")
       end
 
       it "agrandit un élément, de 50 à 400 %" do

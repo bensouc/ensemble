@@ -14,8 +14,10 @@ class Figure
   # (editeur_enonce_controller, editeur/zone.js).
   module Zone
     PAS_DE_LA_GRILLE = 0.25 # em
-    LARGEURS = (16..240) # pas : de 4 à 60 em
-    HAUTEURS = (8..160) # pas : de 2 à 40 em
+    # Le cadre se resserre sur le matériel quand on valide la zone (editeur/zone.js) :
+    # il descend jusqu'au plus petit élément, un cube unité réduit de moitié.
+    LARGEURS = (2..240) # pas : de ½ à 60 em
+    HAUTEURS = (2..160) # pas : de ½ à 40 em
     ELEMENTS_AU_PLUS = 60
     TAILLES = (50..400) # % de la taille du matériel
     CODES = { "b5" => "billet-5", "b10" => "billet-10", "b20" => "billet-20", "b50" => "billet-50",

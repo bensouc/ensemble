@@ -157,6 +157,11 @@ $carreaux-rangees: 3;
     }
   }
 
+  // Au bord d'une case de tableau, la marge de la case suffit : celle de la zone
+  // l'éloignait encore du trait.
+  .rt-cell > :first-child > .rt-figure--zone { margin-top: 0; }
+  .rt-cell > :last-child > .rt-figure--zone { margin-bottom: 0; }
+
   // Un pictogramme se lit comme une lettre de la phrase.
   .rt-figure--picto {
     display: inline-block;

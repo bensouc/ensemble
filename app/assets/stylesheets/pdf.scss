@@ -516,3 +516,6 @@ th:not([align]) {
 .pdf-entete-date {
   margin-left: 12px;
 }
+
+// La fiche de ceinture : ses règles, rangées sous `.fiche`.
+@include meta.load-css("pdf_belt_sheets/fiche");

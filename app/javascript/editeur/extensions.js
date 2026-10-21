@@ -15,7 +15,8 @@ import { Color } from "@tiptap/extension-color"
 import TextAlign from "@tiptap/extension-text-align"
 import { TableKit, TableView } from "@tiptap/extension-table"
 import { Placeholder } from "@tiptap/extensions"
-import { Plugin } from "@tiptap/pm/state"
+import { Plugin, TextSelection } from "@tiptap/pm/state"
+import { Decoration, DecorationSet } from "@tiptap/pm/view"
 import { PieceJointe } from "./piece_jointe"
 import { ZONE_TYPE } from "./types"
 import { Colonnes, Colonne } from "./colonnes"
@@ -145,11 +146,14 @@ class VueTableau extends TableView {
 const BLOCS_SANS_LIGNE_DESSOUS = ["table", "colonnes"]
 // Une zone de manipulation, seule dans son paragraphe, fait bloc elle aussi.
 const estUneZone = (node) => node?.type.name === "pieceJointe" && node.attrs.contentType === ZONE_TYPE
-const finitParUnBloc = (doc) => {
-  const dernier = doc.lastChild
-  if (BLOCS_SANS_LIGNE_DESSOUS.includes(dernier?.type.name)) return true
-  return dernier?.type.name === "paragraph" && dernier.childCount === 1 && estUneZone(dernier.firstChild)
-}
+const estUnBloc = (node) =>
+  BLOCS_SANS_LIGNE_DESSOUS.includes(node?.type.name) ||
+  (node?.type.name === "paragraph" && node.childCount === 1 && estUneZone(node.firstChild))
+const finitParUnBloc = (doc) => estUnBloc(doc.lastChild)
+// La ligne est là, vide, sous le bloc final.
+const aSaLigneVide = (doc) =>
+  doc.childCount > 1 && doc.lastChild.type.name === "paragraph" && !doc.lastChild.content.size &&
+  estUnBloc(doc.child(doc.childCount - 2))
 
 const LigneSousLeBloc = Extension.create({
   name: "ligneSousLeBloc",
@@ -159,12 +163,50 @@ const LigneSousLeBloc = Extension.create({
         if (!finitParUnBloc(state.doc)) return null
         return state.tr.insert(state.doc.content.size, state.schema.nodes.paragraph.create())
           .setMeta("addToHistory", false)
+      },
+      // Vide, la ligne est repliée hors du curseur (LigneDuCurseur) et ne se
+      // vise plus : un clic sous le bloc final, dans le cadre de l'éditeur, y
+      // pose le curseur. Avant ProseMirror (capture), qui viserait le bloc.
+      view: (view) => {
+        const cadre = view.dom.parentElement
+        const surAppui = (event) => {
+          if (event.target !== cadre && !view.dom.contains(event.target)) return
+          const { doc } = view.state
+          const bloc = view.dom.lastElementChild?.previousElementSibling
+          if (!aSaLigneVide(doc) || !bloc || event.clientY <= bloc.getBoundingClientRect().bottom) return
+          event.preventDefault()
+          event.stopPropagation()
+          view.dispatch(view.state.tr.setSelection(TextSelection.create(doc, doc.content.size - 1)))
+          view.focus()
+        }
+        cadre.addEventListener("mousedown", surAppui, true)
+        return { destroy: () => cadre.removeEventListener("mousedown", surAppui, true) }
       }
     })]
   },
   // Dès l'ouverture, et pas seulement à la première frappe.
   onCreate() {
     this.editor.view.dispatch(this.editor.state.tr)
+  }
+})
+
+// La ligne du curseur : le paragraphe où il est, ou celui de la pièce choisie.
+// Les lignes que l'éditeur ajoute pour y poser le curseur — autour d'une image
+// ou d'une zone, sous un bloc qui finit l'énoncé — n'existent ni à l'affichage
+// ni au PDF : elles ne se montrent que là (trix/_tiptap.scss).
+const LigneDuCurseur = Extension.create({
+  name: "ligneDuCurseur",
+  addProseMirrorPlugins() {
+    return [new Plugin({
+      props: {
+        decorations: ({ doc, selection }) => {
+          const { $from } = selection
+          if (!$from.depth || !$from.parent.isTextblock) return null
+          const debut = $from.before()
+          return DecorationSet.create(doc, [Decoration.node(debut, debut + $from.parent.nodeSize, { class: "rt-p--curseur" })])
+        }
+      }
+    })]
   }
 })
 
@@ -199,6 +241,7 @@ export function extensionsDeLEditeur({ placeholder = "", ancien = false } = {}) 
     Colonnes,
     Colonne,
     LigneSousLeBloc,
+    LigneDuCurseur,
     Bordures,
     Placeholder.configure({ placeholder })
   ]

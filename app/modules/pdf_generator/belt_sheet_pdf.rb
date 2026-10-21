@@ -13,21 +13,13 @@ module PdfGenerator
       @title = belt_sheet.title
     end
 
+    # Pas de bas de page, et des marges hautes et basses réduites : la place va
+    # aux blocs. Le prénom et la date sont déjà dans chaque cartouche.
+    MARGES = { margin_top: 0.2, margin_bottom: 0.2 }.freeze # pouces
+
     def generate
       html = render_html("pdfs/belt_sheet", { belt_sheet: @belt_sheet, blocs: @belt_sheet.ordered_domains })
-      html_to_pdf(html, { display_header_footer: true, margin_bottom: 0.6, footer_template: })
-    end
-
-    private
-
-    def footer_template
-      # Le prénom de l'élève ; le niveau, pour une fiche non assignée.
-      qui = @belt_sheet.student ? @belt_sheet.student.first_name.to_s.capitalize : @belt_sheet.grade.name
-      eleve = ERB::Util.html_escape(qui)
-      date = I18n.l(@belt_sheet.created_at.to_date)
-      pages = "Page <span class='pageNumber'></span>/<span class='totalPages'></span>"
-      "<div style='font-size: 8px; width: 100%; text-align: right; padding-right: 20px;'>" \
-        "#{eleve} - Fiche de ceinture du #{date} - #{pages}</div>"
+      html_to_pdf(html, MARGES)
     end
   end
 end
