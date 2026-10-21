@@ -1,7 +1,9 @@
 <%# La fiche de ceinture, sur le modèle des fiches papier : un bloc par domaine et
-    ceinture, chacun sous son cartouche — la ceinture à gauche, le domaine et sa
-    couleur au centre, le prénom et la date à droite —, puis une bande grise par
-    compétence et son énoncé.
+    ceinture, chacun sous son cartouche — une carte aux coins arrondis, comme
+    l'énoncé du plan de travail : la ceinture à gauche, le domaine et sa couleur
+    au centre, le prénom et la date à droite —, puis une bande grise par
+    compétence, où l'enseignant marque au feutre si elle est acquise, et son
+    énoncé.
 
     Mise en page : le plus de blocs possible par page, et un bloc n'est jamais
     coupé (`break-inside: avoid`). Un bloc plus haut qu'une page ne peut pas
@@ -15,17 +17,38 @@
   .fiche { width: 976px; margin: 0 auto; font-family: "Poppins", sans-serif; color: #3D3D3D; }
   * { box-sizing: border-box; }
   .bloc { width: 100%; margin-bottom: 28px; border-collapse: collapse; break-inside: avoid; page-break-inside: avoid; }
-  .cartouche td { border: 1.5px solid #3D3D3D; vertical-align: middle; }
-  .cartouche .ceinture { width: 150px; text-align: center; padding: 6px; }
-  .cartouche .ceinture img { width: 110px; height: auto; }
-  .cartouche .titre { text-align: center; padding: 6px 12px; }
-  .cartouche .domaine { font-size: 30px; font-weight: 700; line-height: 1.1; }
-  .cartouche .couleur { font-size: 20px; }
-  .cartouche .eleve { width: 230px; padding: 8px 14px; font-size: 18px; line-height: 1.6; }
+  .bloc > thead td { padding-bottom: 10px; }
+  .cartouche { display: flex; align-items: center; gap: 24px; padding: 12px 20px;
+               border: 1.5px solid #3D3D3D; border-radius: 14px; }
+  .cartouche .ceinture { width: 104px; height: auto; }
+  .cartouche .titre { flex: 1; }
+  .cartouche .domaine { font-size: 32px; font-weight: 700; line-height: 1.1; }
+  .cartouche .couleur { display: inline-block; margin-top: 6px; padding: 2px 14px; border: 1.5px solid;
+                        border-radius: 999px; font-size: 16px; font-weight: 600;
+                        -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  /* La pastille à la couleur de la ceinture : un fond clair, un bord foncé —
+     le jaune et le blanc se perdraient sur le papier. */
+  .couleur--1 { background: #FFFFFF; border-color: #9C9C9C; }
+  .couleur--2 { background: #FFF5B8; border-color: #B89600; }
+  .couleur--3 { background: #FFE2B8; border-color: #D27C00; }
+  .couleur--4 { background: #D3F2D5; border-color: #2E7D32; }
+  .couleur--5 { background: #DCDBFA; border-color: #1E1BD3; }
+  .couleur--6 { background: #F1DEC7; border-color: #8A4D00; }
+  .couleur--7 { background: #E3E3E3; border-color: #000000; }
+  .cartouche .eleve { width: 250px; padding-left: 20px; border-left: 1.5px solid #DDDDDD; font-size: 18px; }
+  .cartouche .champ { display: flex; align-items: baseline; gap: 10px; min-height: 36px; padding: 4px 0; }
+  .cartouche .champ + .champ { border-top: 1.5px solid #DDDDDD; }
+  .cartouche .prenom { font-weight: 600; }
+  .cartouche .libelle { width: 62px; font-size: 13px; color: #9C9C9C; text-transform: uppercase; letter-spacing: .06em; }
+  .cartouche .date { font-weight: 600; letter-spacing: .3em; }
   .competence { break-inside: avoid; page-break-inside: avoid; }
-  .bande { padding: 4px 10px; border: 1.5px solid #3D3D3D; border-top: none;
-           background: #BFBFBF; font-size: 19px; font-weight: 700; }
-  .bande img { width: 14px; height: 14px; margin-right: 8px; vertical-align: middle; }
+  .bande { display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 14px;
+           background: #DDDDDD; border-radius: 8px; font-size: 19px; font-weight: 700; }
+  .bande img { width: 14px; height: 14px; }
+  .bande .nom { flex: 1; }
+  /* Assez grand pour la pointe d'un feutre : 6 mm une fois imprimé. Sans
+     contour : le blanc se détache seul sur le gris de la bande. */
+  .bande .marque { flex: none; width: 28px; height: 28px; border-radius: 50%; background: #FFFFFF; }
   /* Les règles de l'énoncé du PDF du plan de travail (`.cont-challenge`) : une
      largeur utile de 910 px, du Poppins à 20 px (`.enonce .trix-content`, dans pdf.scss), les images
      sur toute la largeur (`.challenge-content img`, partagée). */
@@ -41,27 +64,25 @@
 			<thead>
 				<tr>
 					<td>
-						<table class="cartouche" style="width: 100%; border-collapse: collapse;">
-							<tr>
-								<td class="ceinture">
-									<%= image_tag(PdfGenerator.image_data_uri("belts/belt_#{bloc.level}.png"), alt: "") %>
-								</td>
-								<td class="titre">
-									<div class="domaine"><%= bloc.domain.name %></div>
-									<div class="couleur">Ceinture <%= bloc.couleur %></div>
-								</td>
-								<td class="eleve">
-									<%# Sans élève, le prénom s'écrit à la main, comme la date — sans
-									    pointillés : ils passaient à la ligne, sur la date. %>
+						<div class="cartouche">
+							<%= image_tag(PdfGenerator.image_data_uri("belts/belt_#{bloc.level}.png"), alt: "", class: "ceinture") %>
+							<div class="titre">
+								<div class="domaine"><%= bloc.domain.name %></div>
+								<span class="couleur couleur--<%= bloc.level %>">Ceinture <%= bloc.couleur %></span>
+							</div>
+							<div class="eleve">
+								<%# Le prénom se lit sans libellé ; sans élève, il s'écrit à la
+								    main, et le libellé dit quoi écrire. %>
+								<div class="champ">
 									<% if belt_sheet.student %>
-										<div><%= belt_sheet.student.first_name.to_s.capitalize %></div>
+										<span class="prenom"><%= belt_sheet.student.first_name.to_s.capitalize %></span>
 									<% else %>
-										<div>Prénom :</div>
+										<span class="libelle">Prénom</span>
 									<% end %>
-									<div>Date : &nbsp;&nbsp;&nbsp; / &nbsp;&nbsp;&nbsp; /</div>
-								</td>
-							</tr>
-						</table>
+								</div>
+								<div class="champ"><span class="libelle">Date</span><span class="date">/ &nbsp;&nbsp; /</span></div>
+							</div>
+						</div>
 					</td>
 				</tr>
 			</thead>
@@ -73,7 +94,8 @@
 								<% if ligne.skill.symbol_img_name.present? %>
 									<%= image_tag(PdfGenerator.image_data_uri("symbols/#{ligne.skill.symbol_img_name}"), alt: "") %>
 								<% end %>
-								<%= ligne.skill.name %>
+								<span class="nom"><%= ligne.skill.name %></span>
+								<span class="marque"></span>
 							</div>
 							<div class="enonce challenge-content">
 								<% if ligne.challenge.nil? %>
