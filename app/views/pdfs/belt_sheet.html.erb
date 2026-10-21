@@ -10,54 +10,8 @@
     tenir : il ne se coupe alors qu'entre deux compétences, et son cartouche,
     porté par un `<thead>`, se répète en haut de la suite.
 
-    Largeur de 1000 px, comme le plan de travail : Chrome la ramène à la page, et
-    les énoncés rendent exactement comme dans le PDF du plan. %>
-<style>
-  body { height: auto; display: block; }
-  .fiche { width: 976px; margin: 0 auto; font-family: "Poppins", sans-serif; color: #3D3D3D; }
-  * { box-sizing: border-box; }
-  .bloc { width: 100%; margin-bottom: 28px; border-collapse: collapse; break-inside: avoid; page-break-inside: avoid; }
-  .bloc > thead td { padding-bottom: 10px; }
-  .cartouche { display: flex; align-items: center; gap: 24px; padding: 12px 20px;
-               border: 1.5px solid #3D3D3D; border-radius: 14px; }
-  .cartouche .ceinture { width: 104px; height: auto; }
-  .cartouche .titre { flex: 1; }
-  .cartouche .domaine { font-size: 32px; font-weight: 700; line-height: 1.1; }
-  /* L'épaisseur et le style seulement : le raccourci `border` remettrait la
-     couleur du bord à celle du texte, par-dessus `.couleur--N`. */
-  .cartouche .couleur { display: inline-block; margin-top: 6px; padding: 2px 14px; border-width: 1.5px; border-style: solid;
-                        border-radius: 999px; font-size: 16px; font-weight: 600;
-                        -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  /* La pastille à la couleur de la ceinture : un fond clair, un bord foncé —
-     le jaune et le blanc se perdraient sur le papier. */
-  .couleur--1 { background: #FFFFFF; border-color: #9C9C9C; }
-  .couleur--2 { background: #FFF5B8; border-color: #B89600; }
-  .couleur--3 { background: #FFE2B8; border-color: #D27C00; }
-  .couleur--4 { background: #D3F2D5; border-color: #2E7D32; }
-  .couleur--5 { background: #DCDBFA; border-color: #1E1BD3; }
-  .couleur--6 { background: #F1DEC7; border-color: #8A4D00; }
-  .couleur--7 { background: #E3E3E3; border-color: #000000; }
-  .cartouche .eleve { width: 250px; padding-left: 20px; border-left: 1.5px solid #DDDDDD; font-size: 18px; }
-  .cartouche .champ { display: flex; align-items: baseline; gap: 10px; min-height: 36px; padding: 4px 0; }
-  .cartouche .champ + .champ { border-top: 1.5px solid #DDDDDD; }
-  .cartouche .prenom { font-weight: 600; }
-  .cartouche .libelle { width: 62px; font-size: 13px; color: #9C9C9C; text-transform: uppercase; letter-spacing: .06em; }
-  .cartouche .date { font-weight: 600; letter-spacing: .3em; }
-  .competence { break-inside: avoid; page-break-inside: avoid; }
-  .bande { display: flex; align-items: center; gap: 10px; padding: 6px 8px 6px 14px;
-           background: #DDDDDD; border-radius: 8px; font-size: 19px; font-weight: 700; }
-  .bande img { width: 14px; height: 14px; }
-  .bande .nom { flex: 1; }
-  /* Assez grand pour la pointe d'un feutre : 6 mm une fois imprimé. Sans
-     contour : le blanc se détache seul sur le gris de la bande. */
-  .bande .marque { flex: none; width: 28px; height: 28px; border-radius: 50%; background: #FFFFFF; }
-  /* Les règles de l'énoncé du PDF du plan de travail (`.cont-challenge`) : une
-     largeur utile de 910 px, du Poppins à 20 px (`.enonce .trix-content`, dans pdf.scss), les images
-     sur toute la largeur (`.challenge-content img`, partagée). */
-  .enonce { padding: 12px 33px 20px; font-family: "Poppins", sans-serif; font-size: 20px; }
-  .enonce .challenge-name-in-content { display: none; }
-  .a-definir { color: #9C9C9C; font-style: italic; }
-</style>
+    Les règles de mise en page et les couleurs (la palette, jamais en dur) sont
+    dans pdf_belt_sheets/_fiche.scss, que charge pdf.scss. %>
 <div class="fiche">
 	<%# Un bloc sans compétence — un domaine spécial pas encore garni — n'a rien à
 	    imprimer. %>
