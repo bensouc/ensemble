@@ -23,7 +23,9 @@
   .cartouche .ceinture { width: 104px; height: auto; }
   .cartouche .titre { flex: 1; }
   .cartouche .domaine { font-size: 32px; font-weight: 700; line-height: 1.1; }
-  .cartouche .couleur { display: inline-block; margin-top: 6px; padding: 2px 14px; border: 1.5px solid;
+  /* L'épaisseur et le style seulement : le raccourci `border` remettrait la
+     couleur du bord à celle du texte, par-dessus `.couleur--N`. */
+  .cartouche .couleur { display: inline-block; margin-top: 6px; padding: 2px 14px; border-width: 1.5px; border-style: solid;
                         border-radius: 999px; font-size: 16px; font-weight: 600;
                         -webkit-print-color-adjust: exact; print-color-adjust: exact; }
   /* La pastille à la couleur de la ceinture : un fond clair, un bord foncé —
