@@ -60,6 +60,23 @@
     pointer-events: none;
   }
 
+  // Les lignes que l'éditeur garde pour y poser le curseur n'existent ni à
+  // l'affichage ni au PDF : autour d'une image ou d'une zone seule sur sa ligne
+  // (le séparateur et le retour à la ligne de ProseMirror), et sous un tableau,
+  // des colonnes ou une zone qui finissent l'énoncé (LigneSousLeBloc). Elles ne
+  // se montrent que sur la ligne du curseur (LigneDuCurseur, extensions.js).
+  // Une pièce calée à gauche ou à droite garde les siennes : on écrit à côté.
+  .rt-p:not(.rt-p--curseur):has(> figure.attachment:not(.rt-fig--gauche, .rt-fig--droite))
+    > :is(.ProseMirror-separator, .ProseMirror-trailingBreak) {
+    display: none !important;
+  }
+
+  .ProseMirror > :is(.tableWrapper, .rt-colonnes, .rt-p:has(> figure[data-trix-content-type="application/vnd.ensemble.figure-zone"]))
+    + .rt-p:last-child:not(.rt-p--curseur):has(> .ProseMirror-trailingBreak:only-child) {
+    height: 0;
+    overflow: hidden;
+  }
+
   // --- Pièces jointes (images, figures) ----------------------------------------
   figure.attachment {
     position: relative;
@@ -144,6 +161,15 @@
     left: 0;
     z-index: 5;
     white-space: nowrap;
+  }
+
+  // Dans un tableau, qui coupe ce qui sort de son cadre, elle est placée à
+  // l'écran par editeur/piece_jointe.js (placerBarre). Sous la fenêtre de zone
+  // (.rt-zone, 1050), qui s'ouvre pendant que la zone reste choisie.
+  .rt-piece-barre--fixe {
+    position: fixed;
+    bottom: auto;
+    z-index: 1040;
   }
 
   // --- Tableaux -------------------------------------------------------------------
