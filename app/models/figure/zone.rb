@@ -41,6 +41,20 @@ class Figure
                          elements: @zone[:elements].map { |element| element_dessine(element) } }
     end
 
+    # La zone telle qu'on l'imprime : rognée au plus près du matériel. Le PDF ne
+    # dessine pas le cadre, et son vide s'y lisait comme une marge autour du
+    # matériel, plus grande en bas qu'en haut. Une zone vide garde son cadre.
+    def zone_imprimee
+      dessin = zone_dessin
+      elements = dessin[:elements]
+      return dessin if elements.empty?
+
+      gauche, largeur = etendue(elements, :x, :largeur, dessin[:largeur])
+      haut, hauteur = etendue(elements, :y, :hauteur, dessin[:hauteur])
+      { largeur:, hauteur:, largeur_em: largeur * PAS_DE_LA_GRILLE, hauteur_em: hauteur * PAS_DE_LA_GRILLE,
+        elements: elements.map { |element| element.merge(x: element[:x] - gauche, y: element[:y] - haut) } }
+    end
+
     # La largeur que la figure prend d'elle-même, en em ; nil pour une figure
     # qui suit la largeur de la ligne.
     def largeur_naturelle_em
@@ -77,6 +91,14 @@ class Figure
       return unless x < largeur && y < hauteur && TAILLES.cover?(taille)
 
       { materiel: Zone.materiel(match[:code]), x:, y:, taille: }
+    end
+
+    # L'étendue du matériel sur un axe, en pas : où il commence, et sur quelle
+    # longueur. Elle s'arrête au cadre, qui coupe à l'écran ce qui en déborde.
+    def etendue(elements, debut, longueur, cadre)
+      premier = elements.pluck(debut).min
+      dernier = [elements.map { |element| element[debut] + element[longueur] }.max, cadre].min
+      [premier, (dernier - premier).round(2)]
     end
 
     def element_dessine(element)

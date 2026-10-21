@@ -10,7 +10,9 @@
 
   `echelle` (en %, FigurePresentation.attributs_de_zone) agrandit le dessin
   tout entier ; absente dans l'éditeur, qui l'agrandit lui-même (--rt-echelle).
+
+  Dans un PDF, la zone est rognée au plus près du matériel (`zone_imprimee`).
 %>
-<% z = dessinable.zone_dessin %>
+<% z = PdfGenerator.rendering? ? dessinable.zone_imprimee : dessinable.zone_dessin %>
 <% fois = local_assigns.fetch(:echelle, nil).to_i.nonzero? || 100 %>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 <%= z[:largeur] %> <%= z[:hauteur] %>" width="<%= (z[:largeur_em] * fois / 100.0).round(3) %>em" height="<%= (z[:hauteur_em] * fois / 100.0).round(3) %>em" role="img" aria-label="<%= dessinable.libelle %>"><defs><% z[:elements].map { |e| e[:materiel] }.uniq.each do |m| %><symbol id="rt-materiel-<%= m.id %>" viewBox="<%= m.cadre_du_materiel[:boite] %>"><%= render "figures/#{m.kind}_formes", dessinable: m %></symbol><% end %></defs><% z[:elements].each do |e| %><use xlink:href="#rt-materiel-<%= e[:materiel].id %>" x="<%= e[:x] %>" y="<%= e[:y] %>" width="<%= e[:largeur] %>" height="<%= e[:hauteur] %>"></use><% end %></svg>

@@ -145,6 +145,20 @@ RSpec.describe Figure do
         expect(agrandie).not_to match(/width:\s*\d+%/)
       end
 
+      # Le PDF ne dessine pas le cadre : son vide s'y lisait comme une marge.
+      it "se rogne au plus près du matériel dans un PDF" do
+        imprimee = ->(id) { PdfGenerator.with_rendering_context { rendu(piece_jointe(id)) } }
+
+        expect(rendu(piece_jointe("zone-80x24-b10.4.2_p2.20.8"))).to include('viewBox="0 0 80 24"')
+        # Billet de 10 € (13 × 6,8 pas) en 4.2, pièce de 2 € (6,2 × 6,2) en 20.8.
+        expect(imprimee.call("zone-80x24-b10.4.2_p2.20.8"))
+          .to include('viewBox="0 0 22.2 12.2"').and include('width="5.55em" height="3.05em"')
+          .and include('y="0" width="13.0"').and include('x="16" y="6"')
+        # Ce qui déborde du cadre reste coupé ; une zone vide garde son cadre.
+        expect(imprimee.call("zone-80x24-b10.70.20")).to include('viewBox="0 0 10 4"')
+        expect(imprimee.call("zone-80x24")).to include('viewBox="0 0 80 24"')
+      end
+
       it "reste à sa taille naturelle sans échelle, ou avec une échelle hors limites" do
         expect(rendu(piece_jointe("zone-80x24-b10.4.8", presentation: "centre")))
           .to include("rt-fig--centre").and include('width="20.0em" height="6.0em"')
