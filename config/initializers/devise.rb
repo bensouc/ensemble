@@ -346,6 +346,10 @@ Devise.setup do |config|
   # par Turbo (`data-turbo-method`). Après un 302, le navigateur rejouerait ce
   # DELETE sur la page de destination ; un 303 la fait charger en GET.
   config.responder.redirect_status = :see_other
+  # Turbo n'affiche un formulaire renvoyé que s'il l'est en erreur (422). Avec le
+  # 200 par défaut de Devise, un mot de passe actuel erroné sur « Mon compte », ou
+  # un e-mail inconnu sur « Mot de passe oublié », ne montrait rien.
+  config.responder.error_status = :unprocessable_content
 
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
