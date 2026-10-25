@@ -121,13 +121,28 @@ RSpec.describe BeltSheet, type: :model do
       expect(bloc.belt_sheet_skills.map(&:skill)).to eq([tracer])
     end
 
-    it "laisse vide un domaine coché sans ceinture en cours" do
+    it "garnit un domaine coché sans ceinture en cours comme selon les résultats" do
       poser(competence(numeration, 1, "Compter"), kind: "ceinture")
+      verbe = competence(grammaire, 1, "Le verbe")
+      adjectif = competence(grammaire, 1, "L'adjectif")
+      # Après les autres : seule de sa ceinture, elle la validait entière.
+      Result.create!(student:, skill: competence(grammaire, 1, "Le nom"), kind: "ceinture", status: "completed")
 
       sheet = preparer(domains: [numeration, grammaire])
 
-      expect(sheet.ordered_domains.map { |b| [b.domain, b.belt_sheet_skills.size] }).
-        to eq([[grammaire, 0], [numeration, 1]])
+      grammaire_bloc, numeration_bloc = sheet.ordered_domains
+      expect([grammaire_bloc.domain, grammaire_bloc.level]).to eq([grammaire, 1])
+      expect(grammaire_bloc.belt_sheet_skills.map(&:skill)).to contain_exactly(verbe, adjectif)
+      expect(numeration_bloc.belt_sheet_skills.size).to eq(1)
+    end
+
+    it "garde vide un domaine spécial coché sans ceinture en cours" do
+      geometrie = create(:domain, grade:, name: "Géométrie", position: 3, special: true)
+      competence(geometrie, 1, "Tracer")
+
+      bloc = preparer(domains: [geometrie]).belt_sheet_domains.sole
+
+      expect([bloc.level, bloc.belt_sheet_skills]).to eq([1, []])
     end
   end
 

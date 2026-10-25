@@ -26,7 +26,7 @@ class BeltSheet < ApplicationRecord
   # - `en_cours` : les ceintures EN COURS de l'élève — celles que son enseignant
   #   a décidé de lui faire passer en posant la compétence « ceinture » dans un
   #   plan de travail, pas encore passée (`ceintures_en_cours`). Un domaine coché
-  #   sans ceinture en cours arrive vide ;
+  #   sans ceinture en cours se prépare selon les résultats ;
   # - `resultats` : selon ses résultats — pour chaque domaine, la ceinture qui
   #   suit la dernière validée, avec ses compétences pas encore validées.
   #
@@ -38,10 +38,15 @@ class BeltSheet < ApplicationRecord
     mode == "en_cours" ? preparer_en_cours!(student, user, domains) : preparer_selon_resultats!(student, user, domains)
   end
 
+  # Cocher un domaine où rien n'est prévu, c'est demander sa prochaine ceinture :
+  # il se prépare selon les résultats. Un bloc vide laissait l'enseignant y
+  # remettre à la main les compétences à passer.
   def self.preparer_en_cours!(student, user, domains)
     en_cours = ceintures_en_cours(student).group_by(&:domain)
     remplir!(student, user, domains || en_cours.keys) do |sheet, domain|
-      sheet.ajouter_en_cours!(domain, en_cours.fetch(domain, []))
+      next sheet.ajouter_selon_resultats!(domain) unless en_cours.key?(domain)
+
+      sheet.ajouter_en_cours!(domain, en_cours[domain])
     end
   end
 
@@ -106,16 +111,8 @@ class BeltSheet < ApplicationRecord
     add_domain!(domain, level) if level
   end
 
-  # Les blocs d'un domaine, une ceinture par bloc. Sans ceinture en cours, un
-  # bloc vide, à la ceinture que l'élève prépare — la blanche pour un domaine
-  # spécial, qui n'en a qu'une.
+  # Les blocs d'un domaine, une ceinture par bloc.
   def ajouter_en_cours!(domain, skills)
-    if skills.empty?
-      level = ceinture_pour(domain)
-      belt_sheet_domains.create!(domain:, level:) if level
-      return
-    end
-
     skills.group_by(&:level).each do |level, competences|
       bloc = belt_sheet_domains.create!(domain:, level:)
       competences.each { |skill| bloc.add_skill!(skill) }

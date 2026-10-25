@@ -23,7 +23,7 @@
 }
 
 .belt-sheet-empty {
-  color: #9c9c9c;
+  color: colors.$grisM;
   font-style: italic;
 }
 
@@ -111,12 +111,25 @@
 }
 
 .fiche-domaine-vide {
-  color: #9c9c9c;
+  color: colors.$grisM;
   font-style: italic;
 }
 
 .fiche-domaine:has(input:not(:checked)) .fiche-domaine-nom {
-  color: #9c9c9c;
+  color: colors.$grisM;
+}
+
+// Coché sans rien de prévu, un domaine reçoit sa prochaine ceinture, comme
+// selon les résultats (`BeltSheet.preparer_en_cours!`) : l'aperçu de ce mode-là
+// remplace « rien de prévu ».
+[data-mode="en_cours"] .fiche-domaine[data-en-cours="false"]:has(input:checked) {
+  [data-mode="en_cours"] {
+    display: none;
+  }
+
+  [data-mode="resultats"] {
+    display: flex;
+  }
 }
 
 // La modale d'une nouvelle fiche, centrée dans la fenêtre : la marge commune
