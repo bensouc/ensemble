@@ -5,30 +5,29 @@ module Ui
   #
   # - `size:` `:sm` (25 px, un message), `:md` (40 px, une conversation), `:lg`
   #   (55 px, la barre du haut), `:xl` (96 px, la page « Mon compte ») ;
-  # - `logo_pour_admin:` montre un admin sous le logo d'Ensemble. La messagerie
-  #   seule le demande : un admin y parle au nom d'Ensemble. Ailleurs, il a son
-  #   avatar comme tout le monde.
+  # - `logo:` le logo d'Ensemble à la place de la personne. La messagerie le
+  #   demande pour un admin, qui y parle au nom d'Ensemble.
   #
   #   render Ui::AvatarComponent.new(current_user, size: :lg)
-  #   render Ui::AvatarComponent.new(message.user, size: :sm, logo_pour_admin: true)
+  #   render Ui::AvatarComponent.new(message.user, size: :sm, logo: message.user.admin?)
   class AvatarComponent < ViewComponent::Base
     SIZES = { sm: 25, md: 40, lg: 55, xl: 96 }.freeze
     # Autant que la liste `$avatar-teintes` de la palette.
     TEINTES = 3
     LOGO = "icons/vroad_b_w.png"
 
-    def initialize(user, size: :md, logo_pour_admin: false, html: {})
+    def initialize(user, size: :md, logo: false, html: {})
       super()
       raise ArgumentError, "taille inconnue : #{size}" unless SIZES.key?(size)
 
       @user = user
       @size = size
-      @logo_pour_admin = logo_pour_admin
+      @logo = logo
       @html = html
     end
 
     def call
-      if @logo_pour_admin && @user.admin?
+      if @logo
         image_tag(LOGO, alt: "Ensemble", **attributes)
       elsif @user.avatar.attached?
         image_tag(photo_url, alt: @user.display_name, **attributes)
@@ -57,9 +56,8 @@ module Ui
       "ui-avatar--teinte-#{@user.id.to_i % TEINTES}"
     end
 
-    def attributes(*classes)
-      { class: ["ui-avatar", "ui-avatar--#{@size}", *classes, @html[:class]].compact.join(" ") }.
-        merge(@html.except(:class))
+    def attributes(teinte = nil)
+      { class: class_names("ui-avatar", "ui-avatar--#{@size}", teinte, @html[:class]) }.merge(@html.except(:class))
     end
   end
 end

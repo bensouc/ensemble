@@ -41,12 +41,13 @@ RSpec.describe Ui::AvatarComponent, type: :component do
     expect(avatar["src"]).to include("c_fill", "g_face", "h_50", "w_50", "cle-de-la-photo")
   end
 
-  it "ne montre le logo d'Ensemble pour un admin que si on le demande" do
+  it "montre un admin comme tout le monde, et le logo d'Ensemble seulement si on le demande" do
     admin = build_stubbed(:user, first_name: "Benoît", last_name: "Moret", admin: true)
 
     expect(rond(admin).text).to eq("BM")
-    expect(rond(admin, logo_pour_admin: true)["src"]).to include("vroad_b_w")
-    expect(rond(prof, logo_pour_admin: true).text).to eq("ÉD")
+    logo = rond(admin, logo: true)
+    expect(logo["src"]).to include("vroad_b_w")
+    expect(logo["alt"]).to eq("Ensemble")
   end
 
   it "passe ses attributs, et garde une classe en plus" do

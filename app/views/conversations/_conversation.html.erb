@@ -9,7 +9,7 @@
           data-bs-toggle="tooltip"
           data-bs-placement="top"
           title="<%=user.first_name%>">
-						<%= render Ui::AvatarComponent.new(user, logo_pour_admin: true) %>
+						<%= render Ui::AvatarComponent.new(user) %>
 					</div>
 				<% end %>
 			<% end %>
@@ -26,7 +26,7 @@
                   data-bs-toggle="tooltip"
                   data-bs-placement="left"
                   title="<%=user.first_name%>">
-									<%= render Ui::AvatarComponent.new(user, logo_pour_admin: true) %>
+									<%= render Ui::AvatarComponent.new(user) %>
 								</div>
 							<% end %>
 						<% end %>

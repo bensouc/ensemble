@@ -3,7 +3,7 @@
       data-controller="message"
       data-message-user-id-value="<%= message.user.id %>">
 	<div class="content">
-		<%= render Ui::AvatarComponent.new(message.user, size: :sm, logo_pour_admin: true,
+		<%= render Ui::AvatarComponent.new(message.user, size: :sm, logo: message.user.admin?,
         html: { class: "me-1",
                 title: message.user.admin? ? "Ensemble" : message.user.first_name,
                 data: { message_target: "avatar",

@@ -8,7 +8,7 @@
           bs_placement:"top",
           turbo_method: :post},
           title: user.first_name do %>
-        <%= render Ui::AvatarComponent.new(user, logo_pour_admin: true) %>
+        <%= render Ui::AvatarComponent.new(user) %>
       <% end %>
     <% end %>
   </div>

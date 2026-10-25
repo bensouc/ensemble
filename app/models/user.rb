@@ -57,7 +57,7 @@ class User < ApplicationRecord
   # Validations
   validates :first_name, presence: true
   validates :last_name, presence: true
-  validate :avatar_est_une_image
+  validate :avatar_est_une_image_legere
 
   # Methods
 
@@ -188,8 +188,8 @@ class User < ApplicationRecord
   # quand la photo change, pour qu'une ancienne photo hors des clous ne bloque pas
   # l'enregistrement du reste du compte — `AnnoncesController` l'enregistre par
   # `update!`, qui lèverait.
-  def avatar_est_une_image
-    return unless attachment_changes.key?("avatar") && avatar.attached?
+  def avatar_est_une_image_legere
+    return unless avatar.attached? && avatar.attachment.new_record?
 
     errors.add(:avatar, :pas_une_image) unless avatar.blob.image?
     errors.add(:avatar, :trop_lourde, max: AVATAR_POIDS_MAX_MO) if avatar.blob.byte_size > AVATAR_POIDS_MAX_MO.megabytes
