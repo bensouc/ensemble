@@ -208,6 +208,8 @@ RSpec.describe "Fiches de ceinture", type: :request do
         expect(ligne.at_css("[data-mode=en_cours]").text.squish).to eq("Ceinture blanche · 1 compétence")
         expect(ligne.at_css("[data-mode=resultats]").text.squish).to eq("Ceinture blanche · 1 compétence")
         geo = page.at_css("#belt_sheet_domain_#{geometrie.id}").parent
+        # Le crochet de la CSS : coché, ce domaine montre l'aperçu « résultats ».
+        expect(geo["data-en-cours"]).to eq("false")
         expect(geo.at_css("[data-mode=en_cours]").text.squish).to eq("rien de prévu")
         expect(geo.at_css("[data-mode=resultats]").text.squish).to eq("Ceinture blanche · à garnir à la main")
         modes = page.css("input[type=radio][name=mode]")
@@ -219,6 +221,13 @@ RSpec.describe "Fiches de ceinture", type: :request do
         post student_belt_sheets_path(eleve), params: { mode: "en_cours", belt_sheet: { domain_ids: [grammaire.id] } }
 
         expect(fiche.belt_sheet_skills.map(&:skill)).to eq([verbe])
+      end
+
+      it "donne sa prochaine ceinture à un domaine coché où rien n'est prévu" do
+        post student_belt_sheets_path(eleve), params: { mode: "en_cours",
+                                                        belt_sheet: { domain_ids: [grammaire.id, numeration.id] } }
+
+        expect(fiche.belt_sheet_skills.map(&:skill)).to contain_exactly(verbe, compter, ranger)
       end
 
       it "retombe sur « selon les résultats » pour un mode inconnu" do
