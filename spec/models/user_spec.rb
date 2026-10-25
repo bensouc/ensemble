@@ -106,4 +106,22 @@ RSpec.describe User, type: :model do
       expect(build(:user, first_name: " ", last_name: nil, email: "invite@ecole.fr").short_name).to eq("invite@ecole.fr")
     end
   end
+
+  describe "la photo" do
+    let(:pdf) { { io: StringIO.new("%PDF-1.4\n%%EOF"), filename: "cv.png", content_type: "image/png" } }
+
+    it "refuse un fichier qui n'est pas une image, au contenu et non au nom" do
+      @user1.avatar = pdf
+
+      expect(@user1).not_to be_valid
+      expect(@user1.errors.full_messages).to eq(["La photo doit être une image (JPEG, PNG…)"])
+    end
+
+    it "ne revient pas sur une photo déjà enregistrée : le reste du compte s'enregistre encore" do
+      @user1.avatar = pdf
+      @user1.save!(validate: false)
+
+      expect { @user1.reload.update!(discovery_method: "Autre") }.not_to raise_error
+    end
+  end
 end

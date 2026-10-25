@@ -31,6 +31,14 @@ $roseL: #e72c3ca4;
 $roseLight: #f79ea5ba;
 $marron: rgb(196, 64, 3);
 
+// Le fond des initiales d'un compte sans photo (`Ui::AvatarComponent`). Trois
+// pastels déjà employés ailleurs, aucune teinte nouvelle : le rose est réservé à
+// l'action principale et à l'état courant, les couleurs de ceinture et
+// d'évaluation ont un sens. Le composant en tire une par compte, d'après son id :
+// deux collègues côte à côte dans la messagerie se distinguent. Leur nombre est
+// repris par `Ui::AvatarComponent::TEINTES`.
+$avatar-teintes: ($violet, $bleuC, $menuOff);
+
 // La rampe des évaluations : blanc « pas fait » → terre cuite → jaune → vert
 // clair → vert « validé ». Monotone, elle se lit comme une progression.
 //

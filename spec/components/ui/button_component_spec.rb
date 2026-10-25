@@ -50,6 +50,15 @@ RSpec.describe Ui::ButtonComponent, type: :component do
     expect(page.at_css("form button.ui-btn--secondary i.fa-regular.fa-clone")).to be_present
   end
 
+  it "devient l'étiquette d'un champ avec `label_for:`, qui ouvre le sélecteur de fichier" do
+    etiquette = render_inline(described_class.new("Changer la photo", icon: "fa-camera", label_for: "compte-photo")).
+      at_css("label")
+
+    expect(etiquette["for"]).to eq("compte-photo")
+    expect(etiquette["class"]).to eq("ui-btn ui-btn--secondary")
+    expect(etiquette.at_css("i.fa-solid.fa-camera")).to be_present
+  end
+
   it "donne à une icône seule son title comme nom accessible" do
     bouton = render_inline(described_class.new(variant: :icon, icon: "fa-ellipsis-vertical", title: "Actions")).
       at_css("button")

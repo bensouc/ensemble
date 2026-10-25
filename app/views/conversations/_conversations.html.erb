@@ -29,7 +29,7 @@
 								    emporte ses `user_conversations`, pas la conversation. %>
 								<% other_user = conversation.users.where.not(id: current_user.id).first %>
 								<% if other_user %>
-									<%= image_tag other_user.avatar_url, class: "avatar-basic", width: "40px" %>
+									<%= render Ui::AvatarComponent.new(other_user, logo_pour_admin: true) %>
 								<% else %>
 									<%# Afficher son propre avatar laisserait croire à une conversation avec
 									    soi-même : mieux vaut dire que l'interlocuteur n'est plus là. %>

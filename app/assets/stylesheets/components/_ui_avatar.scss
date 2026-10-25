@@ -1,0 +1,40 @@
+@use "sass:list";
+@use "../config/colors";
+
+// `Ui::AvatarComponent` : une photo, ou des initiales dans un rond. Le même rond
+// pour les deux, pour qu'une photo et des initiales s'alignent dans une liste.
+.ui-avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  object-fit: cover;
+  color: colors.$grisF;
+  font-weight: 600;
+  line-height: 1;
+  user-select: none;
+}
+
+// Taille du rond, taille des initiales : le texte occupe un peu plus du tiers.
+$tailles: (
+  sm: (25px, 10px),
+  md: (40px, 15px),
+  lg: (55px, 20px),
+  xl: (96px, 34px)
+);
+
+@each $nom, $mesures in $tailles {
+  .ui-avatar--#{$nom} {
+    width: list.nth($mesures, 1);
+    height: list.nth($mesures, 1);
+    font-size: list.nth($mesures, 2);
+  }
+}
+
+// Numérotées à partir de 0, comme le reste de la division faite par le composant.
+@for $i from 1 through list.length(colors.$avatar-teintes) {
+  .ui-avatar--teinte-#{$i - 1} {
+    background-color: list.nth(colors.$avatar-teintes, $i);
+  }
+}

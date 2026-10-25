@@ -244,9 +244,12 @@ RSpec.describe RegistrationsController, type: :controller do
     expect(flash[:alert]).to match(/personnification/i)
   end
 
+  # L'édition de Devise n'a plus d'écran : elle renvoie à « Mon compte », sans
+  # l'alerte de personnification.
   it "laisse l'admin éditer son propre compte" do
     sign_in(admin)
     get :edit
-    expect(response).to be_successful
+    expect(response).to redirect_to(edit_profile_path)
+    expect(flash[:alert]).to be_nil
   end
 end

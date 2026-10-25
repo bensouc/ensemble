@@ -1,0 +1,80 @@
+<%# La page « Mon compte » : trois blocs, chacun son formulaire et sa règle. Le
+    profil s'enregistre de lui-même, sans mot de passe ; la connexion passe par
+    Valider et le mot de passe actuel (Devise). Rendue
+    par `profiles#edit`, et par Devise quand la connexion échoue, pour réafficher
+    ses erreurs en place. Pendant une personnification, seul le profil reste :
+    les identifiants de connexion ne se changent pas sous l'identité d'un autre. %>
+<%= render Ui::PageComponent.new(title: "Mon compte") do |page| %>
+	<% page.with_actions do %>
+		<%= render Ui::ButtonComponent.new("Retour au tableau de bord", variant: :neutral, icon: "fa-arrow-left",
+		                                   href: dashboard_path) %>
+	<% end %>
+
+	<section class="compte-carte">
+		<h2>Profil</h2>
+		<p class="compte-sous-titre">Ce que vos collègues voient de vous, enregistré à chaque changement.</p>
+		<div class="compte-profil">
+			<div class="compte-photo">
+				<%= render Ui::AvatarComponent.new(user, size: :xl, html: { id: "compte-avatar" }) %>
+				<%= form_with model: user, url: profile_avatar_path, method: :patch,
+				              data: { controller: "submit-frame", action: "change->submit-frame#submit" } do |f| %>
+					<%= f.file_field :avatar, accept: "image/*", id: "compte-photo", class: "visually-hidden" %>
+					<%= render Ui::ButtonComponent.new(user.avatar.attached? ? "Changer la photo" : "Ajouter une photo",
+					                                   icon: "fa-camera", label_for: "compte-photo") %>
+				<% end %>
+				<% if user.avatar.attached? %>
+					<%= render Ui::ButtonComponent.new("Retirer la photo", variant: :neutral, size: :sm,
+					                                   url: profile_avatar_path, method: :delete) %>
+				<% end %>
+			</div>
+			<%= simple_form_for user, url: profile_path, method: :patch,
+			                    html: { id: "compte-profil", class: "wp-edit-form compte-formulaire",
+			                            data: { controller: "submit-frame", action: "change->submit-frame#submit" } } do |f| %>
+				<div class="compte-champs">
+					<%= f.input :first_name, label: "Prénom", input_html: { class: "area", autocomplete: "given-name" } %>
+					<%= f.input :last_name, label: "Nom", input_html: { class: "area", autocomplete: "family-name" } %>
+					<div class="form-group compte-plein">
+						<span class="compte-libelle">École</span>
+						<p class="compte-valeur"><%= user.school&.name %></p>
+					</div>
+				</div>
+			<% end %>
+		</div>
+	</section>
+
+	<% unless impersonating? %>
+		<section class="compte-carte">
+			<h2>Connexion</h2>
+			<p class="compte-sous-titre">Votre mot de passe actuel est demandé pour changer ces informations.</p>
+			<%= simple_form_for user, url: user_registration_path, method: :patch,
+			                    html: { id: "compte-connexion", class: "wp-edit-form" } do |f| %>
+				<div class="compte-champs">
+					<%= f.input :email, label: "E-mail", wrapper_html: { class: "compte-plein" },
+					            input_html: { class: "area", autocomplete: "email" } %>
+					<%= f.input :password, label: "Nouveau mot de passe", required: false,
+					            hint: "Laissez vide pour garder l'actuel.",
+					            input_html: { class: "area", autocomplete: "new-password" } %>
+					<%= f.input :password_confirmation, label: "Confirmation", required: false,
+					            input_html: { class: "area", autocomplete: "new-password" } %>
+					<%= f.input :current_password, label: "Mot de passe actuel", required: true,
+					            hint: "Requis pour changer l'e-mail ou le mot de passe.", wrapper_html: { class: "compte-plein" },
+					            input_html: { class: "area", autocomplete: "current-password" } %>
+				</div>
+				<div class="compte-pied">
+					<%= render Ui::ButtonComponent.new("Valider", variant: :primary, type: "submit") %>
+				</div>
+			<% end %>
+		</section>
+
+		<section class="compte-carte">
+			<h2>Supprimer mon compte</h2>
+			<p class="compte-texte">
+				Vos classes partagées passent à un·e collègue du partage. Vos autres classes, leurs élèves, vos plans de
+				travail et vos messages sont supprimés ; vos exercices restent à l'école.
+			</p>
+			<%= render Ui::ButtonComponent.new("Supprimer mon compte", variant: :neutral, icon: "fa-trash",
+			                                   url: user_registration_path, method: :delete,
+			                                   form: { data: { turbo_confirm: "Supprimer votre compte ? C'est définitif." } }) %>
+		</section>
+	<% end %>
+<% end %>

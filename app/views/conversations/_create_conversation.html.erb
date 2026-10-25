@@ -8,7 +8,7 @@
           bs_placement:"top",
           turbo_method: :post},
           title: user.first_name do %>
-        <%= image_tag user.avatar_url, alt: user.first_name, class: 'avatar-basic' %>
+        <%= render Ui::AvatarComponent.new(user, logo_pour_admin: true) %>
       <% end %>
     <% end %>
   </div>
