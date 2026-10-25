@@ -185,9 +185,8 @@ class User < ApplicationRecord
   end
 
   # Rien ne filtrait le fichier : un PDF devenait l'avatar. Contrôlé seulement
-  # quand la photo change, pour qu'une ancienne photo hors des clous ne bloque pas
-  # l'enregistrement du reste du compte — `AnnoncesController` l'enregistre par
-  # `update!`, qui lèverait.
+  # quand une nouvelle photo arrive : aucune sauvegarde du compte ne doit buter
+  # sur une photo déjà enregistrée.
   def avatar_est_une_image_legere
     return unless avatar.attached? && avatar.attachment.new_record?
 

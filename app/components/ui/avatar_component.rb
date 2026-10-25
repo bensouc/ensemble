@@ -3,8 +3,8 @@
 module Ui
   # L'avatar d'un compte : sa photo, ou ses initiales dans un rond de couleur.
   #
-  # - `size:` `:sm` (25 px, un message), `:md` (40 px, une conversation), `:lg`
-  #   (55 px, la barre du haut), `:xl` (96 px, la page « Mon compte ») ;
+  # - `size:` `:sm` un message, `:md` une conversation, `:lg` la barre du haut,
+  #   `:xl` la page « Mon compte » ;
   # - `logo:` le logo d'Ensemble à la place de la personne. La messagerie le
   #   demande pour un admin, qui y parle au nom d'Ensemble.
   #
@@ -12,7 +12,7 @@ module Ui
   #   render Ui::AvatarComponent.new(message.user, size: :sm, logo: message.user.admin?)
   class AvatarComponent < ViewComponent::Base
     SIZES = { sm: 25, md: 40, lg: 55, xl: 96 }.freeze
-    # Autant que la liste `$avatar-teintes` de la palette.
+    # Autant que les `.ui-avatar--teinte-*` de `components/_ui_avatar.scss`.
     TEINTES = 3
     LOGO = "icons/vroad_b_w.png"
 

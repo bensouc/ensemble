@@ -10,17 +10,14 @@ class ProfilesController < ApplicationController
   end
 
   # Le profil s'enregistre dès qu'on quitte un champ, comme la photo dès qu'on la
-  # choisit. La réponse ne redessine que les avatars, dont les initiales suivent
-  # le nom : recharger la page ferait perdre le champ où l'on vient d'entrer.
+  # choisit : par Turbo, sans bouton. Les réponses ne redessinent que ce qui
+  # change — les avatars, dont les initiales suivent le nom, ou le champ refusé.
+  # Recharger la page ferait perdre le champ où l'on vient d'entrer.
   def update
     if current_user.update(profile_params)
-      message = t("mon_compte.profil_enregistre")
-      respond_to do |format|
-        format.turbo_stream { flash.now[:notice] = message }
-        format.html { redirect_to edit_profile_path, notice: message, status: :see_other }
-      end
+      flash.now[:notice] = t("mon_compte.profil_enregistre")
     else
-      render :edit, status: :unprocessable_content
+      render :erreurs, status: :unprocessable_content
     end
   end
 

@@ -17,9 +17,6 @@ Rails.application.routes.draw do
   devise_scope :user do
     post "create_demo_user", to: "registrations#add_demo_user"
   end
-  # « Mon compte » : le prénom, le nom et la photo se changent sans mot de passe.
-  # L'e-mail et le mot de passe restent à Devise (`registrations`), derrière le
-  # mot de passe actuel.
   resource :profile, only: [:edit, :update] do
     resource :avatar, only: [:update, :destroy], module: :profiles
   end

@@ -1,0 +1,4 @@
+<%# Le prénom ou le nom. Un enregistrement refusé ne redessine que ce champ, avec
+    son erreur (`profiles/erreurs`) : celui où l'on vient d'entrer garde le focus. %>
+<%= f.input attribut, wrapper_html: { id: "compte-#{attribut}" },
+            input_html: { class: "area", autocomplete: { first_name: "given-name", last_name: "family-name" }[attribut] } %>

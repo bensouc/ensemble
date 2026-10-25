@@ -64,7 +64,7 @@ class ApplicationController < ActionController::Base
   # responsable du groupe. Un admin qui veut l'ouvrir doit donc personnifier un
   # responsable, pas n'importe quel enseignant.
   FORBIDDEN_WHILE_IMPERSONATING = {
-    "registrations" => %w[edit update destroy]
+    "registrations" => %w[update destroy]
   }.freeze
 
   # Pundit: allow-list approach

@@ -65,27 +65,8 @@
   }
 }
 
-.compte-plein {
-  grid-column: 1 / -1;
-}
-
-// L'école se montre, elle ne se change pas : un texte, pas un champ grisé. Son
-// libellé reprend celui des champs de `.wp-edit-form`.
-.compte-libelle {
-  display: block;
-  margin-bottom: 5px;
-  color: colors.$grisF;
-  font-size: 12px;
-  font-weight: 600;
-}
-
+// L'école se montre, elle ne se change pas : un texte, pas un champ grisé.
 .compte-valeur {
   margin: 0;
   color: colors.$grisF;
-}
-
-.compte-pied {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: echelle.$espace-md;
 }

@@ -8,8 +8,12 @@ require "rails_helper"
 RSpec.describe "Mon compte", type: :request do
   let(:prof) { create(:user, admin: false, first_name: "Camille", last_name: "Martin") }
   let(:png) do
-    image = Base64.decode64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==")
-    Rack::Test::UploadedFile.new(StringIO.new(image), "image/png", original_filename: "photo.png")
+    fichier(Base64.decode64("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="),
+            "image/png", "photo.png")
+  end
+
+  def fichier(contenu, type, nom)
+    Rack::Test::UploadedFile.new(StringIO.new(contenu), type, original_filename: nom)
   end
 
   def page
@@ -29,7 +33,7 @@ RSpec.describe "Mon compte", type: :request do
       expect(response).to have_http_status(:ok)
       expect(titres_des_blocs).to eq(["Profil", "Connexion", "Supprimer mon compte"])
       expect(page.at_css(".compte-photo .ui-avatar").text).to eq("CM")
-      expect(page.at_css("label[for='compte-photo']").text.squish).to eq("Ajouter une photo")
+      expect(page.at_css("label[for='fichier-photo']").text.squish).to eq("Ajouter une photo")
       expect(page.at_css("form[action='#{profile_avatar_path}'] input[type=submit]")).to be_nil
     end
 
@@ -59,8 +63,8 @@ RSpec.describe "Mon compte", type: :request do
     it "s'enregistre en direct, sans bouton Valider" do
       get edit_profile_path
 
-      expect(page.at_css("#compte-profil[data-action~='change->submit-frame#submit']")).to be_present
-      expect(page.at_css("#compte-profil button")).to be_nil
+      expect(page.at_css("#formulaire-profil[data-action~='change->submit-frame#submit']")).to be_present
+      expect(page.at_css("#formulaire-profil button")).to be_nil
     end
 
     it "enregistre le prénom et le nom, et ne redessine que les avatars" do
@@ -74,16 +78,10 @@ RSpec.describe "Mon compte", type: :request do
       expect(response.body).to include("Profil enregistré.")
     end
 
-    it "revient sur la page sans Turbo" do
-      patch profile_path, params: { user: { first_name: "Camilla" } }
-
-      expect(response).to redirect_to(edit_profile_path)
-      expect(prof.reload.first_name).to eq("Camilla")
-    end
-
     it "ne touche ni à l'e-mail ni au mot de passe" do
       patch profile_path, params: { user: { first_name: "Camilla", email: "autre@exemple.fr",
-                                            password: "autre123", password_confirmation: "autre123" } }
+                                            password: "autre123", password_confirmation: "autre123" } },
+                          as: :turbo_stream
 
       prof.reload
       expect(prof.first_name).to eq("Camilla")
@@ -91,22 +89,20 @@ RSpec.describe "Mon compte", type: :request do
       expect(prof.valid_password?("123456")).to be(true)
     end
 
-    it "réaffiche la page, l'erreur sous le champ, sur un prénom vide" do
-      patch profile_path, params: { user: { first_name: "" } }, as: :turbo_stream
+    it "refuse un prénom vide, et ne redessine que ce champ, avec son erreur" do
+      patch profile_path, params: { user: { first_name: "", last_name: "Martin" } }, as: :turbo_stream
 
       expect(response).to have_http_status(:unprocessable_content)
-      expect(response.media_type).to eq("text/html")
-      expect(page.at_css("#compte-profil #user_first_name.is-invalid")).to be_present
+      expect(page.css("turbo-stream").map { |flux| flux["target"] }).to eq(["compte-first_name"])
+      champ = page.at_css("turbo-stream template #compte-first_name")
+      expect(champ.at_css("input#user_first_name[name='user[first_name]'].is-invalid")).to be_present
+      expect(champ.at_css(".invalid-feedback").text).to eq("Prénom doit être rempli(e)")
       expect(prof.reload.first_name).to eq("Camille")
     end
   end
 
   describe "la photo" do
     before { sign_in prof }
-
-    def fichier(contenu, type, nom)
-      Rack::Test::UploadedFile.new(StringIO.new(contenu), type, original_filename: nom)
-    end
 
     it "s'enregistre dès l'envoi, et remplace les initiales" do
       patch profile_avatar_path, params: { user: { avatar: png } }
@@ -115,7 +111,7 @@ RSpec.describe "Mon compte", type: :request do
       expect(prof.reload.avatar).to be_attached
       follow_redirect!
       expect(page.at_css(".compte-photo img.ui-avatar--xl")).to be_present
-      expect(page.at_css("label[for='compte-photo']").text.squish).to eq("Changer la photo")
+      expect(page.at_css("label[for='fichier-photo']").text.squish).to eq("Changer la photo")
     end
 
     it "refuse un fichier qui n'est pas une image, même déguisé" do
@@ -147,12 +143,19 @@ RSpec.describe "Mon compte", type: :request do
   describe "la connexion, derrière le mot de passe actuel" do
     before { sign_in prof }
 
+    it "n'exige que le mot de passe actuel : le nouveau peut rester vide" do
+      get edit_profile_path
+
+      exiges = page.css("#formulaire-connexion input[required]").pluck("id")
+      expect(exiges).to eq(["user_current_password"])
+    end
+
     it "refuse sans le mot de passe actuel, et réaffiche la page avec l'erreur sans déconnecter" do
       patch user_registration_path, params: { user: { email: "nouveau@exemple.fr", current_password: "" } }
 
       expect(response).to have_http_status(:unprocessable_content)
       expect(titres_des_blocs).to eq(["Profil", "Connexion", "Supprimer mon compte"])
-      expect(page.at_css("#compte-connexion #user_current_password.is-invalid")).to be_present
+      expect(page.at_css("#formulaire-connexion #user_current_password.is-invalid")).to be_present
       expect(prof.reload.email).not_to eq("nouveau@exemple.fr")
 
       get edit_profile_path
@@ -188,7 +191,7 @@ RSpec.describe "Mon compte", type: :request do
     end
 
     it "change son prénom" do
-      patch profile_path, params: { user: { first_name: "Camilla" } }
+      patch profile_path, params: { user: { first_name: "Camilla" } }, as: :turbo_stream
 
       expect(prof.reload.first_name).to eq("Camilla")
     end

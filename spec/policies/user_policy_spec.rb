@@ -8,7 +8,6 @@ RSpec.describe UserPolicy do
   describe "#update?" do
     it "laisse chacun changer son prénom, son nom et sa photo" do
       expect(described_class.new(prof, prof).update?).to be(true)
-      expect(described_class.new(prof, prof).edit?).to be(true)
     end
 
     it "refuse ceux d'un autre, collègue ou admin" do

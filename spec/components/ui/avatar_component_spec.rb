@@ -53,7 +53,7 @@ RSpec.describe Ui::AvatarComponent, type: :component do
   it "passe ses attributs, et garde une classe en plus" do
     avatar = rond(prof, size: :sm, html: { class: "me-1", title: "Élodie", data: { message_target: "avatar" } })
 
-    expect(avatar["class"]).to eq("ui-avatar ui-avatar--sm ui-avatar--teinte-#{prof.id % 3} me-1")
+    expect(avatar["class"]).to eq("ui-avatar ui-avatar--sm ui-avatar--teinte-#{prof.id % described_class::TEINTES} me-1")
     expect(avatar["title"]).to eq("Élodie")
     expect(avatar["data-message-target"]).to eq("avatar")
   end

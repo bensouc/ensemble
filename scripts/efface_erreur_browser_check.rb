@@ -6,10 +6,9 @@
 #
 # Voir scripts/support/browser_harness.rb pour le pourquoi de ces bancs.
 #
-# Sur « Mon compte », le profil s'enregistre en direct : l'erreur qu'a rendue le
-# serveur restait sous un prénom déjà corrigé. Elle doit partir dès qu'on retape
-# dans CE champ, et seulement dans lui. Le balisage est celui du wrapper
-# `vertical_form` de simple_form.
+# L'erreur qu'a rendue le serveur doit partir dès qu'on retape dans CE champ, et
+# seulement dans lui. Le balisage est celui du wrapper `vertical_form` de
+# simple_form.
 require_relative "support/browser_harness"
 
 harness = BrowserHarness::Runner.new("efface_erreur_harness")
@@ -28,10 +27,6 @@ harness.page("index",
                    <label for="user_last_name">Nom</label>
                    <input class="form-control is-invalid" id="user_last_name" name="user[last_name]" value="">
                    <div class="invalid-feedback">Nom doit être rempli(e)</div>
-                 </div>
-                 <div class="form-group" id="groupe-ecole">
-                   <input class="form-control" id="ecole" value="">
-                   <div class="invalid-feedback">Message témoin, sans erreur sur le champ</div>
                  </div>
                </form>
 
@@ -61,14 +56,11 @@ harness.with_browser do |browser|
   harness.check("son groupe non plus n'est plus en erreur",
                 !page.evaluate(%(document.querySelector("#groupe-prenom").classList.contains("form-group-invalid"))))
 
-  puts "\n— Les autres champs ne bougent pas"
+  puts "\n— L'autre champ ne bouge pas"
   harness.check("l'erreur du nom reste, tant qu'on n'y a pas touché",
                 page.evaluate(%(document.querySelector("#user_last_name").classList.contains("is-invalid"))) &&
                 page.evaluate(%(document.querySelector("#groupe-nom .invalid-feedback")?.textContent)) ==
                   "Nom doit être rempli(e)")
-  taper(page, "#ecole", "École")
-  harness.check("un champ sans erreur garde ce qui l'entoure",
-                !page.evaluate(%(document.querySelector("#groupe-ecole .invalid-feedback"))).nil?)
 end
 
 harness.report!

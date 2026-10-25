@@ -1,4 +1,3 @@
-@use "sass:list";
 @use "../config/colors";
 
 // `Ui::AvatarComponent` : une photo, ou des initiales dans un rond. Le même rond
@@ -9,32 +8,23 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  object-fit: cover;
   color: colors.$grisF;
   font-weight: 600;
   line-height: 1;
   user-select: none;
 }
 
-// Taille du rond, taille des initiales : le texte occupe un peu plus du tiers.
-$tailles: (
-  sm: (25px, 10px),
-  md: (40px, 15px),
-  lg: (55px, 20px),
-  xl: (96px, 34px)
-);
+// Les initiales occupent un peu plus du tiers du rond.
+.ui-avatar--sm { width: 25px; height: 25px; font-size: 10px; }
+.ui-avatar--md { width: 40px; height: 40px; font-size: 15px; }
+.ui-avatar--lg { width: 55px; height: 55px; font-size: 20px; }
+.ui-avatar--xl { width: 96px; height: 96px; font-size: 34px; }
 
-@each $nom, $mesures in $tailles {
-  .ui-avatar--#{$nom} {
-    width: list.nth($mesures, 1);
-    height: list.nth($mesures, 1);
-    font-size: list.nth($mesures, 2);
-  }
-}
-
-// Numérotées à partir de 0, comme le reste de la division faite par le composant.
-@for $i from 1 through list.length(colors.$avatar-teintes) {
-  .ui-avatar--teinte-#{$i - 1} {
-    background-color: list.nth(colors.$avatar-teintes, $i);
-  }
-}
+// Le fond des initiales, une teinte par compte d'après son id
+// (`Ui::AvatarComponent::TEINTES`) : deux collègues côte à côte dans la
+// messagerie se distinguent. Trois pastels déjà dans la palette, aucune teinte
+// nouvelle : le rose est réservé à l'action principale et à l'état courant, les
+// couleurs de ceinture et d'évaluation ont un sens.
+.ui-avatar--teinte-0 { background-color: colors.$violet; }
+.ui-avatar--teinte-1 { background-color: colors.$bleuC; }
+.ui-avatar--teinte-2 { background-color: colors.$menuOff; }
