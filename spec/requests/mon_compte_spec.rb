@@ -59,7 +59,7 @@ RSpec.describe "Mon compte", type: :request do
     it "s'enregistre en direct, sans bouton Valider" do
       get edit_profile_path
 
-      expect(page.at_css("#compte-profil[data-action='change->submit-frame#submit']")).to be_present
+      expect(page.at_css("#compte-profil[data-action~='change->submit-frame#submit']")).to be_present
       expect(page.at_css("#compte-profil button")).to be_nil
     end
 

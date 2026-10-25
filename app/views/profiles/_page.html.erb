@@ -29,7 +29,8 @@
 			</div>
 			<%= simple_form_for user, url: profile_path, method: :patch,
 			                    html: { id: "compte-profil", class: "wp-edit-form compte-formulaire",
-			                            data: { controller: "submit-frame", action: "change->submit-frame#submit" } } do |f| %>
+			                            data: { controller: "submit-frame efface-erreur",
+			                                    action: "change->submit-frame#submit input->efface-erreur#effacer" } } do |f| %>
 				<div class="compte-champs">
 					<%= f.input :first_name, label: "Prénom", input_html: { class: "area", autocomplete: "given-name" } %>
 					<%= f.input :last_name, label: "Nom", input_html: { class: "area", autocomplete: "family-name" } %>
@@ -47,7 +48,8 @@
 			<h2>Connexion</h2>
 			<p class="compte-sous-titre">Votre mot de passe actuel est demandé pour changer ces informations.</p>
 			<%= simple_form_for user, url: user_registration_path, method: :patch,
-			                    html: { id: "compte-connexion", class: "wp-edit-form" } do |f| %>
+			                    html: { id: "compte-connexion", class: "wp-edit-form",
+			                            data: { controller: "efface-erreur", action: "input->efface-erreur#effacer" } } do |f| %>
 				<div class="compte-champs">
 					<%= f.input :email, label: "E-mail", wrapper_html: { class: "compte-plein" },
 					            input_html: { class: "area", autocomplete: "email" } %>
