@@ -9,7 +9,7 @@
           data-bs-toggle="tooltip"
           data-bs-placement="top"
           title="<%=user.first_name%>">
-						<%= image_tag user.avatar_url, class:"avatar-basic"%>
+						<%= render Ui::AvatarComponent.new(user) %>
 					</div>
 				<% end %>
 			<% end %>
@@ -26,7 +26,7 @@
                   data-bs-toggle="tooltip"
                   data-bs-placement="left"
                   title="<%=user.first_name%>">
-									<%= image_tag user.avatar_url, class:"avatar-basic" %>
+									<%= render Ui::AvatarComponent.new(user) %>
 								</div>
 							<% end %>
 						<% end %>

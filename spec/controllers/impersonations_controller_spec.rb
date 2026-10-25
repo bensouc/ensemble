@@ -236,17 +236,14 @@ RSpec.describe RegistrationsController, type: :controller do
 
   before { @request.env["devise.mapping"] = Devise.mappings[:user] }
 
-  it "interdit l'édition du compte incarné" do
+  # L'édition de Devise n'est plus qu'un renvoi vers « Mon compte », ouvert
+  # pendant une personnification : c'est l'enregistrement qui reste fermé.
+  it "interdit de changer les identifiants du compte incarné" do
     sign_in(admin)
     session[:impersonated_user_id] = teacher.id
-    get :edit
+    patch :update, params: { user: { email: "autre@exemple.fr", current_password: "123456" } }
     expect(response).to redirect_to(dashboard_path)
     expect(flash[:alert]).to match(/personnification/i)
-  end
-
-  it "laisse l'admin éditer son propre compte" do
-    sign_in(admin)
-    get :edit
-    expect(response).to be_successful
+    expect(teacher.reload.email).not_to eq("autre@exemple.fr")
   end
 end

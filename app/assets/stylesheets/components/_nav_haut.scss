@@ -66,11 +66,7 @@
   font-size: 0.8rem;
   color: #4caf50 !important;
 }
-img.avatar {
-  padding: 0;
-  border-radius: 50em;
-  width: 55px;
-  height: 55px;
+.navhaut .dropdown-toggle .ui-avatar {
   margin: 10px 0 10px 10px;
 }
 .dropdown-menu.left {
@@ -82,24 +78,6 @@ img.avatar {
     font-family: "Poppins", sans-serif;
     // font-size: 10px;
     font-weight: lighter;
-    color: colors.$rose;
-  }
-}
-
-.avatar {
-  font-family: "Poppins", sans-serif;
-  font-size: 10px;
-  font-weight: 700;
-  color: colors.$rose;
-  padding-top: 20px;
-
-  h3 {
-    font-size: 1.5em;
-    font-weight: 700;
-    color: colors.$grisF;
-    margin-bottom: 0;
-  }
-  p {
     color: colors.$rose;
   }
 }

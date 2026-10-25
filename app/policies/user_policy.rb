@@ -10,6 +10,11 @@ class UserPolicy < ApplicationPolicy
     user.discovery_method.nil?
   end
 
+  # Le prénom, le nom et la photo : chacun les siens.
+  def update?
+    record == user
+  end
+
   # Écrire à quelqu'un, ou l'ajouter à une conversation : la messagerie est celle
   # de l'école, on n'y retrouve que ses collègues. Un admin écrit à tout le monde.
   def contact?

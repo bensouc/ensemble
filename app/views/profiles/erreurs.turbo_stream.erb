@@ -1,0 +1,7 @@
+<% (current_user.errors.attribute_names & [:first_name, :last_name]).each do |attribut| %>
+	<%= turbo_stream.replace "compte-#{attribut}" do %>
+		<%= simple_fields_for :user, current_user do |f| %>
+			<%= render "profiles/champ_identite", f:, attribut: %>
+		<% end %>
+	<% end %>
+<% end %>

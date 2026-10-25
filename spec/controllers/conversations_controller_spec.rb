@@ -216,7 +216,10 @@ RSpec.describe ConversationsController, type: :controller do
       sign_in teacher
       get :index
       expect(response).to be_successful
-      expect(response.body).to include("avatar-basic")
+      # La barre du haut porte aussi un avatar, celui de l'enseignant : on vise
+      # celui de la liste des conversations.
+      avatar = Nokogiri::HTML(response.body).at_css(".conversation-link .ui-avatar")
+      expect(avatar&.[]("aria-label")).to eq(colleague.display_name)
     end
   end
 end

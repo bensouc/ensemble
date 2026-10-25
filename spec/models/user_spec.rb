@@ -106,4 +106,15 @@ RSpec.describe User, type: :model do
       expect(build(:user, first_name: " ", last_name: nil, email: "invite@ecole.fr").short_name).to eq("invite@ecole.fr")
     end
   end
+
+  # Le refus d'un fichier qui n'est pas une image est couvert par la spec de
+  # requête de « Mon compte » ; ici, ce que la page ne montre pas.
+  describe "la photo" do
+    it "ne revient pas sur une photo déjà enregistrée : le reste du compte s'enregistre encore" do
+      @user1.avatar = { io: StringIO.new("%PDF-1.4\n%%EOF"), filename: "cv.png", content_type: "image/png" }
+      @user1.save!(validate: false)
+
+      expect { @user1.reload.update!(discovery_method: "Autre") }.not_to raise_error
+    end
+  end
 end

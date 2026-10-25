@@ -13,7 +13,7 @@
 			<% end %>
 		<% else %>
 			<div class="content --grisC w-100">
-				<%= image_tag message.user.avatar_url, class:'avatar-small me-1' %>
+				<%= render Ui::AvatarComponent.new(message.user, size: :sm, logo: message.user.admin?, html: { class: "me-1" }) %>
 				<div class="last-message-content"><%= truncate(message.content.to_plain_text, length: 40)%></div>
 			</div>
 			<div class="message-date">

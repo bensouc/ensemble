@@ -12,19 +12,23 @@ module Ui
   # - `:success`   la pastille verte ;
   # - `:icon`      une icône seule, dans un rond (le ⋮ d'un menu d'actions).
   #
-  # Trois formes, selon ce qu'on lui donne : un lien (`href:`), un formulaire
-  # d'un bouton (`url:`, comme `button_to`), ou un simple `<button>`.
+  # Quatre formes, selon ce qu'on lui donne : un lien (`href:`), un formulaire
+  # d'un bouton (`url:`, comme `button_to`), l'étiquette d'un champ
+  # (`label_for:`, qui ouvre un sélecteur de fichier sans JavaScript), ou un
+  # simple `<button>`.
   #
   #   render Ui::ButtonComponent.new("Annuler", variant: :neutral, data: { bs_dismiss: "modal" })
   #   render Ui::ButtonComponent.new("Valider", variant: :primary, type: "submit")
   #   render Ui::ButtonComponent.new("Cloner", icon: "fa-regular fa-clone", url: duplicate_path(x))
+  #   render Ui::ButtonComponent.new("Changer la photo", icon: "fa-camera", label_for: "compte-photo")
   class ButtonComponent < ViewComponent::Base
     VARIANTS = %i[primary secondary neutral success icon].freeze
     SIZES = %i[sm md lg].freeze
 
-    # rubocop:disable Metrics/ParameterLists
+    # Une affectation par option, rien d'autre : la longueur vient du nombre d'options.
+    # rubocop:disable Metrics/ParameterLists, Metrics/MethodLength
     def initialize(label = nil, variant: :secondary, size: :md, icon: nil, href: nil, url: nil, method: :post,
-                   type: "button", title: nil, data: {}, form: {}, html: {})
+                   label_for: nil, type: "button", title: nil, data: {}, form: {}, html: {})
       # rubocop:enable Metrics/ParameterLists
       super()
       raise ArgumentError, "variante inconnue : #{variant}" unless VARIANTS.include?(variant)
@@ -37,18 +41,22 @@ module Ui
       @href = href
       @url = url
       @method = method
+      @label_for = label_for
       @type = type
       @title = title
       @data = data
       @form = form
       @html = html
     end
+    # rubocop:enable Metrics/MethodLength
 
     def call
       if @href
         link_to(@href, **attributes) { inner }
       elsif @url
         button_to(@url, method: @method, form: @form, **attributes) { inner }
+      elsif @label_for
+        tag.label(for: @label_for, **attributes) { inner }
       else
         button_tag(type: @type, **attributes) { inner }
       end

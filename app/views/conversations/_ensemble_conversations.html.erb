@@ -14,7 +14,7 @@
           data-bs-toggle="tooltip"
           data-bs-placement="left"
           title="<%= teacher.school.name + " " + teacher.first_name%>">
-						<%= image_tag teacher.avatar_url, class: "avatar-basic",width: "40px" %>
+						<%= render Ui::AvatarComponent.new(teacher, logo: teacher.admin?) %>
 					</div>
 				</div>
 				<%= render 'messages/last_message', message: ensemble_conversation.messages.last, conversation: ensemble_conversation %>

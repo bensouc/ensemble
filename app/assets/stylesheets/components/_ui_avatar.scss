@@ -1,0 +1,30 @@
+@use "../config/colors";
+
+// `Ui::AvatarComponent` : une photo, ou des initiales dans un rond. Le même rond
+// pour les deux, pour qu'une photo et des initiales s'alignent dans une liste.
+.ui-avatar {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: colors.$grisF;
+  font-weight: 600;
+  line-height: 1;
+  user-select: none;
+}
+
+// Les initiales occupent un peu plus du tiers du rond.
+.ui-avatar--sm { width: 25px; height: 25px; font-size: 10px; }
+.ui-avatar--md { width: 40px; height: 40px; font-size: 15px; }
+.ui-avatar--lg { width: 55px; height: 55px; font-size: 20px; }
+.ui-avatar--xl { width: 96px; height: 96px; font-size: 34px; }
+
+// Le fond des initiales, une teinte par compte d'après son id
+// (`Ui::AvatarComponent::TEINTES`) : deux collègues côte à côte dans la
+// messagerie se distinguent. Trois pastels déjà dans la palette, aucune teinte
+// nouvelle : le rose est réservé à l'action principale et à l'état courant, les
+// couleurs de ceinture et d'évaluation ont un sens.
+.ui-avatar--teinte-0 { background-color: colors.$violet; }
+.ui-avatar--teinte-1 { background-color: colors.$bleuC; }
+.ui-avatar--teinte-2 { background-color: colors.$menuOff; }

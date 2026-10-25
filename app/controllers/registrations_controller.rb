@@ -14,6 +14,12 @@ class RegistrationsController < Devise::RegistrationsController
     redirect_to root_path, notice: "Vous n'avez pas les droits pour cela"
   end
 
+  # L'e-mail et le mot de passe se changent depuis la page « Mon compte », où
+  # Devise n'a qu'un bloc. Son propre écran d'édition n'existe plus.
+  def edit
+    redirect_to edit_profile_path
+  end
+
   def create
     return redirect_to new_user_invitation_path if user_signed_in?
 
@@ -32,7 +38,7 @@ class RegistrationsController < Devise::RegistrationsController
   end
 
   def after_update_path_for(_resource)
-    dashboard_path
+    edit_profile_path
   end
 
   private

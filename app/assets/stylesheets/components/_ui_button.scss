@@ -83,3 +83,11 @@
     pointer-events: none;
   }
 }
+
+// `label_for:` : le champ fichier est masqué, et c'est lui qui reçoit le focus
+// au clavier. Sans ce contour, la tabulation tombait sur un champ invisible et
+// le bouton ne s'allumait pas.
+:focus-visible + label.ui-btn {
+  outline: 2px solid colors.$rose;
+  outline-offset: 2px;
+}

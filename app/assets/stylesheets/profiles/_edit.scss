@@ -1,0 +1,72 @@
+@use "../config/colors";
+@use "../config/echelle";
+
+// La page « Mon compte » (`profiles/_page`) : trois blocs l'un sous l'autre,
+// chacun son formulaire. Les champs reprennent ceux des modales d'édition
+// (`.wp-edit-form`) ; seule leur grille est posée ici, hors d'une modale.
+
+.compte-carte {
+  margin-bottom: echelle.$espace-lg;
+  padding: echelle.$espace-lg;
+  border: 1px solid colors.$grisC;
+  border-radius: echelle.$rayon;
+  background-color: colors.$blanc;
+
+  h2 {
+    margin: 0 0 echelle.$espace-xs;
+    color: colors.$grisF;
+    font-size: echelle.$texte-lg;
+    font-weight: 700;
+  }
+}
+
+.compte-sous-titre {
+  margin: 0 0 echelle.$espace-md;
+  color: colors.$grisM;
+  font-size: echelle.$texte-sm;
+}
+
+.compte-texte {
+  max-width: 60ch;
+  margin: 0 0 echelle.$espace-md;
+  color: colors.$grisF;
+  font-size: echelle.$texte-sm;
+}
+
+// La photo à gauche, le prénom et le nom à droite ; l'une sous l'autre quand la
+// place manque.
+.compte-profil {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: echelle.$espace-lg echelle.$espace-xl;
+}
+
+.compte-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: echelle.$espace-sm;
+  min-width: 10rem;
+}
+
+.compte-formulaire {
+  flex: 1;
+  min-width: 16rem;
+}
+
+.compte-champs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 12px;
+
+  @media (max-width: echelle.$tablette) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// L'école se montre, elle ne se change pas : un texte, pas un champ grisé.
+.compte-valeur {
+  margin: 0;
+  color: colors.$grisF;
+}

@@ -6,6 +6,7 @@ class User < ApplicationRecord
   STUDENT_LIMIT = 25
   DISCOVERY_METHOD = ["Bouche-à-oreille", "Recherche sur Internet", "Réseaux sociaux", "Publicité en ligne",
                       "Article de presse ou blog", "Événement ou conférence", "Autre"].freeze
+  AVATAR_POIDS_MAX_MO = 5
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   before_validation :set_defaults
@@ -56,6 +57,7 @@ class User < ApplicationRecord
   # Validations
   validates :first_name, presence: true
   validates :last_name, presence: true
+  validate :avatar_est_une_image_legere
 
   # Methods
 
@@ -63,16 +65,6 @@ class User < ApplicationRecord
   # Un admin la voit toujours : c'est lui qui l'ouvre aux autres, il doit
   # pouvoir regarder ce qu'il ouvre.
   def manipule_ouvert? = manipule? || admin?
-
-  def avatar_url
-    if admin?
-      ActionController::Base.helpers.asset_path("icons/vroad_b_w.png")
-    elsif avatar.attached?
-      Cloudinary::Utils.cloudinary_url(avatar.key, width: 100, height: 100, crop: :fill)
-    else
-      "https://res.cloudinary.com/bensoucdev/image/upload/v1644250365/avatr_myemjn.png"
-    end
-  end
 
   def unread_message? # check if user has unread messages true=> has unread messages / false=> no unread messages
     !Message.joins(conversation: :user_conversations).
@@ -190,6 +182,16 @@ class User < ApplicationRecord
   def set_defaults
     SchoolRole.create!(user: self, school: School.where(name: "Ensemble").first) if school_role.nil?
     # true
+  end
+
+  # Rien ne filtrait le fichier : un PDF devenait l'avatar. Contrôlé seulement
+  # quand une nouvelle photo arrive : aucune sauvegarde du compte ne doit buter
+  # sur une photo déjà enregistrée.
+  def avatar_est_une_image_legere
+    return unless avatar.attached? && avatar.attachment.new_record?
+
+    errors.add(:avatar, :pas_une_image) unless avatar.blob.image?
+    errors.add(:avatar, :trop_lourde, max: AVATAR_POIDS_MAX_MO) if avatar.blob.byte_size > AVATAR_POIDS_MAX_MO.megabytes
   end
 
   def hand_over_shared_classrooms

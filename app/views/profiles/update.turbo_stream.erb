@@ -1,0 +1,3 @@
+<%= turbo_stream.replace "compte-avatar", Ui::AvatarComponent.new(current_user, size: :xl, html: { id: "compte-avatar" }) %>
+<%= turbo_stream.replace "avatar-nav", Ui::AvatarComponent.new(current_user, size: :lg, html: { id: "avatar-nav" }) %>
+<%= turbo_stream.prepend "flash", partial: "shared/flashes" %>

@@ -51,6 +51,10 @@ fr:
     probleme_duplique: "Copie créée, en brouillon. À vous de la modifier."
     probleme_supprime: "Manipulation supprimée."
     probleme_deja_travaille: "Cette manipulation a déjà été travaillée par un élève : elle ne se supprime pas, masquez-la."
+  mon_compte:
+    profil_enregistre: "Profil enregistré."
+    photo_enregistree: "Photo enregistrée."
+    photo_retiree: "Photo retirée."
   fiches_ceinture:
     preparee: "Fiche de ceinture préparée"
     rien_a_preparer: "Aucune ceinture à préparer automatiquement : ajoutez les domaines à la main."
@@ -117,8 +121,23 @@ fr:
         name: Nom
       grade:
         name: Nom
+      # Les erreurs de « Mon compte » nommaient les champs en anglais :
+      # « Current password n'est pas valide ».
+      user:
+        avatar: "La photo"
+        first_name: "Prénom"
+        last_name: "Nom"
+        email: "E-mail"
+        password: "Mot de passe"
+        password_confirmation: "Confirmation du mot de passe"
+        current_password: "Mot de passe actuel"
     errors:
       models:
+        user:
+          attributes:
+            avatar:
+              pas_une_image: "doit être une image (JPEG, PNG…)"
+              trop_lourde: "ne doit pas dépasser %{max} Mo"
         # Chaque phrase se lit à la suite du nom du champ : « L'énoncé est
         # vide… ». Celles de Rails parlaient de colonnes et d'accords entre
         # parenthèses — « doit être rempli(e) ».
